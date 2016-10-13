@@ -1,19 +1,18 @@
 Build 186:
 Data Changes:
 - Fixed missing values for Metahuman adjustment on several vehicles.
-<<<<<<< HEAD
 - Properly applied localisation to the character roster form.
-
-New Strings:
-- Label_Biography
-=======
+- Fixed the karma costs for new knowledge skills in career mode to not improperly charge twice. 
 - Added a missing Seats label for vehicles.
 - Set the Astral Initiative label to be invisible if the character is not Awakened.
 - Altered the SelectWeapon improvement to allow excluding a specific weapon type. Prevents spare clips from trying to select melee weapons.
 
 New Strings:
 - Label_VehicleSeats
->>>>>>> origin/master
+- Label_Biography
+
+Changed Strings: 
+- Message_ConfirmKarmaExpenseKnowledgeSkill
 
 Build 185:
 Application Changes: 

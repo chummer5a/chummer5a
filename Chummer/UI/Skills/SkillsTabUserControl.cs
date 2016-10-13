@@ -383,8 +383,6 @@ namespace Chummer.UI.Skills
 		        {
 		            KnowledgeSkill skill = new KnowledgeSkill(ObjCharacter);
 		            skill.WriteableName = form.SelectedItem;
-		            //skill.Karma = 1;
-		            _character.Karma -= _character.Options.KarmaNewKnowledgeSkill;
 
 
 		            ObjCharacter.SkillsSection.KnowledgeSkills.Add(skill);
