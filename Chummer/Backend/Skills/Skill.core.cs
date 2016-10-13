@@ -451,10 +451,18 @@ namespace Chummer.Skills
 			if (!CanUpgradeCareer) return;
 
 			int price = UpgradeKarmaCost();
-
+            string strSkillType = "";
+            if (IsKnowledgeSkill)
+            {
+                strSkillType = "String_ExpenseActiveSkill";
+            }
+            else
+            {
+                strSkillType = "String_ExpenseActiveSkill";
+            }
 			//If data file contains {4} this crashes but...
 			string upgradetext =
-				$"{LanguageManager.Instance.GetString("String_ExpenseActiveSkill")} {DisplayName} {LearnedRating} -> {(LearnedRating + 1)}";
+				$"{LanguageManager.Instance.GetString(strSkillType)} {DisplayName} {LearnedRating} -> {(LearnedRating + 1)}";
 
 			ExpenseLogEntry entry = new	ExpenseLogEntry();
 			entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);

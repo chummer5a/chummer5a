@@ -129,10 +129,7 @@ namespace Chummer.UI.Skills
                 if (skill.Karma == 0)
                 {
                     confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
-                        skill.DisplayName, 
-                        skill.Rating + 1,
-                        skill.CharacterObject.Options.KarmaNewKnowledgeSkill,
-                        this.cboType.GetItemText(this.cboType.SelectedItem));
+                        skill.DisplayName, skill.Rating + 1, skill.CharacterObject.Options.KarmaNewKnowledgeSkill, this.cboType.GetItemText(this.cboType.SelectedItem));
                 }
                 else
                 {
@@ -142,10 +139,6 @@ namespace Chummer.UI.Skills
 
 				if (!parent.ConfirmKarmaExpense(confirmstring))
 					return;
-                if (skill.Karma == 0)
-                {
-                    skill.CharacterObject.Karma -= skill.CharacterObject.Options.KarmaNewKnowledgeSkill;
-                }
 			}
 			cboType.Enabled = false;
 
