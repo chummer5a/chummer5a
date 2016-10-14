@@ -936,6 +936,7 @@
 					<name>CHA</name>
 					<max>Rating</max>
 				</specificattribute>
+				<armor>-1</armor>
 			</bonus>
 			<source>CF</source>
 			<page>108</page>
