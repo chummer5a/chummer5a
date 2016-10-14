@@ -10,6 +10,7 @@ Application Changes:
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
+- Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
 
 New Strings:
 - Label_VehicleSeats
