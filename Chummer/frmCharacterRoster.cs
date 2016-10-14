@@ -34,7 +34,7 @@ namespace Chummer
 			lblMetatypeLabel.Left = tabCharacterText.Left;
 			lblCharacterAliasLabel.Left = tabCharacterText.Left;
 			lblEssenceLabel.Left = tabCharacterText.Left;
-
+            lblFilePathLabel.Left = tabCharacterText.Left;
 			intWidth = lblPlayerNameLabel.Right;
 			if (lblCareerKarmaLabel.Right > intWidth)
 			{
@@ -55,13 +55,19 @@ namespace Chummer
 			if (lblEssenceLabel.Right > intWidth)
 			{
 				intWidth = lblEssenceLabel.Right;
-			}
-			lblEssence.Left = intWidth + 12;
-			lblPlayerName.Left = intWidth + 12;
-			lblCareerKarma.Left = intWidth + 12;
-			lblCharacterAlias.Left = intWidth + 12;
-			lblMetatype.Left = intWidth + 12;
-			lblCharacterName.Left = intWidth + 12;
+            }
+            if (lblFilePathLabel.Right > intWidth)
+            {
+                intWidth = lblFilePathLabel.Right;
+            }
+            intWidth += 12;
+            lblEssence.Left = intWidth;
+			lblPlayerName.Left = intWidth;
+			lblCareerKarma.Left = intWidth;
+			lblCharacterAlias.Left = intWidth;
+			lblMetatype.Left = intWidth;
+			lblCharacterName.Left = intWidth;
+            lblFilePath.Left = intWidth;
 		}
 
 		private void LoadCharacters()
@@ -170,6 +176,7 @@ namespace Chummer
 			lblCharacterName.Text = objCache.CharacterName;
 			lblCharacterAlias.Text = objCache.CharacterAlias;
 			lblEssence.Text = objCache.Essence;
+            lblFilePath.Text = objCache.FilePath;
 			picMugshot.Image = objCache.Mugshot;
 		}
 
@@ -185,10 +192,17 @@ namespace Chummer
 			GlobalOptions.Instance.MainForm.LoadCharacter(objCache.FilePath);
 		}
 
-		/// <summary>
-		/// Caches a subset of a full character's properties for loading purposes. 
-		/// </summary>
-		private class CharacterCache
+        private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode != null)
+            {
+                RemoveSelected(treCharacterList.SelectedNode);
+            }
+        }
+        /// <summary>
+        /// Caches a subset of a full character's properties for loading purposes. 
+        /// </summary>
+        private class CharacterCache
 		{
 			internal string FilePath { get; set; }
 			internal string Description { get; set; }
@@ -205,5 +219,13 @@ namespace Chummer
 			public bool Created { get; internal set; }
 			public string Essence { get; internal set; }
 		}
+
+        private void RemoveSelected(TreeNode sender)
+        {
+            CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
+            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
+            GlobalOptions.Instance.RemoveFromStickyMRUList(objCache.FilePath);
+            treCharacterList.Nodes.RemoveAt(sender.Index);
+        }
 	}
 }

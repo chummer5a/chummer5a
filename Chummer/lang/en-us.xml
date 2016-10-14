@@ -750,7 +750,7 @@
 			<key>String_StackedFocus</key>
 			<text>Stacked Focus</text>
 		</string>
-		<!-- End Region-->
+		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>
 			<key>String_UnarmedAttack</key>
@@ -1067,6 +1067,12 @@
 			<text>&amp;About...</text>
 		</string>
 		<!-- End Region -->
+    <!-- Region Character Roster -->
+    <string>
+      <key>Label_File_Path</key>
+      <text>File Path:</text>
+    </string>
+    <!-- End Region -->
 		<!-- Region Create/Career Window -->
 		<string>
 			<key>Menu_Special</key>
