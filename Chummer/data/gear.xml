@@ -36,6 +36,7 @@
 		<category>Custom</category>
 		<category>Cyberdeck Modules</category>
 		<category>Cyberdecks</category>
+		<category>Cyberterminals</category>
 		<category>Disguises</category>
 		<category>DocWagon Contract</category>
 		<category>Drugs</category>
@@ -2396,7 +2397,7 @@
 			<name>Crystal Leviathan Shatterstar</name>
 			<category>Cyberdecks</category>
 			<capacity>0</capacity>
-			<rating>5</rating>
+			<rating>0</rating>
 			<devicerating>5</devicerating>
 			<attributearray>8,7,7,5</attributearray>
 			<attack>8</attack>
@@ -2408,6 +2409,150 @@
 			<cost>500000</cost>
 			<source>SPS</source>
 			<page>45</page>
+		</gear>
+		<gear>
+			<id>34efd0cd-3d0e-4b6b-8c3d-85543d41373d</id>
+			<name>Allegiance Sigma</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>4,3,2,1</attributearray>
+			<attack>4</attack>
+			<sleaze>3</sleaze>
+			<dataprocessing>2</dataprocessing>
+			<firewall>1</firewall>
+			<programs>1</programs>
+			<avail>3R</avail>
+			<cost>49500</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>c106ae08-5aac-4bae-82f9-2429e75cfe04</id>
+			<name>Microdeck Peak</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>4,3,3,1</attributearray>
+			<attack>4</attack>
+			<sleaze>3</sleaze>
+			<dataprocessing>3</dataprocessing>
+			<firewall>1</firewall>
+			<programs>1</programs>
+			<avail>3R</avail>
+			<cost>58000</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>1282e59b-7169-4ba6-8f5b-bc58e846a517</id>
+			<name>Radio Shack PCD-100</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>2</devicerating>
+			<attributearray>5,4,3,2</attributearray>
+			<attack>5</attack>
+			<sleaze>4</sleaze>
+			<dataprocessing>3</dataprocessing>
+			<firewall>2</firewall>
+			<programs>2</programs>
+			<avail>6R</avail>
+			<cost>110250</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>c9bb37ac-a211-4167-9a0c-cc9df6219df1</id>
+			<name>Allegiance Alpha</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>2</devicerating>
+			<attributearray>5,4,4,2</attributearray>
+			<attack>5</attack>
+			<sleaze>4</sleaze>
+			<dataprocessing>4</dataprocessing>
+			<firewall>2</firewall>
+			<programs>2</programs>
+			<avail>6R</avail>
+			<cost>123000</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>e8a816f9-1b85-4398-b77b-088546947620</id>
+			<name>Sony CTY-360</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>3</devicerating>
+			<attributearray>6,5,4,3</attributearray>
+			<attack>6</attack>
+			<sleaze>5</sleaze>
+			<dataprocessing>4</dataprocessing>
+			<firewall>3</firewall>
+			<programs>3</programs>
+			<avail>9R</avail>
+			<cost>205750</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>a7d3635c-68ea-4866-a45a-65ce3c0b6038</id>
+			<name>Fuchi Cyber-4</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>3</devicerating>
+			<attributearray>6,5,5,3</attributearray>
+			<attack>6</attack>
+			<sleaze>5</sleaze>
+			<dataprocessing>5</dataprocessing>
+			<firewall>3</firewall>
+			<programs>3</programs>
+			<avail>9R</avail>
+			<cost>214125</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>34f493aa-369d-4c19-a7a5-82e5c5305f39</id>
+			<name>Fuchi Cyber-6</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>4</devicerating>
+			<attributearray>7,6,5,4</attributearray>
+			<attack>7</attack>
+			<sleaze>6</sleaze>
+			<dataprocessing>5</dataprocessing>
+			<firewall>4</firewall>
+			<programs>4</programs>
+			<avail>12R</avail>
+			<cost>345000</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<gear>
+			<id>37781747-e848-437f-ac7a-920a2a3be25e</id>
+			<name>Fuchi Cyber-7</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>5</devicerating>
+			<attributearray>8,7,6,5</attributearray>
+			<attack>8</attack>
+			<sleaze>7</sleaze>
+			<dataprocessing>6</dataprocessing>
+			<firewall>5</firewall>
+			<programs>5</programs>
+			<avail>15R</avail>
+			<cost>549375</cost>
+			<source>HKS</source>
+			<page>77</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region RCCs -->
@@ -7624,6 +7769,134 @@
 			<cost>800</cost>
 			<source>DT</source>
 			<page>65</page>
+		</gear>
+		<gear>
+			<id>fbb2f661-b915-4e87-9d81-b9d04702112f</id>
+			<name>Hitcher Jacks</name>
+			<category>Cyberdeck Modules</category>
+			<armorcapacity>[2]</armorcapacity>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>HKS</source>
+			<page>76</page>
+		</gear>
+		<gear>
+			<id>0d2bfeea-9d1b-43b5-91f1-1fb84bc3110b</id>
+			<name>Vidscreen Display</name>
+			<category>Cyberdeck Modules</category>
+			<armorcapacity>[2]</armorcapacity>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>HKS</source>
+			<page>77</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Cyberterminals -->
+		<gear>
+			<id>7bf321d5-a51d-4d16-8466-2a2035c9bfa3</id>
+			<name>Microdeck Deskmaster</name>
+			<category>Cyberterminals</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>3</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>3</dataprocessing>
+			<firewall>3</firewall>
+			<avail>6</avail>
+			<cost>1000</cost>
+			<source>HKS</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>bca172ae-25bc-44a6-9f76-75de7706aaf3</id>
+			<name>Sony R4J</name>
+			<category>Cyberterminals</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>4</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>4</dataprocessing>
+			<firewall>4</firewall>
+			<avail>8</avail>
+			<cost>2250</cost>
+			<source>HKS</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>e344173b-bc60-4ec3-a362-161753b8ad9c</id>
+			<name>Fuchi Cyber-2</name>
+			<category>Cyberterminals</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>5</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>5</dataprocessing>
+			<firewall>5</firewall>
+			<avail>10</avail>
+			<cost>3000</cost>
+			<source>HKS</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>6cbd5a4d-217e-4465-8e32-3ee3a9f80c67</id>
+			<name>MCT Sarari-Man</name>
+			<category>Cyberterminals</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>6</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>6</dataprocessing>
+			<firewall>6</firewall>
+			<avail>12</avail>
+			<cost>5000</cost>
+			<source>HKS</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>ac4cdb1d-8587-4a93-b881-643da080e1e3</id>
+			<name>Renraku Desukuwa-Ku</name>
+			<category>Cyberterminals</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>7</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>7</dataprocessing>
+			<firewall>7</firewall>
+			<avail>14</avail>
+			<cost>8000</cost>
+			<source>HKS</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>d941471d-cb5e-4f8e-b448-e828aae21654</id>
+			<name>Fairlight Joyeuse</name>
+			<category>Cyberterminals</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>8</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>8</dataprocessing>
+			<firewall>8</firewall>
+			<avail>16</avail>
+			<cost>12000</cost>
+			<source>HKS</source>
+			<page>78</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Electronic Modification -->

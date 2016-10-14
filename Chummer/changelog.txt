@@ -7,9 +7,11 @@ Data Changes:
 - Set the Astral Initiative label to be invisible if the character is not Awakened.
 - Altered the SelectWeapon improvement to allow excluding a specific weapon type. Prevents spare clips from trying to select melee weapons.
 - Fixed the Expense Log entry for Knowledge Skill increases to properly indicate it's a Knowledge Skill entry. Removed an accidental double-charge for creating skills.
+- Slightly refactored weapon selection to use GUIDs instead of names. 
 
 Data Changes:
 - Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
+- Added content from Lockdown, Shadows in Focus: San Francisco, and the Hong Kong Sourcebook.
 
 New Strings:
 - Label_VehicleSeats

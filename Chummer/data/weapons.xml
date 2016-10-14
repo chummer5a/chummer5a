@@ -7897,8 +7897,6 @@
 		</weapon>
 		<!-- End Region -->
 		<!-- Region Boston Lockdown-->
-
-		<!-- Region Lockdown -->
 		<weapon>
 			<id>21fb8d4f-5958-4fd9-996f-7e88ee0282c2</id>
 			<name>Microwave Gun, High Frequency</name>
@@ -7965,6 +7963,39 @@
 			<source>LCD</source>
 			<page>209</page>
 		</weapon>
+		<!-- End Region -->
+		<!-- Region Shadows in Focus -->
+		<!-- Region San Fancisco -->
+		<weapon>
+			<id>581fed02-2312-4a75-95ba-25215b12ab5f</id>
+			<name>Colt Manhunter</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>5R</avail>
+			<cost>700</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
+			</accessories>
+			<source>SFM</source>
+			<page>18</page>
+		</weapon>
+		<!-- End Region -->
 		<!-- End Region -->
 	</weapons>
 	<accessories>

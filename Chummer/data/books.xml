@@ -152,5 +152,20 @@
 			<name>Shadows In Focus: Butte</name>
 			<code>SFB</code>
 		</book>
+		<book>
+			<id>7186ed14-e0b8-456e-b923-f77933f1762e</id>
+			<name>Hong Kong Sourcebook</name>
+			<code>HKS</code>
+		</book>
+		<book>
+			<id>540cfaa8-823f-46c7-b93b-79191a894bd1</id>
+			<name>Lockdown</name>
+			<code>LCD</code>
+		</book>
+		<book>
+			<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+			<name>Shadows In Focus: San Francisco Metroplex</name>
+			<code>SFM</code>
+		</book>
 	</books>
 </chummer>
