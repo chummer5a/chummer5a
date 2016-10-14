@@ -1,5 +1,5 @@
 Build 186:
-Data Changes:
+Application Changes:
 - Fixed missing values for Metahuman adjustment on several vehicles.
 - Properly applied localisation to the character roster form.
 - Fixed the karma costs for new knowledge skills in career mode to not improperly charge twice. 
@@ -7,6 +7,9 @@ Data Changes:
 - Set the Astral Initiative label to be invisible if the character is not Awakened.
 - Altered the SelectWeapon improvement to allow excluding a specific weapon type. Prevents spare clips from trying to select melee weapons.
 - Fixed the Expense Log entry for Knowledge Skill increases to properly indicate it's a Knowledge Skill entry. Removed an accidental double-charge for creating skills.
+
+Data Changes:
+- Fixed an incorrect spelling for the Personafix gear item.
 
 New Strings:
 - Label_VehicleSeats
