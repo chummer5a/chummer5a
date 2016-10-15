@@ -53,6 +53,8 @@ namespace Chummer
             this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
             this.lblEssence = new System.Windows.Forms.Label();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
+            this.lblFilePath = new System.Windows.Forms.Label();
+            this.lblFilePathLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -71,6 +73,7 @@ namespace Chummer
             this.treCharacterList.TabIndex = 0;
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
             this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
+            this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_KeyDown);
             // 
             // picMugshot
             // 
@@ -301,11 +304,32 @@ namespace Chummer
             this.lblEssenceLabel.Tag = "Label_Essence";
             this.lblEssenceLabel.Text = "Essence:";
             // 
+            // lblFilePath
+            // 
+            this.lblFilePath.AutoSize = true;
+            this.lblFilePath.Location = new System.Drawing.Point(304, 164);
+            this.lblFilePath.Name = "lblFilePath";
+            this.lblFilePath.Size = new System.Drawing.Size(33, 13);
+            this.lblFilePath.TabIndex = 38;
+            this.lblFilePath.Text = "None";
+            // 
+            // lblFilePathLabel
+            // 
+            this.lblFilePathLabel.AutoSize = true;
+            this.lblFilePathLabel.Location = new System.Drawing.Point(208, 164);
+            this.lblFilePathLabel.Name = "lblFilePathLabel";
+            this.lblFilePathLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblFilePathLabel.TabIndex = 37;
+            this.lblFilePathLabel.Tag = "Label_File_Path";
+            this.lblFilePathLabel.Text = "File Path:";
+            // 
             // frmCharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 552);
+            this.Controls.Add(this.lblFilePath);
+            this.Controls.Add(this.lblFilePathLabel);
             this.Controls.Add(this.lblEssence);
             this.Controls.Add(this.lblEssenceLabel);
             this.Controls.Add(this.lblCharacterAlias);
@@ -363,5 +387,7 @@ namespace Chummer
 		private System.Windows.Forms.Label lblCharacterAliasLabel;
 		private System.Windows.Forms.Label lblEssence;
 		private System.Windows.Forms.Label lblEssenceLabel;
-	}
+        private System.Windows.Forms.Label lblFilePath;
+        private System.Windows.Forms.Label lblFilePathLabel;
+    }
 }
