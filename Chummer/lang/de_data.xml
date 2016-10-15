@@ -538,6 +538,13 @@
 				<page>72</page>
 			</armor>
 			<armor>
+				<id>3134bbd7-350b-4d10-8902-25cb156e094f</id>
+				<name>Chain Mail</name>
+				<translate>Kettenhemd</translate>
+				<source>RG</source>
+				<page>71</page>
+			</armor>
+			<armor>
 				<id>31675672-3476-4a2f-8acf-605702ae4c66</id>
 				<name>Murder Armor</name>
 				<translate>Täuschungspanzerung</translate>
@@ -13545,11 +13552,11 @@
 				<translate>Luftfahrtmechanik</translate>
 				<specs>
 					<spec translate="Raumfahrzeuge">Aerospace</spec>
-					<spec translate="Festflügelmaschinen">Fixed Wing</spec>
+					<spec translate="Starrflügler">Fixed Wing</spec>
 					<spec translate="Rotormaschinen">Rotary Wing</spec>
-					<spec translate="Schwenkflügelmaschinen">Tilt Wing</spec>
+					<spec translate="Kippflügler">Tilt Wing</spec>
 					<spec translate="Vektorschubmaschinen">Vector Thrust</spec>
-					<spec translate="LTA (blimp)">LTA (blimp)</spec>
+					<spec translate="Luftschiffe">LTA (blimp)</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13570,9 +13577,9 @@
 				<page>142</page>
 				<translate>Arkana</translate>
 				<specs>
-					<spec translate="Spruchdesign">Spell Design</spec>
+					<spec translate="Zauberdesign">Spell Design</spec>
 					<spec translate="Fokusdesign">Focus Design</spec>
-					<spec translate="Spirit Formula">Spirit Formula</spec>
+					<spec translate="Geisterformeln">Spirit Formula</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13632,9 +13639,9 @@
 				<page>143</page>
 				<translate>Astralkampf</translate>
 				<specs>
-					<spec translate="Magicians">Magicians</spec>
-					<spec translate="Mana Barriers">Mana Barriers</spec>
-					<spec translate="Spirits">Spirits</spec>
+					<spec translate="Magier">Magicians</spec>
+					<spec translate="Mana Barrieren">Mana Barriers</spec>
+					<spec translate="Geister">Spirits</spec>
 					<spec translate="[Weapon Focus Type]">[Weapon Focus Type]</spec>
 					<spec translate="[Other Opponent Type]">[Other Opponent Type]</spec>
 				</specs>
@@ -13675,6 +13682,10 @@
 					<spec translate="Geister des Feuers">Spirits of Fire</spec>
 					<spec translate="Geister des Menschen">Spirits of Man</spec>
 					<spec translate="Geister des Wassers">Spirits of Water</spec>
+					<spec translate="Beschützergeist">Guardian Spirit</spec>
+					<spec translate="Ratgebergeist">Guidance Spirit</spec>
+					<spec translate="Pflanzengeist">Plant Spirit</spec>
+					<spec translate="Helfergeist">Task Spirit</spec>
 					<spec translate="Guardian Spirit">Guardian Spirit</spec>
 					<spec translate="Guidance Spirit">Guidance Spirit</spec>
 					<spec translate="Plant Spirit">Plant Spirit</spec>
@@ -13693,6 +13704,10 @@
 					<spec translate="Geister des Feuers">Spirits of Fire</spec>
 					<spec translate="Geister des Menschen">Spirits of Man</spec>
 					<spec translate="Geister des Wassers">Spirits of Water</spec>
+					<spec translate="Beschützergeist">Guardian Spirit</spec>
+					<spec translate="Ratgebergeist">Guidance Spirit</spec>
+					<spec translate="Pflanzengeist">Plant Spirit</spec>
+					<spec translate="Helfergeist">Task Spirit</spec>
 					<spec translate="Guardian Spirit">Guardian Spirit</spec>
 					<spec translate="Guidance Spirit">Guidance Spirit</spec>
 					<spec translate="Plant Spirit">Plant Spirit</spec>
@@ -18436,7 +18451,7 @@
 			<weapon>
 				<id>38e9682d-d679-47a4-97a1-7161cba07cd2</id>
 				<name>PPSK-4 Collapsible Machine Pistol</name>
-				<page>22</page>
+				<page>34</page>
 				<translate>PPSK-4 Klapp-MP</translate>
 			</weapon>
 			<weapon translated="True">
@@ -18508,8 +18523,7 @@
 			<weapon translated="True">
 				<id>413200d1-fbd4-485f-8a18-152b60cfb290</id>
 				<name>Ares HVAR</name>
-				<page>
-				</page>
+				<page>37</page>
 				<translate>Ares HVAR</translate>
 			</weapon>
 			<weapon translated="True">
@@ -19214,6 +19228,12 @@
 				<name>Hammer</name>
 				<translate>Hammer</translate>
 				<page>22</page>
+			</weapon>
+			<weapon>
+				<id>78293136-5bd0-49ac-aa9b-7c291f94c7a4</id>
+				<name>Ares Redline</name>
+				<translate>Ares Redline</translate>
+				<page>48</page>
 			</weapon>
 			<weapon>
 				<id>df5d5c83-ddf8-4ec2-8a6f-28c61ec7325a</id>
@@ -20628,12 +20648,12 @@
 			<improvement>
 				<id>conditionmonitorthreshold</id>
 				<name>Condition Monitor, Threshold</name>
-				<translate>Condition Monitor, Threshold</translate>
+				<translate>Zustandsmonitor, Threshold</translate>
 			</improvement>
 			<improvement>
 				<id>conditionmonitoroffset</id>
 				<name>Condition Monitor, Threshold Offset</name>
-				<translate>Condition Monitor, Threshold Offset</translate>
+				<translate>Zustandsmonitor, Threshold Offset</translate>
 			</improvement>
 			<improvement>
 				<id>livingpersonabiofeedback</id>

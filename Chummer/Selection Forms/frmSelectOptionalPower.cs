@@ -18,15 +18,17 @@
  */
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Linq;
+﻿using System.Windows.Forms;
+﻿using Octokit;
 
 namespace Chummer
 {
     public partial class frmSelectOptionalPower : Form
     {
-        private string _strReturnValue = "";
-
-		private List<ListItem> _lstPowers = new List<ListItem>();
+	    private string _strReturnPower = "";
+	    private string _strReturnExtra = "";
+		private List<KeyValuePair<string, KeyValuePair<string, string>>> _lstPowers = new List<KeyValuePair<string, KeyValuePair<string, string>>>();
 
 		#region Control Events
 		public frmSelectOptionalPower()
@@ -36,9 +38,10 @@ namespace Chummer
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
-        {
-			_strReturnValue = cboPower.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+		{
+			_strReturnPower = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Key;
+			_strReturnExtra = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Value;
+			this.DialogResult = DialogResult.OK;
         }
 
         private void frmSelectOptionalPower_Load(object sender, EventArgs e)
@@ -69,11 +72,16 @@ namespace Chummer
         {
             get
             {
-                return _strReturnValue;
+                return _strReturnPower;
             }
         }
 
-        /// <summary>
+	    public string SelectedPowerExtra
+	    {
+		    get { return _strReturnExtra; }
+	    }
+
+	    /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
@@ -111,41 +119,17 @@ namespace Chummer
 		{
 			_lstPowers.Clear();
 			foreach (KeyValuePair<string, string> lstObject in lstValue)
-            {
-				ListItem objItem = new ListItem();
-				objItem.Value = lstObject.Key;
+			{
+				string strName = "";
 				if (lstObject.Value != "")
 				{
-					objItem.Name = lstObject.Key + " (" + lstObject.Value + ")";
+					strName = lstObject.Key + " (" + lstObject.Value + ")";
 				}
 				else
 				{
-					objItem.Name = lstObject.Key;
-                }
-                _lstPowers.Add(objItem);
-			}
-			cboPower.DataSource = null;
-			cboPower.DataSource = _lstPowers;
-			cboPower.ValueMember = "Value";
-			cboPower.DisplayMember = "Name";
-		}
-
-		/// <summary>
-		/// Exclude the list of Powers.
-		/// </summary>
-		/// <param name="strValue">List of Powers.</param>
-		public void RemoveFromList(List<string> strValue)
-		{
-			foreach (string strPower in strValue)
-			{
-				foreach (ListItem objItem in _lstPowers)
-				{
-					if (objItem.Value == strPower)
-					{
-						_lstPowers.Remove(objItem);
-						break;
-					}
+					strName = lstObject.Key;
 				}
+				_lstPowers.Add(new KeyValuePair<string, KeyValuePair<string, string>>(strName, lstObject));
 			}
 			cboPower.DataSource = null;
 			cboPower.DataSource = _lstPowers;

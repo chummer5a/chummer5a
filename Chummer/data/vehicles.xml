@@ -2730,7 +2730,7 @@
 				<gear rating="5" maxrating="7">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>24F</avail>
 			<cost>2275000</cost>
@@ -2773,7 +2773,7 @@
 				<gear rating="4" maxrating="7">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>24R</avail>
 			<cost>50000</cost>
@@ -3851,7 +3851,7 @@
 				<name>Searchlight</name>
 			</mods>
 			<avail>10F</avail>
-			<cost>175</cost>
+			<cost>17500</cost>
 			<source>R5</source>
 			<page>143</page>
 		</vehicle>
@@ -4190,7 +4190,7 @@
 				<gear rating="2" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>0</avail>
 			<cost>12000</cost>
@@ -5534,7 +5534,7 @@
 		</vehicle>
 		<vehicle>
 			<id>c036d20d-1bfe-48ee-b188-7756323764cd</id>
-			<name>Sparring Drone (Medium)</name>
+			<name>Sparring Drone (Large)</name>
 			<category>Drones: Anthro</category>
 			<handling>3</handling>
 			<accel>2</accel>
@@ -5551,6 +5551,26 @@
 			<cost>5000</cost>
 			<source>HT</source>
 			<page>190</page>
+		</vehicle>
+		<vehicle>
+			<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
+			<name>Clockwork Greyhound</name>
+			<category>Drones: Medium</category>
+			<handling>3</handling>
+			<accel>1</accel>
+			<speed>2</speed>
+			<pilot>3</pilot>
+			<body>2</body>
+			<armor>1</armor>
+			<seats>0</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="4">Sensor Array</gear>
+			</gears>
+			<avail>16</avail>
+			<cost>225000</cost>
+			<source>TVG</source>
+			<page>19</page>
 		</vehicle>
 	</vehicles>
 	<mods>
@@ -5823,6 +5843,7 @@
 			<cost>FixedValues(Rating*2000,Rating*5000,Rating*12000)</cost>
 			<bonus>
 				<handling>+Rating</handling>
+        <offroadhandling>+Rating</offroadhandling>
 			</bonus>
 			<source>R5</source>
 			<page>154</page>
@@ -6585,6 +6606,9 @@
 			<name>Smuggling Compartment Shielding</name>
 			<category>Body</category>
 			<rating>0</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<slots>0</slots>
 			<avail>12F</avail>
 			<cost>3000</cost>
@@ -6833,6 +6857,9 @@
 			<name>Metahuman Adjustment</name>
 			<category>Cosmetic</category>
 			<rating>Seats</rating>
+			<requires>
+				<seats>1</seats>
+			</requires>
 			<slots>0</slots>
 			<avail>4</avail>
 			<cost>Rating * 500</cost>

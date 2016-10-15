@@ -70,10 +70,10 @@
 						</knowledgeskilllevel>
 						<pushtext>United Canadian American States</pushtext>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>5cf12de1-b41b-4a0f-9a2a-03bf08faa3d0</id>
@@ -94,10 +94,10 @@
 						</skilllevel>
 						<pushtext>United Canadian American States</pushtext>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>7fdfff94-5c90-4af5-808a-f96e5d0643bb</id>
@@ -119,10 +119,10 @@
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>United Canadian American States</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>b332fa10-e0f5-43aa-bb38-52cdb0060da1</id>
@@ -145,10 +145,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>United Canadian American States</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>4fe5e4fd-0275-48bd-9fec-678b86c5f024</id>
@@ -220,10 +220,10 @@
 						</skilllevel>
 						<pushtext>Confederation of American States</pushtext>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>665a11ae-8f7e-44db-8c08-2bae2fb03ba7</id>
@@ -245,10 +245,10 @@
 						</knowledgeskilllevel>
 						<pushtext>Confederation of American States</pushtext>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>b70de7f3-844f-40ec-92c6-5b3b4bacbe4b</id>
@@ -278,6 +278,9 @@
 					<group>Language</group>
 					<val>0</val>
 				</knowledgeskilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
 				<knowledgeskilllevel>
 					<options>
 						<spanish>Spanish</spanish>
@@ -378,10 +381,10 @@
 				</skilllevel>
 				<pushtext>Tír Tairngire</pushtext>
 				<freenegativequalities>-5</freenegativequalities>
+				<addqualities>
+					<addquality>SINner (National)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (National)</addquality>
-			</addqualities>
 			<story>$real was born in Tir Tairngire, $TIRDESC .</story>
 			<source>RF</source>
 			<page>67</page>
@@ -435,10 +438,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Algonkian-Manitou Council</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>97b5d738-0166-482b-be3b-bca2b247f275</id>
@@ -469,10 +472,10 @@
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Athabaskan Council</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>89e16098-3034-4f25-8c2f-e8bb7e94d832</id>
@@ -508,10 +511,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Pueblo Corporate Council</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>042ede14-e0fb-4fb9-95d6-8ddad27d96a3</id>
@@ -544,10 +547,10 @@
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Salish-Shidhe Council</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>969d1f17-c944-44a7-8997-e62e250e7946</id>
@@ -587,10 +590,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Sioux Nation</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>24e4b3e9-49fc-4c71-b088-3f958e3c1ac6</id>
@@ -620,10 +623,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Trans-Polar Aleut Nation</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>9bffa38c-0332-4348-9a92-9734074cb292</id>
@@ -657,10 +660,10 @@
 							<name>Blades</name>
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>Allergy (Uncommon, Mild)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>Allergy (Uncommon, Mild)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>9c59f21b-1130-4277-b896-0d45bafcd9c6</id>
@@ -683,10 +686,10 @@
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Denver</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>7ede647e-920c-43bf-8f2e-ac26cdb611d4</id>
@@ -710,10 +713,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Las Vegas</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>1b4f84a0-0b2a-4a49-ab5f-b92d4d75e44a</id>
@@ -750,10 +753,10 @@
 						</knowledgeskilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Salt Lake City</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 			</versions>
 			<bonus>
@@ -808,10 +811,10 @@
 					<name>[Corperation]</name>
 				</knowledgeskilllevel>
 				<freenegativequalities>-15</freenegativequalities>
+				<addqualities>
+					<addquality>SINner (Corporate Limited)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
 			<story>$real was  $LUCK  enough to grow up in an Arcology: a corporate fortress city that $ARCOLOGY.</story>
 			<source>RF</source>
 			<page>67</page>
@@ -876,11 +879,11 @@
 					<val>5</val>
 				</knowledgeskilllevel>
 				<freepositivequalities>1</freepositivequalities>
+				<addqualities>
+					<addquality>Uneducated</addquality>
+					<addquality>Toughness</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Uneducated</addquality>
-				<addquality>Toughness</addquality>
-			</addqualities>
 			<story>$real spent their formative years on a farm, not moving around hay like the farmhands of yesteryear, but instead $FARMDESC.</story>
 			<source>RF</source>
 			<page>68</page>
@@ -916,12 +919,12 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freenegativequalities>-24</freenegativequalities>
+				<addqualities>
+					<addquality>Paranoia</addquality>
+					<addquality>Bad Rep</addquality>
+					<addquality>SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Paranoia</addquality>
-				<addquality>Bad Rep</addquality>
-				<addquality>SINner (Criminal)</addquality>
-			</addqualities>
 			<story>$real spent their formative years with their parents as they ran away from $FLEE.</story>
 			<source>RF</source>
 			<page>68</page>
@@ -956,12 +959,12 @@
 				</knowledgeskilllevel>
 				<freenegativequalities>-22</freenegativequalities>
 				<freepositivequalities>9</freepositivequalities>
+				<addqualities>
+					<addquality>Uncouth</addquality>
+					<addquality>Uneducated</addquality>
+					<addquality>Toughness</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Uncouth</addquality>
-				<addquality>Uneducated</addquality>
-				<addquality>Toughness</addquality>
-			</addqualities>
 			<story>$real grew up in an isolated portion of the wilderness like the rednecks of old.</story>
 			<source>RF</source>
 			<page>68</page>
@@ -1000,10 +1003,10 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freenegativequalities>-14</freenegativequalities>
-			</bonus>
 			<addqualities>
 				<addquality>Uncouth</addquality>
 			</addqualities>
+			</bonus>
 			<story>$real grew up almost everywhere, shifted from place to place by their $PARRENT 's military duties.</story>
 			<source>RF</source>
 			<page>69</page>
@@ -1080,11 +1083,11 @@
 				<freenegativequalities>-7</freenegativequalities>
 				<freepositivequalities>10</freepositivequalities>
 				<pushtext>Poor</pushtext>
+				<addqualities>
+					<addquality>Prejudiced (Common, Outspoken)</addquality>
+					<addquality>Trust Fund II</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Prejudiced (Common, Outspoken)</addquality>
-				<addquality>Trust Fund II</addquality>
-			</addqualities>
 			<karma>40</karma>
 			<story>$real was literally born with a gold spoon in their mouth, and looked down on those with silver spoons, as those could tarnish.</story>
 			<source>RF</source>
@@ -1122,13 +1125,13 @@
 				</knowledgeskilllevel>
 				<freenegativequalities>-22</freenegativequalities>
 				<freepositivequalities>9</freepositivequalities>
+				<addqualities>
+					<addquality>Paranoia</addquality>
+					<addquality>Flashbacks I</addquality>
+					<addquality>Uneducated</addquality>
+					<addquality>Toughness</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Paranoia</addquality>
-				<addquality>Flashbacks I</addquality>
-				<addquality>Uneducated</addquality>
-				<addquality>Toughness</addquality>
-			</addqualities>
 			<karma>40</karma>
 			<story>$real was a child of the streets, best described with words like plucky or $INSULTA.</story>
 			<source>RF</source>
@@ -1253,10 +1256,10 @@
 					<group>Interest</group>
 				</knowledgeskilllevel>
 				<freepositivequalities>3</freepositivequalities>
-			</bonus>
 			<addqualities>
 				<addquality>Animal Empathy</addquality>
 			</addqualities>
+			</bonus>
 			<story>$real spent their teenage years on a farm, $FARMTASK .</story>
 			<source>RF</source>
 			<page>70</page>
@@ -1391,10 +1394,10 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freenegativequalities>-8</freenegativequalities>
+				<addqualities>
+					<addquality>Social Stress</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Social Stress</addquality>
-			</addqualities>
 			<story>$real was taught at home, by $HOMEDESC . While they managed to avoid the main pitfall of homeschooling and somehow ended up with a better education than their peers, $real was left emotionally stunted due to the lack of contact with others.</story>
 			<source>RF</source>
 			<page>70</page>
@@ -1443,10 +1446,10 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freenegativequalities>-5</freenegativequalities>
+				<addqualities>
+					<addquality>Incompetent</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Incompetent</addquality>
-			</addqualities>
 			<!--TODO electronics autoselect-->
 			<story>$real spent their teenage years in the middle of nowhere, leaving them with very little knowledge of the outside world, but a lot of knowledge about $OUTDOOR .</story>
 			<source>RF</source>
@@ -1498,6 +1501,9 @@
 					<val>2</val>
 				</skilllevel>
 				<freenegativequalities>-15</freenegativequalities>
+			<addqualities>
+				<addquality>SINner (Corporate Limited)</addquality>
+			</addqualities>
 			</bonus>
 			<required>
 				<oneof>
@@ -1505,9 +1511,6 @@
 				</oneof>
 			</required>
 			<story>$real was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>71</page>
 		</module>
@@ -1556,6 +1559,9 @@
 					<val>2</val>
 				</skilllevel>
 				<freenegativequalities>-15</freenegativequalities>
+				<addqualities>
+					<addquality>SINner (Corporate Limited)</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<oneof>
@@ -1563,9 +1569,6 @@
 				</oneof>
 			</required>
 			<story>$real was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>71</page>
 		</module>
@@ -1614,6 +1617,9 @@
 					<val>2</val>
 				</skilllevel>
 				<freenegativequalities>-15</freenegativequalities>
+				<addqualities>
+					<addquality>SINner (Corporate Limited)</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<oneof>
@@ -1621,9 +1627,6 @@
 				</oneof>
 			</required>
 			<story>$real was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>71</page>
 		</module>
@@ -1672,6 +1675,9 @@
 					<val>2</val>
 				</skilllevel>
 				<freenegativequalities>-15</freenegativequalities>
+			<addqualities>
+				<addquality>SINner (Corporate Limited)</addquality>
+			</addqualities>
 			</bonus>
 			<required>
 				<oneof>
@@ -1679,9 +1685,6 @@
 				</oneof>
 			</required>
 			<story>$real was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>71</page>
 		</module>
@@ -1746,11 +1749,11 @@
 					<val>1</val>
 				</knowledgeskilllevel>
 				<freepositivequalities>5</freepositivequalities>
+				<addqualities>
+					<addquality>Rank</addquality>
+					<addquality>Code of Honor</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Rank</addquality>
-				<addquality>Code of Honor</addquality>
-			</addqualities>
 			<story>$real was educated at a military school designed to instill discipline and patriotism in those  $LUCK  to be sent there.</story>
 			<source>RF</source>
 			<page>71</page>
@@ -1795,10 +1798,10 @@
 					<group>Language</group>
 					<val>1</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>First Impression</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>First Impression</addquality>
-			</addqualities>
 			<story>$real was $LUCK enough to go to a respected private school.</story>
 			<source>RF</source>
 			<page>71</page>
@@ -1853,12 +1856,12 @@
 					<group>Street</group>
 					<val>1</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Bad Rep</addquality>
+					<!--can't find this quality anywhere, another copy-paste from cgl?-->
+					<!--<addquality>Enemy</addquality>-->
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Bad Rep</addquality>
-				<!--can't find this quality anywhere, another copy-paste from cgl?-->
-				<!--<addquality>Enemy</addquality>-->
-			</addqualities>
 			<story>$real graduated summa cum laude from the school of hard knocks, with a major in $STREETDESC and a minor in women’s studies.</story>
 			<source>RF</source>
 			<page>72</page>
@@ -3511,10 +3514,10 @@
 					<group>Language</group>
 					<val>1</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Guts</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Guts</addquality>
-			</addqualities>
 			<story>$real decided that muckraking with the Corp’s filth was too likely to get them silenced, so they decided to go for an easier job: covering foreign wars.</story>
 			<source>RF</source>
 			<page>76</page>
@@ -3540,10 +3543,10 @@
 					<group>Professional</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (Corporate Limited)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
 			<versions>
 				<version>
 					<id>edbb6b67-e541-4c42-bf69-266787846337</id>
@@ -3802,11 +3805,11 @@
 					<group>Street</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Hawk Eye</addquality>
+					<addquality>Poor Link</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Hawk Eye</addquality>
-				<addquality>Poor Link</addquality>
-			</addqualities>
 			<story>$real was an genuine secret agent, spying on $ENTITY for $ENTITY</story>
 			<source>RF</source>
 			<page>77</page>
@@ -3888,11 +3891,11 @@
 					<group>Street</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>High Pain Tolerance (Rating 1)</addquality>
+					<addquality>Sense of Direction</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>High Pain Tolerance (Rating 1)</addquality>
-				<addquality>Sense of Direction</addquality>
-			</addqualities>
 			<story>$real decided getting a job just wasn’t for them, instead choosing to couchsurf, or possibly live in their mother’s basement.</story>
 			<source>RF</source>
 			<page>77</page>
@@ -3951,10 +3954,10 @@
 				<skilllevel>
 					<name>Running</name>
 				</skilllevel>
+				<addqualities>
+					<addquality>SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (Criminal)</addquality>
-			</addqualities>
 			<story>$real became a criminal, their main income coming from selling other people’s cyber-VCRs, and occasionally mugging people and stealing the money they got by selling cyber-VCRs.</story>
 			<source>RF</source>
 			<page>78</page>
@@ -4011,10 +4014,10 @@
 					<group>Professional</group>
 					<val>4</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (National)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (National)</addquality>
-			</addqualities>
 			<story>$real somehow managed to get a job with one of the few government organizations that hasn’t yet been privatized. Be it with the FBI, MI5, NSA, TAO, Unit 61398, or some other organization, they get to be paid less than normal people in return for working longer hours and being hated by everyone.</story>
 			<source>RF</source>
 			<page>78</page>
@@ -4262,11 +4265,11 @@
 					<group>Street</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Made Man</addquality>
+					<addquality>SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Made Man</addquality>
-				<addquality>SINner (Criminal)</addquality>
-			</addqualities>
 			<story>$real decided the best way to wealth and power was also the most brutal: organized crime. Specializing in $GANGDESC , $real became well known in the $GANGTYPE</story>
 			<source>RF</source>
 			<page>78</page>
@@ -4339,10 +4342,10 @@
 					<group>Interest</group>
 					<val>4</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (Criminal)</addquality>
-			</addqualities>
 			<story>$real was one of the most dangerous things in the world: an idealist. Working for a small policlub or interest group, they got arrested multiple times in their quest to make the world a better place.</story>
 			<source>RF</source>
 			<page>79</page>
@@ -4439,6 +4442,9 @@
 					<group>Street</group>
 					<val>2</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addqiality>SINner (National)</addqiality>
+				</addqualities>
 			</bonus>
 			<!--<required>
     <oneof>
@@ -4448,9 +4454,6 @@
      <quality>Tour of Duty (UCAS, CAS and CFS)</quality>
     </oneof>
    </required> Needs way to not select individual stuff (shadow work vs face)-->
-			<addqualities>
-				<addqiality>SINner (National)</addqiality>
-			</addqualities>
 			<story>$real overdosed on $CRIMEDESC decided to become a private investigator.</story>
 			<source>RF</source>
 			<page>79</page>
@@ -4539,10 +4542,10 @@
 						<skilllevel>
 							<name>Pistols</name>
 						</skilllevel>
+						<addqualities>
+							<addquality>First Impression</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>First Impression</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>93c2318e-261e-48c6-ab79-72205ca94e00</id>
@@ -4573,11 +4576,11 @@
 							<group>Street</group>
 							<val>4</val>
 						</knowledgeskilllevel>
+						<addqualities>
+							<!--todo: choose action for codeslinger-->
+							<addquality>Codeslinger</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<!--todo: choose action for codeslinger-->
-						<addquality>Codeslinger</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>5d93a7da-9a2d-4bb3-ab58-f1716e10e8ba</id>
@@ -4693,11 +4696,11 @@
 							<group>Street</group>
 							<val>3</val>
 						</knowledgeskilllevel>
-					</bonus>
 					<addqualities>
 						<!--todo: choose code of honor-->
 						<addquality>Code of Honor</addquality>
 					</addqualities>
+					</bonus>
 				</version>
 				<version>
 					<id>66fa0fe9-860e-4668-9805-9dfb9e39a810</id>
@@ -5094,10 +5097,10 @@
 					<group>Street</group>
 					<val>2</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (Criminal)</addquality>
-			</addqualities>
 			<story>$real decided activism is for fools. The only way to get your voice heard is force. Blowing up pubs, executing civilians, assassinations, $real has done it all.</story>
 			<source>RF</source>
 			<page>81</page>
@@ -5936,10 +5939,10 @@
 					<group>Professional</group>
 					<val>4</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (National)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>SINner (National)</addquality>
-			</addqualities>
 			<versions>
 				<version>
 					<id>8ddf9d3d-9e63-4879-a3d1-546d9928d5c0</id>
@@ -6232,10 +6235,10 @@
 					<group>Interest</group>
 					<val>1</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Data Anomaly</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Data Anomaly</addquality>
-			</addqualities>
 			<story>$real grew up in a commune of hackers, who taught him the basics of hacking, and nothing else.</story>
 			<source>DT</source>
 			<page>51</page>
@@ -6325,12 +6328,12 @@
 					<group>Professional</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Guts</addquality>
+					<addquality>Pain is Gain</addquality>
+					<addquality>Vendetta</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Guts</addquality>
-				<addquality>Pain is Gain</addquality>
-				<addquality>Vendetta</addquality>
-			</addqualities>
 			<story>$real was blackbagged by a corp who wanted to take $real apart and see how they tick. Fortunately, they managed to escape, and even got to keep most of their organs.</story>
 			<source>DT</source>
 			<page>52</page>
@@ -6367,10 +6370,10 @@
 					<group>Street</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Go Big or Go Home</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Go Big or Go Home</addquality>
-			</addqualities>
 			<story>$real serves the Old Man of the Mountain via the matrix, hitting their enemies with enough biofeedback to leave their enemies brain leaking out of their ears.</story>
 			<source>DT</source>
 			<page>52</page>
@@ -6428,10 +6431,10 @@
 					<group>Street</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Golden Screwdriver</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Golden Screwdriver</addquality>
-			</addqualities>
 			<story>$real hacks as a hobby, cracking code with nothing but sheer willpower and a lot of mountain dew.</story>
 			<source>DT</source>
 			<page>53</page>
@@ -6474,12 +6477,12 @@
 					<group>Interest</group>
 					<val>5</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Online Fame</addquality>
+					<!--todo: choose datahaven-->
+					<addquality>Prime Datahaven Membership</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addqiality>Online Fame</addqiality>
-				<!--todo: choose datahaven-->
-				<addqiality>Prime Datahaven Membership</addqiality>
-			</addqualities>
 			<story>$real pulled off a big job. How big? I shit you not, they $HACKDESC .</story>
 			<source>DT</source>
 			<page>53</page>
@@ -6529,11 +6532,11 @@
 					<group>Professional</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Overclocker</addquality>
+					<addquality>Quick Config</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Overclocker</addquality>
-				<addquality>Quick Config</addquality>
-			</addqualities>
 			<story>$real had the misfortune to work as a sysadmin, an unappreciated job where one has to somehow fulfil requests made by people without even the most basic computer knowledge.</story>
 			<source>DT</source>
 			<page>53</page>
@@ -6587,11 +6590,11 @@
 					<group>Professional</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>I C U</addquality>
+					<addquality>Ninja Vanish</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>I C U</addquality>
-				<addquality>Ninja Vanish</addquality>
-			</addqualities>
 			<story>$real is an expert at staying unseen in the matrix, especially when it comes to $MATRIXHIDE .</story>
 			<source>DT</source>
 			<page>53</page>
@@ -6638,10 +6641,10 @@
 					<group>Street</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Otaku to Technomancer</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Otaku to Technomancer</addquality>
-			</addqualities>
 			<story>$real was an Otaku. No, not a Japanese nerd, but instead a child of the Matrix. Thankfully, Crash 2.0 hit before they suffered Fading, leaving them as a Technomancer, allowing them to keep their odd connection to the matrix for the rest of their life.</story>
 			<source>DT</source>
 			<page>53</page>
@@ -6680,10 +6683,10 @@
 				<skilllevel>
 					<name>Unarmed</name>
 				</skilllevel>
+				<addqualities>
+					<addquality>Blandness</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Blandness</addquality>
-			</addqualities>
 			<story>$real was a slave, and spent their childhood $SLAVE</story>
 			<source>CF</source>
 			<page>60</page>
@@ -6800,11 +6803,11 @@
 					<val>1</val>
 				</knowledgeskilllevel>
 				<nuyenamt>16000</nuyenamt>
+				<addqualities>
+					<!--todo: choose biocompatibility type-->
+					<addquality>Biocompatability (Cyberware)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<!--todo: choose biocompatibility type-->
-				<addquality>Biocompatability (Cyberware)</addquality>
-			</addqualities>
 			<!--todo: Special: 16,000 nuyen in augmentations-->
 			<story>$real grew up a lab rat, used by mad scientists to test augmentations. On one hand, $real essence was irreparably shredded. On the other hand free ware! Score!</story>
 			<source>CF</source>
@@ -6897,11 +6900,11 @@
 					<group>Street</group>
 					<val>2</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>High Pain Tolerance (Rating 2)</addquality>
+					<addquality>Quick Healer</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>High Pain Tolerance (Rating 2)</addquality>
-				<addquality>Quick Healer</addquality>
-			</addqualities>
 			<story>$real fought in a blood sport, punching the shit out of other people for fun and profit.</story>
 			<source>CF</source>
 			<page>61</page>
@@ -6939,12 +6942,12 @@
 					<group>Professional</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Natural Athlete</addquality>
+					<addquality>SINner (National)</addquality>
+					<addquality>Fame (Local)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Natural Athlete</addquality>
-				<addquality>SINner (National)</addquality>
-				<addquality>Fame (Local)</addquality>
-			</addqualities>
 			<story>$real fought in Urban Brawl, which, despite all appearances, is somehow not a blood sport. It did, however, teach them quite a lot of things about $URBANBRAWL .</story>
 			<source>CF</source>
 			<page>61</page>
@@ -7031,10 +7034,10 @@
 						</skillgrouplevel>
 						<pushtext>Caribbean League</pushtext>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>ebce1884-43ef-4e22-bb4d-69c9856b2959</id>
@@ -7055,10 +7058,10 @@
 						</skilllevel>
 						<pushtext>Caribbean League</pushtext>
 						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>0aea1207-b2ba-409d-8424-36c3366515e3</id>
@@ -7079,10 +7082,10 @@
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Caribbean League</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>79179499-26e7-49d8-a354-910a1c46eeb8</id>
@@ -7103,10 +7106,10 @@
 						</skilllevel>
 						<freenegativequalities>-5</freenegativequalities>
 						<pushtext>Caribbean League</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
 					</bonus>
-					<addqualities>
-						<addquality>SINner (National)</addquality>
-					</addqualities>
 				</version>
 				<version>
 					<id>35ece27f-6bd0-4e23-bed6-512952ff2818</id>
@@ -7191,10 +7194,10 @@
 					<name>(Geography)</name>
 				</knowledgeskilllevel>
 				<freepositivequalities>3</freepositivequalities>
+				<addqualities>
+					<addquality>Sense of Direction</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Sense of Direction</addquality>
-			</addqualities>
 			<story>$real was conscripted onto a ship.</story>
 			<source>HT</source>
 			<page>138</page>
@@ -7249,11 +7252,11 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freepositivequalities>8</freepositivequalities>
+				<addqualities>
+					<addquality>Fame (Local)</addquality>
+					<addquality>Linguist</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Fame (Local)</addquality>
-				<addquality>Linguist</addquality>
-			</addqualities>
 			<story>$real was a crime boss of the sea.</story>
 			<source>HT</source>
 			<page>138</page>
@@ -7370,10 +7373,10 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freenegativequalities>-10</freenegativequalities>
+				<addqualities>
+					<addquality>Insomnia (Basic)</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Insomnia (Basic)</addquality>
-			</addqualities>
 			<story>$real was imprisoned with vodou, living life as a zombie.</story>
 			<source>HT</source>
 			<page>139</page>
@@ -7450,10 +7453,10 @@
 					<val>3</val>
 				</knowledgeskilllevel>
 				<freepositivequalities>8</freepositivequalities>
+				<addqualities>
+					<addquality>Blandness</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Blandness</addquality>
-			</addqualities>
 			<story>$real spent time as a triggerman's assistant.</story>
 			<source>HT</source>
 			<page>200</page>
@@ -7524,10 +7527,10 @@
 					<val>1</val>
 				</knowledgeskilllevel>
 				<freepositivequalities>10</freepositivequalities>
+				<addqualities>
+					<addquality>Guts</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Guts</addquality>
-			</addqualities>
 			<story>$real had a change of heart and instead of killing people for money protected people for free.</story>
 			<source>HT</source>
 			<page>200</page>
@@ -7619,11 +7622,11 @@
 					<name>[Vehicle Stunts]</name>
 					<group>Street</group>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Speed Demon</addquality>
+					<addquality>Stunt Driver</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Speed Demon</addquality>
-				<addquality>Stunt Driver</addquality>
-			</addqualities>
 			<story>$real was driving before other kids could read the street signs, emerging as one of the best getaway drivers around the age normal kids were learning traffic signals</story>
 			<source>R5</source>
 			<page>34</page>
@@ -7657,10 +7660,10 @@
 					<name>[Vehicle Parts]</name>
 					<group>Professional</group>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Grease Monkey</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Grease Monkey</addquality>
-			</addqualities>
 			<story>Tinkering was what $real lived for. It started with simply identifying the limited cars in the neighborhood. From there scavenging parts and putting them back together. Totally self taught $real worked their way into shops if they weren't chased off</story>
 			<source>R5</source>
 			<page>35</page>
@@ -7699,10 +7702,10 @@
 					<group>Street</group>
 					<val>2</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Stunt Driver</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Stunt Driver</addquality>
-			</addqualities>
 			<story>By the time $real was a teen, they were stealing cars to order, driving the boosts to any one of the chop shops in the city. Now, when $real sees a new car in the 'hood, what $real sees is the fee in Nuyen</story>
 			<source>R5</source>
 			<page>35</page>
@@ -7813,11 +7816,11 @@
 					<group>Street</group>
 					<val>2</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Gearhead</addquality>
+					<addquality>Speed Demon</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Gearhead</addquality>
-				<addquality>Speed Demon</addquality>
-			</addqualities>
 			<story>Need a driver for that job you want doing? Feel the need for a getaway? Contact $real at getawaydriver.me for all your driving needs, flat rates for routes inside [CITY]</story>
 			<source>R5</source>
 			<page>35</page>
@@ -7874,11 +7877,11 @@
 					<group>Professional</group>
 					<val>2</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Steely Eyed Wheelman</addquality>
+					<addquality>Speed Demon</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Steely Eyed Wheelman</addquality>
-				<addquality>Speed Demon</addquality>
-			</addqualities>
 			<story>Need a driver for that TRI-D you're finanicing? Contact $real at actor-driver.me for all your driving needs.</story>
 			<source>R5</source>
 			<page>35</page>

@@ -959,6 +959,10 @@
 			<text>Create New Character</text>
 		</string>
 		<string>
+			<key>String_CharacterRoster</key>
+			<text>Character Roster</text>
+		</string>
+		<string>
 			<key>Title_CareerMode</key>
 			<text>Career Mode</text>
 		</string>
@@ -981,6 +985,10 @@
 		<string>
 			<key>Menu_Main_File</key>
 			<text>&amp;File</text>
+		</string>
+		<string>
+			<key>Menu_Main_ClearUnpinnedItems</key>
+			<text>&amp;Clear Unpinned Items</text>
 		</string>
 		<string>
 			<key>Menu_Main_Edit</key>
@@ -2297,6 +2305,10 @@
 			<text>Are you sure you want to spend Karma on improving {0} to {1} for {2} Karma?</text>
 		</string>
 		<string>
+			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
+			<text>Are you sure you want to spend Karma on improving {0} to {1} for {2} Karma and lock this skill's Type to {3}?</text>
+		</string>
+		<string>
 			<key>Message_ConfirmKarmaandNuyenExpense</key>
 			<text>Are you sure you want to spend Karma and Nuyen on improving {0} to {1} for {2} Karma and {3} Nuyen?</text>
 		</string>
@@ -3567,7 +3579,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {0} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
+			<text>Characters receive (INT + LOG) x {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {1} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
 		</string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -4195,7 +4207,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_IncreaseGearQty</key>
-			<text>Purchase more Ammunition.</text>
+			<text>Purchase more of the selected Gear.</text>
 		</string>
 		<string>
 			<key>Tip_DecreaseGearQty</key>
@@ -4271,6 +4283,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_VehicleWeaponModification</key>
 			<text>Vehicle Weapon Modification</text>
 		</string>
+		<string>
+			<key>Label_VehicleSeats</key>
+			<text>Seats:</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region Character Info Tab -->
 		<string>
@@ -4312,8 +4328,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_Description</key>
 			<text>Description:</text>
-		</string>
-		<string>
+		</string>    
+    <string>
+      <key>Label_Biography</key>
+      <text>Biography:</text>
+    </string>
+    <string>
 			<key>Label_Background</key>
 			<text>Background:</text>
 		</string>
@@ -6571,6 +6591,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Options_MultiplyForbiddenCost</key>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
+    <string>
+      <key>Checkbox_Option_AllowMysadPowerPointCareer</key>
+      <text>Allow Mystic Adepts to buy power points during career</text>
+    </string>
 		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
 			<text>Enforce Capacity limits</text>
@@ -6653,7 +6677,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Message_Options_CloseForms</key>
-			<text>Options are only enumerated on character load. Should we close the current open characters?</text>
+			<text>Options are only enumerated on character load. Should we restart the application?</text>
 		</string>
 		<string>
 			<key>Message_Options_SaveForms</key>
@@ -6675,6 +6699,10 @@ Do you want to continue?</text>
 			<key>Label_Options_PDFApplicationPath</key>
 			<text>Location of PDF application:</text>
 		</string>
+		<string>
+			<key>Label_Options_PDFParameters</key>
+			<text>PDF Parameters:</text>
+		</string>	
 		<string>
 			<key>Label_Options_URLApplicationPath</key>
 			<text>Location of Web Browser:</text>
@@ -6702,6 +6730,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Button_ToggleSourcebooks</key>
 			<text>Toggle all Sourcebooks On/Off</text>
+		</string>
+		<string>
+			<key>Label_Options_CharacterRoster</key>
+			<text>Character Roster Watch Folder</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->
@@ -6760,7 +6792,15 @@ Do you want to continue?</text>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Comforts</key>
 			<text>Comforts:</text>
-		</string>		
+		</string>
+		<string>
+			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
+			<text>Entertainments</text>
+		</string>
+		<string>
+			<key>Node_SelectAdvancedLifestyle_FreeMatrixGrids</key>
+			<text>Free Matrix Grids</text>
+		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Entertainment</key>
 			<text>Entertainment:</text>
@@ -8047,40 +8087,8 @@ Do you want to continue?</text>
 			<text>Based on your talent selection, you may choose {0}.</text>
 		</string>
 		<string>
-			<key>String_MetamagicSkillMagicianA</key>
-			<text>2 magical skills to start at rating 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerA</key>
-			<text>2 resonance skills to start at rating 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillMagicianB</key>
-			<text>2 magical skills to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerB</key>
-			<text>2 resonance skills to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptB</key>
-			<text>1 active skill to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedB</key>
-			<text>1 magical skill group to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptC</key>
-			<text>1 active skill to start at rating 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedC</key>
-			<text>1 magical skill group to start at rating 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedD</key>
-			<text>1 magical skill group to start at rating 0</text>
+			<key>String_MetamagicSkills</key>
+			<text>{0} {1} skill(s) to start at rating {2}</text>
 		</string>
 		<string>
 			<key>Message_Metatype_Duplicate</key>

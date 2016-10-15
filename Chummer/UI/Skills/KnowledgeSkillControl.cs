@@ -30,8 +30,9 @@ namespace Chummer.UI.Skills
 
 				lblRating.Visible = true;
 				lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
-
-				cboType.Enabled = false;
+				
+				//New knowledge skills start at 0. Leave the Type selector unlocked until they spend Karma on the skill.
+				cboType.Enabled = skill.Karma == 0;
 
 				lblName.Visible = true;
 				lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -118,19 +119,28 @@ namespace Chummer.UI.Skills
 
 		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
-			frmCareer parrent = ParentForm as frmCareer;
-			if (parrent != null)
+			frmCareer parent = ParentForm as frmCareer;
+			if (parent != null)
 			{
 				int upgradeKarmaCost = skill.UpgradeKarmaCost();
 
 				if (upgradeKarmaCost == -1) return; //TODO: more descriptive
+                string confirmstring = "";
+                if (skill.Karma == 0)
+                {
+                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
+                        skill.DisplayName, skill.Rating + 1, skill.CharacterObject.Options.KarmaNewKnowledgeSkill, this.cboType.GetItemText(this.cboType.SelectedItem));
+                }
+                else
+                {
+                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                       skill.DisplayName, skill.Rating + 1, upgradeKarmaCost, this.cboType.GetItemText(this.cboType.SelectedItem));
+                }
 
-				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
-					skill.DisplayName, skill.Rating + 1, upgradeKarmaCost);
-
-				if (!parrent.ConfirmKarmaExpense(confirmstring))
+				if (!parent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
+			cboType.Enabled = false;
 
 			skill.Upgrade();
 		}

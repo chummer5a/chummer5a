@@ -2606,12 +2606,12 @@
 			<name>Hawk Eye</name>
 			<karma>3</karma>
 			<category>Positive</category>
-      <bonus>
-        <specificskill>
-          <name>Perception</name>
-          <bonus>1</bonus>
-        </specificskill>
-      </bonus>
+			<bonus>
+				<specificskill>
+					<name>Perception</name>
+					<bonus>1</bonus>
+				</specificskill>
+			</bonus>
 			<source>RF</source>
 			<page>147</page>
 		</quality>
@@ -3519,11 +3519,11 @@
 			<category>Negative</category>
 			<bonus>
 				<excon />
+				<addqualities>
+					<addquality>SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
 			<nomission />
-			<addqualities>
-				<addquality contributetobp="false">SINner (Criminal)</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -4387,9 +4387,10 @@
 			<name>Pie Iesu Domine. Dona Eis Requiem.</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<addqualities>
+			<bonus><addqualities>
 				<addquality>High Pain Tolerance (Rating 1)</addquality>
 			</addqualities>
+			</bonus>
 			<source>RF</source>
 			<page>158</page>
 		</quality>
@@ -5691,9 +5692,11 @@
 					<quality>Changeling (Class III SURGE)</quality>
 				</oneof>
 			</required>
+			<bonus>
 			<addqualities>
 				<addquality>Distinctive Style</addquality>
 			</addqualities>
+			</bonus>
 			<source>RF</source>
 			<page>115</page>
 			<metagenetic>yes</metagenetic>
@@ -6754,6 +6757,7 @@
 			<bonus>
 				<skillcategory>
 					<name>Physical Active</name>
+					<exclude>Perception</exclude>
 					<bonus>-2</bonus>
 				</skillcategory>
 			</bonus>
@@ -6989,3408 +6993,3321 @@
 		<!-- End Region -->
 		<!-- End Region -->
 		<!-- Region Run Faster Infected Qualities -->
-<quality>
-	<id>65026e10-6fa5-49a4-9da6-d9575b5b9cde</id>
-	<name>Infected: Bandersnatch</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>22</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<reach>1</reach>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>6</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>2</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<min>1</min>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<min>1</min>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<min>1</min>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<min>1</min>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Sasquatch</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Adaptive Coloration</power>
-		<power select="Sunlight, Mild">Allergy</power>
-		<power select="Sasquatch Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
+		<quality>
+			<id>65026e10-6fa5-49a4-9da6-d9575b5b9cde</id>
+			<name>Infected: Bandersnatch</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>22</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<reach>1</reach>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>6</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>2</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<affectbase>yes</affectbase>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<affectbase>yes</affectbase>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<affectbase>yes</affectbase>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<affectbase>yes</affectbase>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Adaptive Coloration</power>
+					<power select="Sunlight, Mild">Allergy</power>
+					<power select="Sasquatch Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Sasquatch</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>136</page>
+		</quality>
+		<quality>
+			<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
+			<name>Infected: Banshee</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>32</karma>
+			<category>Positive</category>
+			<required>
+				<allof>
+					<metatype>Elf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<bonus>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>2</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>9</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+				</optionalpowers>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Silver">Vulnerability</power>
+					<power select="Wood">Vulnerability</power>
+				</critterpowers>
+			</bonus>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>80</page>
+		</quality>
+		<quality>
+			<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
+			<name>Infected: Dzoo-Noo-Qua</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>43</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower>Armor</optionalpower>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<reach>1</reach>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>5</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Infection</power>
+					<power>Essence Loss</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
+		</quality>
+		<quality>
+			<id>fe01a71d-50c2-4ba3-9604-54af663ae8af</id>
+			<name>Infected: Fomoraig</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>22</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<optionalpowers>
+					<optionalpower>Armor</optionalpower>
+				</optionalpowers>
+				<reach>1</reach>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Corrosive Secretions</power>
+					<power>Magical Guard</power>
+					<power>Dual Natured</power>
+					<power select="Air Pollution, Moderate">Allergy</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>136</page>
-</quality>
-<quality>
-	<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
-	<name>Infected: Banshee</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>32</karma>
-	<category>Positive</category>
-	<required>
-		<allof>
-			<metatype>Elf</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<bonus>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>2</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>9</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power>Essence Drain</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power select="Sunlight, Severe">Allergy</power>
-		<power select="Metahuman Blood">Dietary Requirement</power>
-		<power select="Silver">Vulnerability</power>
-		<power select="Wood">Vulnerability</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>80</page>
-</quality>
-<quality>
-	<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
-	<name>Infected: Dzoo-Noo-Qua</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>43</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower>Armor</optionalpower>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<reach>1</reach>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>5</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Troll</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power>Essence Drain</power>
-		<power select="Age">Immunity</power>
-		<power>Infection</power>
-		<power>Essence Loss</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>137</page>
-</quality>
-<quality>
-	<id>fe01a71d-50c2-4ba3-9604-54af663ae8af</id>
-	<name>Infected: Fomoraig</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>22</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<optionalpowers>
-			<optionalpower>Armor</optionalpower>
-		</optionalpowers>
-		<reach>1</reach>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Troll</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Corrosive Secretions</power>
-		<power>Magical Guard</power>
-		<power>Dual Natured</power>
-		<power select="Air Pollution, Moderate">Allergy</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>ed801fa4-0514-458a-b850-9eeddf0c2fed</id>
-	<name>Infected: Ghoul (Dwarf)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<required>
-		<oneof>
-			<metatype>Dwarf</metatype>
-		</oneof>
-	</required>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>3</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>11</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>2</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>e156dc45-66ca-4b45-baf8-5c875b9866c4</id>
-	<name>Infected: Ghoul (Elf)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<required>
-		<oneof>
-			<metatype>Elf</metatype>
-		</oneof>
-	</required>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>10</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>2</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>2d99bbb6-7af0-45c6-a83b-46d9d9f10838</id>
-	<name>Infected: Ghoul (Human)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<required>
-		<oneof>
-			<metatype>Human</metatype>
-		</oneof>
-	</required>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>10</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>ea7c269f-6843-488a-b0fa-8f79c935f568</id>
-	<name>Infected: Ghoul (Ork)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<required>
-		<oneof>
-			<metatype>Ork</metatype>
-		</oneof>
-	</required>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>4</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>11</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>3</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>8325c7f3-c578-458a-9068-e159b2c686ef</id>
-	<name>Infected: Ghoul (Sasquatch)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<required>
-		<oneof>
-			<metatype>Sasquatch</metatype>
-		</oneof>
-	</required>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>6</min>
-				<max>15</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>92123580-1f4f-4c6a-b2f5-3b9c9031d705</id>
-	<name>Infected: Ghoul (Troll)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<required>
-		<oneof>
-			<metatype>Troll</metatype>
-		</oneof>
-	</required>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>5</min>
-				<max>14</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-		<specificattribute>
-			<name>REA</name>
-			<min>-1</min>
-			<affectbase>yes</affectbase>
-		</specificattribute>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>5f31925d-cc76-49da-acab-644b66d5e93d</id>
-	<name>Infected: Gnawer</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>10</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>2</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Dwarf</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Toxins">Immunity</power>
-		<power>Noxious Breath</power>
-		<power>Paralyzing Touch</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Bone">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>ae5e7ba4-5b9e-40f9-8ace-66f19c6e11eb</id>
-	<name>Infected: Goblin</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>27</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Taste">Enhanced Senses</optionalpower>
-			<optionalpower select="Fire">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>2</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Dwarf</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Dual Natured</power>
-		<power select="Toxins">Immunity</power>
-		<power>Noxious Breath</power>
-		<power>Paralyzing Touch</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Bone">Dietary Requirement</power>
-		<power select="Iron">Vulnerability</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>138</page>
-</quality>
-<quality>
-	<id>ba87adfa-6c7e-4c9b-bf13-b6576b59bd1f</id>
-	<name>Infected: Grendel</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>32</karma>
-	<implemented>no</implemented>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Taste">Enhanced Senses</optionalpower>
-			<optionalpower select="Fire">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>4</min>
-				<max>11</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>11</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Ork</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Animal Control</power>
-		<power>Concealment</power>
-		<power>Dual Natured</power>
-		<power select="Toxins">Immunity</power>
-		<power>Noxious Breath</power>
-		<power>Paralyzing Touch</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-		<power select="Iron">Vulnerability</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>8e3d558a-b69a-4176-a130-1ec3465aa809</id>
-	<name>Infected: Harvester</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>29</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>2</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>2</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-		<specificattribute>
-			<name>CHA</name>
-			<max>-1</max>
-		</specificattribute>
-		<specificattribute>
-			<name>LOG</name>
-			<max>-1</max>
-		</specificattribute>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Elf</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Movement</power>
-		<power select="Thermographic Vision">Enhanced Senses</power>
-		<power>Dual Natured</power>
-		<power select="Silver, Moderate">Allergy</power>
-		<power select="Sunlight, Moderate">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+3)P</damage>
-			<ap>-2</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>fe0c2ae0-fc0f-40fe-9bae-1c3ad5c7e29a</id>
-	<name>Infected: Loup-Garou</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>30</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>2</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>10</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-		<specificattribute>
-			<name>CHA</name>
-			<max>-1</max>
-		</specificattribute>
-		<specificattribute>
-			<name>LOG</name>
-			<max>-1</max>
-		</specificattribute>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Human</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Movement</power>
-		<power select="Hearing">Enhanced Senses</power>
-		<power select="Low-Light Vision">Enhanced Senses</power>
-		<power select="Smell">Enhanced Senses</power>
-		<power select="Thermographic Vision">Enhanced Senses</power>
-		<power>Dual Natured</power>
-		<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
-		<power select="Sunlight, Severe">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+3)P</damage>
-			<ap>-2</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-2</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>f74b4ef1-988f-4787-9a8c-aea493bd7e95</id>
-	<name>Infected: Mutaqua (Non-Awakened)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>54</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-			<optionalpower>Fear</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<reach>1</reach>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>5</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Troll</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-			<quality>Infected: Fomoraig</quality>
-			<quality>Infected: Banshee</quality>
-			<quality>Infected: Dzoo-Noo-Qua</quality>
-			<quality>Infected: Bandersnatch</quality>
-			<quality>Infected: Gnawer</quality>
-			<quality>Infected: Goblin</quality>
-			<quality>Infected: Grendel</quality>
-			<quality>Infected: Harvester</quality>
-			<quality>Infected: Loup-Garou</quality>
-			<quality>Infected: Mutaqua (Adept)</quality>
-			<quality>Infected: Mutaqua (Non-Adept)</quality>
-			<quality>Infected: Nosferatu</quality>
-			<quality>Infected: Vampire</quality>
-			<quality>Infected: Wendigo</quality>
-			<quality>Infected: Ghoul</quality>
-			<quality>Magician</quality>
-			<quality>Adept</quality>
-			<quality>Mystic Adept</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power select="Fire">Vulnerability</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Extreme">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
-	<name>Infected: Mutaqua (Adept)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>44</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-			<optionalpower>Fear</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<reach>1</reach>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>5</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Troll</metatype>
-			<quality>Adept</quality>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-			<quality>Infected: Fomoraig</quality>
-			<quality>Infected: Banshee</quality>
-			<quality>Infected: Dzoo-Noo-Qua</quality>
-			<quality>Infected: Bandersnatch</quality>
-			<quality>Infected: Gnawer</quality>
-			<quality>Infected: Goblin</quality>
-			<quality>Infected: Grendel</quality>
-			<quality>Infected: Harvester</quality>
-			<quality>Infected: Loup-Garou</quality>
-			<quality>Infected: Mutaqua (Non-Awakened)</quality>
-			<quality>Infected: Mutaqua (Non-Adept)</quality>
-			<quality>Infected: Nosferatu</quality>
-			<quality>Infected: Vampire</quality>
-			<quality>Infected: Wendigo</quality>
-			<quality>Infected: Ghoul</quality>
-		</oneof>
-	</forbidden>
-	<addqualities>
-		<addquality>Mystic Adept</addquality>
-	</addqualities>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power select="Fire">Vulnerability</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Extreme">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>89fcd29b-d937-4fa2-8d22-bf88c227de2a</id>
-	<name>Infected: Mutaqua (Non-Adept)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>44</karma>
-	<category>Positive</category>
-	<bonus>
-		<armor>1</armor>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-			<optionalpower>Fear</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<reach>1</reach>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>5</min>
-				<max>12</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>5</min>
-				<max>13</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>5</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>4</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Troll</metatype>
-		</allof>
-		<oneof>
-			<quality>Magician</quality>
-			<quality>Mystic Adept</quality>
-		</oneof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-			<quality>Infected: Fomoraig</quality>
-			<quality>Infected: Banshee</quality>
-			<quality>Infected: Dzoo-Noo-Qua</quality>
-			<quality>Infected: Bandersnatch</quality>
-			<quality>Infected: Gnawer</quality>
-			<quality>Infected: Goblin</quality>
-			<quality>Infected: Grendel</quality>
-			<quality>Infected: Harvester</quality>
-			<quality>Infected: Loup-Garou</quality>
-			<quality>Infected: Mutaqua (Non-Awakened)</quality>
-			<quality>Infected: Mutaqua (Adept)</quality>
-			<quality>Infected: Nosferatu</quality>
-			<quality>Infected: Vampire</quality>
-			<quality>Infected: Wendigo</quality>
-			<quality>Infected: Ghoul</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power select="Fire">Vulnerability</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Extreme">Severe</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>7f922e94-1877-4bd8-a729-fafa91699874</id>
-	<name>Infected: Nosferatu (Adept)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>38</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Human</metatype>
-			<quality>Adept</quality>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<addqualities>
-		<addquality>Mystic Adept</addquality>
-	</addqualities>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power>Infection</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Extreme">Allergy</power>
-		<power select="Metahuman Blood">Dietary Requirement</power>
-		<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>39a8e176-ddbf-470e-84a0-ba25ccd92ca0</id>
-	<name>Infected: Nosferatu (Non-Adept)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>38</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Human</metatype>
-		</allof>
-		<oneof>
-			<quality>Magician</quality>
-			<quality>Mystic Adept</quality>
-		</oneof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power>Infection</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Extreme">Allergy</power>
-		<power select="Metahuman Blood">Dietary Requirement</power>
-		<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>6c50bd74-794e-4c7a-bd94-2033369ca31a</id>
-	<name>Infected: Nosferatu (Non-Awakened)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>48</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<attribute>AGI</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Human</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-			<quality>Magician</quality>
-			<quality>Mystic Adept</quality>
-			<quality>Adept</quality>
-		</oneof>
-	</forbidden>
-	<addqualities>
-		<addquality>Magician</addquality>
-	</addqualities>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power>Infection</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Extreme">Allergy</power>
-		<power select="Metahuman Blood">Dietary Requirement</power>
-		<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>139</page>
-</quality>
-<quality>
-	<id>7d0a1679-846a-4cf2-b8b5-b5c686766a90</id>
-	<name>Infected: Vampire (Human)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>27</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Smell">Enhanced Senses</optionalpower>
-			<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Human</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power>Infection</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Severe">Allergy</power>
-		<power select="Metahuman Blood">Dietary Requirement</power>
-		<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>140</page>
-</quality>
-<quality>
-	<id>4024b100-c762-4354-95e4-db5cb0694a9a</id>
-	<name>Infected: Vampire (Non-Human)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>37</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Smell">Enhanced Senses</optionalpower>
-			<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>8</max>
-			</replaceattribute>
-		</replaceattributes>
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<forbidden>
-		<oneof>
-			<metatype>Free Spirit</metatype>
-			<metatype>Pixie</metatype>
-			<metatype>Human</metatype>
-			<metatype>Centaur</metatype>
-			<metatype>Naga</metatype>
-			<metatypecategory>Shapeshifter</metatypecategory>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-		</oneof>
-	</forbidden>
-	<addqualities>
-		<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
-		<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
-		<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-		<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-	</addqualities>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power>Infection</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power>Infection</power>
-		<power select="Wood, Severe">Allergy</power>
-		<power select="Sunlight, Severe">Allergy</power>
-		<power select="Metahuman Blood">Dietary Requirement</power>
-		<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>140</page>
-</quality>
-<quality>
-	<id>952372b4-56a5-4128-98db-69886c7a4a21</id>
-	<name>Infected: Wendigo (Non-Awakened)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>47</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Smell">Enhanced Senses</optionalpower>
-			<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>4</min>
-				<max>11</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-		</replaceattributes>		
-		<selectattributes>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>BOD</attribute>
-				<attribute>REA</attribute>
-				<attribute>STR</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-			<selectattribute>
-				<attribute>WIL</attribute>
-				<attribute>INT</attribute>
-				<attribute>CHA</attribute>
-				<attribute>LOG</attribute>
-				<val>1</val>
-			</selectattribute>
-		</selectattributes>
-	</bonus>
-	<required>
-		<allof>
-			<metatype>Ork</metatype>
-		</allof>
-	</required>
-	<forbidden>
-		<oneof>
-			<quality>Magic Resistance (Rating 1)</quality>
-			<quality>Magic Resistance (Rating 2)</quality>
-			<quality>Magic Resistance (Rating 3)</quality>
-			<quality>Magic Resistance (Rating 4)</quality>
-			<quality>Technomancer</quality>
-			<quality>Magician</quality>
-			<quality>Mystic Adept</quality>
-			<quality>Adept</quality>
-		</oneof>
-	</forbidden>
-	<addqualities>
-		<addquality>Magician</addquality>
-	</addqualities>
-	<critterpowers>
-		<power>Essence Drain</power>
-		<power>Infection</power>
-		<power select="Age">Immunity</power>
-		<power>Essence Loss</power>
-		<power>Dual Natured</power>
-		<power>Infection</power>
-		<power select="Ferrous Metals, Moderate">Allergy</power>
-		<power select="Sunlight, Severe">Allergy</power>
-		<power select="Metahuman Flesh">Dietary Requirement</power>
-	</critterpowers>
-	<naturalweapons>
-		<naturalweapon>
-			<name>Infected Claws</name>
-			<reach>0</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-		<naturalweapon>
-			<name>Infected Bite</name>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<useskill>Unarmed Combat</useskill>
-			<accuracy>Physical</accuracy>
-			<source>RF</source>
-			<page>137</page>
-		</naturalweapon>
-	</naturalweapons>
-	<source>RF</source>
-	<page>140</page>
-</quality>
-<quality>
-	<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
-	<name>Infected: Wendigo (Non-Adept)</name>
-	<contributetolimit>no</contributetolimit>
-	<karma>37</karma>
-	<category>Positive</category>
-	<bonus>
-		<enabletab>
-			<name>critter</name>
-		</enabletab>
-		<initiative>1</initiative>
-		<movement>1</movement>
-		<optionalpowers>
-			<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-			<optionalpower select="Smell">Enhanced Senses</optionalpower>
-			<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
-			<optionalpower select="Pathogens">Immunity</optionalpower>
-			<optionalpower select="Toxins">Immunity</optionalpower>
-		</optionalpowers>
-		<replaceattributes>
-			<replaceattribute>
-				<name>BOD</name>
-				<min>4</min>
-				<max>11</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>AGI</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>REA</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>STR</name>
-				<min>3</min>
-				<max>9</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>WIL</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>LOG</name>
-				<min>1</min>
-				<max>6</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>INT</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			<replaceattribute>
-				<name>CHA</name>
-				<min>1</min>
-				<max>7</max>
-			</replaceattribute>
-			</replaceattributes>
-			<selectattributes>
-				<selectattribute>
-					<attribute>BOD</attribute>
-					<attribute>REA</attribute>
-					<attribute>STR</attribute>
-					<val>1</val>
-					<affectbase />
-				</selectattribute>
-				<selectattribute>
-					<attribute>BOD</attribute>
-					<attribute>REA</attribute>
-					<attribute>STR</attribute>
-					<val>1</val>
-					<affectbase />
-				</selectattribute>
-				<selectattribute>
-					<attribute>WIL</attribute>
-					<attribute>INT</attribute>
-					<attribute>CHA</attribute>
-					<attribute>LOG</attribute>
-					<val>1</val>
-					<affectbase />
-				</selectattribute>
-				<selectattribute>
-					<attribute>WIL</attribute>
-					<attribute>INT</attribute>
-					<attribute>CHA</attribute>
-					<attribute>LOG</attribute>
-					<val>1</val>
-					<affectbase />
-				</selectattribute>
-			</selectattributes>
-		</bonus>
-		<required>
-			<allof>
-				<metatype>Ork</metatype>
-			</allof>
-			<oneof>
-				<quality>Magician</quality>
-				<quality>Mystic Adept</quality>
-			</oneof>
-		</required>
-		<forbidden>
-			<oneof>
-				<quality>Magic Resistance (Rating 1)</quality>
-				<quality>Magic Resistance (Rating 2)</quality>
-				<quality>Magic Resistance (Rating 3)</quality>
-				<quality>Magic Resistance (Rating 4)</quality>
-				<quality>Technomancer</quality>
-			</oneof>
-		</forbidden>
-		<critterpowers>
-			<power>Essence Drain</power>
-			<power>Infection</power>
-			<power select="Age">Immunity</power>
-			<power>Essence Loss</power>
-			<power>Dual Natured</power>
-			<power>Infection</power>
-			<power select="Ferrous Metals, Moderate">Allergy</power>
-			<power select="Sunlight, Severe">Allergy</power>
-			<power select="Metahuman Flesh">Dietary Requirement</power>
-		</critterpowers>
-		<naturalweapons>
-			<naturalweapon>
-				<name>Infected Claws</name>
-				<reach>0</reach>
-				<damage>(STR+2)P</damage>
-				<ap>-1</ap>
-				<useskill>Unarmed Combat</useskill>
-				<accuracy>Physical</accuracy>
-				<source>RF</source>
-				<page>137</page>
-			</naturalweapon>
-			<naturalweapon>
-				<name>Infected Bite</name>
-				<reach>-1</reach>
-				<damage>(STR+1)P</damage>
-				<ap>-1</ap>
-				<useskill>Unarmed Combat</useskill>
-				<accuracy>Physical</accuracy>
-				<source>RF</source>
-				<page>137</page>
-			</naturalweapon>
-		</naturalweapons>
-		<source>RF</source>
-		<page>140</page>
-	</quality>
-	<quality>
-		<id>38732eb7-e04a-44d8-882e-14cc19fbaca1</id>
-		<name>Infected: Wendigo (Adept)</name>
-		<contributetolimit>no</contributetolimit>
-		<karma>37</karma>
-		<category>Positive</category>
-		<bonus>
-			<enabletab>
-				<name>critter</name>
-			</enabletab>
-			<initiative>1</initiative>
-			<movement>1</movement>
-			<optionalpowers>
-				<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-				<optionalpower select="Smell">Enhanced Senses</optionalpower>
-				<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
-				<optionalpower select="Pathogens">Immunity</optionalpower>
-				<optionalpower select="Toxins">Immunity</optionalpower>
-			</optionalpowers>
-			<replaceattributes>
-				<replaceattribute>
-					<name>BOD</name>
-					<min>4</min>
-					<max>11</max>
-				</replaceattribute>
-				<replaceattribute>
-					<name>AGI</name>
-					<min>1</min>
-					<max>6</max>
-				</replaceattribute>
-				<replaceattribute>
-					<name>REA</name>
-					<min>1</min>
-					<max>6</max>
-				</replaceattribute>
-				<replaceattribute>
-					<name>STR</name>
-					<min>3</min>
-					<max>9</max>
-				</replaceattribute>
-				<replaceattribute>
-					<name>WIL</name>
-					<min>1</min>
-					<max>7</max>
-				</replaceattribute>
-				<replaceattribute>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>ed801fa4-0514-458a-b850-9eeddf0c2fed</id>
+			<name>Infected: Ghoul (Dwarf)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>Dwarf</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>3</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>2</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
 					<name>LOG</name>
-					<min>1</min>
-					<max>6</max>
-				</replaceattribute>
-				<replaceattribute>
-					<name>INT</name>
-					<min>1</min>
-					<max>7</max>
-				</replaceattribute>
-				<replaceattribute>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
 					<name>CHA</name>
-					<min>1</min>
-					<max>7</max>
-				</replaceattribute>
-			</replaceattributes>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>e156dc45-66ca-4b45-baf8-5c875b9866c4</id>
+			<name>Infected: Ghoul (Elf)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>Elf</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>10</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>2</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>2d99bbb6-7af0-45c6-a83b-46d9d9f10838</id>
+			<name>Infected: Ghoul (Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>Human</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>10</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>ea7c269f-6843-488a-b0fa-8f79c935f568</id>
+			<name>Infected: Ghoul (Ork)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>Ork</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>4</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>3</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>8325c7f3-c578-458a-9068-e159b2c686ef</id>
+			<name>Infected: Ghoul (Sasquatch)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>Sasquatch</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>6</min>
+						<max>15</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>92123580-1f4f-4c6a-b2f5-3b9c9031d705</id>
+			<name>Infected: Ghoul (Troll)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>Troll</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>5</min>
+						<max>14</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>5f31925d-cc76-49da-acab-644b66d5e93d</id>
+			<name>Infected: Gnawer</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>10</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>2</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+			<critterpowers>
+				<power>Dual Natured</power>
+				<power select="Toxins">Immunity</power>
+				<power>Noxious Breath</power>
+				<power>Paralyzing Touch</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Bone">Dietary Requirement</power>
+			</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Dwarf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>ae5e7ba4-5b9e-40f9-8ace-66f19c6e11eb</id>
+			<name>Infected: Goblin</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>27</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Taste">Enhanced Senses</optionalpower>
+					<optionalpower select="Fire">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>2</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Toxins">Immunity</power>
+					<power>Noxious Breath</power>
+					<power>Paralyzing Touch</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Bone">Dietary Requirement</power>
+					<power select="Iron">Vulnerability</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Dwarf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>ba87adfa-6c7e-4c9b-bf13-b6576b59bd1f</id>
+			<name>Infected: Grendel</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>32</karma>
+			<implemented>no</implemented>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Taste">Enhanced Senses</optionalpower>
+					<optionalpower select="Fire">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>4</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Animal Control</power>
+					<power>Concealment</power>
+					<power>Dual Natured</power>
+					<power select="Toxins">Immunity</power>
+					<power>Noxious Breath</power>
+					<power>Paralyzing Touch</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+					<power select="Iron">Vulnerability</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>8e3d558a-b69a-4176-a130-1ec3465aa809</id>
+			<name>Infected: Harvester</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>2</armor>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>2</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Movement</power>
+					<power select="Thermographic Vision">Enhanced Senses</power>
+					<power>Dual Natured</power>
+					<power select="Silver, Moderate">Allergy</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Elf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>fe0c2ae0-fc0f-40fe-9bae-1c3ad5c7e29a</id>
+			<name>Infected: Loup-Garou</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>30</karma>
+			<category>Positive</category>
+			<bonus>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<armor>2</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>10</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<val>-1</val>
+				</specificattribute>
+				<critterpowers>
+					<power>Movement</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Low-Light Vision">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Thermographic Vision">Enhanced Senses</power>
+					<power>Dual Natured</power>
+					<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>f74b4ef1-988f-4787-9a8c-aea493bd7e95</id>
+			<name>Infected: Mutaqua (Mundane)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>54</karma>
+			<category>Positive</category>
+			<bonus>
+				<addqualities>
+					<addquality>Mystic Adept</addquality>
+				</addqualities>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower>Fear</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<reach>1</reach>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>5</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Fire">Vulnerability</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Ghoul (Troll)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Vampire (Non-Human)</quality>
+					<quality>Magician</quality>
+					<quality>Adept</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
+			<name>Infected: Mutaqua (Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>44</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower>Fear</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<reach>1</reach>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>5</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Fire">Vulnerability</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Mystic Adept</addquality>
+				</addqualities>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Ghoul (Troll)</quality>
+					<quality>Infected: Mutaqua (Mundane)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
+					<quality>Infected: Vampire (Non-Human)</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>89fcd29b-d937-4fa2-8d22-bf88c227de2a</id>
+			<name>Infected: Mutaqua (Non-Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>44</karma>
+			<category>Positive</category>
+			<bonus>
+				<armor>1</armor>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower>Fear</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<reach>1</reach>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>5</min>
+						<max>12</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>5</min>
+						<max>13</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>5</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>4</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Fire">Vulnerability</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Severe</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+				<oneof>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua (Mundane)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire (Human)</quality>
+					<quality>Infected: Vampire (Non-Human)</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>7f922e94-1877-4bd8-a729-fafa91699874</id>
+			<name>Infected: Nosferatu (Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>38</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Mystic Adept</addquality>
+				</addqualities>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>39a8e176-ddbf-470e-84a0-ba25ccd92ca0</id>
+			<name>Infected: Nosferatu (Non-Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>38</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+				<oneof>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>6c50bd74-794e-4c7a-bd94-2033369ca31a</id>
+			<name>Infected: Nosferatu (Non-Awakened)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>48</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
+			<addqualities>
+				<addquality>Magician</addquality>
+			</addqualities>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<id>7d0a1679-846a-4cf2-b8b5-b5c686766a90</id>
+			<name>Infected: Vampire (Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>27</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<id>4024b100-c762-4354-95e4-db5cb0694a9a</id>
+			<name>Infected: Vampire (Non-Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+			<critterpowers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<metatype>Free Spirit</metatype>
+					<metatype>Pixie</metatype>
+					<metatype>Human</metatype>
+					<metatype>Centaur</metatype>
+					<metatype>Naga</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<id>952372b4-56a5-4128-98db-69886c7a4a21</id>
+			<name>Infected: Wendigo (Non-Awakened)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>47</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>4</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Ferrous Metals, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Magician</addquality>
+				</addqualities>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
+			<name>Infected: Wendigo (Non-Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>4</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+				</replaceattributes>
 				<selectattributes>
 					<selectattribute>
 						<attribute>BOD</attribute>
@@ -10423,6 +10340,165 @@
 						<affectbase />
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Ferrous Metals, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+				</allof>
+				<oneof>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<id>38732eb7-e04a-44d8-882e-14cc19fbaca1</id>
+			<name>Infected: Wendigo (Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>4</min>
+						<max>11</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>3</min>
+						<max>9</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Ferrous Metals, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -10439,17 +10515,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power>Infection</power>
-				<power select="Ferrous Metals, Moderate">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -11679,10 +11744,6 @@
 					<name>LOG</name>
 					<val>1</val>
 				</specificattribute>
-			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
 			<critterpowers>
 				<power>Dual Natured</power>
 				<power>Shift (Dracoform)</power>
@@ -11691,6 +11752,10 @@
 				<power rating="2">Hardened Mystic Armor</power>
 				<power select="Fire">Elemental Attack</power>
 			</critterpowers>
+				<addqualities>
+					<addquality>Wanted</addquality>
+				</addqualities>
+			</bonus>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Claws</name>
@@ -11737,18 +11802,18 @@
 					<name>CHA</name>
 					<val>1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Shift (Dracoform)</power>
+					<power>Vestigial Wings</power>
+					<power rating="2">Hardened Armor</power>
+					<power rating="2">Hardened Mystic Armor</power>
+					<power select="Fire">Elemental Attack</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Wanted</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Shift (Dracoform)</power>
-				<power>Vestigial Wings</power>
-				<power rating="2">Hardened Armor</power>
-				<power rating="2">Hardened Mystic Armor</power>
-				<power select="Fire">Elemental Attack</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Horns</name>
@@ -11803,18 +11868,18 @@
 					<name>WIL</name>
 					<val>1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Shift (Dracoform)</power>
+					<power>Vestigial Wings</power>
+					<power rating="2">Hardened Armor</power>
+					<power rating="2">Hardened Mystic Armor</power>
+					<power select="Fire">Elemental Attack</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Wanted</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Shift (Dracoform)</power>
-				<power>Vestigial Wings</power>
-				<power rating="2">Hardened Armor</power>
-				<power rating="2">Hardened Mystic Armor</power>
-				<power select="Fire">Elemental Attack</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Tail</name>
@@ -11865,10 +11930,6 @@
 					<name>INT</name>
 					<val>1</val>
 				</specificattribute>
-			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
 			<critterpowers>
 				<power>Dual Natured</power>
 				<power>Shift (Dracoform)</power>
@@ -11877,6 +11938,10 @@
 				<power rating="2">Hardened Mystic Armor</power>
 				<power select="Fire">Elemental Attack</power>
 			</critterpowers>
+				<addqualities>
+					<addquality>Wanted</addquality>
+				</addqualities>
+			</bonus>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Fangs</name>

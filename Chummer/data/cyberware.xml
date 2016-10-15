@@ -2200,14 +2200,16 @@
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>6000</cost>
+			<bonus>
+				<addqualities>
+					<addquality>Human-Looking</addquality>
+				</addqualities>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>Ork</metatype>
 				</oneof>
 			</required>
-			<addqualities>
-				<addquality>Human-Looking</addquality>
-			</addqualities>
 			<source>CF</source>
 			<page>73</page>
 		</cyberware>
@@ -2752,6 +2754,9 @@
 			<capacity>80</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>
+			<bonus>
+				<movementpercent>100</movementpercent>
+			</bonus>
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>
@@ -2769,6 +2774,9 @@
 			<capacity>40</capacity>
 			<avail>8</avail>
 			<cost>40000</cost>
+			<bonus>
+				<movementpercent>100</movementpercent>
+			</bonus>
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>

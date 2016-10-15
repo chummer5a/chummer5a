@@ -93,6 +93,11 @@
 			<code>DT</code>
 		</book>
 		<book>
+			<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
+			<name>Data Trails (Dissonant Echoes)</name>
+			<code>DTD</code>
+		</book>
+		<book>
 			<id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
 			<name>Chrome Flesh</name>
 			<code>CF</code>
@@ -126,6 +131,41 @@
 			<id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
 			<name>Howling Shadows</name>
 			<code>HS</code>
+		</book>
+		<book>
+			<id>9b88873f-61fa-4419-b733-49b96997bd42</id>
+			<name>Battle Of Manhattan</name>
+			<code>BOM</code>
+		</book>
+		<book>
+			<id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
+			<name>The Vladivostok Gauntlet</name>
+			<code>TVG</code>
+		</book>
+		<book>
+			<id>6b37230a-dd55-4c3f-882d-0a1c6324a457</id>
+			<name>Splintered State</name>
+			<code>SPS</code>
+		</book>
+		<book>
+			<id>58b3ffae-7320-4b11-8c50-db92b7f0452b</id>
+			<name>Shadows In Focus: Butte</name>
+			<code>SFB</code>
+		</book>
+		<book>
+			<id>7186ed14-e0b8-456e-b923-f77933f1762e</id>
+			<name>Hong Kong Sourcebook</name>
+			<code>HKS</code>
+		</book>
+		<book>
+			<id>540cfaa8-823f-46c7-b93b-79191a894bd1</id>
+			<name>Lockdown</name>
+			<code>LCD</code>
+		</book>
+		<book>
+			<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+			<name>Shadows In Focus: San Francisco Metroplex</name>
+			<code>SFM</code>
 		</book>
 	</books>
 </chummer>

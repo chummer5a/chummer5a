@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -170,8 +171,9 @@ namespace Chummer
 			ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
 			SpecialSkills,
 			ReflexRecorderOptimization,
-	        
-        }
+			MovementMultiplier,
+			DataStore
+		}
 
         public enum ImprovementSource
         {
@@ -568,8 +570,6 @@ namespace Chummer
 		private string _strForcedValue = "";
 		private readonly List<Improvement> _lstTransaction = new List<Improvement>();
 
-        private CommonFunctions objFunctions = new CommonFunctions();
-
 		public ImprovementManager(Character objCharacter)
 		{
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
@@ -631,10 +631,8 @@ namespace Chummer
 			List<string> lstUniqueName = new List<string>();
 			List<string[,]> lstUniquePair = new List<string[,]>();
 			int intValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom))
 			{
-				if (objImprovement.Enabled && !objImprovement.Custom)
-				{
 					bool blnAllowed = true;
 					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
 					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -675,7 +673,6 @@ namespace Chummer
 								intValue += objImprovement.Value;
 						}
 					}
-				}
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.
@@ -699,7 +696,7 @@ namespace Chummer
 				// Retrieve all of the items that are precedence1 and nothing else.
 				foreach (string[,] strValues in lstUniquePair)
 				{
-					if (strValues[0, 0] == "precedence1")
+					if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
 						intValue += Convert.ToInt32(strValues[0, 1]);
 				}
 			}
@@ -717,11 +714,11 @@ namespace Chummer
 							intHighest = Convert.ToInt32(strValues[0, 1]);
 					}
 				}
-				if (lstUniqueName.Contains("ignoreprecedence"))
+				if (lstUniqueName.Contains("precedence-1"))
 				{
 					foreach (string[,] strValues in lstUniquePair)
 					{
-						if (strValues[0, 0] == "ignoreprecedence")
+						if (strValues[0, 0] == "precedence-1")
 						{
 							intHighest += Convert.ToInt32(strValues[0, 1]);
 						}
@@ -734,10 +731,8 @@ namespace Chummer
 			lstUniqueName = new List<string>();
 			lstUniquePair = new List<string[,]>();
 			int intCustomValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.Custom))
 			{
-				if (objImprovement.Enabled && objImprovement.Custom)
-				{
 					bool blnAllowed = true;
 					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
 					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -778,7 +773,6 @@ namespace Chummer
 								intCustomValue += objImprovement.Value;
 						}
 					}
-				}
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.
@@ -939,62 +933,6 @@ namespace Chummer
                 if (nodBonus.HasChildNodes)
                 {
                     Log.Info("Has Child Nodes");
-
-                    // Select Text (custom entry for things like Allergy).
-                    if (NodeExists(nodBonus, "selecttext"))
-                    {
-                        Log.Info("selecttext");
-
-					if (_objCharacter != null)
-					{
-						if (_strForcedValue != "")
-						{
-							_strLimitSelection = _strForcedValue;
-						}
-						else if (_objCharacter.Pushtext.Count != 0)
-						{
-							_strLimitSelection = _objCharacter.Pushtext.Pop();
-						}
-					}
-
-						Log.Info("_strForcedValue = " + _strSelectedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-                        // Display the Select Text window and record the value that was entered.
-                        frmSelectText frmPickText = new frmSelectText();
-						frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-							.Replace("{0}", strFriendlyName);
-
-                        if (_strLimitSelection != "")
-                        {
-                            frmPickText.SelectedValue = _strLimitSelection;
-                            frmPickText.Opacity = 0;
-                        }
-
-                        frmPickText.ShowDialog();
-
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
-                        {
-                            Rollback();
-                            blnSuccess = false;
-                            _strForcedValue = "";
-                            _strLimitSelection = "";
-                            Log.Exit("CreateImprovements");
-                            return false;
-                        }
-
-                        _strSelectedValue = frmPickText.SelectedValue;
-                        if (blnConcatSelectedValue)
-                            strSourceName += " (" + _strSelectedValue + ")";
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSourceName = " + strSourceName);
-
-                        // Create the Improvement.
-                        Log.Info("Calling CreateImprovement");
-						CreateImprovement(frmPickText.SelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text,
-							strUnique);
-                    }
                 }
 
                 // If there is no character object, don't attempt to add any Improvements.
@@ -1108,12 +1046,7 @@ namespace Chummer
             }
 
 			// A List of Improvements to hold all of the items that will eventually be deleted.
-			List<Improvement> objImprovementList = new List<Improvement>();
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
-			{
-				if (objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName)
-					objImprovementList.Add(objImprovement);
-			}
+			List<Improvement> objImprovementList = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
 
 			// Now that we have all of the applicable Improvements, remove them from the character.
 			foreach (Improvement objImprovement in objImprovementList)
@@ -1966,6 +1899,16 @@ namespace Chummer
 				{
 					_objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
 				}
+
+				//Remove qualities that were granted by the Improvement.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecificQuality)
+				{
+					foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objImprovement.ImprovedName == objQuality.InternalId))
+					{
+						_objCharacter.Qualities.Remove(objQuality);
+						break;
+					}
+				}
 			}
 
 
@@ -2085,6 +2028,11 @@ namespace Chummer
 
 	public static class ImprovementExtensions
 	{
+		/// <summary>
+		/// Are Skill Points enabled for the character?
+		/// </summary>
+		/// <param name="method"></param>
+		/// <returns></returns>
 		public static bool HaveSkillPoints(this CharacterBuildMethod method)
 		{
 			return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;

@@ -524,6 +524,14 @@ namespace Chummer.Backend.Equipment
 			Guid guiAmmo = GetClip(_intActiveAmmoSlot).Guid;
 
 			objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo));
+			objWriter.WriteStartElement("clips");
+			foreach (Clip objClip in _ammo)
+			{
+				objClip.AmmoName = GetAmmoName(objClip.Guid);
+				objClip.Save(objWriter);
+			}
+			objWriter.WriteEndElement();
+
 			//Don't seem to be used
 			//objWriter.WriteElementString("ammoslot1", GetAmmoName(_guiAmmoLoaded));
 			//objWriter.WriteElementString("ammoslot2", GetAmmoName(_guiAmmoLoaded2));
@@ -2011,6 +2019,16 @@ namespace Chummer.Backend.Equipment
 									intAP += objImprovement.Value;
 							}
 						}
+						//TODO: There should probably be a method to enable this for ANY weapon the user wants to use.
+						// This should also add any UnarmedAP bonus to Unarmed physical weapons if the option is enabled.
+						if ((_strName == "Knucks") && _objCharacter.Options.KnucksUseUnarmed)
+						{
+							foreach (Improvement objImprovement in _objCharacter.Improvements)
+							{
+								if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedAP && objImprovement.Enabled)
+									intAP += objImprovement.Value;
+							}
+						}
 					}
 					// If this is an Unarmed Cyberware Weapon (belongs to the Cyberware category), add the Unarmed AP bonus an Adept may have.
 					if (_strCategory == "Cyberware")
@@ -3079,6 +3097,7 @@ namespace Chummer.Backend.Equipment
 		{
 			internal Guid Guid { get; set; }
 			internal int Ammo { get; set; }
+			public string AmmoName { get; internal set; }
 
 			internal static Clip Load(XmlNode node)
 			{
@@ -3090,6 +3109,7 @@ namespace Chummer.Backend.Equipment
 				if (Guid != Guid.Empty || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
 				{
 					writer.WriteStartElement("clip");
+					writer.WriteElementString("name", AmmoName);
 					writer.WriteElementString("id", Guid.ToString());
 					writer.WriteElementString("count", Ammo.ToString());
 					writer.WriteEndElement();

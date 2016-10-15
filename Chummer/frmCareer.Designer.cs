@@ -136,7 +136,6 @@ namespace Chummer
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.lblCMStunLabel = new System.Windows.Forms.Label();
 			this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
-			this.lblArmorLabel = new System.Windows.Forms.Label();
 			this.chkArmorEquipped = new System.Windows.Forms.CheckBox();
 			this.lblRemainingNuyenLabel = new System.Windows.Forms.Label();
 			this.lblESS = new System.Windows.Forms.Label();
@@ -162,7 +161,7 @@ namespace Chummer
 			this.lblCareerNuyenLabel = new System.Windows.Forms.Label();
 			this.lblNotoriety = new System.Windows.Forms.Label();
 			this.lblStreetCred = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
+			this.lblArmorLabel = new System.Windows.Forms.Label();
 			this.lblRiggingINILabel = new System.Windows.Forms.Label();
 			this.lblMatrixINIHotLabel = new System.Windows.Forms.Label();
 			this.lblMatrixINIColdLabel = new System.Windows.Forms.Label();
@@ -700,6 +699,8 @@ namespace Chummer
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
+			this.lblVehicleSeats = new System.Windows.Forms.Label();
+			this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
 			this.lblVehicleDroneModSlots = new System.Windows.Forms.Label();
 			this.lblVehicleDroneModSlotsLabel = new System.Windows.Forms.Label();
 			this.lblVehicleCosmetic = new System.Windows.Forms.Label();
@@ -1304,9 +1305,9 @@ namespace Chummer
             this.toolStripStatusLabel4,
             this.tssNuyen,
             this.pgbProgress});
-			this.StatusStrip.Location = new System.Drawing.Point(0, 640);
+			this.StatusStrip.Location = new System.Drawing.Point(0, 615);
 			this.StatusStrip.Name = "StatusStrip";
-			this.StatusStrip.Size = new System.Drawing.Size(1040, 24);
+			this.StatusStrip.Size = new System.Drawing.Size(1066, 24);
 			this.StatusStrip.TabIndex = 24;
 			this.StatusStrip.Text = "StatusStrip1";
 			// 
@@ -2106,17 +2107,6 @@ namespace Chummer
 			this.lblCMPhysicalLabel.Text = "Physical Condition Track:";
 			this.tipTooltip.SetToolTip(this.lblCMPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// lblArmorLabel
-			// 
-			this.lblArmorLabel.AutoSize = true;
-			this.lblArmorLabel.Location = new System.Drawing.Point(307, 36);
-			this.lblArmorLabel.Name = "lblArmorLabel";
-			this.lblArmorLabel.Size = new System.Drawing.Size(37, 13);
-			this.lblArmorLabel.TabIndex = 70;
-			this.lblArmorLabel.Tag = "Label_ArmorShort";
-			this.lblArmorLabel.Text = "Armor:";
-			this.tipTooltip.SetToolTip(this.lblArmorLabel, resources.GetString("lblArmorLabel.ToolTip"));
-			// 
 			// chkArmorEquipped
 			// 
 			this.chkArmorEquipped.AutoSize = true;
@@ -2411,16 +2401,16 @@ namespace Chummer
 			this.tipTooltip.SetToolTip(this.lblStreetCred, "Street Cred is calculated as Career Karma ÷ 10, rounded up, and can be further ad" +
         "justed by Game Masters.");
 			// 
-			// label5
+			// lblArmorLabel
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(6, 189);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(37, 13);
-			this.label5.TabIndex = 71;
-			this.label5.Tag = "Label_ArmorValueShort";
-			this.label5.Text = "Armor:";
-			this.tipTooltip.SetToolTip(this.label5, resources.GetString("label5.ToolTip"));
+			this.lblArmorLabel.AutoSize = true;
+			this.lblArmorLabel.Location = new System.Drawing.Point(6, 189);
+			this.lblArmorLabel.Name = "lblArmorLabel";
+			this.lblArmorLabel.Size = new System.Drawing.Size(37, 13);
+			this.lblArmorLabel.TabIndex = 71;
+			this.lblArmorLabel.Tag = "Label_ArmorValueShort";
+			this.lblArmorLabel.Text = "Armor:";
+			this.tipTooltip.SetToolTip(this.lblArmorLabel, resources.GetString("lblArmorLabel.ToolTip"));
 			// 
 			// lblRiggingINILabel
 			// 
@@ -3060,7 +3050,7 @@ namespace Chummer
 			this.tabCharacterTabs.Location = new System.Drawing.Point(0, 0);
 			this.tabCharacterTabs.Name = "tabCharacterTabs";
 			this.tabCharacterTabs.SelectedIndex = 0;
-			this.tabCharacterTabs.Size = new System.Drawing.Size(846, 637);
+			this.tabCharacterTabs.Size = new System.Drawing.Size(867, 612);
 			this.tabCharacterTabs.TabIndex = 33;
 			this.tabCharacterTabs.Tag = "";
 			this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
@@ -3105,7 +3095,7 @@ namespace Chummer
 			this.tabCommon.Location = new System.Drawing.Point(4, 22);
 			this.tabCommon.Name = "tabCommon";
 			this.tabCommon.Padding = new System.Windows.Forms.Padding(3);
-			this.tabCommon.Size = new System.Drawing.Size(838, 611);
+			this.tabCommon.Size = new System.Drawing.Size(859, 586);
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
 			this.tabCommon.Text = "Common";
@@ -3120,7 +3110,7 @@ namespace Chummer
 			this.tabPeople.Location = new System.Drawing.Point(285, 373);
 			this.tabPeople.Name = "tabPeople";
 			this.tabPeople.SelectedIndex = 0;
-			this.tabPeople.Size = new System.Drawing.Size(547, 232);
+			this.tabPeople.Size = new System.Drawing.Size(568, 207);
 			this.tabPeople.TabIndex = 91;
 			// 
 			// tabContacts
@@ -3134,7 +3124,7 @@ namespace Chummer
 			this.tabContacts.Location = new System.Drawing.Point(4, 22);
 			this.tabContacts.Name = "tabContacts";
 			this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
-			this.tabContacts.Size = new System.Drawing.Size(539, 206);
+			this.tabContacts.Size = new System.Drawing.Size(560, 181);
 			this.tabContacts.TabIndex = 0;
 			this.tabContacts.Text = "Contacts";
 			// 
@@ -3147,7 +3137,7 @@ namespace Chummer
 			this.panContacts.AutoScroll = true;
 			this.panContacts.Location = new System.Drawing.Point(3, 48);
 			this.panContacts.Name = "panContacts";
-			this.panContacts.Size = new System.Drawing.Size(530, 154);
+			this.panContacts.Size = new System.Drawing.Size(551, 129);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
 			this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
@@ -3408,7 +3398,7 @@ namespace Chummer
 			// 
 			this.lblQualityBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualityBP.AutoSize = true;
-			this.lblQualityBP.Location = new System.Drawing.Point(58, 589);
+			this.lblQualityBP.Location = new System.Drawing.Point(58, 564);
 			this.lblQualityBP.Name = "lblQualityBP";
 			this.lblQualityBP.Size = new System.Drawing.Size(43, 13);
 			this.lblQualityBP.TabIndex = 70;
@@ -3418,7 +3408,7 @@ namespace Chummer
 			// 
 			this.lblQualityBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualityBPLabel.AutoSize = true;
-			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 589);
+			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 564);
 			this.lblQualityBPLabel.Name = "lblQualityBPLabel";
 			this.lblQualityBPLabel.Size = new System.Drawing.Size(40, 13);
 			this.lblQualityBPLabel.TabIndex = 69;
@@ -3429,7 +3419,7 @@ namespace Chummer
 			// 
 			this.lblQualitySource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualitySource.AutoSize = true;
-			this.lblQualitySource.Location = new System.Drawing.Point(232, 589);
+			this.lblQualitySource.Location = new System.Drawing.Point(232, 564);
 			this.lblQualitySource.Name = "lblQualitySource";
 			this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
 			this.lblQualitySource.TabIndex = 68;
@@ -3440,7 +3430,7 @@ namespace Chummer
 			// 
 			this.lblQualitySourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualitySourceLabel.AutoSize = true;
-			this.lblQualitySourceLabel.Location = new System.Drawing.Point(182, 589);
+			this.lblQualitySourceLabel.Location = new System.Drawing.Point(182, 564);
 			this.lblQualitySourceLabel.Name = "lblQualitySourceLabel";
 			this.lblQualitySourceLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblQualitySourceLabel.TabIndex = 67;
@@ -3490,7 +3480,7 @@ namespace Chummer
 			this.treQualities.ShowNodeToolTips = true;
 			this.treQualities.ShowPlusMinus = false;
 			this.treQualities.ShowRootLines = false;
-			this.treQualities.Size = new System.Drawing.Size(273, 545);
+			this.treQualities.Size = new System.Drawing.Size(273, 520);
 			this.treQualities.TabIndex = 64;
 			this.treQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treQualities_AfterSelect);
 			this.treQualities.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treQualities_KeyDown);
@@ -7993,6 +7983,7 @@ namespace Chummer
 			this.chkGearMatrixCM2.Tag = "2";
 			this.chkGearMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.chkGearMatrixCM2.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM2.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
 			// 
 			// chkGearMatrixCM3
 			// 
@@ -8762,6 +8753,8 @@ namespace Chummer
 			// tabVehicles
 			// 
 			this.tabVehicles.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabVehicles.Controls.Add(this.lblVehicleSeats);
+			this.tabVehicles.Controls.Add(this.lblVehicleSeatsLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleDroneModSlots);
 			this.tabVehicles.Controls.Add(this.lblVehicleDroneModSlotsLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleCosmetic);
@@ -8862,6 +8855,25 @@ namespace Chummer
 			this.tabVehicles.TabIndex = 7;
 			this.tabVehicles.Tag = "Tab_Vehicles";
 			this.tabVehicles.Text = "Vehicles & Drones";
+			// 
+			// lblVehicleSeats
+			// 
+			this.lblVehicleSeats.AutoSize = true;
+			this.lblVehicleSeats.Location = new System.Drawing.Point(759, 152);
+			this.lblVehicleSeats.Name = "lblVehicleSeats";
+			this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
+			this.lblVehicleSeats.TabIndex = 226;
+			this.lblVehicleSeats.Text = "[Seats]";
+			// 
+			// lblVehicleSeatsLabel
+			// 
+			this.lblVehicleSeatsLabel.AutoSize = true;
+			this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(720, 152);
+			this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
+			this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
+			this.lblVehicleSeatsLabel.TabIndex = 225;
+			this.lblVehicleSeatsLabel.Tag = "Label_Slots";
+			this.lblVehicleSeatsLabel.Text = "Seats:";
 			// 
 			// lblVehicleDroneModSlots
 			// 
@@ -10536,7 +10548,7 @@ namespace Chummer
 			// lblVehicleSlots
 			// 
 			this.lblVehicleSlots.AutoSize = true;
-			this.lblVehicleSlots.Location = new System.Drawing.Point(709, 150);
+			this.lblVehicleSlots.Location = new System.Drawing.Point(671, 152);
 			this.lblVehicleSlots.Name = "lblVehicleSlots";
 			this.lblVehicleSlots.Size = new System.Drawing.Size(36, 13);
 			this.lblVehicleSlots.TabIndex = 58;
@@ -10545,7 +10557,7 @@ namespace Chummer
 			// lblVehicleSlotsLabel
 			// 
 			this.lblVehicleSlotsLabel.AutoSize = true;
-			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(670, 150);
+			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(632, 152);
 			this.lblVehicleSlotsLabel.Name = "lblVehicleSlotsLabel";
 			this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblVehicleSlotsLabel.TabIndex = 57;
@@ -10698,7 +10710,7 @@ namespace Chummer
 			// lblVehicleCost
 			// 
 			this.lblVehicleCost.AutoSize = true;
-			this.lblVehicleCost.Location = new System.Drawing.Point(574, 150);
+			this.lblVehicleCost.Location = new System.Drawing.Point(574, 152);
 			this.lblVehicleCost.Name = "lblVehicleCost";
 			this.lblVehicleCost.Size = new System.Drawing.Size(34, 13);
 			this.lblVehicleCost.TabIndex = 50;
@@ -10707,7 +10719,7 @@ namespace Chummer
 			// lblVehicleCostLabel
 			// 
 			this.lblVehicleCostLabel.AutoSize = true;
-			this.lblVehicleCostLabel.Location = new System.Drawing.Point(534, 150);
+			this.lblVehicleCostLabel.Location = new System.Drawing.Point(534, 152);
 			this.lblVehicleCostLabel.Name = "lblVehicleCostLabel";
 			this.lblVehicleCostLabel.Size = new System.Drawing.Size(31, 13);
 			this.lblVehicleCostLabel.TabIndex = 49;
@@ -10717,7 +10729,7 @@ namespace Chummer
 			// lblVehicleAvail
 			// 
 			this.lblVehicleAvail.AutoSize = true;
-			this.lblVehicleAvail.Location = new System.Drawing.Point(488, 150);
+			this.lblVehicleAvail.Location = new System.Drawing.Point(488, 152);
 			this.lblVehicleAvail.Name = "lblVehicleAvail";
 			this.lblVehicleAvail.Size = new System.Drawing.Size(36, 13);
 			this.lblVehicleAvail.TabIndex = 48;
@@ -10726,7 +10738,7 @@ namespace Chummer
 			// lblVehicleAvailLabel
 			// 
 			this.lblVehicleAvailLabel.AutoSize = true;
-			this.lblVehicleAvailLabel.Location = new System.Drawing.Point(418, 150);
+			this.lblVehicleAvailLabel.Location = new System.Drawing.Point(418, 152);
 			this.lblVehicleAvailLabel.Name = "lblVehicleAvailLabel";
 			this.lblVehicleAvailLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblVehicleAvailLabel.TabIndex = 47;
@@ -12572,7 +12584,7 @@ namespace Chummer
 			this.tabInfo.Location = new System.Drawing.Point(0, 0);
 			this.tabInfo.Name = "tabInfo";
 			this.tabInfo.SelectedIndex = 0;
-			this.tabInfo.Size = new System.Drawing.Size(187, 637);
+			this.tabInfo.Size = new System.Drawing.Size(192, 612);
 			this.tabInfo.TabIndex = 50;
 			// 
 			// tabOtherInfo
@@ -12590,7 +12602,7 @@ namespace Chummer
 			this.tabOtherInfo.Controls.Add(this.lblAstralINILabel);
 			this.tabOtherInfo.Controls.Add(this.lblMatrixINILabel);
 			this.tabOtherInfo.Controls.Add(this.lblINILabel);
-			this.tabOtherInfo.Controls.Add(this.label5);
+			this.tabOtherInfo.Controls.Add(this.lblArmorLabel);
 			this.tabOtherInfo.Controls.Add(this.lblCareerNuyen);
 			this.tabOtherInfo.Controls.Add(this.lblCareerNuyenLabel);
 			this.tabOtherInfo.Controls.Add(this.lblFly);
@@ -12614,7 +12626,6 @@ namespace Chummer
 			this.tabOtherInfo.Controls.Add(this.lblESSMax);
 			this.tabOtherInfo.Controls.Add(this.lblESS);
 			this.tabOtherInfo.Controls.Add(this.lblArmor);
-			this.tabOtherInfo.Controls.Add(this.lblArmorLabel);
 			this.tabOtherInfo.Controls.Add(this.lblCMStun);
 			this.tabOtherInfo.Controls.Add(this.lblCMPhysical);
 			this.tabOtherInfo.Controls.Add(this.lblCMStunLabel);
@@ -12622,7 +12633,7 @@ namespace Chummer
 			this.tabOtherInfo.Location = new System.Drawing.Point(4, 22);
 			this.tabOtherInfo.Name = "tabOtherInfo";
 			this.tabOtherInfo.Padding = new System.Windows.Forms.Padding(3);
-			this.tabOtherInfo.Size = new System.Drawing.Size(179, 611);
+			this.tabOtherInfo.Size = new System.Drawing.Size(184, 586);
 			this.tabOtherInfo.TabIndex = 1;
 			this.tabOtherInfo.Tag = "Tab_OtherInfo";
 			this.tabOtherInfo.Text = "Other Info";
@@ -13328,7 +13339,7 @@ namespace Chummer
             this.tsbCopy});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(1040, 25);
+			this.toolStrip.Size = new System.Drawing.Size(1066, 25);
 			this.toolStrip.TabIndex = 53;
 			this.toolStrip.Text = "ToolStrip";
 			// 
@@ -13827,8 +13838,8 @@ namespace Chummer
 			// 
 			this.splitMain.Panel2.BackColor = System.Drawing.SystemColors.Control;
 			this.splitMain.Panel2.Controls.Add(this.tabInfo);
-			this.splitMain.Size = new System.Drawing.Size(1040, 637);
-			this.splitMain.SplitterDistance = 849;
+			this.splitMain.Size = new System.Drawing.Size(1066, 612);
+			this.splitMain.SplitterDistance = 870;
 			this.splitMain.TabIndex = 54;
 			// 
 			// cmsBioware
@@ -14122,7 +14133,7 @@ namespace Chummer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1040, 664);
+			this.ClientSize = new System.Drawing.Size(1066, 639);
 			this.Controls.Add(this.splitMain);
 			this.Controls.Add(this.StatusStrip);
 			this.Controls.Add(this.toolStrip);
@@ -14354,7 +14365,6 @@ namespace Chummer
 		private System.Windows.Forms.Label lblESSMax;
 		private System.Windows.Forms.Label lblESS;
 		private System.Windows.Forms.Label lblArmor;
-        private System.Windows.Forms.Label lblArmorLabel;
 		private System.Windows.Forms.Label lblCMStun;
         private System.Windows.Forms.Label lblCMPhysical;
 		private System.Windows.Forms.Label lblCMStunLabel;
@@ -15063,7 +15073,7 @@ namespace Chummer
         private SplitButton cmdAddLifestyle;
         private System.Windows.Forms.Label lblArmorValueLabel;
         private System.Windows.Forms.Label lblArmorValue;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblArmorLabel;
         private System.Windows.Forms.Label lblWeaponAccuracyLabel;
         private System.Windows.Forms.Label lblWeaponAccuracy;
         private System.Windows.Forms.Button cmdIncreasePowerPoints;
@@ -15409,6 +15419,8 @@ namespace Chummer
 		private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
 		private System.Windows.Forms.CheckBox chkShowFreeKarma;
 		private System.Windows.Forms.CheckBox chkShowFreeNuyen;
+		private System.Windows.Forms.Label lblVehicleSeats;
+		private System.Windows.Forms.Label lblVehicleSeatsLabel;
 	}
 }
 

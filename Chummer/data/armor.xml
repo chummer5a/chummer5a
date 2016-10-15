@@ -1900,6 +1900,8 @@
 			<source>HT</source>
 			<page>184</page>
 		</armor>
+		<!-- End Region -->
+		<!-- Region Run Faster -->
 		<armor>
 			<id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
 			<name>One-Use Shoes</name>
@@ -2384,6 +2386,36 @@
 			<source>RF</source>
 			<page>253</page>
 		</armor>
+		<!-- End Region -->
+		<!-- Region Howling Shadows -->
+		<armor>
+			<id>beae253f-bd4f-495e-89ab-63a07ef8d82a</id>
+			<name>Sensor Collar</name>
+			<category>Specialty Armor</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>2</avail>
+			<cost>200</cost>
+			<gears>
+				<usegear>Camera</usegear>
+				<usegear>Microphone, Omni-Directional</usegear>
+			</gears>
+			<source>HS</source>
+			<page>185</page>
+		</armor>
+		<armor>
+			<id>39ba5cd4-01f2-4202-8ed2-fba09f490fbb</id>
+			<name>Critter Body Armor</name>
+			<category>Specialty Armor</category>
+			<rating>24</rating>
+			<armor>0</armor>
+			<armorcapacity>Rating</armorcapacity>
+			<avail>6</avail>
+			<cost>50 * Rating</cost>
+			<source>HS</source>
+			<page>185</page>
+		</armor>
+		<!-- End Region -->
 	</armors>
 	<mods>
 		<!-- Region Shadowrun 5 -->

@@ -88,6 +88,7 @@
 			this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.tabForms = new System.Windows.Forms.TabControl();
+			this.mnuClearUnpinnedItems = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -118,6 +119,7 @@
             this.printToolStripMenuItem,
             this.mnuFilePrintMultiple,
             this.printSetupToolStripMenuItem,
+            this.mnuClearUnpinnedItems,
             this.mnuMURSep,
             this.mnuStickyMRU0,
             this.mnuStickyMRU1,
@@ -495,7 +497,7 @@
 			// newWindowToolStripMenuItem
 			// 
 			this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-			this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
 			this.newWindowToolStripMenuItem.Text = "&New Window";
 			this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
@@ -503,7 +505,7 @@
 			// closeAllToolStripMenuItem
 			// 
 			this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-			this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
 			this.closeAllToolStripMenuItem.Text = "C&lose All";
 			this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
@@ -665,6 +667,15 @@
 			this.tabForms.Visible = false;
 			this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
 			// 
+			// mnuClearUnpinnedItems
+			// 
+			this.mnuClearUnpinnedItems.Name = "mnuClearUnpinnedItems";
+			this.mnuClearUnpinnedItems.Size = new System.Drawing.Size(195, 22);
+			this.mnuClearUnpinnedItems.Text = "Clear Unpinned Items";
+			this.mnuClearUnpinnedItems.Tag = "Menu_Main_ClearUnpinnedItems";
+			this.mnuClearUnpinnedItems.Image = global::Chummer.Properties.Resources.delete;
+			this.mnuClearUnpinnedItems.Click += new System.EventHandler(this.mnuClearUnpinnedItems_Click);
+			// 
 			// frmMain
 			// 
 			this.AllowDrop = true;
@@ -754,6 +765,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem mnuToolsOmae;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpDumpshock;
+		private System.Windows.Forms.ToolStripMenuItem mnuClearUnpinnedItems;
 	}
 }
 

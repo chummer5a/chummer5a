@@ -26,7 +26,8 @@ using System.Xml;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Drawing;
-using System.Web;
+ using System.Linq;
+ using System.Web;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -1336,16 +1337,19 @@ namespace Chummer
 		/// <param name="strSource">Book coode and page number to open.</param>
 		public void OpenPDF(string strSource)
 		{
+			// The user must have specified the arguments of their PDF application in order to use this functionality.
+			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters))
+				return;
+
 			string[] strTemp = strSource.Split(' ');
 			string strBook = "";
-			string strPage = "";
-			string strPath = "";
+			Uri uriPath = null;
 			int intPage = 0;
 
 			try
 			{
 				strBook = strTemp[0];
-				strPage = strTemp[1];
+				string strPage = strTemp[1];
 
 				// Make sure the page is actually a number that we can use as well as being 1 or higher.
 				if (Convert.ToInt32(strPage) < 1)
@@ -1361,69 +1365,27 @@ namespace Chummer
 			if (_objCharacter != null)
 				strBook = _objCharacter.Options.BookFromAltCode(strBook);
 
-            XmlDocument objXmlBookDoc = XmlManager.Instance.Load("books.xml");
-            XmlNode objXmlBook = objXmlBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
-            string strURL = "";
-            try
-            {
-                strURL = objXmlBook["url"].InnerText;
-            }
-            catch
-            {
-            }
-
 			// Retrieve the sourcebook information including page offset and PDF application name.
 			bool blnFound = false;
-			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo)
+			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo.Where(objInfo => objInfo.Code == strBook).Where(objInfo => objInfo.Path != string.Empty))
 			{
-				if (objInfo.Code == strBook)
-				{
-					if (objInfo.Path != string.Empty)
-					{
-						blnFound = true;
-						strPath = objInfo.Path;
-						intPage += objInfo.Offset;
-					}
-				}
+				blnFound = true;
+				uriPath = new Uri(objInfo.Path);
+				intPage += objInfo.Offset;
 			}
 
-            if (strURL.Length > 0)
-            {
-                Process.Start(strURL);
-            }
-            else
-            {
-                // The user must have specified the path of their PDF application in order to use this functionality.
-                if (GlobalOptions.Instance.PDFAppPath == string.Empty)
-                    return;
+			// If the sourcebook was not found, we can't open anything.
+            if (!blnFound)
+				return;
 
-                // If the sourcebook was not found, we can't open anything.
-                if (!blnFound)
-                    return;
-
-                // Open the PDF.
-                // acrord32 /A "page=123" "D:\foo\bar.pdf"
-                //string strFilePath = "C:\\Gaming\\Shadowrun\\Books\\Shadowrun 4th ed Anniverary.pdf";
-                if (GlobalOptions._blnOpenPDFsAsURLs)
-                {
-                    var uri = new System.Uri(strPath, UriKind.Absolute);
-                    string strParams = "\"" + uri + "#page=" + intPage.ToString() + "\"";
-                    Process.Start(GlobalOptions.Instance.URLAppPath, strParams);
-                }
-                else
-                {
-                    string strParams;
-                    if (GlobalOptions._blnOpenPDFsAsUnix)
-                    {
-                        strParams = "-p " + intPage + " \"" + strPath + "\"";
-                    }
-                    else
-                    {
-                        strParams = " /n /A \"page=" + intPage + "\" \"" + strPath + "\"";
-                    }
-                    Process.Start(GlobalOptions.Instance.PDFAppPath, strParams);
-                }
-            }
+			string strParams = GlobalOptions.Instance.PDFParameters;
+			strParams = strParams.Replace("{page}", intPage.ToString());
+			strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+			strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+			ProcessStartInfo objProgress = new ProcessStartInfo();
+			objProgress.FileName = GlobalOptions.Instance.PDFAppPath;
+			objProgress.Arguments = strParams;
+			Process.Start(objProgress);
 		}
 		#endregion
 

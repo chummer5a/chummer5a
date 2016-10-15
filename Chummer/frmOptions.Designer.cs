@@ -102,23 +102,20 @@
 			this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
+			this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
+			this.lblPDFLocation = new System.Windows.Forms.Label();
+			this.txtPDFLocation = new System.Windows.Forms.TextBox();
+			this.cmdPDFLocation = new System.Windows.Forms.Button();
+			this.lblPDFOffset = new System.Windows.Forms.Label();
+			this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
+			this.cmdPDFTest = new System.Windows.Forms.Button();
+			this.cboPDFParameters = new Chummer.helpers.ComboBox();
 			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
 			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
-			this.chkOpenPDFsAsUnix = new System.Windows.Forms.CheckBox();
 			this.chkLifeModule = new System.Windows.Forms.CheckBox();
-			this.cmdURLAppPath = new System.Windows.Forms.Button();
-			this.txtURLAppPath = new System.Windows.Forms.TextBox();
-			this.lblURLAppPath = new System.Windows.Forms.Label();
-			this.chkOpenPDFsAsURLs = new System.Windows.Forms.CheckBox();
+			this.lblPDFParametersLabel = new System.Windows.Forms.Label();
 			this.chkUseLogging = new System.Windows.Forms.CheckBox();
-			this.chkLocalisedUpdatesOnly = new System.Windows.Forms.CheckBox();
 			this.chkDatesIncludeTime = new System.Windows.Forms.CheckBox();
-			this.cmdPDFTest = new System.Windows.Forms.Button();
-			this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
-			this.lblPDFOffset = new System.Windows.Forms.Label();
-			this.cmdPDFLocation = new System.Windows.Forms.Button();
-			this.txtPDFLocation = new System.Windows.Forms.TextBox();
-			this.lblPDFLocation = new System.Windows.Forms.Label();
 			this.cmdPDFAppPath = new System.Windows.Forms.Button();
 			this.txtPDFAppPath = new System.Windows.Forms.TextBox();
 			this.lblPDFAppPath = new System.Windows.Forms.Label();
@@ -131,6 +128,9 @@
 			this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
 			this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.cmdCharacterRoster = new System.Windows.Forms.Button();
+			this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
+			this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
 			this.chkDontUseCyberlimbCalculation = new System.Windows.Forms.CheckBox();
 			this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
 			this.cboEssenceDecimals = new System.Windows.Forms.ComboBox();
@@ -234,6 +234,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkMysAdPp = new System.Windows.Forms.CheckBox();
 			this.chkAlternateMetatypeAttributeKarma = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.nudDroneArmorMultiplier = new System.Windows.Forms.NumericUpDown();
@@ -291,6 +292,7 @@
 			this.tabGeneral.SuspendLayout();
 			this.tabControl2.SuspendLayout();
 			this.tabGlobal.SuspendLayout();
+			this.grpSelectedSourcebook.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).BeginInit();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudBP)).BeginInit();
@@ -885,7 +887,7 @@
 			// chkPrintSkillsWithZeroRating
 			// 
 			this.chkPrintSkillsWithZeroRating.AutoSize = true;
-			this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(11, 200);
+			this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(7, 236);
 			this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
 			this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(259, 17);
 			this.chkPrintSkillsWithZeroRating.TabIndex = 11;
@@ -922,7 +924,7 @@
 			// lblNuyenPerBP
 			// 
 			this.lblNuyenPerBP.AutoSize = true;
-			this.lblNuyenPerBP.Location = new System.Drawing.Point(8, 355);
+			this.lblNuyenPerBP.Location = new System.Drawing.Point(4, 391);
 			this.lblNuyenPerBP.Name = "lblNuyenPerBP";
 			this.lblNuyenPerBP.Size = new System.Drawing.Size(112, 13);
 			this.lblNuyenPerBP.TabIndex = 2;
@@ -932,7 +934,7 @@
 			// 
 			// nudNuyenPerBP
 			// 
-			this.nudNuyenPerBP.Location = new System.Drawing.Point(137, 353);
+			this.nudNuyenPerBP.Location = new System.Drawing.Point(133, 389);
 			this.nudNuyenPerBP.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -976,7 +978,7 @@
 			// chkPrintExpenses
 			// 
 			this.chkPrintExpenses.AutoSize = true;
-			this.chkPrintExpenses.Location = new System.Drawing.Point(11, 223);
+			this.chkPrintExpenses.Location = new System.Drawing.Point(7, 259);
 			this.chkPrintExpenses.Name = "chkPrintExpenses";
 			this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
 			this.chkPrintExpenses.TabIndex = 12;
@@ -1035,8 +1037,8 @@
 			this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
 			this.cmdEnableSourcebooks.Size = new System.Drawing.Size(226, 23);
 			this.cmdEnableSourcebooks.TabIndex = 6;
-			this.cmdEnableSourcebooks.Tag = "String_ToggleSourcebooks";
-			this.cmdEnableSourcebooks.Text = "OK";
+			this.cmdEnableSourcebooks.Tag = "Button_ToggleSourcebooks";
+			this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
 			this.cmdEnableSourcebooks.UseVisualStyleBackColor = true;
 			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.cmdEnableSourcebooks_Click);
 			// 
@@ -1055,23 +1057,14 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGlobal.Controls.Add(this.grpSelectedSourcebook);
+			this.tabGlobal.Controls.Add(this.cboPDFParameters);
 			this.tabGlobal.Controls.Add(this.chkPreferNightlyBuilds);
 			this.tabGlobal.Controls.Add(this.chkOmaeEnabled);
-			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsUnix);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
-			this.tabGlobal.Controls.Add(this.cmdURLAppPath);
-			this.tabGlobal.Controls.Add(this.txtURLAppPath);
-			this.tabGlobal.Controls.Add(this.lblURLAppPath);
-			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsURLs);
+			this.tabGlobal.Controls.Add(this.lblPDFParametersLabel);
 			this.tabGlobal.Controls.Add(this.chkUseLogging);
-			this.tabGlobal.Controls.Add(this.chkLocalisedUpdatesOnly);
 			this.tabGlobal.Controls.Add(this.chkDatesIncludeTime);
-			this.tabGlobal.Controls.Add(this.cmdPDFTest);
-			this.tabGlobal.Controls.Add(this.nudPDFOffset);
-			this.tabGlobal.Controls.Add(this.lblPDFOffset);
-			this.tabGlobal.Controls.Add(this.cmdPDFLocation);
-			this.tabGlobal.Controls.Add(this.txtPDFLocation);
-			this.tabGlobal.Controls.Add(this.lblPDFLocation);
 			this.tabGlobal.Controls.Add(this.cmdPDFAppPath);
 			this.tabGlobal.Controls.Add(this.txtPDFAppPath);
 			this.tabGlobal.Controls.Add(this.lblPDFAppPath);
@@ -1091,6 +1084,97 @@
 			this.tabGlobal.TabIndex = 0;
 			this.tabGlobal.Tag = "Tab_Options_Global";
 			this.tabGlobal.Text = "Global";
+			// 
+			// grpSelectedSourcebook
+			// 
+			this.grpSelectedSourcebook.Controls.Add(this.lblPDFLocation);
+			this.grpSelectedSourcebook.Controls.Add(this.txtPDFLocation);
+			this.grpSelectedSourcebook.Controls.Add(this.cmdPDFLocation);
+			this.grpSelectedSourcebook.Controls.Add(this.lblPDFOffset);
+			this.grpSelectedSourcebook.Controls.Add(this.nudPDFOffset);
+			this.grpSelectedSourcebook.Controls.Add(this.cmdPDFTest);
+			this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 360);
+			this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
+			this.grpSelectedSourcebook.Size = new System.Drawing.Size(392, 80);
+			this.grpSelectedSourcebook.TabIndex = 27;
+			this.grpSelectedSourcebook.TabStop = false;
+			this.grpSelectedSourcebook.Text = "Selected Sourcebook";
+			// 
+			// lblPDFLocation
+			// 
+			this.lblPDFLocation.AutoSize = true;
+			this.lblPDFLocation.Location = new System.Drawing.Point(8, 24);
+			this.lblPDFLocation.Name = "lblPDFLocation";
+			this.lblPDFLocation.Size = new System.Drawing.Size(75, 13);
+			this.lblPDFLocation.TabIndex = 12;
+			this.lblPDFLocation.Tag = "Label_Options_PDFLocation";
+			this.lblPDFLocation.Text = "PDF Location:";
+			// 
+			// txtPDFLocation
+			// 
+			this.txtPDFLocation.Location = new System.Drawing.Point(89, 20);
+			this.txtPDFLocation.Name = "txtPDFLocation";
+			this.txtPDFLocation.ReadOnly = true;
+			this.txtPDFLocation.Size = new System.Drawing.Size(248, 20);
+			this.txtPDFLocation.TabIndex = 13;
+			// 
+			// cmdPDFLocation
+			// 
+			this.cmdPDFLocation.Enabled = false;
+			this.cmdPDFLocation.Location = new System.Drawing.Point(343, 19);
+			this.cmdPDFLocation.Name = "cmdPDFLocation";
+			this.cmdPDFLocation.Size = new System.Drawing.Size(27, 23);
+			this.cmdPDFLocation.TabIndex = 14;
+			this.cmdPDFLocation.Text = "...";
+			this.cmdPDFLocation.UseVisualStyleBackColor = true;
+			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
+			// 
+			// lblPDFOffset
+			// 
+			this.lblPDFOffset.AutoSize = true;
+			this.lblPDFOffset.Location = new System.Drawing.Point(8, 56);
+			this.lblPDFOffset.Name = "lblPDFOffset";
+			this.lblPDFOffset.Size = new System.Drawing.Size(66, 13);
+			this.lblPDFOffset.TabIndex = 15;
+			this.lblPDFOffset.Tag = "Label_Options_PDFOffset";
+			this.lblPDFOffset.Text = "Page Offset:";
+			// 
+			// nudPDFOffset
+			// 
+			this.nudPDFOffset.Enabled = false;
+			this.nudPDFOffset.Location = new System.Drawing.Point(89, 52);
+			this.nudPDFOffset.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+			this.nudPDFOffset.Name = "nudPDFOffset";
+			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
+			this.nudPDFOffset.TabIndex = 16;
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
+			// 
+			// cmdPDFTest
+			// 
+			this.cmdPDFTest.AutoSize = true;
+			this.cmdPDFTest.Enabled = false;
+			this.cmdPDFTest.Location = new System.Drawing.Point(140, 51);
+			this.cmdPDFTest.Name = "cmdPDFTest";
+			this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
+			this.cmdPDFTest.TabIndex = 17;
+			this.cmdPDFTest.Tag = "Button_Options_PDFTest";
+			this.cmdPDFTest.Text = "Test - Open to Page 5";
+			this.cmdPDFTest.UseVisualStyleBackColor = true;
+			this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
+			// 
+			// cboPDFParameters
+			// 
+			this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPDFParameters.FormattingEnabled = true;
+			this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
+			this.cboPDFParameters.Name = "cboPDFParameters";
+			this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
+			this.cboPDFParameters.TabIndex = 26;
+			this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.cboPDFParameters_SelectedIndexChanged);
 			// 
 			// chkPreferNightlyBuilds
 			// 
@@ -1115,18 +1199,6 @@
 			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
 			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
 			// 
-			// chkOpenPDFsAsUnix
-			// 
-			this.chkOpenPDFsAsUnix.AutoSize = true;
-			this.chkOpenPDFsAsUnix.Location = new System.Drawing.Point(9, 426);
-			this.chkOpenPDFsAsUnix.Name = "chkOpenPDFsAsUnix";
-			this.chkOpenPDFsAsUnix.Size = new System.Drawing.Size(250, 17);
-			this.chkOpenPDFsAsUnix.TabIndex = 23;
-			this.chkOpenPDFsAsUnix.Tag = "Checkbox_Options_OpenPDFsAsUnix";
-			this.chkOpenPDFsAsUnix.Text = "Use Unix-Style Parameters when opening PDFs";
-			this.chkOpenPDFsAsUnix.UseVisualStyleBackColor = true;
-			this.chkOpenPDFsAsUnix.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-			// 
 			// chkLifeModule
 			// 
 			this.chkLifeModule.AutoSize = true;
@@ -1139,45 +1211,15 @@
 			this.chkLifeModule.UseVisualStyleBackColor = true;
 			this.chkLifeModule.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
-			// cmdURLAppPath
+			// lblPDFParametersLabel
 			// 
-			this.cmdURLAppPath.Location = new System.Drawing.Point(407, 288);
-			this.cmdURLAppPath.Name = "cmdURLAppPath";
-			this.cmdURLAppPath.Size = new System.Drawing.Size(27, 23);
-			this.cmdURLAppPath.TabIndex = 21;
-			this.cmdURLAppPath.Text = "...";
-			this.cmdURLAppPath.UseVisualStyleBackColor = true;
-			this.cmdURLAppPath.Click += new System.EventHandler(this.cmdURLAppPath_Click);
-			// 
-			// txtURLAppPath
-			// 
-			this.txtURLAppPath.Location = new System.Drawing.Point(153, 290);
-			this.txtURLAppPath.Name = "txtURLAppPath";
-			this.txtURLAppPath.ReadOnly = true;
-			this.txtURLAppPath.Size = new System.Drawing.Size(248, 20);
-			this.txtURLAppPath.TabIndex = 20;
-			// 
-			// lblURLAppPath
-			// 
-			this.lblURLAppPath.AutoSize = true;
-			this.lblURLAppPath.Location = new System.Drawing.Point(6, 293);
-			this.lblURLAppPath.Name = "lblURLAppPath";
-			this.lblURLAppPath.Size = new System.Drawing.Size(126, 13);
-			this.lblURLAppPath.TabIndex = 19;
-			this.lblURLAppPath.Tag = "Label_Options_URLApplicationPath";
-			this.lblURLAppPath.Text = "Location of Web browser";
-			// 
-			// chkOpenPDFsAsURLs
-			// 
-			this.chkOpenPDFsAsURLs.AutoSize = true;
-			this.chkOpenPDFsAsURLs.Location = new System.Drawing.Point(266, 401);
-			this.chkOpenPDFsAsURLs.Name = "chkOpenPDFsAsURLs";
-			this.chkOpenPDFsAsURLs.Size = new System.Drawing.Size(125, 17);
-			this.chkOpenPDFsAsURLs.TabIndex = 18;
-			this.chkOpenPDFsAsURLs.Tag = "Checkbox_Options_OpenPDFsAsURLs";
-			this.chkOpenPDFsAsURLs.Text = "Open PDFs as URLs";
-			this.chkOpenPDFsAsURLs.UseVisualStyleBackColor = true;
-			this.chkOpenPDFsAsURLs.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			this.lblPDFParametersLabel.AutoSize = true;
+			this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 293);
+			this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
+			this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
+			this.lblPDFParametersLabel.TabIndex = 19;
+			this.lblPDFParametersLabel.Tag = "Label_Options_PDFParameters";
+			this.lblPDFParametersLabel.Text = "PDF Parameters:";
 			// 
 			// chkUseLogging
 			// 
@@ -1191,18 +1233,6 @@
 			this.chkUseLogging.UseVisualStyleBackColor = true;
 			this.chkUseLogging.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
-			// chkLocalisedUpdatesOnly
-			// 
-			this.chkLocalisedUpdatesOnly.AutoSize = true;
-			this.chkLocalisedUpdatesOnly.Location = new System.Drawing.Point(9, 130);
-			this.chkLocalisedUpdatesOnly.Name = "chkLocalisedUpdatesOnly";
-			this.chkLocalisedUpdatesOnly.Size = new System.Drawing.Size(254, 17);
-			this.chkLocalisedUpdatesOnly.TabIndex = 6;
-			this.chkLocalisedUpdatesOnly.Tag = "Checkbox_Options_LocalisedUpdatesOnly";
-			this.chkLocalisedUpdatesOnly.Text = "Only download updates in my selected language";
-			this.chkLocalisedUpdatesOnly.UseVisualStyleBackColor = true;
-			this.chkLocalisedUpdatesOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-			// 
 			// chkDatesIncludeTime
 			// 
 			this.chkDatesIncludeTime.AutoSize = true;
@@ -1214,72 +1244,6 @@
 			this.chkDatesIncludeTime.Text = "Expense dates should include time";
 			this.chkDatesIncludeTime.UseVisualStyleBackColor = true;
 			this.chkDatesIncludeTime.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-			// 
-			// cmdPDFTest
-			// 
-			this.cmdPDFTest.AutoSize = true;
-			this.cmdPDFTest.Enabled = false;
-			this.cmdPDFTest.Location = new System.Drawing.Point(138, 397);
-			this.cmdPDFTest.Name = "cmdPDFTest";
-			this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
-			this.cmdPDFTest.TabIndex = 17;
-			this.cmdPDFTest.Tag = "Button_Options_PDFTest";
-			this.cmdPDFTest.Text = "Test - Open to Page 5";
-			this.cmdPDFTest.UseVisualStyleBackColor = true;
-			this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
-			// 
-			// nudPDFOffset
-			// 
-			this.nudPDFOffset.Enabled = false;
-			this.nudPDFOffset.Location = new System.Drawing.Point(87, 400);
-			this.nudPDFOffset.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-			this.nudPDFOffset.Name = "nudPDFOffset";
-			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
-			this.nudPDFOffset.TabIndex = 16;
-			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
-			// 
-			// lblPDFOffset
-			// 
-			this.lblPDFOffset.AutoSize = true;
-			this.lblPDFOffset.Location = new System.Drawing.Point(6, 402);
-			this.lblPDFOffset.Name = "lblPDFOffset";
-			this.lblPDFOffset.Size = new System.Drawing.Size(66, 13);
-			this.lblPDFOffset.TabIndex = 15;
-			this.lblPDFOffset.Tag = "Label_Options_PDFOffset";
-			this.lblPDFOffset.Text = "Page Offset:";
-			// 
-			// cmdPDFLocation
-			// 
-			this.cmdPDFLocation.Enabled = false;
-			this.cmdPDFLocation.Location = new System.Drawing.Point(341, 365);
-			this.cmdPDFLocation.Name = "cmdPDFLocation";
-			this.cmdPDFLocation.Size = new System.Drawing.Size(27, 23);
-			this.cmdPDFLocation.TabIndex = 14;
-			this.cmdPDFLocation.Text = "...";
-			this.cmdPDFLocation.UseVisualStyleBackColor = true;
-			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
-			// 
-			// txtPDFLocation
-			// 
-			this.txtPDFLocation.Location = new System.Drawing.Point(87, 367);
-			this.txtPDFLocation.Name = "txtPDFLocation";
-			this.txtPDFLocation.ReadOnly = true;
-			this.txtPDFLocation.Size = new System.Drawing.Size(248, 20);
-			this.txtPDFLocation.TabIndex = 13;
-			// 
-			// lblPDFLocation
-			// 
-			this.lblPDFLocation.AutoSize = true;
-			this.lblPDFLocation.Location = new System.Drawing.Point(6, 370);
-			this.lblPDFLocation.Name = "lblPDFLocation";
-			this.lblPDFLocation.Size = new System.Drawing.Size(75, 13);
-			this.lblPDFLocation.TabIndex = 12;
-			this.lblPDFLocation.Tag = "Label_Options_PDFLocation";
-			this.lblPDFLocation.Text = "PDF Location:";
 			// 
 			// cmdPDFAppPath
 			// 
@@ -1397,6 +1361,9 @@
 			// tabPage2
 			// 
 			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage2.Controls.Add(this.cmdCharacterRoster);
+			this.tabPage2.Controls.Add(this.txtCharacterRosterPath);
+			this.tabPage2.Controls.Add(this.lblCharacterRosterLabel);
 			this.tabPage2.Controls.Add(this.chkDontUseCyberlimbCalculation);
 			this.tabPage2.Controls.Add(this.chkPrintToFileFirst);
 			this.tabPage2.Controls.Add(this.cboEssenceDecimals);
@@ -1422,10 +1389,38 @@
 			this.tabPage2.Tag = "Tab_Options_Character";
 			this.tabPage2.Text = "Character and Printing";
 			// 
+			// cmdCharacterRoster
+			// 
+			this.cmdCharacterRoster.Location = new System.Drawing.Point(424, 39);
+			this.cmdCharacterRoster.Name = "cmdCharacterRoster";
+			this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 23);
+			this.cmdCharacterRoster.TabIndex = 23;
+			this.cmdCharacterRoster.Text = "...";
+			this.cmdCharacterRoster.UseVisualStyleBackColor = true;
+			this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
+			// 
+			// txtCharacterRosterPath
+			// 
+			this.txtCharacterRosterPath.Location = new System.Drawing.Point(168, 40);
+			this.txtCharacterRosterPath.Name = "txtCharacterRosterPath";
+			this.txtCharacterRosterPath.ReadOnly = true;
+			this.txtCharacterRosterPath.Size = new System.Drawing.Size(248, 20);
+			this.txtCharacterRosterPath.TabIndex = 22;
+			// 
+			// lblCharacterRosterLabel
+			// 
+			this.lblCharacterRosterLabel.AutoSize = true;
+			this.lblCharacterRosterLabel.Location = new System.Drawing.Point(8, 44);
+			this.lblCharacterRosterLabel.Name = "lblCharacterRosterLabel";
+			this.lblCharacterRosterLabel.Size = new System.Drawing.Size(154, 13);
+			this.lblCharacterRosterLabel.TabIndex = 20;
+			this.lblCharacterRosterLabel.Tag = "Label_Options_CharacterRoster";
+			this.lblCharacterRosterLabel.Text = "Character Roster Watch Folder";
+			// 
 			// chkDontUseCyberlimbCalculation
 			// 
 			this.chkDontUseCyberlimbCalculation.AutoSize = true;
-			this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(12, 36);
+			this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(8, 72);
 			this.chkDontUseCyberlimbCalculation.Name = "chkDontUseCyberlimbCalculation";
 			this.chkDontUseCyberlimbCalculation.Size = new System.Drawing.Size(270, 17);
 			this.chkDontUseCyberlimbCalculation.TabIndex = 19;
@@ -1437,7 +1432,7 @@
 			// chkPrintToFileFirst
 			// 
 			this.chkPrintToFileFirst.AutoSize = true;
-			this.chkPrintToFileFirst.Location = new System.Drawing.Point(11, 269);
+			this.chkPrintToFileFirst.Location = new System.Drawing.Point(7, 305);
 			this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
 			this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
 			this.chkPrintToFileFirst.TabIndex = 18;
@@ -1450,7 +1445,7 @@
 			// 
 			this.cboEssenceDecimals.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboEssenceDecimals.FormattingEnabled = true;
-			this.cboEssenceDecimals.Location = new System.Drawing.Point(245, 305);
+			this.cboEssenceDecimals.Location = new System.Drawing.Point(241, 341);
 			this.cboEssenceDecimals.Name = "cboEssenceDecimals";
 			this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
 			this.cboEssenceDecimals.TabIndex = 17;
@@ -1458,7 +1453,7 @@
 			// lblEssenceDecimals
 			// 
 			this.lblEssenceDecimals.AutoSize = true;
-			this.lblEssenceDecimals.Location = new System.Drawing.Point(9, 308);
+			this.lblEssenceDecimals.Location = new System.Drawing.Point(5, 344);
 			this.lblEssenceDecimals.Name = "lblEssenceDecimals";
 			this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
 			this.lblEssenceDecimals.TabIndex = 16;
@@ -1468,7 +1463,7 @@
 			// chkPrintNotes
 			// 
 			this.chkPrintNotes.AutoSize = true;
-			this.chkPrintNotes.Location = new System.Drawing.Point(11, 246);
+			this.chkPrintNotes.Location = new System.Drawing.Point(7, 282);
 			this.chkPrintNotes.Name = "chkPrintNotes";
 			this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
 			this.chkPrintNotes.TabIndex = 15;
@@ -1479,7 +1474,7 @@
 			// lblLimbCount
 			// 
 			this.lblLimbCount.AutoSize = true;
-			this.lblLimbCount.Location = new System.Drawing.Point(6, 12);
+			this.lblLimbCount.Location = new System.Drawing.Point(8, 8);
 			this.lblLimbCount.Name = "lblLimbCount";
 			this.lblLimbCount.Size = new System.Drawing.Size(152, 13);
 			this.lblLimbCount.TabIndex = 0;
@@ -1489,7 +1484,7 @@
 			// chkAllowSkillDiceRolling
 			// 
 			this.chkAllowSkillDiceRolling.AutoSize = true;
-			this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(11, 167);
+			this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(7, 203);
 			this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
 			this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
 			this.chkAllowSkillDiceRolling.TabIndex = 10;
@@ -1501,7 +1496,7 @@
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(8, 79);
+			this.label36.Location = new System.Drawing.Point(4, 115);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(140, 13);
 			this.label36.TabIndex = 4;
@@ -1510,7 +1505,7 @@
 			// 
 			// nudBP
 			// 
-			this.nudBP.Location = new System.Drawing.Point(104, 104);
+			this.nudBP.Location = new System.Drawing.Point(100, 140);
 			this.nudBP.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -1530,7 +1525,7 @@
 			// 
 			this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboBuildMethod.FormattingEnabled = true;
-			this.cboBuildMethod.Location = new System.Drawing.Point(9, 104);
+			this.cboBuildMethod.Location = new System.Drawing.Point(5, 140);
 			this.cboBuildMethod.Name = "cboBuildMethod";
 			this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
 			this.cboBuildMethod.TabIndex = 5;
@@ -1539,7 +1534,7 @@
 			// lblMaxAvail
 			// 
 			this.lblMaxAvail.AutoSize = true;
-			this.lblMaxAvail.Location = new System.Drawing.Point(39, 134);
+			this.lblMaxAvail.Location = new System.Drawing.Point(35, 170);
 			this.lblMaxAvail.Name = "lblMaxAvail";
 			this.lblMaxAvail.Size = new System.Drawing.Size(59, 13);
 			this.lblMaxAvail.TabIndex = 7;
@@ -1548,7 +1543,7 @@
 			// 
 			// nudMaxAvail
 			// 
-			this.nudMaxAvail.Location = new System.Drawing.Point(104, 131);
+			this.nudMaxAvail.Location = new System.Drawing.Point(100, 167);
 			this.nudMaxAvail.Name = "nudMaxAvail";
 			this.nudMaxAvail.Size = new System.Drawing.Size(42, 20);
 			this.nudMaxAvail.TabIndex = 8;
@@ -1563,7 +1558,7 @@
 			// 
 			this.cboLimbCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboLimbCount.FormattingEnabled = true;
-			this.cboLimbCount.Location = new System.Drawing.Point(164, 9);
+			this.cboLimbCount.Location = new System.Drawing.Point(166, 5);
 			this.cboLimbCount.Name = "cboLimbCount";
 			this.cboLimbCount.Size = new System.Drawing.Size(210, 21);
 			this.cboLimbCount.TabIndex = 1;
@@ -2702,7 +2697,9 @@
 			// 
 			// tabHouseRules
 			// 
+			this.tabHouseRules.AutoScroll = true;
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkMysAdPp);
 			this.tabHouseRules.Controls.Add(this.chkAlternateMetatypeAttributeKarma);
 			this.tabHouseRules.Controls.Add(this.label4);
 			this.tabHouseRules.Controls.Add(this.nudDroneArmorMultiplier);
@@ -2736,6 +2733,17 @@
 			this.tabHouseRules.TabIndex = 3;
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
+			// 
+			// chkMysAdPp
+			// 
+			this.chkMysAdPp.AutoSize = true;
+			this.chkMysAdPp.Location = new System.Drawing.Point(8, 279);
+			this.chkMysAdPp.Name = "chkMysAdPp";
+			this.chkMysAdPp.Size = new System.Drawing.Size(280, 17);
+			this.chkMysAdPp.TabIndex = 29;
+			this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
+			this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
+			this.chkMysAdPp.UseVisualStyleBackColor = true;
 			// 
 			// chkAlternateMetatypeAttributeKarma
 			// 
@@ -2948,7 +2956,7 @@
 			this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
 			this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
 			this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
-			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.chkKnowledgeMultiplier_CheckedChanged);
 			// 
 			// label2
 			// 
@@ -2993,7 +3001,7 @@
 			this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
 			this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
 			this.chkContactMultiplier.UseVisualStyleBackColor = true;
-			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.chkContactMultiplier_CheckedChanged);
 			// 
 			// chkFreeKarmaContacts
 			// 
@@ -3179,6 +3187,8 @@
 			this.tabControl2.ResumeLayout(false);
 			this.tabGlobal.ResumeLayout(false);
 			this.tabGlobal.PerformLayout();
+			this.grpSelectedSourcebook.ResumeLayout(false);
+			this.grpSelectedSourcebook.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).EndInit();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
@@ -3412,7 +3422,6 @@
 		private System.Windows.Forms.CheckBox chkDatesIncludeTime;
 		private System.Windows.Forms.CheckBox chkExtendAnyDetectionSpell;
 		private System.Windows.Forms.CheckBox chkPrintToFileFirst;
-		private System.Windows.Forms.CheckBox chkLocalisedUpdatesOnly;
 		private System.Windows.Forms.CheckBox chkSpecialKarmaCost;
         private System.Windows.Forms.CheckBox chkContactPoints;
         private System.Windows.Forms.CheckBox chkMayBuyQualities;
@@ -3426,10 +3435,7 @@
         private System.Windows.Forms.CheckBox chkAllowInitiation;
         private System.Windows.Forms.CheckBox chkFreeKarmaContacts;
         private System.Windows.Forms.CheckBox chkFreeKarmaKnowledge;
-        private System.Windows.Forms.CheckBox chkOpenPDFsAsURLs;
-        private System.Windows.Forms.Button cmdURLAppPath;
-        private System.Windows.Forms.TextBox txtURLAppPath;
-        private System.Windows.Forms.Label lblURLAppPath;
+        private System.Windows.Forms.Label lblPDFParametersLabel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown nudKnowledgeMultiplier;
         private System.Windows.Forms.CheckBox chkKnowledgeMultiplier;
@@ -3454,10 +3460,15 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown nudDroneArmorMultiplier;
         private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
-        private System.Windows.Forms.CheckBox chkOpenPDFsAsUnix;
 		private System.Windows.Forms.CheckBox chkOmaeEnabled;
 		private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
 		private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
 		private System.Windows.Forms.Button cmdEnableSourcebooks;
-	}
+		private System.Windows.Forms.Label lblCharacterRosterLabel;
+		private System.Windows.Forms.Button cmdCharacterRoster;
+		private System.Windows.Forms.TextBox txtCharacterRosterPath;
+		private helpers.ComboBox cboPDFParameters;
+		private System.Windows.Forms.GroupBox grpSelectedSourcebook;
+        private System.Windows.Forms.CheckBox chkMysAdPp;
+    }
 }

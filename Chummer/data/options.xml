@@ -41,5 +41,19 @@
 				<exclude />
 			</limb>
 		</limbcounts>
+		<pdfarguments>
+			<pdfargument>
+				<name>Web Browser</name>
+				<value>{absolutepath}#page={page}</value>
+			</pdfargument>
+			<pdfargument>
+				<name>Acrobat-style</name>
+				<value>/A "page={page}" "{localpath}"</value>
+			</pdfargument>
+			<pdfargument>
+				<name>Unix-style</name>
+				<value>-p {page} {localpath}</value>
+			</pdfargument>
+		</pdfarguments>
 	</options>
 </chummer>

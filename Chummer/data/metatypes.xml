@@ -72,9 +72,9 @@
 			<depmin>0</depmin>
 			<depmax>0</depmax>
 			<depaug>0</depaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+2m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>2/1/0</sprint>
 			<bonus />
 			<source>SR5</source>
 			<page>50</page>
@@ -122,9 +122,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Shiva Arms (1 Pair)</quality>
@@ -183,9 +180,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+2m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>2/1/0</sprint>
 			<qualities>
 				<positive>
 					<quality>Low-Light Vision</quality>
@@ -238,9 +235,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -297,9 +291,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -321,7 +312,6 @@
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<karma>80</karma>
-
 					<bodaug>10</bodaug>
 					<agimin>2</agimin>
 					<agimax>7</agimax>
@@ -359,9 +349,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -417,9 +404,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -478,9 +462,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+1m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>1/1/0</sprint>
 			<qualities>
 				<positive>
 					<quality>Thermographic Vision</quality>
@@ -536,9 +520,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Arcane Arrester</quality>
@@ -593,10 +574,7 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>					
+					<essaug>6</essaug>				
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -654,10 +632,7 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>					
+					<essaug>6</essaug>				
 					<qualities>
 						<positive>
 							<quality>Celerity</quality>
@@ -676,7 +651,6 @@
 					<name>Menehune</name>
 					<category>Metavariant</category>
 					<karma>50</karma>
-
 					<bodmin>2</bodmin>
 					<bodmax>7</bodmax>
 					<bodaug>11</bodaug>
@@ -715,10 +689,7 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>					
+					<essaug>6</essaug>					
 					<qualities>
 						<positive>
 							<quality>Resistance to Pathogens/Toxins</quality>
@@ -778,9 +749,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+2m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>2/1/0</sprint>
 			<qualities>
 				<positive>
 					<quality>Low-Light Vision</quality>
@@ -833,9 +804,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -893,9 +861,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -950,9 +915,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -1008,9 +970,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -1069,9 +1028,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+1m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>1/1/0</sprint>
 			<qualities>
 				<positive>
 					<quality>Thermographic Vision</quality>
@@ -1128,9 +1087,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>
 					<qualities>
 						<negative>
 							<quality>Cyclopean Eye</quality>
@@ -1187,9 +1143,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1247,9 +1200,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1307,9 +1257,6 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+1m/hit</sprint>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1370,9 +1317,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*1</walk>
-			<run>AGI*4</run>
-			<sprint>+4m/hit</sprint>
+			<walk>4/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>4/1/0</sprint>
 			<bonus>
 				<addattribute>
 					<name>MAG</name>
@@ -1447,9 +1394,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+1m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>1/1/0</sprint>
 			<bonus>
 				<armor>8</armor>
 				<addattribute>
@@ -1526,12 +1473,10 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*1</walk>
-			<run>AGI*2</run>
-			<sprint>+1m/hit</sprint>
-			<bonus>  
-				<flyspeed>2</flyspeed>
-
+			<walk>1/1/2</walk>
+			<run>2/0/6</run>
+			<sprint>1/1/2</sprint>
+			<bonus>
 				<addattribute>
 					<name>MAG</name>
 					<min>1</min>
@@ -1602,9 +1547,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<walk>AGI*2</walk>
-			<run>AGI*4</run>
-			<sprint>+2m/hit</sprint>
+			<walk>2/1/0</walk>
+			<run>4/0/0</run>
+			<sprint>2/2/0</sprint>
 			<bonus>
 				<addattribute>
 					<name>MAG</name>

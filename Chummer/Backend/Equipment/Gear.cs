@@ -282,11 +282,15 @@ namespace Chummer.Backend.Equipment
 					{
 						frmPickWeaponCategory.WeaponType = "flame";
 					}
-					else if (_strName.StartsWith("Ammo: Injection Dart") || _strName.StartsWith("Ammo: Peak-Discharge"))
+					else if (_strName.StartsWith("Ammo: Injection Dart"))
 					{
 						frmPickWeaponCategory.WeaponType = "exotic";
-					}
-					else
+                    }
+                    else if (_strName.StartsWith("Ammo: Peak-Discharge"))
+                    {
+                        frmPickWeaponCategory.WeaponType = "laser";
+                    }
+                    else
 					{
 						frmPickWeaponCategory.WeaponType = "gun";
 					}
