@@ -131,15 +131,17 @@ namespace Chummer
 			XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
 			{
-                bool blnCyberware = objXmlWeapon["cyberware"]?.InnerText == "yes";
-
-				if (blnCyberware) continue;
-				ListItem objItem = new ListItem
+                bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes";
+				blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
+				if (!blnHide)
 				{
-					Value = objXmlWeapon["id"].InnerText,
-					Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText
-				};
-				lstWeapons.Add(objItem);
+					ListItem objItem = new ListItem
+					{
+						Value = objXmlWeapon["id"].InnerText,
+						Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText
+					};
+					lstWeapons.Add(objItem);
+				}
 			}
 			SortListItem objSort = new SortListItem();
 			lstWeapons.Sort(objSort.Compare);
@@ -213,7 +215,7 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = objXmlWeapon.SelectNodes("accessories/accessory");
 			foreach (XmlNode objXmlAccessory in objXmlNodeList)
 			{
-				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = \"" + objXmlAccessory["id"].InnerText + "\"]");
+				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
 				strAccessories += objXmlItem["translate"] != null
 					? objXmlItem["translate"].InnerText + "\n"
 					: objXmlItem["name"].InnerText + "\n";
@@ -567,16 +569,10 @@ namespace Chummer
 
             foreach (XmlNode objXmlWeapon in objXmlWeaponList)
             {
-                bool blnCyberware = false;
-                try 
-                {
-                    if (objXmlWeapon["cyberware"].InnerText == "yes")
-                        blnCyberware = true;
-                }
-                catch
-                { }
+				bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes";
+				blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
 
-                if (!blnCyberware)
+				if (!blnHide)
                 {
                     TreeNode objNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
@@ -728,21 +724,21 @@ namespace Chummer
                 List<ListItem> lstWeapons = new List<ListItem>();
                 foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlWeapon["id"].InnerText;
-                    if (objXmlWeapon["translate"] != null)
-                        objItem.Name = objXmlWeapon["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlWeapon["name"].InnerText;
+					bool blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
+	                if (!blnHide)
+	                {
+		                ListItem objItem = new ListItem();
+		                objItem.Value = objXmlWeapon["id"].InnerText;
+		                objItem.Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
 
-                    try
-                    {
-                        objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlWeapon["category"].InnerText).Name + "]";
-                        lstWeapons.Add(objItem);
-                    }
-                    catch
-                    {
-                    }
+		                if (objXmlWeapon["category"] != null)
+		                {
+							objItem.Name += " [" +
+											_lstCategory.Find(objFind => objFind.Value == objXmlWeapon["category"].InnerText)
+												.Name + "]";
+						}
+						lstWeapons.Add(objItem);
+					}
                 }
                 SortListItem objSort = new SortListItem();
                 lstWeapons.Sort(objSort.Compare);
