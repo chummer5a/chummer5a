@@ -1035,7 +1035,60 @@
 								select="position()"/></xsl:with-param>
 					</xsl:call-template>
 				</xsl:for-each>
-
+				
+				<xsl:if test="tradition/name != ''">
+					<div class="block" id="TraditionBlock">
+						<table width="100%" cellspacing="0" cellpadding="0" border="0">
+							<tr>
+								<td>
+									<table width="100%" cellspacing="0" cellpadding="0" border="0"
+										class="tableborder">
+										<tr>
+											<td width="22%">
+												<strong>Tradition</strong>
+											</td>
+											<td width="13%" style="text-align:center;">
+												<strong>Combat Spirit</strong>
+											</td>
+											<td width="13%" style="text-align:center;">
+												<strong>Detection Spirit</strong>
+											</td>
+											<td width="13%" style="text-align:center;">
+												<strong>Health Spirit</strong>
+											</td>
+											<td width="13%" style="text-align:center;">
+												<strong>Illusion Spirit</strong>
+											</td>
+											<td width="13%" style="text-align:center;">
+												<strong>Manipulation Spirit</strong>
+											</td>
+											<td width="13%" style="text-align:center;">
+												<strong>Drain</strong>
+											</td>
+											<td width="10%" style="text-align:center;"> </td>
+										</tr>
+										<xsl:call-template name="tradition"/>
+										<tr>
+											<td class="rowsummary" colspan="7">
+												TRADITION <span
+												class="rowsummarybutton"
+												onClick="showhide(this,'TraditionBlock');" colspan="1"
+												>Show: YES</span>
+												<span class="rowsummarybutton"
+												onClick="zalomit(this,'TraditionBlock');" colspan="1"
+												>Page Break: NO</span>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="hseparator"/>
+							</tr>
+						</table>
+					</div>
+				</xsl:if>
+				
 				<xsl:if test="spells/spell">
 					<div class="block" id="SpellBlock">
 						<table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -2987,12 +3040,52 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template name="spells">
+	<xsl:template name="tradition">
 		<tr>
-			<td colspan="7" valign="top"> Tradition: <xsl:value-of select="tradition"
-				/>&#160;&#160;&#160; Resist Drain with <xsl:value-of select="drain"/>
+			<td width="22%">
+				<strong>
+					<xsl:value-of select="tradition/name" />
+					<span style="color:grey;">
+						(<xsl:value-of select="tradition/spiritform" />)
+					</span>
+				</strong>
+				<span style="color:grey;">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="tradition/source" />
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="tradition/page" />
+				</span>
 			</td>
+			<td width="13%" style="text-align:center;">
+					<xsl:value-of select="tradition/spiritcombat" />
+			</td>
+			<td width="13%" style="text-align:center;">
+				<xsl:value-of select="tradition/spiritdetection" />
+			</td>
+			<td width="13%" style="text-align:center;">
+					<xsl:value-of select="tradition/spirithealth" />
+			</td>
+			<td width="13%" style="text-align:center;">
+				<xsl:value-of select="tradition/spiritillusion" />
+			</td>
+			<td width="13%" style="text-align:center;">
+				<xsl:value-of select="tradition/spiritmanipulation" />
+			</td>
+			<td width="13%" style="text-align:center;">
+				<xsl:choose>
+					<xsl:when test="qualities/quality[name='Adept']">
+						BOD + WIL (<xsl:value-of select="attributes/attribute[name='BOD']/total +attributes/attribute[name='WIL']/total"/>)
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="tradition/drain" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</td>
+			<td width="10%" style="text-align:center;"> </td>
 		</tr>
+	</xsl:template>
+	
+	<xsl:template name="spells">
 		<xsl:variable name="sortedlist">
 			<xsl:for-each select="spells/spell">
 				<xsl:sort select="category"/>
