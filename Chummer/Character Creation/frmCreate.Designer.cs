@@ -2389,6 +2389,7 @@ namespace Chummer
 			this.tsGearAddNexus.Size = new System.Drawing.Size(152, 22);
 			this.tsGearAddNexus.Tag = "Menu_AddNexus";
 			this.tsGearAddNexus.Text = "A&dd Nexus";
+	        this.tsGearAddNexus.Visible = false;
 			this.tsGearAddNexus.Click += new System.EventHandler(this.tsGearAddNexus_Click);
 			// 
 			// cmsVehicle
@@ -2460,6 +2461,7 @@ namespace Chummer
 			this.tsVehicleAddNexus.Size = new System.Drawing.Size(147, 22);
 			this.tsVehicleAddNexus.Tag = "Menu_AddNexus";
 			this.tsVehicleAddNexus.Text = "A&dd Nexus";
+			this.tsVehicleAddNexus.Visible = false;
 			this.tsVehicleAddNexus.Click += new System.EventHandler(this.tsVehicleAddNexus_Click);
 			// 
 			// tsVehicleAddWeapon

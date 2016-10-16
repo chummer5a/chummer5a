@@ -832,7 +832,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("category_english", _strCategory);
 			objWriter.WriteElementString("iscommlink", false.ToString());
 			objWriter.WriteElementString("ispersona", false.ToString());
-			objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
+			//objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
 			objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
 			objWriter.WriteElementString("isprogram", IsProgram.ToString());
 			objWriter.WriteElementString("isos", false.ToString());
