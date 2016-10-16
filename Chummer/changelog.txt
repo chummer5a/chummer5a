@@ -13,7 +13,7 @@ Application Changes:
 - Added a File Path label to the Character Roster.
 - Added the ability to delete items from the Character Roster by pressing the Delete button. This will ONLY remove the file from the relevant MRU lists, no .chum5 files will be deleted.
 - Suppressed the ability to attempt to add a Nexus to vehicle or gear items. 
-
+- Made some alterations to the display of characters in the Roster. Added the Game Notes field, removed the ability to edit the text (It wasn't saving anyway.)
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
 - Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
@@ -27,6 +27,12 @@ New Strings:
 - Label_VehicleSeats
 - Label_Biography
 - Label_File_Path
+- Label_Roster_File_Name
+- Tab_Roster_Description
+- Tab_Roster_Concept
+- Tab_Roster_Background
+- Tab_Roster_CharacterNotes
+- Tab_Roster_GameNotes
 
 Changed Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill

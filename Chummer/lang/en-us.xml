@@ -1069,9 +1069,29 @@
 		<!-- End Region -->
     <!-- Region Character Roster -->
     <string>
-      <key>Label_File_Path</key>
-      <text>File Path:</text>
+      <key>Label_Roster_File_Name</key>
+      <text>File Name:</text>
     </string>
+    <string>
+      <key>Tab_Roster_Description</key>
+      <text>Description</text>
+    </string>
+		<string>
+			<key>Tab_Roster_Concept</key>
+			<text>Concept</text>
+		</string>
+		<string>
+			<key>Tab_Roster_Background</key>
+			<text>Concept</text>
+		</string>
+		<string>
+			<key>Tab_Roster_CharacterNotes</key>
+			<text>Character Notes</text>
+		</string>
+		<string>
+			<key>Tab_Roster_GameNotes</key>
+			<text>Game Notes</text>
+		</string>
     <!-- End Region -->
 		<!-- Region Create/Career Window -->
 		<string>
