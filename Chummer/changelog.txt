@@ -22,6 +22,7 @@ Data Changes:
 - Added the Shotgun (Flechette) weapon range.
 - Added missing weapons from the Schattenhandbuch, courtesy of gamingharry.
 - Fixed the display of magic traditions in the core character sheets.
+- Moved the selecttext method back out of AddImprovementCollection. 
 
 New Strings:
 - Label_VehicleSeats

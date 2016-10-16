@@ -72,63 +72,6 @@ namespace Chummer.Classes
 
 		#region
 
-		public void selecttext(XmlNode bonusNode)
-		{
-			Log.Info("selecttext");
-
-			if (_objCharacter != null)
-			{
-				if (ForcedValue != "")
-				{
-					LimitSelection = ForcedValue;
-				}
-				else if (_objCharacter.Pushtext.Count != 0)
-				{
-					LimitSelection = _objCharacter.Pushtext.Pop();
-				}
-			}
-
-			Log.Info("_strForcedValue = " + SelectedValue);
-			Log.Info("_strLimitSelection = " + LimitSelection);
-
-			// Display the Select Text window and record the value that was entered.
-			frmSelectText frmPickText = new frmSelectText();
-			frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-				.Replace("{0}", this._strFriendlyName);
-
-			if (LimitSelection != "")
-			{
-				frmPickText.SelectedValue = LimitSelection;
-				frmPickText.Opacity = 0;
-			}
-
-			frmPickText.ShowDialog();
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickText.DialogResult == DialogResult.Cancel)
-			{
-
-				Rollback();
-				ForcedValue = "";
-				LimitSelection = "";
-				Log.Exit("CreateImprovements");
-				throw new AbortedException();
-			}
-
-			SelectedValue = frmPickText.SelectedValue;
-			if (this._blnConcatSelectedValue)
-				SourceName += " (" + SelectedValue + ")";
-			Log.Info("_strSelectedValue = " + SelectedValue);
-			Log.Info("strSourceName = " +SourceName);
-
-			// Create the Improvement.
-			Log.Info("Calling CreateImprovement");
-
-			CreateImprovement(frmPickText.SelectedValue, _objImprovementSource, SourceName, 
-				Improvement.ImprovementType.Text,
-				_strUnique);
-		}
-
 		public void qualitylevel(XmlNode bonusNode)
 		{
 			//List of qualities to work with
