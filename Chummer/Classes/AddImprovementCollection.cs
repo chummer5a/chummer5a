@@ -3476,20 +3476,30 @@ namespace Chummer.Classes
 				LimitSelection = ForcedValue;
 
 			// Display the Select Item window and record the value that was entered.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+			XmlNodeList objXmlNodeList;
+			
+			if (!string.IsNullOrEmpty(bonusNode.InnerText))
+			{
+				objXmlNodeList = objXmlDocument.SelectNodes("/chummer/armors/armor[name starts-with " + bonusNode.InnerText + "(" + _objCharacter.Options.BookXPath() +
+															") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
+			}
+			else
+			{
+				objXmlNodeList =
+					objXmlDocument.SelectNodes("/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() +
+											   ") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
+			}
+
+			//.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
 
 			List<ListItem> lstArmors = new List<ListItem>();
-			foreach (Armor objArmor in _objCharacter.Armor)
+			foreach (XmlNode objNode in objXmlNodeList)
 			{
-				foreach (ArmorMod objMod in objArmor.ArmorMods)
-				{
-					if (objMod.Name.StartsWith("Custom Fit"))
-					{
-						ListItem objItem = new ListItem();
-						objItem.Value = objArmor.Name;
-						objItem.Name = objArmor.DisplayName;
-						lstArmors.Add(objItem);
-					}
-				}
+				ListItem objItem = new ListItem();
+				objItem.Value = objNode["name"].InnerText;
+				objItem.Name = objNode.Attributes["translate"]?.InnerText ?? objNode["name"].InnerText;
+				lstArmors.Add(objItem);
 			}
 
 			if (lstArmors.Count > 0)
