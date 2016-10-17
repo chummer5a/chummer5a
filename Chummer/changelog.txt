@@ -13,8 +13,13 @@ Application Changes:
 - Added a File Path label to the Character Roster.
 - Added the ability to delete items from the Character Roster by pressing the Delete button. This will ONLY remove the file from the relevant MRU lists, no .chum5 files will be deleted.
 - Suppressed the ability to attempt to add a Nexus to vehicle or gear items. 
+- Added the ability to filter qualities by their karma values, applying a minimum, maximum and value boundary to the quality list. 
 - Made some alterations to the display of characters in the Roster. Added the Game Notes field, removed the ability to edit the text (It wasn't saving anyway.)
+<<<<<<< HEAD
 - Fixed the calculation method of Custom Fit (Stack) mods to work more reliably.
+=======
+- Fixed the implementation of Awakened Infected (Mutaqua, Wendigo, etc.) to not add the relevant qualities. 
+>>>>>>> origin/master
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
@@ -25,6 +30,7 @@ Data Changes:
 - Added missing weapons from the Schattenhandbuch, courtesy of gamingharry.
 - Fixed the display of magic traditions in the core character sheets.
 - Moved the selecttext method back out of AddImprovementCollection. 
+- Altered the Magician, Adept, Mystic Adept, and Technomancer to not need special treatment when adding their special tabs. 
 
 New Strings:
 - Label_VehicleSeats

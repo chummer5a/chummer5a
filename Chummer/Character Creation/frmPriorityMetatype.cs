@@ -1519,7 +1519,7 @@ namespace Chummer
                     _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
 
                 // Set starting talent tabs
-                switch (cboTalents.SelectedValue.ToString())
+                /*switch (cboTalents.SelectedValue.ToString())
                 {
                     case "Magician":
                         _objCharacter.MagicianEnabled = true;
@@ -1539,7 +1539,7 @@ namespace Chummer
                         break;
                     default:
                         break;
-                }
+                }*/
 
                 // Set Free Skills/Skill Groups
                 int intFreeLevels = 0;

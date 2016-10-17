@@ -7191,7 +7191,7 @@ namespace Chummer
             // Remove the Improvements that were created by the Quality.
             switch (objQuality.Name)
             {
-                case "Magician":
+                /*case "Magician":
                     _objCharacter.MAGEnabled = false;
                     _objCharacter.MagicianEnabled = false;
                     break;
@@ -7211,7 +7211,7 @@ namespace Chummer
                 case "Technomancer":
                     _objCharacter.RESEnabled = false;
                     _objCharacter.TechnomancerEnabled = false;
-                    break;
+                    break;*/
 				case "Changeling (Class I SURGE)":
 					_objCharacter.MetageneticLimit = 0;
 					break;
@@ -21308,7 +21308,8 @@ namespace Chummer
             }
 
 			List<Quality> lstRemoveQualities = new List<Quality>();
-            //Revert all Special Qualities
+            //TODO: This shouldn't be required as of 17/10/16. Revert in case something weird shows up. 
+            /*Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 switch (objQuality.Name)
@@ -21342,7 +21343,7 @@ namespace Chummer
                     default:
                         break;
                 }
-			}
+			}*/
 
 			// Remove any Qualities the character received from their Metatype, then remove the Quality.
 			foreach (Quality objQuality in lstRemoveQualities)
