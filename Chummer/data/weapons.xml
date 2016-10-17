@@ -285,7 +285,9 @@
 			<ammo>38(c)</ammo>
 			<avail>8F</avail>
 			<cost>1250</cost>
-			<underbarrel>AK-98 Grenade Launcher</underbarrel>
+			<underbarrels>
+				<underbarrel>AK-98 Grenade Launcher</underbarrel>
+			</underbarrels>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Stock</mount>
@@ -313,7 +315,9 @@
 			<ammo>42(c)</ammo>
 			<avail>11F</avail>
 			<cost>2650</cost>
-			<underbarrel>Ares Alpha Grenade Launcher</underbarrel>
+			<underbarrels>
+				<underbarrel>Ares Alpha Grenade Launcher</underbarrel>
+			</underbarrels>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Stock</mount>
@@ -484,7 +488,9 @@
 			<ammo>30(c)</ammo>
 			<avail>15F</avail>
 			<cost>4500</cost>
+			<underbarrels>
 			<underbarrel>HK XM30 Grenade Launcher</underbarrel>
+			</underbarrels>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Stock</mount>
@@ -507,6 +513,7 @@
 			</accessories>
 			<source>RG</source>
 			<page>37</page>
+		
 		</weapon>
 		<weapon>
 			<id>cc446f64-1dbd-42dd-8fc4-ca17dc6bcf42</id>
@@ -725,7 +732,9 @@
 			<ammo>30(c)</ammo>
 			<avail>10F</avail>
 			<cost>2300</cost>
-			<underbarrel>Nissan Optiumum II Shotgun</underbarrel>
+			<underbarrels>
+				<underbarrel>Nissan Optiumum II Shotgun</underbarrel>
+			</underbarrels>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Stock</mount>
@@ -7883,6 +7892,9 @@
 			<avail>8R</avail>
 			<cost>1080</cost>
 			<allowaccessory>true</allowaccessory>
+			<underbarrels>
+				<underbarrel>Lemat 2072 (Shotgun Barrel)</underbarrel>
+			</underbarrels>
 			<accessorymounts>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
@@ -7895,10 +7907,30 @@
 			<source>HT</source>
 			<page>178</page>
 		</weapon>
+		<weapon>
+			<id>e6c0ceab-ac8f-4b69-bb00-8f6e05396a64</id>
+			<name>Lemat 2072 (Shotgun Barrel)</name>
+			<category>Heavy Pistols</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>10P(f)</damage>
+			<ap>+4</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>1(b)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<accessorymounts />
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
 		<!-- End Region -->
 		<!-- Region Boston Lockdown-->
-
-		<!-- Region Lockdown -->
 		<weapon>
 			<id>21fb8d4f-5958-4fd9-996f-7e88ee0282c2</id>
 			<name>Microwave Gun, High Frequency</name>
@@ -7964,6 +7996,260 @@
 			<range>Submachine Guns</range>
 			<source>LCD</source>
 			<page>209</page>
+		</weapon>
+		<!-- End Region -->
+		<!-- Region Shadows in Focus -->
+		<!-- Region San Fancisco -->
+		<weapon>
+			<id>581fed02-2312-4a75-95ba-25215b12ab5f</id>
+			<name>Colt Manhunter</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>5R</avail>
+			<cost>700</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
+			</accessories>
+			<source>SFM</source>
+			<page>18</page>
+		</weapon>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Schattenhandbuch -->
+		<weapon>
+			<id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
+			<name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
+			<category>Shotguns</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<spec>Shotguns</spec>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-1</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>10(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<accessorymounts />
+			<accessories />
+			<useskill>Longarms</useskill>
+			<range>Shotguns (flechette)</range>
+			<source>SHB</source>
+			<page>0</page>
+		</weapon>
+		<weapon>
+			<id>026343e0-f47d-4c5a-905d-bbbc2411b5da</id>
+			<name>Mannlicher Marpingen Pro D</name>
+			<category>Sporting Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<spec>Sporting Rifles</spec>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>11P</damage>
+			<ap>-4</ap>
+			<mode>SA</mode>
+			<rc>1</rc>
+			<ammo>6(m)</ammo>
+			<avail>5R</avail>
+			<cost>1800</cost>
+			<underbarrels>
+				<underbarrel>Mannlicher Marpingen Pro D (Shotgun Barrels)</underbarrel>
+			</underbarrels>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Slide Mount</name>
+				</accessory>
+			</accessories>
+			<useskill>Longarms</useskill>
+			<range>Sniper Rifles</range>
+			<source>SHB</source>
+			<page>0</page>
+		</weapon>
+		<weapon>
+			<id>5c04009f-7858-4c9a-bc9e-d21880e420cf</id>
+			<name>HK MP75</name>
+			<category>Submachine Guns</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>9P</damage>
+			<ap>-1</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>2</rc>
+			<ammo>30(c)</ammo>
+			<avail>12F</avail>
+			<cost>1000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
+				<accessory>
+					<name>Advanced Safety System, Basic</name>
+				</accessory>
+				<accessory>
+					<name>Gas-Vent 2 System</name>
+				</accessory>
+				<useskill>Pistols</useskill>
+				<range>Light Pistols</range>
+			</accessories>
+			<source>SHB</source>
+			<page>0</page>
+		</weapon>
+		<weapon>
+			<id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
+			<name>Mannlicher Dirmingen SX BD: Shotgun Barrel</name>
+			<category>Shotguns</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<spec>Shotguns</spec>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>13P</damage>
+			<ap>0</ap>
+			<mode>SS</mode>
+			<rc>1</rc>
+			<ammo>1(b)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<accessorymounts />
+			<useskill>Longarms</useskill>
+			<range>Shotguns (flechette)</range>
+			<source>SHB</source>
+			<page>0</page>
+		</weapon>
+		<weapon>
+			<id>4dee0b90-b3d0-41a8-a784-8c3342a69719</id>
+			<name>Mannlicher Dirmingen SX BD</name>
+			<category>Sporting Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<spec>Sporting Rifles</spec>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>11P</damage>
+			<ap>-4</ap>
+			<mode>SA</mode>
+			<rc>1</rc>
+			<ammo>6(m)</ammo>
+			<avail>5R</avail>
+			<cost>1800</cost>
+			<underbarrels>
+				<underbarrel>Mannlicher Dirmingen SX BD: Shotgun Barrel</underbarrel>
+				<underbarrel>Mannlicher Dirmingen SX BD: Small Caliber</underbarrel>
+			</underbarrels>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<useskill>Longarms</useskill>
+			<range>Shotguns</range>
+			<source>SHB</source>
+			<page>0</page>
+		</weapon>
+		<weapon>
+			<id>deaf5a3d-7428-4a58-be14-c8447716b0f8</id>
+			<name>Mannlicher Dirmingen SX BD: Small Caliber</name>
+			<category>Sporting Rifles</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<spec>Sporting Rifles</spec>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>11P</damage>
+			<ap>-4</ap>
+			<mode>SA</mode>
+			<rc>1</rc>
+			<ammo>6(m)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<accessorymounts />
+			<useskill>Longarms</useskill>
+			<range>Light Pistols</range>
+			<source>SHB</source>
+			<page>0</page>
+		</weapon>
+		<weapon>
+			<id>581ed592-9caa-41ea-aaf2-55cee20c94e7e</id>
+			<name>Walther PP110</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>7R</avail>
+			<cost>325</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Flashlight, Standard</name>
+				</accessory>
+				<accessory>
+					<name>Advanced Safety System, Basic</name>
+				</accessory>
+			</accessories>
+			<useskill>Pistols</useskill>
+			<range>Light Pistols</range>
+			<source>SHB</source>
+			<page>0</page>
 		</weapon>
 		<!-- End Region -->
 	</weapons>

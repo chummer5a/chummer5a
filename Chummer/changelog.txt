@@ -7,18 +7,34 @@ Application Changes:
 - Set the Astral Initiative label to be invisible if the character is not Awakened.
 - Altered the SelectWeapon improvement to allow excluding a specific weapon type. Prevents spare clips from trying to select melee weapons.
 - Fixed the Expense Log entry for Knowledge Skill increases to properly indicate it's a Knowledge Skill entry. Removed an accidental double-charge for creating skills.
+- Slightly refactored weapon selection to use GUIDs instead of names. 
+- Altered the underbarrel weapon node to allow multiple child items.
+- Added the ability to hide weapons from being visible in the selection window. 
 - Added a File Path label to the Character Roster.
 - Added the ability to delete items from the Character Roster by pressing the Delete button. This will ONLY remove the file from the relevant MRU lists, no .chum5 files will be deleted.
+- Suppressed the ability to attempt to add a Nexus to vehicle or gear items. 
 - Added the ability to filter qualities by their karma values, applying a minimum, maximum and value boundary to the quality list. 
-
+- Made some alterations to the display of characters in the Roster. Added the Game Notes field, removed the ability to edit the text (It wasn't saving anyway.)
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
 - Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
+- Added content from Lockdown, Shadows in Focus: San Francisco, and the Hong Kong Sourcebook.
+- Added a range category for Shotgun (flechette).
+- Added the Shotgun (Flechette) weapon range.
+- Added missing weapons from the Schattenhandbuch, courtesy of gamingharry.
+- Fixed the display of magic traditions in the core character sheets.
+- Moved the selecttext method back out of AddImprovementCollection. 
 
 New Strings:
 - Label_VehicleSeats
 - Label_Biography
 - Label_File_Path
+- Label_Roster_File_Name
+- Tab_Roster_Description
+- Tab_Roster_Concept
+- Tab_Roster_Background
+- Tab_Roster_CharacterNotes
+- Tab_Roster_GameNotes
 
 Changed Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill

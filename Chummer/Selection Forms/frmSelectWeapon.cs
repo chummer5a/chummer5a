@@ -55,10 +55,9 @@ namespace Chummer
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in this.Controls.OfType<Label>().Where(objLabel => objLabel.Text.StartsWith("[")))
 			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+				objLabel.Text = "";
 			}
 
         	// Load the Weapon information.
@@ -70,20 +69,15 @@ namespace Chummer
 				string[] strValues = _strLimitToCategories.Split(',');
 				// Populate the Category list.
 				XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-				foreach (XmlNode objXmlCategory in objXmlNodeList)
-				{
-					foreach (string strCategory in strValues)
+				if (objXmlNodeList != null)
+					foreach (XmlNode objXmlCategory in objXmlNodeList)
 					{
-						if (strCategory == objXmlCategory.InnerText)
+						foreach (ListItem objItem in from strCategory in strValues where strCategory == objXmlCategory.InnerText select new ListItem())
 						{
-							ListItem objItem = new ListItem();
 							objItem.Value = objXmlCategory.InnerText;
 							if (objXmlCategory.Attributes != null)
 							{
-								if (objXmlCategory.Attributes["translate"] != null)
-									objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-								else
-									objItem.Name = objXmlCategory.InnerText;
+								objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
 							}
 							else
 							{
@@ -92,7 +86,6 @@ namespace Chummer
 							_lstCategory.Add(objItem);
 						}
 					}
-				}
 			}
 			else
 			{
@@ -104,10 +97,7 @@ namespace Chummer
 					objItem.Value = objXmlCategory.InnerText;
 					if (objXmlCategory.Attributes != null)
 					{
-						if (objXmlCategory.Attributes["translate"] != null)
-							objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-						else
-							objItem.Name = objXmlCategory.InnerText;
+						objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
 					}
 					else
 						objItem.Name = objXmlCategory.InnerXml;
@@ -141,25 +131,17 @@ namespace Chummer
 			XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
 			{
-                bool blnCyberware = false;
-                try 
-                {
-                    if (objXmlWeapon["cyberware"].InnerText == "yes")
-                        blnCyberware = true;
-                }
-                catch
-                { }
-
-                if (!blnCyberware)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlWeapon["name"].InnerText;
-                    if (objXmlWeapon["translate"] != null)
-                        objItem.Name = objXmlWeapon["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlWeapon["name"].InnerText;
-                    lstWeapons.Add(objItem);
-                }
+                bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes";
+				blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
+				if (!blnHide)
+				{
+					ListItem objItem = new ListItem
+					{
+						Value = objXmlWeapon["id"].InnerText,
+						Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText
+					};
+					lstWeapons.Add(objItem);
+				}
 			}
 			SortListItem objSort = new SortListItem();
 			lstWeapons.Sort(objSort.Compare);
@@ -178,7 +160,7 @@ namespace Chummer
 				return;
 
             // Retireve the information for the selected Weapon.
-        	XmlNode objXmlWeapon = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + lstWeapon.SelectedValue + "\"]");
+        	XmlNode objXmlWeapon = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
 
 			Weapon objWeapon = new Weapon(_objCharacter);
 			TreeNode objNode = new TreeNode();
@@ -205,7 +187,7 @@ namespace Chummer
             {
                 dblCost = dblCost*0.90;
             }
-			lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
+			lblWeaponCost.Text = $"{dblCost:###,###,##0¥}";
 			try
 			{
 				intItemCost = Convert.ToInt32(dblCost);
@@ -216,7 +198,7 @@ namespace Chummer
 
 			if (chkFreeItem.Checked)
 			{
-				lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", 0);
+				lblWeaponCost.Text = $"{0:###,###,##0¥}";
 				intItemCost = 0;
 			}
 
@@ -234,24 +216,11 @@ namespace Chummer
 			foreach (XmlNode objXmlAccessory in objXmlNodeList)
 			{
 				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
-				if (objXmlItem["translate"] != null)
-					strAccessories += objXmlItem["translate"].InnerText + "\n";
-				else
-					strAccessories += objXmlItem["name"].InnerText + "\n";
+				strAccessories += objXmlItem["translate"] != null
+					? objXmlItem["translate"].InnerText + "\n"
+					: objXmlItem["name"].InnerText + "\n";
 			}
-            objXmlNodeList = objXmlWeapon.SelectNodes("mods/mod");
-			foreach (XmlNode objXmlMod in objXmlNodeList)
-			{
-				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod.InnerText + "\"]");
-				if (objXmlItem["translate"] != null)
-					strAccessories += objXmlItem["translate"].InnerText + "\n";
-				else
-					strAccessories += objXmlItem["name"].InnerText + "\n";
-			}
-			if (strAccessories == "")
-				lblIncludedAccessories.Text = LanguageManager.Instance.GetString("String_None");
-			else
-				lblIncludedAccessories.Text = strAccessories;
+	        lblIncludedAccessories.Text = strAccessories == "" ? LanguageManager.Instance.GetString("String_None") : strAccessories;
 
             tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
         }
@@ -460,11 +429,11 @@ namespace Chummer
                     {
                         string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
                         strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf("(") - 1);
-                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strWeapon + "\"]");
+                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strWeapon + "\"]");
                     }
                     else
                     {
-                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + dgvWeapons.SelectedRows[0].Cells[0].Value.ToString() + "\"]");
+                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + dgvWeapons.SelectedRows[0].Cells[0].Value.ToString() + "\"]");
                     }
                     _strSelectCategory = objNode["category"].InnerText;
                     _strSelectedWeapon = objNode["name"].InnerText;
@@ -475,7 +444,7 @@ namespace Chummer
             }
 			else if (lstWeapon.Text != "")
 			{
-				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + lstWeapon.SelectedValue + "\"]");
+				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
 				_strSelectCategory = objNode["category"].InnerText;
 				_strSelectedWeapon = objNode["name"].InnerText;
 				_intMarkup = Convert.ToInt32(nudMarkup.Value);
@@ -600,16 +569,10 @@ namespace Chummer
 
             foreach (XmlNode objXmlWeapon in objXmlWeaponList)
             {
-                bool blnCyberware = false;
-                try 
-                {
-                    if (objXmlWeapon["cyberware"].InnerText == "yes")
-                        blnCyberware = true;
-                }
-                catch
-                { }
+				bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes";
+				blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
 
-                if (!blnCyberware)
+				if (!blnHide)
                 {
                     TreeNode objNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
@@ -761,21 +724,21 @@ namespace Chummer
                 List<ListItem> lstWeapons = new List<ListItem>();
                 foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlWeapon["name"].InnerText;
-                    if (objXmlWeapon["translate"] != null)
-                        objItem.Name = objXmlWeapon["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlWeapon["name"].InnerText;
+					bool blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
+	                if (!blnHide)
+	                {
+		                ListItem objItem = new ListItem();
+		                objItem.Value = objXmlWeapon["id"].InnerText;
+		                objItem.Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
 
-                    try
-                    {
-                        objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlWeapon["category"].InnerText).Name + "]";
-                        lstWeapons.Add(objItem);
-                    }
-                    catch
-                    {
-                    }
+		                if (objXmlWeapon["category"] != null)
+		                {
+							objItem.Name += " [" +
+											_lstCategory.Find(objFind => objFind.Value == objXmlWeapon["category"].InnerText)
+												.Name + "]";
+						}
+						lstWeapons.Add(objItem);
+					}
                 }
                 SortListItem objSort = new SortListItem();
                 lstWeapons.Sort(objSort.Compare);

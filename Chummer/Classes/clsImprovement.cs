@@ -934,6 +934,62 @@ namespace Chummer
                 {
                     Log.Info("Has Child Nodes");
                 }
+				if (NodeExists(nodBonus, "selecttext"))
+				{
+					Log.Info("selecttext");
+
+					if (_objCharacter != null)
+					{
+						if (_strForcedValue != "")
+						{
+							LimitSelection = _strForcedValue;
+						}
+						else if (_objCharacter.Pushtext.Count != 0)
+						{
+							LimitSelection = _objCharacter.Pushtext.Pop();
+						}
+					}
+
+					Log.Info("_strForcedValue = " + SelectedValue);
+					Log.Info("_strLimitSelection = " + LimitSelection);
+
+					// Display the Select Text window and record the value that was entered.
+					frmSelectText frmPickText = new frmSelectText();
+					frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+						.Replace("{0}", strFriendlyName);
+
+					if (LimitSelection != "")
+					{
+						frmPickText.SelectedValue = LimitSelection;
+						frmPickText.Opacity = 0;
+					}
+
+					frmPickText.ShowDialog();
+
+					// Make sure the dialogue window was not canceled.
+					if (frmPickText.DialogResult == DialogResult.Cancel)
+					{
+
+						Rollback();
+						ForcedValue = "";
+						LimitSelection = "";
+						Log.Exit("CreateImprovements");
+						throw new AbortedException();
+					}
+
+					_strSelectedValue = frmPickText.SelectedValue;
+					if (blnConcatSelectedValue)
+						strSourceName += " (" + SelectedValue + ")";
+					Log.Info("_strSelectedValue = " + SelectedValue);
+					Log.Info("strSourceName = " + strSourceName);
+
+					// Create the Improvement.
+					Log.Info("Calling CreateImprovement");
+
+					CreateImprovement(frmPickText.SelectedValue, objImprovementSource, strSourceName,
+						Improvement.ImprovementType.Text,
+						strUnique);
+				}
 
                 // If there is no character object, don't attempt to add any Improvements.
                 if (_objCharacter == null)
@@ -978,7 +1034,6 @@ namespace Chummer
 			return blnSuccess;
 
 		}
-
 		private bool ProcessBonus(Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
 			bool blnConcatSelectedValue,
 			int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
