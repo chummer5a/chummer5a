@@ -9,6 +9,7 @@ Application Changes:
 - Fixed the Expense Log entry for Knowledge Skill increases to properly indicate it's a Knowledge Skill entry. Removed an accidental double-charge for creating skills.
 - Added a File Path label to the Character Roster.
 - Added the ability to delete items from the Character Roster by pressing the Delete button. This will ONLY remove the file from the relevant MRU lists, no .chum5 files will be deleted.
+- Added the ability to filter qualities by their karma values, applying a minimum, maximum and value boundary to the quality list. 
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
