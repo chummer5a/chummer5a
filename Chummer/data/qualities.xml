@@ -975,6 +975,9 @@
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
+        <enabletab>
+          <name>magician</name>
+        </enabletab>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<forbidden>
@@ -995,6 +998,9 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
+        <enabletab>
+          <name>adept</name>
+        </enabletab>
 				<unlockskills>Adept</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1015,6 +1021,10 @@
 			<karma>35</karma>
 			<category>Positive</category>
 			<bonus>
+        <enabletab>
+          <name>magician</name>
+          <name>adept</name>
+        </enabletab>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1035,6 +1045,9 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
+        <enabletab>
+          <name>technomancer</name>
+        </enabletab>
 				<unlockskills>Technomancer</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1055,6 +1068,9 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
+        <enabletab>
+          <name>magician</name>
+        </enabletab>
 				<unlockskills>Sorcery,Conjuring,Enchanting</unlockskills>
 			</bonus>
 			<forbidden>
@@ -8986,7 +9002,9 @@
 				</addqualities>
 				<armor>1</armor>
 				<enabletab>
-					<name>critter</name>
+        <name>magician</name>
+        <name>adept</name>
+				<name>critter</name>
 				</enabletab>
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
@@ -9125,14 +9143,16 @@
 		</quality>
 		<quality>
 			<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
-			<name>Infected: Mutaqua (Adept)</name>
+			<name>Infected: Mutaqua (Awakened)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>44</karma>
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
 				<enabletab>
-					<name>critter</name>
+          <name>magician</name>
+          <name>adept</name>
+				  <name>critter</name>
 				</enabletab>
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
@@ -9221,15 +9241,16 @@
 					<power select="Sunlight, Extreme">Allergy</power>
 					<power select="Metahuman Flesh">Dietary Requirement</power>
 				</critterpowers>
-				<addqualities>
-					<addquality>Mystic Adept</addquality>
-				</addqualities>
 			</bonus>
 			<required>
 				<allof>
 					<metatype>Troll</metatype>
-					<quality>Adept</quality>
 				</allof>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Magician</quality>
+					<quality>Aspected Magician</quality>
+        </oneof>
 			</required>
 			<forbidden>
 				<oneof>
@@ -9242,167 +9263,9 @@
 					<quality>Infected: Dzoo-Noo-Qua</quality>
 					<quality>Infected: Ghoul (Troll)</quality>
 					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Non-Adept)</quality>
+					<quality>Infected: Mutaqua (Awakened)</quality>
 					<quality>Infected: Vampire (Non-Human)</quality>
 					<quality>Mystic Adept</quality>
-				</oneof>
-			</forbidden>
-			<naturalweapons>
-				<naturalweapon>
-					<name>Infected Claws</name>
-					<reach>0</reach>
-					<damage>(STR+2)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-				<naturalweapon>
-					<name>Infected Bite</name>
-					<reach>-1</reach>
-					<damage>(STR+1)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-			</naturalweapons>
-			<source>RF</source>
-			<page>139</page>
-		</quality>
-		<quality>
-			<id>89fcd29b-d937-4fa2-8d22-bf88c227de2a</id>
-			<name>Infected: Mutaqua (Non-Adept)</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>44</karma>
-			<category>Positive</category>
-			<bonus>
-				<armor>1</armor>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-					<optionalpower>Fear</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<reach>1</reach>
-				<replaceattributes>
-					<replaceattribute>
-						<name>BOD</name>
-						<min>5</min>
-						<max>12</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>AGI</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>REA</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>STR</name>
-						<min>5</min>
-						<max>13</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>WIL</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>LOG</name>
-						<min>1</min>
-						<max>5</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>INT</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>CHA</name>
-						<min>1</min>
-						<max>4</max>
-					</replaceattribute>
-				</replaceattributes>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<attribute>AGI</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<attribute>AGI</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<val>1</val>
-					</selectattribute>
-				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power select="Fire">Vulnerability</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Extreme">Severe</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Troll</metatype>
-				</allof>
-				<oneof>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-				</oneof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<quality>Infected: Fomoraig</quality>
-					<quality>Infected: Banshee</quality>
-					<quality>Infected: Dzoo-Noo-Qua</quality>
-					<quality>Infected: Bandersnatch</quality>
-					<quality>Infected: Gnawer</quality>
-					<quality>Infected: Goblin</quality>
-					<quality>Infected: Grendel</quality>
-					<quality>Infected: Harvester</quality>
-					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Adept)</quality>
-					<quality>Infected: Nosferatu</quality>
-					<quality>Infected: Vampire (Human)</quality>
-					<quality>Infected: Vampire (Non-Human)</quality>
-					<quality>Infected: Wendigo</quality>
-					<quality>Infected: Ghoul</quality>
 				</oneof>
 			</forbidden>
 			<naturalweapons>
@@ -9568,13 +9431,15 @@
 		</quality>
 		<quality>
 			<id>39a8e176-ddbf-470e-84a0-ba25ccd92ca0</id>
-			<name>Infected: Nosferatu (Non-Adept)</name>
+			<name>Infected: Nosferatu (Awakened)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>38</karma>
 			<category>Positive</category>
 			<bonus>
 				<enabletab>
-					<name>critter</name>
+          <name>magician</name>
+          <name>adept</name>
+				  <name>critter</name>
 				</enabletab>
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
@@ -9676,6 +9541,8 @@
 				<oneof>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+          <quality>Adept</quality>
+          <quality>Aspected Magician</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -9704,13 +9571,15 @@
 		</quality>
 		<quality>
 			<id>6c50bd74-794e-4c7a-bd94-2033369ca31a</id>
-			<name>Infected: Nosferatu (Non-Awakened)</name>
+			<name>Infected: Nosferatu (Mundane)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>48</karma>
 			<category>Positive</category>
 			<bonus>
 				<enabletab>
-					<name>critter</name>
+          <name>magician</name>
+          <name>adept</name>
+				  <name>critter</name>
 				</enabletab>
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
@@ -9804,9 +9673,6 @@
 					<power select="Metahuman Blood">Dietary Requirement</power>
 					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
 				</critterpowers>
-			<addqualities>
-				<addquality>Magician</addquality>
-			</addqualities>
 			</bonus>
 			<required>
 				<allof>
@@ -10100,13 +9966,13 @@
 		</quality>
 		<quality>
 			<id>952372b4-56a5-4128-98db-69886c7a4a21</id>
-			<name>Infected: Wendigo (Non-Awakened)</name>
+			<name>Infected: Wendigo (Mundane)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>47</karma>
 			<category>Positive</category>
 			<bonus>
 				<enabletab>
-					<name>critter</name>
+					<name>magician</name>
 				</enabletab>
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
@@ -10246,12 +10112,13 @@
 		</quality>
 		<quality>
 			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
-			<name>Infected: Wendigo (Non-Adept)</name>
+			<name>Infected: Wendigo (Awakened)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
 			<bonus>
 				<enabletab>
+          <name>magician</name>
 					<name>critter</name>
 				</enabletab>
         <initiativepass precedence="-1">1</initiativepass>
@@ -10356,6 +10223,7 @@
 				<oneof>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
 				</oneof>
 			</required>
 			<forbidden>

@@ -472,7 +472,7 @@ namespace Chummer
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
             switch (lstQualities.SelectedValue.ToString())
             {
-                case "Technomancer":
+                /*case "Technomancer":
                     _objCharacter.RESEnabled = true;
                     _objCharacter.TechnomancerEnabled = true;
                     break;
@@ -492,7 +492,7 @@ namespace Chummer
                     _objCharacter.MAGEnabled = true;
                     _objCharacter.MagicianEnabled = true;
                     _objCharacter.AdeptEnabled = true;
-                    break;
+                    break;*/
                 case "Changeling (Class I SURGE)":
                     _objCharacter.MetageneticLimit = 30;
                     break;
