@@ -16,6 +16,7 @@ Application Changes:
 - Added the ability to filter qualities by their karma values, applying a minimum, maximum and value boundary to the quality list. 
 - Made some alterations to the display of characters in the Roster. Added the Game Notes field, removed the ability to edit the text (It wasn't saving anyway.)
 - Fixed the implementation of Awakened Infected (Mutaqua, Wendigo, etc.) to not add the relevant qualities. 
+- Added logic to prevent weapon accessories from applying their bonuses while uninstalled. 
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
