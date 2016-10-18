@@ -19,6 +19,7 @@ Application Changes:
 - Fixed the implementation of Awakened Infected (Mutaqua, Wendigo, etc.) to not add the relevant qualities. 
 - Added logic to prevent weapon accessories from applying their bonuses while uninstalled. 
 - Added naming logic to the Create Mode form, similar to the behaviour for Career Mode. In order of precedence, characters will use their Alias, Real Name or the localised string for Unnamed Character. 
+- Fixed the 'Increase Qty' button in career mode to properly select the currently selected item. 
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.

@@ -7366,9 +7366,9 @@ namespace Chummer
 		private void cmdGearIncreaseQty_Click(object sender, EventArgs e)
 		{
 			Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-
+			
 			// Select the root Gear node then open the Select Gear window.
-			bool blnAddAgain = PickGear(true, objGear);
+			bool blnAddAgain = PickGear((objGear.Category == "Ammunition"), objGear, objGear.Name);
 			if (blnAddAgain)
 				cmdGearIncreaseQty_Click(sender, e);
 			_objController.PopulateFocusList(treFoci);
@@ -22967,6 +22967,8 @@ namespace Chummer
 			catch
 			{
 			}
+			
+			frmPickGear.DefaultSearchText = strForceItemValue;
 
 			if (blnAmmoOnly)
 			{
