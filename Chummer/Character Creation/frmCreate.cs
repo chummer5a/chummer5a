@@ -24029,5 +24029,22 @@ namespace Chummer
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_ValidCharacter"), LanguageManager.Instance.GetString("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
-	}
+
+        #region Properties
+        /// <summary>
+        /// Character's name to use when loading them in a new tab.
+        /// </summary>
+        public string CharacterName
+        {
+            get
+            {
+                if (_objCharacter.Alias.Trim() != string.Empty)
+                    return _objCharacter.Alias;
+                if (_objCharacter.Name.Trim() != string.Empty)
+                    return _objCharacter.Name;
+                return LanguageManager.Instance.GetString("String_UnnamedCharacter");
+            }
+        }
+        #endregion
+    }
 }
