@@ -23,6 +23,7 @@ Application Changes:
 - Altered the crash handler logic to jump directly into the crash handler form. Important note: We still only receive the report if you click Send Error Report. 
 - Nightly builds are now configured as Release, fixing an issue with launching the Crash Handler.
 - Added a warning that porevents creating invalid Custom Item names. 
+- Added missing 'dirty' flags for changing options in the Options menu. Ensures that changing any option in the Options menu properly flags it as dirty and requests a restart.
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.

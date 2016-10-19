@@ -1041,6 +1041,7 @@
 			this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
 			this.cmdEnableSourcebooks.UseVisualStyleBackColor = true;
 			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.cmdEnableSourcebooks_Click);
+			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.OptionsChanged);
 			// 
 			// tabControl2
 			// 
@@ -1128,6 +1129,7 @@
 			this.cmdPDFLocation.Text = "...";
 			this.cmdPDFLocation.UseVisualStyleBackColor = true;
 			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
+			this.cmdPDFLocation.Click += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblPDFOffset
 			// 
@@ -1152,6 +1154,7 @@
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cmdPDFTest
 			// 
@@ -1175,6 +1178,7 @@
 			this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
 			this.cboPDFParameters.TabIndex = 26;
 			this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.cboPDFParameters_SelectedIndexChanged);
+			this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkPreferNightlyBuilds
 			// 
@@ -1186,6 +1190,7 @@
 			this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
 			this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
 			this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
+			this.chkPreferNightlyBuilds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkOmaeEnabled
 			// 
@@ -1291,6 +1296,7 @@
 			this.cboXSLT.Name = "cboXSLT";
 			this.cboXSLT.Size = new System.Drawing.Size(266, 21);
 			this.cboXSLT.TabIndex = 8;
+			this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblLanguage
 			// 
@@ -1311,6 +1317,7 @@
 			this.cboLanguage.Size = new System.Drawing.Size(162, 21);
 			this.cboLanguage.TabIndex = 1;
 			this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+			this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cmdVerify
 			// 
@@ -1449,6 +1456,7 @@
 			this.cboEssenceDecimals.Name = "cboEssenceDecimals";
 			this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
 			this.cboEssenceDecimals.TabIndex = 17;
+			this.cboEssenceDecimals.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblEssenceDecimals
 			// 
@@ -1470,6 +1478,7 @@
 			this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
 			this.chkPrintNotes.Text = "Print Notes";
 			this.chkPrintNotes.UseVisualStyleBackColor = true;
+			this.chkPrintNotes.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblLimbCount
 			// 
