@@ -35,11 +35,7 @@ namespace Chummer
 		{
 			if (Debugger.IsAttached) return;
 
-			if (
-				MessageBox.Show("Chummer5a crashed.\nDo you want to send a crash report to the developer?", "Crash!",
-					MessageBoxButtons.YesNo) == DialogResult.Yes)
-			{
-				CrashReport report = new CrashReport(Guid.NewGuid())
+			CrashReport report = new CrashReport(Guid.NewGuid())
 					.AddDefaultData()
 					.AddData("exception.txt", e.ExceptionObject.ToString());
 
@@ -75,7 +71,6 @@ namespace Chummer
 
 				report.Send();
 				MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
-			}
 		}
 
 		private List<KeyValuePair<String, Stream>> values; 

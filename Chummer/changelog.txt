@@ -20,6 +20,9 @@ Application Changes:
 - Added logic to prevent weapon accessories from applying their bonuses while uninstalled. 
 - Added naming logic to the Create Mode form, similar to the behaviour for Career Mode. In order of precedence, characters will use their Alias, Real Name or the localised string for Unnamed Character. 
 - Fixed the 'Increase Qty' button in career mode to properly select the currently selected item. 
+- Altered the crash handler logic to jump directly into the crash handler form. Important note: We still only receive the report if you click Send Error Report. 
+- Nightly builds are now configured as Release, fixing an issue with launching the Crash Handler.
+- Added a warning that porevents creating invalid Custom Item names. 
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.

@@ -65,14 +65,14 @@
 			this.lblTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblTitle.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblTitle.Location = new System.Drawing.Point(0, 0);
 			this.lblTitle.Margin = new System.Windows.Forms.Padding(10);
 			this.lblTitle.Name = "lblTitle";
 			this.lblTitle.Size = new System.Drawing.Size(438, 58);
 			this.lblTitle.TabIndex = 1;
-			this.lblTitle.Text = "Chummer5a has encountered a problem and had to exit. We are sorry for the inconve" +
-    "nience.";
+			this.lblTitle.Text = "Chummer5a has encountered a problem and needs to close. We are sorry for the inco" +
+    "nvenience.";
 			this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblDesc
@@ -183,6 +183,8 @@
 			this.Controls.Add(this.lblDesc);
 			this.Controls.Add(this.lblTitle);
 			this.Controls.Add(this.statusStrip1);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "frmCrashReporter";
 			this.Text = "Chummer5a Crash Reporter";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCrashReporter_FormClosing);

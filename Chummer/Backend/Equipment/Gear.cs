@@ -133,6 +133,7 @@ namespace Chummer.Backend.Equipment
 			if (objXmlGear["name"].InnerText == "Custom Item")
 			{
 				frmSelectText frmPickText = new frmSelectText();
+				frmPickText.PreventXPathErrors = true;
 				frmPickText.Description = LanguageManager.Instance.GetString("String_CustomItem_SelectText");
 				frmPickText.ShowDialog();
 

@@ -8128,6 +8128,10 @@ Do you want to continue?</text>
 			<key>Label_Condition</key>
 			<text>Condition:</text>
 		</string>
+		<string>
+			<key>Message_InvalidCharacters</key>
+			<text>This text contains one or more invalid characters. Invalid character(s): "\n Please remove any invalid characters and try again.</text>
+		</string>
 		<!-- End Region -->
 		<!-- End Region -->
 	</strings>
