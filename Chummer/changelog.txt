@@ -24,6 +24,8 @@ Application Changes:
 - Nightly builds are now configured as Release, fixing an issue with launching the Crash Handler.
 - Added a warning that porevents creating invalid Custom Item names. 
 - Added missing 'dirty' flags for changing options in the Options menu. Ensures that changing any option in the Options menu properly flags it as dirty and requests a restart.
+- Added Restart Chummer menu option to Tools menu.
+- Did some general UI cleanup for the Options menu, ensuring that the full text of a book is always visible. 
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.
@@ -46,9 +48,11 @@ New Strings:
 - Tab_Roster_Background
 - Tab_Roster_CharacterNotes
 - Tab_Roster_GameNotes
+- Message_Options_Restart
 
 Changed Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill
+- Message_Options_CloseForms
 
 Build 185:
 Application Changes: 

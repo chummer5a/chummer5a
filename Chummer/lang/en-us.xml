@@ -6702,6 +6702,10 @@ Do you want to continue?</text>
 			<text>Limit Drone Armor Enhance ment to Drone Armor</text>
 		</string>
 		<string>
+			<key>Message_Options_Restart</key>
+			<text>Are you sure you want to restart?</text>
+		</string>
+		<string>
 			<key>Message_Options_CloseForms</key>
 			<text>Options are only enumerated on character load. Should we restart the application?</text>
 		</string>

@@ -51,7 +51,6 @@ namespace Chummer
             PopulateEssenceDecimalsList();
             PopulateLimbCountList();
             SetToolTips();
-            MoveControls();
             PopulateSettingsList();
 	        SetDefaultValueForSettingsList();
             PopulateGlobalOptions();
@@ -60,6 +59,7 @@ namespace Chummer
             PopulateXsltList();
             SetDefaultValueForXsltList();
 			PopulatePDFParameters();
+            MoveControls();
 	        blnLoading = false;
         }
         #endregion
@@ -195,7 +195,7 @@ namespace Chummer
 					default:
 						return;
 				}
-				RestartApplication();
+				Utils.RestartApplication("Message_Options_CloseForms");
 			}
 
 			DialogResult = DialogResult.OK;
@@ -399,7 +399,6 @@ namespace Chummer
 		private void MoveControls()
         {
             int intWidth = 0;
-
             lblMetatypeCostsKarma.Left = chkMetatypeCostsKarma.Left + chkMetatypeCostsKarma.Width + 6;
             nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width + 6;
             cboSetting.Left = lblSetting.Left + lblSetting.Width + 6;
@@ -521,18 +520,20 @@ namespace Chummer
             lblKarmaWeaponFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
 
             // Determine where the widest control ends so we can change the window with to accommodate it.
-            foreach (Control objControl in tabGeneral.Controls)
-                intWidth = Math.Max(intWidth, objControl.Left + objControl.Width);
-            foreach (Control objControl in tabKarmaCosts.Controls)
-                intWidth = Math.Max(intWidth, objControl.Left + objControl.Width);
-            foreach (Control objControl in tabOptionalRules.Controls)
-                intWidth = Math.Max(intWidth, objControl.Left + objControl.Width);
-            foreach (Control objControl in tabHouseRules.Controls)
-                intWidth = Math.Max(intWidth, objControl.Left + objControl.Width);
+			intWidth = (from Control objControl in tabGeneral.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
+			intWidth = (from Control objControl in tabKarmaCosts.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
+			intWidth = (from Control objControl in tabOptionalRules.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
+			intWidth = (from Control objControl in tabHouseRules.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
 
 			// Change the window size.
 			Width = intWidth + 29;
 			Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
+
+			intWidth = (from TreeNode objNode in treSourcebook.Nodes select objNode.Bounds.Left * 2 + objNode.Bounds.Width).Concat(new[] { treSourcebook.Width }).Max();
+			treSourcebook.Width = intWidth + 12;
+			cmdEnableSourcebooks.Left = treSourcebook.Left;
+			cmdEnableSourcebooks.Width = treSourcebook.Width;
+			tabControl2.Left = treSourcebook.Right + 6;
 			// Centre the OK button.
 			cmdOK.Left = (Width / 2) - (cmdOK.Width / 2);
 		}
@@ -754,32 +755,6 @@ namespace Chummer
             if (!blnSR5Included)
                 _characterOptions.Books.Add("SR5");
         }
-
-        private void RestartApplication()
-        {
-            string text = LanguageManager.Instance.GetString("Message_Options_CloseForms");
-            string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
-
-			if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-			    return;
-			// Get the parameters/arguments passed to program if any
-			string arguments = string.Empty;
-			string[] args = Environment.GetCommandLineArgs();
-			for (int i = 1; i < args.Length; i++) // args[0] is always exe path/filename
-				arguments += args[i] + " ";
-	        foreach (Character objCharacter in GlobalOptions.Instance.MainForm.OpenCharacters)
-	        {
-		        arguments += objCharacter.FileName + " ";
-	        }
-			// Restart current application, with same arguments/parameters
-	        this.Close();
-	        foreach (Form objForm in GlobalOptions.Instance.MainForm.MdiChildren)
-	        {
-		        objForm.Close();
-	        }
-			Application.Exit();
-			Process.Start(Application.ExecutablePath, arguments);
-		}
 
         private void RestoreDefaultKarmaValues()
         {

@@ -939,6 +939,19 @@ namespace Chummer
 				frmRoller.Show();
 			}
 		}
+
+		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
+		{
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
+			{
+				GlobalOptions.Instance.RemoveFromMRUList(strFile);
+			}
+		}
+
+		private void mnuRestart_Click(object sender, EventArgs e)
+		{
+			Utils.RestartApplication();
+		}
 		#endregion
 
 		#region Application Properties
@@ -979,12 +992,5 @@ namespace Chummer
 		}
 		#endregion
 
-		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
-		{
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
-			{
-				GlobalOptions.Instance.RemoveFromMRUList(strFile);
-			}
-		}
 	}
 }
