@@ -26,6 +26,7 @@ Application Changes:
 - Added missing 'dirty' flags for changing options in the Options menu. Ensures that changing any option in the Options menu properly flags it as dirty and requests a restart.
 - Added Restart Chummer menu option to Tools menu.
 - Did some general UI cleanup for the Options menu, ensuring that the full text of a book is always visible. 
+- Fixed an error caused by users not entering Drain attributes for their Custom Tradition.
 
 Data Changes:
 - Fixed an incorrect spelling for the Personafix gear item.

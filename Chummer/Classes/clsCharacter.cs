@@ -1999,6 +1999,10 @@ namespace Chummer
                 strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
                 strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
                 strDrain = strDrain.Replace("MAG", _attMAG.TotalValue.ToString());
+                if (strDrain == "")
+                {
+                    strDrain = "0";
+                }
 				XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
