@@ -126,6 +126,13 @@
 			<capacity>0</capacity>
 			<avail>(Rating * 4)</avail>
 			<cost>Rating * 5000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Bone Lacing (Titanium)</cyberware>
+					<cyberware>Bone Lacing (Aluminum)</cyberware>
+					<cyberware>Bone Lacing (Plastic)</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<damageresistance>Rating</damageresistance>
 				<unarmeddv>Rating-1</unarmeddv>
@@ -284,6 +291,11 @@
 			<capacity>0</capacity>
 			<avail>(Rating * 4)R</avail>
 			<cost>Rating * 6000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Dermal Plating</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<armor group="0">Rating</armor>
 			</bonus>

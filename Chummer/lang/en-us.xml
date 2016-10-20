@@ -7037,6 +7037,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Transgenic</key>
 			<text>Add as Transgenic</text>
 		</string>
+		<string>
+			<key>Message_SelectCyberware_CyberwareRestriction</key>
+			<text>You cannot select this Cyberware/Bioware because of the following forbidden items you have already taken.</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region Select Cyberware Suite Window -->
 		<string>

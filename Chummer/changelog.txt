@@ -39,7 +39,8 @@ Data Changes:
 - Fixed the display of magic traditions in the core character sheets.
 - Moved the selecttext method back out of AddImprovementCollection. 
 - Altered the Magician, Adept, Mystic Adept, and Technomancer to not need special treatment when adding their special tabs. 
-
+- Added code to prevent Bone Density and Bone Lacing from being taken together. 
+- Added code to prevent Orthoskin and Dermal Plating from being taken together. 
 New Strings:
 - Label_VehicleSeats
 - Label_Biography
