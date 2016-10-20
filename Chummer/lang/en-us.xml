@@ -826,6 +826,10 @@
 			<key>MessageTitle_RemoveCharacterAssociation</key>
 			<text>Remove Character Association</text>
 		</string>
+    <string>
+      <key>Message_OutdatedChummerSave</key>
+      <text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}). \nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+    </string>
 		<string>
 			<key>Message_IncorrectGameVersion_SR4</key>
 			<text>This save file is intended to be used with Shadowrun 4th Edition while this version of Chummer is for Shadowrun 5th Edition. Please use the Shadowrun 4th Edition version of Chummer to open this file.</text>

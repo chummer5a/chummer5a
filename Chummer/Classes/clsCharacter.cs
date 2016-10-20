@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -27,10 +27,11 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-﻿﻿using Chummer.Annotations;
-﻿using Chummer.Backend;
- using Chummer.Backend.Equipment;
- using Chummer.Skills;
+using Chummer.Annotations;
+using Chummer.Backend;
+using Chummer.Backend.Equipment;
+using Chummer.Skills;
+using System.Reflection;
 
 // MAGEnabledChanged Event Handler
 public delegate void MAGEnabledChangedHandler(Chummer.Character sender);
@@ -972,8 +973,8 @@ namespace Chummer
             {
                 if (objXmlCharacter["gameedition"].InnerText != string.Empty && objXmlCharacter["gameedition"].InnerText != "SR5")
                 {
-				    MessageBox.Show(LanguageManager.Instance.GetString("Message_IncorrectGameVersion_SR4"),
-					    LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.OK,
+				    MessageBox.Show(LanguageManager.Instance.GetString("Message_OutdatedChummerSave"),
+					    LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo,
 					    MessageBoxIcon.Error);
                     return false;
                 }
@@ -982,8 +983,32 @@ namespace Chummer
             {
             }
 
+            //Check to see if the character was created in a version of Chummer later than the currently installed one.
+            if (objXmlCharacter["appversion"].InnerText != string.Empty)
+            {
+                Version verSavedVersion = new Version();
+                var strVersion = objXmlCharacter["appversion"].InnerText;
+                if (strVersion.StartsWith("0."))
+                {
+                    strVersion = strVersion.Substring(2);
+                }
+                Version.TryParse(strVersion, out verSavedVersion);
+                Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
+                int intResult = verCurrentversion.CompareTo(verSavedVersion);
+                if (intResult == -1)
+                {
+                    string strMessage = LanguageManager.Instance.GetString("Message_OutdatedChummerSave").Replace("{0}", verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
+                    DialogResult result = MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+                    if (result != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             // Get the name of the settings file in use if possible.
-		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
+            objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
 		    
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
