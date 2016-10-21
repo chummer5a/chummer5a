@@ -978,6 +978,9 @@
         <enabletab>
           <name>magician</name>
         </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1001,6 +1004,9 @@
         <enabletab>
           <name>adept</name>
         </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<unlockskills>Adept</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1025,6 +1031,9 @@
           <name>magician</name>
           <name>adept</name>
         </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1048,6 +1057,9 @@
         <enabletab>
           <name>technomancer</name>
         </enabletab>
+        <enableattribute>
+          <name>RES</name>
+        </enableattribute>
 				<unlockskills>Technomancer</unlockskills>
 			</bonus>
 			<forbidden>
@@ -11583,13 +11595,13 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<addattribute>
+				<replaceattribute>
 					<name>MAG</name>
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
 					<val>1</val>
-				</addattribute>
+				</replaceattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -11645,13 +11657,13 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<addattribute>
+        <replaceattribute>
 					<name>MAG</name>
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
 					<val>1</val>
-				</addattribute>
+				</replaceattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -11703,13 +11715,13 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<addattribute>
+        <replaceattribute>
 					<name>MAG</name>
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
 					<val>1</val>
-				</addattribute>
+				</replaceattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -11769,13 +11781,13 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<addattribute>
+        <replaceattribute>
 					<name>MAG</name>
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
 					<val>1</val>
-				</addattribute>
+				</replaceattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>

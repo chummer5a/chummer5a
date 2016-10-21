@@ -1,5 +1,15 @@
-Build 186:
+Build 187
+
 Application Changes:
+
+- Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
+- Renamed the addattribute improvement to enableattribute.
+- Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
+
+Build 186:
+
+Application Changes:
+
 - Fixed missing values for Metahuman adjustment on several vehicles.
 - Properly applied localisation to the character roster form.
 - Fixed the karma costs for new knowledge skills in career mode to not improperly charge twice. 
@@ -30,6 +40,7 @@ Application Changes:
 - Added logic to check whether a character was saved in a later version of Chummer than the current one.
 
 Data Changes:
+
 - Fixed an incorrect spelling for the Personafix gear item.
 - Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
 - Added content from Lockdown, Shadows in Focus: San Francisco, and the Hong Kong Sourcebook.
@@ -41,7 +52,9 @@ Data Changes:
 - Altered the Magician, Adept, Mystic Adept, and Technomancer to not need special treatment when adding their special tabs. 
 - Added code to prevent Bone Density and Bone Lacing from being taken together. 
 - Added code to prevent Orthoskin and Dermal Plating from being taken together. 
+
 New Strings:
+
 - Label_VehicleSeats
 - Label_Biography
 - Label_File_Path
@@ -55,6 +68,7 @@ New Strings:
 - Message_OutdatedChummerSave
 
 Changed Strings: 
+
 - Message_ConfirmKarmaExpenseKnowledgeSkill
 - Message_Options_CloseForms
 

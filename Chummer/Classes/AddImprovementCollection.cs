@@ -95,9 +95,9 @@ namespace Chummer.Classes
 			//	set list[top] active
 		}
 
-		public void addattribute(XmlNode bonusNode)
+		public void enableattribute(XmlNode bonusNode)
 		{
-			Log.Info("addattribute");
+			Log.Info("enableattribute");
 			if (bonusNode["name"].InnerText == "MAG")
 			{
 				_objCharacter.MAGEnabled = true;
@@ -157,7 +157,7 @@ namespace Chummer.Classes
 						break;
 					case "adept":
 						_objCharacter.AdeptEnabled = true;
-						Log.Info("adept");
+                        Log.Info("adept");
 						CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
 							"enabletab",
 							0, 0);
