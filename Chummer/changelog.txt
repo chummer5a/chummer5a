@@ -4,6 +4,9 @@ Application Changes:
 
 - Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
 - Renamed the addattribute improvement to enableattribute.
+
+Data Changes: 
+
 - Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
 
 Build 186:
