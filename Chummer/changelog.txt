@@ -4,6 +4,8 @@ Application Changes:
 
 - Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
 - Renamed the addattribute improvement to enableattribute.
+- Fixed an issue that prevented the Enable/Disable Sourcebook button from actually changing the settings. 
+- Fixed an issue with the display of calculated Limit modifiers. Fixes #1175.
 
 Data Changes: 
 

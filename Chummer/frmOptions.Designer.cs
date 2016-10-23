@@ -1041,6 +1041,7 @@
 			this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
 			this.cmdEnableSourcebooks.UseVisualStyleBackColor = true;
 			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.OptionsChanged);
+			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.cmdEnableSourcebooks_Click);
 			// 
 			// tabControl2
 			// 
