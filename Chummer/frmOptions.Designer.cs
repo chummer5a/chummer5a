@@ -1129,6 +1129,7 @@
 			this.cmdPDFLocation.Text = "...";
 			this.cmdPDFLocation.UseVisualStyleBackColor = true;
 			this.cmdPDFLocation.Click += new System.EventHandler(this.OptionsChanged);
+			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
 			// 
 			// lblPDFOffset
 			// 
