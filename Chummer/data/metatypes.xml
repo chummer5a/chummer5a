@@ -1321,13 +1321,9 @@
 			<run>4/0/0</run>
 			<sprint>4/1/0</sprint>
 			<bonus>
-				<addattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -1399,13 +1395,9 @@
 			<sprint>1/1/0</sprint>
 			<bonus>
 				<armor>8</armor>
-				<addattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -1477,13 +1469,9 @@
 			<run>2/0/6</run>
 			<sprint>1/1/2</sprint>
 			<bonus>
-				<addattribute>
+				<enableattribute>
 					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -1551,13 +1539,9 @@
 			<run>4/0/0</run>
 			<sprint>2/2/0</sprint>
 			<bonus>
-				<addattribute>
+				<enableattribute>
 					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>

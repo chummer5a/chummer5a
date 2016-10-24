@@ -1498,8 +1498,6 @@ namespace Chummer
                 if (objXmlTalentList[0]["magic"] != null)
                 {
                     _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
-                    if (_objCharacter.MAG.Value > 0)
-                        _objCharacter.MAGEnabled = true;
                     _objCharacter.SpellLimit = objXmlTalentList[0]["spells"] != null ? Convert.ToInt32(objXmlTalentList[0]["spells"].InnerText) : 0;
                 }
 
@@ -1511,35 +1509,11 @@ namespace Chummer
                 if (objXmlTalentList[0]["resonance"] != null)
                 {
                     _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
-                    _objCharacter.RESEnabled = true;
                     _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentList[0]["cfp"].InnerText);
                 }
 
                 if (objXmlTalentList[0]["maxresonance"] != null)
                     _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
-
-                // Set starting talent tabs
-                switch (cboTalents.SelectedValue.ToString())
-                {
-                    case "Magician":
-                        _objCharacter.MagicianEnabled = true;
-                        break;
-                    case "Aspected Magician":
-                        _objCharacter.MagicianEnabled = true;
-                        break;
-                    case "Adept":
-                        _objCharacter.AdeptEnabled = true;
-                        break;
-                    case "Mystic Adept":
-                        _objCharacter.MagicianEnabled = true;
-                        _objCharacter.AdeptEnabled = true;
-                        break;
-                    case "Technomancer":
-                        _objCharacter.TechnomancerEnabled = true;
-                        break;
-                    default:
-                        break;
-                }
 
                 // Set Free Skills/Skill Groups
                 int intFreeLevels = 0;
@@ -1552,75 +1526,6 @@ namespace Chummer
                     intFreeLevels = 2;
 
 	            AddFreeSkills(intFreeLevels);
-
-
-                //foreach (Skill objSkill in _objCharacter.Skills)
-                //{
-                //    if (cboSkill1.Visible && objSkill.Name == cboSkill1.Text && !blnGroup)
-                //    {
-                //        objSkill.FreeLevels = intFreeLevels;
-                //        if (objSkill.Rating < intFreeLevels)
-                //            objSkill.Rating = intFreeLevels;
-                //        _objCharacter.PriorityBonusSkill1 = cboSkill1.Text.ToString();
-                //    }
-                //    else if (cboSkill2.Visible && objSkill.Name == cboSkill2.Text && !blnGroup)
-                //    {
-                //        objSkill.FreeLevels = intFreeLevels;
-                //        if (objSkill.Rating < intFreeLevels)
-                //            objSkill.Rating = intFreeLevels;
-                //        _objCharacter.PriorityBonusSkill2 = cboSkill2.Text.ToString();
-                //    }
-                //    else
-                //    {
-                //        objSkill.FreeLevels = 0;
-                //        if (blnGroup)
-                //        {
-                //            // if this skill is a magical skill not belonging to the selected group, reduce the skill maximum to 0
-                //            if (objSkill.SkillGroup == "Conjuring" || objSkill.SkillGroup == "Enchanting" || objSkill.SkillGroup == "Sorcery")
-                //            {
-                //                if (objSkill.SkillGroup != cboSkill1.SelectedValue.ToString())
-                //                    objSkill.RatingMaximum = 0;
-                //                else
-                //                {
-                //                    if (_objCharacter.IgnoreRules)
-                //                        objSkill.RatingMaximum = 12;
-                //                    else
-                //                        objSkill.RatingMaximum = 6;
-                //                }
-                //                _objCharacter.PriorityBonusSkillGroup = cboSkill1.Text.ToString();
-                //            }
-                //        }
-                //    }
-                //}
-                //foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                //{
-                //    if (cboSkill1.Visible && objSkillGroup.Name == cboSkill1.Text && blnGroup)
-                //    {
-                //        objSkillGroup.FreeLevels = intFreeLevels;
-                //        if (objSkillGroup.Base < intFreeLevels)
-                //            objSkillGroup.Base = intFreeLevels;
-                //        _objCharacter.PriorityBonusSkillGroup = cboSkill1.Text.ToString();
-                //    }
-                //    else
-                //        objSkillGroup.FreeLevels = 0;
-
-                //    if (blnGroup)
-                //    {
-                //        // if this skill is a magical skill not belonging to the selected group, reduce the skill maximum to 0
-                //        if (objSkillGroup.Name == "Conjuring" || objSkillGroup.Name == "Enchanting" || objSkillGroup.Name == "Sorcery")
-                //        {
-                //            if (objSkillGroup.Name != cboSkill1.SelectedValue.ToString())
-                //                objSkillGroup.RatingMaximum = 0;
-                //            else
-                //            {
-                //                if (_objCharacter.IgnoreRules)
-                //                    objSkillGroup.RatingMaximum = 12;
-                //                else
-                //                    objSkillGroup.RatingMaximum = 6;
-                //            }
-                //        }
-                //    }
-                //}
 
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);

@@ -2041,7 +2041,7 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				foreach (WeaponAccessory objAccessory in _lstAccessories)
+				foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objAccessory.Installed))
 				{
 					// Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
 					if (!(objAccessory.DamageType.Contains("(f)") && _strDamage.Contains("(f)")))

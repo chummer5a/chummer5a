@@ -338,6 +338,10 @@ namespace Chummer
                 {
                     strSearch += " and not (metagenetic = 'yes')";
                 }
+                if (nudMinimumBP.Value != 0)
+                {
+                    strSearch += "and karma => " + nudMinimumBP.Value.ToString();
+                }
                 strSearch += "]";
 
 				XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
@@ -386,9 +390,25 @@ namespace Chummer
 				else
 				{
 					strXPath += " and not (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
-				}
+                }
+                if (nudValueBP.Value != 0)
+                {
+                    strXPath += "and karma = " + nudValueBP.Value.ToString();
+                }
+                else
+                {
+                    if (nudMinimumBP.Value != 0)
+                    {
+                        strXPath += "and karma >= " + nudMinimumBP.Value.ToString();
+                    }
 
-				foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
+                    if (nudMaximumBP.Value != 0)
+                    {
+                        strXPath += "and karma <= " + nudMaximumBP.Value.ToString();
+                    }
+                }
+
+                foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
 				{
 					if (objXmlQuality["name"].InnerText.StartsWith("Infected"))
 					{
@@ -452,27 +472,6 @@ namespace Chummer
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
             switch (lstQualities.SelectedValue.ToString())
             {
-                case "Technomancer":
-                    _objCharacter.RESEnabled = true;
-                    _objCharacter.TechnomancerEnabled = true;
-                    break;
-                case "Magician":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.MagicianEnabled = true;
-                    break;
-                case "Aspected Magician":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.MagicianEnabled = true;
-                    break;
-                case "Adept":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.AdeptEnabled = true;
-                    break;
-                case "Mystic Adept":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.MagicianEnabled = true;
-                    _objCharacter.AdeptEnabled = true;
-                    break;
                 case "Changeling (Class I SURGE)":
                     _objCharacter.MetageneticLimit = 30;
                     break;
@@ -1343,6 +1342,23 @@ namespace Chummer
         {
             CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             objCommon.OpenPDF(lblSource.Text);
+        }
+
+        private void KarmaFilter(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(nudMinimumBP.Text))
+            {
+                nudMinimumBP.Value = 0;
+            }
+            if (string.IsNullOrWhiteSpace(nudValueBP.Text))
+            {
+                nudValueBP.Value = 0;
+            }
+            if (string.IsNullOrWhiteSpace(nudMaximumBP.Text))
+            {
+                nudMaximumBP.Value = 0;
+            }
+            BuildQualityList();
         }
     }
 }

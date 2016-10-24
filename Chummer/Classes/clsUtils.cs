@@ -115,5 +115,30 @@ namespace Chummer
 			int intResult = GitVersion().CompareTo(verCurrentversion);
 			return intResult;
 		}
+		
+		public static void RestartApplication(string strText = "Message_Options_Restart")
+		{
+			string text = LanguageManager.Instance.GetString(strText);
+			string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+			if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+				return;
+			// Get the parameters/arguments passed to program if any
+			string arguments = string.Empty;
+			arguments += GlobalOptions.Instance.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
+			arguments = arguments.Trim();
+			// Restart current application, with same arguments/parameters
+			foreach (Form objForm in GlobalOptions.Instance.MainForm.MdiChildren)
+			{
+				objForm.Close();
+			}
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Application.ExecutablePath,
+				Arguments = arguments
+			};
+			Application.Exit();
+			Process.Start(startInfo);
+		}
 	}
 }

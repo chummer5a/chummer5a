@@ -112,7 +112,7 @@ namespace Chummer
 				objCache.Description = objXmlSourceNode["description"]?.InnerText;
 				objCache.BuildMethod = objXmlSourceNode["buildmethod"]?.InnerText;
 				objCache.Background = objXmlSourceNode["background"]?.InnerText;
-				objCache.CharacterNotes = objXmlSourceNode["characternotes"]?.InnerText;
+				objCache.CharacterNotes = objXmlSourceNode["notes"]?.InnerText;
 				objCache.GameNotes = objXmlSourceNode["gamenotes"]?.InnerText;
 				objCache.Concept = objXmlSourceNode["concept"]?.InnerText;
 				objCache.Karma = objXmlSourceNode["totalkarma"]?.InnerText;

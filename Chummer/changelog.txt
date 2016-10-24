@@ -1,5 +1,20 @@
-Build 186:
+Build 187
+
 Application Changes:
+
+- Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
+- Renamed the addattribute improvement to enableattribute.
+- Fixed an issue that prevented the Enable/Disable Sourcebook button from actually changing the settings. 
+- Fixed an issue with the display of calculated Limit modifiers. Fixes #1175.
+
+Data Changes: 
+
+- Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
+
+Build 186:
+
+Application Changes:
+
 - Fixed missing values for Metahuman adjustment on several vehicles.
 - Properly applied localisation to the character roster form.
 - Fixed the karma costs for new knowledge skills in career mode to not improperly charge twice. 
@@ -13,8 +28,24 @@ Application Changes:
 - Added a File Path label to the Character Roster.
 - Added the ability to delete items from the Character Roster by pressing the Delete button. This will ONLY remove the file from the relevant MRU lists, no .chum5 files will be deleted.
 - Suppressed the ability to attempt to add a Nexus to vehicle or gear items. 
+- Added the ability to filter qualities by their karma values, applying a minimum, maximum and value boundary to the quality list. 
 - Made some alterations to the display of characters in the Roster. Added the Game Notes field, removed the ability to edit the text (It wasn't saving anyway.)
+- Fixed the calculation method of Custom Fit (Stack) mods to work more reliably.
+- Fixed the implementation of Awakened Infected (Mutaqua, Wendigo, etc.) to not add the relevant qualities. 
+- Added logic to prevent weapon accessories from applying their bonuses while uninstalled. 
+- Added naming logic to the Create Mode form, similar to the behaviour for Career Mode. In order of precedence, characters will use their Alias, Real Name or the localised string for Unnamed Character. 
+- Fixed the 'Increase Qty' button in career mode to properly select the currently selected item. 
+- Altered the crash handler logic to jump directly into the crash handler form. Important note: We still only receive the report if you click Send Error Report. 
+- Nightly builds are now configured as Release, fixing an issue with launching the Crash Handler.
+- Added a warning that porevents creating invalid Custom Item names. 
+- Added missing 'dirty' flags for changing options in the Options menu. Ensures that changing any option in the Options menu properly flags it as dirty and requests a restart.
+- Added Restart Chummer menu option to Tools menu.
+- Did some general UI cleanup for the Options menu, ensuring that the full text of a book is always visible. 
+- Fixed an error caused by users not entering Drain attributes for their Custom Tradition.
+- Added logic to check whether a character was saved in a later version of Chummer than the current one.
+
 Data Changes:
+
 - Fixed an incorrect spelling for the Personafix gear item.
 - Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
 - Added content from Lockdown, Shadows in Focus: San Francisco, and the Hong Kong Sourcebook.
@@ -23,8 +54,12 @@ Data Changes:
 - Added missing weapons from the Schattenhandbuch, courtesy of gamingharry.
 - Fixed the display of magic traditions in the core character sheets.
 - Moved the selecttext method back out of AddImprovementCollection. 
+- Altered the Magician, Adept, Mystic Adept, and Technomancer to not need special treatment when adding their special tabs. 
+- Added code to prevent Bone Density and Bone Lacing from being taken together. 
+- Added code to prevent Orthoskin and Dermal Plating from being taken together. 
 
 New Strings:
+
 - Label_VehicleSeats
 - Label_Biography
 - Label_File_Path
@@ -34,9 +69,13 @@ New Strings:
 - Tab_Roster_Background
 - Tab_Roster_CharacterNotes
 - Tab_Roster_GameNotes
+- Message_Options_Restart
+- Message_OutdatedChummerSave
 
 Changed Strings: 
+
 - Message_ConfirmKarmaExpenseKnowledgeSkill
+- Message_Options_CloseForms
 
 Build 185:
 Application Changes: 

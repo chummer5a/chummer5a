@@ -203,6 +203,8 @@ namespace Chummer
 
 			if (_strSelectedGear != "")
 				lstGear.SelectedValue = _strSelectedGear;
+			else
+				txtSearch.Text = DefaultSearchText;
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -737,6 +739,11 @@ namespace Chummer
 				return _blnBlackMarketDiscount;
 			}
 		}
+
+		/// <summary>
+		/// Default text string to filter by. 
+		/// </summary>
+		public string DefaultSearchText { get; set; }
 		#endregion
 
 		#region Methods

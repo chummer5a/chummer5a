@@ -585,6 +585,11 @@
 			<capacity>0</capacity>
 			<avail>12R</avail>
 			<cost>18000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Bone Density Augmentation</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<armor>2</armor>
 				<damageresistance>2</damageresistance>
@@ -603,6 +608,11 @@
 			<capacity>0</capacity>
 			<avail>8R</avail>
 			<cost>8000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Bone Density Augmentation</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<armor>1</armor>
 				<damageresistance>1</damageresistance>
@@ -621,6 +631,11 @@
 			<capacity>0</capacity>
 			<avail>16R</avail>
 			<cost>30000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Bone Density Augmentation</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<armor>3</armor>
 				<damageresistance>3</damageresistance>
@@ -639,6 +654,11 @@
 			<capacity>0</capacity>
 			<avail>(Rating * 4)R</avail>
 			<cost>Rating * 3000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Orthoskin</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<armor group="0">Rating</armor>
 			</bonus>

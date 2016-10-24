@@ -361,16 +361,23 @@ namespace Chummer
 				{
 					TabPage tp = new TabPage();
 					// Add a tab page.
-					tp.Text = LanguageManager.Instance.GetString(this.ActiveMdiChild.GetType() == typeof (frmCharacterRoster) ? "String_CharacterRoster" : "String_UnnamedCharacter");
 					tp.Tag = this.ActiveMdiChild;
 					tp.Parent = tabForms;
-
+                    
 					if (this.ActiveMdiChild.GetType() == typeof(frmCareer))
 					{
 						tp.Text = ((frmCareer)this.ActiveMdiChild).CharacterName;
 					}
+                    else if (this.ActiveMdiChild.GetType() == typeof(frmCreate))
+                    {
+                        tp.Text = ((frmCreate)this.ActiveMdiChild).CharacterName;
+                    }
+                    else if (this.ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
+                    {
+                        tp.Text = LanguageManager.Instance.GetString("String_CharacterRoster");
+                    }
 
-					tabForms.SelectedTab = tp;
+                    tabForms.SelectedTab = tp;
 
 					this.ActiveMdiChild.Tag = tp;
 					this.ActiveMdiChild.FormClosed += ActiveMdiChild_FormClosed;
@@ -932,6 +939,19 @@ namespace Chummer
 				frmRoller.Show();
 			}
 		}
+
+		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
+		{
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
+			{
+				GlobalOptions.Instance.RemoveFromMRUList(strFile);
+			}
+		}
+
+		private void mnuRestart_Click(object sender, EventArgs e)
+		{
+			Utils.RestartApplication();
+		}
 		#endregion
 
 		#region Application Properties
@@ -972,12 +992,5 @@ namespace Chummer
 		}
 		#endregion
 
-		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
-		{
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
-			{
-				GlobalOptions.Instance.RemoveFromMRUList(strFile);
-			}
-		}
 	}
 }
