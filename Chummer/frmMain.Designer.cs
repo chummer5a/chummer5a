@@ -66,9 +66,9 @@
 			this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuToolsDiceRoller = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
+			this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -468,15 +468,6 @@
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
 			// 
-			// mnuRestart
-			// 
-			this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
-			this.mnuRestart.Name = "mnuRestart";
-			this.mnuRestart.Size = new System.Drawing.Size(171, 22);
-			this.mnuRestart.Tag = "Button_Update_RestartChummer";
-			this.mnuRestart.Text = "Restart Chummer";
-			this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
-			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.Image = global::Chummer.Properties.Resources.cog_edit;
@@ -494,6 +485,15 @@
 			this.mnuToolsUpdate.Tag = "Menu_Main_Update";
 			this.mnuToolsUpdate.Text = "Check for Updates";
 			this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
+			// 
+			// mnuRestart
+			// 
+			this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
+			this.mnuRestart.Name = "mnuRestart";
+			this.mnuRestart.Size = new System.Drawing.Size(171, 22);
+			this.mnuRestart.Tag = "Button_Update_RestartChummer";
+			this.mnuRestart.Text = "Restart Chummer";
+			this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
 			// 
 			// mnuToolsOmae
 			// 
@@ -702,6 +702,7 @@
 			this.Name = "frmMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Chummer5";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_Closing);
 			this.Load += new System.EventHandler(this.frmMain_Load);
 			this.MdiChildActivate += new System.EventHandler(this.frmMain_MdiChildActivate);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmMain_DragDrop);
