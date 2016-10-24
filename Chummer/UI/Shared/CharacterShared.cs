@@ -224,13 +224,19 @@ namespace Chummer
 		/// <param name="tipTooltip"></param>
 		/// <param name="nudATT"></param>
 		protected void UpdateCharacterAttribute(CharacterAttrib objAttribute, Label lblATTMetatype, Label lblATTAug,
-			ToolTip tipTooltip, [Optional] NumericUpDown nudATT)
+			ToolTip tipTooltip, [Optional] NumericUpDown nudATT, [Optional] NumericUpDown nudKATT)
 		{
 			if (nudATT != null)
 			{
 				nudATT.Minimum = objAttribute.TotalMinimum;
 				nudATT.Maximum = objAttribute.TotalMaximum;
 				nudATT.Value = Math.Max(objAttribute.Value - objAttribute.Karma, objAttribute.Base);
+			}
+			if (nudKATT != null)
+			{
+				nudKATT.Minimum = 0;
+				nudKATT.Maximum = objAttribute.TotalMaximum;
+				nudKATT.Value = objAttribute.Karma;
 			}
 			lblATTMetatype.Text = string.Format("{0} / {1} ({2})", objAttribute.TotalMinimum, objAttribute.TotalMaximum,
 				objAttribute.TotalAugmentedMaximum);

@@ -4403,6 +4403,18 @@
 			<page>446</page>
 		</gear>
 		<gear>
+			<id>c68da753-6ee3-4e14-8234-26676b7735f6</id>
+			<name>Vision Magnification</name>
+			<category>Sensor Functions</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
 			<id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
 			<name>Nanoscanner</name>
 			<category>Sensor Functions</category>

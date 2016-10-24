@@ -14876,19 +14876,18 @@ namespace Chummer
                 }
 
                 // Update the CharacterAttribute information.
-				UpdateCharacterAttribute(_objCharacter.BOD,lblBODMetatype,lblBODAug,tipTooltip,nudBOD);
-				//tipTooltip.SetToolTip(lblAGIAug, _objCharacter.AGI.ToolTip());
-				UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip, nudAGI);
-				UpdateCharacterAttribute(_objCharacter.STR, lblSTRMetatype, lblSTRAug, tipTooltip, nudSTR);
-				UpdateCharacterAttribute(_objCharacter.REA, lblREAMetatype, lblREAAug, tipTooltip, nudREA);
-				UpdateCharacterAttribute(_objCharacter.INT, lblINTMetatype, lblINTAug, tipTooltip, nudINT);
-				UpdateCharacterAttribute(_objCharacter.LOG, lblLOGMetatype, lblLOGAug, tipTooltip, nudLOG);
-				UpdateCharacterAttribute(_objCharacter.WIL, lblWILMetatype, lblWILAug, tipTooltip, nudWIL);
-				UpdateCharacterAttribute(_objCharacter.CHA, lblCHAMetatype, lblCHAAug, tipTooltip, nudCHA);
-				UpdateCharacterAttribute(_objCharacter.EDG, lblEDGMetatype, lblEDGAug, tipTooltip, nudEDG);
-				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip, nudDEP);
-				UpdateCharacterAttribute(_objCharacter.MAG, lblMAGMetatype, lblMAGAug, tipTooltip, nudMAG);
-				UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip, nudRES);
+				UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip, nudBOD, nudKBOD);
+				UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip, nudAGI, nudKAGI);
+				UpdateCharacterAttribute(_objCharacter.STR, lblSTRMetatype, lblSTRAug, tipTooltip, nudSTR, nudKSTR);
+				UpdateCharacterAttribute(_objCharacter.REA, lblREAMetatype, lblREAAug, tipTooltip, nudREA, nudKREA);
+				UpdateCharacterAttribute(_objCharacter.INT, lblINTMetatype, lblINTAug, tipTooltip, nudINT, nudKINT);
+				UpdateCharacterAttribute(_objCharacter.LOG, lblLOGMetatype, lblLOGAug, tipTooltip, nudLOG, nudKLOG);
+				UpdateCharacterAttribute(_objCharacter.WIL, lblWILMetatype, lblWILAug, tipTooltip, nudWIL, nudKWIL);
+				UpdateCharacterAttribute(_objCharacter.CHA, lblCHAMetatype, lblCHAAug, tipTooltip, nudCHA, nudKCHA);
+				UpdateCharacterAttribute(_objCharacter.EDG, lblEDGMetatype, lblEDGAug, tipTooltip, nudEDG, nudKEDG);
+				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip, nudDEP, nudKDEP);
+				UpdateCharacterAttribute(_objCharacter.MAG, lblMAGMetatype, lblMAGAug, tipTooltip, nudMAG, nudKMAG);
+				UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip, nudRES, nudKRES);
 
                 // Update the MAG pseudo-Attributes if applicable.
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
