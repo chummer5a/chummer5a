@@ -15,6 +15,10 @@ Data Changes:
 - Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
 - Added a missing Sensor Function to the gear category. Fixes #1176.
 
+Sheet Changes:
+
+- Character sheets now default to displaying the Alias of a character as a header in preference to their Name attribute when printing.
+
 Build 186:
 
 Application Changes:

@@ -5,14 +5,22 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 	<xsl:output method="html" indent="yes" version="4.0"/>
-	
-  
+	<xsl:include href="xt.PreserveLineBreaks.xslt"/>
+	<xsl:include href="xt.TitleName.xslt"/>
+
 	<xsl:template match="/characters/character">
+		<xsl:variable name="TitleName">
+			<xsl:call-template name="TitleName">
+				<xsl:with-param name="name" select="name"/>
+				<xsl:with-param name="alias" select="alias"/>
+			</xsl:call-template>
+		</xsl:variable>
+
 		<xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
 		<html>
 			<head>
 				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
-				<title><xsl:value-of select="name" /></title>
+				<title><xsl:value-of select="$TitleName" /></title>
 				<style type="text/css">
 					*
 					{
@@ -1937,25 +1945,6 @@
 				background-color:lightgrey;
 			</xsl:attribute>
 		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template name="PreserveLineBreaks">
-		<xsl:param name="text"/>
-		
-		<xsl:choose>
-			<xsl:when test="contains($text,'&#xA;')">
-				<xsl:value-of select="substring-before($text,'&#xA;')"/>
-				<br/>
-				<xsl:call-template name="PreserveLineBreaks">
-					<xsl:with-param name="text">
-						<xsl:value-of select="substring-after($text,'&#xA;')"/>
-					</xsl:with-param>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text"/>
-			</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="page_breaker">

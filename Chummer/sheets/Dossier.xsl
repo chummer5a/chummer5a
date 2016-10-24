@@ -3,12 +3,21 @@
 <!-- Created by Jeff Halket, modified by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	
-	<xsl:template match="/characters">
+	<xsl:include href="xt.PreserveLineBreaks.xslt"/>
+	<xsl:include href="xt.TitleName.xslt"/>
+
+	<xsl:template match="/characters/character">
+		<xsl:variable name="TitleName">
+			<xsl:call-template name="TitleName">
+				<xsl:with-param name="name" select="name"/>
+				<xsl:with-param name="alias" select="alias"/>
+			</xsl:call-template>
+		</xsl:variable>
+
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 			<head>
 				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
-				<title>Dossier</title>
+				<title><xsl:value-of select="$TitleName" /></title>
 				<style type="text/css">
 					*
 					{
@@ -38,7 +47,6 @@
 				</style>
 			</head>
 			<body>
-				<xsl:for-each select="character">
 					<table width="100%" cellspacing="0" cellpadding="2">
 						<tr>
 							<td class="label">Name:</td>
@@ -119,26 +127,7 @@
 							</td>
 						</tr>
 					</table>
-				</xsl:for-each>
 			</body>
 		</html>
-	</xsl:template>
-	
-	<xsl:template name="PreserveLineBreaks">
-		<xsl:param name="text"/>
-		<xsl:choose>
-			<xsl:when test="contains($text,'&#xA;')">
-				<xsl:value-of select="substring-before($text,'&#xA;')"/>
-				<br/>
-				<xsl:call-template name="PreserveLineBreaks">
-					<xsl:with-param name="text">
-						<xsl:value-of select="substring-after($text,'&#xA;')"/>
-					</xsl:with-param>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text"/>
-			</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 </xsl:stylesheet>
