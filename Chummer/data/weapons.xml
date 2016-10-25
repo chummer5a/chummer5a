@@ -25,6 +25,8 @@
     <category type="melee">Improvised Weapons</category>
     <category type="melee">Exotic Melee Weapons</category>
 		<category type="exotic">Exotic Ranged Weapons</category>
+    <category type="melee">Bio-Weapon</category>
+    <category type="melee">Cyberweapon</category>
 		<category type="melee">Unarmed</category>
 		<category type="bow">Bows</category>
 		<category type="crossbow">Crossbows</category>
@@ -41,6 +43,7 @@
     <category type="gun">Light Machine Guns</category>
     <category type="gun">Medium Machine Guns</category>
     <category type="gun">Heavy Machine Guns</category>
+    <category type="gun">Underbarrel Weapons</category>
 		<category type="cannon">Assault Cannons</category>
 		<category type="flame">Flamethrowers</category>
 		<category type="laser">Laser Weapons</category>
@@ -6752,6 +6755,7 @@
 			<category>Quality</category>
 			<type>Melee</type>
 			<conceal>0</conceal>
+      <hide>yes</hide>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(STR)P</damage>
@@ -6771,6 +6775,7 @@
 			<name>Razor Claws</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -6791,6 +6796,7 @@
 			<name>Retractable Claws</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -6811,6 +6817,7 @@
 			<name>Raptor Beak</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -6831,6 +6838,7 @@
 			<name>Fangs</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>-1</reach>
@@ -6851,6 +6859,7 @@
 			<name>Functional Tail (Thagomizer)</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>1</reach>
@@ -6871,6 +6880,7 @@
 			<name>Goring Horns</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -6891,6 +6901,7 @@
 			<name>Larger Tusks</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -6911,6 +6922,7 @@
 			<name>Proboscis</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -6931,6 +6943,7 @@
 			<name>Kick (Centaur)</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>1</reach>
@@ -6951,6 +6964,7 @@
 			<name>Bite (Infected)</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>-1</reach>
@@ -6971,6 +6985,7 @@
 			<name>Bite (Naga)</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>-1</reach>
@@ -6991,6 +7006,7 @@
 			<name>Claws (Sasquatch)</name>
 			<category>Quality</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>1</reach>
@@ -7007,148 +7023,6 @@
 			<page>105</page>
 		</weapon>
 		<!--End Region -->
-		<!-- Region Infected Weapons-->
-		<weapon>
-			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
-			<name>Claws (Sasquatch)</name>
-			<category>Quality</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>0</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>105</page>
-		</weapon>
-		<weapon>
-			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
-			<name>Claws (Infected) 3</name>
-			<category>Quality</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>1</reach>
-			<damage>(STR+3)P</damage>
-			<ap>-2</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>136</page>
-		</weapon>
-		<weapon>
-			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
-			<name>Claws (Infected) 2</name>
-			<category>Quality</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>136</page>
-		</weapon>
-		<weapon>
-			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
-			<name>Claws (Infected) 1</name>
-			<category>Natural</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>136</page>
-		</weapon>
-		<weapon>
-			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
-			<name>Bite (Infected) 1</name>
-			<category>Natural</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>-1</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-1</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>137</page>
-		</weapon>
-		<weapon>
-			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
-			<name>Bite (Infected) 2</name>
-			<category>Quality</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>-1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-2</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>137</page>
-		</weapon>
-		<weapon>
-			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
-			<name>Bite (Gnawer)</name>
-			<category>Quality</category>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>Physical</accuracy>
-			<reach>-1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-2</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>RF</source>
-			<page>137</page>
-		</weapon>		
-		<!-- End Region -->
 		<!--End Region -->
 		<!-- Region Chrome Flesh-->
 		<!-- Region Chrome Flesh Cyber-Weapons -->
@@ -7156,6 +7030,7 @@
 			<id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
 			<name>Oral Slasher</name>
 			<category>Cyberweapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>-4</conceal>
 			<accuracy>Physical</accuracy>
@@ -7178,6 +7053,7 @@
 			<name>Flametosser</name>
 			<category>Flamethrowers</category>
 			<type>Ranged</type>
+      <hide>yes</hide>
 			<conceal>2</conceal>
 			<accuracy>4</accuracy>
 			<reach>0</reach>
@@ -7200,6 +7076,7 @@
 			<name>Cyberfangs</name>
 			<category>Cyberweapon</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>-4</conceal>
 			<accuracy>Physical-2</accuracy>
 			<reach>0</reach>
@@ -7221,6 +7098,7 @@
 			<name>Extreme Cyberimplant</name>
 			<category>Cyberweapon</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -7242,6 +7120,7 @@
 			<name>Junkyard Jaw</name>
 			<category>Cyberweapon</category>
 			<type>Melee</type>
+      <hide>yes</hide>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
@@ -7264,6 +7143,7 @@
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Claws (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
@@ -7284,6 +7164,7 @@
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Retractable Claws (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
@@ -7304,6 +7185,7 @@
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Electrical Discharge</name>
 			<category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
@@ -7323,7 +7205,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Fangs (Bio-Weapon)</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>3</accuracy>
@@ -7344,6 +7227,7 @@
       <id>576770af-b5da-4b76-afdf-5559e7401e2d</id>
       <name>Retractable Fangs (Bio-Weapon)</name>
       <category>Bio-Weapon</category>
+      <hide>yes</hide>
       <type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>3</accuracy>
@@ -7363,7 +7247,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Horns (Bio-Weapon)</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>4</accuracy>
@@ -7383,7 +7268,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Large Stinger</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
@@ -7403,7 +7289,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Medium Stinger</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
@@ -7423,7 +7310,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Horns (Bio-Weapon)</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>4</accuracy>
@@ -7443,7 +7331,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Medium Tusk(s)</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>4</accuracy>
@@ -7463,7 +7352,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Large Tusk(s)</name>
-			<category>Bio-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>4</accuracy>
@@ -7483,7 +7373,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Raptor Foot</name>
-			<category>Cyber-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical-1</accuracy>
@@ -7503,7 +7394,8 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Grapple Fist</name>
-			<category>Cyber-Weapon</category>
+      <category>Bio-Weapon</category>
+      <hide>yes</hide>
 			<type>Ranged</type>
 			<conceal>0</conceal>
 			<spec>Grapple Gun</spec>

@@ -15,6 +15,9 @@ Application Changes:
 Data Changes: 
 
 - Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
+- Fixed an issue that prevented metavariants with a karma cost from properly charging the Karma cost.
+- Fixed an issue that caused a crash when searching for certain strings in the weapon selection form. 
+- Hid a bunch of weapons that shouldn't normally be visible.
 - Added a missing Sensor Function to the gear category. Fixes #1176.
 
 Sheet Changes:

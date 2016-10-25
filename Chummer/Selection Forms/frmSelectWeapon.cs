@@ -104,6 +104,7 @@ namespace Chummer
 					_lstCategory.Add(objItem);
 				}
 			}
+
 			cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
