@@ -5,6 +5,12 @@ Application Changes:
 - Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
 - Renamed the addattribute improvement to enableattribute.
 - Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
+- Fixed an issue that prevented metavariants with a karma cost from properly charging the Karma cost.
+- Fixed an issue that caused a crash when searching for certain strings in the weapon selection form. 
+
+Data Changes:
+
+- Hid a bunch of weapons that shouldn't normally be visible.
 
 Build 186:
 

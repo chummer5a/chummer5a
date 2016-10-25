@@ -656,6 +656,15 @@ namespace Chummer
                 lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["wilmin"].InnerText, objXmlMetavariant["wilmax"].InnerText, objXmlMetavariant["wilaug"].InnerText);
                 lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["inimin"].InnerText, objXmlMetavariant["inimax"].InnerText, objXmlMetavariant["iniaug"].InnerText);
 
+                if (objXmlMetavariantBP["karma"] != null)
+                {
+                    lblMetavariantBP.Text = objXmlMetavariantBP["karma"].InnerText;
+                }
+                else
+                {
+                    lblMetavariantBP.Text = "0";
+                }
+
                 // Set the special attributes label.
                 int intSpecial = 0;
                 if (cboHeritage.SelectedIndex < 4)
