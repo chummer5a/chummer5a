@@ -1041,6 +1041,7 @@
 			this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
 			this.cmdEnableSourcebooks.UseVisualStyleBackColor = true;
 			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.OptionsChanged);
+			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.cmdEnableSourcebooks_Click);
 			// 
 			// tabControl2
 			// 
@@ -1128,6 +1129,7 @@
 			this.cmdPDFLocation.Text = "...";
 			this.cmdPDFLocation.UseVisualStyleBackColor = true;
 			this.cmdPDFLocation.Click += new System.EventHandler(this.OptionsChanged);
+			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
 			// 
 			// lblPDFOffset
 			// 

@@ -23,8 +23,15 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+ using System.Windows;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
+ using Application = System.Windows.Forms.Application;
+ using DataFormats = System.Windows.Forms.DataFormats;
+ using DragDropEffects = System.Windows.Forms.DragDropEffects;
+ using DragEventArgs = System.Windows.Forms.DragEventArgs;
+ using MessageBox = System.Windows.Forms.MessageBox;
+ using Size = System.Drawing.Size;
 
 namespace Chummer
 {
@@ -522,6 +529,20 @@ namespace Chummer
 
 		private void frmMain_Load(object sender, EventArgs e)
 		{
+			if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0)
+			{
+				this.Size = new Size(1191, 752);
+			}
+			else
+			{
+				this.WindowState = Properties.Settings.Default.WindowState;
+
+				if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
+
+				this.Location = Properties.Settings.Default.Location;
+				this.Size = Properties.Settings.Default.Size;
+			}
+
 			if (GlobalOptions.Instance.StartupFullscreen)
 				this.WindowState = FormWindowState.Maximized;
 
@@ -992,5 +1013,21 @@ namespace Chummer
 		}
 		#endregion
 
+		private void frmMain_Closing(object sender, FormClosingEventArgs e)
+		{
+			Properties.Settings.Default.WindowState = this.WindowState;
+			if (this.WindowState == FormWindowState.Normal)
+			{
+				Properties.Settings.Default.Location = this.Location;
+				Properties.Settings.Default.Size = this.Size;
+			}
+			else
+			{
+				Properties.Settings.Default.Location = this.RestoreBounds.Location;
+				Properties.Settings.Default.Size = this.RestoreBounds.Size;
+			}
+
+			Properties.Settings.Default.Save();
+		}
 	}
 }

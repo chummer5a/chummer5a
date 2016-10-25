@@ -1720,25 +1720,33 @@ namespace Chummer
 		{
 			get
 			{
-				bool blnReturn;
+				bool blnReturn = _blnContributeToLimit;
 
-				if (!_blnContributeToLimit || _objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
-					blnReturn = false;
-				else
-					blnReturn = true;
+				if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
+					return false;
 
-                if (_strMetagenetic == "yes")
-                {
-                    foreach (Quality objQuality in _objCharacter.Qualities)
-                    {
-                        if (objQuality.Name == "Changeling (Class I SURGE)" || objQuality.Name == "Changeling (Class II SURGE)" || objQuality.Name == "Changeling (Class III SURGE)")
-                        { 
-                            _blnContributeToLimit = false;
-                        }
-                    }
-                    blnReturn = _blnContributeToLimit;
-                }
+				//Positive Metagenetic Qualities are free if you're a Changeling. 
+				if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
+				{
+					return false;
+				}
 
+				//The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+				switch (_strName)
+				{
+					case "Mentor Spirit":
+						if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+							return false;
+						break;
+					case "High Pain Tolerance (Rating 1)":
+						if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem."))
+						{
+							return false;
+						}
+						break;
+					default:
+						return true;
+				}
 				return blnReturn;
 			}
 			set
@@ -1754,55 +1762,33 @@ namespace Chummer
 		{
 			get
 			{
-				bool blnReturn;
+				if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
+					return false;
 
-
-                if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
-                    blnReturn = false;
-                else
-                {
-                    bool blnContribute = true;
                     //Positive Metagenetic Qualities are free if you're a Changeling. 
-                    if (_strMetagenetic == "yes")
+                    if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
                     {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
-                            if (objQuality.Name == "Changeling (Class I SURGE)" || objQuality.Name == "Changeling (Class II SURGE)" || objQuality.Name == "Changeling (Class III SURGE)")
-                            { blnContribute = false; }
-                        }
-                        blnReturn = blnContribute;
+	                    return false;
                     }
-                    //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                    else if (_strName == "Mentor Spirit")
-                    {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
 
-                            if (objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way")
-                            {
-                                blnContribute = false;
-                            }
-                        }
-                        blnReturn = blnContribute;
+					//The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+					switch (_strName)
+                    {
+	                    case "Mentor Spirit":
+							if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+								return false;
+		                    break;
+						case "High Pain Tolerance (Rating 1)":
+							if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem."))
+							{
+								return false;
+							}
+							break;
+	                    default:
+		                    return true;
                     }
-                    //Characters with the "Pie Iesu Domine. Dona Eis Requiem." Quality gain High Pain Tolerance (Rating 1) for free.
-                    else if (_strName == "High Pain Tolerance (Rating 1)")
-                    {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
 
-                            if (objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem.")
-                            {
-                                blnContribute = false;
-                            }
-                        }
-                        blnReturn = blnContribute;
-                    }                        
-                    else
-                        blnReturn = true;
-                }
-
-				return blnReturn;
+				return true;
 			}
 		}
 

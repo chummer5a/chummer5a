@@ -5,13 +5,22 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 	<xsl:include href="ConditionMonitor.xslt"/>
+	<xsl:include href="xt.TitleName.xslt"/>
+
 	<xsl:template match="/characters/character">
+		<xsl:variable name="TitleName">
+			<xsl:call-template name="TitleName">
+				<xsl:with-param name="name" select="name"/>
+				<xsl:with-param name="alias" select="alias"/>
+			</xsl:call-template>
+		</xsl:variable>
+
 		<xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
 		<html>
 			<head>
 				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
 				<title>
-					<xsl:value-of select="name"/>
+					<xsl:value-of select="$TitleName"/>
 				</title>
 				<style type="text/css">
 					*

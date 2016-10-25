@@ -788,23 +788,26 @@ namespace Chummer
 				else
 					chkInherentProgram.Visible = false;
 
-				if (objXmlGear["category"].InnerText == "Commlinks" || objXmlGear["category"].InnerText == "Cyberdecks" || objXmlGear["category"].InnerText == "Commlink Upgrade")
+				switch (objXmlGear["category"].InnerText)
 				{
-					lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
-				}
-				else if (objXmlGear["category"].InnerText == "Commlink Operating System" || objXmlGear["category"].InnerText == "Commlink Operating System Upgrade")
-				{
-					lblGearDeviceRating.Text = "";
-				}
-				else
-				{
-					lblGearDeviceRating.Text = "";
+					case "Commlinks":
+					case "Cyberdecks":
+					case "Commlink Upgrade":
+						lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
+						break;
+					case "Commlink Operating System":
+					case "Commlink Operating System Upgrade":
+						lblGearDeviceRating.Text = "";
+						break;
+					default:
+						lblGearDeviceRating.Text = "";
+						break;
 				}
 
-				if (objXmlGear["category"].InnerText.EndsWith("Software") || objXmlGear["category"].InnerText.EndsWith("Programs") || objXmlGear["category"].InnerText == "Program Options" || objXmlGear["category"].InnerText.StartsWith("Autosofts") || objXmlGear["category"].InnerText.StartsWith("Skillsoft") || objXmlGear["category"].InnerText == "Program Packages" || objXmlGear["category"].InnerText == "Software Suites")
+				/*if (objXmlGear["category"].InnerText.EndsWith("Software") || objXmlGear["category"].InnerText.EndsWith("Programs") || objXmlGear["category"].InnerText == "Program Options" || objXmlGear["category"].InnerText.StartsWith("Autosofts") || objXmlGear["category"].InnerText.StartsWith("Skillsoft") || objXmlGear["category"].InnerText == "Program Packages" || objXmlGear["category"].InnerText == "Software Suites")
 					chkHacked.Visible = true;
 				else
-					chkHacked.Visible = false;
+					chkHacked.Visible = false;*/
 
 				string strBook = _objCharacter.Options.LanguageBookShort(objXmlGear["source"].InnerText);
 				string strPage = objXmlGear["page"].InnerText;

@@ -4,13 +4,24 @@ Application Changes:
 
 - Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
 - Renamed the addattribute improvement to enableattribute.
+- Fixed an issue that prevented the Enable/Disable Sourcebook button from actually changing the settings. 
+- Fixed an issue with the display of calculated Limit modifiers. Fixes #1175.
+- Removed the ability to mark an item as Hacked.
+- Made some minor tweaks to the calculation of whether a quality contributes to the limit during chartgen.
+- Fixed an issue that prevented initiation in create mode from allowing MAG or RES to exceed the Metatype Maximum. 
+- Added code to preserve the window position of the main form on exit. Looking for feedback on if this is a useful feature that should carry through to the rest of the application's forms.
+
+Data Changes: 
+
 - Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
 - Fixed an issue that prevented metavariants with a karma cost from properly charging the Karma cost.
 - Fixed an issue that caused a crash when searching for certain strings in the weapon selection form. 
-
-Data Changes:
-
 - Hid a bunch of weapons that shouldn't normally be visible.
+- Added a missing Sensor Function to the gear category. Fixes #1176.
+
+Sheet Changes:
+
+- Character sheets now default to displaying the Alias of a character as a header in preference to their Name attribute when printing.
 
 Build 186:
 
