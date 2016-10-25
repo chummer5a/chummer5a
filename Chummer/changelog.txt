@@ -10,6 +10,7 @@ Application Changes:
 - Made some minor tweaks to the calculation of whether a quality contributes to the limit during chartgen.
 - Fixed an issue that prevented initiation in create mode from allowing MAG or RES to exceed the Metatype Maximum. 
 - Added code to preserve the window position of the main form on exit. Looking for feedback on if this is a useful feature that should carry through to the rest of the application's forms.
+- Fixed a missing binding for PDF offsets in the Options menu. 
 
 Data Changes: 
 

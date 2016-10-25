@@ -1154,6 +1154,7 @@
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
 			// 
 			// cmdPDFTest
 			// 
@@ -1191,6 +1192,7 @@
 			this.chkOmaeEnabled.Text = "[Omae enabled]";
 			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
 			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
+			this.chkLifeModule.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkLifeModule
 			// 
