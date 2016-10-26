@@ -1722,6 +1722,10 @@ namespace Chummer
 			{
 				bool blnReturn = _blnContributeToLimit;
 
+				if (!_blnContributeToLimit)
+				{
+					return false;
+				}
 				if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
 					return false;
 
