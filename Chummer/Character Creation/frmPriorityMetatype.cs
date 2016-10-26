@@ -375,17 +375,11 @@ namespace Chummer
 			
 			ListItem objPossession = new ListItem();
 			objPossession.Value = "Possession";
-			if (objXmlPossession["translate"] != null)
-				objPossession.Name = objXmlPossession["translate"].InnerText;
-			else
-				objPossession.Name = objXmlPossession["name"].InnerText;
+			objPossession.Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText;
 
 			ListItem objInhabitation = new ListItem();
 			objInhabitation.Value = "Inhabitation";
-			if (objXmlInhabitation["translate"] != null)
-				objInhabitation.Name = objXmlInhabitation["translate"].InnerText;
-			else
-				objInhabitation.Name = objXmlInhabitation["name"].InnerText;
+			objInhabitation.Name = objXmlInhabitation["translate"]?.InnerText ?? objXmlInhabitation["name"].InnerText;
 
 			lstMethods.Add(objInhabitation);
 			lstMethods.Add(objPossession);
@@ -547,6 +541,7 @@ namespace Chummer
 										   objTalentsNode.SelectSingleNode("skillgrouptype")?.InnerText);
 					string strSkillVal = (objTalentsNode.SelectSingleNode("skillval")?.InnerText ??
 										  objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
+					XmlNodeList objNodeList = (objTalentsNode.SelectNodes("skillgroupchoices/skillgroup"));
 					string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
 					strLabel = string.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkills"));
 					strLabel = string.Format(strLabel, strSkillCount, strSkillType, strSkillVal);
@@ -569,6 +564,11 @@ namespace Chummer
 								objXmlSkillsList = GetMatrixSkillList();
 								break;
 							}
+						case "choices":
+							{
+								objXmlSkillsList = BuildSkillCategoryList(objNodeList);
+								break;
+							}
 						default:
 							{
 								objXmlSkillsList = GetActiveSkillList();
@@ -579,14 +579,23 @@ namespace Chummer
 					if (strSkillCount == "1" || strSkillCount == "2")
 					{
 						List<ListItem> lstSkills = new List<ListItem>();
-						foreach (XmlNode objXmlSkill in objXmlSkillsList)
+						if (objNodeList.Count > 0)
 						{
-							ListItem objItem = new ListItem
-							{
-								Value = objXmlSkill["name"]?.InnerText,
-								Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
-							};
-							lstSkills.Add(objItem);
+							lstSkills.AddRange(from XmlNode objXmlSkill in objXmlSkillsList
+								select new ListItem
+								{
+									Value = objXmlSkill.InnerText,
+									Name = objXmlSkill.Attributes["translate"]?.InnerText ?? objXmlSkill.InnerText
+								});
+						}
+						else
+						{
+							lstSkills.AddRange(from XmlNode objXmlSkill in objXmlSkillsList
+								select new ListItem
+								{
+									Value = objXmlSkill["name"]?.InnerText,
+									Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
+								});
 						}
 						cboSkill1.ValueMember = "Value";
 						cboSkill1.DisplayMember = "Name";
@@ -624,7 +633,7 @@ namespace Chummer
 			}
 		}
 
-		private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+	    private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
 			XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
@@ -1474,13 +1483,13 @@ namespace Chummer
                     _objCharacter.StartingNuyen = _objCharacter.Nuyen;
                 }
 
-	            if ("Aspected Magician".Equals(cboTalents.SelectedValue))
-	            {
-		            _objCharacter.Pushtext.Push((string) cboSkill1.SelectedValue);
-	            }
+				if ("Aspected Magician".Equals(cboTalents.SelectedValue))
+				{
+					_objCharacter.Pushtext.Push((string)cboSkill1.SelectedValue);
 
-                // Set starting positive qualities
-                foreach (XmlNode objXmlQualityItem in objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]/qualities/quality"))
+				}
+				// Set starting positive qualities
+				foreach (XmlNode objXmlQualityItem in objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]/qualities/quality"))
                 {
                     XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
                     TreeNode objNode = new TreeNode();
@@ -1526,13 +1535,18 @@ namespace Chummer
 
                 // Set Free Skills/Skill Groups
                 int intFreeLevels = 0;
-                bool blnGroup = (cboTalents.SelectedValue.ToString() == "Aspected Magician");
-                if ((cboTalent.SelectedValue.ToString().Split(',')[0]) == "A")
-                    intFreeLevels = 5;
-                else if ((cboTalent.SelectedValue.ToString().Split(',')[0]) == "B")
-                    intFreeLevels = 4;
-                else if ((cboTalent.SelectedValue.ToString().Split(',')[0]) == "C")
-                    intFreeLevels = 2;
+                switch ((cboTalent.SelectedValue.ToString().Split(',')[0]))
+                {
+	                case "A":
+		                intFreeLevels = 5;
+		                break;
+	                case "B":
+		                intFreeLevels = 4;
+		                break;
+	                case "C":
+		                intFreeLevels = 2;
+		                break;
+                }
 
 	            AddFreeSkills(intFreeLevels);
 
@@ -1600,14 +1614,16 @@ namespace Chummer
 		    ImprovementManager manager = new ImprovementManager(_objCharacter);
 		    var type = "Aspected Magician".Equals(cboTalents.SelectedValue) ? Improvement.ImprovementType.SkillGroupBase : Improvement.ImprovementType.SkillBase;
 
-		    if (cboSkill1.Visible)
-		    {
-			    manager.CreateImprovement(cboSkill1.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
-		    }
+			if (cboSkill1.Visible)
+			{
+				manager.CreateImprovement(cboSkill1.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
+					type, "", intFreeLevels);
+			}
 
 			if (cboSkill2.Visible)
 			{
-				manager.CreateImprovement(cboSkill2.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
+				manager.CreateImprovement(cboSkill2.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
+					type, "", intFreeLevels);
 			}
 
 			manager.Commit();
@@ -1719,7 +1735,7 @@ namespace Chummer
             {
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlPriorityTalent["value"].InnerText;
-				objItem.Name = objXmlPriorityTalent["translate"] != null ? objXmlPriorityTalent["translate"].InnerText : objXmlPriorityTalent["name"].InnerText;
+				objItem.Name = objXmlPriorityTalent["translate"]?.InnerText ?? objXmlPriorityTalent["name"].InnerText;
 				lstTalent.Add(objItem);
             }
 
@@ -1900,7 +1916,7 @@ namespace Chummer
 			return objXmlSkill;
 		}
 
-		private XmlNodeList GetMagicalSkillList()
+		private XmlNodeList GetMagicalSkillList(XmlNodeList objNodeList = null)
         {
 			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
             var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Magical Active\"]");
@@ -1919,9 +1935,22 @@ namespace Chummer
 	        XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
             var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill");
             return objXmlSkillList;
-        }
+		}
 
-        private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
+		private XmlNodeList BuildSkillCategoryList(XmlNodeList objSkillList)
+		{
+			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+			string strGroups = "/chummer/skillgroups/name[. = \"" + objSkillList[0].InnerText + "\"";
+			for (int i = 1; i < objSkillList.Count; i++)
+			{
+				strGroups += " or . = \"" + objSkillList[i].InnerText + "\"";
+			}
+			strGroups += "]";
+			var objXmlSkillList = objXmlSkillsDocument.SelectNodes(strGroups);
+			return objXmlSkillList;
+		}
+
+		private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
 		{
 			cboPossessionMethod.Enabled = chkPossessionBased.Checked;
 		}

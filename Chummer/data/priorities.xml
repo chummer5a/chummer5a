@@ -778,7 +778,7 @@
 					<magic>5</magic>
 					<skillgroupqty>1</skillgroupqty>
 					<skillgroupval>4</skillgroupval>
-					<skillgrouptype>magic</skillgrouptype>
+					<skillgrouptype>choices</skillgrouptype>
 				</talent>
 				<talent>
 					<name>Technomancer - 4 Resonance/2 Complex Forms</name>
@@ -843,7 +843,7 @@
 					<magic>3</magic>
 					<skillgroupqty>1</skillgroupqty>
 					<skillgroupval>2</skillgroupval>
-					<skillgrouptype>magic</skillgrouptype>
+					<skillgrouptype>choices</skillgrouptype>
 				</talent>
 				<talent>
 					<name>Technomancer - 3 Resonance/1 Complex Forms</name>
@@ -884,7 +884,7 @@
 					<magic>2</magic>
 					<skillgroupqty>1</skillgroupqty>
 					<skillgroupval>0</skillgroupval>
-					<skillgrouptype>magic</skillgrouptype>
+					<skillgrouptype>choices</skillgrouptype>
 				</talent>
 			</talents>
 		</priority>
