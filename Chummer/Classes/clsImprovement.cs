@@ -29,6 +29,7 @@ using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Classes;
 using Chummer.Skills;
+using Chummer.Backend.Attributes;
 
 namespace Chummer
 {

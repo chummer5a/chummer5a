@@ -21025,7 +21025,7 @@ namespace Chummer
 
 				// Update the CharacterAttribute information.
 
-				// Character Attribute: BOD
+				/*// Character Attribute: BOD
 				UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip);
 
 				// Character Attribute: AGI
@@ -21062,7 +21062,7 @@ namespace Chummer
 				UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip);
 
 				// Character Attribute: DEP
-				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip);
+				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip);*/
 
 				// Update the MAG pseudo-Attributes if applicable.
 				int intCharacterMAG = _objCharacter.MAG.TotalValue;

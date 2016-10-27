@@ -32,6 +32,7 @@ using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Reflection;
+using Chummer.Backend.Attributes;
 
 // MAGEnabledChanged Event Handler
 public delegate void MAGEnabledChangedHandler(Chummer.Character sender);

@@ -299,6 +299,12 @@
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Attributes\AttributeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
+      <DependentUpon>AttributeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
@@ -851,6 +857,9 @@
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
+      <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1106,6 +1115,7 @@
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <Compile Include="Backend\Attributes\Attribute.Core.cs" />
     <None Include="Chummer_TemporaryKey.pfx" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

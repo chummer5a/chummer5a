@@ -30,6 +30,7 @@ using Chummer.Skills;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using Chummer.Backend.Equipment;
+using Chummer.UI.Attributes;
 
 namespace Chummer
 {
@@ -1097,7 +1098,8 @@ namespace Chummer
             UpdateInitiationGradeTree();
             UpdateCharacterInfo();
 
-	       
+            AttributeControl objControl = new AttributeControl(_objCharacter.STR);
+            pnlNewAttributes.Controls.Add(objControl);
 
             _blnIsDirty = false;
             UpdateWindowTitle(false);
@@ -14875,7 +14877,7 @@ namespace Chummer
                     _objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intESSModifier);
                 }
 
-                // Update the CharacterAttribute information.
+                /*// Update the CharacterAttribute information.
 				UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip, nudBOD, nudKBOD);
 				UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip, nudAGI, nudKAGI);
 				UpdateCharacterAttribute(_objCharacter.STR, lblSTRMetatype, lblSTRAug, tipTooltip, nudSTR, nudKSTR);
@@ -14888,7 +14890,7 @@ namespace Chummer
 				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip, nudDEP, nudKDEP);
 				UpdateCharacterAttribute(_objCharacter.MAG, lblMAGMetatype, lblMAGAug, tipTooltip, nudMAG, nudKMAG);
 				UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip, nudRES, nudKRES);
-
+                */
                 // Update the MAG pseudo-Attributes if applicable.
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
                 {
