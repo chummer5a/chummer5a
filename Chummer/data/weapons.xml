@@ -2104,6 +2104,9 @@
 			<avail>12F</avail>
 			<cost>10000</cost>
 			<allowaccessory>true</allowaccessory>
+      <accessorymounts>
+        <mount>Under</mount>
+      </accessorymounts>      
 			<accessories>
 				<accessory>
 					<name>Slide Mount</name>
@@ -2129,10 +2132,6 @@
 			<avail>16F</avail>
 			<cost>2200</cost>
 			<allowaccessory>true</allowaccessory>
-			<accessorymounts>
-				<mount>Top</mount>
-				<mount>Under</mount>
-			</accessorymounts>
 			<range>Tasers</range>
 			<source>RG</source>
 			<page>50</page>

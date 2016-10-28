@@ -611,6 +611,8 @@ namespace Chummer
                     objContactControl.DeleteContact += objContact_DeleteContact;
                     objContactControl.FileNameChanged += objContact_FileNameChanged;
                     objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
+                    objContactControl.FamilyChanged += objContact_OtherCostChanged;
+                    objContactControl.BlackmailChanged += objContact_OtherCostChanged;
                     objContactControl.ContactObject = objContact;
                     objContactControl.ContactName = objContact.Name;
                     objContactControl.ContactLocation = objContact.Location;
@@ -1110,6 +1112,11 @@ namespace Chummer
 	        
         }
 
+        private void BindEvents(ContactControl objContactControl)
+        {
+            throw new NotImplementedException();
+        }
+
         private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
 			// If there are unsaved changes to the character, as the user if they would like to save their changes.
@@ -1177,6 +1184,8 @@ namespace Chummer
                 {
                     objContactControl.ConnectionRatingChanged -= objContact_ConnectionRatingChanged;
                     objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
+                    objContactControl.BlackmailChanged -= objContact_OtherCostChanged;
+                    objContactControl.FamilyChanged -= objContact_OtherCostChanged;
                     objContactControl.DeleteContact -= objContact_DeleteContact;
                     objContactControl.FileNameChanged -= objContact_FileNameChanged;
                     objContactControl.FreeRatingChanged -= objContact_OtherCostChanged;
@@ -4654,6 +4663,8 @@ namespace Chummer
             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChangedEvent
             objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
             objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
+            objContactControl.FamilyChanged += objContact_OtherCostChanged;
+            objContactControl.BlackmailChanged += objContact_OtherCostChanged;
             objContactControl.DeleteContact += objContact_DeleteContact;
             objContactControl.FileNameChanged += objContact_FileNameChanged;
             objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
@@ -15612,6 +15623,8 @@ namespace Chummer
 				ctrl.DeleteContact += objContact_DeleteContact;
 				ctrl.FileNameChanged += objContact_FileNameChanged;
                 ctrl.FreeRatingChanged += objContact_OtherCostChanged;
+                ctrl.FamilyChanged += objContact_OtherCostChanged;
+                ctrl.BlackmailChanged += objContact_OtherCostChanged;
 
 
 		        ctrl.LoyaltyRating = ctrl.LoyaltyRating;

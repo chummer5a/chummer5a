@@ -299,7 +299,7 @@
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shared\CharacterShared.cs" />
+    <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -517,6 +517,8 @@ namespace Chummer
 					objContactControl.FileNameChanged += objContact_FileNameChanged;
                     objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 					objContactControl.MouseDown += panContactControl_MouseDown;
+                    objContactControl.FamilyChanged += objContact_OtherCostChanged;
+                    objContactControl.BlackmailChanged += objContact_OtherCostChanged;
 					
 					objContactControl.ContactObject = objContact;
 					objContactControl.ContactName = objContact.Name;
@@ -1161,7 +1163,9 @@ namespace Chummer
 					objContactControl.DeleteContact -= objContact_DeleteContact;
 					objContactControl.FileNameChanged -= objContact_FileNameChanged;
                     objContactControl.FreeRatingChanged -= objContact_OtherCostChanged;
-				}
+                    objContactControl.FamilyChanged -= objContact_OtherCostChanged;
+                    objContactControl.BlackmailChanged -= objContact_OtherCostChanged;
+                }
 
 				foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
 				{
@@ -4321,8 +4325,10 @@ namespace Chummer
 			objContactControl.FileNameChanged += objContact_FileNameChanged;
             objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 			objContactControl.MouseDown += panContactControl_MouseDown;
+            objContactControl.FamilyChanged += objContact_OtherCostChanged;
+            objContactControl.BlackmailChanged += objContact_OtherCostChanged;
 
-			panContacts.Controls.Add(objContactControl);
+            panContacts.Controls.Add(objContactControl);
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -20580,6 +20586,8 @@ namespace Chummer
 				ctrl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 				ctrl.DeleteContact += objContact_DeleteContact;
 				ctrl.FileNameChanged += objContact_FileNameChanged;
+                ctrl.BlackmailChanged += objContact_OtherCostChanged;
+                ctrl.FamilyChanged += objContact_OtherCostChanged;
 
 
 				ctrl.LoyaltyRating = ctrl.LoyaltyRating;

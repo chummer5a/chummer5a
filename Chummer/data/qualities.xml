@@ -8454,7 +8454,7 @@
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
 					<optionalpower select="Taste">Enhanced Senses</optionalpower>
 					<optionalpower select="Fire">Immunity</optionalpower>
 					<optionalpower select="Toxins">Immunity</optionalpower>
@@ -8535,11 +8535,13 @@
 				</specificattribute>
 				<critterpowers>
 					<power>Dual Natured</power>
-					<power select="Toxins">Immunity</power>
+          <power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+          <power>Infection</power>
 					<power>Noxious Breath</power>
 					<power>Paralyzing Touch</power>
 					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Bone">Dietary Requirement</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
 					<power select="Iron">Vulnerability</power>
 				</critterpowers>
 			</bonus>

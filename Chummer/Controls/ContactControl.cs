@@ -37,6 +37,10 @@ public delegate void LoyaltyRatingChangedHandler(Object sender);
 public delegate void DeleteContactHandler(Object sender);
 // FileNameChanged Event Handler.
 public delegate void FileNameChangedHandler(Object sender);
+// FamilyChanged Event Handler.
+public delegate void FamilyChangedHandler(Object sender);
+// BlackmailChanged Event Handler.
+public delegate void BlackmailChangedHandler(Object sender);
 // OtherCostChanged Event Handler.
 public delegate void OtherCostChangedHandler(Object sender);
 
@@ -61,6 +65,8 @@ namespace Chummer
         public event FreeRatingChangedHandler FreeRatingChanged;
         public event DeleteContactHandler DeleteContact;
         public event FileNameChangedHandler FileNameChanged;
+        public event BlackmailChangedHandler BlackmailChanged;
+        public event FamilyChangedHandler FamilyChanged;
 
         #region Control Events
         public ContactControl(Character objCharacter)
@@ -150,10 +156,10 @@ namespace Chummer
 			_objContact.IsGroup = chkGroup.Checked;
 			chkGroup.Enabled = !_objContact.MadeMan;
 
-			if (GroupStatusChanged != null) GroupStatusChanged(this);
+            if (GroupStatusChanged != null) GroupStatusChanged(this);
 
-			//Loyalty can be changed by event above
-			nudLoyalty.Enabled = !_objContact.IsGroup;
+            //Loyalty can be changed by event above
+            nudLoyalty.Enabled = !_objContact.IsGroup;
 			nudLoyalty.Value = _objContact.Loyalty;
 			UpdateQuickText();
 		}
@@ -329,18 +335,20 @@ namespace Chummer
 		private void chkFree_CheckedChanged(object sender, EventArgs e)
 		{
 			_objContact.Free = chkFree.Checked;
-			if (FreeRatingChanged != null) FreeRatingChanged(this);
-		}
+            FreeRatingChanged?.Invoke(this);
+        }
 
 		private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
 		{
 			_objContact.Blackmail = chkBlackmail.Checked;
-		}
+            BlackmailChanged?.Invoke(this);
+        }
 
 		private void chkFamily_CheckedChanged(object sender, EventArgs e)
 		{
 			_objContact.Family = chkFamily.Checked;
-		}
+            FamilyChanged?.Invoke(this);
+        }
 		#endregion
 
 		#region Properties

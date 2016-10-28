@@ -6917,7 +6917,12 @@ namespace Chummer
         {
             get
             {
-                return Free ? 0 : (_intConnection + _intLoyalty);
+                if (Free) return 0;
+                int intReturn = 0;
+                if (Family) intReturn += 1;
+                if (Blackmail) intReturn += 2;
+                intReturn += _intConnection + _intLoyalty;
+                return intReturn;
             }
         }
 
