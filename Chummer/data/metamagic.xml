@@ -532,7 +532,7 @@
       <required>
         <allof>
           <art>Blood Magic</art>
-		  <metamagic>Cannibalize</metamagic>
+					<metamagic>Sacrifice</metamagic>
         </allof>
       </required>
       <source>SG</source>
