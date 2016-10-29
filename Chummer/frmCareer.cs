@@ -33,6 +33,7 @@ using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Drawing.Imaging;
+using Chummer.UI.Attributes;
 
 public delegate void DiceRollerOpenHandler(Object sender);
 public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
@@ -1067,6 +1068,9 @@ namespace Chummer
 			_blnIsDirty = false;
 			UpdateWindowTitle(false);
 			RefreshPasteStatus();
+
+			AttributeControl objControl = new AttributeControl(_objCharacter.STR);
+			pnlNewAttributes.Controls.Add(objControl);
 
 			// Stupid hack to get the MDI icon to show up properly.
 			this.Icon = this.Icon.Clone() as System.Drawing.Icon;

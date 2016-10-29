@@ -11,15 +11,18 @@ using Chummer.Backend.Attributes;
 namespace Chummer.UI.Attributes
 {
     public partial class AttributeControl : UserControl
-    {
-        private readonly CharacterAttrib attribute;
+	{
+		// ConnectionRatingChanged Event Handler.
+		public delegate void ValueChangedHandler(Object sender);
+		public event ValueChangedHandler ValueChanged;
+		private readonly CharacterAttrib attribute;
         public AttributeControl(CharacterAttrib attribute)
         {
             this.attribute = attribute;
             InitializeComponent();
-
-            //Display
-            lblName.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
+			
+			//Display
+			lblName.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.Value), false, DataSourceUpdateMode.OnPropertyChanged);
             lblAugmented.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.TotalValue), false, DataSourceUpdateMode.OnPropertyChanged);
             lblLimits.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -60,13 +63,87 @@ namespace Chummer.UI.Attributes
                     return;
                 }
 
-                if (!!parent.ConfirmKarmaExpense(attribute.UpgradeKarmaCostString))
+                if (parent.ConfirmKarmaExpense(attribute.UpgradeKarmaCostString))
                     return;
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;
             }
             attribute.Upgrade();
+	        ValueChanged?.Invoke(this);
         }
-    }
+
+		private void nudBase_ValueChanged(object sender, EventArgs e)
+		{// Verify that the CharacterAttribute can be improved within the rules.
+			if (!attribute.CanImproveAttribute() && (nudBase.Value + nudKarma.Value) >= nudBase.Maximum && !attribute._objCharacter.IgnoreRules)
+			{
+				try
+				{
+					attribute.Value = attribute.TotalMaximum - attribute.Value - 1;
+					ShowAttributeRule();
+				}
+				catch
+				{
+					nudKarma.Value = 0;
+				}
+			}
+			else if ((nudBase.Value + nudKarma.Value) > nudBase.Maximum)
+			{
+				try
+				{
+					nudKarma.Value = nudBase.Maximum - nudBase.Value;
+				}
+				catch
+				{
+					nudKarma.Value = 0;
+				}
+			}
+
+			attribute.Base = Convert.ToInt32(nudBase.Value);
+			attribute.Karma = Convert.ToInt32(nudKarma.Value);
+			attribute.Value = Convert.ToInt32(nudBase.Value) + Convert.ToInt32(nudKarma.Value);
+			ValueChanged?.Invoke(this);
+		}
+
+		private void nudKarma_ValueChanged(object sender, EventArgs e)
+		{
+			// Verify that the CharacterAttribute can be improved within the rules.
+			if (!attribute.CanImproveAttribute() && (nudBase.Value + nudKarma.Value) >= nudBase.Maximum && !attribute._objCharacter.IgnoreRules)
+			{
+				try
+				{
+					nudKarma.Value = nudBase.Maximum - nudBase.Value - 1;
+					ShowAttributeRule();
+				}
+				catch
+				{
+					nudKarma.Value = 0;
+				}
+			}
+			else if ((nudBase.Value + nudKarma.Value) > nudBase.Maximum)
+			{
+				try
+				{
+					nudKarma.Value = nudBase.Maximum - nudBase.Value;
+				}
+				catch
+				{
+					nudKarma.Value = 0;
+				}
+			}
+
+			attribute.Karma = Convert.ToInt32(nudKarma.Value);
+			attribute.Base = Convert.ToInt32(nudBase.Value);
+			attribute.Value = Convert.ToInt32(nudBase.Value) + Convert.ToInt32(nudKarma.Value);
+			ValueChanged?.Invoke(this);
+		}
+
+		/// <summary>
+		/// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
+		/// </summary>
+		public void ShowAttributeRule()
+		{
+			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"), LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+	}
 }

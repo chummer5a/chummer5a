@@ -1106,12 +1106,150 @@ namespace Chummer.Backend.Attributes
 
         }
 
+	    public virtual int TotalKarmaCost()
+	    {
+		    int intCost = 0;
+		    if (!_objCharacter.Options.AlternateMetatypeAttributeKarma)
+		    {
+			    for (int i = 1; i <= Karma; i++)
+			    {
+				    if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
+					    x.Name == "Myostatin Inhibitor") != null)
+				    {
+					    intCost += ((Convert.ToInt32(Base) + i)*_objCharacter.Options.KarmaAttribute) - 2;
+				    }
+				    else
+				    {
+					    intCost += ((Convert.ToInt32(Base) + i)*_objCharacter.Options.KarmaAttribute);
+				    }
+			    }
+		    }
+		    else
+		    {
+				for (int i = 1; i <= Karma; i++)
+				{
+					if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
+						x.Name == "Myostatin Inhibitor") != null)
+					{
+						intCost += (Convert.ToInt32(1 + i) * _objCharacter.Options.KarmaAttribute) - 2;
+					}
+					else
+					{
+						intCost += (Convert.ToInt32(1 + i) * _objCharacter.Options.KarmaAttribute);
+					}
+					
+				}
+			}
+		    return intCost;
+	    }
+
         public bool CanUpgradeCareer
         {
             get { return _objCharacter.Karma >= UpgradeKarmaCost() && TotalMaximum > Value; }
         }
 
-        [NotifyPropertyChangedInvocator]
+		/// <summary>
+		/// Check if any other CharacterAttribute is already at its Metatype Maximum.
+		/// </summary>
+		public bool CanImproveAttribute()
+		{
+			CharacterAttrib objAttribute = this;
+			bool blnAtMaximum = false;
+			if (_objCharacter.Created)
+			{
+				return CanUpgradeCareer;
+			}
+			if (_objCharacter.Options.Allow2ndMaxAttribute)
+			{
+				if (objAttribute.Abbrev != "STR")
+				{
+					if (((_objCharacter.STR.Base + _objCharacter.STR.Karma) == _objCharacter.STR.TotalMaximum) && _objCharacter.STR.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "BOD")
+				{
+					if (((_objCharacter.BOD.Base + _objCharacter.BOD.Karma) == _objCharacter.BOD.TotalMaximum) && _objCharacter.BOD.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "AGI")
+				{
+					if (((_objCharacter.AGI.Base + _objCharacter.AGI.Karma) == _objCharacter.AGI.TotalMaximum) && _objCharacter.AGI.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "REA")
+				{
+					if (((_objCharacter.REA.Base + _objCharacter.REA.Karma) == _objCharacter.REA.TotalMaximum) && _objCharacter.REA.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "CHA")
+				{
+					if (((_objCharacter.CHA.Base + _objCharacter.CHA.Karma) == _objCharacter.CHA.TotalMaximum) && _objCharacter.CHA.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "INT")
+				{
+					if (((_objCharacter.INT.Base + _objCharacter.INT.Karma) == _objCharacter.INT.TotalMaximum) && _objCharacter.INT.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "WIL")
+				{
+					if (((_objCharacter.WIL.Base + _objCharacter.WIL.Karma) == _objCharacter.WIL.TotalMaximum) && _objCharacter.WIL.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "LOG")
+				{
+					if (((_objCharacter.LOG.Base + _objCharacter.LOG.Karma) == _objCharacter.LOG.TotalMaximum) && _objCharacter.LOG.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+			}
+			else
+			{
+				if (objAttribute.Abbrev != "STR")
+				{
+					if (((_objCharacter.STR.Base + _objCharacter.STR.Karma) == _objCharacter.STR.TotalMaximum) && _objCharacter.STR.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "BOD")
+				{
+					if (((_objCharacter.BOD.Base + _objCharacter.BOD.Karma) == _objCharacter.BOD.TotalMaximum) && _objCharacter.BOD.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "AGI")
+				{
+					if (((_objCharacter.AGI.Base + _objCharacter.AGI.Karma) == _objCharacter.AGI.TotalMaximum) && _objCharacter.AGI.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "REA")
+				{
+					if (((_objCharacter.REA.Base + _objCharacter.REA.Karma) == _objCharacter.REA.TotalMaximum) && _objCharacter.REA.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "CHA")
+				{
+					if (((_objCharacter.CHA.Base + _objCharacter.CHA.Karma) == _objCharacter.CHA.TotalMaximum) && _objCharacter.CHA.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "INT")
+				{
+					if (((_objCharacter.INT.Base + _objCharacter.INT.Karma) == _objCharacter.INT.TotalMaximum) && _objCharacter.INT.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "WIL")
+				{
+					if (((_objCharacter.WIL.Base + _objCharacter.WIL.Karma) == _objCharacter.WIL.TotalMaximum) && _objCharacter.WIL.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+				if (objAttribute.Abbrev != "LOG")
+				{
+					if (((_objCharacter.LOG.Base + _objCharacter.LOG.Karma) == _objCharacter.LOG.TotalMaximum) && _objCharacter.LOG.TotalMaximum != 0)
+						blnAtMaximum = true;
+				}
+			}
+
+			return !blnAtMaximum;
+		}
+
+		[NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

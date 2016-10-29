@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using Chummer.Backend.Equipment;
 using Chummer.UI.Attributes;
+using Chummer.Backend.Attributes;
 
 namespace Chummer
 {
@@ -53,6 +54,8 @@ namespace Chummer
         public int contactConnection = 0;
 	    private StoryBuilder _objStoryBuilder;
 		private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
+		List<CharacterAttrib> lstPrimaryAttributes = new List<CharacterAttrib>();
+		List<CharacterAttrib> lstSpecialAttributes = new List<CharacterAttrib>();
 
 		// Create the XmlManager that will handle finding all of the XML files.
 		private ImprovementManager _objImprovementManager;
@@ -205,25 +208,6 @@ namespace Chummer
 			tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
 			lblQualityBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
 
-			// Set the Statusbar Labels if we're using Karma to build.
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                
-                //TODO: Fix the UI for karmagen
-
-                nudAGI.Enabled = false;
-                nudBOD.Enabled = false;
-                nudSTR.Enabled = false;
-                nudREA.Enabled = false;
-                nudINT.Enabled = false;
-                nudCHA.Enabled = false;
-                nudLOG.Enabled = false;
-                nudWIL.Enabled = false;
-                nudEDG.Enabled = false;
-                nudRES.Enabled = false;
-                nudMAG.Enabled = false;
-
-            }
             nudNuyen.Value = _objCharacter.NuyenBP;
 
             // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
@@ -355,40 +339,11 @@ namespace Chummer
             txtPlayerName.Text = _objCharacter.PlayerName;
 
             // Check for Special Attributes.
-            lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
-            lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-            if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
-            {
-                nudMAG.Enabled = _objCharacter.MAGEnabled;
-            }
-            nudKMAG.Enabled = _objCharacter.MAGEnabled;
-            lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
 	        nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
 	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
-
-			if (_objCharacter.Metatype == "A.I.")
-			{
-				lblDEPAug.Enabled = true;
-				lblDEPLabel.Enabled = true;
-				if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
-				{ 
-					nudDEP.Enabled = true;
-				}
-				nudKDEP.Enabled = true;
-				lblDEPMetatype.Enabled = true;
-			}
-
-            lblRESLabel.Enabled = _objCharacter.RESEnabled;
-            lblRESAug.Enabled = _objCharacter.RESEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma || _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule)
-            {
-                nudRES.Enabled = _objCharacter.RESEnabled;
-            }
-            nudKRES.Enabled = _objCharacter.RESEnabled;
-            lblRESMetatype.Enabled = _objCharacter.RESEnabled;
 
             // Define the XML objects that will be used.
             XmlDocument objXmlDocument = new XmlDocument();
@@ -1034,24 +989,8 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.EndsWith("Sprite"))
-            {
-                lblBODLabel.Enabled = false;
-                nudBOD.Enabled = false;
-                lblAGILabel.Enabled = false;
-                nudAGI.Enabled = false;
-                lblREALabel.Enabled = false;
-                nudREA.Enabled = false;
-                lblSTRLabel.Enabled = false;
-                nudSTR.Enabled = false;
-                lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributePilot");
-                lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeResponse");
-                lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeFirewall");
-                lblWILLabel.Enabled = false;
-                nudWIL.Enabled = false;
-            }
-            else if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+			// If this is a Sprite, re-label the Mental CharacterAttribute Labels.
+			if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
             {
                 lblRatingLabel.Visible = true;
                 lblRating.Visible = true;
@@ -1067,16 +1006,6 @@ namespace Chummer
                 nudSignal.Visible = true;
                 nudSignal.Enabled = true;
                 nudSignal.Value = _objCharacter.Signal;
-
-                // Disable the Physical CharacterAttribute controls.
-                lblBODLabel.Enabled = false;
-                lblAGILabel.Enabled = false;
-                lblREALabel.Enabled = false;
-                lblSTRLabel.Enabled = false;
-                nudBOD.Enabled = false;
-                nudAGI.Enabled = false;
-                nudREA.Enabled = false;
-                nudSTR.Enabled = false;
             }
 
             mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
@@ -1098,10 +1027,38 @@ namespace Chummer
             UpdateInitiationGradeTree();
             UpdateCharacterInfo();
 
-            AttributeControl objControl = new AttributeControl(_objCharacter.STR);
-            pnlNewAttributes.Controls.Add(objControl);
+			lstPrimaryAttributes.Add(_objCharacter.STR);
+			lstPrimaryAttributes.Add(_objCharacter.AGI);
+			lstPrimaryAttributes.Add(_objCharacter.BOD);
+			lstPrimaryAttributes.Add(_objCharacter.REA);
+			lstPrimaryAttributes.Add(_objCharacter.WIL);
+			lstPrimaryAttributes.Add(_objCharacter.LOG);
+			lstPrimaryAttributes.Add(_objCharacter.CHA);
+			lstPrimaryAttributes.Add(_objCharacter.INT);
+			
+			lstSpecialAttributes.Add(_objCharacter.EDG);
+			if (_objCharacter.MAGEnabled)
+	        {
+				lstSpecialAttributes.Add(_objCharacter.MAG);
+	        }
+			if (_objCharacter.RESEnabled)
+			{
+				lstSpecialAttributes.Add(_objCharacter.RES);
+			}
+			if (_objCharacter.Metatype == "A.I.")
+			{
+				lstSpecialAttributes.Add(_objCharacter.DEP);
+			}
+	        foreach (AttributeControl objControl in lstPrimaryAttributes.Select(objAttribute => new AttributeControl(objAttribute)))
+	        {
+		        pnlNewAttributes.Controls.Add(objControl);
+			}
+			foreach (AttributeControl objControl in lstSpecialAttributes.Select(objAttribute => new AttributeControl(objAttribute)))
+			{
+				pnlNewAttributes.Controls.Add(objControl);
+			}
 
-            _blnIsDirty = false;
+			_blnIsDirty = false;
             UpdateWindowTitle(false);
             RefreshPasteStatus();
 
@@ -1347,14 +1304,6 @@ namespace Chummer
                 return;
 
             // Change to the status of MAG being enabled.
-            lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
-            lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
-            {
-                nudMAG.Enabled = _objCharacter.MAGEnabled;
-            }
-            nudKMAG.Enabled = _objCharacter.MAGEnabled;
-            lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
@@ -1367,9 +1316,6 @@ namespace Chummer
                 int intEssenceLoss = 0;
                 if (!_objOptions.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
-                nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
-                nudMAG.Maximum = _objCharacter.MAG.MetatypeMaximum;
-                nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum;
 
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
@@ -1389,11 +1335,13 @@ namespace Chummer
             {
                 ClearInitiationTab();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
-                // Put MAG back to the Metatype minimum.
-                nudMAG.Value = nudMAG.Minimum;
-                nudKMAG.Value = nudKMAG.Minimum;
             }
-        }
+			foreach (AttributeControl objControl in pnlNewAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "MAG"))
+			{
+				objControl.Visible = _objCharacter.MAGEnabled;
+				break;
+			}
+		}
 
         private void objCharacter_RESEnabledChanged(object sender)
         {
@@ -1401,27 +1349,16 @@ namespace Chummer
                 return;
 
             // Change to the status of RES being enabled.
-            lblRESLabel.Enabled = _objCharacter.RESEnabled;
-            lblRESAug.Enabled = _objCharacter.RESEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
-            {
-                nudRES.Enabled = _objCharacter.RESEnabled;
-            }
-            nudKRES.Enabled = _objCharacter.RESEnabled;
-            lblRESMetatype.Enabled = _objCharacter.RESEnabled;
 
             if (_objCharacter.RESEnabled)
             {
                 int intEssenceLoss = 0;
                 if (!_objOptions.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
-                nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
-                nudRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
                 // If the character options permit submersion in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
 					UpdateInitiationCost();
-					nudKRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                     {
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -1436,11 +1373,14 @@ namespace Chummer
             {
                 ClearInitiationTab();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
-                // Put RES back to the Metatype minimum.
-                nudRES.Value = nudRES.Minimum;
-                nudKRES.Value = nudKRES.Minimum;
-            }
-        }
+				// Put RES back to the Metatype minimum.
+			}
+			foreach (AttributeControl objControl in pnlNewAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "RES"))
+			{
+				objControl.Visible = _objCharacter.MAGEnabled;
+				break;
+			}
+		}
 
         private void objCharacter_AdeptTabEnabledChanged(object sender)
         {
@@ -3577,10 +3517,11 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+		#endregion
 
-        #region CharacterAttribute Events
-        private void nudBOD_ValueChanged(object sender, EventArgs e)
+		#region CharacterAttribute Events
+		/*
+		private void nudBOD_ValueChanged(object sender, EventArgs e)
         {
             // Don't attempt to do anything while the data is still being populated.
             if (_blnLoading)
@@ -4032,7 +3973,7 @@ namespace Chummer
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
-
+		*/
 		private void nudMysticAdeptMAGMagician_ValueChanged(object sender, EventArgs e)
         {
             _objCharacter.MAGMagician = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
@@ -4917,8 +4858,8 @@ namespace Chummer
             objSpriteControl.DeleteSpirit += objSprite_DeleteSpirit;
             objSpriteControl.FileNameChanged += objSprite_FileNameChanged;
 
-            objSpriteControl.ForceMaximum = Convert.ToInt32(nudRES.Value);
-            objSpriteControl.Force = Convert.ToInt32(nudRES.Value);
+            objSpriteControl.ForceMaximum = Convert.ToInt32(_objCharacter.RES.Value);
+            objSpriteControl.Force = Convert.ToInt32(_objCharacter.RES.Value);
             objSpriteControl.RebuildSpiritList(_objCharacter.TechnomancerStream);
 
             objSpriteControl.Top = i * objSpriteControl.Height;
@@ -13822,61 +13763,6 @@ namespace Chummer
             // Also update the Maximum and Augmented Maximum values displayed.
             _blnSkipUpdate = true;
 
-            nudBOD.Maximum = _objCharacter.BOD.TotalMaximum;
-            nudAGI.Maximum = _objCharacter.AGI.TotalMaximum;
-            nudREA.Maximum = _objCharacter.REA.TotalMaximum;
-            nudSTR.Maximum = _objCharacter.STR.TotalMaximum;
-            nudCHA.Maximum = _objCharacter.CHA.TotalMaximum;
-            nudINT.Maximum = _objCharacter.INT.TotalMaximum;
-            nudLOG.Maximum = _objCharacter.LOG.TotalMaximum;
-            nudWIL.Maximum = _objCharacter.WIL.TotalMaximum;
-            nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-            {
-                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-                nudKRES.Maximum = _objCharacter.RES.TotalMaximum;
-            }
-            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-            nudRES.Maximum = _objCharacter.RES.TotalMaximum;
-			nudDEP.Maximum = _objCharacter.DEP.TotalMaximum;
-
-			nudKBOD.Value = _objCharacter.BOD.Karma;
-            nudKAGI.Value = _objCharacter.AGI.Karma;
-            nudKREA.Value = _objCharacter.REA.Karma;
-            nudKSTR.Value = _objCharacter.STR.Karma;
-            nudKCHA.Value = _objCharacter.CHA.Karma;
-            nudKINT.Value = _objCharacter.INT.Karma;
-            nudKLOG.Value = _objCharacter.LOG.Karma;
-	        nudKWIL.Value = _objCharacter.WIL.Karma;
-            nudKEDG.Value = _objCharacter.EDG.Karma;
-            nudKMAG.Value = _objCharacter.MAG.Karma;
-            nudKRES.Value = _objCharacter.RES.Karma;
-			nudKDEP.Value = _objCharacter.DEP.Karma;
-
-			nudBOD.Minimum = _objCharacter.BOD.TotalMinimum;
-			nudAGI.Minimum = _objCharacter.AGI.TotalMinimum;
-			nudREA.Minimum = _objCharacter.REA.TotalMinimum;
-			nudSTR.Minimum = _objCharacter.STR.TotalMinimum;
-			nudCHA.Minimum = _objCharacter.CHA.TotalMinimum;
-			nudWIL.Minimum = _objCharacter.WIL.TotalMinimum;
-			nudINT.Minimum = _objCharacter.INT.TotalMinimum;
-			nudLOG.Minimum = _objCharacter.LOG.TotalMinimum;
-			nudEDG.Minimum = _objCharacter.EDG.TotalMinimum;
-			nudMAG.Minimum = _objCharacter.MAG.TotalMinimum;
-			nudRES.Minimum = _objCharacter.RES.TotalMinimum;
-			nudDEP.Minimum = _objCharacter.DEP.TotalMinimum;
-
-			nudMAG.Value = _objCharacter.MAG.Value;
-			nudRES.Value = _objCharacter.RES.Value;
-			nudDEP.Value = _objCharacter.DEP.Value;
-
-            // Quick Fix
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                nudMAG.Value = _objCharacter.MAG.Base;
-                nudRES.Value = _objCharacter.RES.Base;
-            }
-
 			// Metatypes cost Karma.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
@@ -13903,7 +13789,7 @@ namespace Chummer
         /// Check if any other CharacterAttribute is already at its Metatype Maximum.
         /// </summary>
         /// <param name="strAttribute">NumericUpDown Control that is calling this function.</param>
-        private bool CanImproveAttribute(string strAttribute)
+        /*private bool CanImproveAttribute(string strAttribute)
         {
             bool blnAtMaximum = false;
 
@@ -13996,7 +13882,7 @@ namespace Chummer
 
             return !blnAtMaximum;
         }
-
+		*/
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
@@ -14006,119 +13892,31 @@ namespace Chummer
             // Special Attributes are not subject to the 1/2 of max BP rule.
             int intBP = 0;
 			int intAtt = 0;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
-		        _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                // Get the total of "free points" spent
-                intAtt += Convert.ToInt32(nudBOD.Value - nudBOD.Minimum);
-                intAtt += Convert.ToInt32(nudAGI.Value - nudAGI.Minimum);
-                intAtt += Convert.ToInt32(nudREA.Value - nudREA.Minimum);
-                intAtt += Convert.ToInt32(nudSTR.Value - nudSTR.Minimum);
-                intAtt += Convert.ToInt32(nudCHA.Value - nudCHA.Minimum);
-                intAtt += Convert.ToInt32(nudINT.Value - nudINT.Minimum);
-                intAtt += Convert.ToInt32(nudLOG.Value - nudLOG.Minimum);
-                intAtt += Convert.ToInt32(nudWIL.Value - nudWIL.Minimum);
+			foreach (CharacterAttrib objAttribute in lstPrimaryAttributes)
+			{
+				if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+				_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+				{
+					intAtt += Convert.ToInt32(objAttribute.Base - objAttribute.TotalMinimum);
+					_objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
+				}
+				intBP += objAttribute.TotalKarmaCost();
+			}
+			
 
-                _objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
-		    }
-	        if (!_objOptions.AlternateMetatypeAttributeKarma)
-	        {
-		        // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
-		        for (int i = 1; i <= nudKBOD.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudBOD.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        for (int i = 1; i <= nudKAGI.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudAGI.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        for (int i = 1; i <= nudKREA.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudREA.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        for (int i = 1; i <= nudKSTR.Value; i++)
-		        {
-			        if (_objCharacter.Cyberware.Find(x =>
-				        x.Name == "Myostatin Inhibitor") != null)
-			        {
-				        intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute) - 2;
-			        }
-			        else
-			        {
-				        intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
-			        }
-		        }
-		        for (int i = 1; i <= nudKCHA.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudCHA.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        for (int i = 1; i <= nudKINT.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudINT.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        for (int i = 1; i <= nudKLOG.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudLOG.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        for (int i = 1; i <= nudKWIL.Value; i++)
-		        {
-			        intBP += ((Convert.ToInt32(nudWIL.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-	        }
-	        else
-	        {
-				// For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma. Treat the karma cost as though we were raising it from 1.
-				for (int i = 1; i <= nudKBOD.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-				for (int i = 1; i <= nudKAGI.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-				for (int i = 1; i <= nudKREA.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-				for (int i = 1; i <= nudKSTR.Value; i++)
-				{
-					if (_objCharacter.Cyberware.Find(x =>
-						x.Name == "Myostatin Inhibitor") != null)
+			switch (_objCharacter.BuildMethod)
+			{
+				case CharacterBuildMethod.Priority:
+				case CharacterBuildMethod.SumtoTen:
+					if (intBP > 0)
 					{
-						intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute) - 2;
+						lblPBuildAttributes.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString(), intBP.ToString());
 					}
 					else
 					{
-						intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+						lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString());
 					}
-				}
-				for (int i = 1; i <= nudKCHA.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-				for (int i = 1; i <= nudKINT.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-				for (int i = 1; i <= nudKLOG.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-				for (int i = 1; i <= nudKWIL.Value; i++)
-				{
-					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
-				}
-			}
-			if ((_objCharacter.BuildMethod == CharacterBuildMethod.Priority) || (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen))
-			{
-				if (intBP > 0)
-				{
-					lblPBuildAttributes.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString(), intBP.ToString());
-				}
-				else
-				{
-					lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString());
-				}
+					break;
 			}
 			return intBP;
             }
@@ -14130,81 +13928,23 @@ namespace Chummer
         {
             int intEDG = 0,intMAG = 0, intRES = 0, intDEP = 0;
 			int intAtt = 0, intBP;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
-	            _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-	        {
-		        // Get the total of "free points" spent
-		        intAtt += Convert.ToInt32(nudEDG.Value - nudEDG.Minimum);
-		        if (_objCharacter.MAGEnabled)
-			        intAtt += Convert.ToInt32(nudMAG.Value - _objCharacter.MAG.TotalMinimum);
-		        if (_objCharacter.RESEnabled)
-			        intAtt += Convert.ToInt32(nudRES.Value - nudRES.Minimum);
-	            if (_objCharacter.Metatype == "A.I.")
-	                intAtt += Convert.ToInt32(nudDEP.Value - nudDEP.Minimum);
-	        }
-
-			_objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
-
-	        if (!_objOptions.AlternateMetatypeAttributeKarma)
-	        {
-		        // For each attribute, figure out the actual karma cost of attributes raised with karma
-		        for (int i = 1; i <= nudKEDG.Value; i++)
-		        {
-			        intEDG += ((Convert.ToInt32(nudEDG.Value) + i)*_objOptions.KarmaAttribute);
-		        }
-		        if (_objCharacter.MAGEnabled)
-		        {
-			        for (int i = 1; i <= nudKMAG.Value; i++)
-			        {
-				        intMAG += ((Convert.ToInt32(nudMAG.Value) + i)*_objOptions.KarmaAttribute);
-			        }
-		        }
-		        if (_objCharacter.RESEnabled)
-		        {
-			        for (int i = 1; i <= nudKRES.Value; i++)
-			        {
-				        intRES += ((Convert.ToInt32(nudRES.Value) + i)*_objOptions.KarmaAttribute);
-			        }
-		        }
-		        if (_objCharacter.Metatype == "A.I.")
-		        {
-			        for (int i = 1; i <= nudKDEP.Value; i++)
-			        {
-				        intDEP += ((Convert.ToInt32(nudDEP.Value) + i)*_objOptions.KarmaAttribute);
-			        }
-		        }
-	        }
-	        else
-	        {
-				// For each attribute, figure out the actual karma cost of attributes raised with karma
-				for (int i = 1; i <= nudKEDG.Value; i++)
+			foreach (CharacterAttrib objAttribute in lstSpecialAttributes)
+			{
+				if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+				_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 				{
-					intEDG += ((1 + i) * _objOptions.KarmaAttribute);
-				}
-				if (_objCharacter.MAGEnabled)
-				{
-					for (int i = 1; i <= nudKMAG.Value; i++)
-					{
-						intMAG += ((1 + i) * _objOptions.KarmaAttribute);
-					}
-				}
-				if (_objCharacter.RESEnabled)
-				{
-					for (int i = 1; i <= nudKRES.Value; i++)
-					{
-						intRES += ((1 + i) * _objOptions.KarmaAttribute);
-					}
-				}
-				if (_objCharacter.Metatype == "A.I.")
-				{
-					for (int i = 1; i <= nudKDEP.Value; i++)
-					{
-						intDEP += ((1 + i) * _objOptions.KarmaAttribute);
-					}
+					intAtt += Convert.ToInt32(objAttribute.Base - objAttribute.TotalMinimum);
 				}
 			}
 
-	        // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
+			_objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
+
+			intEDG = _objCharacter.EDG.TotalKarmaCost();
+			intMAG = _objCharacter.MAG.TotalKarmaCost();
+			intRES = _objCharacter.RES.TotalKarmaCost();
+			intDEP = _objCharacter.DEP.TotalKarmaCost();
+
+			// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
 			int intEssenceLoss = _objOptions.ESSLossReducesMaximumOnly ? 0 : _objCharacter.EssencePenalty;
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
@@ -14212,11 +13952,11 @@ namespace Chummer
             {
                 if (_objCharacter.MAGEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    intMAG += intEssenceLoss * Convert.ToInt32(nudMAG.Value+nudKMAG.Value) *  _objOptions.KarmaAttribute;                
+                    intMAG += intEssenceLoss * Convert.ToInt32(_objCharacter.MAG.Base + _objCharacter.MAG.Karma) *  _objOptions.KarmaAttribute;                
                 }
                 if (_objCharacter.RESEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    intRES += intEssenceLoss * Convert.ToInt32(nudRES.Value + nudKRES.Value) * _objOptions.KarmaAttribute;
+                    intRES += intEssenceLoss * Convert.ToInt32(_objCharacter.RES.Base + _objCharacter.RES.Karma) * _objOptions.KarmaAttribute;
                 }
             }
 
@@ -14240,10 +13980,10 @@ namespace Chummer
 
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
-					lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt).ToString(), _objCharacter.TotalSpecial.ToString(), intBP.ToString());
-				}
-                else
-				{
+				lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt), _objCharacter.TotalSpecial, intBP);
+			}
+            else
+			{
 				lblSpecialAttributesBP.Text = intBP.ToString();
             }
 			return intBP;
@@ -15193,7 +14933,7 @@ namespace Chummer
                 }
 
                 // If this is a Mutant Critter, determine their Essence loss: -1 for each of: Every 2 points added to a Skill, Each Quality (or Quality Rating). This can be offset by a Negative Quality (or Quality Rating)
-                if (_objCharacter.MetatypeCategory == "Mutant Critters")
+                /*if (_objCharacter.MetatypeCategory == "Mutant Critters")
                 {
                     // Remove any current Essence Improvements from MutantCritter.
                     _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MutantCritter, "");
@@ -15271,7 +15011,7 @@ namespace Chummer
                     lblESSMax.Text = decESS.ToString();
                     tssEssence.Text = string.Format("{0:0.00}", decESS);
                     lblPBuildEssence.Text = string.Format("{0:0.00}", decESS);
-                }
+                }*/
 
                 _blnSkipUpdate = false;
 
@@ -15467,8 +15207,8 @@ namespace Chummer
                     lblCyberlimbSTR.Visible = true;
                     lblCyberlimbSTRLabel.Visible = true;
 
-                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
-                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
+                    //lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
+                    //lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
                     lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
                     lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
                 }
@@ -20277,7 +20017,7 @@ namespace Chummer
             if (objXmlKit["attributes"] != null)
             {
                 // Reset all Attributes back to 1 so we don't go over any BP limits.
-                nudBOD.Value = nudBOD.Minimum;
+                /*nudBOD.Value = nudBOD.Minimum;
                 nudAGI.Value = nudAGI.Minimum;
                 nudREA.Value = nudREA.Minimum;
                 nudSTR.Value = nudSTR.Minimum;
@@ -20327,7 +20067,7 @@ namespace Chummer
                             nudEDG.Value = Convert.ToInt32(objXmlAttribute.InnerText) - (6 - _objCharacter.EDG.MetatypeMaximum);
                             break;
                     }
-                }
+                }*/
             }
 
            //TODO: PACKS SKILLS?
@@ -21423,79 +21163,6 @@ namespace Chummer
             // Populate the Qualities list.
 			RefreshQualities(treQualities,cmsQuality,true);
 
-            _blnSkipUpdate = true;
-            nudBOD.Maximum = _objCharacter.BOD.TotalMaximum;
-            nudAGI.Maximum = _objCharacter.AGI.TotalMaximum;
-            nudREA.Maximum = _objCharacter.REA.TotalMaximum;
-            nudSTR.Maximum = _objCharacter.STR.TotalMaximum;
-            nudCHA.Maximum = _objCharacter.CHA.TotalMaximum;
-            nudINT.Maximum = _objCharacter.INT.TotalMaximum;
-            nudLOG.Maximum = _objCharacter.LOG.TotalMaximum;
-            nudWIL.Maximum = _objCharacter.WIL.TotalMaximum;
-            nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-            {
-                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-                nudKRES.Maximum = _objCharacter.RES.TotalMaximum;
-            }
-            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-            nudRES.Maximum = _objCharacter.RES.TotalMaximum;
-
-            nudBOD.Minimum = _objCharacter.BOD.MetatypeMinimum;
-            nudAGI.Minimum = _objCharacter.AGI.MetatypeMinimum;
-            nudREA.Minimum = _objCharacter.REA.MetatypeMinimum;
-            nudSTR.Minimum = _objCharacter.STR.MetatypeMinimum;
-            nudCHA.Minimum = _objCharacter.CHA.MetatypeMinimum;
-            nudINT.Minimum = _objCharacter.INT.MetatypeMinimum;
-            nudLOG.Minimum = _objCharacter.LOG.MetatypeMinimum;
-            nudWIL.Minimum = _objCharacter.WIL.MetatypeMinimum;
-            nudEDG.Minimum = _objCharacter.EDG.MetatypeMinimum;
-            nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
-            nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
-
-            _objCharacter.BOD.Value = _objCharacter.BOD.MetatypeMinimum + intBOD;
-            _objCharacter.AGI.Value = _objCharacter.AGI.MetatypeMinimum + intAGI;
-            _objCharacter.REA.Value = _objCharacter.REA.MetatypeMinimum + intREA;
-            _objCharacter.STR.Value = _objCharacter.STR.MetatypeMinimum + intSTR;
-            _objCharacter.CHA.Value = _objCharacter.CHA.MetatypeMinimum + intCHA;
-            _objCharacter.INT.Value = _objCharacter.INT.MetatypeMinimum + intINT;
-            _objCharacter.LOG.Value = _objCharacter.LOG.MetatypeMinimum + intLOG;
-            _objCharacter.WIL.Value = _objCharacter.WIL.MetatypeMinimum + intWIL;
-            _objCharacter.EDG.Value = _objCharacter.EDG.MetatypeMinimum + intEDG;
-            _objCharacter.MAG.Value = _objCharacter.MAG.MetatypeMinimum + intMAG;
-            _objCharacter.RES.Value = _objCharacter.RES.MetatypeMinimum + intRES;
-
-            nudBOD.Value = _objCharacter.BOD.Value;
-            nudAGI.Value = _objCharacter.AGI.Value;
-            nudREA.Value = _objCharacter.REA.Value;
-            nudSTR.Value = _objCharacter.STR.Value;
-            nudCHA.Value = _objCharacter.CHA.Value;
-            nudINT.Value = _objCharacter.INT.Value;
-            nudLOG.Value = _objCharacter.LOG.Value;
-            nudWIL.Value = _objCharacter.WIL.Value;
-            nudEDG.Value = _objCharacter.EDG.Value;
-            if (_objCharacter.MAG.Value < 1)
-            {
-                if (nudMAG.Maximum < 1)
-                    nudMAG.Maximum = 1;
-                if (nudMAG.Minimum < 1)
-                    nudMAG.Minimum = 1;
-                nudMAG.Value = 1;
-            }
-            else
-                nudMAG.Value = _objCharacter.MAG.Value;
-		    if (_objCharacter.RES.Value < 1)
-		    {
-		        if (nudRES.Maximum < 1)
-		            nudRES.Maximum = 1;
-		        if (nudRES.Minimum < 1)
-		            nudRES.Minimum = 1;
-                nudRES.Value = 1;
-		    }
-		    else
-		        nudRES.Value = _objCharacter.RES.Value;
-		    _blnSkipUpdate = false;
-
             XmlDocument objMetatypeDoc = new XmlDocument();
             XmlNode objMetatypeNode;
             string strMetatype = "";
@@ -21703,19 +21370,6 @@ namespace Chummer
             tipTooltip.SetToolTip(lblJudgeIntentionsLabel, LanguageManager.Instance.GetString("Tip_OtherJudgeIntentions"));
             tipTooltip.SetToolTip(lblLiftCarryLabel, LanguageManager.Instance.GetString("Tip_OtherLiftAndCarry"));
             tipTooltip.SetToolTip(lblMemoryLabel, LanguageManager.Instance.GetString("Tip_OtherMemory"));
-
-            // CharacterAttribute Labels.
-            lblBODLabel.Text = LanguageManager.Instance.GetString("String_AttributeBODLong") + " (" + LanguageManager.Instance.GetString("String_AttributeBODShort") + ")";
-            lblAGILabel.Text = LanguageManager.Instance.GetString("String_AttributeAGILong") + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + ")";
-            lblREALabel.Text = LanguageManager.Instance.GetString("String_AttributeREALong") + " (" + LanguageManager.Instance.GetString("String_AttributeREAShort") + ")";
-            lblSTRLabel.Text = LanguageManager.Instance.GetString("String_AttributeSTRLong") + " (" + LanguageManager.Instance.GetString("String_AttributeSTRShort") + ")";
-            lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributeCHALong") + " (" + LanguageManager.Instance.GetString("String_AttributeCHAShort") + ")";
-            lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeINTLong") + " (" + LanguageManager.Instance.GetString("String_AttributeINTShort") + ")";
-            lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeLOGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeLOGShort") + ")";
-            lblWILLabel.Text = LanguageManager.Instance.GetString("String_AttributeWILLong") + " (" + LanguageManager.Instance.GetString("String_AttributeWILShort") + ")";
-            lblEDGLabel.Text = LanguageManager.Instance.GetString("String_AttributeEDGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeEDGShort") + ")";
-            lblMAGLabel.Text = LanguageManager.Instance.GetString("String_AttributeMAGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeMAGShort") + ")";
-            lblRESLabel.Text = LanguageManager.Instance.GetString("String_AttributeRESLong") + " (" + LanguageManager.Instance.GetString("String_AttributeRESShort") + ")";
 
             // Reposition controls based on their new sizes.
             // Common Tab.
@@ -23016,7 +22670,7 @@ namespace Chummer
         {
 
         }
-
+		/*
         private void nudKBOD_ValueChanged(object sender, EventArgs e)
         {
             // Don't attempt to do anything while the data is still being populated.
@@ -23451,7 +23105,7 @@ namespace Chummer
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
-
+		*/
 		private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
             if (treMetamagic.SelectedNode.Level != 0)
