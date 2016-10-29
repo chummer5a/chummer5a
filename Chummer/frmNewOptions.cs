@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
+using System.Xml;
+using Chummer.Backend;
 using Chummer.Backend.Attributes.OptionDisplayAttributes;
 using Chummer.Classes;
 using Chummer.UI.Options;
@@ -133,11 +136,22 @@ namespace Chummer
 
 	    private void button3_Click(object sender, EventArgs e)
 		{
+		    /*
 			Option testOption = new Option();
 			testOption.DescriptionTag = "Tip_CombineItems";
 			testOption.ModifierTag = "Tip_SplitItems";
 			OptionsNumberControl objControl = new OptionsNumberControl(testOption);
 			flowLayoutPanel1.Controls.Add(objControl);
+            */
+
+		    using (XmlTextWriter writer = new XmlTextWriter("xmltest.xml", Encoding.UTF8){Formatting = Formatting.Indented})
+		    {
+		        ClassSaver saver = new ClassSaver();
+		        writer.WriteStartElement("settings");
+		        saver.Save(new CharacterOptions(null), writer);
+		        writer.WriteEndElement();
+		        writer.Flush();
+		    }
 		}
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)

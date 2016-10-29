@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes.OptionDisplayAttributes;
+using Chummer.Backend.Attributes.SaveAttributes;
 using Microsoft.Win32;
 
 namespace Chummer
@@ -77,8 +78,7 @@ namespace Chummer
 		private bool _blnPrintExpenses;
 		private bool _blnPrintLeadershipAlternates;
 		private bool _blnPrintNotes;
-		private bool _blnPrintSkillsWithZeroRating = true;
-		private bool _blnRestrictRecoil = true;
+	    private bool _blnRestrictRecoil = true;
 		private bool _blnSkillDefaultingIncludesModifiers;
 		private bool _blnSpecialAttributeKarmaLimit;
 		private bool _blnSpecialKarmaCostBasedOnShownValue;
@@ -233,7 +233,7 @@ namespace Chummer
 			// <confirmkarmaexpense />
 			objWriter.WriteElementString("confirmkarmaexpense", _blnConfirmKarmaExpense.ToString());
 			// <printzeroratingskills />
-			objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString());
+			objWriter.WriteElementString("printzeroratingskills", PrintSkillsWithZeroRating.ToString());
 			// <morelethalgameplay />
 			objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString());
 			// <spiritforcebasedontotalmag />
@@ -587,7 +587,7 @@ namespace Chummer
 			// Confirm Karama ExpenseTryGetField
 			objXmlNode.TryGetField("confirmkarmaexpense", out _blnConfirmKarmaExpense);
 			// Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-			objXmlNode.TryGetField("printzeroratingskills", out _blnPrintSkillsWithZeroRating);
+			//objXmlNode.TryGetField(, out PrintSkillsWithZeroRating);
 			// More Lethal Gameplay.
 			objXmlNode.TryGetField("morelethalgameplay", out _blnMoreLethalGameplay);
 			// Spirit Force Based on Total MAG.
@@ -857,7 +857,7 @@ namespace Chummer
 			// Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
 			try
 			{
-				_blnPrintSkillsWithZeroRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printzeroratingskills").ToString());
+				PrintSkillsWithZeroRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printzeroratingskills").ToString());
 				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("printzeroratingskills");
 			}
 			catch
@@ -1255,23 +1255,16 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_PrintAllSkills",false, "Printing")]
-		public bool PrintSkillsWithZeroRating
-		{
-			get
-			{
-				return _blnPrintSkillsWithZeroRating;
-			}
-			set
-			{
-				_blnPrintSkillsWithZeroRating = value;
-			}
-		}
+		[OptionAttributes("Printing")]
+		[DisplayConfiguration("Checkbox_Options_PrintAllSkills")]
+		[SavePropertyAs("printzeroratingskills")]
+		public bool PrintSkillsWithZeroRating { get; set; } = true;
 
-		/// <summary>
+	    /// <summary>
 		/// Whether or not the More Lethal Gameplay optional rule is enabled.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_MoreLethalGameplay", false,"Gameplay Options")]
+		[OptionAttributes("Gameplay Options")]
+	    [DisplayConfiguration("Checkbox_Options_MoreLethalGameplay")]
 		public bool MoreLethalGameplay
 		{
 			get
@@ -1287,7 +1280,8 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not to require licensing restricted items.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_LicenseRestricted", false, "Gameplay Options/Printing")]
+		[OptionAttributes("Gameplay Options")]  //TODO: Really?
+		[DisplayConfiguration("Checkbox_Options_LicenseRestricted")]
 		public bool LicenseRestricted
 		{
 			get
@@ -1303,7 +1297,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_MaxSpiritForce", false, "Gameplay Options/Printing")]
+		[DisplayConfiguration("Checkbox_Options_MaxSpiritForce")]
 		public bool SpiritForceBasedOnTotalMAG
 		{
 			get
@@ -1319,7 +1313,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not Defaulting on a Skill should include any Modifiers.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_EnforceSkillRating", false, "Gameplay Options/Printing")]
+		[DisplayConfiguration("Checkbox_Options_EnforceSkillRating")]
 		public bool SkillDefaultingIncludesModifiers
 		{
 			get
@@ -1335,7 +1329,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the maximum Skill rating modifiers are set.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_EnforceSkillRating", false, "Gameplay Options/Printing")]
+		[DisplayConfiguration("Checkbox_Options_EnforceSkillRating")]
 		public bool EnforceMaximumSkillRatingModifier
 		{
 			get
@@ -1351,7 +1345,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_LimitSkills", false, "Gameplay Options/Printing")]
+		[DisplayConfiguration("Checkbox_Options_LimitSkills")]
 		public bool CapSkillRating
 		{
 			get
@@ -1367,7 +1361,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_PrintExpenses", false, "Gameplay Options/Printing")]
+		[DisplayConfiguration("Checkbox_Options_PrintExpenses")]
 		public bool PrintExpenses
 		{
 			get
@@ -1383,7 +1377,7 @@ namespace Chummer
 		/// <summary>
 		/// Amount of Nuyen gained per BP spent.
 		/// </summary>
-		[OptionAttributes("Label_Options_Nuyen", false, "Gameplay Options/Printing")]
+		[DisplayConfiguration("Label_Options_Nuyen")]
 		public int NuyenPerBP
 		{
 			get
@@ -1399,7 +1393,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not characters in Karma build mode receive free Contacts equal to CHA * 2.
 		/// </summary>
-		[OptionAttributes("Checkbox_Options_Knucks",false,"Uncategorized","Tip_OptionsKnucks")]
+		[DisplayConfiguration("Checkbox_Options_Knucks")]
 		public bool KnucksUseUnarmed
 		{
 			get
@@ -2506,7 +2500,7 @@ namespace Chummer
 		/// <summary>
 		/// BP cost for each Attribute = this value.
 		/// </summary>
-		[OptionAttributes("Label_Options_BPAttribute",5,"Karma Costs")]
+		[DisplayConfiguration("Label_Options_BPAttribute","Karma Costs")]
 		public int BPAttribute
 		{
 			get
@@ -2522,7 +2516,7 @@ namespace Chummer
 		/// <summary>
 		/// BP cost to raise an Attribute to its Metatype Maximum = this value.
 		/// </summary>
-		[OptionAttributes("Label_Options_BPAttributeMax",15, "Karma Costs/More")]
+		[DisplayConfiguration("Label_Options_BPAttributeMax", "Karma Costs/More")]
 		public int BPAttributeMax
 		{
 			get
