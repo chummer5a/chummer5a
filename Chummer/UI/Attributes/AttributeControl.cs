@@ -16,7 +16,9 @@ namespace Chummer.UI.Attributes
 		public delegate void ValueChangedHandler(Object sender);
 		public event ValueChangedHandler ValueChanged;
 		private readonly CharacterAttrib attribute;
-        public AttributeControl(CharacterAttrib attribute)
+		private object sender;
+
+		public AttributeControl(CharacterAttrib attribute)
         {
             this.attribute = attribute;
             InitializeComponent();
@@ -48,7 +50,12 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private void cmdImproveATT_Click(object sender, EventArgs e)
+		public AttributeControl(object sender)
+		{
+			this.sender = sender;
+		}
+
+		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
             frmCareer parent = ParentForm as frmCareer;
             if (parent != null)
@@ -145,5 +152,10 @@ namespace Chummer.UI.Attributes
 		{
 			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"), LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
+
+	    public string AttributeName
+	    {
+		    get { return attribute.Abbrev; }
+	    }
 	}
 }

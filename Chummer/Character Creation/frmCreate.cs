@@ -18,6 +18,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -54,9 +56,10 @@ namespace Chummer
         public int contactConnection = 0;
 	    private StoryBuilder _objStoryBuilder;
 		private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
-		List<CharacterAttrib> lstPrimaryAttributes = new List<CharacterAttrib>();
-		List<CharacterAttrib> lstSpecialAttributes = new List<CharacterAttrib>();
+		ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
+		ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
 
+		
 		// Create the XmlManager that will handle finding all of the XML files.
 		private ImprovementManager _objImprovementManager;
 
@@ -95,7 +98,7 @@ namespace Chummer
             _objCharacter.FameChanged += objCharacter_FameChanged;
             _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
             _objCharacter.ErasedChanged += objCharacter_ErasedChanged;
-
+			
 	        tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
 
             GlobalOptions.Instance.MRUChanged += PopulateMRU;
@@ -1027,6 +1030,8 @@ namespace Chummer
             UpdateInitiationGradeTree();
             UpdateCharacterInfo();
 
+			lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+			lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
 			lstPrimaryAttributes.Add(_objCharacter.STR);
 			lstPrimaryAttributes.Add(_objCharacter.AGI);
 			lstPrimaryAttributes.Add(_objCharacter.BOD);
@@ -1035,7 +1040,7 @@ namespace Chummer
 			lstPrimaryAttributes.Add(_objCharacter.LOG);
 			lstPrimaryAttributes.Add(_objCharacter.CHA);
 			lstPrimaryAttributes.Add(_objCharacter.INT);
-			
+
 			lstSpecialAttributes.Add(_objCharacter.EDG);
 			if (_objCharacter.MAGEnabled)
 	        {
@@ -1049,14 +1054,6 @@ namespace Chummer
 			{
 				lstSpecialAttributes.Add(_objCharacter.DEP);
 			}
-	        foreach (AttributeControl objControl in lstPrimaryAttributes.Select(objAttribute => new AttributeControl(objAttribute)))
-	        {
-		        pnlNewAttributes.Controls.Add(objControl);
-			}
-			foreach (AttributeControl objControl in lstSpecialAttributes.Select(objAttribute => new AttributeControl(objAttribute)))
-			{
-				pnlNewAttributes.Controls.Add(objControl);
-			}
 
 			_blnIsDirty = false;
             UpdateWindowTitle(false);
@@ -1069,7 +1066,36 @@ namespace Chummer
 	        
         }
 
-        private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)
+		private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+		{
+			switch (notifyCollectionChangedEventArgs.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
+					{
+						AttributeControl objControl = new AttributeControl(objAttrib);
+						objControl.ValueChanged += objAttribute_ValueChanged;
+						pnlNewAttributes.Controls.Add(objControl);
+					}
+					break;
+					case NotifyCollectionChangedAction.Remove:
+					foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
+					{
+						foreach (
+							AttributeControl objControl in
+								pnlNewAttributes.Controls.Cast<AttributeControl>()
+									.Where(objControl => objControl.AttributeName == objAttrib.Abbrev))
+						{
+							objControl.ValueChanged -= objAttribute_ValueChanged;
+							pnlNewAttributes.Controls.Remove(objControl);
+							objControl.Dispose();
+						}
+					}
+					break;
+			}
+		}
+
+		private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
 			// If there are unsaved changes to the character, as the user if they would like to save their changes.
 			if (_blnIsDirty)
@@ -1330,17 +1356,14 @@ namespace Chummer
                         chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_InitiationOrdeal");
                     }
                 }
+				lstSpecialAttributes.Add(_objCharacter.MAG);
             }
             else
-            {
-                ClearInitiationTab();
+			{
+				lstSpecialAttributes.Remove(_objCharacter.MAG);
+				ClearInitiationTab();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
             }
-			foreach (AttributeControl objControl in pnlNewAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "MAG"))
-			{
-				objControl.Visible = _objCharacter.MAGEnabled;
-				break;
-			}
 		}
 
         private void objCharacter_RESEnabledChanged(object sender)
@@ -1371,14 +1394,15 @@ namespace Chummer
             }
             else
             {
-                ClearInitiationTab();
+				foreach (AttributeControl objControl in pnlNewAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "RES"))
+				{
+					pnlNewAttributes.Controls.Remove(objControl);
+					break;
+				}
+				lstSpecialAttributes.Remove(_objCharacter.RES);
+				ClearInitiationTab();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
 				// Put RES back to the Metatype minimum.
-			}
-			foreach (AttributeControl objControl in pnlNewAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "RES"))
-			{
-				objControl.Visible = _objCharacter.MAGEnabled;
-				break;
 			}
 		}
 
@@ -4001,10 +4025,21 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+		#endregion
 
-        #region ContactControl Events
-        private void objContact_ConnectionRatingChanged(Object sender)
+		#region AttributeControl Events
+		private void objAttribute_ValueChanged(Object sender)
+		{
+			// Handle the AttributeValueChanged Event for the AttributeControl object.
+			UpdateCharacterInfo();
+
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
+		#endregion
+
+		#region ContactControl Events
+		private void objContact_ConnectionRatingChanged(Object sender)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             UpdateCharacterInfo();
@@ -13940,11 +13975,20 @@ namespace Chummer
 			_objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
 
 			intEDG = _objCharacter.EDG.TotalKarmaCost();
-			intMAG = _objCharacter.MAG.TotalKarmaCost();
-			intRES = _objCharacter.RES.TotalKarmaCost();
-			intDEP = _objCharacter.DEP.TotalKarmaCost();
+	        if (_objCharacter.MAGEnabled)
+	        {
+		        intMAG = _objCharacter.MAG.TotalKarmaCost();
+	        }
+	        if (_objCharacter.RESEnabled)
+	        {
+		        intRES = _objCharacter.RES.TotalKarmaCost();
+	        }
+	        if (_objCharacter.Metatype == "A.I.")
+	        {
+		        intDEP = _objCharacter.DEP.TotalKarmaCost();
+	        }
 
-			// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
+	        // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
 			int intEssenceLoss = _objOptions.ESSLossReducesMaximumOnly ? 0 : _objCharacter.EssencePenalty;
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
