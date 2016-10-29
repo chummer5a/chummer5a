@@ -55,6 +55,7 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("base", _intBase.ToString());
             objWriter.WriteElementString("karma", _intKarma.ToString());
             objWriter.WriteElementString("augmodifier", _intAugModifier.ToString());
+			objWriter.WriteElementString("category", Category.ToString());
             // External reader friendly stuff.
             objWriter.WriteElementString("totalvalue", TotalValue.ToString());
             objWriter.WriteEndElement();
@@ -73,8 +74,8 @@ namespace Chummer.Backend.Attributes
 
             objNode.TryGetField("base", out _intBase);
             objNode.TryGetField("karma", out _intKarma);
-
-            Value = Convert.ToInt32(objNode["value"].InnerText);
+			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
+			Value = Convert.ToInt32(objNode["value"].InnerText);
             _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
 
             if (_intBase == 0)
@@ -94,16 +95,33 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("min", TotalMinimum.ToString());
             objWriter.WriteElementString("max", TotalMaximum.ToString());
             objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString());
-            objWriter.WriteElementString("bp", CalculatedBP().ToString());
-            objWriter.WriteEndElement();
+			objWriter.WriteElementString("bp", CalculatedBP().ToString());
+			objWriter.WriteElementString("category", Category.ToString());
+			objWriter.WriteEndElement();
         }
-        #endregion
+		#endregion
+		/// <summary>
+		/// Type of Attribute.
+		/// </summary>
+		public enum AttributeCategory
+		{
+			Standard = 0,
+			Special = 1,
+			Shapeshifter = 2
+		}
 
-        #region Properties
-        /// <summary>
-        /// Minimum value for the CharacterAttribute as set by the character's Metatype.
-        /// </summary>
-        public int MetatypeMinimum
+		#region Properties
+
+	    public Enum Category
+	    {
+		    get { return _enumCategory; }
+			set { _enumCategory = value; }
+	    }
+
+		/// <summary>
+		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
+		/// </summary>
+		public int MetatypeMinimum
         {
             get
             {
@@ -1254,19 +1272,53 @@ namespace Chummer.Backend.Attributes
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        }
-        #endregion
+		}
 
-        #region static
+		/// <summary>
+		/// Convert a string to a LifestyleType.
+		/// </summary>
+		/// <param name="strValue">String value to convert.</param>
+		/// <param name="strAbbrev">Linked attribute abbreviation.</param>
+		public AttributeCategory ConvertToAttributeCategory(string strValue, string strAbbrev = "")
+		{
+			//If the value does not exist, figure out what it should be from the abbreviation.
+			if (string.IsNullOrWhiteSpace(strValue))
+			{
+				switch (strAbbrev)
+				{
+					case "EDG":
+					case "MAG":
+					case "RES":
+					case "DEP":
+						return AttributeCategory.Special;
+					default:
+						return AttributeCategory.Standard;
+				}
+			}
+			//If a value does exist, test whether it belongs to a shapeshifter form.
+			switch (strValue)
+			{
+				case "Shapeshifter":
+					return AttributeCategory.Shapeshifter;
+				case "Special":
+					return AttributeCategory.Special;
+				default:
+					return AttributeCategory.Standard;
+			}
+		}
+		#endregion
 
-        private static readonly Lazy<HashSet<string>> _physicalAttributes =
+		#region static
+
+		private static readonly Lazy<HashSet<string>> _physicalAttributes =
             new Lazy<HashSet<string>>(() => new HashSet<string>() { "BOD", "AGI", "REA", "STR" },
                 LazyThreadSafetyMode.PublicationOnly);
         private string _strDisplayNameShort;
         private string _strDisplayNameLong;
         private string _strDisplayNameFormatted;
+	    private Enum _enumCategory;
 
-        public static HashSet<string> PhysicalAttributes
+	    public static HashSet<string> PhysicalAttributes
         {
             get { return _physicalAttributes.Value; }
         }
