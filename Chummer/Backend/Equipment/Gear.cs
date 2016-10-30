@@ -399,41 +399,6 @@ namespace Chummer.Backend.Equipment
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
 
-					if (_objCharacter.Options.AutomaticCopyProtection && !blnInherent)
-					{
-						Gear objPlugin1 = new Gear(_objCharacter);
-						TreeNode objPlugin1Node = new TreeNode();
-						objPlugin1.Create(objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"Copy Protection\"]"), objCharacter, objPlugin1Node, _intRating, null, null);
-						if (_intRating == 0)
-							objPlugin1.Rating = 1;
-						objPlugin1.Avail = "0";
-						objPlugin1.Cost = "0";
-						objPlugin1.Cost3 = "0";
-						objPlugin1.Cost6 = "0";
-						objPlugin1.Cost10 = "0";
-						objPlugin1.Capacity = "[0]";
-						objPlugin1.Parent = this;
-						_objChildren.Add(objPlugin1);
-						objNode.Nodes.Add(objPlugin1Node);
-					}
-
-					if (_objCharacter.Options.AutomaticRegistration && !blnInherent)
-					{
-						Gear objPlugin2 = new Gear(_objCharacter);
-						TreeNode objPlugin2Node = new TreeNode();
-						objPlugin2.Create(objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"Registration\"]"), objCharacter, objPlugin2Node, 0, null, null);
-						objPlugin2.Avail = "0";
-						objPlugin2.Cost = "0";
-						objPlugin2.Cost3 = "0";
-						objPlugin2.Cost6 = "0";
-						objPlugin2.Cost10 = "0";
-						objPlugin2.Capacity = "[0]";
-						objPlugin2.Parent = this;
-						_objChildren.Add(objPlugin2);
-						objNode.Nodes.Add(objPlugin2Node);
-						objNode.Expand();
-					}
-
 					if ((objCharacter.Metatype == "A.I." || objCharacter.MetatypeCategory == "Technocritters" || objCharacter.MetatypeCategory == "Protosapients") && blnInherent)
 					{
 						Gear objPlugin3 = new Gear(_objCharacter);

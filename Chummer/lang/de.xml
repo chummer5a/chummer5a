@@ -4376,7 +4376,7 @@
       <text>Erlaube das Regruppieren von Fertigkeiten, wenn alle den selben Wert haben.</text>
     </string>
     <string>
-      <key>Checkbox_Options_MetatypesCostKarma</key>
+      <key>Checkbox_Options_MetatypeCostsKarma</key>
       <text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
     </string>
     <string>
@@ -4441,7 +4441,7 @@
       <text>Attribut statt Programm für Matrixproben nutzen (VN 42)</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
+      <key>Checkbox_Options_RestrictRecoil</key>
       <text>Nutze Einschränkungen für Rückstoßkompensation (AR 156)</text>
     </string>
     <string>
@@ -4477,7 +4477,7 @@
       <text>Multipliziere die Kosten für verbotene Gegenstände mit dem Faktor</text>
     </string>
     <string>
-      <key>Checkbox_Option_EnforceCapacity</key>
+      <key>Checkbox_Options_EnforceCapacity</key>
       <text>Erzwinge Kapazitätsgrenzen</text>
     </string>
     <string>
@@ -5279,11 +5279,11 @@
       <text>Schwingungsfokus</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowExceedAttributeBP</key>
+      <key>Checkbox_Options_AllowExceedAttributeBP</key>
       <text>Dem Spieler erlauben, mehr als 50% der Punkte für Attribute auszugeben</text>
     </string>
     <string>
-      <key>Checkbox_Option_UnrestrictedNuyen</key>
+      <key>Checkbox_Options_UnrestrictedNuyen</key>
       <text>Der Charakter kann beliebig viele Punkte in Nuyen wandeln</text>
     </string>
     <string>
@@ -5586,7 +5586,7 @@
       <text>wird ausgeführt</text>
     </string>
     <string>
-      <key>Checkbox_Option_CalculateCommlinkResponse</key>
+      <key>Checkbox_Options_CalculateCommlinkResponse</key>
       <text>Berechne de Kommlink-Prozessor anhand der laufenden Programme</text>
     </string>
     <string>
@@ -5794,7 +5794,7 @@
       <text>Sie müssen auswählen, ob der Zauberspruch eine geringe oder eine starke Veränderung hervorruft</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowHigherStackedFoci</key>
+      <key>Checkbox_Options_AllowHigherStackedFoci</key>
       <text>Erlauben, dass ein Mehrfachfoki zusammengerechnet über Kraftstufe 6 hinaus generiert werden kann</text>
     </string>
     <!-- Version 311 -->
@@ -5922,11 +5922,11 @@
       <text>Erlauben Bioware in Transgenetik zu wandeln (BT 96)</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowEditPartOfBaseWeapon</key>
+      <key>Checkbox_Options_AllowEditPartOfBaseWeapon</key>
       <text>Waffenzubehör darf auch an nicht dafür vorgesehenen Stellen an der Waffen angebracht werden</text>
     </string>
     <string>
-      <key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
+      <key>Checkbox_Options_AlternateMetatypeAttributeKarma</key>
       <text>Die gesteigerten Werte von Metamenschen kosten in der Bauphase Punkte</text>
     </string>
     <string>
@@ -6104,7 +6104,7 @@
       <text>NPC Paket runtergeladen.</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowSkillDiceRolling</key>
+      <key>Checkbox_Options_AllowSkillDiceRolling</key>
       <text>Würfeltool für Fertigkeiten benutzen</text>
     </string>
     <string>
@@ -6207,7 +6207,7 @@
     </string>
     <!-- Version 356 -->
     <string>
-      <key>Checkbox_Option_CreateBackupOnCareer</key>
+      <key>Checkbox_Options_CreateBackupOnCareer</key>
       <text>Kopie des Charakters erstellen, bevor er in den Karriere-Modus überführt wird</text>
     </string>
     <string>
@@ -6272,11 +6272,11 @@
       <text>Verschiedenes</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintLeadershipAlternates</key>
+      <key>Checkbox_Options_PrintLeadershipAlternates</key>
       <text>Alternative Führungsskills anzeigen(aus dem "War!" Regelwerk)</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintArcanaAlternates</key>
+      <key>Checkbox_Options_PrintArcanaAlternates</key>
       <text>Alternative Magieskills anzeigen(aus dem "Strassenmagie" Regelwerk)</text>
     </string>
     <!-- Version 360 -->
@@ -6390,7 +6390,7 @@
       <text>Natürliche Waffe erstellen</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintNotes</key>
+      <key>Checkbox_Options_PrintNotes</key>
       <text>Notizen ausdrucken</text>
     </string>
     <string>
@@ -6451,7 +6451,7 @@
     </string>
     <!-- Version 401 -->
     <string>
-      <key>Checkbox_Option_AllowObsolescentUpgrade</key>
+      <key>Checkbox_Options_AllowObsolescentUpgrade</key>
       <text>Antiquierte Fahrzeuge dürfen ebenso wie Auslaufmodelle nachgerüstet werden.</text>
     </string>
     <string>
@@ -6480,7 +6480,7 @@
       <text>Bioware Zusammenstellung erstellen</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowBiowareSuites</key>
+      <key>Checkbox_Options_AllowBiowareSuites</key>
       <text>Bioware Zusammenstellung erlauben</text>
     </string>
     <string>
@@ -6514,7 +6514,7 @@
     </string>
     <!-- Version 408 -->
     <string>
-      <key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
+      <key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
       <text>Frei Geister erhalten ihre Powerpunkte basierend auf ihrem MAG Attribute, nicht Edge</text>
     </string>
     <!-- Gelöscht
@@ -6538,7 +6538,7 @@
       <text>Startdatum ändern</text>
     </string>
     <string>
-      <key>Checkbox_Option_SpecialAttributeKarmaLimit</key>
+      <key>Checkbox_Options_SpecialAttributeKarmaLimit</key>
       <text>Spezialattribute(EDG,MAG,RES) werden während der Charaktererschaffung nicht dem 50% Limit für Attribute angerechnet</text>
     </string>
     <!-- Version 418 -->
@@ -6552,7 +6552,7 @@
       <text>Ergonomische Programme beeinflussen die Prozessorleistung des Kommlinks nicht (UN114)</text>
     </string>
     <string>
-      <key>Checkbox_Option_TechnomancerAllowAutosoft</key>
+      <key>Checkbox_Options_TechnomancerAllowAutosoft</key>
       <text>Technomancer dürfen Autosofts als Komplexe Form wählen</text>
     </string>
     <!-- Version 425 -->
@@ -6700,7 +6700,7 @@
       <text>Lade Aktualisierungen nur in der von mir gewählten Sprache.</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintToFileFirst</key>
+      <key>Checkbox_Options_PrintToFileFirst</key>
       <text>Linux Druckfehler-Fix nutzen.</text>
     </string>
     <string>
@@ -7300,7 +7300,7 @@
       <text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialKarmaCost</key>
+      <key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
       <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>
     </string>
     <string>

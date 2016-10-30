@@ -353,7 +353,7 @@ namespace Chummer
 
                 // Art requirements.
                 bool blnStreetGrimoire = (_objCharacter.Options.Books.Contains("SG"));
-                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArt)
+                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArtRequirements)
                 {
                     foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/allof/art"))
                     {
@@ -492,7 +492,7 @@ namespace Chummer
 
 			    foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/oneof/art"))
 			    {
-			        if (!blnStreetGrimoire || _objCharacter.Options.IgnoreArt)
+			        if (!blnStreetGrimoire || _objCharacter.Options.IgnoreArtRequirements)
 			        {
                         blnOneOfRequirementMet = true;
                         break;

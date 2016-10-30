@@ -135,7 +135,7 @@ namespace Chummer
 
                 // Art requirements.
                 bool blnStreetGrimoire = (_objCharacter.Options.Books.Contains("SG"));
-                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArt)
+                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArtRequirements)
                 {
                     foreach (XmlNode objXmlArt in objXmlSpell.SelectNodes("required/allof/art"))
                     {

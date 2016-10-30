@@ -1618,7 +1618,7 @@ Printing with Linux/Wine
 This update introduces a fix to allow machines using Wine to load Chummer on a non-Windows OS to print character sheets if they were previously crashing. To fix the printing issue, go to Tools > Options > General Tab > Character and Printing sub-tab. Turn on the Apply Linux printing fix checkbox, then click OK. You should now be able to print without crashing.
 
 New Strings
-- Checkbox_Option_PrintToFileFirst
+- Checkbox_Options_PrintToFileFirst
 
 Build 472
 - save files now include <gameedition /> to indicate which edition of Shadowrun they are for
@@ -1883,7 +1883,7 @@ Build 423
 - Programs with the Ergonomic Program Option no longer count towards the number of Programs running on the Commlink to affect its Response
 
 New Strings
-- Checkbox_Option_TechnomancerAllowAutosoft
+- Checkbox_Options_TechnomancerAllowAutosoft
 
 Build 420
 - fixed an issue where plugins would not be properly added to a Commlink when adding a PACKS Kit and selecting them would throw an error
@@ -1923,7 +1923,7 @@ Up until now, Specializations required that the Weapon's name or Category match 
 
 New Strings
 - Button_ChangeStartWeek
-- Checkbox_Option_SpecialAttributeKarmaLimit
+- Checkbox_Options_SpecialAttributeKarmaLimit
 
 Build 413
 - added support for <throwstr /> to the Improvement Manager which effectively raises a character's STR for the purpose of determining the DV of Thrown Weapons
@@ -1955,7 +1955,7 @@ Include Smartlink bonus in Active Skills option removed
 Weapons have displayed their own calculated Dice Pools since build 314. As a result, showing the Smartlink bonus in an Active Skill has become redundant and rather misleading since it is applied on a per-Weapon basis instead of the Active Skill as a whole. The Weapon Dice Pool accurately reflects any Smartlink bonuses the character receives.
 
 New Strings
-- Checkbox_Option_FreeSpiritPowerPointsMAG
+- Checkbox_Options_FreeSpiritPowerPointsMAG
 
 Deleted Strings
 - Checkbox_Options_IncludeSmartlink
@@ -1996,7 +1996,7 @@ Build 403
 New Strings
 - Menu_SpecialAddBiowareSuite
 - Menu_SpecialCreateBiowareSuite
-- Checkbox_Option_AllowBiowareSuites
+- Checkbox_Options_AllowBiowareSuites
 - Title_SelectBiowareSuite
 - Label_SelectBiowareSuite_PartsInSuite
 - Title_CreateBiowareSuite
@@ -2026,7 +2026,7 @@ Build 401
 - fixed an issue where the displayed monthly Nuyen cost for a Lifestyle was including Lifestyle discounts a second time
 
 New Strings
-- Checkbox_Option_AllowObsolescentUpgrade
+- Checkbox_Options_AllowObsolescentUpgrade
 - Button_QuickenSpell
 - String_QuickeningKarma
 - Message_ConfirmKarmaExpenseQuickeningMetamagic
@@ -2180,7 +2180,7 @@ New Strings
 - MessageTitle_CannotRemoveQualityWeapon
 - Label_ActiveSkill
 - Menu_AddNaturalWeapon
-- Checkbox_Option_PrintNotes
+- Checkbox_Options_PrintNotes
 - Checkbox_BlackMarketDiscount
 
 Build 371
@@ -2293,10 +2293,10 @@ Build 356
 - fixed an issue where undoing the Nuyen Expense for a Bioware purchase would not remove the Bioware's Improvements properly
 
 Changed Strings
-- Checkbox_Option_AllowSkillDiceRolling
+- Checkbox_Options_AllowSkillDiceRolling
 
 New Strings
-- Checkbox_Option_CreateBackupOnCareer
+- Checkbox_Options_CreateBackupOnCareer
 - Title_CreateMode
 - Message_CyberwareGear
 - MessageTitle_CyberwareGear
@@ -2441,7 +2441,7 @@ Build 336
 - tabs now correctly show the character's name when moving from Create Mode to Career Mode when more than 1 character is currently open
 
 New Strings
-- Checkbox_Option_AlternateMetatypeAttributeKarma
+- Checkbox_Options_AlternateMetatypeAttributeKarma
 - Checkbox_Options_AlternateMatrixAttribute
 
 Build 332
@@ -2476,7 +2476,7 @@ Build 327
 
 New Strings
 - Message_Omae_NPCPackDownloaded
-- Checkbox_Option_AllowSkillDiceRolling
+- Checkbox_Options_AllowSkillDiceRolling
 - Tip_DiceRoller
 
 Build 325
@@ -2554,7 +2554,7 @@ New Strings
 - Message_AdditionalEchoLimit
 - Checkbox_Options_AlternateComplexFormCost
 - Checkbox_Options_AllowCustomTransgenics
-- Checkbox_Option_AllowEditPartOfBaseWeapon
+- Checkbox_Options_AllowEditPartOfBaseWeapon
 - Checkbox_Transgenic
 
 Build 320
@@ -2674,7 +2674,7 @@ New Strings
 - String_SpellDiseaseDV
 - String_SpellRadiationPower
 - Checkbox_SoftwareRunning
-- Checkbox_Option_CalculateCommlinkResponse
+- Checkbox_Options_CalculateCommlinkResponse
 - String_SpellDurationPermanentLong
 - Menu_CreateSpell
 - Title_CreateSpell
@@ -2914,8 +2914,8 @@ New Strings
 - Label_Options_SustainingFocus
 - Label_Options_SymbolicLinkFocus
 - Label_Options_WeaponFocus
-- Checkbox_Option_AllowExceedAttributeBP
-- Checkbox_Option_UnrestrictedNuyen
+- Checkbox_Options_AllowExceedAttributeBP
+- Checkbox_Options_UnrestrictedNuyen
 
 Removable Metatype Qualities
 Metatypes now have the ability to mark their starting Qualities as removable by setting the removable attribute to "true". These Qualities can be removed in Create Mode and Career Mode by selecting them and clicking the Delete Quality button. Removing these Qualities will cost the appropriate amount of BP or Karma. This is to allow Sapient Critters to buy off the Uncouth and Uneducated Qualities that they start with. This can be applied to older save files by locating the appropriate Quality and changing its <qualitysource> to MetatypeRemovable.
@@ -3006,7 +3006,7 @@ Override Data Files
 Similar to Custom Data Files, Override Data Files let you override individual items, replacing the base data with your own version (for example, changing the cost and damage for a Weapon). These follow the same naming rules as Custom Data Files but use "override" as their prefix (such as override_weapons.xml). Multiple Override files can exist for the same type (such as multiple Override files for Weapons), and the files are loaded in alphabetical order after loading the base data files. The item in the Override file completely replaces the base item. This is not intended to be used for holding your new custom data as the XML Manager will only overwrite existing items; it will not add items that do not exist in the base data files. Use at your own risk.
 
 New Strings
-- Checkbox_Option_EnforceCapacity
+- Checkbox_Options_EnforceCapacity
 - Message_CapacityReached
 - Message_CapacityReachedValidate
 

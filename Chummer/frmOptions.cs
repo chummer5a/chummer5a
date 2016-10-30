@@ -97,12 +97,7 @@ namespace Chummer
             _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _characterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
             _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
-            _characterOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
-            _characterOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
             _characterOptions.ArmorDegradation = chkArmorDegradation.Checked;
-            _characterOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
-            _characterOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
-            _characterOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
             _characterOptions.CapSkillRating = chkCapSkillRating.Checked;
             _characterOptions.ConfirmDelete = chkConfirmDelete.Checked;
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
@@ -113,8 +108,6 @@ namespace Chummer
 			_characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
 			_characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
 			_characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
-            _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
-            _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
 			_characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
             _characterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
@@ -136,14 +129,13 @@ namespace Chummer
                 if (chkKnowledgeMultiplier.Checked)
                     chkKnowledgeMultiplier.Enabled = true;
             _characterOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
-            _characterOptions.IgnoreArt = chkIgnoreArt.Checked;
+            _characterOptions.IgnoreArtRequirements = chkIgnoreArt.Checked;
             _characterOptions.KnucksUseUnarmed = chkKnucks.Checked;
             _characterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
             _characterOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
             _characterOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
             _characterOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
             _characterOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
-            _characterOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
             _characterOptions.NuyenPerBP = Convert.ToInt32(nudKarmaNuyenPer.Value);
             _characterOptions.PrintExpenses = chkPrintExpenses.Checked;
             _characterOptions.PrintNotes = chkPrintNotes.Checked;
@@ -171,7 +163,6 @@ namespace Chummer
             _characterOptions.KarmaNewComplexForm = Convert.ToInt32(nudKarmaNewComplexForm.Value);
             _characterOptions.KarmaImproveComplexForm = Convert.ToInt32(nudKarmaImproveComplexForm.Value);
             _characterOptions.KarmaMetamagic = Convert.ToInt32(nudKarmaMetamagic.Value);
-            _characterOptions.KarmaNuyenPer = Convert.ToInt32(nudKarmaNuyenPer.Value);
             _characterOptions.KarmaContact = Convert.ToInt32(nudKarmaContact.Value);
             _characterOptions.KarmaEnemy = Convert.ToInt32(nudKarmaEnemy.Value);
             _characterOptions.KarmaCarryover = Convert.ToInt32(nudKarmaCarryover.Value);
@@ -182,10 +173,6 @@ namespace Chummer
             _characterOptions.KarmaComplexFormSkillsoft = Convert.ToInt32(nudKarmaComplexFormSkillsoft.Value);
             _characterOptions.KarmaJoinGroup = Convert.ToInt32(nudKarmaJoinGroup.Value);
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
-
-            // Build Priority options.
-            _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
-            _characterOptions.UseContactPoints = chkContactPoints.Checked;
 
             // Build method options.
             _characterOptions.BuildMethod = cboBuildMethod.SelectedValue.ToString();
@@ -597,13 +584,8 @@ namespace Chummer
 			chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
             chkDontUseCyberlimbCalculation.Checked = _characterOptions.DontUseCyberlimbCalculation;
 			chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
-			chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
-			chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
 			chkArmorDegradation.Checked = _characterOptions.ArmorDegradation;
 			chkArmorSuitCapacity.Checked = _characterOptions.ArmorSuitCapacity;
-			chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
-			chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
-			chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
 			chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
 			chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
 			chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
@@ -611,14 +593,11 @@ namespace Chummer
 	        chkUseTotalValueForFreeKnowledge.Checked = _characterOptions.UseTotalValueForFreeKnowledge;
 			chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
             chkDroneArmorMultiplier.Checked = _characterOptions.DroneArmorMultiplierEnabled;
-			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
 			chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
 			chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
 			chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
-			chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
-			chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
 			chkESSLossReducesMaximumOnly.Checked = _characterOptions.ESSLossReducesMaximumOnly;
             chkExceedNegativeQualities.Checked = _characterOptions.ExceedNegativeQualities;
 			chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;
@@ -627,15 +606,13 @@ namespace Chummer
 			chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
 			chkFreeKarmaContacts.Checked = _characterOptions.FreeKarmaContacts;
 			chkFreeKarmaKnowledge.Checked = _characterOptions.FreeKarmaKnowledge;
-			chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
+			chkIgnoreArt.Checked = _characterOptions.IgnoreArtRequirements;
 			chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;
 			chkKnucks.Checked = _characterOptions.KnucksUseUnarmed;
 			chkLicenseEachRestrictedItem.Checked = _characterOptions.LicenseRestricted;
 			chkMaximumArmorModifications.Checked = _characterOptions.MaximumArmorModifications;
-			chkMayBuyQualities.Checked = _characterOptions.MayBuyQualities;
 			chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
 			chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
-			chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
             chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
             chkOpenPDFsAsUnix.Checked = GlobalOptions._blnOpenPDFsAsUnix;
             chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
@@ -680,7 +657,6 @@ namespace Chummer
 	        nudKarmaImproveComplexForm.Value = _characterOptions.KarmaImproveComplexForm;
 	        nudKarmaComplexFormOption.Value = _characterOptions.KarmaComplexFormOption;
 	        nudKarmaComplexFormSkillsoft.Value = _characterOptions.KarmaComplexFormSkillsoft;
-	        nudKarmaNuyenPer.Value = _characterOptions.KarmaNuyenPer;
 	        nudKarmaContact.Value = _characterOptions.KarmaContact;
 	        nudKarmaEnemy.Value = _characterOptions.KarmaEnemy;
 	        nudKarmaCarryover.Value = _characterOptions.KarmaCarryover;

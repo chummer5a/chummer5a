@@ -7713,132 +7713,6 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
-        private void cmdCreateStackedFocus_Click(object sender, EventArgs e)
-        {
-            int intFree = 0;
-            List<Gear> lstGear = new List<Gear>();
-            List<Gear> lstStack = new List<Gear>();
-
-            // Run through all of the Foci the character has and count the un-Bonded ones.
-            foreach (Gear objGear in _objCharacter.Gear)
-            {
-                if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
-                {
-                    if (!objGear.Bonded)
-                    {
-                        intFree++;
-                        lstGear.Add(objGear);
-                    }
-                }
-            }
-
-            // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
-            if (intFree < 2)
-            {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotStackFoci"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            frmSelectItem frmPickItem = new frmSelectItem();
-
-            // Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
-            do
-            {
-                frmPickItem.Gear = lstGear;
-                frmPickItem.AllowAutoSelect = false;
-                frmPickItem.Description = LanguageManager.Instance.GetString("String_SelectItemFocus");
-                frmPickItem.ShowDialog(this);
-
-                if (frmPickItem.DialogResult == DialogResult.OK)
-                {
-                    // Move the item from the Gear list to the Stack list.
-                    foreach (Gear objGear in lstGear)
-                    {
-                        if (objGear.InternalId == frmPickItem.SelectedItem)
-                        {
-                            objGear.Bonded = true;
-                            lstStack.Add(objGear);
-                            lstGear.Remove(objGear);
-                            break;
-                        }
-                    }
-                }
-            } while (lstGear.Count > 0 && frmPickItem.DialogResult != DialogResult.Cancel);
-
-            // Make sure at least 2 Foci were selected.
-            if (lstStack.Count < 2)
-            {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_StackedFocusMinimum"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Make sure the combined Force of the Foci do not exceed 6.
-            if (!_objOptions.AllowHigherStackedFoci)
-            {
-                int intCombined = 0;
-                foreach (Gear objGear in lstStack)
-                    intCombined += objGear.Rating;
-                if (intCombined > 6)
-                {
-                    foreach (Gear objGear in lstStack)
-                        objGear.Bonded = false;
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_StackedFocusForce"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
-            // Create the Stacked Focus.
-            StackedFocus objStack = new StackedFocus(_objCharacter);
-            objStack.Gear = lstStack;
-            _objCharacter.StackedFoci.Add(objStack);
-
-            // Remove the Gear from the character and replace it with a Stacked Focus item.
-            int intCost = 0;
-            foreach (Gear objGear in lstStack)
-            {
-                intCost += objGear.TotalCost;
-                _objCharacter.Gear.Remove(objGear);
-
-                // Remove the TreeNode from Gear.
-                foreach (TreeNode nodRoot in treGear.Nodes)
-                {
-                    foreach (TreeNode nodItem in nodRoot.Nodes)
-                    {
-                        if (nodItem.Tag.ToString() == objGear.InternalId)
-                        {
-                            nodRoot.Nodes.Remove(nodItem);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            Gear objStackItem = new Gear(_objCharacter);
-            objStackItem.Category = "Stacked Focus";
-            objStackItem.Name = "Stacked Focus: " + objStack.Name;
-            objStackItem.MinRating = 0;
-            objStackItem.MaxRating = 0;
-            objStackItem.Source = "SM";
-            objStackItem.Page = "84";
-            objStackItem.Cost = intCost.ToString();
-            objStackItem.Avail = "0";
-
-            TreeNode nodStackNode = new TreeNode();
-            nodStackNode.Text = objStackItem.DisplayNameShort;
-            nodStackNode.Tag = objStackItem.InternalId;
-
-            treGear.Nodes[0].Nodes.Add(nodStackNode);
-
-            _objCharacter.Gear.Add(objStackItem);
-
-            objStack.GearId = objStackItem.InternalId;
-
-            _blnIsDirty = true;
-            _objController.PopulateFocusList(treFoci);
-            UpdateCharacterInfo();
-            UpdateWindowTitle();
-        }
-
         private void cmdAddArmor_Click(object sender, EventArgs e)
         {
             frmSelectArmor frmPickArmor = new frmSelectArmor(_objCharacter);
@@ -14235,9 +14109,6 @@ namespace Chummer
         private bool CanImproveAttribute(string strAttribute)
         {
             bool blnAtMaximum = false;
-
-            if (_objCharacter.Options.Allow2ndMaxAttribute)
-            {
                 if (strAttribute != "nudSTR")
                 {
                     if (((nudSTR.Value + nudKSTR.Value) == nudSTR.Maximum) && nudSTR.Maximum != 0)
@@ -14278,50 +14149,6 @@ namespace Chummer
                     if (((nudLOG.Value + nudKLOG.Value) == nudLOG.Maximum) && nudLOG.Maximum != 0)
                         blnAtMaximum = true;
                 }
-            }
-            else
-            {
-                if (strAttribute != "nudSTR")
-                {
-                    if (((nudSTR.Value + nudKSTR.Value) == nudSTR.Maximum) && nudSTR.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudBOD")
-                {
-                    if (((nudBOD.Value + nudKBOD.Value) == nudBOD.Maximum) && nudBOD.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudAGI")
-                {
-                    if (((nudAGI.Value + nudKAGI.Value) == nudAGI.Maximum) && nudAGI.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudREA")
-                {
-                    if (((nudREA.Value + nudKREA.Value) == nudREA.Maximum) && nudREA.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudCHA")
-                {
-                    if (((nudCHA.Value + nudKCHA.Value) == nudCHA.Maximum) && nudCHA.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudINT")
-                {
-                    if (((nudINT.Value + nudKINT.Value) == nudINT.Maximum) && nudINT.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudWIL")
-                {
-                    if (((nudWIL.Value + nudKWIL.Value) == nudWIL.Maximum) && nudWIL.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-                if (strAttribute != "nudLOG")
-                {
-                    if (((nudLOG.Value + nudKLOG.Value) == nudLOG.Maximum) && nudLOG.Maximum != 0)
-                        blnAtMaximum = true;
-                }
-            }
 
             return !blnAtMaximum;
         }
@@ -16909,8 +16736,8 @@ namespace Chummer
                     chkGearEquipped.Visible = true;
                     chkGearEquipped.Checked = objGear.Equipped;
 
-                    // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                    if (objGear.IsProgram && _objOptions.CalculateCommlinkResponse)
+                    // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, rename the Equipped textbox to Running.
+                    if (objGear.IsProgram)
                     {
                         Gear objParent = new Gear(_objCharacter);
                         objParent = objGear.Parent;
@@ -19169,7 +18996,7 @@ namespace Chummer
 						{
 							// The Contact's BP cost = their Connection + Loyalty Rating.
 							intContactPointsUsed += (objContactControl.ConnectionRating +
-													 objContactControl.LoyaltyRating) * _objOptions.BPContact;
+													 objContactControl.LoyaltyRating) * _objOptions.KarmaContact;
 						}
 
 					}
@@ -22058,7 +21885,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
             tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
             tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
-            tipTooltip.SetToolTip(lblNuyen, String.Format(LanguageManager.Instance.GetString("Tip_CommonNuyen"), _objCharacter.Options.KarmaNuyenPer));
+            tipTooltip.SetToolTip(lblNuyen, String.Format(LanguageManager.Instance.GetString("Tip_CommonNuyen"), _objCharacter.Options.NuyenPerBP));
             tipTooltip.SetToolTip(lblRatingLabel, LanguageManager.Instance.GetString("Tip_CommonAIRating"));
             tipTooltip.SetToolTip(lblSystemLabel, LanguageManager.Instance.GetString("Tip_CommonAISystem"));
             tipTooltip.SetToolTip(lblFirewallLabel, LanguageManager.Instance.GetString("Tip_CommonAIFirewall"));
@@ -22086,18 +21913,18 @@ namespace Chummer
             tipTooltip.SetToolTip(lblBuildSpecialAttributes, LanguageManager.Instance.GetString("Tip_BuildSpecialAttributes"));
             tipTooltip.SetToolTip(lblBuildPositiveQualities, LanguageManager.Instance.GetString("Tip_BuildPositiveQualities"));
             tipTooltip.SetToolTip(lblBuildNegativeQualities, LanguageManager.Instance.GetString("Tip_BuildNegativeQualities"));
-            tipTooltip.SetToolTip(lblBuildContacts, LanguageManager.Instance.GetString("Tip_CommonContacts").Replace("{0}", _objOptions.BPContact.ToString()));
+            tipTooltip.SetToolTip(lblBuildContacts, LanguageManager.Instance.GetString("Tip_CommonContacts").Replace("{0}", _objOptions.KarmaContact.ToString()));
             tipTooltip.SetToolTip(lblBuildEnemies, LanguageManager.Instance.GetString("Tip_CommonEnemies"));
             tipTooltip.SetToolTip(lblBuildNuyen, LanguageManager.Instance.GetString("Tip_CommonNuyen").Replace("{0}", String.Format("{0:###,###,##0}", _objOptions.NuyenPerBP)));
-            tipTooltip.SetToolTip(lblBuildSkillGroups, LanguageManager.Instance.GetString("Tip_SkillsSkillGroups").Replace("{0}", _objOptions.BPSkillGroup.ToString()));
-            tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.Instance.GetString("Tip_SkillsActiveSkills").Replace("{0}", _objOptions.BPActiveSkill.ToString()).Replace("{1}", _objOptions.BPActiveSkillSpecialization.ToString()));
-            tipTooltip.SetToolTip(lblBuildKnowledgeSkills, LanguageManager.Instance.GetString("Tip_SkillsKnowledgeSkills").Replace("{0}", _objOptions.BPKnowledgeSkill.ToString()));
-            tipTooltip.SetToolTip(lblBuildSpells, LanguageManager.Instance.GetString("Tip_SpellsSelectedSpells").Replace("{0}", _objOptions.BPSpell.ToString()));
-            tipTooltip.SetToolTip(lblBuildFoci, LanguageManager.Instance.GetString("Tip_BuildFoci").Replace("{0}", _objOptions.BPFocus.ToString()));
-            tipTooltip.SetToolTip(lblBuildSpirits, LanguageManager.Instance.GetString("Tip_SpellsSpirits").Replace("{0}", _objOptions.BPSpirit.ToString()));
-            tipTooltip.SetToolTip(lblBuildSprites, LanguageManager.Instance.GetString("Tip_TechnomancerSprites").Replace("{0}", _objOptions.BPSpirit.ToString()));
-            tipTooltip.SetToolTip(lblBuildComplexForms, LanguageManager.Instance.GetString("Tip_TechnomancerComplexForms").Replace("{0}", _objOptions.BPComplexForm.ToString()));
-            tipTooltip.SetToolTip(lblBuildManeuvers, LanguageManager.Instance.GetString("Tip_BuildManeuvers").Replace("{0}", _objOptions.BPMartialArtManeuver.ToString()));
+            tipTooltip.SetToolTip(lblBuildSkillGroups, LanguageManager.Instance.GetString("Tip_SkillsSkillGroups").Replace("{0}", _objOptions.KarmaImproveSkillGroup.ToString()));
+            tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.Instance.GetString("Tip_SkillsActiveSkills").Replace("{0}", _objOptions.KarmaImproveActiveSkill.ToString()).Replace("{1}", _objOptions.KarmaSpecialization.ToString()));
+            tipTooltip.SetToolTip(lblBuildKnowledgeSkills, LanguageManager.Instance.GetString("Tip_SkillsKnowledgeSkills").Replace("{0}", _objOptions.KarmaImproveKnowledgeSkill.ToString()));
+            tipTooltip.SetToolTip(lblBuildSpells, LanguageManager.Instance.GetString("Tip_SpellsSelectedSpells").Replace("{0}", _objOptions.KarmaSpell.ToString()));
+            //tipTooltip.SetToolTip(lblBuildFoci, LanguageManager.Instance.GetString("Tip_BuildFoci").Replace("{0}", _objOptions.BPFocus.ToString())); //TODO: Foci have multiple cost values. 
+            tipTooltip.SetToolTip(lblBuildSpirits, LanguageManager.Instance.GetString("Tip_SpellsSpirits").Replace("{0}", _objOptions.KarmaSpirit.ToString()));
+            tipTooltip.SetToolTip(lblBuildSprites, LanguageManager.Instance.GetString("Tip_TechnomancerSprites").Replace("{0}", _objOptions.KarmaSpirit.ToString()));
+            tipTooltip.SetToolTip(lblBuildComplexForms, LanguageManager.Instance.GetString("Tip_TechnomancerComplexForms").Replace("{0}", _objOptions.KarmaComplexFormOption.ToString()));
+            tipTooltip.SetToolTip(lblBuildManeuvers, LanguageManager.Instance.GetString("Tip_BuildManeuvers").Replace("{0}", _objOptions.KarmaManeuver.ToString()));
             // Other Info Tab.
             tipTooltip.SetToolTip(lblCMPhysicalLabel, LanguageManager.Instance.GetString("Tip_OtherCMPhysical"));
             tipTooltip.SetToolTip(lblCMStunLabel, LanguageManager.Instance.GetString("Tip_OtherCMStun"));
