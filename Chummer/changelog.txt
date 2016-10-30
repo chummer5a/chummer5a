@@ -26,6 +26,7 @@ Data Changes:
 - Added Blood Magic metamagics from Street Grimoire.
 - Added an Under mod slot for the Shiawase Incinerator flamethrower.
 - Removed the mod slots from the Shiawase Blazer.
+- Fixed the implementation of Mutaqua, Wendigo and Nosferatu to not require adding a Mystic Adept quality. 
 
 Sheet Changes:
 
