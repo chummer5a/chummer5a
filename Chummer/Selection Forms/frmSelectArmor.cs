@@ -124,7 +124,8 @@ namespace Chummer
 			// Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
 			Armor objArmor = new Armor(_objCharacter);
 			TreeNode objNode = new TreeNode();
-			objArmor.Create(objXmlArmor, objNode, null, 0, true);
+			List<Weapon> objWeapons = new List<Weapon>();
+			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true);
 
 			lblArmor.Text = objXmlArmor["name"].InnerText;
             lblArmorValue.Text = objXmlArmor["armor"].InnerText;
@@ -357,7 +358,8 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode();
                     Armor objArmor = new Armor(_objCharacter);
-                    objArmor.Create(objXmlArmor, objNode, null, 0, true, true);
+					List<Weapon> objWeapons = new List<Weapon>();
+					objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true);
 
                     string strWeaponName = objArmor.Name;
                     int intArmor = objArmor.TotalArmor;
@@ -621,7 +623,8 @@ namespace Chummer
             {
                 TreeNode objNode = new TreeNode();
                 Armor objArmor = new Armor(_objCharacter);
-                objArmor.Create(objXmlArmor, objNode, null, 0, true, true);
+				List<Weapon> objWeapons = new List<Weapon>();
+				objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true);
 
                 string strWeaponName = objArmor.Name;
                 int intArmor = objArmor.TotalArmor;
@@ -660,7 +663,8 @@ namespace Chummer
 			// Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
 			Armor objArmor = new Armor(_objCharacter);
 			TreeNode objNode = new TreeNode();
-			objArmor.Create(objXmlArmor, objNode, null, 0, true);
+			List<Weapon> objWeapons = new List<Weapon>();
+			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true);
 
 			// Check for a Variable Cost.
 			int intItemCost = 0;

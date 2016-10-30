@@ -4956,7 +4956,8 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Armor objArmor = new Armor(_objCharacter);
-			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
+			List<Weapon> objWeapons = new List<Weapon>();
+			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating, objWeapons);
 			objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
 
 			if (objArmor.InternalId == Guid.Empty.ToString())
@@ -5010,6 +5011,12 @@ namespace Chummer
 			treArmor.Nodes[0].Nodes.Add(objNode);
 			treArmor.Nodes[0].Expand();
 			treArmor.SelectedNode = objNode;
+
+			foreach (Weapon objWeapon in objWeapons)
+			{
+				_objCharacter.Weapons.Add(objWeapon);
+				_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, objArmor.WeaponID);
+			}
 
 			UpdateCharacterInfo();
 
@@ -5085,30 +5092,25 @@ namespace Chummer
 					Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
 					if (objArmor == null)
 						return;
-
+					Weapon objRemoveWeapon = new Weapon(_objCharacter);
 					// Remove any Improvements created by the Armor and its children.
 					foreach (ArmorMod objMod in objArmor.ArmorMods)
 					{
 						// Remove the Cyberweapon created by the Mod if applicable.
 						if (objMod.WeaponID != Guid.Empty.ToString())
 						{
-							// Remove the Weapon from the TreeView.
-							TreeNode objRemoveNode = new TreeNode();
-							foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
-							{
-								if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
-									objRemoveNode = objWeaponNode;
-							}
-							treWeapons.Nodes.Remove(objRemoveNode);
 
 							// Remove the Weapon from the Character.
-							Weapon objRemoveWeapon = new Weapon(_objCharacter);
-							foreach (Weapon objWeapon in _objCharacter.Weapons)
+							foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
 							{
-								if (objWeapon.InternalId == objMod.WeaponID)
-									objRemoveWeapon = objWeapon;
+								_objCharacter.Weapons.Remove(objWeapon);
+								// Remove the Weapon from the TreeView.
+								TreeNode objRemoveNode = new TreeNode();
+								foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objMod.WeaponID))
+								{
+									treWeapons.Nodes.Remove(objWeaponNode);
+								}
 							}
-							_objCharacter.Weapons.Remove(objRemoveWeapon);
 						}
 
 						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
@@ -5118,6 +5120,18 @@ namespace Chummer
 					// Remove any Improvements created by the Armor's Gear.
 					foreach (Gear objGear in objArmor.Gear)
 						_objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+
+					// Remove the Weapon from the Character.
+					foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
+					{
+						_objCharacter.Weapons.Remove(objWeapon);
+						// Remove the Weapon from the TreeView.
+						TreeNode objRemoveNode = new TreeNode();
+						foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objArmor.WeaponID))
+						{
+							treWeapons.Nodes.Remove(objWeaponNode);
+						}
+					}
 
 					_objCharacter.Armor.Remove(objArmor);
 					treArmor.SelectedNode.Remove();

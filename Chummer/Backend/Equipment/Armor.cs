@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -13,6 +14,7 @@ namespace Chummer.Backend.Equipment
 	public class Armor
 	{
 		private Guid _guiID = new Guid();
+		private Guid _guiWeaponID = new Guid();
 		private string _strName = "";
 		private string _strCategory = "";
 		private string _strA = "0";
@@ -47,13 +49,15 @@ namespace Chummer.Backend.Equipment
 			_objCharacter = objCharacter;
 		}
 
-		/// Create a Cyberware from an XmlNode and return the TreeNodes for it.
+		/// Create an Armor from an XmlNode and return the TreeNodes for it.
 		/// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="cmsArmorMod">ContextMenuStrip to apply to Armor Mode TreeNodes.</param>
 		/// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, bool blnSkipCost = false, bool blnCreateChildren = true)
+		/// <param name="intRating">Rating of the item.</param>
+		/// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
+		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true)
 		{
 			_strName = objXmlArmorNode["name"].InnerText;
 			_strCategory = objXmlArmorNode["category"].InnerText;
@@ -252,6 +256,24 @@ namespace Chummer.Backend.Equipment
 					}
 			}
 
+			if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
+			{
+				XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+
+				// More than one Weapon can be added, so loop through all occurrences.
+				foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
+				{
+					XmlNode objXmlWeapon = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
+
+					TreeNode objGearWeaponNode = new TreeNode();
+					Weapon objGearWeapon = new Weapon(_objCharacter);
+					objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
+					objWeapons.Add(objGearWeapon);
+
+					_guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+				}
+			}
+
 			objNode.Text = DisplayName;
 			objNode.Tag = _guiID.ToString();
 		}
@@ -311,6 +333,8 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("location", _strLocation);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+			if (_guiWeaponID != Guid.Empty)
+				objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
 			objWriter.WriteEndElement();
 			_objCharacter.SourceProcess(_strSource);
 		}
@@ -734,6 +758,21 @@ namespace Chummer.Backend.Equipment
 			set
 			{
 				_strSource = value;
+			}
+		}
+
+		/// <summary>
+		/// Guid of a Weapon created from the Armour.
+		/// </summary>
+		public string WeaponID
+		{
+			get
+			{
+				return _guiWeaponID.ToString();
+			}
+			set
+			{
+				_guiWeaponID = Guid.Parse(value);
 			}
 		}
 

@@ -14,6 +14,7 @@ Application Changes:
 - Fixed an issue with custom knowledge skills that could cause a crash when not using English strings. 
 - Fixed an issue where Priority Aspected Magicians didn't get their unlocked skill group. 
 - Fixed an issue that prevented the Blackmail and Family options from forcing a cost refresh for contacts in Create mode.
+- Fixed the addweapon node for Armour to actually add the weapon to the character.
 
 Data Changes: 
 

@@ -5325,8 +5325,9 @@ namespace Chummer
 
                 if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmor")))
                     return;
+				Weapon objRemoveWeapon = new Weapon(_objCharacter);
 
-                if (treArmor.SelectedNode.Level == 1)
+				if (treArmor.SelectedNode.Level == 1)
                 {
                     Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
                     if (objArmor == null)
@@ -5348,13 +5349,11 @@ namespace Chummer
                             treWeapons.Nodes.Remove(objRemoveNode);
 
                             // Remove the Weapon from the Character.
-                            Weapon objRemoveWeapon = new Weapon(_objCharacter);
-                            foreach (Weapon objWeapon in _objCharacter.Weapons)
-                            {
-                                if (objWeapon.InternalId == objMod.WeaponID)
-                                    objRemoveWeapon = objWeapon;
-                            }
-                            _objCharacter.Weapons.Remove(objRemoveWeapon);
+
+	                        foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
+	                        {
+		                        _objCharacter.Weapons.Remove(objWeapon);
+	                        }
                         }
 
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
@@ -5365,7 +5364,19 @@ namespace Chummer
                     foreach (Gear objGear in objArmor.Gear)
                         _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
 
-                    _objCharacter.Armor.Remove(objArmor);
+					// Remove the Weapon from the Character.
+					foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
+					{
+						_objCharacter.Weapons.Remove(objWeapon);
+						// Remove the Weapon from the TreeView.
+						TreeNode objRemoveNode = new TreeNode();
+						foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objArmor.WeaponID))
+						{
+							treWeapons.Nodes.Remove(objWeaponNode);
+						}
+					}
+
+					_objCharacter.Armor.Remove(objArmor);
                     treArmor.SelectedNode.Remove();
                 }
                 else if (treArmor.SelectedNode.Level == 2)
@@ -5380,24 +5391,17 @@ namespace Chummer
                         // Remove the Cyberweapon created by the Mod if applicable.
                         if (objMod.WeaponID != Guid.Empty.ToString())
                         {
-                            // Remove the Weapon from the TreeView.
-                            TreeNode objRemoveNode = new TreeNode();
-                            foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
-                            {
-                                if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
-                                    objRemoveNode = objWeaponNode;
-                            }
-                            treWeapons.Nodes.Remove(objRemoveNode);
-
-                            // Remove the Weapon from the Character.
-                            Weapon objRemoveWeapon = new Weapon(_objCharacter);
-                            foreach (Weapon objWeapon in _objCharacter.Weapons)
-                            {
-                                if (objWeapon.InternalId == objMod.WeaponID)
-                                    objRemoveWeapon = objWeapon;
-                            }
-                            _objCharacter.Weapons.Remove(objRemoveWeapon);
-                        }
+							// Remove the Weapon from the Character.
+							foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
+							{
+								_objCharacter.Weapons.Remove(objWeapon);
+								// Remove the Weapon from the TreeView.
+								foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objMod.WeaponID))
+								{
+									treWeapons.Nodes.Remove(objWeaponNode);
+								}
+							}
+						}
 
                         // Remove any Improvements created by the ArmorMod.
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
@@ -7533,9 +7537,12 @@ namespace Chummer
 
             XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + frmPickArmor.SelectedArmor + "\"]");
 
-            TreeNode objNode = new TreeNode();
+
+			List<Weapon> objWeapons = new List<Weapon>();
+			TreeNode objNode = new TreeNode();
             Armor objArmor = new Armor(_objCharacter);
-            objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
+
+			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating, objWeapons);
 			objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
 			if (objArmor.InternalId == Guid.Empty.ToString())
                 return;
@@ -7546,7 +7553,13 @@ namespace Chummer
             treArmor.Nodes[0].Expand();
             treArmor.SelectedNode = objNode;
 
-            UpdateCharacterInfo();
+			foreach (Weapon objWeapon in objWeapons)
+			{
+				_objCharacter.Weapons.Add(objWeapon);
+				_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+			}
+			
+			UpdateCharacterInfo();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -20679,12 +20692,14 @@ namespace Chummer
 
                     Armor objArmor = new Armor(_objCharacter);
                     TreeNode objNode = new TreeNode();
+					List<Weapon> objWeapons = new List<Weapon>();
+
                     int intArmorRating = 0;
                     if (objXmlArmor["rating"] != null)
                     {
                         intArmorRating = Convert.ToInt32(objXmlArmor["rating"].InnerText);
                     }
-                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, intArmorRating, false, blnCreateChildren);
+                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, intArmorRating, objWeapons, false, blnCreateChildren);
                     _objCharacter.Armor.Add(objArmor);
 
                     // Look for Armor Mods.
@@ -20720,9 +20735,14 @@ namespace Chummer
                                 treWeapons.Nodes[0].Expand();
                             }
                         }
-                    }
+					}
 
-                    XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+					foreach (Weapon objWeapon in objWeapons)
+					{
+						_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+					}
+
+					XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
                     foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
                         AddPACKSGear(objXmlGearDocument, objXmlGear, objNode, objArmor, cmsArmorGear, blnCreateChildren);
 
