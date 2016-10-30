@@ -15,6 +15,7 @@ Application Changes:
 - Fixed an issue where Priority Aspected Magicians didn't get their unlocked skill group. 
 - Fixed an issue that prevented the Blackmail and Family options from forcing a cost refresh for contacts in Create mode.
 - Fixed the addweapon node for Armour to actually add the weapon to the character.
+- Added support for <required/oneof/lifestyle> to lifestyle qualities. 
 
 Data Changes: 
 
@@ -27,6 +28,7 @@ Data Changes:
 - Added an Under mod slot for the Shiawase Incinerator flamethrower.
 - Removed the mod slots from the Shiawase Blazer.
 - Fixed the implementation of Mutaqua, Wendigo and Nosferatu to not require adding a Mystic Adept quality. 
+- Updated the Thrifty negative lifestyle quality to properly require the Traveler lifestyle.
 
 Sheet Changes:
 
