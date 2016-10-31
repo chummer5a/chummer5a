@@ -1478,7 +1478,7 @@
 			this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
 			this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
 			this.chkPrintToFileFirst.TabIndex = 18;
-			this.chkPrintToFileFirst.Tag = "Checkbox_Option_PrintToFileFirst";
+			this.chkPrintToFileFirst.Tag = "Checkbox_Options_PrintToFileFirst";
 			this.chkPrintToFileFirst.Text = "Apply Linux printing fix";
 			this.chkPrintToFileFirst.UseVisualStyleBackColor = true;
 			this.chkPrintToFileFirst.CheckedChanged += new System.EventHandler(this.OptionsChanged);
@@ -1509,7 +1509,7 @@
 			this.chkPrintNotes.Name = "chkPrintNotes";
 			this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
 			this.chkPrintNotes.TabIndex = 15;
-			this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
+			this.chkPrintNotes.Tag = "Checkbox_Options_PrintNotes";
 			this.chkPrintNotes.Text = "Print Notes";
 			this.chkPrintNotes.UseVisualStyleBackColor = true;
 			// 
@@ -1530,7 +1530,7 @@
 			this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
 			this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
 			this.chkAllowSkillDiceRolling.TabIndex = 10;
-			this.chkAllowSkillDiceRolling.Tag = "Checkbox_Option_AllowSkillDiceRolling";
+			this.chkAllowSkillDiceRolling.Tag = "Checkbox_Options_AllowSkillDiceRolling";
 			this.chkAllowSkillDiceRolling.Text = "Allow dice rolling for dice pools";
 			this.chkAllowSkillDiceRolling.UseVisualStyleBackColor = true;
 			this.chkAllowSkillDiceRolling.CheckedChanged += new System.EventHandler(this.OptionsChanged);
@@ -1646,7 +1646,7 @@
 			this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
 			this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
 			this.chkSpecialKarmaCost.TabIndex = 17;
-			this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCost";
+			this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCostBasedOnShownValue";
 			this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
 			this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
 			this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
@@ -1671,7 +1671,7 @@
 			this.chkCalculateCommlinkResponse.Name = "chkCalculateCommlinkResponse";
 			this.chkCalculateCommlinkResponse.Size = new System.Drawing.Size(350, 17);
 			this.chkCalculateCommlinkResponse.TabIndex = 8;
-			this.chkCalculateCommlinkResponse.Tag = "Checkbox_Option_CalculateCommlinkResponse";
+			this.chkCalculateCommlinkResponse.Tag = "Checkbox_Options_CalculateCommlinkResponse";
 			this.chkCalculateCommlinkResponse.Text = "Calculate Commlink Response based on number of running programs";
 			this.chkCalculateCommlinkResponse.UseVisualStyleBackColor = true;
 			this.chkCalculateCommlinkResponse.Visible = false;
@@ -1684,7 +1684,7 @@
 			this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
 			this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(328, 17);
 			this.chkCreateBackupOnCareer.TabIndex = 2;
-			this.chkCreateBackupOnCareer.Tag = "Checkbox_Option_CreateBackupOnCareer";
+			this.chkCreateBackupOnCareer.Tag = "Checkbox_Options_CreateBackupOnCareer";
 			this.chkCreateBackupOnCareer.Text = "Create backup of character before moving them to Career Mode";
 			this.chkCreateBackupOnCareer.UseVisualStyleBackColor = true;
 			this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChanged);
@@ -1709,7 +1709,7 @@
 			this.chkRestrictRecoil.Name = "chkRestrictRecoil";
 			this.chkRestrictRecoil.Size = new System.Drawing.Size(258, 17);
 			this.chkRestrictRecoil.TabIndex = 3;
-			this.chkRestrictRecoil.Tag = "Checkbox_Options_UseRestrictionsToRecoilCompensation";
+			this.chkRestrictRecoil.Tag = "Checkbox_Options_RestrictRecoil";
 			this.chkRestrictRecoil.Text = "Use Restrictions to Recoil Compensation (RG 53)";
 			this.chkRestrictRecoil.UseVisualStyleBackColor = true;
 			this.chkRestrictRecoil.CheckedChanged += new System.EventHandler(this.OptionsChanged);
@@ -1734,7 +1734,7 @@
 			this.chkEnforceCapacity.Name = "chkEnforceCapacity";
 			this.chkEnforceCapacity.Size = new System.Drawing.Size(132, 17);
 			this.chkEnforceCapacity.TabIndex = 4;
-			this.chkEnforceCapacity.Tag = "Checkbox_Option_EnforceCapacity";
+			this.chkEnforceCapacity.Tag = "Checkbox_Options_EnforceCapacity";
 			this.chkEnforceCapacity.Text = "Enforce Capacity limits";
 			this.chkEnforceCapacity.UseVisualStyleBackColor = true;
 			this.chkEnforceCapacity.CheckedChanged += new System.EventHandler(this.OptionsChanged);
@@ -2782,7 +2782,7 @@
 			this.chkAlternateMetatypeAttributeKarma.Name = "chkAlternateMetatypeAttributeKarma";
 			this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(411, 17);
 			this.chkAlternateMetatypeAttributeKarma.TabIndex = 28;
-			this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
+			this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Options_AlternateMetatypeAttributeKarma";
 			this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
 			this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
 			// 

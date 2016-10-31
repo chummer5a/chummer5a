@@ -5288,7 +5288,7 @@
       <text>技能値がすべて同じなら, 能動技能を再びグループにしてもよい (SR4 FAQ)</text>
     </string>
     <string>
-      <key>Checkbox_Options_MetatypesCostKarma</key>
+      <key>Checkbox_Options_MetatypeCostsKarma</key>
       <text>メタタイプのカルマコストはBP</text>
     </string>
     <string>
@@ -5372,11 +5372,11 @@
       <text>エルゴノミック・プログラムはコムリンクの【レスポンス】に影響しない (UN)</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialKarmaCost</key>
+      <key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
       <text>特殊能力値を成長させる際のカルマは、【エッセンス】の減少に基づいて削減される</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
+      <key>Checkbox_Options_RestrictRecoil</key>
       <text>反動補正の制限を適用する (AR)</text>
     </string>
     <string>
@@ -5420,63 +5420,63 @@
       <text>禁止されている装備の価格倍率</text>
     </string>
     <string>
-      <key>Checkbox_Option_EnforceCapacity</key>
+      <key>Checkbox_Options_EnforceCapacity</key>
       <text>容量制限を守る</text>
     </string>
     <string>
-      <key>Checkbox_Option_CalculateCommlinkResponse</key>
+      <key>Checkbox_Options_CalculateCommlinkResponse</key>
       <text>コムリンクの【レスポンス】を実行中のプログラムの数を元に計算する</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowSkillDiceRolling</key>
+      <key>Checkbox_Options_AllowSkillDiceRolling</key>
       <text>ダイス・プールからダイスツールを起動できる</text>
     </string>
     <string>
-      <key>Checkbox_Option_CreateBackupOnCareer</key>
+      <key>Checkbox_Options_CreateBackupOnCareer</key>
       <text>キャラクターをキャリア・モードにする際にバックアップを取る</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowExceedAttributeBP</key>
+      <key>Checkbox_Options_AllowExceedAttributeBP</key>
       <text>能力値にBP/カルマの50%以上を消費することを認める</text>
     </string>
     <string>
-      <key>Checkbox_Option_UnrestrictedNuyen</key>
+      <key>Checkbox_Options_UnrestrictedNuyen</key>
       <text>キャラクターは新円に好きなだけBP/カルマを使える</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowHigherStackedFoci</key>
+      <key>Checkbox_Options_AllowHigherStackedFoci</key>
       <text>合計【フォース】が6を超える重積収束具の作成を認める</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowEditPartOfBaseWeapon</key>
+      <key>Checkbox_Options_AllowEditPartOfBaseWeapon</key>
       <text>武器アクセサリと改造が元の武器の性能を変化することを認める</text>
     </string>
     <string>
-      <key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
+      <key>Checkbox_Options_AlternateMetatypeAttributeKarma</key>
       <text>カルマコストを決定する際に, 能力値の下限を1として取り扱う</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintLeadershipAlternates</key>
+      <key>Checkbox_Options_PrintLeadershipAlternates</key>
       <text>&lt;統率&gt;の派生技能を印刷する (WAR! より)</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintArcanaAlternates</key>
+      <key>Checkbox_Options_PrintArcanaAlternates</key>
       <text>&lt;アルカナ&gt;の派生技能を印刷する (ストリート・マジック より)</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowObsolescentUpgrade</key>
+      <key>Checkbox_Options_AllowObsolescentUpgrade</key>
       <text>痛みかけたものも, 痛んだものと同様に除去/アップグレードする</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowBiowareSuites</key>
+      <key>Checkbox_Options_AllowBiowareSuites</key>
       <text>バイオウェア・スイートを認める</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintNotes</key>
+      <key>Checkbox_Options_PrintNotes</key>
       <text>ノートを印刷</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintToFileFirst</key>
+      <key>Checkbox_Options_PrintToFileFirst</key>
       <text>Linux 上での印刷トラブルに対応させる</text>
     </string>
     <string>
@@ -5484,15 +5484,15 @@
       <text>エッセンスの端数処理を行う桁数:</text>
     </string>
     <string>
-      <key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
+      <key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
       <text>自由精霊は【エッジ】でなく【魔力】を基準にパワーポイントを得る</text>
     </string>
     <string>
-      <key>Checkbox_Option_SpecialAttributeKarmaLimit</key>
+      <key>Checkbox_Options_SpecialAttributeKarmaLimit</key>
       <text>キャラクター作成時は, 特殊能力値をカルマの50%制限に含めない</text>
     </string>
     <string>
-      <key>Checkbox_Option_TechnomancerAllowAutosoft</key>
+      <key>Checkbox_Options_TechnomancerAllowAutosoft</key>
       <text>テクノマンサーはオートソフトを複合体として習得できる</text>
     </string>
     <string>

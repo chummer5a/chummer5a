@@ -13,6 +13,7 @@ namespace Chummer
 {
 	public class CharacterOptions
 	{
+		#region Default Values
 		private readonly Character _character;
 		private string _strFileName = "default.xml";
 		private string _strName = "Default Settings";
@@ -107,22 +108,6 @@ namespace Chummer
 		private string _strBookXPath = "";
 		private string _strExcludeLimbSlot = "";
 
-		// BP variables.
-		private int _intBPActiveSkill = 4;
-		private int _intBPActiveSkillSpecialization = 2;
-		private int _intBPAttributeMax = 15;
-		private int _intBPComplexForm = 1;
-		private int _intBPComplexFormOption = 1;
-		private int _intBPContact = 1;
-		private int _intBPFocus = 1;
-		private int _intBPKnowledgeSkill = 2;
-		private int _intBPMartialArt = 5;
-		private int _intBPMartialArtManeuver = 2;
-		private int _intBPSkillGroup = 10;
-		private int _intBPSpell = 3;
-		private int _intBPSpirit = 1;
-		private int _intBPAttribute = 10;
-
 		// Karma variables.
 		private int _intKarmaAttribute = 5;
 		private int _intKarmaCarryover = 7;
@@ -172,7 +157,7 @@ namespace Chummer
 		private string _strBuildMethod = "Karma";
 		private int _intBuildPoints = 800;
 		private int _intAvailability = 12;
-
+		#endregion
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
 
@@ -398,34 +383,6 @@ namespace Chummer
 			objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
 			// <bpcost>
 			objWriter.WriteStartElement("bpcost");
-			// <bpattribute />
-			objWriter.WriteElementString("bpattribute", _intBPAttribute.ToString());
-			// <bpattributemax />
-			objWriter.WriteElementString("bpattributemax", _intBPAttributeMax.ToString());
-			// <bpcontact />
-			objWriter.WriteElementString("bpcontact", _intBPContact.ToString());
-			// <bpmartialart />
-			objWriter.WriteElementString("bpmartialart", _intBPMartialArt.ToString());
-			// <bpmartialartmaneuver />
-			objWriter.WriteElementString("bpmartialartmaneuver", _intBPMartialArtManeuver.ToString());
-			// <bpskillgroup />
-			objWriter.WriteElementString("bpskillgroup", _intBPSkillGroup.ToString());
-			// <bpactiveskill />
-			objWriter.WriteElementString("bpactiveskill", _intBPActiveSkill.ToString());
-			// <bpactiveskillspecialization />
-			objWriter.WriteElementString("bpactiveskillspecialization", _intBPActiveSkillSpecialization.ToString());
-			// <bpknowledgeskill />
-			objWriter.WriteElementString("bpknowledgeskill", _intBPKnowledgeSkill.ToString());
-			// <bpspell />
-			objWriter.WriteElementString("bpspell", _intBPSpell.ToString());
-			// <bpfocus />
-			objWriter.WriteElementString("bpfocus", _intBPFocus.ToString());
-			// <bpspirit />
-			objWriter.WriteElementString("bpspirit", _intBPSpirit.ToString());
-			// <bpcomplexform />
-			objWriter.WriteElementString("bpcomplexform", _intBPComplexForm.ToString());
-			// <bpcomplexformoption />
-			objWriter.WriteElementString("bpcomplexformoption", _intBPComplexFormOption.ToString());
 			// </bpcost>
 			objWriter.WriteEndElement();
 
@@ -749,23 +706,6 @@ namespace Chummer
 			// House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
 			objXmlNode.TryGetField("usecalculatedpublicawareness", out _blnUseCalculatedPublicAwareness);
 
-			objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
-			// Attempt to populate the BP vlaues.
-			objXmlNode.TryGetField("bpattribute", out _intBPAttribute);
-			objXmlNode.TryGetField("bpattributemax", out _intBPAttributeMax);
-			objXmlNode.TryGetField("bpcontact", out _intBPContact);
-			objXmlNode.TryGetField("bpmartialart", out _intBPMartialArt);
-			objXmlNode.TryGetField("bpmartialartmaneuver", out _intBPMartialArtManeuver);
-			objXmlNode.TryGetField("bpskillgroup", out _intBPSkillGroup);
-			objXmlNode.TryGetField("bpactiveskill", out _intBPActiveSkill);
-			objXmlNode.TryGetField("bpactiveskillspecialization", out _intBPActiveSkillSpecialization);
-			objXmlNode.TryGetField("bpknowledgeskill", out _intBPKnowledgeSkill);
-			objXmlNode.TryGetField("bpspell", out _intBPSpell);
-			objXmlNode.TryGetField("bpfocus", out _intBPFocus);
-			objXmlNode.TryGetField("bpspirit", out _intBPSpirit);
-			objXmlNode.TryGetField("bpcomplexform", out _intBPComplexForm);
-			objXmlNode.TryGetField("bpcomplexformoption", out _intBPComplexFormOption);
-
 			objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
 			// Attempt to populate the Karma values.
 			objXmlNode.TryGetField("karmaattribute", out _intKarmaAttribute);
@@ -828,7 +768,7 @@ namespace Chummer
 		}
 		#endregion
 
-		#region Properties and Methods
+		#region Methods
 		/// <summary>
 		/// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
 		/// </summary>
@@ -1251,20 +1191,219 @@ namespace Chummer
 		{
 			return _lstBooks;
 		}
+		#endregion
 
+		#region Rule Settings
+		#region Chummer Options
+		/// <summary>
+		/// Whether or not confirmation messages are shown when deleting an object.
+		/// </summary>
+		[OptionAttributes("Chummer Options")]
+		[SavePropertyAs("confirmdelete")]
+		[DisplayConfiguration("Checkbox_Options_ConfirmDelete")]
+		public bool ConfirmDelete
+		{
+			get
+			{
+				return _blnConfirmDelete;
+			}
+			set
+			{
+				_blnConfirmDelete = value;
+			}
+		}
+
+		/// <summary>
+		/// Wehther or not confirmation messages are shown for Karma Expenses.
+		/// </summary>
+		[SavePropertyAs("confirmkarmaexpense")]
+		[DisplayConfiguration("Checkbox_Options_ConfirmKarmaExpense")]
+		public bool ConfirmKarmaExpense
+		{
+			get
+			{
+				return _blnConfirmKarmaExpense;
+			}
+			set
+			{
+				_blnConfirmKarmaExpense = value;
+			}
+		}
+
+		/// <summary>
+		/// Number of Limbs a standard character has.
+		/// </summary>
+		[SavePropertyAs("limbcount")]
+		//TODO: Handler for comboboxes
+		public int LimbCount
+		{
+			get
+			{
+				return _intLimbCount;
+			}
+			set
+			{
+				_intLimbCount = value;
+			}
+		}
+
+		/// <summary>
+		/// Exclude a particular Limb Slot from count towards the Limb Count.
+		/// </summary>
+		[SavePropertyAs("excludelimbslot")]
+		//TODO: Handler for comboboxes
+		public string ExcludeLimbSlot
+		{
+			get
+			{
+				return _strExcludeLimbSlot;
+			}
+			set
+			{
+				_strExcludeLimbSlot = value;
+			}
+		}
+		/// <summary>
+		/// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
+		/// </summary>
+		[SavePropertyAs("createbackuponcareer")]
+		[DisplayConfiguration("Checkbox_Options_CreateBackupOnCareer")]
+		public bool CreateBackupOnCareer
+		{
+			get
+			{
+				return _blnCreateBackupOnCareer;
+			}
+			set
+			{
+				_blnCreateBackupOnCareer = value;
+			}
+		}
+
+		/// <summary>
+		/// Number of decimal places to round to when calculating Essence.
+		/// </summary>
+		[SavePropertyAs("essencedecimals")]
+		public int EssenceDecimals
+		{
+			get
+			{
+				return _intEssenceDecimals;
+			}
+			set
+			{
+				_intEssenceDecimals = value;
+			}
+		}
+
+		/// <summary>
+		/// Default build method.
+		/// </summary>
+		[SavePropertyAs("buildmethod")]
+		public string BuildMethod
+		{
+			get
+			{
+				return _strBuildMethod;
+			}
+			set
+			{
+				_strBuildMethod = value;
+			}
+		}
+
+		/// <summary>
+		/// Default number of build points.
+		/// </summary>
+		[SavePropertyAs("buildpoints")]
+		public int BuildPoints
+		{
+			get
+			{
+				return _intBuildPoints;
+			}
+			set
+			{
+				_intBuildPoints = value;
+			}
+		}
+
+		/// <summary>
+		/// Default Availability.
+		/// </summary>
+		[SavePropertyAs("availability")]
+		public int Availability
+		{
+			get
+			{
+				return _intAvailability;
+			}
+			set
+			{
+				_intAvailability = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether Life Modules should automatically generate a character background.
+		/// </summary>
+		[SavePropertyAs("autobackstory")]
+		public bool AutomaticBackstory
+		{
+			get { return _automaticBackstory; }
+			internal set { _automaticBackstory = value; }
+		}
+		#region Printing
 		/// <summary>
 		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
 		/// </summary>
-		[OptionAttributes("Printing")]
+		[OptionAttributes("Chummer Options/Printing")]
 		[DisplayConfiguration("Checkbox_Options_PrintAllSkills")]
 		[SavePropertyAs("printzeroratingskills")]
 		public bool PrintSkillsWithZeroRating { get; set; } = true;
 
-	    /// <summary>
+		/// <summary>
+		/// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
+		/// </summary>
+		[SavePropertyAs("printexpenses")]
+		[DisplayConfiguration("Checkbox_Options_PrintExpenses")]
+		public bool PrintExpenses
+		{
+			get
+			{
+				return _blnPrintExpenses;
+			}
+			set
+			{
+				_blnPrintExpenses = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Notes should be printed.
+		/// </summary>
+		[SavePropertyAs("printnotes")]
+		[DisplayConfiguration("Checkbox_Options_PrintNotes")]
+		public bool PrintNotes
+		{
+			get
+			{
+				return _blnPrintNotes;
+			}
+			set
+			{
+				_blnPrintNotes = value;
+			}
+		}
+		#endregion
+		#endregion
+		#region Optional Rules
+		/// <summary>
 		/// Whether or not the More Lethal Gameplay optional rule is enabled.
 		/// </summary>
-		[OptionAttributes("Gameplay Options")]
+		[OptionAttributes("Optional Rules")]
 	    [DisplayConfiguration("Checkbox_Options_MoreLethalGameplay")]
+		[SavePropertyAs("morelethalgameplay")]
 		public bool MoreLethalGameplay
 		{
 			get
@@ -1280,8 +1419,8 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not to require licensing restricted items.
 		/// </summary>
-		[OptionAttributes("Gameplay Options")]  //TODO: Really?
 		[DisplayConfiguration("Checkbox_Options_LicenseRestricted")]
+		[SavePropertyAs("licenserestricted")]
 		public bool LicenseRestricted
 		{
 			get
@@ -1298,6 +1437,7 @@ namespace Chummer
 		/// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
 		/// </summary>
 		[DisplayConfiguration("Checkbox_Options_MaxSpiritForce")]
+		[SavePropertyAs("spiritforcebasedontotalmag")]
 		public bool SpiritForceBasedOnTotalMAG
 		{
 			get
@@ -1311,88 +1451,9 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not Defaulting on a Skill should include any Modifiers.
+		/// Whether or not Knucks benefit from improvements to Unarmed DV, such as Adept Powers.
 		/// </summary>
-		[DisplayConfiguration("Checkbox_Options_EnforceSkillRating")]
-		public bool SkillDefaultingIncludesModifiers
-		{
-			get
-			{
-				return _blnSkillDefaultingIncludesModifiers;
-			}
-			set
-			{
-				_blnSkillDefaultingIncludesModifiers = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the maximum Skill rating modifiers are set.
-		/// </summary>
-		[DisplayConfiguration("Checkbox_Options_EnforceSkillRating")]
-		public bool EnforceMaximumSkillRatingModifier
-		{
-			get
-			{
-				return _blnEnforceSkillMaximumModifiedRating;
-			}
-			set
-			{
-				_blnEnforceSkillMaximumModifiedRating = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
-		/// </summary>
-		[DisplayConfiguration("Checkbox_Options_LimitSkills")]
-		public bool CapSkillRating
-		{
-			get
-			{
-				return _blnCapSkillRating;
-			}
-			set
-			{
-				_blnCapSkillRating = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
-		/// </summary>
-		[DisplayConfiguration("Checkbox_Options_PrintExpenses")]
-		public bool PrintExpenses
-		{
-			get
-			{
-				return _blnPrintExpenses;
-			}
-			set
-			{
-				_blnPrintExpenses = value;
-			}
-		}
-
-		/// <summary>
-		/// Amount of Nuyen gained per BP spent.
-		/// </summary>
-		[DisplayConfiguration("Label_Options_Nuyen")]
-		public int NuyenPerBP
-		{
-			get
-			{
-				return _intNuyenPerBP;
-			}
-			set
-			{
-				_intNuyenPerBP = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Contacts equal to CHA * 2.
-		/// </summary>
+		[SavePropertyAs("knucksuseunarmed")]
 		[DisplayConfiguration("Checkbox_Options_Knucks")]
 		public bool KnucksUseUnarmed
 		{
@@ -1409,6 +1470,8 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not characters may use Initiation/Submersion in Create mode.
 		/// </summary>
+		[SavePropertyAs("allowinitiationincreatemode")]
+		[DisplayConfiguration("Checkbox_Options_AllowInitiation")]
 		public bool AllowInitiationInCreateMode
 		{
 			get
@@ -1422,8 +1485,314 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not Defaulting on a Skill should include any Modifiers.
+		/// </summary>
+		[DisplayConfiguration("Checkbox_Options_DefaultIncludeModifiers")]
+		[SavePropertyAs("skilldefaultingincludesmodifiers")]
+		public bool SkillDefaultingIncludesModifiers
+		{
+			get
+			{
+				return _blnSkillDefaultingIncludesModifiers;
+			}
+			set
+			{
+				_blnSkillDefaultingIncludesModifiers = value;
+			}
+		}
+		/// <summary>
+		/// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
+		/// </summary>
+		[SavePropertyAs("esslossreducesmaximumonly")]
+		[DisplayConfiguration("Checkbox_Options_EssenceLossReducesMaximum")]
+		public bool ESSLossReducesMaximumOnly
+		{
+			get
+			{
+				return _blnESSLossReducesMaximumOnly;
+			}
+			set
+			{
+				_blnESSLossReducesMaximumOnly = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
+		/// </summary>
+		[SavePropertyAs("allowskillregrouping")]
+		[DisplayConfiguration("Checkbox_Options_SkillRegroup")]
+		public bool AllowSkillRegrouping
+		{
+			get
+			{
+				return _blnAllowSkillRegrouping;
+			}
+			set
+			{
+				_blnAllowSkillRegrouping = value;
+			}
+		}
+
+		/// <summary>
+		/// Allow Cyberware Essence cost discounts.
+		/// </summary>
+		[SavePropertyAs("allowcyberwareessdiscounts")]
+		[DisplayConfiguration("Checkbox_Options_AllowCyberwareESSDiscounts")]
+		public bool AllowCyberwareESSDiscounts
+		{
+			get
+			{
+				return _blnAllowCyberwareESSDiscounts;
+			}
+			set
+			{
+				_blnAllowCyberwareESSDiscounts = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not a character's Strength affects Weapon Recoil.
+		/// </summary>
+		[SavePropertyAs("strengthaffectsrecoil")]
+		[DisplayConfiguration("Checkbox_Options_StrengthAffectsRecoil")]
+		public bool StrengthAffectsRecoil
+		{
+			get
+			{
+				return _blnStrengthAffectsRecoil;
+			}
+			set
+			{
+				_blnStrengthAffectsRecoil = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Maximum Armor Modifications is in use.
+		/// </summary>
+		[SavePropertyAs("maximumarmormodifications")]
+		[DisplayConfiguration("Checkbox_Options_MaximumArmorModifications")]
+		public bool MaximumArmorModifications
+		{
+			get
+			{
+				return _blnMaximumArmorModifications;
+			}
+			set
+			{
+				_blnMaximumArmorModifications = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Armor Suit Capacity is in use.
+		/// </summary>
+		[SavePropertyAs("armorsuitcapacity")]
+		[DisplayConfiguration("Checkbox_Options_ArmorSuitCapacity")]
+		public bool ArmorSuitCapacity
+		{
+			get
+			{
+				return _blnArmorSuitCapacity;
+			}
+			set
+			{
+				_blnArmorSuitCapacity = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Armor Degredation is allowed.
+		/// </summary>
+		[SavePropertyAs("armordegredation")]
+		[DisplayConfiguration("Checkbox_Options_ArmorDegradation")]
+		public bool ArmorDegradation
+		{
+			get
+			{
+				return _blnArmorDegradation;
+			}
+			set
+			{
+				_blnArmorDegradation = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the Karma cost for increasing Special Attributes is based on the shown value instead of actual value.
+		/// </summary>
+		[SavePropertyAs("specialkarmacostbasedonshownvalue")]
+		[DisplayConfiguration("Checkbox_Options_SpecialKarmaCostBasedOnShownValue")]
+		public bool SpecialKarmaCostBasedOnShownValue
+		{
+			get
+			{
+				return _blnSpecialKarmaCostBasedOnShownValue;
+			}
+			set
+			{
+				_blnSpecialKarmaCostBasedOnShownValue = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not characters can have more than 25 BP in Positive Qualities.
+		/// </summary>
+		[SavePropertyAs("exceedpositivequalities")]
+		[DisplayConfiguration("Checkbox_Options_ExceedPositiveQualities")]
+		public bool ExceedPositiveQualities
+		{
+			get
+			{
+				return _blnExceedPositiveQualities;
+			}
+			set
+			{
+				_blnExceedPositiveQualities = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not characters can have more than 25 BP in Negative Qualities.
+		/// </summary>
+		[SavePropertyAs("exceednegativequalities")]
+		[DisplayConfiguration("Checkbox_Options_ExceedNegativeQualities")]
+		public bool ExceedNegativeQualities
+		{
+			get
+			{
+				return _blnExceedNegativeQualities;
+			}
+			set
+			{
+				_blnExceedNegativeQualities = value;
+			}
+		}
+
+		/// <summary>
+		/// If true, the character will not receive additional BP from Negative Qualities past the initial 25
+		/// </summary>
+		[SavePropertyAs("exceednegativequalitieslimit")]
+		[DisplayConfiguration("Checkbox_Options_ExceedNegativeQualitiesLimit")]
+		public bool ExceedNegativeQualitiesLimit
+		{
+			get
+			{
+				return _blnExceedNegativeQualitiesLimit;
+			}
+			set
+			{
+				_blnExceedNegativeQualitiesLimit = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Restricted items have their cost multiplied.
+		/// </summary>
+		[SavePropertyAs("multiplyrestrictedcost")]
+		[DisplayConfiguration("Checkbox_Options_MultiplyRestrictedCost")]
+		public bool MultiplyRestrictedCost
+		{
+			get
+			{
+				return _blnMultiplyRestrictedCost;
+			}
+			set
+			{
+				_blnMultiplyRestrictedCost = value;
+			}
+		}
+		/// <summary>
+		/// Cost multiplier for Restricted items.
+		/// </summary>
+		[SavePropertyAs("restrictedcostmultiplier")]
+		public int RestrictedCostMultiplier
+		{
+			get
+			{
+				return _intRestrictedCostMultiplier;
+			}
+			set
+			{
+				_intRestrictedCostMultiplier = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Forbidden items have their cost multiplied.
+		/// </summary>
+		[SavePropertyAs("multiplyforbiddencost")]
+		[DisplayConfiguration("Checkbox_Options_MultiplyForbiddenCost")]
+		public bool MultiplyForbiddenCost
+		{
+			get
+			{
+				return _blnMultiplyForbiddenCost;
+			}
+			set
+			{
+				_blnMultiplyForbiddenCost = value;
+			}
+		}
+
+		/// <summary>
+		/// Cost multiplier for Forbidden items.
+		/// </summary>
+		[SavePropertyAs("forbiddencostmultiplier")]
+		public int ForbiddenCostMultiplier
+		{
+			get
+			{
+				return _intForbiddenCostMultiplier;
+			}
+			set
+			{
+				_intForbiddenCostMultiplier = value;
+			}
+		}
+		/// <summary>
+		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
+		/// </summary>
+		[OptionAttributes("Optional Rules/SR4")]
+		[SavePropertyAs("capskillrating")]
+		[DisplayConfiguration("Checkbox_Options_LimitSkills")]
+		public bool CapSkillRating
+		{
+			get
+			{
+				return _blnCapSkillRating;
+			}
+			set
+			{
+				_blnCapSkillRating = value;
+			}
+		}
+		/// <summary>
+		/// Whether to use the rules from SR4 to calculate Public Awareness.
+		/// </summary>
+		[SavePropertyAs("usecalculatedpublicawareness")]
+		[DisplayConfiguration("Checkbox_Options_UseCalculatedPublicAwareness")]
+		public bool UseCalculatedPublicAwareness
+		{
+			get
+			{
+				return _blnUseCalculatedPublicAwareness;
+			}
+			set
+			{
+				_blnUseCalculatedPublicAwareness = value;
+			}
+		}
+
+		#endregion
+		#region House Rules
+		/// <summary>
 		/// Whether or not characters can spend skill points on broken groups.
 		/// </summary>
+		[OptionAttributes("House Rules")]
+		[SavePropertyAs("usepointsonbrokengroups")]
+		[DisplayConfiguration("Checkbox_Options_PointsOnBrokenGroups")]
 		public bool UsePointsOnBrokenGroups
 		{
 			get
@@ -1437,8 +1806,233 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not to ignore the art requirements from street grimoire.
+		/// </summary>
+		[SavePropertyAs("ignoreart")]
+		[DisplayConfiguration("Checkbox_Options_IgnoreArt")]
+		public bool IgnoreArtRequirements
+		{
+			get
+			{
+				return _blnIgnoreArt;
+			}
+			set
+			{
+				_blnIgnoreArt = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not to use stats from Cyberlegs when calculating movement rates
+		/// </summary>
+		[SavePropertyAs("cyberlegmovement")]
+		[DisplayConfiguration("Checkbox_Options_CyberlegMovement")]
+		public bool CyberlegMovement
+		{
+			get
+			{
+				return _blnCyberlegMovement;
+			}
+			set
+			{
+				_blnCyberlegMovement = value;
+			}
+		}
+
+		/// <summary>
+		/// The Drone Body multiplier for maximal Armor //TODO: Link the enabled state to DroneArmorMultiplierEnabled.
+		/// </summary>
+		[SavePropertyAs("dronearmorflatnumber")]
+		[DisplayConfiguration("Checkbox_Options_DroneArmorMultiplier")]
+		public int DroneArmorMultiplier
+		{
+			get
+			{
+				return _intDroneArmorMultiplier;
+			}
+			set
+			{
+				_intDroneArmorMultiplier = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the DroneArmorMultiplier house rule is enabled. //TODO: Link DroneArmorMultiplier to the enabled state. Redundant?
+		/// </summary>
+		[SavePropertyAs("dronearmormultiplierenabled")]
+		[DisplayConfiguration("Checkbox_Options_DroneArmorMultiplier")]
+		public bool DroneArmorMultiplierEnabled
+		{
+			get
+			{
+				return _blnDroneArmorMultiplierEnabled;
+			}
+			set
+			{
+				_blnDroneArmorMultiplierEnabled = value;
+			}
+		}
+
+
+		/// <summary>
+		/// Whether or not Capacity limits should be enforced.
+		/// </summary>
+		[SavePropertyAs("enforcecapacity")]
+		[DisplayConfiguration("Checkbox_Options_EnforceCapacity")]
+		public bool EnforceCapacity
+		{
+			get
+			{
+				return _blnEnforceCapacity;
+			}
+			set
+			{
+				_blnEnforceCapacity = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not Recoil modifiers are restricted (AR 148).
+		/// </summary>
+		[SavePropertyAs("restrictrecoil")]
+		[DisplayConfiguration("Checkbox_Options_RestrictRecoil")]
+		public bool RestrictRecoil
+		{
+			get
+			{
+				return _blnRestrictRecoil;
+			}
+			set
+			{
+				_blnRestrictRecoil = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not characters are unresicted in the number of points they can invest in Nuyen.
+		/// </summary>
+		[SavePropertyAs("unrestrictednuyen")]
+		[DisplayConfiguration("Checkbox_Options_UnrestrictedNuyen")]
+		public bool UnrestrictedNuyen
+		{
+			get
+			{
+				return _blnUnrestrictedNuyen;
+			}
+			set
+			{
+				_blnUnrestrictedNuyen = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the user can change the Part of Base Weapon flag for a Weapon Accessory or Mod.
+		/// </summary>
+		[SavePropertyAs("alloweditpartofbaseweapon")]
+		[DisplayConfiguration("Checkbox_Options_AllowEditPartOfBaseWeapon")]
+		public bool AllowEditPartOfBaseWeapon
+		{
+			get
+			{
+				return _blnAllowEditPartOfBaseWeapon;
+			}
+			set
+			{
+				_blnAllowEditPartOfBaseWeapon = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the user can mark any piece of Bioware as being Transgenic.
+		/// </summary>
+		[SavePropertyAs("allowcustomtransgenics")]
+		[DisplayConfiguration("Checkbox_Options_AllowCustomTransgenics")]
+		public bool AllowCustomTransgenics
+		{
+			get
+			{
+				return _blnAllowCustomTransgenics;
+			}
+			set
+			{
+				_blnAllowCustomTransgenics = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the user is allowed to break Skill Groups while in Create Mode.
+		/// </summary>
+		[SavePropertyAs("breakskillgroupsincreatemode")]
+		[DisplayConfiguration("Checkbox_Options_StrictSkillGroups")]
+		public bool StrictSkillGroupsInCreateMode
+		{
+			get
+			{
+				return _blnStrictSkillGroupsInCreateMode;
+			}
+			set
+			{
+				_blnStrictSkillGroupsInCreateMode = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not any Detection Spell can be taken as Extended range version.
+		/// </summary>
+		[SavePropertyAs("extendanydetectionspell")]
+		[DisplayConfiguration("Checkbox_Options_ExtendAnyDetectionSpell")]
+		public bool ExtendAnyDetectionSpell
+		{
+			get
+			{
+				return _blnExtendAnyDetectionSpell;
+			}
+			set
+			{
+				_blnExtendAnyDetectionSpell = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not dice rolling is allowed for Skills.
+		/// </summary>
+		[SavePropertyAs("allowskilldicerolling")]
+		[DisplayConfiguration("Checkbox_Options_AllowSkillDiceRolling")]
+		public bool AllowSkillDiceRolling
+		{
+			get
+			{
+				return _blnAllowSkillDiceRolling;
+			}
+			set
+			{
+				_blnAllowSkillDiceRolling = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not cyberlimbs stats are used in attribute calculation
+		/// </summary>
+		[SavePropertyAs("dontusecyberlimbcalculation")]
+		[DisplayConfiguration("Checkbox_Options_UseCyberlimbCalculation")]
+		public bool DontUseCyberlimbCalculation
+		{
+			get
+			{
+				return _blnDontUseCyberlimbCalculation;
+			}
+			set
+			{
+				_blnDontUseCyberlimbCalculation = value;
+			}
+		}
+
+		/// <summary>
 		/// Whether or not characters in Career Mode should pay double for qualities.
 		/// </summary>
+		[OptionAttributes("House Rules/Qualities")]
+		[SavePropertyAs("dontdoublequalities")]
+		[DisplayConfiguration("Checkbox_Options_DontDoubleQualityPurchases")]
 		public bool DontDoubleQualityPurchases
 		{
 			get
@@ -1454,6 +2048,8 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
 		/// </summary>
+		[SavePropertyAs("dontdoublequalityrefunds")]
+		[DisplayConfiguration("Checkbox_Options_DontDoubleNegativeQualityRefunds")]
 		public bool DontDoubleQualityRefunds
 		{
 			get
@@ -1465,70 +2061,81 @@ namespace Chummer
 				_blnDontDoubleQualityRefundCost = value;
 			}
 		}
-
 		/// <summary>
-		/// Whether or not to ignore the art requirements from street grimoire.
+		/// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
 		/// </summary>
-		public bool IgnoreArt
+		[SavePropertyAs("allowobsolescentupgrade")]
+		[DisplayConfiguration("Checkbox_Options_AllowObsolescentUpgrade")]
+		public bool AllowObsolescentUpgrade
 		{
 			get
 			{
-				return _blnIgnoreArt;
+				return _blnAllowObsolescentUpgrade;
 			}
 			set
 			{
-				_blnIgnoreArt = value;
+				_blnAllowObsolescentUpgrade = value;
 			}
 		}
 
 		/// <summary>
-		/// Whether or not to use stats from Cyberlegs when calculating movement rates
+		/// Whether or not Bioware Suites can be added and created.
 		/// </summary>
-		public bool CyberlegMovement
+		[SavePropertyAs("allowbiowaresuites")]
+		[DisplayConfiguration("Checkbox_Options_AllowBiowareSuites")]
+		public bool AllowBiowareSuites
 		{
 			get
 			{
-				return _blnCyberlegMovement;
+				return _blnAllowBiowareSuites;
 			}
 			set
 			{
-				_blnCyberlegMovement = value;
+				_blnAllowBiowareSuites = value;
 			}
 		}
 
 		/// <summary>
-		/// Whether or not to allow a 2nd max attribute with Exceptional Attribute
+		/// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
 		/// </summary>
-		public bool Allow2ndMaxAttribute
+		[SavePropertyAs("freespiritpowerpointsmag")]
+		[DisplayConfiguration("Checkbox_Options_FreeSpiritPowerPointsMAG")]
+		public bool FreeSpiritPowerPointsMAG
 		{
 			get
 			{
-				return _blnAllow2ndMaxAttribute;
+				return _blnFreeSpiritPowerPointsMAG;
 			}
 			set
 			{
-				_blnAllow2ndMaxAttribute = value;
+				_blnFreeSpiritPowerPointsMAG = value;
 			}
 		}
 
 		/// <summary>
-		/// Whether or not to allow using Attribute points on the bonus point from Exceptional Attribute
+		/// Whether or not Technomancers can select Autosofts as Complex Forms.
 		/// </summary>
-		public bool AllowAttributePointsOnExceptional
+		[SavePropertyAs("technomancerallowautosoft")]
+		[DisplayConfiguration("Checkbox_Options_TechnomancerAllowAutosoft")]
+		public bool TechnomancerAllowAutosoft
 		{
 			get
 			{
-				return _blnAllowAttributePointsOnExceptional;
+				return _blnTechnomancerAllowAutosoft;
 			}
 			set
 			{
-				_blnAllowAttributePointsOnExceptional = value;
+				_blnTechnomancerAllowAutosoft = value;
 			}
 		}
-
+		#region Character Creation
 		/// <summary>
 		/// The CHA multiplier to be used with the Free Contacts Option.
 		/// </summary>
+		/// //TODO: Link the enabled state to FreeContactsMultiplierEnabled.
+		[OptionAttributes("House Rules/Character Creation")]
+		[SavePropertyAs("freekarmacontactsmultiplier")]
+		[DisplayConfiguration("Checkbox_Options_ContactMultiplier")]
 		public int FreeContactsMultiplier
 		{
 			get
@@ -1553,10 +2160,13 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Whether or not characters get a flat number of BP for free Contacts.
-        /// </summary>
-        public bool FreeContactsMultiplierEnabled
+		/// <summary>
+		/// Whether or not characters get a flat number of BP for free Contacts.
+		/// </summary>
+		/// //TODO: Link FreeContactsMultiplier to the enabled state. Redundant?
+		[SavePropertyAs("freecontactsmultiplierenabled")]
+		[DisplayConfiguration("Checkbox_Options_ContactMultiplier")]
+		public bool FreeContactsMultiplierEnabled
         {
             get
             {
@@ -1568,41 +2178,12 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-		/// The Drone Body multiplier for maximal Armor
+		/// <summary>
+		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
 		/// </summary>
-		public int DroneArmorMultiplier
-        {
-            get
-            {
-                return _intDroneArmorMultiplier;
-            }
-            set
-            {
-                _intDroneArmorMultiplier = value;
-            }
-        }
-
-        /// <summary>
-		/// Whether or not Armor
-		/// </summary>
-		public bool DroneArmorMultiplierEnabled
-        {
-            get
-            {
-                return _blnDroneArmorMultiplierEnabled;
-            }
-            set
-            {
-                _blnDroneArmorMultiplierEnabled = value;
-            }
-        }
-
-
-        /// <summary>
-        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-        /// </summary>
-        public bool FreeKarmaContacts
+		[SavePropertyAs("freekarmacontacts")]
+		[DisplayConfiguration("Checkbox_Options_FreeKarmaContacts")]
+		public bool FreeKarmaContacts
 		{
 			get
 			{
@@ -1617,6 +2198,8 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
 		/// </summary>
+		[SavePropertyAs("freekarmaknowledge")]
+		[DisplayConfiguration("Checkbox_Options_FreeKnowledgeSkills")]
 		public bool FreeKarmaKnowledge
 		{
 			get
@@ -1632,6 +2215,8 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the multiplier for Free Knowledge points are used.
 		/// </summary>
+		[SavePropertyAs("freekarmaknowledgemultiplierenabled")]
+		[DisplayConfiguration("Checkbox_Options_KnowledgeMultiplier")]
 		public bool FreeKnowledgeMultiplierEnabled
 		{
 			get
@@ -1647,6 +2232,8 @@ namespace Chummer
 		/// <summary>
 		/// The INT+LOG multiplier to be used with the Free Knowledge Option.
 		/// </summary>
+		[SavePropertyAs("freekarmaknowledgemultiplier")]
+		[DisplayConfiguration("Checkbox_Options_KnowledgeMultiplier")]
 		public int FreeKnowledgeMultiplier
 		{
 			get
@@ -1658,111 +2245,797 @@ namespace Chummer
 				_intFreeKnowledgeMultiplier = value;
 			}
 		}
-
 		/// <summary>
-		/// Optional Rule: Whether or not Armor Encumbrance is ignored if only a single piece of Armor is worn.
+		/// Whether or not Metatypes cost Karma.
 		/// </summary>
-		public bool NoSingleArmorEncumbrance
+		[SavePropertyAs("metatypecostskarma")]
+		[DisplayConfiguration("Checkbox_Options_MetatypeCostsKarma")]
+		public bool MetatypeCostsKarma
 		{
 			get
 			{
-				return _blnNoSingleArmorEncumbrance;
+				return _blnMetatypeCostsKarma;
 			}
 			set
 			{
-				_blnNoSingleArmorEncumbrance = value;
+				_blnMetatypeCostsKarma = value;
 			}
 		}
 
 		/// <summary>
-		/// House Rule: Ignore Armor Encumbrance entirely.
+		/// Mutiplier for Metatype Karma Costs.
 		/// </summary>
-		public bool IgnoreArmorEncumbrance
+		[SavePropertyAs("metatypecostskarma")]
+		[DisplayConfiguration("Checkbox_Options_MetatypeCostsKarma")]
+		public int MetatypeCostsKarmaMultiplier
 		{
 			get
 			{
-				return _blnIgnoreArmorEncumbrance;
+				return _intMetatypeCostMultiplier;
 			}
 			set
 			{
-				_blnIgnoreArmorEncumbrance = value;
+				_intMetatypeCostMultiplier = value;
 			}
 		}
 
 		/// <summary>
-		/// House Rule: Alternate Armor Encumbrance (BOD+STR) instead of (BOD*2).
+		/// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
 		/// </summary>
-		public bool AlternateArmorEncumbrance
+		[SavePropertyAs("alternatemetatypeattributekarma")]
+		[DisplayConfiguration("Checkbox_Options_AlternateMetatypeAttributeKarma")]
+		public bool AlternateMetatypeAttributeKarma
 		{
 			get
 			{
-				return _blnAlternateArmorEncumbrance;
+				return _blnAlternateMetatypeAttributeKarma;
 			}
 			set
 			{
-				_blnAlternateArmorEncumbrance = value;
+				_blnAlternateMetatypeAttributeKarma = value;
+			}
+		}
+		/// <summary>
+		/// Maximum amount of remaining Karma that is carried over to the character once they are created.
+		/// </summary>
+		[SavePropertyAs("karmacarryover")]
+		[DisplayConfiguration("Label_Options_Carryover")]
+		public int KarmaCarryover
+		{
+			get
+			{
+				return _intKarmaCarryover;
+			}
+			set
+			{
+				_intKarmaCarryover = value;
 			}
 		}
 
 		/// <summary>
-		/// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
+		/// Amount of Nuyen gained per Karma spent.
 		/// </summary>
-		public bool ESSLossReducesMaximumOnly
+		[SavePropertyAs("nuyenperbp")]
+		[DisplayConfiguration("Label_Options_Nuyen")]
+		public int NuyenPerBP
 		{
 			get
 			{
-				return _blnESSLossReducesMaximumOnly;
+				return _intNuyenPerBP;
 			}
 			set
 			{
-				_blnESSLossReducesMaximumOnly = value;
+				_intNuyenPerBP = value;
+			}
+		}
+
+
+		/// <summary>
+		/// Whether you benefit from augmented values for contact points.
+		/// </summary>
+		[SavePropertyAs("usetotalvalueforcontacts")]
+		[DisplayConfiguration("Checkbox_Options_UseTotalValueForFreeContacts")]
+		public bool UseTotalValueForFreeContacts
+		{
+			get
+			{
+				return _blnUseTotalValueForFreeContacts;
+			}
+			set
+			{
+				_blnUseTotalValueForFreeContacts = value;
 			}
 		}
 
 		/// <summary>
-		/// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
+		/// Whether you benefit from augmented values for free knowledge points.
 		/// </summary>
-		public bool AllowSkillRegrouping
+		[SavePropertyAs("usetotalvalueforknowledge")]
+		[DisplayConfiguration("Checkbox_Options_UseTotalValueForFreeKnowledge")]
+		public bool UseTotalValueForFreeKnowledge
 		{
 			get
 			{
-				return _blnAllowSkillRegrouping;
+				return _blnUseTotalValueForFreeKnowledge;
 			}
 			set
 			{
-				_blnAllowSkillRegrouping = value;
+				_blnUseTotalValueForFreeKnowledge = value;
+			}
+		}
+		#endregion
+
+		#endregion
+
+		#region Karma Costs
+		/// <summary>
+		/// Karma cost to improve an Attribute = New Rating X this value.
+		/// </summary>
+		[OptionAttributes("Karma Costs")]
+		[SavePropertyAs("karmaattribute")]
+		[DisplayConfiguration("Label_Options_ImproveAttribute")]
+		public int KarmaAttribute
+		{
+			get
+			{
+				return _intKarmaAttribute;
+			}
+			set
+			{
+				_intKarmaAttribute = value;
 			}
 		}
 
 		/// <summary>
-		/// Whether or not confirmation messages are shown when deleting an object.
+		/// Karma cost to purchase a Quality = BP Cost x this value.
 		/// </summary>
-		public bool ConfirmDelete
+		[SavePropertyAs("karmaquality")]
+		[DisplayConfiguration("Label_Options_Qualities")]
+		public int KarmaQuality
 		{
 			get
 			{
-				return _blnConfirmDelete;
+				return _intKarmaQuality;
 			}
 			set
 			{
-				_blnConfirmDelete = value;
+				_intKarmaQuality = value;
+			}
+		}
+		/// <summary>
+		/// Karma cost for a Contact = (Connection + Loyalty) x this value.
+		/// </summary>
+		[SavePropertyAs("karmacontact")]
+		[DisplayConfiguration("Label_Options_KarmaContact")]
+		public int KarmaContact
+		{
+			get
+			{
+				return _intKarmaContact;
+			}
+			set
+			{
+				_intKarmaContact = value;
 			}
 		}
 
 		/// <summary>
-		/// Wehther or not confirmation messages are shown for Karma Expenses.
+		/// Karma cost for an Enemy = (Connection + Loyalty) x this value.
 		/// </summary>
-		public bool ConfirmKarmaExpense
+		[SavePropertyAs("karmaenemy")]
+		[DisplayConfiguration("Label_Options_Enemies")]
+		public int KarmaEnemy
 		{
 			get
 			{
-				return _blnConfirmKarmaExpense;
+				return _intKarmaEnemy;
 			}
 			set
 			{
-				_blnConfirmKarmaExpense = value;
+				_intKarmaEnemy = value;
 			}
 		}
+
+		/// <summary>
+		/// Karma cost for a Combat Maneuver = this value.
+		/// </summary>
+		[SavePropertyAs("karmamaneuver")]
+		[DisplayConfiguration("Label_Options_KarmaMartialArtManeuver")]
+		public int KarmaManeuver
+		{
+			get
+			{
+				return _intKarmaManeuver;
+			}
+			set
+			{
+				_intKarmaManeuver = value;
+			}
+		}
+		#region Skills
+		/// <summary>
+		/// Karma cost to purchase a Specialization = this value.
+		/// </summary>
+		[SavePropertyAs("karmaspecialization")]
+		[DisplayConfiguration("Label_Options_KarmaSkillSpecialization")]
+		public int KarmaSpecialization
+		{
+			get
+			{
+				return _intKarmaSpecialization;
+			}
+			set
+			{
+				_intKarmaSpecialization = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to purchase a new Knowledge Skill = this value.
+		/// </summary>
+		[SavePropertyAs("karmanewknowledgeskill")]
+		[DisplayConfiguration("Label_Options_KarmaKnowledgeSkill")]
+		public int KarmaNewKnowledgeSkill
+		{
+			get
+			{
+				return _intKarmaNewKnowledgeSkill;
+			}
+			set
+			{
+				_intKarmaNewKnowledgeSkill = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to purchase a new Active Skill = this value.
+		/// </summary>
+		[SavePropertyAs("karmanewactiveskill")]
+		[DisplayConfiguration("Label_Options_KarmaActiveSkill")]
+		public int KarmaNewActiveSkill
+		{
+			get
+			{
+				return _intKarmaNewActiveSkill;
+			}
+			set
+			{
+				_intKarmaNewActiveSkill = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to purchase a new Skill Group = this value.
+		/// </summary>
+		[SavePropertyAs("karmanewskillgroup")]
+		[DisplayConfiguration("Label_Options_KarmaSkillGroup")]
+		public int KarmaNewSkillGroup
+		{
+			get
+			{
+				return _intKarmaNewSkillGroup;
+			}
+			set
+			{
+				_intKarmaNewSkillGroup = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to improve a Knowledge Skill = New Rating x this value.
+		/// </summary>
+		[SavePropertyAs("karmaimproveknowledgeskill")]
+		[DisplayConfiguration("Label_Options_ImproveKnowledgeSkill")]
+		public int KarmaImproveKnowledgeSkill
+		{
+			get
+			{
+				return _intKarmaImproveKnowledgeSkill;
+			}
+			set
+			{
+				_intKarmaImproveKnowledgeSkill = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to improve an Active Skill = New Rating x this value.
+		/// </summary>
+		[SavePropertyAs("karmaimproveactiveskill")]
+		[DisplayConfiguration("Label_Options_ImproveActiveSkill")]
+		public int KarmaImproveActiveSkill
+		{
+			get
+			{
+				return _intKarmaImproveActiveSkill;
+			}
+			set
+			{
+				_intKarmaImproveActiveSkill = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to improve a Skill Group = New Rating x this value.
+		/// </summary>
+		[SavePropertyAs("karmaimproveskillgroup")]
+		[DisplayConfiguration("Label_Options_ImproveSkillGroup")]
+		public int KarmaImproveSkillGroup
+		{
+			get
+			{
+				return _intKarmaImproveSkillGroup;
+			}
+			set
+			{
+				_intKarmaImproveSkillGroup = value;
+			}
+		}
+		#endregion
+		#region Magic
+		/// <summary>
+		/// Karma cost for each Spell = this value.
+		/// </summary>
+		[SavePropertyAs("karmaspell")]
+		[DisplayConfiguration("Label_Options_KarmaSpell")]
+		public int KarmaSpell
+		{
+			get
+			{
+				return _intKarmaSpell;
+			}
+			set
+			{
+				_intKarmaSpell = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for each Enhancement = this value.
+		/// </summary>
+		[SavePropertyAs("karmaenhancement")]
+		[DisplayConfiguration("String_Enhancement")]
+		public int KarmaEnhancement
+		{
+			get
+			{
+				return _intKarmaEnhancement;
+			}
+			set
+			{
+				_intKarmaEnhancement = value;
+			}
+		}
+		/// <summary>
+		/// Karma cost for a Spirit = this value.regis
+		/// </summary>
+		[SavePropertyAs("karmaspirit")]
+		[DisplayConfiguration("Label_Options_KarmaSpirit")]
+		public int KarmaSpirit
+		{
+			get
+			{
+				return _intKarmaSpirit;
+			}
+			set
+			{
+				_intKarmaSpirit = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for a Initiation = 10 + (New Rating x this value).
+		/// </summary>
+		[SavePropertyAs("karmainitiation")]
+		[DisplayConfiguration("Tab_Initiation")]
+		public int KarmaInitiation
+		{
+			get
+			{
+				return _intKarmaInitiation;
+			}
+			set
+			{
+				_intKarmaInitiation = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for a Metamagic = this value.
+		/// </summary>
+		[SavePropertyAs("karmametamagic")]
+		[DisplayConfiguration("String_Metamagic")]
+		public int KarmaMetamagic
+		{
+			get
+			{
+				return _intKarmaMetamagic;
+			}
+			set
+			{
+				_intKarmaMetamagic = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to join a Group = this value.
+		/// </summary>
+		[SavePropertyAs("karmajoingroup")]
+		[DisplayConfiguration("Label_Options_JoinGroup")]
+		public int KarmaJoinGroup
+		{
+			get
+			{
+				return _intKarmaJoinGroup;
+			}
+			set
+			{
+				_intKarmaJoinGroup = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to leave a Group = this value.
+		/// </summary>
+		[SavePropertyAs("karmaleavegroup")]
+		[DisplayConfiguration("Label_Options_LeaveGroup")]
+		public int KarmaLeaveGroup
+		{
+			get
+			{
+				return _intKarmaLeaveGroup;
+			}
+			set
+			{
+				_intKarmaLeaveGroup = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Alchemical Foci.
+		/// </summary>
+		[OptionAttributes("Karma Costs/Foci")]
+		[SavePropertyAs("karmaalchemicalfocus")]
+		[DisplayConfiguration("Label_Options_AlchemicalFocus")]
+		public int KarmaAlchemicalFocus
+		{
+			get
+			{
+				return _intKarmaAlchemicalFocus;
+			}
+			set
+			{
+				_intKarmaAlchemicalFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Banishing Foci.
+		/// </summary>
+		[SavePropertyAs("karmabanishingfocus")]
+		[DisplayConfiguration("Label_Options_BanishingFocus")]
+		public int KarmaBanishingFocus
+		{
+			get
+			{
+				return _intKarmaBanishingFocus;
+			}
+			set
+			{
+				_intKarmaBanishingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Binding Foci.
+		/// </summary>
+		[SavePropertyAs("karmabindingfocus")]
+		[DisplayConfiguration("Label_Options_BindingFocus")]
+		public int KarmaBindingFocus
+		{
+			get
+			{
+				return _intKarmaBindingFocus;
+			}
+			set
+			{
+				_intKarmaBindingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Centering Foci.
+		/// </summary>
+		[SavePropertyAs("karmacenteringfocus")]
+		[DisplayConfiguration("Label_Options_CenteringFocus")]
+		public int KarmaCenteringFocus
+		{
+			get
+			{
+				return _intKarmaCenteringFocus;
+			}
+			set
+			{
+				_intKarmaCenteringFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Counterspelling Foci.
+		/// </summary>
+		[SavePropertyAs("karmacounterspellingfocus")]
+		[DisplayConfiguration("Label_Options_CounterspellingFocus")]
+		public int KarmaCounterspellingFocus
+		{
+			get
+			{
+				return _intKarmaCounterspellingFocus;
+			}
+			set
+			{
+				_intKarmaCounterspellingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Disenchanting Foci.
+		/// </summary>
+		[SavePropertyAs("karmadisenchantingfocus")]
+		[DisplayConfiguration("Label_Options_DisenchantingFocus")]
+		public int KarmaDisenchantingFocus
+		{
+			get
+			{
+				return _intKarmaDisenchantingFocus;
+			}
+			set
+			{
+				_intKarmaDisenchantingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Flexible Signature Foci.
+		/// </summary>
+		[SavePropertyAs("karmaflexiblesignaturefocus")]
+		[DisplayConfiguration("Label_Options_FlexibleSignatureFocus")]
+		public int KarmaFlexibleSignatureFocus
+		{
+			get
+			{
+				return _intKarmaFlexibleSignatureFocus;
+			}
+			set
+			{
+				_intKarmaFlexibleSignatureFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Masking Foci.
+		/// </summary>
+		[SavePropertyAs("karmamaskingfocus")]
+		[DisplayConfiguration("Label_Options_MaskingFocus")]
+		public int KarmaMaskingFocus
+		{
+			get
+			{
+				return _intKarmaMaskingFocus;
+			}
+			set
+			{
+				_intKarmaMaskingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Power Foci.
+		/// </summary>
+		[SavePropertyAs("karmapowerfocus")]
+		[DisplayConfiguration("Label_Options_PowerFocus")]
+		public int KarmaPowerFocus
+		{
+			get
+			{
+				return _intKarmaPowerFocus;
+			}
+			set
+			{
+				_intKarmaPowerFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Qi Foci.
+		/// </summary>
+		[SavePropertyAs("karmaqifocus")]
+		[DisplayConfiguration("Label_Options_QiFocus")]
+		public int KarmaQiFocus
+		{
+			get
+			{
+				return _intKarmaQiFocus;
+			}
+			set
+			{
+				_intKarmaQiFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Ritual Spellcasting Foci.
+		/// </summary>
+		[SavePropertyAs("karmaritualspellcastingfocus")]
+		[DisplayConfiguration("Label_Options_RitualSpellcastingFocus")]
+		public int KarmaRitualSpellcastingFocus
+		{
+			get
+			{
+				return _intKarmaRitualSpellcastingFocus;
+			}
+			set
+			{
+				_intKarmaRitualSpellcastingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Spellcasting Foci.
+		/// </summary>
+		[SavePropertyAs("karmaspellcastingfocus")]
+		[DisplayConfiguration("Label_Options_SpellcastingFocus")]
+		public int KarmaSpellcastingFocus
+		{
+			get
+			{
+				return _intKarmaSpellcastingFocus;
+			}
+			set
+			{
+				_intKarmaSpellcastingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Spell Shaping Foci.
+		/// </summary>
+		[SavePropertyAs("karmaspellshapingfocus")]
+		[DisplayConfiguration("Label_Options_SpellShapingFocus")]
+		public int KarmaSpellShapingFocus
+		{
+			get
+			{
+				return _intKarmaSpellShapingFocus;
+			}
+			set
+			{
+				_intKarmaSpellShapingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Summoning Foci.
+		/// </summary>
+		[SavePropertyAs("karmasummoningfocus")]
+		[DisplayConfiguration("Label_Options_SummoningFocus")]
+		public int KarmaSummoningFocus
+		{
+			get
+			{
+				return _intKarmaSummoningFocus;
+			}
+			set
+			{
+				_intKarmaSummoningFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Sustaining Foci.
+		/// </summary>
+		[SavePropertyAs("karmasustainingfocus")]
+		[DisplayConfiguration("Label_Options_SustainingFocus")]
+		public int KarmaSustainingFocus
+		{
+			get
+			{
+				return _intKarmaSustainingFocus;
+			}
+			set
+			{
+				_intKarmaSustainingFocus = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Weapon Foci.
+		/// </summary>
+		[SavePropertyAs("karmaweaponfocus")]
+		[DisplayConfiguration("Label_Options_WeaponFocus")]
+		public int KarmaWeaponFocus
+		{
+			get
+			{
+				return _intKarmaWeaponFocus;
+			}
+			set
+			{
+				_intKarmaWeaponFocus = value;
+			}
+		}
+		#endregion
+		#region Complex Forms
+		/// <summary>
+		/// Karma cost for a new Complex Form = this value.
+		/// </summary>
+		[OptionAttributes("Karma Costs/Complex Forms")]
+		[SavePropertyAs("karmanewcomplexform")]
+		[DisplayConfiguration("Label_Options_NewComplexForm")]
+		public int KarmaNewComplexForm
+		{
+			get
+			{
+				return _intKarmaNewComplexForm;
+			}
+			set
+			{
+				_intKarmaNewComplexForm = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost to improve a Complex Form = New Rating x this value.
+		/// </summary>
+		[SavePropertyAs("karmaimprovecomplexform")]
+		[DisplayConfiguration("Label_Options_ImproveComplexForm")]
+		public int KarmaImproveComplexForm
+		{
+			get
+			{
+				return _intKarmaImproveComplexForm;
+			}
+			set
+			{
+				_intKarmaImproveComplexForm = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Complex Form Options = Rating x this value.
+		/// </summary>
+		[SavePropertyAs("karmacomplexformoption")]
+		[DisplayConfiguration("Label_Options_ComplexFormOptions")]
+		public int KarmaComplexFormOption
+		{
+			get
+			{
+				return _intKarmaComplexFormOption;
+			}
+			set
+			{
+				_intKarmaComplexFormOption = value;
+			}
+		}
+
+		/// <summary>
+		/// Karma cost for Complex Form Skillsofts = Rating x this value.
+		/// </summary>
+		[SavePropertyAs("karmacomplexformskillsoft")]
+		[DisplayConfiguration("Label_Options_ComplexFormSkillsoft")]
+		public int KarmaComplexFormSkillsoft
+		{
+			get
+			{
+				return _intKarmaComplexFormSkillfot;
+			}
+			set
+			{
+				_intKarmaComplexFormSkillfot = value;
+			}
+		}
+		#endregion
+		#endregion
+		#endregion
 
 		/// <summary>
 		/// Sourcebooks.
@@ -1789,1645 +3062,7 @@ namespace Chummer
 				_strName = value;
 			}
 		}
-
-		/// <summary>
-		/// Whether or not Metatypes cost Karma equal to their BP when creating a character with Karma.
-		/// </summary>
-		public bool MetatypeCostsKarma
-		{
-			get
-			{
-				return _blnMetatypeCostsKarma;
-			}
-			set
-			{
-				_blnMetatypeCostsKarma = value;
-			}
-		}
-
-		/// <summary>
-		/// Mutiplier for Metatype Karma Costs when converting from BP to Karma.
-		/// </summary>
-		public int MetatypeCostsKarmaMultiplier
-		{
-			get
-			{
-				return _intMetatypeCostMultiplier;
-			}
-			set
-			{
-				_intMetatypeCostMultiplier = value;
-			}
-		}
-
-		/// <summary>
-		/// Number of Limbs a standard character has.
-		/// </summary>
-		public int LimbCount
-		{
-			get
-			{
-				return _intLimbCount;
-			}
-			set
-			{
-				_intLimbCount = value;
-			}
-		}
-
-		/// <summary>
-		/// Exclude a particular Limb Slot from count towards the Limb Count.
-		/// </summary>
-		public string ExcludeLimbSlot
-		{
-			get
-			{
-				return _strExcludeLimbSlot;
-			}
-			set
-			{
-				_strExcludeLimbSlot = value;
-			}
-		}
-
-		/// <summary>
-		/// Allow Cyberware Essence cost discounts.
-		/// </summary>
-		public bool AllowCyberwareESSDiscounts
-		{
-			get
-			{
-				return _blnAllowCyberwareESSDiscounts;
-			}
-			set
-			{
-				_blnAllowCyberwareESSDiscounts = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not a character's Strength affects Weapon Recoil.
-		/// </summary>
-		public bool StrengthAffectsRecoil
-		{
-			get
-			{
-				return _blnStrengthAffectsRecoil;
-			}
-			set
-			{
-				_blnStrengthAffectsRecoil = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Maximum Armor Modifications is in use.
-		/// </summary>
-		public bool MaximumArmorModifications
-		{
-			get
-			{
-				return _blnMaximumArmorModifications;
-			}
-			set
-			{
-				_blnMaximumArmorModifications = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Armor Suit Capacity is in use.
-		/// </summary>
-		public bool ArmorSuitCapacity
-		{
-			get
-			{
-				return _blnArmorSuitCapacity;
-			}
-			set
-			{
-				_blnArmorSuitCapacity = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Armor Degredation is allowed.
-		/// </summary>
-		public bool ArmorDegradation
-		{
-			get
-			{
-				return _blnArmorDegradation;
-			}
-			set
-			{
-				_blnArmorDegradation = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Copy Protection Program Option should automatically be added.
-		/// </summary>
-		public bool AutomaticCopyProtection
-		{
-			get
-			{
-				return _blnAutomaticCopyProtection;
-			}
-			set
-			{
-				_blnAutomaticCopyProtection = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Registration Program Option should automatically be added.
-		/// </summary>
-		public bool AutomaticRegistration
-		{
-			get
-			{
-				return _blnAutomaticRegistration;
-			}
-			set
-			{
-				_blnAutomaticRegistration = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-		/// </summary>
-		public bool ErgonomicProgramLimit
-		{
-			get
-			{
-				return _blnErgonomicProgramsLimit;
-			}
-			set
-			{
-				_blnErgonomicProgramsLimit = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Karma cost for increasing Special Attributes is based on the shown value instead of actual value.
-		/// </summary>
-		public bool SpecialKarmaCostBasedOnShownValue
-		{
-			get
-			{
-				return _blnSpecialKarmaCostBasedOnShownValue;
-			}
-			set
-			{
-				_blnSpecialKarmaCostBasedOnShownValue = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters can have more than 25 BP in Positive Qualities.
-		/// </summary>
-		public bool ExceedPositiveQualities
-		{
-			get
-			{
-				return _blnExceedPositiveQualities;
-			}
-			set
-			{
-				_blnExceedPositiveQualities = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters can have more than 25 BP in Negative Qualities.
-		/// </summary>
-		public bool ExceedNegativeQualities
-		{
-			get
-			{
-				return _blnExceedNegativeQualities;
-			}
-			set
-			{
-				_blnExceedNegativeQualities = value;
-			}
-		}
-
-		/// <summary>
-		/// If true, the character will not receive additional BP from Negative Qualities past the initial 25
-		/// </summary>
-		public bool ExceedNegativeQualitiesLimit
-		{
-			get
-			{
-				return _blnExceedNegativeQualitiesLimit;
-			}
-			set
-			{
-				_blnExceedNegativeQualitiesLimit = value;
-			}
-		}
 		
-		/// <summary>
-		/// Whether or not Restricted items have their cost multiplied.
-		/// </summary>
-		public bool MultiplyRestrictedCost
-		{
-			get
-			{
-				return _blnMultiplyRestrictedCost;
-			}
-			set
-			{
-				_blnMultiplyRestrictedCost = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Forbidden items have their cost multiplied.
-		/// </summary>
-		public bool MultiplyForbiddenCost
-		{
-			get
-			{
-				return _blnMultiplyForbiddenCost;
-			}
-			set
-			{
-				_blnMultiplyForbiddenCost = value;
-			}
-		}
-
-		/// <summary>
-		/// Cost multiplier for Restricted items.
-		/// </summary>
-		public int RestrictedCostMultiplier
-		{
-			get
-			{
-				return _intRestrictedCostMultiplier;
-			}
-			set
-			{
-				_intRestrictedCostMultiplier = value;
-			}
-		}
-
-		/// <summary>
-		/// Cost multiplier for Forbidden items.
-		/// </summary>
-		public int ForbiddenCostMultiplier
-		{
-			get
-			{
-				return _intForbiddenCostMultiplier;
-			}
-			set
-			{
-				_intForbiddenCostMultiplier = value;
-			}
-		}
-
-		/// <summary>
-		/// Number of decimal places to round to when calculating Essence.
-		/// </summary>
-		public int EssenceDecimals
-		{
-			get
-			{
-				return _intEssenceDecimals;
-			}
-			set
-			{
-				_intEssenceDecimals = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Capacity limits should be enforced.
-		/// </summary>
-		public bool EnforceCapacity
-		{
-			get
-			{
-				return _blnEnforceCapacity;
-			}
-			set
-			{
-				_blnEnforceCapacity = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Recoil modifiers are restricted (AR 148).
-		/// </summary>
-		public bool RestrictRecoil
-		{
-			get
-			{
-				return _blnRestrictRecoil;
-			}
-			set
-			{
-				_blnRestrictRecoil = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters can exceed putting 50% of their points into Attributes.
-		/// </summary>
-		public bool AllowExceedAttributeBP
-		{
-			get
-			{
-				return _blnAllowExceedAttributeBP;
-			}
-			set
-			{
-				_blnAllowExceedAttributeBP = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters are unresicted in the number of points they can invest in Nuyen.
-		/// </summary>
-		public bool UnrestrictedNuyen
-		{
-			get
-			{
-				return _blnUnrestrictedNuyen;
-			}
-			set
-			{
-				_blnUnrestrictedNuyen = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not a Commlink's Response should be calculated based on the number of programs running on it.
-		/// </summary>
-		public bool CalculateCommlinkResponse
-		{
-			get
-			{
-				return _blnCalculateCommlinkResponse;
-			}
-			set
-			{
-				_blnCalculateCommlinkResponse = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Stacked Foci can have a combined Force higher than 6.
-		/// </summary>
-		public bool AllowHigherStackedFoci
-		{
-			get
-			{
-				return _blnAllowHigherStackedFoci;
-			}
-			set
-			{
-				_blnAllowHigherStackedFoci = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Coplex Forms have the same BP/Karma cost as Spells.
-		/// </summary>
-		public bool AlternateComplexFormCost
-		{
-			get
-			{
-				return _blnAlternateComplexFormCost;
-			}
-			set
-			{
-				_blnAlternateComplexFormCost = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-		/// </summary>
-		public bool AlternateMatrixAttribute
-		{
-			get
-			{
-				return _blnAlternateMatrixAttribute;
-			}
-			set
-			{
-				_blnAlternateMatrixAttribute = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the user can change the Part of Base Weapon flag for a Weapon Accessory or Mod.
-		/// </summary>
-		public bool AllowEditPartOfBaseWeapon
-		{
-			get
-			{
-				return _blnAllowEditPartOfBaseWeapon;
-			}
-			set
-			{
-				_blnAllowEditPartOfBaseWeapon = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the user can mark any piece of Bioware as being Transgenic.
-		/// </summary>
-		public bool AllowCustomTransgenics
-		{
-			get
-			{
-				return _blnAllowCustomTransgenics;
-			}
-			set
-			{
-				_blnAllowCustomTransgenics = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the user can buy qualities.
-		/// </summary>
-		public bool MayBuyQualities
-		{
-			get
-			{
-				return _blnMayBuyQualities;
-			}
-			set
-			{
-				_blnMayBuyQualities = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not to use contact points instead of fixed contacts.
-		/// </summary>
-		public bool UseContactPoints
-		{
-			get
-			{
-				return _blnUseContactPoints;
-			}
-			set
-			{
-				_blnUseContactPoints = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the user is allowed to break Skill Groups while in Create Mode.
-		/// </summary>
-		public bool StrictSkillGroupsInCreateMode
-		{
-			get
-			{
-				return _blnStrictSkillGroupsInCreateMode;
-			}
-			set
-			{
-				_blnStrictSkillGroupsInCreateMode = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not any Detection Spell can be taken as Extended range version.
-		/// </summary>
-		public bool ExtendAnyDetectionSpell
-		{
-			get
-			{
-				return _blnExtendAnyDetectionSpell;
-			}
-			set
-			{
-				_blnExtendAnyDetectionSpell = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not dice rolling is allowed for Skills.
-		/// </summary>
-		public bool AllowSkillDiceRolling
-		{
-			get
-			{
-				return _blnAllowSkillDiceRolling;
-			}
-			set
-			{
-				_blnAllowSkillDiceRolling = value;
-			}
-		}
-
-        /// <summary>
-		/// Whether or not cyberlimbs stats are used in attribute calculation
-		/// </summary>
-		public bool DontUseCyberlimbCalculation
-        {
-            get
-            {
-                return _blnDontUseCyberlimbCalculation;
-            }
-            set
-            {
-                _blnDontUseCyberlimbCalculation = value;
-            }
-        }
-
-        /// <summary>
-        /// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-        /// </summary>
-        public bool AlternateMetatypeAttributeKarma
-		{
-			get
-			{
-				return _blnAlternateMetatypeAttributeKarma;
-			}
-			set
-			{
-				_blnAlternateMetatypeAttributeKarma = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-		/// </summary>
-		public bool CreateBackupOnCareer
-		{
-			get
-			{
-				return _blnCreateBackupOnCareer;
-			}
-			set
-			{
-				_blnCreateBackupOnCareer = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the alternate uses for the Leadership Skill should be printed.
-		/// </summary>
-		public bool PrintLeadershipAlternates
-		{
-			get
-			{
-				return _blnPrintLeadershipAlternates;
-			}
-			set
-			{
-				_blnPrintLeadershipAlternates = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-		/// </summary>
-		public bool PrintArcanaAlternates
-		{
-			get
-			{
-				return _blnPrintArcanaAlternates;
-			}
-			set
-			{
-				_blnPrintArcanaAlternates = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Notes should be printed.
-		/// </summary>
-		public bool PrintNotes
-		{
-			get
-			{
-				return _blnPrintNotes;
-			}
-			set
-			{
-				_blnPrintNotes = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
-		/// </summary>
-		public bool AllowObsolescentUpgrade
-		{
-			get
-			{
-				return _blnAllowObsolescentUpgrade;
-			}
-			set
-			{
-				_blnAllowObsolescentUpgrade = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Bioware Suites can be added and created.
-		/// </summary>
-		public bool AllowBiowareSuites
-		{
-			get
-			{
-				return _blnAllowBiowareSuites;
-			}
-			set
-			{
-				_blnAllowBiowareSuites = value;
-			}
-		}
-
-		/// <summary>
-		/// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-		/// </summary>
-		public bool FreeSpiritPowerPointsMAG
-		{
-			get
-			{
-				return _blnFreeSpiritPowerPointsMAG;
-			}
-			set
-			{
-				_blnFreeSpiritPowerPointsMAG = value;
-			}
-		}
-
-		/// <summary>
-		/// House rule: Whether or not Special Attributes count towards the max 50% karma spent on Attributes.
-		/// </summary>
-		public bool SpecialAttributeKarmaLimit
-		{
-			get
-			{
-				return _blnSpecialAttributeKarmaLimit;
-			}
-			set
-			{
-				_blnSpecialAttributeKarmaLimit = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not Technomancers can select Autosofts as Complex Forms.
-		/// </summary>
-		public bool TechnomancerAllowAutosoft
-		{
-			get
-			{
-				return _blnTechnomancerAllowAutosoft;
-			}
-			set
-			{
-				_blnTechnomancerAllowAutosoft = value;
-			}
-		}
-		#endregion
-
-		#region BP
-		/// <summary>
-		/// BP cost for each Attribute = this value.
-		/// </summary>
-		[DisplayConfiguration("Label_Options_BPAttribute","Karma Costs")]
-		public int BPAttribute
-		{
-			get
-			{
-				return _intBPAttribute;
-			}
-			set
-			{
-				_intBPAttribute = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost to raise an Attribute to its Metatype Maximum = this value.
-		/// </summary>
-		[DisplayConfiguration("Label_Options_BPAttributeMax", "Karma Costs/More")]
-		public int BPAttributeMax
-		{
-			get
-			{
-				return _intBPAttributeMax;
-			}
-			set
-			{
-				_intBPAttributeMax = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Loyalty, Connection, and Group point = this value.
-		/// </summary>
-		public int BPContact
-		{
-			get
-			{
-				return _intBPContact;
-			}
-			set
-			{
-				_intBPContact = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Martial Arts Rating = this value.
-		/// </summary>
-		public int BPMartialArt
-		{
-			get
-			{
-				return _intBPMartialArt;
-			}
-			set
-			{
-				_intBPMartialArt = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Martial Art Maneuver = this value.
-		/// </summary>
-		public int BPMartialArtManeuver
-		{
-			get
-			{
-				return _intBPMartialArtManeuver;
-			}
-			set
-			{
-				_intBPMartialArtManeuver = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Skill Group Rating = this value.
-		/// </summary>
-		public int BPSkillGroup
-		{
-			get
-			{
-				return _intBPSkillGroup;
-			}
-			set
-			{
-				_intBPSkillGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Active Skill Rating = this value.
-		/// </summary>
-		public int BPActiveSkill
-		{
-			get
-			{
-				return _intBPActiveSkill;
-			}
-			set
-			{
-				_intBPActiveSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Active Skill Specialization = this value.
-		/// </summary>
-		public int BPActiveSkillSpecialization
-		{
-			get
-			{
-				return _intBPActiveSkillSpecialization;
-			}
-			set
-			{
-				_intBPActiveSkillSpecialization = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Knowledge Skill Rating = this value.
-		/// </summary>
-		public int BPKnowledgeSkill
-		{
-			get
-			{
-				return _intBPKnowledgeSkill;
-			}
-			set
-			{
-				_intBPKnowledgeSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Spell = this value.
-		/// </summary>
-		public int BPSpell
-		{
-			get
-			{
-				return _intBPSpell;
-			}
-			set
-			{
-				_intBPSpell = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Rating of Foci.
-		/// </summary>
-		public int BPFocus
-		{
-			get
-			{
-				return _intBPFocus;
-			}
-			set
-			{
-				_intBPFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each service a Sprit owes = this value.
-		/// </summary>
-		public int BPSpirit
-		{
-			get
-			{
-				return _intBPSpirit;
-			}
-			set
-			{
-				_intBPSpirit = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Complex Form Rating = this value.
-		/// </summary>
-		public int BPComplexForm
-		{
-			get
-			{
-				return _intBPComplexForm;
-			}
-			set
-			{
-				_intBPComplexForm = value;
-			}
-		}
-
-		/// <summary>
-		/// BP cost for each Complex Form Option Rating = this value.
-		/// </summary>
-		public int BPComplexFormOption
-		{
-			get
-			{
-				return _intBPComplexFormOption;
-			}
-			set
-			{
-				_intBPComplexFormOption = value;
-			}
-		}
-		#endregion
-
-		#region Karma
-		/// <summary>
-		/// Karma cost to improve an Attribute = New Rating X this value.
-		/// </summary>
-		//[OptionAttributes("Karma Costs/More")]
-		public int KarmaAttribute
-		{
-			get
-			{
-				return _intKarmaAttribute;
-			}
-			set
-			{
-				_intKarmaAttribute = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to purchase a Quality = BP Cost x this value.
-		/// </summary>
-		public int KarmaQuality
-		{
-			get
-			{
-				return _intKarmaQuality;
-			}
-			set
-			{
-				_intKarmaQuality = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to purchase a Specialization = this value.
-		/// </summary>
-		public int KarmaSpecialization
-		{
-			get
-			{
-				return _intKarmaSpecialization;
-			}
-			set
-			{
-				_intKarmaSpecialization = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to purchase a new Knowledge Skill = this value.
-		/// </summary>
-		public int KarmaNewKnowledgeSkill
-		{
-			get
-			{
-				return _intKarmaNewKnowledgeSkill;
-			}
-			set
-			{
-				_intKarmaNewKnowledgeSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to purchase a new Active Skill = this value.
-		/// </summary>
-		public int KarmaNewActiveSkill
-		{
-			get
-			{
-				return _intKarmaNewActiveSkill;
-			}
-			set
-			{
-				_intKarmaNewActiveSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to purchase a new Skill Group = this value.
-		/// </summary>
-		public int KarmaNewSkillGroup
-		{
-			get
-			{
-				return _intKarmaNewSkillGroup;
-			}
-			set
-			{
-				_intKarmaNewSkillGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to improve a Knowledge Skill = New Rating x this value.
-		/// </summary>
-		public int KarmaImproveKnowledgeSkill
-		{
-			get
-			{
-				return _intKarmaImproveKnowledgeSkill;
-			}
-			set
-			{
-				_intKarmaImproveKnowledgeSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to improve an Active Skill = New Rating x this value.
-		/// </summary>
-		public int KarmaImproveActiveSkill
-		{
-			get
-			{
-				return _intKarmaImproveActiveSkill;
-			}
-			set
-			{
-				_intKarmaImproveActiveSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to improve a Skill Group = New Rating x this value.
-		/// </summary>
-		public int KarmaImproveSkillGroup
-		{
-			get
-			{
-				return _intKarmaImproveSkillGroup;
-			}
-			set
-			{
-				_intKarmaImproveSkillGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for each Spell = this value.
-		/// </summary>
-		public int KarmaSpell
-		{
-			get
-			{
-				return _intKarmaSpell;
-			}
-			set
-			{
-				_intKarmaSpell = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for each Enhancement = this value.
-		/// </summary>
-		public int KarmaEnhancement
-		{
-			get
-			{
-				return _intKarmaEnhancement;
-			}
-			set
-			{
-				_intKarmaEnhancement = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for a new Complex Form = this value.
-		/// </summary>
-		public int KarmaNewComplexForm
-		{
-			get
-			{
-				return _intKarmaNewComplexForm;
-			}
-			set
-			{
-				_intKarmaNewComplexForm = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to improve a Complex Form = New Rating x this value.
-		/// </summary>
-		public int KarmaImproveComplexForm
-		{
-			get
-			{
-				return _intKarmaImproveComplexForm;
-			}
-			set
-			{
-				_intKarmaImproveComplexForm = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Complex Form Options = Rating x this value.
-		/// </summary>
-		public int KarmaComplexFormOption
-		{
-			get
-			{
-				return _intKarmaComplexFormOption;
-			}
-			set
-			{
-				_intKarmaComplexFormOption = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Complex Form Skillsofts = Rating x this value.
-		/// </summary>
-		public int KarmaComplexFormSkillsoft
-		{
-			get
-			{
-				return _intKarmaComplexFormSkillfot;
-			}
-			set
-			{
-				_intKarmaComplexFormSkillfot = value;
-			}
-		}
-
-		/// <summary>
-		/// Amount of Nueyn objtained per Karma point.
-		/// </summary>
-		public int KarmaNuyenPer
-		{
-			get
-			{
-				return _intKarmaNuyenPer;
-			}
-			set
-			{
-				_intKarmaNuyenPer = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for a Contact = (Connection + Loyalty) x this value.
-		/// </summary>
-		public int KarmaContact
-		{
-			get
-			{
-				return _intKarmaContact;
-			}
-			set
-			{
-				_intKarmaContact = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for an Enemy = (Connection + Loyalty) x this value.
-		/// </summary>
-		public int KarmaEnemy
-		{
-			get
-			{
-				return _intKarmaEnemy;
-			}
-			set
-			{
-				_intKarmaEnemy = value;
-			}
-		}
-
-		/// <summary>
-		/// Maximum amount of remaining Karma that is carried over to the character once they are created.
-		/// </summary>
-		public int KarmaCarryover
-		{
-			get
-			{
-				return _intKarmaCarryover;
-			}
-			set
-			{
-				_intKarmaCarryover = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for a Spirit = this value.regis
-		/// </summary>
-		public int KarmaSpirit
-		{
-			get
-			{
-				return _intKarmaSpirit;
-			}
-			set
-			{
-				_intKarmaSpirit = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for a Combat Maneuver = this value.
-		/// </summary>
-		public int KarmaManeuver
-		{
-			get
-			{
-				return _intKarmaManeuver;
-			}
-			set
-			{
-				_intKarmaManeuver = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for a Initiation = 10 + (New Rating x this value).
-		/// </summary>
-		public int KarmaInitiation
-		{
-			get
-			{
-				return _intKarmaInitiation;
-			}
-			set
-			{
-				_intKarmaInitiation = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for a Metamagic = this value.
-		/// </summary>
-		public int KarmaMetamagic
-		{
-			get
-			{
-				return _intKarmaMetamagic;
-			}
-			set
-			{
-				_intKarmaMetamagic = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to join a Group = this value.
-		/// </summary>
-		public int KarmaJoinGroup
-		{
-			get
-			{
-				return _intKarmaJoinGroup;
-			}
-			set
-			{
-				_intKarmaJoinGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost to leave a Group = this value.
-		/// </summary>
-		public int KarmaLeaveGroup
-		{
-			get
-			{
-				return _intKarmaLeaveGroup;
-			}
-			set
-			{
-				_intKarmaLeaveGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Alchemical Foci.
-		/// </summary>
-		public int KarmaAlchemicalFocus
-		{
-			get
-			{
-				return _intKarmaAlchemicalFocus;
-			}
-			set
-			{
-				_intKarmaAlchemicalFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Banishing Foci.
-		/// </summary>
-		public int KarmaBanishingFocus
-		{
-			get
-			{
-				return _intKarmaBanishingFocus;
-			}
-			set
-			{
-				_intKarmaBanishingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Binding Foci.
-		/// </summary>
-		public int KarmaBindingFocus
-		{
-			get
-			{
-				return _intKarmaBindingFocus;
-			}
-			set
-			{
-				_intKarmaBindingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Centering Foci.
-		/// </summary>
-		public int KarmaCenteringFocus
-		{
-			get
-			{
-				return _intKarmaCenteringFocus;
-			}
-			set
-			{
-				_intKarmaCenteringFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Counterspelling Foci.
-		/// </summary>
-		public int KarmaCounterspellingFocus
-		{
-			get
-			{
-				return _intKarmaCounterspellingFocus;
-			}
-			set
-			{
-				_intKarmaCounterspellingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Disenchanting Foci.
-		/// </summary>
-		public int KarmaDisenchantingFocus
-		{
-			get
-			{
-				return _intKarmaDisenchantingFocus;
-			}
-			set
-			{
-				_intKarmaDisenchantingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Flexible Signature Foci.
-		/// </summary>
-		public int KarmaFlexibleSignatureFocus
-		{
-			get
-			{
-				return _intKarmaFlexibleSignatureFocus;
-			}
-			set
-			{
-				_intKarmaFlexibleSignatureFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Masking Foci.
-		/// </summary>
-		public int KarmaMaskingFocus
-		{
-			get
-			{
-				return _intKarmaMaskingFocus;
-			}
-			set
-			{
-				_intKarmaMaskingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Power Foci.
-		/// </summary>
-		public int KarmaPowerFocus
-		{
-			get
-			{
-				return _intKarmaPowerFocus;
-			}
-			set
-			{
-				_intKarmaPowerFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Qi Foci.
-		/// </summary>
-		public int KarmaQiFocus
-		{
-			get
-			{
-				return _intKarmaQiFocus;
-			}
-			set
-			{
-				_intKarmaQiFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Ritual Spellcasting Foci.
-		/// </summary>
-		public int KarmaRitualSpellcastingFocus
-		{
-			get
-			{
-				return _intKarmaRitualSpellcastingFocus;
-			}
-			set
-			{
-				_intKarmaRitualSpellcastingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Spellcasting Foci.
-		/// </summary>
-		public int KarmaSpellcastingFocus
-		{
-			get
-			{
-				return _intKarmaSpellcastingFocus;
-			}
-			set
-			{
-				_intKarmaSpellcastingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Spell Shaping Foci.
-		/// </summary>
-		public int KarmaSpellShapingFocus
-		{
-			get
-			{
-				return _intKarmaSpellShapingFocus;
-			}
-			set
-			{
-				_intKarmaSpellShapingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Summoning Foci.
-		/// </summary>
-		public int KarmaSummoningFocus
-		{
-			get
-			{
-				return _intKarmaSummoningFocus;
-			}
-			set
-			{
-				_intKarmaSummoningFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Sustaining Foci.
-		/// </summary>
-		public int KarmaSustainingFocus
-		{
-			get
-			{
-				return _intKarmaSustainingFocus;
-			}
-			set
-			{
-				_intKarmaSustainingFocus = value;
-			}
-		}
-
-		/// <summary>
-		/// Karma cost for Weapon Foci.
-		/// </summary>
-		public int KarmaWeaponFocus
-		{
-			get
-			{
-				return _intKarmaWeaponFocus;
-			}
-			set
-			{
-				_intKarmaWeaponFocus = value;
-			}
-		}
-		#endregion
-
-		#region Default Build
-		/// <summary>
-		/// Default build method.
-		/// </summary>
-		public string BuildMethod
-		{
-			get
-			{
-				return _strBuildMethod;
-			}
-			set
-			{
-				_strBuildMethod = value;
-			}
-		}
-
-		/// <summary>
-		/// Default number of build points.
-		/// </summary>
-		public int BuildPoints
-		{
-			get
-			{
-				return _intBuildPoints;
-			}
-			set
-			{
-				_intBuildPoints = value;
-			}
-		}
-
-		/// <summary>
-		/// Default Availability.
-		/// </summary>
-		public int Availability
-		{
-			get
-			{
-				return _intAvailability;
-			}
-			set
-			{
-				_intAvailability = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether Life Modules should automatically generate a character background.
-		/// </summary>
-		public bool AutomaticBackstory
-		{
-			get { return _automaticBackstory; }
-			internal set { _automaticBackstory = value; }
-		}
-
-		/// <summary>
-		/// Whether to use the rules from SR4 to calculate Public Awareness.
-		/// </summary>
-		public bool UseCalculatedPublicAwareness
-		{
-			get
-			{
-				return _blnUseCalculatedPublicAwareness;
-			}
-			set
-			{
-				_blnUseCalculatedPublicAwareness = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether you benefit from augmented values for contact points.
-		/// </summary>
-		public bool UseTotalValueForFreeContacts
-		{
-			get
-			{
-				return _blnUseTotalValueForFreeContacts;
-			}
-			set
-			{
-				_blnUseTotalValueForFreeContacts = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether you benefit from augmented values for free knowledge points.
-		/// </summary>
-		public bool UseTotalValueForFreeKnowledge
-		{
-			get
-			{
-				return _blnUseTotalValueForFreeKnowledge;
-			}
-			set
-			{
-				_blnUseTotalValueForFreeKnowledge = value;
-			}
-		}
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -3442,7 +3077,6 @@ namespace Chummer
 				_strImageFolder = value;
 			}
 		}
-		#endregion
 
 	}
 }

@@ -6136,59 +6136,59 @@ Do you want to continue?</text>
 			<text>Print Karma and Nuyen Expenses</text>
 		</string>
 		<string>
-			<key>Label_Options_BPAttribute</key>
+			<key>Label_Options_KarmaAttribute</key>
 			<text>Attribute</text>
 		</string>
 		<string>
-			<key>Label_Options_BPAttributeMax</key>
+			<key>Label_Options_KarmaAttributeMax</key>
 			<text>Additional for Metatype Maximum</text>
 		</string>
 		<string>
-			<key>Label_Options_BPContact</key>
+			<key>Label_Options_KarmaContact</key>
 			<text>Contacts</text>
 		</string>
 		<string>
-			<key>Label_Options_BPMartialArt</key>
+			<key>Label_Options_KarmaMartialArt</key>
 			<text>Martial Art Rating</text>
 		</string>
 		<string>
-			<key>Label_Options_BPMartialArtManeuver</key>
+			<key>Label_Options_KarmaMartialArtManeuver</key>
 			<text>Martial Art Maneuver</text>
 		</string>
 		<string>
-			<key>Label_Options_BPSkillGroup</key>
+			<key>Label_Options_KarmaSkillGroup</key>
 			<text>Skill Group Rating</text>
 		</string>
 		<string>
-			<key>Label_Options_BPActiveSkill</key>
+			<key>Label_Options_KarmaActiveSkill</key>
 			<text>Active Skill Rating</text>
 		</string>
 		<string>
-			<key>Label_Options_BPSkillSpecialization</key>
+			<key>Label_Options_KarmaSkillSpecialization</key>
 			<text>Active Skill Specialization</text>
 		</string>
 		<string>
-			<key>Label_Options_BPKnowledgeSkill</key>
+			<key>Label_Options_KarmaKnowledgeSkill</key>
 			<text>Knowledge Skill Rating</text>
 		</string>
 		<string>
-			<key>Label_Options_BPSpell</key>
+			<key>Label_Options_KarmaSpell</key>
 			<text>Spell</text>
 		</string>
 		<string>
-			<key>Label_Options_BPFocus</key>
+			<key>Label_Options_KarmaFocus</key>
 			<text>Focus Rating</text>
 		</string>
 		<string>
-			<key>Label_Options_BPSpirit</key>
+			<key>Label_Options_KarmaSpirit</key>
 			<text>Spirit/Sprite Service</text>
 		</string>
 		<string>
-			<key>Label_Options_BPComplexForm</key>
+			<key>Label_Options_KarmaComplexForm</key>
 			<text>Complex Form Rating</text>
 		</string>
 		<string>
-			<key>Label_Options_BPComplexFormOption</key>
+			<key>Label_Options_KarmaComplexFormOption</key>
 			<text>Complex Form Option Rating</text>
 		</string>
 		<string>
@@ -6216,7 +6216,7 @@ Do you want to continue?</text>
 			<text>x New Rating) + 10</text>
 		</string>
 		<string>
-			<key>Label_Options_BPCost</key>
+			<key>Label_Options_KarmaCost</key>
 			<text>x Karma Cost</text>
 		</string>
 		<string>
@@ -6324,6 +6324,10 @@ Do you want to continue?</text>
 			<text>Leave Group/Network</text>
 		</string>
 		<string>
+			<key>Label_Options_AlchemicalFocus</key>
+			<text>Alchemical Focus</text>
+		</string>
+		<string>
 			<key>Label_Options_AnchoringFocus</key>
 			<text>Anchoring Focus</text>
 		</string>
@@ -6344,12 +6348,20 @@ Do you want to continue?</text>
 			<text>Counterspelling Focus</text>
 		</string>
 		<string>
+			<key>Label_Options_DisenchantingFocus</key>
+			<text>Disenchanting Focus</text>
+		</string>
+		<string>
 			<key>Label_Options_DiviningFocus</key>
 			<text>Divining Focus</text>
 		</string>
 		<string>
 			<key>Label_Options_DowsingFocus</key>
 			<text>Dowsing Focus</text>
+		</string>
+		<string>
+			<key>Label_Options_FlexibleSignatureFocus</key>
+			<text>Flexible Signature Focus</text>
 		</string>
 		<string>
 			<key>Label_Options_InfusionFocus</key>
@@ -6364,12 +6376,24 @@ Do you want to continue?</text>
 			<text>Power Focus</text>
 		</string>
 		<string>
+			<key>Label_Options_QiFocus</key>
+			<text>Qi Focus</text>
+		</string>
+		<string>
+			<key>Label_Options_RitualSpellcastingFocus</key>
+			<text>Ritual Spellcasting Focus</text>
+		</string>
+		<string>
 			<key>Label_Options_ShieldingFocus</key>
 			<text>Shielding Focus</text>
 		</string>
 		<string>
 			<key>Label_Options_SpellcastingFocus</key>
 			<text>Spellcasting Focus</text>
+		</string>
+		<string>
+			<key>Label_Options_SpellShapingFocus</key>
+			<text>Spell Shaping Focus</text>
 		</string>
 		<string>
 			<key>Label_Options_SummoningFocus</key>
@@ -6444,7 +6468,7 @@ Do you want to continue?</text>
 			<text>Allow Skills to be re-Grouped if all Ratings are the same</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_MetatypesCostKarma</key>
+			<key>Checkbox_Options_MetatypeCostsKarma</key>
 			<text>Metatypes cost Karma equal to their Karma</text>
 		</string>
 		<string>
@@ -6532,11 +6556,11 @@ Do you want to continue?</text>
 			<text>Ergonomic Programs do not affect a Commlink's effective Response</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_SpecialKarmaCost</key>
+			<key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
 			<text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
+			<key>Checkbox_Options_RestrictRecoil</key>
 			<text>Use Restrictions to Recoil Compensation (RG 53)</text>
 		</string>		
 		<string>
@@ -6580,63 +6604,63 @@ Do you want to continue?</text>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_EnforceCapacity</key>
+			<key>Checkbox_Options_EnforceCapacity</key>
 			<text>Enforce Capacity limits</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_CalculateCommlinkResponse</key>
+			<key>Checkbox_Options_CalculateCommlinkResponse</key>
 			<text>Calculate Commlink Response based on number of running programs</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AllowSkillDiceRolling</key>
+			<key>Checkbox_Options_AllowSkillDiceRolling</key>
 			<text>Allow dice rolling for dice pools</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_CreateBackupOnCareer</key>
+			<key>Checkbox_Options_CreateBackupOnCareer</key>
 			<text>Create backup of character before moving them to Career Mode</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AllowExceedAttributeBP</key>
+			<key>Checkbox_Options_AllowExceedAttributeBP</key>
 			<text>Allow characters to exceed 50% of points in Attributes</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_UnrestrictedNuyen</key>
+			<key>Checkbox_Options_UnrestrictedNuyen</key>
 			<text>Characters can spend any number of points on Nuyen</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AllowHigherStackedFoci</key>
+			<key>Checkbox_Options_AllowHigherStackedFoci</key>
 			<text>Allow the combined Force of Stacked Foci to exceed 6</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AllowEditPartOfBaseWeapon</key>
+			<key>Checkbox_Options_AllowEditPartOfBaseWeapon</key>
 			<text>Allow Weapon Accessories and Mods to change their Part of Base Weapon status</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
+			<key>Checkbox_Options_AlternateMetatypeAttributeKarma</key>
 			<text>Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_PrintLeadershipAlternates</key>
+			<key>Checkbox_Options_PrintLeadershipAlternates</key>
 			<text>Print Leadership variation Skills (from War!)</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_PrintArcanaAlternates</key>
+			<key>Checkbox_Options_PrintArcanaAlternates</key>
 			<text>Print Arcana variation Skills (from Street Magic)</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AllowObsolescentUpgrade</key>
+			<key>Checkbox_Options_AllowObsolescentUpgrade</key>
 			<text>Allow Obsolescent to be removed/upgraded in the same way as Obsolete</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_AllowBiowareSuites</key>
+			<key>Checkbox_Options_AllowBiowareSuites</key>
 			<text>Allow Bioware Suites</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_PrintNotes</key>
+			<key>Checkbox_Options_PrintNotes</key>
 			<text>Print Notes</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_PrintToFileFirst</key>
+			<key>Checkbox_Options_PrintToFileFirst</key>
 			<text>Apply Linux printing fix</text>
 		</string>
     <string>
@@ -6644,15 +6668,15 @@ Do you want to continue?</text>
 			<text>Number of decimal places to round Essence to:</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
+			<key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
 			<text>Free Spirits receive Power Points based on MAG instead of EDG</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_SpecialAttributeKarmaLimit</key>
+			<key>Checkbox_Options_SpecialAttributeKarmaLimit</key>
 			<text>Special Attributes do not count towards 50% Karma limit during character creation</text>
 		</string>
 		<string>
-			<key>Checkbox_Option_TechnomancerAllowAutosoft</key>
+			<key>Checkbox_Options_TechnomancerAllowAutosoft</key>
 			<text>Technomancers may select Autosofts as Complex Forms</text>
 		</string>
 		<string>

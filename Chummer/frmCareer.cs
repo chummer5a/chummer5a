@@ -4969,10 +4969,6 @@ namespace Chummer
 
             _objCharacter.ComplexForms.Add(objProgram);
 
-			// If using the optional rule for costing the same as Spells, change the Karma cost.
-			if (_objOptions.AlternateComplexFormCost)
-				intKarmaCost = _objOptions.KarmaSpell;
-
 			// Make sure the character has enough Karma before letting them select a Complex Form.
 			if (_objCharacter.Karma < intKarmaCost)
 			{
@@ -8434,132 +8430,6 @@ namespace Chummer
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdCreateStackedFocus_Click(object sender, EventArgs e)
-		{
-			int intFree = 0;
-			List<Gear> lstGear = new List<Gear>();
-			List<Gear> lstStack = new List<Gear>();
-
-			// Run through all of the Foci the character has and count the un-Bonded ones.
-			foreach (Gear objGear in _objCharacter.Gear)
-			{
-				if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
-				{
-					if (!objGear.Bonded)
-					{
-						intFree++;
-						lstGear.Add(objGear);
-					}
-				}
-			}
-
-			// If the character does not have at least 2 un-Bonded Foci, display an error and leave.
-			if (intFree < 2)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotStackFoci"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			frmSelectItem frmPickItem = new frmSelectItem();
-
-			// Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
-			do
-			{
-				frmPickItem.Gear = lstGear;
-				frmPickItem.AllowAutoSelect = false;
-				frmPickItem.Description = LanguageManager.Instance.GetString("String_SelectItemFocus");
-				frmPickItem.ShowDialog(this);
-
-				if (frmPickItem.DialogResult == DialogResult.OK)
-				{
-					// Move the item from the Gear list to the Stack list.
-					foreach (Gear objGear in lstGear)
-					{
-						if (objGear.InternalId == frmPickItem.SelectedItem)
-						{
-							objGear.Bonded = true;
-							lstStack.Add(objGear);
-							lstGear.Remove(objGear);
-							break;
-						}
-					}
-				}
-			} while (lstGear.Count > 0 && frmPickItem.DialogResult != DialogResult.Cancel);
-
-			// Make sure at least 2 Foci were selected.
-			if (lstStack.Count < 2)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_StackedFocusMinimum"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			// Make sure the combined Force of the Foci do not exceed 6.
-			if (!_objOptions.AllowHigherStackedFoci)
-			{
-				int intCombined = 0;
-				foreach (Gear objGear in lstStack)
-					intCombined += objGear.Rating;
-				if (intCombined > 6)
-				{
-					foreach (Gear objGear in lstStack)
-						objGear.Bonded = false;
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_StackedFocusForce"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-			}
-
-			// Create the Stacked Focus.
-			StackedFocus objStack = new StackedFocus(_objCharacter);
-			objStack.Gear = lstStack;
-			_objCharacter.StackedFoci.Add(objStack);
-
-			// Remove the Gear from the character and replace it with a Stacked Focus item.
-			int intCost = 0;
-			foreach (Gear objGear in lstStack)
-			{
-				intCost += objGear.TotalCost;
-				_objCharacter.Gear.Remove(objGear);
-
-				// Remove the TreeNode from Gear.
-				foreach (TreeNode nodRoot in treGear.Nodes)
-				{
-					foreach (TreeNode nodItem in nodRoot.Nodes)
-					{
-						if (nodItem.Tag.ToString() == objGear.InternalId)
-						{
-							nodRoot.Nodes.Remove(nodItem);
-							break;
-						}
-					}
-				}
-			}
-
-			Gear objStackItem = new Gear(_objCharacter);
-			objStackItem.Category = "Stacked Focus";
-			objStackItem.Name = "Stacked Focus: " + objStack.Name;
-			objStackItem.MinRating = 0;
-			objStackItem.MaxRating = 0;
-			objStackItem.Source = "SM";
-			objStackItem.Page = "84";
-			objStackItem.Cost = intCost.ToString();
-			objStackItem.Avail = "0";
-
-			TreeNode nodStackNode = new TreeNode();
-			nodStackNode.Text = objStackItem.DisplayNameShort;
-			nodStackNode.Tag = objStackItem.InternalId;
-
-			treGear.Nodes[0].Nodes.Add(nodStackNode);
-
-			_objCharacter.Gear.Add(objStackItem);
-
-			objStack.GearId = objStackItem.InternalId;
-
-			_blnIsDirty = true;
-			_objController.PopulateFocusList(treFoci);
-			UpdateCharacterInfo();
 			UpdateWindowTitle();
 		}
 
@@ -22877,8 +22747,8 @@ namespace Chummer
 					chkGearEquipped.Visible = true;
 					chkGearEquipped.Checked = objGear.Equipped;
 
-					// If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-					if (objGear.IsProgram && _objOptions.CalculateCommlinkResponse)
+					// If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, rename the Equipped textbox to Running.
+					if (objGear.IsProgram)
 					{
 						Gear objParent = new Gear(_objCharacter);
 						objParent = objGear.Parent;

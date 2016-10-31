@@ -5267,7 +5267,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Permet aux Compétences d'être re-groupées si tout les Indices sont les mêmes (SR4A, FAQ)</text>
     </string>
     <string>
-      <key>Checkbox_Options_MetatypesCostKarma</key>
+      <key>Checkbox_Options_MetatypeCostsKarma</key>
       <text>En méthode de création par Karma, les Métatypes coûtent autant en Karma qu'en PC</text>
     </string>
     <string>
@@ -5339,7 +5339,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Autoriser la conversion de n'importe quel Bioware en Transgénique (AUG 93)</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
+      <key>Checkbox_Options_RestrictRecoil</key>
       <text>Utiliser les restrictions de compensation de recul (Ars 148)</text>
     </string>
     <string>
@@ -5383,59 +5383,59 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Multiplier le coût des objets prohibés par</text>
     </string>
     <string>
-      <key>Checkbox_Option_EnforceCapacity</key>
+      <key>Checkbox_Options_EnforceCapacity</key>
       <text>Mettre en application les limites de Capacité</text>
     </string>
     <string>
-      <key>Checkbox_Option_CalculateCommlinkResponse</key>
+      <key>Checkbox_Options_CalculateCommlinkResponse</key>
       <text>Calculer la réponse du commlink en fonction du nombre de programmes en exécution simultanée</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowSkillDiceRolling</key>
+      <key>Checkbox_Options_AllowSkillDiceRolling</key>
       <text>Autoriser le lancer de dés pour les compétences</text>
     </string>
     <string>
-      <key>Checkbox_Option_CreateBackupOnCareer</key>
+      <key>Checkbox_Options_CreateBackupOnCareer</key>
       <text>Créer une sauvegarde du personnage avant de le basculer en mode Carrière</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowExceedAttributeBP</key>
+      <key>Checkbox_Options_AllowExceedAttributeBP</key>
       <text>Autoriser la création de personnages avec plus de 50% des Points de Création en attributs</text>
     </string>
     <string>
-      <key>Checkbox_Option_UnrestrictedNuyen</key>
+      <key>Checkbox_Options_UnrestrictedNuyen</key>
       <text>Autoriser la création de personnages avec autant de Points de Création que souhaité en nuyens</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowHigherStackedFoci</key>
+      <key>Checkbox_Options_AllowHigherStackedFoci</key>
       <text>Autoriser la puissance combinée d'un focus multiple à dépasser 6</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowEditPartOfBaseWeapon</key>
+      <key>Checkbox_Options_AllowEditPartOfBaseWeapon</key>
       <text>Autoriser les accessoires d'armes et Modes à changer leur statut comme partie de l'arme de base</text>
     </string>
     <string>
-      <key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
+      <key>Checkbox_Options_AlternateMetatypeAttributeKarma</key>
       <text>Considérer 1 comme le minimum d'attribut de métatype pour déterminer les coûts en Karma</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintLeadershipAlternates</key>
+      <key>Checkbox_Options_PrintLeadershipAlternates</key>
       <text>Imprimer les variations de la compétence Leadership (tiré de War!)</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintArcanaAlternates</key>
+      <key>Checkbox_Options_PrintArcanaAlternates</key>
       <text>Imprimer les variations de la compétence Arcanes (tiré de Magie des Ombres)</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowObsolescentUpgrade</key>
+      <key>Checkbox_Options_AllowObsolescentUpgrade</key>
       <text>Autoriser les programmes obsolescents à être supprimés/mis-à-jour de la même manière que les obsolètes</text>
     </string>
     <string>
-      <key>Checkbox_Option_AllowBiowareSuites</key>
+      <key>Checkbox_Options_AllowBiowareSuites</key>
       <text>Autoriser les suites Bioware</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintNotes</key>
+      <key>Checkbox_Options_PrintNotes</key>
       <text>Imprimer les notes</text>
     </string>
     <string>
@@ -5443,15 +5443,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Arrondir l'Essence au nombre de décimales suivant:</text>
     </string>
     <string>
-      <key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
+      <key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
       <text>Les esprits libres obtiennent un nombre de points de pouvoir basé sur leur magie au lieu de leur chance</text>
     </string>
     <string>
-      <key>Checkbox_Option_SpecialAttributeKarmaLimit</key>
+      <key>Checkbox_Options_SpecialAttributeKarmaLimit</key>
       <text>Les attributs spéciaux ne comptent pas dans la limite de 50% de Karma durant la création de personnage</text>
     </string>
     <string>
-      <key>Checkbox_Option_TechnomancerAllowAutosoft</key>
+      <key>Checkbox_Options_TechnomancerAllowAutosoft</key>
       <text>Les Technomancien peuvent sélectionner les Autosofts en tant que Formes complexes</text>
     </string>
     <string>
@@ -6975,7 +6975,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Entrer le modificateur</text>
     </string>
     <string>
-      <key>Checkbox_Option_PrintToFileFirst</key>
+      <key>Checkbox_Options_PrintToFileFirst</key>
       <text>Appliquer le correctif d'impression Linux</text>
     </string>
     <string>
@@ -6983,7 +6983,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>VT:</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialKarmaCost</key>
+      <key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
       <text>Coût en Karma de l'augmentation Attributs spéciaux est réduite avec la perte d'essence</text>
     </string>
     <string>
