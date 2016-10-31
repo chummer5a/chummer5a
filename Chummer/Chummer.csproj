@@ -124,6 +124,7 @@
     <Compile Include="Backend\Attributes\SaveAttributes\SaveIgnorePropertyAttribute.cs" />
     <Compile Include="Backend\Attributes\SaveAttributes\SavePropertyAsAttribute.cs" />
     <Compile Include="Backend\ClassSaver.cs" />
+    <Compile Include="Backend\Datastructures\DictionaryList.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
@@ -1825,11 +1826,11 @@
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"; cp -r $(ProjectDir){data,lang,sheets} "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
   -->
 </Project>

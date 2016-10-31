@@ -9,6 +9,7 @@ using System.Xml;
 using Chummer.Backend;
 using Chummer.Backend.Attributes.OptionDisplayAttributes;
 using Chummer.Classes;
+using Chummer.Datastructures;
 using Chummer.UI.Options;
 
 namespace Chummer
@@ -89,47 +90,43 @@ namespace Chummer
 	    {
 	        DummyOptionTree root = new DummyOptionTree("root");
 
+            DictionaryList<string,PropertyInfo> properties = new DictionaryList<string, PropertyInfo>();
+
 	        string currentName = "";
 	        AbstractOptionTree parentTree;
 	        string[] npath;
 
-            List<PropertyInfo> currentInfos = new List<PropertyInfo>();
-	        //BAD JOHANNES: what did we say about logic in forms?
+            //BAD JOHANNES: what did we say about logic in forms?
 	        //to be fair, rest of code is winform specific too
+
+	        //Collect all properties in groups based on their option path
 	        foreach (PropertyInfo info in o.GetType().GetProperties())
 	        {
 	            if (info.GetCustomAttribute<OptionAttributes>() != null)
 	            {
-	                if (currentInfos.Count == 0)
-	                {
-	                    currentName = info.GetCustomAttribute<OptionAttributes>().Path;
-	                }
-	                else
-	                {
-	                    parentTree = root;
-	                    npath = currentName.Split('/');
-	                    foreach (string s in npath.Take(npath.Length - 1))
-	                    {
-	                        parentTree = parentTree.Children.First(x => x.Name == s);
-	                    }
-
-	                    parentTree.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
-
-                        currentInfos.Clear();
-                        currentName = info.GetCustomAttribute<OptionAttributes>().Path;
-                    }
+	                currentName = info.GetCustomAttribute<OptionAttributes>().Path;
 	            }
 
-                currentInfos.Add(info);
+	            properties.Add(currentName, info);
 	        }
 
-            parentTree = root;
-            npath = currentName.Split('/');
-            foreach (string s in npath.Take(npath.Length - 1))
-            {
-                parentTree = parentTree.Children.First(x => x.Name == s);
-            }
-            parentTree.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
+
+	        foreach (KeyValuePair<string, List<PropertyInfo>> group in properties
+	                    .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+	                    .OrderByDescending(x => x.Key))
+	        {
+	            string[] path = group.Key.Split('/');
+	            AbstractOptionTree parrent = root;
+
+	            //find path in option tree, skip last as thats new
+	            //Breaks if trying to "jump" a path element
+	            for (int i = 0; i < path.Length - 1; i++)
+	            {
+	                parrent = parrent.Children.First(x => x.Name == path[i]);
+	            }
+
+	            parrent.Children.Add(new SimpleOptionTree(path.Last(), o, group.Value));
+	        }
 
             return root;
 	    }

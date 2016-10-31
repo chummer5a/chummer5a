@@ -50,7 +50,7 @@ namespace Chummer.UI.Options
                     throw new InvalidOperationException("target is never set and got propertyinfo without linked object");
 
                 Type t = tuple.Item1.PropertyType;
-	            string strDisplayName = tuple.Item1.GetCustomAttribute<DisplayConfigurationAttribute>() != null ? tuple.Item1.GetCustomAttribute<DisplayConfigurationAttribute>().DisplayName : tuple.Item1.Name;
+                string strDisplayName = tuple.Item1.GetCustomAttribute<DisplayConfigurationAttribute>() != null ? tuple.Item1.GetCustomAttribute<DisplayConfigurationAttribute>().DisplayName : tuple.Item1.Name;
 				string strTooltip = tuple.Item1.GetCustomAttribute<DisplayConfigurationAttribute>() != null ? tuple.Item1.GetCustomAttribute<DisplayConfigurationAttribute>().Tooltip : "";
 
 				Wrapper w = new Wrapper(this, tuple.Item1, tuple.Item2, strDisplayName, strTooltip);
