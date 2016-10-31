@@ -1720,7 +1720,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strContactMultiplier = _objOptions.FreeContactsMultiplier.ToString();
+                    strContactMultiplier = (_objOptions.FreeContactsMultiplier  * (GameplayOption == "Prime Runner" ? 2 : 1)).ToString();
                 }
                 _intMaxKarma = Convert.ToInt32(strKarma);
                 _intMaxNuyen = Convert.ToInt32(strNuyen);
