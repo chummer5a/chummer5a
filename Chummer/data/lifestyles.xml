@@ -1006,7 +1006,13 @@
 			<id>61e7bb21-cb25-44ff-a332-639fe9dac893</id>
 			<name>Thrifty</name>
 			<category>Negative</category>
-			<lp>0</lp>
+      <required>
+        <oneof>
+          <lifestyle>Traveler</lifestyle>
+        </oneof>
+      </required>
+			<lp>2</lp>
+      <cost>-1000</cost>
 			<source>RF</source>
 			<page>226</page>
 		</quality>
