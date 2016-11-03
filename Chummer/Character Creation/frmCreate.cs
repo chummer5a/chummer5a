@@ -16140,7 +16140,7 @@ namespace Chummer
                     lblArmorValue.Text = "";
                     lblArmorAvail.Text = objSelectedGear.TotalAvail(true);
                     if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
-                        lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
+                        lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
                     else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
                         lblArmorCapacity.Text = "[0]";
                     else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)

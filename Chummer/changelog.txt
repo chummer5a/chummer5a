@@ -1,3 +1,13 @@
+Build 188
+
+Application Changes: 
+- Fixed an issue that prevented Gear items from showing their Capacity usage while attached to Armor items. 
+
+Data Changes: 
+
+- Added a missing Foregrip for the Ares SIGMA-3. 
+- Changed the P93 Praetor to a standard Stock.
+
 Build 187
 
 Application Changes:

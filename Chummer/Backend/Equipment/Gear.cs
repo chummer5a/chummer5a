@@ -1735,7 +1735,7 @@ namespace Chummer.Backend.Equipment
 		}
 
 		/// <summary>
-		/// Caculated Armor Capacity of the Gear.
+		/// Caculated Capacity of the Gear when attached to Armor.
 		/// </summary>
 		public string CalculatedArmorCapacity
 		{
