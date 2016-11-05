@@ -17,7 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.Windows.Forms;
+﻿using System.IO;
+﻿using System.Text;
+﻿using System.Windows.Documents;
+﻿using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -26,7 +29,8 @@ namespace Chummer
 		private static int _intWidth = 534;
 		private static int _intHeight = 278;
 		private readonly bool _blnLoading = false;
-
+		private string _strNotes = "";
+		RichTextBoxExtended objExtended = new RichTextBoxExtended();
 		#region Control Events
 		public frmNotes()
 		{
@@ -35,25 +39,15 @@ namespace Chummer
 			_blnLoading = true;
 			this.Width = _intWidth;
 			this.Height = _intHeight;
+			objExtended.Dock = DockStyle.Fill;
+			this.Controls.Add(objExtended);
 			_blnLoading = false;
 		}
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			Notes = objExtended.RichTextBox.Text;
 			this.DialogResult = DialogResult.OK;
-		}
-
-		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Escape)
-				this.DialogResult = DialogResult.OK;
-
-			if (e.Control && e.KeyCode == Keys.A)
-			{
-				e.SuppressKeyPress = true;
-                if (sender != null)
-					((TextBox)sender).SelectAll();
-			}
 		}
 
 		private void frmNotes_Resize(object sender, EventArgs e)
@@ -74,12 +68,11 @@ namespace Chummer
 		{
 			get
 			{
-				return txtNotes.Text;
+				return _strNotes;
 			}
 			set
 			{
-				txtNotes.Text = value;
-				txtNotes.Select(txtNotes.Text.Length, 0);
+				_strNotes = value;
 			}
 		}
 		#endregion

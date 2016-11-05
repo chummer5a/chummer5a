@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Chummer</RootNamespace>
     <AssemblyName>Chummer5</AssemblyName>
-	<TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -171,6 +171,9 @@
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RichTextBoxExtended.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
@@ -797,6 +800,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RichTextBoxExtended.resx">
+      <DependentUpon>RichTextBoxExtended.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
