@@ -168,7 +168,7 @@ namespace Chummer
                 }
                 else
                 {
-                    _objCharacter.ContactMultiplier = _objOptions.FreeContactsMultiplier * _objCharacter.GameplayOption == "Prime Runner" ? 2 : 1;
+                    _objCharacter.ContactMultiplier = _objOptions.FreeContactsMultiplier * (_objCharacter.GameplayOption == "Prime Runner" ? 2 : 1);
                 }
                 _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
 				_objCharacter.GameplayOptionQualityLimit = Convert.ToInt32(strKarma);
@@ -14992,7 +14992,7 @@ namespace Chummer
 					{
 						intCHA = _objCharacter.CHA.TotalValue;
 					}
-					_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier * _objCharacter.GameplayOption == "Prime Runner" ? 2 : 1;
+					_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier * (_objCharacter.GameplayOption == "Prime Runner" ? 2 : 1);
 				}
                 else
                     _objCharacter.ContactPoints = 0;
@@ -19003,7 +19003,7 @@ namespace Chummer
 				}
 
 				// If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-				int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier * _objCharacter.GameplayOption == "Prime Runner" ? 2 : 1);
+				int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier * (_objCharacter.GameplayOption == "Prime Runner" ? 2 : 1));
 
 
 

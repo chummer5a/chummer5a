@@ -344,7 +344,7 @@ namespace Chummer
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
-			_objOptions = new CharacterOptions(this);
+			_objOptions = new CharacterOptions();
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
         }
@@ -985,9 +985,10 @@ namespace Chummer
             // Get the name of the settings file in use if possible.
 		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
 		    
+            //TODO: load options again
             // Load the character's settings file.
-            if (!_objOptions.Load(_strSettingsFileName))
-                return false;
+            //if (!_objOptions.Load(_strSettingsFileName))
+            //    return false;
 
 			// Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
 				if (objXmlCharacter["sources"] != null)
@@ -2970,7 +2971,8 @@ namespace Chummer
             set
             {
                 _strSettingsFileName = value;
-                _objOptions.Load(_strSettingsFileName);
+                //TODO: load
+                //_objOptions.Load(_strSettingsFileName);
             }
         }
 

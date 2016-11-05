@@ -41,7 +41,7 @@ namespace Chummer
             //}
 
             //TODO: get existing characteroptions?
-            CharacterOptions o = new CharacterOptions(null);
+            CharacterOptions o = new CharacterOptions();
             optionTree = GetInitialTree(o);
 
 
@@ -111,9 +111,11 @@ namespace Chummer
 	        }
 
 
-	        foreach (KeyValuePair<string, List<PropertyInfo>> group in properties
-	                    .Where(x => !string.IsNullOrWhiteSpace(x.Key))
-	                    .OrderByDescending(x => x.Key))
+	        var temp = properties
+	            .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+	            .OrderBy(x => x.Key);
+
+            foreach (KeyValuePair<string, List<PropertyInfo>> group in temp)
 	        {
 	            string[] path = group.Key.Split('/');
 	            AbstractOptionTree parrent = root;
@@ -145,7 +147,7 @@ namespace Chummer
 		    {
 		        ClassSaver saver = new ClassSaver();
 		        writer.WriteStartElement("settings");
-		        saver.Save(new CharacterOptions(null), writer);
+		        saver.Save(new CharacterOptions(), writer);
 		        writer.WriteEndElement();
 		        writer.Flush();
 		    }

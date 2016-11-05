@@ -33,7 +33,7 @@ namespace Chummer
 {
 	public partial class frmOptions : Form
 	{
-		private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
+		private readonly CharacterOptions _characterOptions = new CharacterOptions();
 		private bool _skipRefresh;
 		private bool blnDirty = false;
 		private bool blnLoading = true;
@@ -180,7 +180,7 @@ namespace Chummer
             _characterOptions.Availability = Convert.ToInt32(nudMaxAvail.Value);
 
             _characterOptions.Name = txtSettingName.Text;
-            _characterOptions.Save();
+            //_characterOptions.Save(); //TODO: remove?
 			
 			DialogResult = DialogResult.OK;
         }
@@ -202,7 +202,7 @@ namespace Chummer
             if (!objItem.Value.Contains(".xml"))
                 return;
 
-            _characterOptions.Load(objItem.Value);
+            //_characterOptions.Load(objItem.Value); //TODO: Fixme!
             PopulateOptions();
         }
 
