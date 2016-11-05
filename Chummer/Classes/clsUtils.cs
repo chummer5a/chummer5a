@@ -68,7 +68,18 @@ namespace Chummer
 			
 		}
 
-		public static bool IsRunningInVisualStudio()
+
+        private static readonly Lazy<bool> _linux = new Lazy<bool>(() =>
+        {
+            int p = (int)Environment.OSVersion.Platform;
+            return p == 4 || p == 6 || p == 128;
+        });
+
+	    public static bool IsLinux => _linux.Value;
+	    public static bool IsProbablyWindows => !IsLinux;
+
+
+	    public static bool IsRunningInVisualStudio()
 		{
 			return System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv";
 		}

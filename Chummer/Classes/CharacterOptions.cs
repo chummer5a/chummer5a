@@ -14,7 +14,7 @@ namespace Chummer
 	public class CharacterOptions
 	{
 		#region Default Values
-		private string _strFileName = "default.xml";
+		public readonly string FileName = "default.xml";
 
 	    // Settings.
 		private bool _blnAllow2ndMaxAttribute;
@@ -52,320 +52,14 @@ namespace Chummer
 		// Sourcebook list.
 
 	    #region Initialization, Save, and Load Methods
-		public CharacterOptions()
+		public CharacterOptions(string filename)
 		{
-			//// Create the settings directory if it does not exist.
-			//string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
-			//if (!Directory.Exists(settingsDirectoryPath))
-			//	Directory.CreateDirectory(settingsDirectoryPath);
-
-			//// If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
-			//string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
-			//if (!File.Exists(strFilePath))
-			//{
-			//	_strFileName = "default.xml";
-			//	LoadFromRegistry();
-			//	Save();
-			//}
-			//else
-			//	Load("default.xml");
-			//// Load the language file.
-			//LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-
-			//// Load the book information.
-			//_objBookDoc = XmlManager.Instance.Load("books.xml");
+		    FileName = filename;
 		}
 
 		#endregion
 
 		#region Methods
-		/// <summary>
-		/// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-		/// </summary>
-		private void LoadFromRegistry()
-		{
-			// Confirm delete.
-			try
-			{
-				ConfirmDelete = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("confirmdelete").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("confirmdelete");
-			}
-			catch
-			{
-			}
-
-			// Confirm Karama Expense.
-			try
-			{
-				ConfirmKarmaExpense = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("confirmkarmaexpense").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("confirmkarmaexpense");
-			}
-			catch
-			{
-			}
-
-			// Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-			try
-			{
-				PrintSkillsWithZeroRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printzeroratingskills").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("printzeroratingskills");
-			}
-			catch
-			{
-			}
-
-			// More Lethal Gameplay.
-			try
-			{
-				MoreLethalGameplay = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("morelethalgameplay").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("morelethalgameplay");
-			}
-			catch
-			{
-			}
-
-			// Spirit Force Based on Total MAG.
-			try
-			{
-				SpiritForceBasedOnTotalMAG = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("spiritforcebasedontotalmag").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("spiritforcebasedontotalmag");
-			}
-			catch
-			{
-			}
-
-			// Skill Defaulting Includes Modifers.
-			try
-			{
-				SkillDefaultingIncludesModifiers = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("skilldefaultingincludesmodifiers").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("skilldefaultingincludesmodifiers");
-			}
-			catch
-			{
-			}
-
-			// Enforce Skill Maximum Modified Rating.
-			try
-			{
-				_blnEnforceSkillMaximumModifiedRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("enforceskillmaximummodifiedrating").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("enforceskillmaximummodifiedrating");
-			}
-			catch
-			{
-			}
-
-			// Cap Skill Rating.
-			try
-			{
-				CapSkillRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("capskillrating").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("capskillrating");
-			}
-			catch
-			{
-			}
-
-			// Print Expenses.
-			try
-			{
-				PrintExpenses = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printexpenses").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("printexpenses");
-			}
-			catch
-			{
-			}
-
-			// Nuyen per Build Point
-			try
-			{
-				NuyenPerBP = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("nuyenperbp").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("nuyenperbp");
-			}
-			catch
-			{
-			}
-
-			// Free Contacts Multiplier Enabled
-			try
-			{
-				FreeContactsMultiplierEnabled = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontactsmultiplierenabled").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontactsmultiplierenabled");
-			}
-			catch
-			{
-			}
-
-			// Free Contacts Multiplier Value
-			try
-			{
-				FreeContactsMultiplier = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontactsmultiplier").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontactsmultiplier");
-			}
-			catch
-			{
-			}
-
-			// Free Knowledge Multiplier Enabled
-			try
-			{
-				FreeKnowledgeMultiplierEnabled = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledgemultiplierenabled").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledgemultiplierenabled");
-			}
-			catch
-			{
-			}
-			// Free Knowledge Multiplier Value
-			try
-			{
-				FreeKnowledgeMultiplier = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledgemultiplier").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledgemultiplier");
-			}
-			catch
-			{
-			}
-
-			// Karma Free Knowledge Multiplier Enabled
-			try
-			{
-				FreeKnowledgeMultiplierEnabled = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freeknowledgemultiplierenabled").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freeknowledgemultiplierenabled");
-			}
-			catch
-			{
-			}
-			// Karma Free Knowledge
-			try
-			{
-				FreeKarmaContacts = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontacts").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontacts");
-			}
-			catch
-			{
-			}
-			// Karma Free Knowledge
-			try
-			{
-				FreeKarmaKnowledge = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledge").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledge");
-			}
-			catch
-			{
-			}
-
-			// No Single Armor Encumbrance
-			try
-			{
-				_blnNoSingleArmorEncumbrance = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("nosinglearmorencumbrance").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("nosinglearmorencumbrance");
-			}
-			catch
-			{
-			}
-
-			// Essence Loss Reduces Maximum Only.
-			try
-			{
-				ESSLossReducesMaximumOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("esslossreducesmaximumonly").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("esslossreducesmaximumonly");
-			}
-			catch
-			{
-			}
-
-			// Allow Skill Regrouping.
-			try
-			{
-				AllowSkillRegrouping = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("allowskillregrouping").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("allowskillregrouping");
-			}
-			catch
-			{
-			}
-
-			// Attempt to populate the Karma values.
-			try
-			{
-				KarmaAttribute = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaattribute").ToString());
-				KarmaQuality = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaquality").ToString());
-				KarmaSpecialization = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspecialization").ToString());
-				KarmaNewKnowledgeSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewknowledgeskill").ToString());
-				KarmaNewActiveSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewactiveskill").ToString());
-				KarmaNewSkillGroup = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewskillgroup").ToString());
-				KarmaImproveKnowledgeSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimproveknowledgeskill").ToString());
-				KarmaImproveActiveSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimproveactiveskill").ToString());
-				KarmaImproveSkillGroup = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimproveskillgroup").ToString());
-				KarmaSpell = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspell").ToString());
-				KarmaEnhancement = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenhancement").ToString());
-				KarmaNewComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewcomplexform").ToString());
-				KarmaImproveComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimprovecomplexform").ToString());
-				_intKarmaNuyenPer = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanuyenper").ToString());
-				KarmaContact = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacontact").ToString());
-				KarmaEnemy = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenemy").ToString());
-				KarmaCarryover = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacarryover").ToString());
-				KarmaSpirit = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspirit").ToString());
-				KarmaManeuver = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmamaneuver").ToString());
-				KarmaInitiation = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmainitiation").ToString());
-				KarmaMetamagic = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmametamagic").ToString());
-				KarmaComplexFormOption = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacomplexformoption").ToString());
-				// Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaattribute");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaquality");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaspecialization");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewknowledgeskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewactiveskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewskillgroup");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimproveknowledgeskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimproveactiveskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimproveskillgroup");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaspell");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewcomplexform");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimprovecomplexform");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanuyenper");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmacontact");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmacarryover");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaspirit");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmamaneuver");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmainitiation");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmametamagic");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmacomplexformoption");
-			}
-			catch
-			{
-			}
-
-			// Retrieve the sourcebooks that are in the Registry.
-			string strBookList = "";
-			try
-			{
-				strBookList = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("books").ToString();
-			}
-			catch
-			{
-				// We were unable to get the Registry key which means the book options have not been saved yet, so create the default values.
-				strBookList = "Shadowrun 5th Edition";
-				RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-				objRegistry.SetValue("books", strBookList);
-			}
-			string[] strBooks = strBookList.Split(',');
-
-			XmlDocument objXmlDocument = new XmlDocument();
-			objXmlDocument = XmlManager.Instance.Load("books.xml");
-
-			foreach (string strBookCode in strBooks)
-			{
-				XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-				try
-				{
-					Books.Add(objXmlBook["code"].InnerText);
-				}
-				catch
-				{
-				}
-			}
-
-			// Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-			Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("books");
-		}
-
 		/// <summary>
 		/// Convert a book code into the full name.
 		/// </summary>
@@ -959,7 +653,7 @@ namespace Chummer
 	    /// <summary>
 		/// Mutiplier for Metatype Karma Costs.
 		/// </summary>
-		[SavePropertyAs("metatypecostskarma")]
+		[SavePropertyAs("metatypecostskarmamultiplier")]
 		[DisplayConfiguration("Checkbox_Options_MetatypeCostsKarma")]
 		public int MetatypeCostsKarmaMultiplier { get; set; } = 1;
 
@@ -980,7 +674,7 @@ namespace Chummer
 	    /// <summary>
 		/// Amount of Nuyen gained per Karma spent.
 		/// </summary>
-		[SavePropertyAs("nuyenperbp")]
+		[SavePropertyAs("karmanuyenper")]
 		[DisplayConfiguration("Label_Options_Nuyen")]
 		public int NuyenPerBP { get; set; } = 2000;
 

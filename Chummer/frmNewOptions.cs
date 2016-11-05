@@ -40,8 +40,8 @@ namespace Chummer
             //	flowLayoutPanel1.Controls.Add(objControl);
             //}
 
-            //TODO: get existing characteroptions?
-            CharacterOptions o = new CharacterOptions();
+            //TODO: dropdown that allows you to select/add multiple
+            CharacterOptions o = Program.OptionsManager.Default; 
             optionTree = GetInitialTree(o);
 
 
@@ -147,7 +147,7 @@ namespace Chummer
 		    {
 		        ClassSaver saver = new ClassSaver();
 		        writer.WriteStartElement("settings");
-		        saver.Save(new CharacterOptions(), writer);
+		        //saver.Save(writer);
 		        writer.WriteEndElement();
 		        writer.Flush();
 		    }

@@ -31,7 +31,7 @@ namespace Chummer.Backend
 
         //Not 99% sure ref is needed, but makes it explicit what happens and might prevent if anybody uses this on a
         //struct in the future
-        public void Load(ref object target, XmlNode source)
+        public void Load<T>(ref T target, XmlNode source)
         {
             if (target == null) throw new NullReferenceException(nameof(target));
             if (source == null) throw new NullReferenceException(nameof(source));
@@ -41,13 +41,14 @@ namespace Chummer.Backend
 
         }
 
-        private void LoadInner(ref object target, Func<string, string> read)
+        private void LoadInner<T>(ref T target, Func<string, string> read)
         {
             PropertyInfo[] properties = target.GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
             {
-                if (property.GetCustomAttribute<SaveIgnorePropertyAttribute>() != null) continue;
+                if (property.GetCustomAttribute<SaveIgnorePropertyAttribute>() != null)
+                    continue;
 
                 if (!(AttemptSaveList.Contains(property.PropertyType) ||
                     (AttemptSaveList.Contains(typeof(Enum)) && property.PropertyType.IsSubclassOf(typeof(Enum)))
@@ -59,7 +60,8 @@ namespace Chummer.Backend
 
                 string unparsed = read(name);
 
-                if (unparsed == null) continue;
+                if (unparsed == null)
+                    continue;
 
                 try
                 {

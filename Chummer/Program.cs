@@ -24,6 +24,7 @@ using System.Linq;
 ﻿using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
+﻿using Chummer.Backend;
 ﻿using Chummer.Backend.Debugging;
 ﻿using Chummer.Debugging;
 
@@ -72,6 +73,7 @@ namespace Chummer
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
+		    OptionsManager = OptionsManager.Load();
 
 	        sw.TaskEnd("languagefreestartup");
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
@@ -106,9 +108,10 @@ namespace Chummer
 			Log.Info(ExceptionMap);
 		}
 
-		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
-
-		static void FixCwd()
+	    public static OptionsManager OptionsManager { get; private set; }
+	    static ExceptionHeatMap heatmap = new ExceptionHeatMap();
+	    
+	    static void FixCwd()
 		{
 			//If launched by file assiocation, the cwd is file location. 
 			//Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)

@@ -344,7 +344,7 @@ namespace Chummer
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
-			_objOptions = new CharacterOptions();
+            _objOptions = Program.OptionsManager.Default; //TODO: decide
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
         }

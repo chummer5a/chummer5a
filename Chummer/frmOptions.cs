@@ -33,7 +33,7 @@ namespace Chummer
 {
 	public partial class frmOptions : Form
 	{
-		private readonly CharacterOptions _characterOptions = new CharacterOptions();
+	    private readonly CharacterOptions _characterOptions = null;
 		private bool _skipRefresh;
 		private bool blnDirty = false;
 		private bool blnLoading = true;
