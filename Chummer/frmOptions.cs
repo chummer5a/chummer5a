@@ -175,7 +175,7 @@ namespace Chummer
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
 
             // Build method options.
-            _characterOptions.BuildMethod = cboBuildMethod.SelectedValue.ToString();
+            //_characterOptions.BuildMethod = cboBuildMethod.SelectedValue;
             _characterOptions.BuildPoints = Convert.ToInt32(nudBP.Value);
             _characterOptions.Availability = Convert.ToInt32(nudMaxAvail.Value);
 

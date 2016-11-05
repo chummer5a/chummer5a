@@ -548,10 +548,10 @@ namespace Chummer
 		public int EssenceDecimals { get; set; } = 2;
 
 	    /// <summary>
-		/// Default build method.
-		/// </summary>
-		[SavePropertyAs("buildmethod")]
-		public string BuildMethod { get; set; } = "Karma";
+	    /// Default build method.
+	    /// </summary>
+	    [SavePropertyAs("buildmethod")]
+	    public CharacterBuildMethod BuildMethod { get; set; } = CharacterBuildMethod.Priority;
 
 	    /// <summary>
 		/// Default number of build points.

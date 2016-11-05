@@ -17,7 +17,8 @@ namespace Chummer.Backend
             typeof(double),
             typeof(float),
             typeof(string),
-            typeof(bool)
+            typeof(bool),
+            typeof(Enum)
         };
 
         public void Save(object toSave, XmlTextWriter destination)
@@ -48,7 +49,9 @@ namespace Chummer.Backend
             {
                 if (property.GetCustomAttribute<SaveIgnorePropertyAttribute>() != null) continue;
 
-                if (!AttemptSaveList.Contains(property.PropertyType)) continue;
+                if (!(AttemptSaveList.Contains(property.PropertyType) ||
+                    (AttemptSaveList.Contains(typeof(Enum)) && property.PropertyType.IsSubclassOf(typeof(Enum)))
+                 )) continue;
 
                 string name = property.GetCustomAttribute<SavePropertyAsAttribute>()?.Name ??
                               property.Name.ToLowerInvariant();
@@ -81,7 +84,9 @@ namespace Chummer.Backend
             {
                 if (property.GetCustomAttribute<SaveIgnorePropertyAttribute>() != null) continue;
 
-                if (!AttemptSaveList.Contains(property.PropertyType)) continue;
+                if (!(AttemptSaveList.Contains(property.PropertyType) || 
+                    (AttemptSaveList.Contains(typeof(Enum)) && property.PropertyType.IsSubclassOf(typeof(Enum)))
+                 )) continue;
 
                 string name = property.GetCustomAttribute<SavePropertyAsAttribute>()?.Name ??
                               property.Name.ToLowerInvariant();

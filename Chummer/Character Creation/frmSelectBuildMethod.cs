@@ -160,7 +160,7 @@ namespace Chummer
             {
                 if (cboBuildMethod.SelectedValue.ToString() == "Karma")
                 {
-                    if (_objOptions.BuildMethod == "Karma")
+                    if (_objOptions.BuildMethod == CharacterBuildMethod.Karma)
                     {
                         lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_KarmaSummary").Replace("{0}", _objOptions.BuildPoints.ToString());
                         if (!_blnUseCurrentValues)

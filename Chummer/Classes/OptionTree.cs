@@ -51,7 +51,7 @@ namespace Chummer.Classes
         private OptionItem GenerateItem()
         {
             OptionItem item = new OptionItem();
-            item.Setoptions(_properies,_target);
+            item.SetManyToSingleOptions(_properies,_target);
             return item;
         }
 

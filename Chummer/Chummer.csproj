@@ -186,6 +186,7 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Classes\GlobalOptions.cs" />
     <Compile Include="Classes\Options.cs" />
     <Compile Include="Classes\OptionTree.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">

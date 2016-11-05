@@ -53,7 +53,7 @@ namespace Chummer
             //OptionItem item = new OptionItem();
             //Controls.Add(item);
             //Controls.SetChildIndex(item, 0);
-            //item.Setoptions(o.GetType().GetProperties().ToList(), o);
+            //item.SetManyToSingleOptions(o.GetType().GetProperties().ToList(), o);
 		}
 
 	    private void MaybeSpawnAndMakeVisible(TreeNode selectedNode)
