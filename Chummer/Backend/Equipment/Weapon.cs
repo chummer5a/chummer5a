@@ -1862,9 +1862,10 @@ namespace Chummer.Backend.Equipment
 						bool blnFound = false;
 						foreach (WeaponAccessory objAccessory in _lstAccessories)
 						{
-							if (objAccessory.Mount == objXmlMount.InnerText)
+							if ((objAccessory.Mount == objXmlMount.InnerText) || (objAccessory.ExtraMount == objXmlMount.InnerText))
 							{
 								blnFound = true;
+								break;
 							}
 						}
 						if (!blnFound)

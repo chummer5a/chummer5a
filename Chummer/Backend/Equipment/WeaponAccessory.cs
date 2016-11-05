@@ -18,6 +18,7 @@ namespace Chummer.Backend.Equipment
 		private Weapon _objParent;
 		private string _strName = "";
 		private string _strMount = "";
+		private string _strExtraMount = "";
 		private string _strRC = "";
 		private string _strDamage = "";
 		private string _strDamageType = "";
@@ -98,6 +99,7 @@ namespace Chummer.Backend.Equipment
 			objXmlAccessory.TryGetField("extra", out _strExtra, "");
 			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
 			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
+			objXmlAccessory.TryGetField("extramount", out _strExtraMount);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -126,6 +128,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("mount", _strMount);
+			objWriter.WriteElementString("extramount", _strExtraMount);
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
@@ -191,6 +194,7 @@ namespace Chummer.Backend.Equipment
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strMount = objNode["mount"].InnerText;
+			objNode.TryGetField("extramount", out _strExtraMount,0);
 			_strRC = objNode["rc"].InnerText;
 			objNode.TryGetField("rating", out _intRating,0);
 			objNode.TryGetField("rcgroup", out _intRCGroup, 0);
@@ -311,6 +315,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteStartElement("accessory");
 			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteElementString("mount", _strMount);
+			objWriter.WriteElementString("extramount", _strExtraMount);
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("conceal", _strConceal);
 			objWriter.WriteElementString("avail", TotalAvail);
@@ -554,6 +559,21 @@ namespace Chummer.Backend.Equipment
 			set
 			{
 				_strMount = value;
+			}
+		}
+		
+		/// <summary>
+		/// Additional mount slot used (if any).
+		/// </summary>
+		public string ExtraMount
+		{
+			get
+			{
+				return _strExtraMount;
+			}
+			set
+			{
+				_strExtraMount = value;
 			}
 		}
 

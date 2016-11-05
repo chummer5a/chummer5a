@@ -68,7 +68,14 @@ namespace Chummer
 			// Populate the Accessory list.
 			string[] strAllowed = _strAllowedMounts.Split('/');
 			string strMount = "";
-			foreach (string strAllowedMount in strAllowed)
+            strMount += "(extramount = \"\"";
+            foreach (string strAllowedMount in strAllowed)
+            {
+                if (strAllowedMount != "")
+                    strMount += "or contains(extramount, \"" + strAllowedMount + "\") ";
+            }
+            strMount += ") and";
+            foreach (string strAllowedMount in strAllowed)
 			{
 				if (strAllowedMount != "")
 					strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
@@ -173,9 +180,14 @@ namespace Chummer
 				lblRatingLabel.Visible = false;
 			}
 			List<string> strMounts = new List<string>();
+            string strExtraMount = "";
+            if (objXmlAccessory["extramount"].InnerText != "")
+            {
+                strExtraMount += "+ " + objXmlAccessory["extramount"].InnerText;
+            }
 			foreach (string strItem in (objXmlAccessory["mount"].InnerText.Split('/')))
 			{
-				strMounts.Add(strItem);
+				strMounts.Add(strItem + strExtraMount);
 			}
 			strMounts.Add("None");
 

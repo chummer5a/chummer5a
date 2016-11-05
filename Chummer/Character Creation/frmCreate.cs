@@ -7830,11 +7830,12 @@ namespace Chummer
 					bool blnFound = false;
 					foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
 					{
-						if (objMod.Mount == objXmlMount.InnerText)
-						{
-							blnFound = true;
-						}
-					}
+                        if ((objMod.Mount == objXmlMount.InnerText) || (objMod.ExtraMount == objXmlMount.InnerText))
+                        {
+                            blnFound = true;
+                            break;
+                        }
+                    }
 					if (!blnFound)
 					{
 						strMounts += objXmlMount.InnerText + "/";
@@ -8186,8 +8187,11 @@ namespace Chummer
                     bool blnFound = false;
                     foreach (WeaponAccessory objCurrentAccessory in objWeapon.WeaponAccessories)
                     {
-                        if (objCurrentAccessory.Mount == objXmlMount.InnerText)
+                        if ((objCurrentAccessory.Mount == objXmlMount.InnerText) || (objCurrentAccessory.ExtraMount == objXmlMount.InnerText))
+                        {
                             blnFound = true;
+                            break;
+                        }
                     }
                     if (!blnFound)
                         strMounts += objXmlMount.InnerText + "/";

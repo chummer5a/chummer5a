@@ -4035,7 +4035,7 @@
 			</accessorymounts>
 			<accessories>
 				<accessory>
-					<name>Stock</name>
+					<name>Folding Stock</name>
 			</accessory>
 				<accessory>
 					<name>Laser Sight</name></accessory>
@@ -6378,7 +6378,7 @@
 			<name>Cavalier Safeguard</name>
 			<category>Tasers</category>
 			<type>Ranged</type>
-			<conceal>0</conceal>
+			<conceal>-2</conceal>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>6S(e)</damage>
@@ -6403,7 +6403,7 @@
 			<name>Defiance EX Shocker</name>
 			<category>Tasers</category>
 			<type>Ranged</type>
-			<conceal>0</conceal>
+			<conceal>-2</conceal>
 			<accuracy>4</accuracy>
 			<reach>0</reach>
 			<damage>9S(e)</damage>
@@ -6413,6 +6413,9 @@
 			<ammo>4(m)</ammo>
 			<avail>0</avail>
 			<cost>250</cost>
+			<underbarrels>
+				<underbarrel>Defiance EX Shocker Contacts</underbarrel>
+			</underbarrels>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Top</mount>
@@ -6421,11 +6424,29 @@
 			<page>424</page>
 		</weapon>
 		<weapon>
+			<id>3b12990b-afcb-4e0c-943d-ee215ffcfde1</id>
+			<name>Defiance EX Shocker (Melee Contacts)</name>
+			<category>Clubs</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>-2</conceal>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>8S(e)</damage>
+			<ap>-5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>10</ammo>
+			<requireammo>false</requireammo>
+			<source>SR5</source>
+			<page>424</page>
+		</weapon>
+		<weapon>
 			<id>3540d227-3288-410f-aa11-5048179ab322</id>
 			<name>Tiffani-Defiance Protector</name>
 			<category>Tasers</category>
 			<type>Ranged</type>
-			<conceal>0</conceal>
+			<conceal>-2</conceal>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>7S(e)</damage>
@@ -6451,7 +6472,7 @@
 			<name>Yamaha Pulsar</name>
 			<category>Tasers</category>
 			<type>Ranged</type>
-			<conceal>0</conceal>
+			<conceal>-2</conceal>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>7S(e)</damage>
@@ -8604,8 +8625,18 @@
 		</accessory>
 		<accessory>
 			<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
-			<name>Gecko Grip</name>
+			<name>Gecko Grip (for Weapon with No Stock Slot)</name>
 			<mount/>
+			<rating>0</rating>
+			<avail>6</avail>
+			<cost>100</cost>
+			<source>RG</source>
+			<page>52</page>
+		</accessory>
+		<accessory>
+			<id>bf18c385-77bf-4f45-a51c-c17fd702526f</id>
+			<name>Gecko Grip (for Weapon with Stock Slot)</name>
+			<mount>Stock</mount>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>100</cost>
@@ -8845,7 +8876,7 @@
 			<avail>0</avail>
 			<cost>0</cost>
 			<source>GH3</source>
-			<page>53</page>
+			<page>3</page>
 		</accessory>
 		<!-- End Region -->
 		<!-- Region Chrome Flesh -->
@@ -8864,7 +8895,7 @@
 		<accessory>
 			<id>0c315fd8-3a1a-4748-8359-cb6a04436fbd</id>
 			<name>Ammo Skip</name>
-			<mount />
+			<mount>Under</mount>
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>250</cost>
@@ -8907,7 +8938,7 @@
 		<accessory>
 			<id>5cc39a55-3973-4368-81ee-c7a5c0432323</id>
 			<name>Chameleon Coating (Pistol)</name>
-			<mount />
+			<mount>Side</mount>
 			<rating>0</rating>
 			<conceal>-2</conceal>
 			<avail>10R</avail>
@@ -8918,7 +8949,7 @@
 		<accessory>
 			<id>98c9ed33-2636-40bb-a455-334e8fb8e65f</id>
 			<name>Chameleon Coating (Rifle)</name>
-			<mount />
+			<mount>Side</mount>
 			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>10R</avail>
@@ -8982,7 +9013,7 @@
 		<accessory>
 			<id>2da4f104-cf0c-4e0c-a001-4a6da4c2b46b</id>
 			<name>Electronic Firing</name>
-			<mount />
+			<mount>Barrel</mount>
 			<rc>1</rc>
 			<rating>0</rating>
 			<avail>10R</avail>
@@ -8994,6 +9025,7 @@
 			<id>a2e4fcc6-cc21-4fc8-bbdf-efb489e9c377</id>
 			<name>Mounted Crossbow</name>
 			<mount>Under</mount>
+			<extramount>Barrel</extramount>
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>1000</cost>
@@ -9004,6 +9036,7 @@
 			<id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
 			<name>Underbarrel Laser</name>
 			<mount>Under</mount>
+			<extramount>Side</extramount>
 			<rating>0</rating>
 			<avail>16F</avail>
 			<cost>22000</cost>
