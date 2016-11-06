@@ -634,6 +634,9 @@
 				<name>Newest Model</name>
 				<name rating="3">Ruthenium Polymer Coating</name>
 			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
 			<source>RG</source>
 			<page>61</page>
 		</armor>
