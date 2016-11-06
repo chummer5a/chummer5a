@@ -1146,6 +1146,9 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
         <enabletab>
           <name>magician</name>
         </enabletab>

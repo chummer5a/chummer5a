@@ -7,6 +7,7 @@ Data Changes:
 
 - Added a missing Foregrip for the Ares SIGMA-3. 
 - Changed the P93 Praetor to a standard Stock.
+- Fixed the Aspected Magician to properly grant their Magic attribute.
 
 Build 187
 
