@@ -47,6 +47,7 @@ namespace Chummer
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Notes = objExtended.RichTextBox.Text;
+			FormattedNotes = objExtended.RichTextBox.Rtf;
 			this.DialogResult = DialogResult.OK;
 		}
 
@@ -75,6 +76,11 @@ namespace Chummer
 				_strNotes = value;
 			}
 		}
+
+		/// <summary>
+		/// RTF Formatted notes.
+		/// </summary>
+		public string FormattedNotes { get; set; }
 		#endregion
 	}
 }
