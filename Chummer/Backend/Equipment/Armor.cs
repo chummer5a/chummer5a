@@ -57,7 +57,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		/// <param name="intRating">Rating of the item.</param>
 		/// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
-		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
 		{
 			_strName = objXmlArmorNode["name"].InnerText;
 			_strCategory = objXmlArmorNode["category"].InnerText;
@@ -156,6 +156,72 @@ namespace Chummer.Backend.Equipment
 				{
 					_strExtra = objImprovementManager.SelectedValue;
 					objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+				}
+			}
+
+			if (objXmlArmorNode.InnerXml.Contains("<selectmodsfromcategory>") && !blnSkipSelectForms)
+			{
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+
+				// More than one Weapon can be added, so loop through all occurrences.
+				foreach (XmlNode objXmlCategoryNode in objXmlArmorNode["selectmodsfromcategory"])
+				{
+					frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter);
+					frmPickArmorMod.AllowedCategories = objXmlCategoryNode.InnerText;
+					frmPickArmorMod.ExcludeGeneralCategory = true;
+					frmPickArmorMod.ShowDialog();
+
+					if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+						return;
+
+					// Locate the selected piece.
+					XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
+
+					if (objXmlMod != null)
+					{
+						ArmorMod objMod = new ArmorMod(_objCharacter);
+						List<Weapon> lstWeapons = new List<Weapon>();
+						List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+
+						TreeNode objModNode = new TreeNode();
+
+						objMod.Create(objXmlMod, objModNode, intRating, lstWeapons, lstWeaponNodes, blnSkipCost);
+						objMod.Parent = this;
+						objMod.IncludedInArmor = true;
+						objMod.ArmorCapacity = "[0]";
+						objMod.Cost = "0";
+						objMod.MaximumRating = objMod.Rating;
+						_lstArmorMods.Add(objMod);
+
+						objModNode.ContextMenuStrip = cmsArmorMod;
+						objNode.Nodes.Add(objModNode);
+						objNode.Expand();
+					}
+					else
+					{
+						ArmorMod objMod = new ArmorMod(_objCharacter);
+						List<Weapon> lstWeapons = new List<Weapon>();
+						List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+
+						TreeNode objModNode = new TreeNode();
+
+						objMod.Name = objXmlArmorNode["name"].InnerText;
+						objMod.Category = "Features";
+						objMod.Avail = "0";
+						objMod.Source = _strSource;
+						objMod.Page = _strPage;
+						objMod.Parent = this;
+						objMod.IncludedInArmor = true;
+						objMod.ArmorCapacity = "[0]";
+						objMod.Cost = "0";
+						objMod.Rating = 0;
+						objMod.MaximumRating = objMod.Rating;
+						_lstArmorMods.Add(objMod);
+
+						objModNode.ContextMenuStrip = cmsArmorMod;
+						objNode.Nodes.Add(objModNode);
+						objNode.Expand();
+					}
 				}
 			}
 

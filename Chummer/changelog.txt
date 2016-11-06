@@ -9,6 +9,7 @@ Data Changes:
 - Changed the P93 Praetor to a standard Stock.
 - Fixed the Aspected Magician to properly grant their Magic attribute.
 - Fixed an issue with the Safety Third lifestyle quality that caused a crash.
+- Fixed missing/incorrect Mods for various pieces of Armour. Specifically the Ares Victory set, Vashon Island Synergist and Sleeping Tiger.
 
 Build 187
 

@@ -584,7 +584,7 @@
 				<name>Custom Fit</name>
 			</mods>
 			<gears>
-				<usegear>Concealable Holster</usegear>
+				<usegear>Holster</usegear>
 			</gears>
 			<source>RG</source>
 			<page>61</page>
@@ -634,6 +634,9 @@
 				<name>Newest Model</name>
 				<name rating="3">Ruthenium Polymer Coating</name>
 			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
 			<source>RG</source>
 			<page>61</page>
 		</armor>
@@ -816,7 +819,9 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>10</avail>
 			<cost>1300</cost>
-			<addmodcategory>Globetrotter Jacket Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
 			<gears>
 				<usegear>Holster</usegear>
 			</gears>
@@ -831,7 +836,9 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>7</avail>
 			<cost>900</cost>
-			<addmodcategory>Globetrotter Vest Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
 			<source>RG</source>
 			<page>63</page>
 		</armor>
@@ -843,7 +850,12 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>6</avail>
 			<cost>600</cost>
-			<addmodcategory>Globetrotter Clothing Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
+			<mods>
+				<name>Gear Access</name>
+			</mods>
 			<source>RG</source>
 			<page>63</page>
 		</armor>
@@ -855,7 +867,9 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>12</avail>
 			<cost>3000</cost>
-			<addmodcategory>Victory Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Victory Liners</category>
+			</selectmodsfromcategory>
 			<mods>
 				<name>Gear Access</name>
 			</mods>
@@ -894,7 +908,9 @@
 			<armorcapacity>12</armorcapacity>
 			<avail>12</avail>
 			<cost>5000</cost>
-			<addmodcategory>Victory Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Victory Liners</category>
+			</selectmodsfromcategory>
 			<mods>
 				<name>Custom Fit</name>
 				<name>Gear Access</name>
@@ -1457,7 +1473,9 @@
 					<condition>Must be visible</condition>
 				</limitmodifier>
 			</bonus>
-			<addmodcategory>Globetrotter Jacket Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
 			<source>RG</source>
 			<page>75</page>
 		</armor>

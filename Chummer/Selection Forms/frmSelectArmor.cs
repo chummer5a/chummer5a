@@ -125,7 +125,7 @@ namespace Chummer
 			Armor objArmor = new Armor(_objCharacter);
 			TreeNode objNode = new TreeNode();
 			List<Weapon> objWeapons = new List<Weapon>();
-			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true);
+			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
 
 			lblArmor.Text = objXmlArmor["name"].InnerText;
             lblArmorValue.Text = objXmlArmor["armor"].InnerText;
@@ -161,10 +161,7 @@ namespace Chummer
 			{
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlArmor["name"].InnerText;
-				if (objXmlArmor["translate"] != null)
-					objItem.Name = objXmlArmor["translate"].InnerText;
-				else
-					objItem.Name = objXmlArmor["name"].InnerText;
+				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
 				lstArmors.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
@@ -218,10 +215,7 @@ namespace Chummer
 			{
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlArmor["name"].InnerText;
-				if (objXmlArmor["translate"] != null)
-					objItem.Name = objXmlArmor["translate"].InnerText;
-				else
-					objItem.Name = objXmlArmor["name"].InnerText;
+				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
 
 				try
 				{
@@ -664,7 +658,7 @@ namespace Chummer
 			Armor objArmor = new Armor(_objCharacter);
 			TreeNode objNode = new TreeNode();
 			List<Weapon> objWeapons = new List<Weapon>();
-			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true);
+			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
 
 			// Check for a Variable Cost.
 			int intItemCost = 0;
