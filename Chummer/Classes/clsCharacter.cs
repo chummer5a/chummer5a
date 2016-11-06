@@ -6267,7 +6267,7 @@ namespace Chummer
 					{
 						if (strMovementType == "Swim")
 						{
-							intWalk = (intAGI + _attSTR.TotalValue / 2)* intWalkMultiplier;
+							intWalk = (intAGI + _attSTR.CalculatedTotalValue(false) / 2)* intWalkMultiplier;
 						}
 						else
 						{
@@ -6280,12 +6280,12 @@ namespace Chummer
 				{
 					if (strMovementType == "Swim")
 					{
-						intWalk = (_attAGI.TotalValue + _attSTR.TotalValue/2)*intWalkMultiplier;
+						intWalk = (_attAGI.TotalValue + _attSTR.TotalValue / 2)*intWalkMultiplier;
 					}
 					else
 					{
-						intWalk = (_attAGI.TotalValue*intWalkMultiplier);
-						intRun = (_attAGI.TotalValue*intRunMultiplier);
+						intWalk = (_attAGI.CalculatedTotalValue(false) * intWalkMultiplier);
+						intRun = (_attAGI.CalculatedTotalValue(false) * intRunMultiplier);
 					}
 				}
 				if (strMovementType == "Swim")

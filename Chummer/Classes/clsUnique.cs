@@ -593,17 +593,15 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The CharacterAttribute's total value (Value + Modifiers).
+		/// The CharacterAttribute's total value (Value + Modifiers). 
 		/// </summary>
-		public int TotalValue
+		public int CalculatedTotalValue (bool blnIncludeCyberlimbs = true)
 		{
-			get
-			{
 				int intMeat = Value + AttributeModifiers;
 				int intReturn = intMeat;
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
-                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
+                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
                 {
                     int intLimbTotal = 0;
                     int intLimbCount = 0;
@@ -659,9 +657,15 @@ namespace Chummer
 					return 1;
 
 				return intReturn;
-			}
 		}
 
+		/// <summary>
+		/// The CharacterAttribute's total value (Value + Modifiers).
+		/// </summary>
+		public int TotalValue
+		{
+			get { return CalculatedTotalValue(); }
+		}
 		/// <summary>
 		/// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
 		/// </summary>

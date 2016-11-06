@@ -4,6 +4,7 @@ Application Changes:
 - Fixed an issue that prevented Gear items from showing their Capacity usage while attached to Armor items. 
 - Fixed the implementation of the Incompetent quality to prevent defaulting in the selected skillgroup.
 - Added the <blockskillgroupdefaulting> node, used for the above. 
+- Altered the calculation of movement speeds to exclude cyberlimb stats, with the exception of Swimming and/or the Houserule to have your cyberlegs serve as the total agility for the test. tl;dr cyberarms don't make you fast anymore. 
 
 Data Changes: 
 
