@@ -301,6 +301,10 @@ namespace Chummer.Skills
 						if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
 							yield return objImprovement;
 						break;
+					case Improvement.ImprovementType.BlockSkillDefault:
+						if (objImprovement.ImprovedName == SkillGroup)
+							yield return objImprovement;
+						break;
 					case Improvement.ImprovementType.EnhancedArticulation:
 						if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
 							yield return objImprovement;

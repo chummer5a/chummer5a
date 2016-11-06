@@ -2,6 +2,8 @@ Build 188
 
 Application Changes: 
 - Fixed an issue that prevented Gear items from showing their Capacity usage while attached to Armor items. 
+- Fixed the implementation of the Incompetent quality to prevent defaulting in the selected skillgroup.
+- Added the <blockskillgroupdefaulting> node, used for the above. 
 
 Data Changes: 
 

@@ -1547,7 +1547,7 @@
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus>
-				<selectskillgroup />
+				<blockskillgroupdefaulting />
 			</bonus>
 			<source>SR5</source>
 			<page>81</page>

@@ -172,7 +172,8 @@ namespace Chummer
 			SpecialSkills,
 			ReflexRecorderOptimization,
 			MovementMultiplier,
-			DataStore
+			DataStore,
+			BlockSkillDefault
 		}
 
         public enum ImprovementSource
@@ -1445,7 +1446,7 @@ namespace Chummer
 
 								foreach (Gear objChild in objGear.Children)
 								{
-									objGear.DiscountCost = false;
+									objChild.DiscountCost = false;
 								}
 							}
 						}

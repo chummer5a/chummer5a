@@ -230,6 +230,49 @@ namespace Chummer.Classes
 
 		}
 
+		public void blockskillgroupdefaulting(XmlNode bonusNode)
+		{
+			Log.Info("blockskillgroupdefaulting");
+			string strExclude = "";
+			if (bonusNode.Attributes["excludecategory"] != null)
+				strExclude = bonusNode.Attributes["excludecategory"].InnerText;
+
+			frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
+			if (_strFriendlyName != "")
+				frmPickSkillGroup.Description =
+					LanguageManager.Instance.GetString("String_Improvement_SelectSkillGroupName").Replace("{0}", _strFriendlyName);
+			else
+				frmPickSkillGroup.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillGroup");
+
+			Log.Info("_strForcedValue = " + ForcedValue);
+			Log.Info("_strLimitSelection = " + LimitSelection);
+
+			if (ForcedValue != "")
+			{
+				frmPickSkillGroup.OnlyGroup = ForcedValue;
+				frmPickSkillGroup.Opacity = 0;
+			}
+
+			if (strExclude != string.Empty)
+				frmPickSkillGroup.ExcludeCategory = strExclude;
+
+			frmPickSkillGroup.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
+
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("SourceName = " + SourceName);
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillDefault,
+				_strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+		}
+
 		// Select a Skill.
 		public void selectskill(XmlNode bonusNode)
 		{
