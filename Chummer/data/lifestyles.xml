@@ -986,8 +986,18 @@
 			<lp>-1</lp>
 			<required>
 				<oneof>
-					<quality>Garage</quality>
+					<quality>Garage (Airplane)</quality>
+					<quality>Garage (Boat)</quality>
+					<quality>Garage (Car (Body 4 or Less))</quality>
+					<quality>Garage (Car (Body 5 or More))</quality>
+					<quality>Garage (Helicopter)</quality>
+					<quality>Cramped Garage (Airplane)</quality>
+					<quality>Cramped Garage (Boat)</quality>
+					<quality>Cramped Garage (Car (Body 4 or Less))</quality>
+					<quality>Cramped Garage (Car (Body 5 or More))</quality>
+					<quality>Cramped Garage (Helicopter)</quality>
 					<quality>Workshop/Facility</quality>
+					<quality>Cramped Workshop/Facility</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
