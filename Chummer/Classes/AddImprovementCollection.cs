@@ -1893,6 +1893,16 @@ namespace Chummer.Classes
 				1);
 		}
 
+		// Check for Ambidextrous modifiers.
+		public void ambidextrous(XmlNode bonusNode)
+		{
+			Log.Info("Ambidextrous");
+			Log.Info("Ambidextrous = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Ambidextrous, _strUnique);
+			_objCharacter.Ambidextrous = true;
+		}
+
 		// Check for Weapon Category DV modifiers.
 		public void weaponcategorydv(XmlNode bonusNode)
 		{

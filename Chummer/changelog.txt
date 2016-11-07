@@ -5,6 +5,7 @@ Application Changes:
 - Fixed the implementation of the Incompetent quality to prevent defaulting in the selected skillgroup.
 - Added the <blockskillgroupdefaulting> node, used for the above. 
 - Altered the calculation of movement speeds to exclude cyberlimb stats, with the exception of Swimming and/or the Houserule to have your cyberlegs serve as the total agility for the test. tl;dr cyberarms don't make you fast anymore. 
+- Added an Ambidextrous Improvement to manage whether to show a cyberlimb's dicepool as offhand or not. 
 
 Data Changes: 
 
@@ -13,6 +14,7 @@ Data Changes:
 - Fixed the Aspected Magician to properly grant their Magic attribute.
 - Fixed an issue with the Safety Third lifestyle quality that caused a crash.
 - Fixed missing/incorrect Mods for various pieces of Armour. Specifically the Ares Victory set, Vashon Island Synergist and Sleeping Tiger.
+- Added the Ambidextrous bonus node to the Ambidextrous quality. 
 
 Build 187
 

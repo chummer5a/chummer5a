@@ -7408,6 +7408,9 @@ namespace Chummer
             get { return _intRedlinerBonus; }
             set { _intRedlinerBonus = value; }
         }
+
+		public bool Ambidextrous { get; internal set; }
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 	    [NotifyPropertyChangedInvocator]
