@@ -1075,7 +1075,7 @@ namespace Chummer
 					{
 						AttributeControl objControl = new AttributeControl(objAttrib);
 						objControl.ValueChanged += objAttribute_ValueChanged;
-						pnlNewAttributes.Controls.Add(objControl);
+						pnlAttributes.Controls.Add(objControl);
 					}
 					break;
 					case NotifyCollectionChangedAction.Remove:
@@ -1083,11 +1083,11 @@ namespace Chummer
 					{
 						foreach (
 							AttributeControl objControl in
-								pnlNewAttributes.Controls.Cast<AttributeControl>()
+								pnlAttributes.Controls.Cast<AttributeControl>()
 									.Where(objControl => objControl.AttributeName == objAttrib.Abbrev))
 						{
 							objControl.ValueChanged -= objAttribute_ValueChanged;
-							pnlNewAttributes.Controls.Remove(objControl);
+							pnlAttributes.Controls.Remove(objControl);
 							objControl.Dispose();
 						}
 					}
@@ -1394,9 +1394,9 @@ namespace Chummer
             }
             else
             {
-				foreach (AttributeControl objControl in pnlNewAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "RES"))
+				foreach (AttributeControl objControl in pnlAttributes.Controls.Cast<AttributeControl>().Where(objControl => objControl.Name == "RES"))
 				{
-					pnlNewAttributes.Controls.Remove(objControl);
+					pnlAttributes.Controls.Remove(objControl);
 					break;
 				}
 				lstSpecialAttributes.Remove(_objCharacter.RES);

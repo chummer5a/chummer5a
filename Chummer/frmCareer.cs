@@ -34,6 +34,9 @@ using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Drawing.Imaging;
 using Chummer.UI.Attributes;
+using System.Collections.ObjectModel;
+using Chummer.Backend.Attributes;
+using System.Collections.Specialized;
 
 public delegate void DiceRollerOpenHandler(Object sender);
 public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
@@ -54,7 +57,9 @@ namespace Chummer
 		private MouseButtons _objDragButton = new MouseButtons();
 		private bool _blnDraggingGear = false;
 		private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
-
+		ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
+		ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
+		
 		private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
 		private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
 
@@ -275,23 +280,9 @@ namespace Chummer
 			nudPublicAware.Value = _objCharacter.PublicAwareness;
 
 			// Check for Special Attributes.
-			lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
-			lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-			lblMAG.Enabled = _objCharacter.MAGEnabled;
-			lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
 			lblFoci.Visible = _objCharacter.MAGEnabled;
 			treFoci.Visible = _objCharacter.MAGEnabled;
 			cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
-
-			lblDEPLabel.Enabled = (_objCharacter.Metatype == "A.I.");
-			lblDEPAug.Enabled = (_objCharacter.Metatype == "A.I.");
-			lblDEP.Enabled = (_objCharacter.Metatype == "A.I.");
-			lblDEPMetatype.Enabled = (_objCharacter.Metatype == "A.I.");
-
-			lblRESLabel.Enabled = _objCharacter.RESEnabled;
-			lblRESAug.Enabled = _objCharacter.RESEnabled;
-			lblRES.Enabled = _objCharacter.RESEnabled;
-			lblRESMetatype.Enabled = _objCharacter.RESEnabled;
 
 			// Define the XML objects that will be used.
 			XmlDocument objXmlDocument = new XmlDocument();
@@ -998,19 +989,7 @@ namespace Chummer
 			ToolStripManager.RevertMerge("toolStrip");
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.EndsWith("Sprite"))
-			{
-				lblBODLabel.Enabled = false;
-				lblAGILabel.Enabled = false;
-				lblREALabel.Enabled = false;
-				lblSTRLabel.Enabled = false;
-				lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributePilot");
-				lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeResponse");
-				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeFirewall");
-				lblWILLabel.Enabled = false;
-			}
-			else if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+			if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
 			{
 				lblRatingLabel.Visible = true;
 				lblRating.Visible = true;
@@ -1065,13 +1044,35 @@ namespace Chummer
 
 			tabSkillsUc.ObjCharacter = _objCharacter;
 
+
+			lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+			lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+			lstPrimaryAttributes.Add(_objCharacter.STR);
+			lstPrimaryAttributes.Add(_objCharacter.AGI);
+			lstPrimaryAttributes.Add(_objCharacter.BOD);
+			lstPrimaryAttributes.Add(_objCharacter.REA);
+			lstPrimaryAttributes.Add(_objCharacter.WIL);
+			lstPrimaryAttributes.Add(_objCharacter.LOG);
+			lstPrimaryAttributes.Add(_objCharacter.CHA);
+			lstPrimaryAttributes.Add(_objCharacter.INT);
+
+			lstSpecialAttributes.Add(_objCharacter.EDG);
+			if (_objCharacter.MAGEnabled)
+			{
+				lstSpecialAttributes.Add(_objCharacter.MAG);
+			}
+			if (_objCharacter.RESEnabled)
+			{
+				lstSpecialAttributes.Add(_objCharacter.RES);
+			}
+			if (_objCharacter.Metatype == "A.I.")
+			{
+				lstSpecialAttributes.Add(_objCharacter.DEP);
+			}
+
 			_blnIsDirty = false;
 			UpdateWindowTitle(false);
 			RefreshPasteStatus();
-
-			AttributeControl objControl = new AttributeControl(_objCharacter.STR);
-			pnlNewAttributes.Controls.Add(objControl);
-
 			// Stupid hack to get the MDI icon to show up properly.
 			this.Icon = this.Icon.Clone() as System.Drawing.Icon;
 			Timekeeper.Finish("load_frm_career");
@@ -1091,6 +1092,35 @@ namespace Chummer
 
 				case nameof(Character.Karma):
 					tssKarma.Text = _objCharacter.Karma.ToString();
+					break;
+			}
+		}
+
+		private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+		{
+			switch (notifyCollectionChangedEventArgs.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
+					{
+						AttributeControl objControl = new AttributeControl(objAttrib);
+						objControl.ValueChanged += objAttribute_ValueChanged;
+						pnlAttributes.Controls.Add(objControl);
+					}
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
+					{
+						foreach (
+							AttributeControl objControl in
+								pnlAttributes.Controls.Cast<AttributeControl>()
+									.Where(objControl => objControl.AttributeName == objAttrib.Abbrev))
+						{
+							objControl.ValueChanged -= objAttribute_ValueChanged;
+							pnlAttributes.Controls.Remove(objControl);
+							objControl.Dispose();
+						}
+					}
 					break;
 			}
 		}
@@ -1331,12 +1361,6 @@ namespace Chummer
 			if (_blnReapplyImprovements)
 				return;
 
-			// Change to the status of MAG being enabled.
-			lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
-			lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-			lblMAG.Enabled = _objCharacter.MAGEnabled;
-			lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
-
 			lblFoci.Visible = _objCharacter.MAGEnabled;
 			treFoci.Visible = _objCharacter.MAGEnabled;
 			cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
@@ -1364,12 +1388,6 @@ namespace Chummer
 		{
 			if (_blnReapplyImprovements)
 				return;
-
-			// Change to the status of RES being enabled.
-			lblRESLabel.Enabled = _objCharacter.RESEnabled;
-			lblRESAug.Enabled = _objCharacter.RESEnabled;
-			lblRES.Enabled = _objCharacter.RESEnabled;
-			lblRESMetatype.Enabled = _objCharacter.RESEnabled;
 
 			if (_objCharacter.RESEnabled)
 			{
@@ -3157,475 +3175,18 @@ namespace Chummer
 		}
 		#endregion
 
-		#region CharacterAttribute Events
-		private void cmdBurnEdge_Click(object sender, EventArgs e)
+		#region AttributeControl Events
+		private void objAttribute_ValueChanged(Object sender)
 		{
-			// Edge cannot go below 1.
-			if (_objCharacter.EDG.Value == 0)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotBurnEdge"), LanguageManager.Instance.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				return;
-			}
-
-			// Verify that the user wants to Burn a point of Edge.
-			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnEdge"), LanguageManager.Instance.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-				return;
-
-			_objCharacter.EDG.Value -= 1;
-
+			// Handle the AttributeValueChanged Event for the AttributeControl object.
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
+		#endregion
 
-		private void cmdImproveBOD_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.BOD.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeBODShort")).Replace("{1}", (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-			
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeBODShort") + " " + (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "BOD");
-			objExpense.Undo = objUndo;
-			
-			_objCharacter.BOD.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveAGI_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.AGI.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeAGIShort")).Replace("{1}", (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeAGIShort") + " " + (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "AGI");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.AGI.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveREA_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.REA.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeREAShort")).Replace("{1}", (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeREAShort") + " " + (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "REA");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.REA.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveSTR_Click(object sender, EventArgs e)
-		{
-            // Make sure the character has enough Karma to improve the Attribute.
-		    int intKarmaCost;
-            if (_objCharacter.Cyberware.Find(x =>
-		        x.Name == "Myostatin Inhibitor") != null)
-		    {
-		        intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1)*
-		                           _objOptions.KarmaAttribute - 2;
-		    }
-		    else
-		    {
-                intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) *
-                                    _objOptions.KarmaAttribute;
-            }
-		    if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.STR.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeSTRShort")).Replace("{1}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + " " + (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "STR");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.STR.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveCHA_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.CHA.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeCHAShort")).Replace("{1}", (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeCHAShort") + " " + (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "CHA");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.CHA.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveINT_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.INT.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeINTShort")).Replace("{1}", (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeINTShort") + " " + (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "INT");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.INT.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveLOG_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.LOG.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeLOGShort")).Replace("{1}", (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeLOGShort") + " " + (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "LOG");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.LOG.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveWIL_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.WIL.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeWILShort")).Replace("{1}", (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeWILShort") + " " + (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "WIL");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.WIL.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveEDG_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
-				intKarmaCost -= (_objCharacter.EDG.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeEDGShort")).Replace("{1}", (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeEDGShort") + " " + (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers).ToString() + " -> " + (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "EDG");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.EDG.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveMAG_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = 0;
-			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intKarmaCost = (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			else
-				intKarmaCost = (_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
-
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			int intFromValue = 0;
-			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intFromValue = _objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers;
-			else
-				intFromValue = _objCharacter.MAG.Value - _objCharacter.EssencePenalty;
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeMAGShort")).Replace("{1}", (intFromValue + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeMAGShort") + " " + (intFromValue).ToString() + " -> " + (intFromValue + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "MAG");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.MAG.Value += 1;
-
-			if (_objCharacter.Metatype == "Free Spirit")
-			{
-				// MAG determines the Metatype Maximum for Free Spirit, so change the Metatype Maximum for all other Attributes.
-				_objCharacter.BOD.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.AGI.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.REA.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.STR.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.CHA.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.INT.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.LOG.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.WIL.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.EDG.MetatypeMaximum = _objCharacter.MAG.Value;
-				_objCharacter.ESS.MetatypeMaximum = _objCharacter.MAG.Value;
-			}
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void cmdImproveRES_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = 0;
-			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intKarmaCost = (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			else
-				intKarmaCost = (_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
-
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			int intFromValue = 0;
-			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intFromValue = _objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers;
-			else
-				intFromValue = _objCharacter.RES.Value - _objCharacter.EssencePenalty;
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeRESShort")).Replace("{1}", (intFromValue + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeRESShort") + " " + (intFromValue).ToString() + " -> " + (intFromValue + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "RES");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.RES.Value += 1;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-		
-		private void cmdImproveDEP_Click(object sender, EventArgs e)
-		{
-			// Make sure the character has enough Karma to improve the Attribute.
-			int intKarmaCost = 0;
-			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intKarmaCost = (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			else
-				intKarmaCost = (_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
-
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			int intFromValue = 0;
-			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intFromValue = _objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers;
-			else
-				intFromValue = _objCharacter.DEP.Value - _objCharacter.EssencePenalty;
-
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeDEPShort")).Replace("{1}", (intFromValue + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
-
-			// Create the Karma expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeDEPShort") + " " + (intFromValue).ToString() + " -> " + (intFromValue + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
-			_objCharacter.Karma -= intKarmaCost;
-
-			ExpenseUndo objUndo = new ExpenseUndo();
-			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "DEP");
-			objExpense.Undo = objUndo;
-
-			_objCharacter.DEP.Value += 1;
-            UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
+		#region SpellDefense Events
 
 		private void nudResponse_ValueChanged(object sender, EventArgs e)
 		{
@@ -20487,19 +20048,6 @@ namespace Chummer
 				}
 			}
 
-			lblBOD.Text = _objCharacter.BOD.Value.ToString();
-			lblAGI.Text = _objCharacter.AGI.Value.ToString();
-			lblREA.Text = _objCharacter.REA.Value.ToString();
-			lblSTR.Text = _objCharacter.STR.Value.ToString();
-			lblCHA.Text = _objCharacter.CHA.Value.ToString();
-			lblINT.Text = _objCharacter.INT.Value.ToString();
-			lblLOG.Text = _objCharacter.LOG.Value.ToString();
-			lblWIL.Text = _objCharacter.WIL.Value.ToString();
-			lblEDG.Text = _objCharacter.EDG.Value.ToString();
-			lblMAG.Text = (_objCharacter.MAG.Value - intEssenceLoss).ToString();
-			lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
-			lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
-
 			_blnSkipUpdate = false;
 
 			UpdateCharacterInfo();
@@ -20669,29 +20217,6 @@ namespace Chummer
 					}
 				}
 
-				// Update the CharacterAttribute information.
-				lblBOD.Text = _objCharacter.BOD.Value.ToString();
-				lblAGI.Text = _objCharacter.AGI.Value.ToString();
-				lblREA.Text = _objCharacter.REA.Value.ToString();
-				lblSTR.Text = _objCharacter.STR.Value.ToString();
-				lblCHA.Text = _objCharacter.CHA.Value.ToString();
-				lblINT.Text = _objCharacter.INT.Value.ToString();
-				lblLOG.Text = _objCharacter.LOG.Value.ToString();
-				lblWIL.Text = _objCharacter.WIL.Value.ToString();
-				lblEDG.Text = _objCharacter.EDG.Value.ToString();
-				if (_objCharacter.MAG.Value - intEssenceLoss < 0)
-					lblMAG.Text = "0";
-				else
-					lblMAG.Text = (_objCharacter.MAG.Value - intEssenceLoss).ToString();
-				if (_objCharacter.RES.Value - intEssenceLoss < 0)
-					lblRES.Text = "0";
-				else
-					lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
-				if (_objCharacter.DEP.Value - intEssenceLoss < 0)
-					lblDEP.Text = "0";
-				else
-					lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
-
 				// If the CharacterAttribute reaches 0, the character has burned out.
 				if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
 				{
@@ -20818,109 +20343,6 @@ namespace Chummer
 					_objImprovementManager.CreateImprovement("LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intESSModifier);
 					_objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intESSModifier);
 				}
-
-				// Update the CharacterAttribute Improvement Cost ToolTips.
-				string strTooltip = "";
-				if (!_objOptions.AlternateMetatypeAttributeKarma)
-				{
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveBOD, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveAGI, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveREA, strTooltip);
-                    if (_objCharacter.Cyberware.Find(x => x.Name == "Myostatin Inhibitor") != null)
-                    {
-                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute - 2).ToString());
-                    }
-                    else
-                    {
-                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-                    }
-                    tipTooltip.SetToolTip(cmdImproveSTR, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveCHA, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveINT, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveLOG, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveWIL, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveEDG, strTooltip);
-					if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-					{
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
-					else
-					{
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value + _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value + _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
-				}
-				else
-				{
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers - _objCharacter.BOD.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveBOD, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers - _objCharacter.AGI.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveAGI, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers - _objCharacter.REA.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveREA, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers - _objCharacter.STR.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveSTR, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers - _objCharacter.CHA.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveCHA, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers - _objCharacter.INT.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveINT, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers - _objCharacter.LOG.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveLOG, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers - _objCharacter.WIL.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveWIL, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers - _objCharacter.EDG.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveEDG, strTooltip);
-					if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-					{
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
-					else
-					{
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
-						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
-						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
-				}
-
-				// Disable any CharacterAttribute Karma buttons that have reached their Total Metatype Maximum.
-				cmdImproveBOD.Enabled = !(_objCharacter.BOD.Value == _objCharacter.BOD.TotalMaximum);
-				cmdImproveAGI.Enabled = !(_objCharacter.AGI.Value == _objCharacter.AGI.TotalMaximum);
-				cmdImproveREA.Enabled = !(_objCharacter.REA.Value == _objCharacter.REA.TotalMaximum);
-				cmdImproveSTR.Enabled = !(_objCharacter.STR.Value == _objCharacter.STR.TotalMaximum);
-				cmdImproveCHA.Enabled = !(_objCharacter.CHA.Value == _objCharacter.CHA.TotalMaximum);
-				cmdImproveINT.Enabled = !(_objCharacter.INT.Value == _objCharacter.INT.TotalMaximum);
-				cmdImproveLOG.Enabled = !(_objCharacter.LOG.Value == _objCharacter.LOG.TotalMaximum);
-				cmdImproveWIL.Enabled = !(_objCharacter.WIL.Value == _objCharacter.WIL.TotalMaximum);
-				cmdImproveDEP.Enabled = !(_objCharacter.DEP.Value == _objCharacter.DEP.TotalMaximum);
-				cmdImproveEDG.Enabled = !(_objCharacter.EDG.Value == _objCharacter.EDG.TotalMaximum);
-
-				// Disable the Magic or Resonance Karma buttons if they have reached their current limits.
-				if (_objCharacter.MAGEnabled)
-					cmdImproveMAG.Enabled = !(_objCharacter.MAG.Value - intEssenceLoss >= _objCharacter.MAG.TotalMaximum);
-				else
-					cmdImproveMAG.Enabled = false;
-
-				if (_objCharacter.RESEnabled)
-					cmdImproveRES.Enabled = !(_objCharacter.RES.Value - intEssenceLoss >= _objCharacter.RES.TotalMaximum);
-				else
-					cmdImproveRES.Enabled = false;
 
 				// Condition Monitor.
 				UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip, _objImprovementManager);
@@ -21426,8 +20848,6 @@ namespace Chummer
                     lblCyberlimbSTR.Visible = true;
                     lblCyberlimbSTRLabel.Visible = true;
 
-                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
-                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
                     lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
                     lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
 
@@ -25248,7 +24668,6 @@ namespace Chummer
 			tipTooltip.SetToolTip(lblFirewallLabel, LanguageManager.Instance.GetString("Tip_CommonAIFirewall"));
 			tipTooltip.SetToolTip(lblResponseLabel, LanguageManager.Instance.GetString("Tip_CommonAIResponse"));
 			tipTooltip.SetToolTip(lblSignalLabel, LanguageManager.Instance.GetString("Tip_CommonAISignal"));
-			tipTooltip.SetToolTip(cmdBurnEdge, LanguageManager.Instance.GetString("Tip_CommonBurnEdge"));
 			// Spells Tab.
 			tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.Instance.GetString("Tip_DiceRoller"));
 			tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.Instance.GetString("Tip_DiceRoller"));
@@ -25310,19 +24729,6 @@ namespace Chummer
 				tipTooltip.SetToolTip(lblPublicAware, LanguageManager.Instance.GetString("Tip_PublicAwareness"));
 			}
 			tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.Instance.GetString("Tip_BurnStreetCred"));
-
-			// CharacterAttribute Labels.
-			lblBODLabel.Text = LanguageManager.Instance.GetString("String_AttributeBODLong") + " (" + LanguageManager.Instance.GetString("String_AttributeBODShort") + ")";
-			lblAGILabel.Text = LanguageManager.Instance.GetString("String_AttributeAGILong") + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + ")";
-			lblREALabel.Text = LanguageManager.Instance.GetString("String_AttributeREALong") + " (" + LanguageManager.Instance.GetString("String_AttributeREAShort") + ")";
-			lblSTRLabel.Text = LanguageManager.Instance.GetString("String_AttributeSTRLong") + " (" + LanguageManager.Instance.GetString("String_AttributeSTRShort") + ")";
-			lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributeCHALong") + " (" + LanguageManager.Instance.GetString("String_AttributeCHAShort") + ")";
-			lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeINTLong") + " (" + LanguageManager.Instance.GetString("String_AttributeINTShort") + ")";
-			lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeLOGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeLOGShort") + ")";
-			lblWILLabel.Text = LanguageManager.Instance.GetString("String_AttributeWILLong") + " (" + LanguageManager.Instance.GetString("String_AttributeWILShort") + ")";
-			lblEDGLabel.Text = LanguageManager.Instance.GetString("String_AttributeEDGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeEDGShort") + ")";
-			lblMAGLabel.Text = LanguageManager.Instance.GetString("String_AttributeMAGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeMAGShort") + ")";
-			lblRESLabel.Text = LanguageManager.Instance.GetString("String_AttributeRESLong") + " (" + LanguageManager.Instance.GetString("String_AttributeRESShort") + ")";
 
 			// Reposition controls based on their new sizes.
 			// Common Tab.

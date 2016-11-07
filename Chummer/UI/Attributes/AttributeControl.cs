@@ -34,6 +34,7 @@ namespace Chummer.UI.Attributes
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
                 cmdImproveATT.Visible = true;
+	            cmdBurnEdge.Visible = attribute.Abbrev == "EDG";
             }
             else
             {
@@ -47,6 +48,7 @@ namespace Chummer.UI.Attributes
                 nudKarma.Minimum = 0;
                 nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
+	            cmdBurnEdge.Visible = false;
             }
         }
 
@@ -157,5 +159,22 @@ namespace Chummer.UI.Attributes
 	    {
 		    get { return attribute.Abbrev; }
 	    }
+
+		private void cmdBurnEdge_Click(object sender, EventArgs e)
+		{
+			// Edge cannot go below 1.
+			if (attribute.Value == 0)
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotBurnEdge"), LanguageManager.Instance.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+
+			// Verify that the user wants to Burn a point of Edge.
+			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnEdge"), LanguageManager.Instance.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+				return;
+
+			attribute.Value -= 1;
+			ValueChanged?.Invoke(this);
+		}
 	}
 }

@@ -35,6 +35,7 @@
 			this.lblLimits = new System.Windows.Forms.Label();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.nudBase = new System.Windows.Forms.NumericUpDown();
+			this.cmdBurnEdge = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudBase)).BeginInit();
 			this.SuspendLayout();
@@ -55,7 +56,7 @@
 			// lblValue
 			// 
 			this.lblValue.AutoSize = true;
-			this.lblValue.Location = new System.Drawing.Point(229, 7);
+			this.lblValue.Location = new System.Drawing.Point(270, 7);
 			this.lblValue.Name = "lblValue";
 			this.lblValue.Size = new System.Drawing.Size(19, 13);
 			this.lblValue.TabIndex = 74;
@@ -64,7 +65,7 @@
 			// lblAugmented
 			// 
 			this.lblAugmented.AutoSize = true;
-			this.lblAugmented.Location = new System.Drawing.Point(249, 7);
+			this.lblAugmented.Location = new System.Drawing.Point(290, 7);
 			this.lblAugmented.Name = "lblAugmented";
 			this.lblAugmented.Size = new System.Drawing.Size(19, 13);
 			this.lblAugmented.TabIndex = 73;
@@ -82,7 +83,7 @@
 			// lblLimits
 			// 
 			this.lblLimits.AutoSize = true;
-			this.lblLimits.Location = new System.Drawing.Point(270, 7);
+			this.lblLimits.Location = new System.Drawing.Point(311, 7);
 			this.lblLimits.Name = "lblLimits";
 			this.lblLimits.Size = new System.Drawing.Size(45, 13);
 			this.lblLimits.TabIndex = 72;
@@ -109,10 +110,23 @@
             0});
 			this.nudBase.ValueChanged += new System.EventHandler(this.nudBase_ValueChanged);
 			// 
+			// cmdBurnEdge
+			// 
+			this.cmdBurnEdge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.delete;
+			this.cmdBurnEdge.Location = new System.Drawing.Point(227, 1);
+			this.cmdBurnEdge.Name = "cmdBurnEdge";
+			this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
+			this.cmdBurnEdge.TabIndex = 78;
+			this.cmdBurnEdge.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.cmdBurnEdge.UseVisualStyleBackColor = true;
+			this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
+			// 
 			// AttributeControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.cmdBurnEdge);
 			this.Controls.Add(this.nudKarma);
 			this.Controls.Add(this.nudBase);
 			this.Controls.Add(this.cmdImproveATT);
@@ -121,7 +135,7 @@
 			this.Controls.Add(this.lblName);
 			this.Controls.Add(this.lblLimits);
 			this.Name = "AttributeControl";
-			this.Size = new System.Drawing.Size(324, 26);
+			this.Size = new System.Drawing.Size(362, 26);
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudBase)).EndInit();
 			this.ResumeLayout(false);
@@ -138,5 +152,6 @@
         internal System.Windows.Forms.Label lblLimits;
         internal System.Windows.Forms.NumericUpDown nudKarma;
         internal System.Windows.Forms.NumericUpDown nudBase;
-    }
+		private System.Windows.Forms.Button cmdBurnEdge;
+	}
 }

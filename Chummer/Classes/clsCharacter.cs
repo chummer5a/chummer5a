@@ -216,6 +216,16 @@ namespace Chummer
         private CharacterAttrib _attESS = new CharacterAttrib("ESS");
 		private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
 
+		// Shapeshifter Attributes.
+		private CharacterAttrib _attShifterBOD = new CharacterAttrib("BOD", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterAGI = new CharacterAttrib("AGI", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterREA = new CharacterAttrib("REA", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterSTR = new CharacterAttrib("STR", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterCHA = new CharacterAttrib("CHA", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterINT = new CharacterAttrib("INT", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterLOG = new CharacterAttrib("LOG", CharacterAttrib.AttributeCategory.Shapeshifter);
+		private CharacterAttrib _attShifterWIL = new CharacterAttrib("WIL", CharacterAttrib.AttributeCategory.Shapeshifter);
+
 		private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnGroupMember = false;
@@ -345,6 +355,14 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
+			_attShifterBOD._objCharacter = this;
+			_attShifterAGI._objCharacter = this;
+			_attShifterREA._objCharacter = this;
+			_attShifterSTR._objCharacter = this;
+			_attShifterCHA._objCharacter = this;
+			_attShifterINT._objCharacter = this;
+			_attShifterLOG._objCharacter = this;
+			_attShifterWIL._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
 			SkillsSection = new SkillsSection(this);
@@ -593,6 +611,20 @@ namespace Chummer
 				objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("signal", _intSignal.ToString());
             }
+
+	        if (_strMetatypeCategory == "Shapeshifter" && _blnCreated)
+	        {
+				objWriter.WriteStartElement("shapeshifter");
+				_attShifterBOD.Save(objWriter);
+				_attShifterAGI.Save(objWriter);
+				_attShifterREA.Save(objWriter);
+				_attShifterSTR.Save(objWriter);
+				_attShifterCHA.Save(objWriter);
+				_attShifterINT.Save(objWriter);
+				_attShifterLOG.Save(objWriter);
+				_attShifterWIL.Save(objWriter);
+				objWriter.WriteEndElement();
+			}
             // </attributes>
             objWriter.WriteEndElement();
 
@@ -1254,8 +1286,36 @@ namespace Chummer
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
             _attESS.Load(objXmlCharacter);
 
-            // A.I. Attributes.
-            try
+	        if (_blnCreated && _strMetatypeCategory == "Shapeshifter")
+	        {
+		        // Attributes.
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"BOD\"]");
+		        _attShifterBOD.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"AGI\"]");
+		        _attShifterAGI.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"REA\"]");
+		        _attShifterREA.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"STR\"]");
+		        _attShifterSTR.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"CHA\"]");
+		        _attShifterCHA.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"INT\"]");
+		        _attShifterINT.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"LOG\"]");
+		        _attShifterLOG.Load(objXmlCharacter);
+		        objXmlCharacter =
+			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"WIL\"]");
+		        _attShifterWIL.Load(objXmlCharacter);
+	        }
+	        // A.I. Attributes.
+			try
 			{
 				objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
 				_attDEP.Load(objXmlCharacter);

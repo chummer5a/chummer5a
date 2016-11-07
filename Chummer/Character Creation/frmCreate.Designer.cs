@@ -289,6 +289,7 @@ namespace Chummer
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.tabCharacterTabs = new System.Windows.Forms.TabControl();
 			this.tabCommon = new System.Windows.Forms.TabPage();
+			this.pnlAttributes = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdLifeModule = new System.Windows.Forms.Button();
 			this.tabPeople = new System.Windows.Forms.TabControl();
 			this.tabContacts = new System.Windows.Forms.TabPage();
@@ -867,7 +868,6 @@ namespace Chummer
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.pnlNewAttributes = new System.Windows.Forms.FlowLayoutPanel();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -3310,7 +3310,7 @@ namespace Chummer
 			// tabCommon
 			// 
 			this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabCommon.Controls.Add(this.pnlNewAttributes);
+			this.tabCommon.Controls.Add(this.pnlAttributes);
 			this.tabCommon.Controls.Add(this.cmdLifeModule);
 			this.tabCommon.Controls.Add(this.tabPeople);
 			this.tabCommon.Controls.Add(this.label7);
@@ -3353,6 +3353,13 @@ namespace Chummer
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
 			this.tabCommon.Text = "Acc";
+			// 
+			// pnlAttributes
+			// 
+			this.pnlAttributes.Location = new System.Drawing.Point(288, 48);
+			this.pnlAttributes.Name = "pnlAttributes";
+			this.pnlAttributes.Size = new System.Drawing.Size(352, 320);
+			this.pnlAttributes.TabIndex = 96;
 			// 
 			// cmdLifeModule
 			// 
@@ -9973,13 +9980,6 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// pnlNewAttributes
-			// 
-			this.pnlNewAttributes.Location = new System.Drawing.Point(288, 48);
-			this.pnlNewAttributes.Name = "pnlNewAttributes";
-			this.pnlNewAttributes.Size = new System.Drawing.Size(352, 320);
-			this.pnlNewAttributes.TabIndex = 96;
-			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10930,7 +10930,7 @@ namespace Chummer
 		private System.Windows.Forms.TreeView treFoci;
 		private System.Windows.Forms.Label lblVehicleSeats;
 		private System.Windows.Forms.Label lblVehicleSeatsLabel;
-		private System.Windows.Forms.FlowLayoutPanel pnlNewAttributes;
+		private System.Windows.Forms.FlowLayoutPanel pnlAttributes;
 	}
 }
 

@@ -35,9 +35,11 @@ namespace Chummer.Backend.Attributes
         /// Character CharacterAttribute.
         /// </summary>
         /// <param name="strAbbrev">CharacterAttribute abbreviation.</param>
-        public CharacterAttrib(string strAbbrev)
+        /// <param name="enumCategory"></param>
+        public CharacterAttrib(string strAbbrev, AttributeCategory enumCategory = AttributeCategory.Standard)
         {
             _strAbbrev = strAbbrev;
+	        Category = enumCategory;
         }
 
         /// <summary>
