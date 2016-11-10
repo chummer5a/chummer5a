@@ -7,6 +7,7 @@ Application Changes:
 - Altered the calculation of movement speeds to exclude cyberlimb stats, with the exception of Swimming and/or the Houserule to have your cyberlegs serve as the total agility for the test. tl;dr cyberarms don't make you fast anymore. 
 - Added an Ambidextrous Improvement to manage whether to show a cyberlimb's dicepool as offhand or not. 
 - Fixed an issue with the use of Restricted Gear that caused it to incorrectly flag child items as the parent. 
+- Fixed an issue with the update mechanism that would prevent the Chummer executable from restarting properly until the application is closed. 
 
 Data Changes: 
 
@@ -16,6 +17,7 @@ Data Changes:
 - Fixed an issue with the Safety Third lifestyle quality that caused a crash.
 - Fixed missing/incorrect Mods for various pieces of Armour. Specifically the Ares Victory set, Vashon Island Synergist and Sleeping Tiger.
 - Added the Ambidextrous bonus node to the Ambidextrous quality. 
+- Fixed a missing weapon category for the Huge Weapon Mount. 
 
 Build 187
 
