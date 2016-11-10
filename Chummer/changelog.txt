@@ -8,6 +8,7 @@ Application Changes:
 - Added an Ambidextrous Improvement to manage whether to show a cyberlimb's dicepool as offhand or not. 
 - Fixed an issue with the use of Restricted Gear that caused it to incorrectly flag child items as the parent. 
 - Fixed an issue with the update mechanism that would prevent the Chummer executable from restarting properly until the application is closed. 
+- Fixed a crash caused by cancelling out of text selection bonus nodes such as when creating a Fake SIN. 
 
 Data Changes: 
 

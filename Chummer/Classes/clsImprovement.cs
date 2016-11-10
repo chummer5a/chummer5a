@@ -976,7 +976,7 @@ namespace Chummer
 						ForcedValue = "";
 						LimitSelection = "";
 						Log.Exit("CreateImprovements");
-						throw new AbortedException();
+						return false;
 					}
 
 					_strSelectedValue = frmPickText.SelectedValue;
