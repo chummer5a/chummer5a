@@ -25,6 +25,7 @@
 		<category>Entertainment - Outing</category>
 		<category>Positive</category>
 		<category>Negative</category>
+		<category>Contracts</category>
 	</categories>
 	<lifestyles>
 		<lifestyle>
@@ -964,6 +965,7 @@
 			<name>One Good Thing About This Place</name>
 			<category>Positive</category>
 			<lp>1</lp>
+			<allowed>Traveler</allowed>
 			<bonus>
 				<selecttext />
 			</bonus>
@@ -1016,13 +1018,9 @@
 			<id>61e7bb21-cb25-44ff-a332-639fe9dac893</id>
 			<name>Thrifty</name>
 			<category>Negative</category>
-      <required>
-        <oneof>
-          <lifestyle>Traveler</lifestyle>
-        </oneof>
-      </required>
+			<allowed>Traveler</allowed>
 			<lp>2</lp>
-      <cost>-1000</cost>
+			<cost>-1000</cost>
 			<source>RF</source>
 			<page>226</page>
 		</quality>
@@ -1038,8 +1036,8 @@
 		<!--Chrome Flesh -->
 		<quality>
 			<id>d4f23b83-d884-47e0-9bbf-7c04341e1894</id>
-			<name>Basic Skillsoft Network</name>
-			<category>Positive</category>
+			<name>Skillsoft Network, Basic</name>
+			<category>Contracts</category>
 			<lp>0</lp>
 			<cost>2000</cost>
 			<source>CF</source>
@@ -1047,8 +1045,8 @@
 		</quality>
 		<quality>
 			<id>5e090a22-119a-4922-ada5-c8d634399797</id>
-			<name>Silver Skillsoft Network</name>
-			<category>Positive</category>
+			<name>Skillsoft Network, Silver</name>
+			<category>Contracts</category>
 			<lp>0</lp>
 			<cost>10000</cost>
 			<source>CF</source>
@@ -1056,8 +1054,8 @@
 		</quality>
 		<quality>
 			<id>fbd64602-f7c5-410f-8ec8-5c5cd7fde945</id>
-			<name>Gold Skillsoft Network</name>
-			<category>Positive</category>
+			<name>Skillsoft Network, Gold</name>
+			<category>Contracts</category>
 			<lp>0</lp>
 			<cost>15000</cost>
 			<source>CF</source>
@@ -1065,13 +1063,96 @@
 		</quality>
 		<quality>
 			<id>1fc363ff-b577-4e5b-b3e7-ae87bbab0fe9</id>
-			<name>Platinum Skillsoft Network</name>
-			<category>Positive</category>
+			<name>Skillsoft Network, Platinum</name>
+			<category>Contracts</category>
 			<lp>0</lp>
 			<cost>20000</cost>
 			<source>CF</source>
 			<page>78</page>
 		</quality>
+		<quality>
+			<id>4d2bac20-5051-4035-8959-2286c0879686</id>
+			<name>Datahost Subscription</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CF</source>
+			<page>80</page>
+		</quality>
+		<quality>
+			<id>5d2d66a4-29b5-4055-859a-9471de62774b</id>
+			<name>Shopsoft Network Subscription</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CF</source>
+			<page>80</page>
+		</quality>
+		<quality>
+			<id>dea3d03c-9441-400c-a512-d8840f6f40d5</id>
+			<name>Mapping System Subscription, Basic</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>81</page>
+		</quality>
+		<quality>
+			<id>516c286b-b233-43f4-96d0-19e8295f9f88</id>
+			<name>Mapping System Subscription, Silver</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>150</cost>
+			<source>CF</source>
+			<page>81</page>
+		</quality>
+		<quality>
+			<id>53b8cea1-aa63-4e12-8a04-b7ba72aa1cbe</id>
+			<name>Mapping System Subscription, Gold</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>81</page>
+		</quality>
+		<!-- Region Docwagon Contracts -->
+		<quality>
+			<id>4f41448a-7d44-4a5f-a99a-e2cc1e2cc2b1</id>
+			<name>DocWagon Contract, Basic</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>417</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</quality>
+		<quality>
+			<id>4f2d39cd-fbc7-4d02-a3eb-f8decdb9a415</id>
+			<name>DocWagon Contract, Gold</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>2084</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</quality>
+		<quality>
+			<id>26476ddb-52f6-4c31-b1f0-949d0ef95495</id>
+			<name>DocWagon Contract, Platinum</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>4167</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</quality>
+		<quality>
+			<id>0a58f493-a12e-4c08-b8b8-baac4c5e6591</id>
+			<name>DocWagon Contract, Super-Platinum</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>8334</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</quality>
+		<!-- End Region -->
 		<!-- Hard Targets -->
 		<quality>
 			<name>Local Grid Subscription</name>

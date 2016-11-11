@@ -33,12 +33,12 @@
 		<category>Commlink Accessories</category>
 		<category>Common Programs</category>
 		<category>Communications and Countermeasures</category>
+		<category>Contracts</category>
 		<category>Custom</category>
 		<category>Cyberdeck Modules</category>
 		<category>Cyberdecks</category>
 		<category>Cyberterminals</category>
 		<category>Disguises</category>
-		<category>DocWagon Contract</category>
 		<category>Drugs</category>
 		<category>Electronics Accessories</category>
 		<category>Electronic Modification</category>
@@ -5373,11 +5373,11 @@
 			<page>176</page>
 		</gear>
 		<!-- End Region -->
-		<!-- Region Docwagon Contracts -->
+		<!-- Region Contracts -->
 		<gear>
 			<id>6b28b36a-416a-4041-9561-558083158d7c</id>
-			<name>DocWagon Contract, Basic</name>
-			<category>DocWagon Contract</category>
+			<name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
+			<category>Contracts</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>5000</cost>
@@ -5386,8 +5386,8 @@
 		</gear>
 		<gear>
 			<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
-			<name>DocWagon Contract, Gold</name>
-			<category>DocWagon Contract</category>
+			<name>DocWagon Contract, Gold (1 Year Advance Payment)</name>
+			<category>Contracts</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>25000</cost>
@@ -5396,8 +5396,8 @@
 		</gear>
 		<gear>
 			<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
-			<name>DocWagon Contract, Platinum</name>
-			<category>DocWagon Contract</category>
+			<name>DocWagon Contract, Platinum (1 Year Advance Payment)</name>
+			<category>Contracts</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>50000</cost>
@@ -5406,13 +5406,103 @@
 		</gear>
 		<gear>
 			<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
-			<name>DocWagon Contract, Super-Platinum</name>
-			<category>DocWagon Contract</category>
+			<name>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</name>
+			<category>Contracts</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>100000</cost>
 			<source>SR5</source>
 			<page>450</page>
+		</gear>
+		<gear>
+			<id>c138c8f7-4561-476b-840f-f583afa38c7c</id>
+			<name>Skillsoft Network, Basic (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>e94e5c36-57fe-4e59-bd91-fbc85b50d702</id>
+			<name>Skillsoft Network, Silver (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>05d57fa9-3415-408a-8084-a40e33153fd0</id>
+			<name>Skillsoft Network, Gold (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>15000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>13a79eae-ea01-451b-a59a-171a1be1937f</id>
+			<name>Skillsoft Network, Platinum (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</gear>
+		<gear>
+			<id>02d9dd2f-4a10-4c30-b592-20052089e985</id>
+			<name>Datahost Subscription (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>250</cost>
+			<source>CF</source>
+			<page>80</page>
+		</gear>
+		<gear>
+			<id>a8eba631-78e9-4bd3-9420-5bf550212193</id>
+			<name>Shopsoft Network Subscription (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>250</cost>
+			<source>CF</source>
+			<page>80</page>
+		</gear>
+		<gear>
+			<id>e995f9ee-f3f9-4515-b86e-244e25c79521</id>
+			<name>Mapping System Subscription, Basic (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>81</page>
+		</gear>
+		<gear>
+			<id>8bb19ef9-9a8b-4d63-b86f-50b7c489ea4f</id>
+			<name>Mapping System Subscription, Silver (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>150</cost>
+			<source>CF</source>
+			<page>81</page>
+		</gear>
+		<gear>
+			<id>03a0f05e-7d07-44cb-b4e7-241e2b172d99</id>
+			<name>Mapping System Subscription, Gold (1 Month Advance Payment)</name>
+			<category>Contracts</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>81</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Foci -->
