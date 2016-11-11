@@ -109,6 +109,7 @@
 					<xs:element name="ammoslots" type="xs:string" minOccurs="0" maxOccurs="1" />
 					<xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="extramount" type="xs:string" minOccurs="0" maxOccurs="1" />
 					<xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
 					<xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
 					<xs:element name="rcdeployable" type="xs:string" minOccurs="0" maxOccurs="1" />
