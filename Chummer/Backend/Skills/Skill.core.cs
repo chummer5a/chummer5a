@@ -279,7 +279,8 @@ namespace Chummer.Skills
 
 		private IEnumerable<Improvement> RelevantImprovements()
 		{
-			foreach (Improvement objImprovement in CharacterObject.Improvements)
+            if (string.IsNullOrWhiteSpace(Name)) yield break;
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
 			{
 				if(!objImprovement.Enabled) continue;
 
