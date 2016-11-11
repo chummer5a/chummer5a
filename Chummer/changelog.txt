@@ -10,6 +10,7 @@ Application Changes:
 - Fixed an issue with the update mechanism that would prevent the Chummer executable from restarting properly until the application is closed. 
 - Fixed a crash caused by cancelling out of text selection bonus nodes such as when creating a Fake SIN. 
 - Fixed an issue that caused Essence loss in priority creation mode to revert MAG/RES metatype minimums to 1. 
+- Fixed a crash caused by adding a a new knowledge skill after adding the PUSHeD bioware. 
 
 Data Changes: 
 
