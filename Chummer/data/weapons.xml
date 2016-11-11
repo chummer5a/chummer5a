@@ -9024,8 +9024,8 @@
 		<accessory>
 			<id>a2e4fcc6-cc21-4fc8-bbdf-efb489e9c377</id>
 			<name>Mounted Crossbow</name>
-			<mount>Under</mount>
-			<extramount>Barrel</extramount>
+			<mount>Under/Barrel</mount>
+			<extramount>Under/Barrel</extramount>
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>1000</cost>
@@ -9035,8 +9035,8 @@
 		<accessory>
 			<id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
 			<name>Underbarrel Laser</name>
-			<mount>Under</mount>
-			<extramount>Side</extramount>
+			<mount>Under/Side</mount>
+			<extramount>Under/Side</extramount>
 			<rating>0</rating>
 			<avail>16F</avail>
 			<cost>22000</cost>

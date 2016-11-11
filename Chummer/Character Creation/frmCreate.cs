@@ -15954,6 +15954,27 @@ namespace Chummer
                         if (strMount != "" && strMount.Contains('/'))
                             strMount = strMount.Substring(0, strMount.Length - 1);
 
+                        if ((objSelectedAccessory.ExtraMount != "") && (objSelectedAccessory.ExtraMount != "None"))
+                        {
+                            bool boolHaveAddedItem = false;
+                            string[] strExtraMounts = objSelectedAccessory.ExtraMount.Split('/');
+                            foreach (string strCurrentExtraMount in strExtraMounts)
+                            {
+                                if (strCurrentExtraMount != "")
+                                {
+                                    if (!boolHaveAddedItem)
+                                    {
+                                        strMount += " + ";
+                                        boolHaveAddedItem = true;
+                                    }
+                                    strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentExtraMount) + "/";
+                                }
+                            }
+                            // Remove the trailing /
+                            if (boolHaveAddedItem)
+                                strMount = strMount.Substring(0, strMount.Length - 1);
+                        }
+
                         lblWeaponSlots.Text = strMount;
                         string strBook = _objOptions.LanguageBookShort(objSelectedAccessory.Source);
                         string strPage = objSelectedAccessory.Page;
@@ -18407,6 +18428,26 @@ namespace Chummer
                         // Remove the trailing /
                         if (strMount != "" && strMount.Contains('/'))
                             strMount = strMount.Substring(0, strMount.Length - 1);
+                        if ((objAccessory.ExtraMount != "") && (objAccessory.ExtraMount != "None"))
+                        {
+                            bool boolHaveAddedItem = false;
+                            string[] strExtraMounts = objAccessory.ExtraMount.Split('/');
+                            foreach (string strCurrentExtraMount in strExtraMounts)
+                            {
+                                if (strCurrentExtraMount != "")
+                                {
+                                    if (!boolHaveAddedItem)
+                                    {
+                                        strMount += " + ";
+                                        boolHaveAddedItem = true;
+                                    }
+                                    strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentExtraMount) + "/";
+                                }
+                            }
+                            // Remove the trailing /
+                            if (boolHaveAddedItem)
+                                strMount = strMount.Substring(0, strMount.Length - 1);
+                        }
 
                         lblVehicleSlots.Text = strMount;
                         string strBook = _objOptions.LanguageBookShort(objAccessory.Source);
@@ -18513,8 +18554,28 @@ namespace Chummer
 					// Remove the trailing /
 					if (strMount != "" && strMount.Contains('/'))
 						strMount = strMount.Substring(0, strMount.Length - 1);
+                    if ((objAccessory.ExtraMount != "") && (objAccessory.ExtraMount != "None"))
+                    {
+                        bool boolHaveAddedItem = false;
+                        string[] strExtraMounts = objAccessory.ExtraMount.Split('/');
+                        foreach (string strCurrentExtraMount in strExtraMounts)
+                        {
+                            if (strCurrentExtraMount != "")
+                            {
+                                if (!boolHaveAddedItem)
+                                {
+                                    strMount += " + ";
+                                    boolHaveAddedItem = true;
+                                }
+                                strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentExtraMount) + "/";
+                            }
+                        }
+                        // Remove the trailing /
+                        if (boolHaveAddedItem)
+                            strMount = strMount.Substring(0, strMount.Length - 1);
+                    }
 
-					lblVehicleSlots.Text = strMount;
+                    lblVehicleSlots.Text = strMount;
 					string strBook = _objOptions.LanguageBookShort(objAccessory.Source);
 					string strPage = objAccessory.Page;
 					lblVehicleSource.Text = strBook + " " + strPage;
@@ -20410,11 +20471,14 @@ namespace Chummer
                             XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                             TreeNode objModNode = new TreeNode();
-                            string strMount = "";
+                            string strMount = "Internal";
 							int intRating = 0;
                             if (objXmlAccessory["mount"] != null)
                                 strMount = objXmlAccessory["mount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, strMount, intRating);
+                            string strExtraMount = "None";
+                            if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                                strMount = objXmlAccessory["extramount"].InnerText;
+                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount }, intRating);
                             objModNode.ContextMenuStrip = cmsWeaponAccessory;
                             objMod.Parent = objWeapon;
 
@@ -20758,11 +20822,14 @@ namespace Chummer
                                     XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
                                     WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                     TreeNode objModNode = new TreeNode();
-                                    string strMount = "";
+                                    string strMount = "Internal";
 									int intRating = 0;
 									if (objXmlAccessory["mount"] != null)
                                         strMount = objXmlAccessory["mount"].InnerText;
-                                    objMod.Create(objXmlAccessoryNode, objModNode, strMount,intRating);
+                                    string strExtraMount = "None";
+                                    if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                                        strMount = objXmlAccessory["extramount"].InnerText;
+                                    objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount }, intRating);
                                     objModNode.ContextMenuStrip = cmsWeaponAccessory;
                                     objMod.Parent = objWeapon;
 

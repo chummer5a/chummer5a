@@ -234,11 +234,18 @@ namespace Chummer.Backend.Equipment
 					}
 					if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
 					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
+                        if (objXmlWeaponAccessory.InnerXml.Contains("<extramount>"))
+                        {
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText }, intAccessoryRating);
+                        }
+                        else
+                        {
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { objXmlAccessory["mount"].InnerText, "None" }, intAccessoryRating);
+                        }
 					}
 					else
 					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, "Internal", intAccessoryRating);
+						objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { "Internal" , "None" }, intAccessoryRating);
 					}
 					objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;

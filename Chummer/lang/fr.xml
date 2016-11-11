@@ -250,6 +250,10 @@
       <key>Label_Mount</key>
       <text>Monture :</text>
     </string>
+	<string>
+      <key>Label_Mount</key>
+      <text>Monture Extra :</text>
+    </string>
     <string>
       <key>Label_DataFile</key>
       <text>Fichiers :</text>

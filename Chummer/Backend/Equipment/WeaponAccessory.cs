@@ -67,11 +67,12 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
 		/// <param name="intRating">Rating of the Weapon Accessory.</param>
-		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string strMount, int intRating)
+		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string[] strMount, int intRating)
 		{
 			_strName = objXmlAccessory["name"].InnerText;
-			_strMount = strMount;
-			_intRating = intRating;
+			_strMount = strMount[0];
+            _strExtraMount = strMount[1];
+            _intRating = intRating;
 			_strAvail = objXmlAccessory["avail"].InnerText;
 			_strCost = objXmlAccessory["cost"].InnerText;
 			_strSource = objXmlAccessory["source"].InnerText;
@@ -99,7 +100,6 @@ namespace Chummer.Backend.Equipment
 			objXmlAccessory.TryGetField("extra", out _strExtra, "");
 			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
 			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
-			objXmlAccessory.TryGetField("extramount", out _strExtraMount);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -194,7 +194,7 @@ namespace Chummer.Backend.Equipment
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strMount = objNode["mount"].InnerText;
-			objNode.TryGetField("extramount", out _strExtraMount,0);
+			objNode.TryGetField("extramount", out _strExtraMount, "");
 			_strRC = objNode["rc"].InnerText;
 			objNode.TryGetField("rating", out _intRating,0);
 			objNode.TryGetField("rcgroup", out _intRCGroup, 0);

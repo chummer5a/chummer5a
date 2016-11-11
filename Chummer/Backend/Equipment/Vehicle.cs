@@ -317,11 +317,14 @@ namespace Chummer.Backend.Equipment
 							XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
 							WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
 							TreeNode objModNode = new TreeNode();
-							string strMount = "";
+							string strMount = "Internal";
 							int intRating = 0;
 							if (objXmlAccessory["mount"] != null)
 								strMount = objXmlAccessory["mount"].InnerText;
-							objMod.Create(objXmlAccessoryNode, objModNode, strMount,intRating);
+                            string strExtraMount = "None";
+                            if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                                strMount = objXmlAccessory["extramount"].InnerText;
+                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount },intRating);
 							objMod.Cost = "0";
 							objModNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
 
