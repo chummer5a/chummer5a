@@ -90,12 +90,12 @@ namespace Chummer
 			// Read the content.
 
 			string responseFromServer = reader.ReadToEnd();
-			string[] stringSeparators = new string[] { "," };
-			var result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+			string[] stringSeparators = { "," };
+			string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string line in result.Where(line => line.Contains("tag_name")))
 			{
-				var strVersion = line.Split(':')[1];
+				string strVersion = line.Split(':')[1];
 				strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
 				strVersion = strVersion + ".0";
 				Version.TryParse(strVersion, out verLatestVersion);
@@ -134,7 +134,7 @@ namespace Chummer
 			}
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Application.ExecutablePath,
+				FileName = Application.StartupPath + "\\Chummer.exe",
 				Arguments = arguments
 			};
 			Application.Exit();

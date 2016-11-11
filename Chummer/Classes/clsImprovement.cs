@@ -172,7 +172,9 @@ namespace Chummer
 			SpecialSkills,
 			ReflexRecorderOptimization,
 			MovementMultiplier,
-			DataStore
+			DataStore,
+			BlockSkillDefault,
+			Ambidextrous
 		}
 
         public enum ImprovementSource
@@ -974,7 +976,7 @@ namespace Chummer
 						ForcedValue = "";
 						LimitSelection = "";
 						Log.Exit("CreateImprovements");
-						throw new AbortedException();
+						return false;
 					}
 
 					_strSelectedValue = frmPickText.SelectedValue;
@@ -1445,7 +1447,7 @@ namespace Chummer
 
 								foreach (Gear objChild in objGear.Children)
 								{
-									objGear.DiscountCost = false;
+									objChild.DiscountCost = false;
 								}
 							}
 						}
@@ -1771,9 +1773,32 @@ namespace Chummer
 
                     if (!blnFound)
                         _objCharacter.MadeMan = false;
-                }
-                // Turn off the Overclocker flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
+				}
+
+				// Turn off the Ambidextrous flag if it is being removed.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.Ambidextrous)
+				{
+					bool blnFound = false;
+					// See if the character has anything else that is granting them access to Ambidextrous.
+					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+					{
+						// Skip items from the current Improvement source.
+						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+						{
+							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Ambidextrous)
+							{
+								blnFound = true;
+								break;
+							}
+						}
+					}
+
+					if (!blnFound)
+						_objCharacter.Ambidextrous = false;
+				}
+
+				// Turn off the Overclocker flag if it is being removed.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
                 {
                     bool blnFound = false;
                     // See if the character has anything else that is granting them access to Overclocker.

@@ -31,7 +31,9 @@
 			<karma>4</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<bonus />
+			<bonus>
+				<ambidextrous />
+			</bonus>
 			<source>SR5</source>
 			<page>71</page>
 		</quality>
@@ -1547,7 +1549,7 @@
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus>
-				<selectskillgroup />
+				<blockskillgroupdefaulting />
 			</bonus>
 			<source>SR5</source>
 			<page>81</page>

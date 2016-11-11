@@ -2,6 +2,14 @@ Build 188
 
 Application Changes: 
 - Fixed an issue that prevented Gear items from showing their Capacity usage while attached to Armor items. 
+- Fixed the implementation of the Incompetent quality to prevent defaulting in the selected skillgroup.
+- Added the <blockskillgroupdefaulting> node, used for the above. 
+- Altered the calculation of movement speeds to exclude cyberlimb stats, with the exception of Swimming and/or the Houserule to have your cyberlegs serve as the total agility for the test. tl;dr cyberarms don't make you fast anymore. 
+- Added an Ambidextrous Improvement to manage whether to show a cyberlimb's dicepool as offhand or not. 
+- Fixed an issue with the use of Restricted Gear that caused it to incorrectly flag child items as the parent. 
+- Fixed an issue with the update mechanism that would prevent the Chummer executable from restarting properly until the application is closed. 
+- Fixed a crash caused by cancelling out of text selection bonus nodes such as when creating a Fake SIN. 
+- Fixed an issue that caused Essence loss in priority creation mode to revert MAG/RES metatype minimums to 1. 
 
 Data Changes: 
 
@@ -9,6 +17,9 @@ Data Changes:
 - Changed the P93 Praetor to a standard Stock.
 - Fixed the Aspected Magician to properly grant their Magic attribute.
 - Fixed an issue with the Safety Third lifestyle quality that caused a crash.
+- Fixed missing/incorrect Mods for various pieces of Armour. Specifically the Ares Victory set, Vashon Island Synergist and Sleeping Tiger.
+- Added the Ambidextrous bonus node to the Ambidextrous quality. 
+- Fixed a missing weapon category for the Huge Weapon Mount. 
 
 Build 187
 
