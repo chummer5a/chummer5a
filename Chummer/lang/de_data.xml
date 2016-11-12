@@ -18228,9 +18228,8 @@
 			<weapon>
 				<id>60f52b1f-6376-49fc-a746-b811c54197e7</id>
 				<name>Pole Arm</name>
-				<page>
-				</page>
-				<translate>Hellebarde</translate>
+				<page>425</page>
+				<translate>Stangenwaffe</translate>
 			</weapon>
 			<weapon>
 				<id>e85d55b3-06f1-48e0-bbe1-14b833ac4181</id>
