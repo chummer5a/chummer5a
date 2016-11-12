@@ -32,7 +32,8 @@ namespace Chummer.Backend.Equipment
 		private bool _blnSuite = false;
 		private string _strLocation = "";
 		private Guid _guiWeaponID = new Guid();
-		private Grade _objGrade = new Grade();
+        private Guid _guiVehicleID = new Guid();
+        private Grade _objGrade = new Grade();
 		private List<Cyberware> _objChildren = new List<Cyberware>();
 		private List<Gear> _lstGear = new List<Gear>();
 		private XmlNode _nodBonus;
@@ -100,7 +101,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		/// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
-		public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "")
+		public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "")
 		{
 			_strName = objXmlCyberware["name"].InnerText;
 			_strCategory = objXmlCyberware["category"].InnerText;
@@ -263,8 +264,29 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			// If the piece grants a bonus, pass the information to the Improvement Manager.
-			if (objXmlCyberware["bonus"] != null && blnCreateImprovements)
+            // Add Drone Bodyparts if applicable.
+            if (objXmlCyberware.InnerXml.Contains("<addvehicle>"))
+            {
+                XmlDocument objXmlVehicleDocument = XmlManager.Instance.Load("vehicles.xml");
+
+                // More than one Weapon can be added, so loop through all occurrences.
+                foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
+                {
+                    XmlNode objXmlVehicle = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlAddVehicle.InnerText + "\"]"); // and starts-with(category, \"Cyberware\")]");
+
+                    TreeNode objVehicleNode = new TreeNode();
+                    Vehicle objVehicle = new Vehicle(_objCharacter);
+                    objVehicle.Create(objXmlVehicle, objVehicleNode, null, null, null, null);
+                    objVehicleNode.ForeColor = SystemColors.GrayText;
+                    objVehicleNodes.Add(objVehicleNode);
+                    objVehicles.Add(objVehicle);
+
+                    _guiVehicleID = Guid.Parse(objVehicle.InternalId);
+                }
+            }
+
+            // If the piece grants a bonus, pass the information to the Improvement Manager.
+            if (objXmlCyberware["bonus"] != null && blnCreateImprovements)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
 				if (strForced != "")
@@ -383,7 +405,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
 			if (_guiWeaponID != Guid.Empty)
 				objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
-			objWriter.WriteStartElement("children");
+            if (_guiVehicleID != Guid.Empty)
+                objWriter.WriteElementString("vehicleguid", _guiVehicleID.ToString());
+            objWriter.WriteStartElement("children");
 			foreach (Cyberware objChild in _objChildren)
 			{
 				objChild.Save(objWriter);
@@ -461,8 +485,15 @@ namespace Chummer.Backend.Equipment
 			catch
 			{
 			}
+            try
+            {
+                _guiVehicleID = Guid.Parse(objNode["vehicleguid"].InnerText);
+            }
+            catch
+            {
+            }
 
-			if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Instance.Language != "en-us")
 			{
 				string strXmlFile = "";
 				string strXPath = "";
@@ -646,10 +677,25 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Bonus node from the XML file.
+        /// <summary>
+		/// Guid of a Cyberware Drone/Vehicle.
 		/// </summary>
-		public XmlNode Bonus
+		public string VehicleID
+        {
+            get
+            {
+                return _guiVehicleID.ToString();
+            }
+            set
+            {
+                _guiVehicleID = Guid.Parse(value);
+            }
+        }
+
+        /// <summary>
+        /// Bonus node from the XML file.
+        /// </summary>
+        public XmlNode Bonus
 		{
 			get
 			{

@@ -106,6 +106,8 @@ namespace Chummer
 			XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlVehicle in objXmlVehicleList)
 			{
+                if (objXmlVehicle["hidden"] != null)
+                    continue;
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlVehicle["name"].InnerText;
 				if (objXmlVehicle["translate"] != null)
@@ -153,7 +155,9 @@ namespace Chummer
 			List<ListItem> lstVehicles = new List<ListItem>();
 			foreach (XmlNode objXmlVehicle in objXmlVehicleList)
 			{
-				ListItem objItem = new ListItem();
+                if (objXmlVehicle["hidden"] != null)
+                    continue;
+                ListItem objItem = new ListItem();
 				objItem.Value = objXmlVehicle["name"].InnerText;
 				if (objXmlVehicle["translate"] != null)
 					objItem.Name = objXmlVehicle["translate"].InnerText;

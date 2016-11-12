@@ -5099,6 +5099,15 @@ namespace Chummer
                                         objRemoveWeapon = objWeapon;
                                 }
                                 _objCharacter.Weapons.Remove(objRemoveWeapon);
+
+                                // Remove the Vehicle from the Character.
+                                Vehicle objRemoveCyberVehicle = new Vehicle(_objCharacter);
+                                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                                {
+                                    if (objVehicle.InternalId == objChildCyberware.VehicleID)
+                                        objRemoveCyberVehicle = objVehicle;
+                                }
+                                _objCharacter.Vehicles.Remove(objRemoveCyberVehicle);
                             }
                         }
                         // Remove the Children.
@@ -5124,14 +5133,32 @@ namespace Chummer
                                     objRemoveWeapon = objWeapon;
                             }
                             _objCharacter.Weapons.Remove(objRemoveWeapon);
-
-                            // Remove any Gear attached to the Cyberware.
-                            foreach (Gear objGear in objCyberware.Gear)
-                                _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
                         }
 
-						// Remove any Gear attached to the Cyberware.
-						foreach (Gear objGear in objCyberware.Gear)
+                        // Remove the Cybervehicle created by the Cyberware if applicable.
+                        if (objCyberware.VehicleID != Guid.Empty.ToString())
+                        {
+                            // Remove the Vehicle from the TreeView.
+                            TreeNode objRemoveVehicleNode = new TreeNode();
+                            foreach (TreeNode objVehicleNode in treVehicles.Nodes[0].Nodes)
+                            {
+                                if (objVehicleNode.Tag.ToString() == objCyberware.VehicleID)
+                                    objRemoveVehicleNode = objVehicleNode;
+                            }
+                            treVehicles.Nodes.Remove(objRemoveVehicleNode);
+
+                            // Remove the Vehicle from the Character.
+                            Vehicle objRemoveVehicle = new Vehicle(_objCharacter);
+                            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                            {
+                                if (objVehicle.InternalId == objCyberware.VehicleID)
+                                    objRemoveVehicle = objVehicle;
+                            }
+                            _objCharacter.Vehicles.Remove(objRemoveVehicle);
+                        }
+
+                        // Remove any Gear attached to the Cyberware.
+                        foreach (Gear objGear in objCyberware.Gear)
 						{ _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager); }
 
 
@@ -9869,7 +9896,9 @@ namespace Chummer
             List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
-            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, false);
+            List<Vehicle> objVehicles = new List<Vehicle>();
+            List<TreeNode> objVehicleNodes = new List<TreeNode>();
+            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, false);
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -16931,7 +16960,9 @@ namespace Chummer
 			List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
-            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes);
+            List<Vehicle> objVehicles = new List<Vehicle>();
+            List<TreeNode> objVehicleNodes = new List<TreeNode>();
+            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes);
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return false;
 
@@ -16988,7 +17019,18 @@ namespace Chummer
                 treWeapons.Nodes[0].Expand();
             }
 
-			treCyberware.SortCustom();
+            foreach (Vehicle objVehicle in objVehicles)
+                _objCharacter.Vehicles.Add(objVehicle);
+
+            // Create the Vehicle Node if one exists.
+            foreach (TreeNode objVehicleNode in objVehicleNodes)
+            {
+                objVehicleNode.ContextMenuStrip = cmsVehicle;
+                treVehicles.Nodes[0].Nodes.Add(objVehicleNode);
+                treVehicles.Nodes[0].Expand();
+            }
+
+            treCyberware.SortCustom();
             treCyberware.SelectedNode = objNode;
             _blnSkipRefresh = true;
             PopulateCyberwareGradeList();
@@ -19851,6 +19893,8 @@ namespace Chummer
             // Create the Cyberware object.
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
+            List<Vehicle> objVehicles = new List<Vehicle>();
+            List<TreeNode> objVehicleNodes = new List<TreeNode>();
             TreeNode objNode = new TreeNode();
             Cyberware objCyberware = new Cyberware(_objCharacter);
             string strForced = "";
@@ -19858,7 +19902,7 @@ namespace Chummer
             if (objXmlItem["name"].Attributes["select"] != null)
                 strForced = objXmlItem["name"].Attributes["select"].InnerText;
 
-            objCyberware.Create(objXmlNode, _objCharacter, objGrade, objSource, intRating, objNode, objWeapons, objWeaponNodes, true, true, strForced);
+            objCyberware.Create(objXmlNode, _objCharacter, objGrade, objSource, intRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, true, strForced);
             objCyberware.Suite = true;
 
             foreach (Weapon objWeapon in objWeapons)
@@ -19868,6 +19912,15 @@ namespace Chummer
             {
                 treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
                 treWeapons.Nodes[0].Expand();
+            }
+
+            foreach (Vehicle objVehicle in objVehicles)
+                _objCharacter.Vehicles.Add(objVehicle);
+
+            foreach (TreeNode objVehicleNode in objVehicleNodes)
+            {
+                treVehicles.Nodes[0].Nodes.Add(objVehicleNode);
+                treVehicles.Nodes[0].Expand();
             }
 
             if (blnAddToCharacter)
@@ -20532,6 +20585,8 @@ namespace Chummer
 
                     List<Weapon> objWeapons = new List<Weapon>();
                     List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                    List<Vehicle> objVehicles = new List<Vehicle>();
+                    List<TreeNode> objVehicleNodes = new List<TreeNode>();
                     TreeNode objNode = new TreeNode();
                     Cyberware objCyberware = new Cyberware(_objCharacter);
                     Grade objGrade = objCyberware.ConvertToCyberwareGrade(objXmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware);
@@ -20541,7 +20596,7 @@ namespace Chummer
                         intRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
 
                     XmlNode objXmlCyberwareNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlCyberware["name"].InnerText + "\"]");
-                    objCyberware.Create(objXmlCyberwareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intRating, objNode, objWeapons, objWeaponNodes, true, blnCreateChildren);
+                    objCyberware.Create(objXmlCyberwareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                     _objCharacter.Cyberware.Add(objCyberware);
 
                     // Add any children.
@@ -20557,7 +20612,7 @@ namespace Chummer
                                 intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
 
                             XmlNode objXmlChildNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlChild["name"].InnerText + "\"]");
-                            objChildCyberware.Create(objXmlChildNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intChildRating, objChildNode, objWeapons, objWeaponNodes, true, blnCreateChildren);
+                            objChildCyberware.Create(objXmlChildNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intChildRating, objChildNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                             objCyberware.Children.Add(objChildCyberware);
                             objChildNode.ContextMenuStrip = cmsCyberware;
 
@@ -20587,6 +20642,16 @@ namespace Chummer
                         treWeapons.Nodes[0].Expand();
                     }
 
+                    foreach (Vehicle objVehicle in objVehicles)
+                        _objCharacter.Vehicles.Add(objVehicle);
+
+                    foreach (TreeNode objVehicleNode in objVehicleNodes)
+                    {
+                        objVehicleNode.ContextMenuStrip = cmsVehicle;
+                        treVehicles.Nodes[0].Nodes.Add(objVehicleNode);
+                        treVehicles.Nodes[0].Expand();
+                    }
+
                     Application.DoEvents();
                 }
 
@@ -20611,6 +20676,8 @@ namespace Chummer
 
                     List<Weapon> objWeapons = new List<Weapon>();
                     List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                    List<Vehicle> objVehicles = new List<Vehicle>();
+                    List<TreeNode> objVehicleNodes = new List<TreeNode>();
                     TreeNode objNode = new TreeNode();
                     Cyberware objCyberware = new Cyberware(_objCharacter);
                     Grade objGrade = objCyberware.ConvertToCyberwareGrade(objXmlBioware["grade"].InnerText, Improvement.ImprovementSource.Bioware);
@@ -20620,7 +20687,7 @@ namespace Chummer
                         intRating = Convert.ToInt32(objXmlBioware["rating"].InnerText);
 
                     XmlNode objXmlBiowareNode = objXmlBiowareDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlBioware["name"].InnerText + "\"]");
-                    objCyberware.Create(objXmlBiowareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intRating, objNode, objWeapons, objWeaponNodes, true, blnCreateChildren);
+                    objCyberware.Create(objXmlBiowareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                     _objCharacter.Cyberware.Add(objCyberware);
 
                     objNode.ContextMenuStrip = cmsBioware;
@@ -20636,6 +20703,16 @@ namespace Chummer
                         objWeaponNode.ContextMenuStrip = cmsWeapon;
                         treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
                         treWeapons.Nodes[0].Expand();
+                    }
+
+                    foreach (Vehicle objVehicle in objVehicles)
+                        _objCharacter.Vehicles.Add(objVehicle);
+
+                    foreach (TreeNode objVehicleNode in objVehicleNodes)
+                    {
+                        objVehicleNode.ContextMenuStrip = cmsVehicle;
+                        treVehicles.Nodes[0].Nodes.Add(objVehicleNode);
+                        treVehicles.Nodes[0].Expand();
                     }
 
                     Application.DoEvents();

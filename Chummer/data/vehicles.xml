@@ -5093,6 +5093,27 @@
 			<page>465</page>
 		</vehicle>
 		<vehicle>
+			<id>715a8171-8167-4391-8d33-f7d50217efec</id>
+			<name>Ocular Drone</name>
+			<category>Drones: Mini</category>
+			<hidden />
+			<handling>4</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>3</pilot>
+			<body>1</body>
+			<armor>0</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<avail>8</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>453</page>
+		</vehicle>
+		<vehicle>
 			<id>d187e9f7-b308-426f-ac35-957ba601c70c</id>
 			<name>MCT Fly-Spy (Minidrone)</name>
 			<category>Drones: Mini</category>
