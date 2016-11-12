@@ -11137,6 +11137,90 @@
 			<source>CF</source>
 			<page>56</page>
 		</quality>
+		<!-- End Region -->
+		<!--Region Chrome Flesh Phenotype Adjustments as Positive Qualities -->
+		<quality>
+			<id>0d5e6819-ac41-4700-ac7d-58fa957b328c</id>
+			<name>Phenotypic Variation - Genewipe</name>
+			<karma>32</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>157</page>
+		</quality>
+		<quality>
+			<id>13edde6a-f920-4665-9e65-53a20b30c2a3</id>
+			<name>Phenotypic Variation - Masque</name>
+			<karma>23</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>157</page>
+		</quality>
+		<quality>
+			<id>eac42e74-2f7b-418d-bd38-c1cdd56ceec4</id>
+			<name>Phenotypic Variation - Reprint</name>
+			<karma>18</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>157</page>
+		</quality>
+		<quality>
+			<id>f0bd7ebc-8b59-4586-b83a-d884540a7651</id>
+			<name>Phenotypic Variation - Shuffle</name>
+			<karma>13</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>157</page>
+		</quality>
+		<quality>
+			<id>9d4dd549-3bce-450d-be6e-8bfaf35d49b1</id>
+			<name>Phenotypic Variation - Genetic Optimization</name>
+			<karma>27</karma>
+			<category>Positive</category>
+			<bonus>
+				<selectattribute>
+					<excludeattribute>EDG</excludeattribute>
+					<excludeattribute>MAG</excludeattribute>
+					<excludeattribute>RES</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
+					<max>1</max>
+				</selectattribute>
+			</bonus>
+			<source>CF</source>
+			<page>157</page>
+		</quality>
+		<quality>
+			<id>e89ddeca-1de4-410e-916f-205aeaee6ea2</id>
+			<name>Phenotypic Variation - Cosmetic Alteration</name>
+			<karma>21</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>158</page>
+		</quality>
+		<quality>
+			<id>b17b895e-6819-4609-91e6-9ce42d0446a9</id>
+			<name>Phenotypic Variation - Print Removal</name>
+			<karma>12</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>158</page>
+		</quality>
+		<quality>
+			<id>89564979-72ca-4e73-9923-0ce088da0227</id>
+			<name>Phenotypic Variation - Metaposeur</name>
+			<karma>22</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>158</page>
+		</quality>
+		<!-- End Region -->
+		<!--Region Chrome Flesh Negative Qualities -->
 		<quality>
 			<id>b9afa9de-39c0-4e49-8271-f76910352ec2</id>
 			<name>Antipathy</name>
@@ -11146,8 +11230,6 @@
 			<source>CF</source>
 			<page>57</page>
 		</quality>
-		<!-- End Region -->
-		<!--Region Chrome Flesh Negative Qualities -->
 		<quality>
 			<id>b8f8799f-b89b-462e-9e8c-e47cdd965587</id>
 			<name>AIPS</name>
