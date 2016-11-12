@@ -31,6 +31,7 @@
 		<category>Chemicals</category>
 		<category>Commlinks</category>
 		<category>Commlink Accessories</category>
+		<category>Commlink Apps</category>
 		<category>Common Programs</category>
 		<category>Communications and Countermeasures</category>
 		<category>Contracts</category>
@@ -2731,6 +2732,64 @@
 			<cost>140000</cost>
 			<source>SR5</source>
 			<page>266</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Commlink Apps -->
+		<gear>
+			<id>6731a23a-25cc-4c86-be77-35e90693e837</id>
+			<name>AR Game</name>
+			<category>Commlink Apps</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>Variable(0-50)</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>DT</source>
+			<page>55</page>
+		</gear>
+		<gear>
+			<id>09e35306-4850-43f0-b952-188ee097b0d6</id>
+			<name>Diagnostics</name>
+			<category>Commlink Apps</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>Variable(0-50)</cost>
+			<source>DT</source>
+			<page>56</page>
+		</gear>
+		<gear>
+			<id>0f17d835-cb4a-4673-820e-3feab32f0866</id>
+			<name>P2.1</name>
+			<category>Commlink Apps</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>Variable(0-50)</cost>
+			<source>DT</source>
+			<page>56</page>
+		</gear>
+		<gear>
+			<id>f1d72c1e-32f6-48d1-88c9-f916119cbaf8</id>
+			<name>Theme Music</name>
+			<category>Commlink Apps</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>Variable(0-50)</cost>
+			<source>DT</source>
+			<page>56</page>
+		</gear>
+		<gear>
+			<id>e2af5e6b-3c6e-4b57-8093-d2e621a72a4c</id>
+			<name>Ticker</name>
+			<category>Commlink Apps</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>Variable(0-50)</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>DT</source>
+			<page>56</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Programs -->
@@ -7766,6 +7825,7 @@
 			<armorcapacity>[2]</armorcapacity>
 			<rating>0</rating>
 			<devicerating>0</devicerating>
+			<addweapon>Stun Dongle</addweapon>
 			<avail>6R</avail>
 			<cost>600</cost>
 			<source>DT</source>
@@ -7780,6 +7840,52 @@
 			<devicerating>0</devicerating>
 			<avail>3</avail>
 			<cost>400</cost>
+			<source>DT</source>
+			<page>62</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Commlink and Cyberdeck Form Factors -->
+		<gear>
+			<id>f4ea77c8-e4d4-46a7-b43d-5193d4e0ea48</id>
+			<name>Form Factor: Non-Standard Commlink</name>
+			<category>Commlinks</category>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>+2</avail>
+			<cost>Gear Cost * 1.2</cost>
+			<source>DT</source>
+			<page>61</page>
+		</gear>
+		<gear>
+			<id>d57e91ee-89b6-47ab-86fc-1977b92b79aa</id>
+			<name>Form Factor: Weapon Commlink</name>
+			<category>Commlinks</category>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>+4R</avail>
+			<cost>Gear Cost * 1.5</cost>
+			<source>DT</source>
+			<page>61</page>
+		</gear>
+		<gear>
+			<id>01c28047-0446-4f3d-817d-4805317167ce</id>
+			<name>Form Factor: Non-Standard Cyberdeck</name>
+			<category>Cyberdecks</category>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>+3</avail>
+			<cost>Gear Cost * 1.2</cost>
+			<source>DT</source>
+			<page>62</page>
+		</gear>
+		<gear>
+			<id>88c4b801-d7e1-4a20-9ddc-97644e15e85f</id>
+			<name>Form Factor: Weapon Cyberdeck</name>
+			<category>Cyberdecks</category>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>+6R</avail>
+			<cost>Gear Cost * 1.5</cost>
 			<source>DT</source>
 			<page>62</page>
 		</gear>

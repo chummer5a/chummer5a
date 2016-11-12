@@ -1612,6 +1612,27 @@
 			<page>422</page>
 		</weapon>
 		<weapon>
+			<id>b4b3a872-1532-4477-9bf3-76db34dc7bbf</id>
+			<name>Stun Dongle</name>
+			<category>Clubs</category>
+			<type>Melee</type>
+			<hide>yes</hide>
+			<conceal>-4</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>8S(e)</damage>
+			<ap>-5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>3</ammo>
+			<requireammo>false</requireammo>
+			<avail>6R</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>DT</source>
+			<page>62</page>
+		</weapon>
+		<weapon>
 			<id>a20f44a1-ced0-4018-9522-8a0e7234c29d</id>
 			<name>Aquadyne Shark-XS Harpoon Gun</name>
 			<category>Crossbows</category>
