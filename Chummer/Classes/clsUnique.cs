@@ -702,11 +702,9 @@ namespace Chummer
 						// the CharacterAttribute's total maximum, in which case the minimum becomes 0.
 						if (_objCharacter.EssencePenalty >= _objCharacter.MAG.TotalMaximum)
 							intReturn = 0;
-						else
-							intReturn = 1;
 					}
 					else
-						intReturn = Math.Max(_intMetatypeMin - _objCharacter.EssencePenalty, 0);
+						intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
 				}
 
 				// If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
