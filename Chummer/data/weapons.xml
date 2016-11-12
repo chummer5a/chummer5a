@@ -9056,6 +9056,7 @@
 			<id>225d5411-953e-4537-9e97-40bced059bd3</id>
 			<name>Sawed Off/Shortbarrel</name>
 			<mount>Barrel</mount>
+			<damage>-2</damage>
 			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>4R</avail>

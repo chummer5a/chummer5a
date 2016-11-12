@@ -19,6 +19,7 @@ Data Changes:
 - Fixed missing/incorrect Mods for various pieces of Armour. Specifically the Ares Victory set, Vashon Island Synergist and Sleeping Tiger.
 - Added the Ambidextrous bonus node to the Ambidextrous quality. 
 - Fixed a missing weapon category for the Huge Weapon Mount. 
+- Fixed a missing damage reduction from the Sawed Off shotgun mod. 
 
 Build 187
 
