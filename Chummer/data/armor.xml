@@ -1877,6 +1877,18 @@
 		<!-- End Region -->
 		<!-- Region Hard Targets -->
 		<armor>
+			<id>e3ab6aec-a4ef-4a04-92fe-ffca02ebd92a</id>
+			<name>Shiawase Arms Simoom</name>
+			<category>Specialty Armor</category>
+			<armor>+1</armor>
+			<armorcapacity>0</armorcapacity>
+			<addweapon>Shiawase Arms Simoom</addweapon>
+			<avail>14R</avail>
+			<cost>1500</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
 			<id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
 			<name>Cloak</name>
 			<category>Cloaks</category>
