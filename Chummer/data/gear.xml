@@ -34,7 +34,7 @@
 		<category>Commlink Apps</category>
 		<category>Common Programs</category>
 		<category>Communications and Countermeasures</category>
-		<category>Contracts</category>
+		<category>Contracts/Upkeep</category>
 		<category>Custom</category>
 		<category>Cyberdeck Modules</category>
 		<category>Cyberdecks</category>
@@ -3894,6 +3894,7 @@
 			<name>Camera, Micro</name>
 			<category>Vision Devices</category>
 			<rating>1</rating>
+			<armorcapacity>[1]</armorcapacity>
 			<capacity>1</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
@@ -4132,6 +4133,18 @@
 			<cost>Rating * 50</cost>
 			<source>SR5</source>
 			<page>445</page>
+		</gear>
+		<gear>
+			<id>3ca6be75-6efb-4cf4-809f-da72eb83e909</id>
+			<name>Microphone, Omni-Directional, Micro</name>
+			<category>Audio Devices</category>
+			<armorcapacity>[2]</armorcapacity>
+			<rating>1</rating>
+			<capacity>1</capacity>
+			<avail>4</avail>
+			<cost>50</cost>
+			<source>SR5</source>
+			<page>443</page>
 		</gear>
 		<gear>
 			<id>bedcaf29-5b6e-4135-8589-d8b5a1291afb</id>
@@ -5432,11 +5445,31 @@
 			<page>176</page>
 		</gear>
 		<!-- End Region -->
-		<!-- Region Contracts -->
+		<!-- Region Contracts and Upkeep -->
+		<gear>
+			<id>2f40c4cd-7582-4358-8752-91c9f94f5b6e</id>
+			<name>Symbiotes Upkeep (1 Month Advance Payment)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>4</rating>
+			<avail>0</avail>
+			<cost>Rating * 200</cost>
+			<source>SR5</source>
+			<page>459</page>
+		</gear>
+		<gear>
+			<id>bb20f803-0dc2-49ed-9460-248551cf1961</id>
+			<name>Hard Nanohive Upkeep (6 Months Advance Payment)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>6</rating>
+			<avail>0</avail>
+			<cost>Rating * 500</cost>
+			<source>CF</source>
+			<page>151</page>
+		</gear>
 		<gear>
 			<id>6b28b36a-416a-4041-9561-558083158d7c</id>
 			<name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>5000</cost>
@@ -5446,7 +5479,7 @@
 		<gear>
 			<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
 			<name>DocWagon Contract, Gold (1 Year Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>25000</cost>
@@ -5456,7 +5489,7 @@
 		<gear>
 			<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
 			<name>DocWagon Contract, Platinum (1 Year Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>50000</cost>
@@ -5466,7 +5499,7 @@
 		<gear>
 			<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
 			<name>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>100000</cost>
@@ -5476,7 +5509,7 @@
 		<gear>
 			<id>c138c8f7-4561-476b-840f-f583afa38c7c</id>
 			<name>Skillsoft Network, Basic (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>2000</cost>
@@ -5486,7 +5519,7 @@
 		<gear>
 			<id>e94e5c36-57fe-4e59-bd91-fbc85b50d702</id>
 			<name>Skillsoft Network, Silver (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>10000</cost>
@@ -5496,7 +5529,7 @@
 		<gear>
 			<id>05d57fa9-3415-408a-8084-a40e33153fd0</id>
 			<name>Skillsoft Network, Gold (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>15000</cost>
@@ -5506,7 +5539,7 @@
 		<gear>
 			<id>13a79eae-ea01-451b-a59a-171a1be1937f</id>
 			<name>Skillsoft Network, Platinum (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>20000</cost>
@@ -5516,7 +5549,7 @@
 		<gear>
 			<id>02d9dd2f-4a10-4c30-b592-20052089e985</id>
 			<name>Datahost Subscription (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>250</cost>
@@ -5526,7 +5559,7 @@
 		<gear>
 			<id>a8eba631-78e9-4bd3-9420-5bf550212193</id>
 			<name>Shopsoft Network Subscription (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>250</cost>
@@ -5536,7 +5569,7 @@
 		<gear>
 			<id>e995f9ee-f3f9-4515-b86e-244e25c79521</id>
 			<name>Mapping System Subscription, Basic (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>50</cost>
@@ -5546,7 +5579,7 @@
 		<gear>
 			<id>8bb19ef9-9a8b-4d63-b86f-50b7c489ea4f</id>
 			<name>Mapping System Subscription, Silver (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>150</cost>
@@ -5556,7 +5589,7 @@
 		<gear>
 			<id>03a0f05e-7d07-44cb-b4e7-241e2b172d99</id>
 			<name>Mapping System Subscription, Gold (1 Month Advance Payment)</name>
-			<category>Contracts</category>
+			<category>Contracts/Upkeep</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>500</cost>
