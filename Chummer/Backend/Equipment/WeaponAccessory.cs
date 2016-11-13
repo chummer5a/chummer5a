@@ -67,7 +67,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
 		/// <param name="intRating">Rating of the Weapon Accessory.</param>
-		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string[] strMount, int intRating)
+		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string[] strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
 		{
 			_strName = objXmlAccessory["name"].InnerText;
 			_strMount = strMount[0];
@@ -101,7 +101,40 @@ namespace Chummer.Backend.Equipment
 			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
 			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
 
-			if (GlobalOptions.Instance.Language != "en-us")
+            // Add any Gear that comes with the Armor.
+            if (objXmlAccessory["gears"] != null && blnCreateChildren)
+            {
+                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                foreach (XmlNode objXmlAccessoryGear in objXmlAccessory.SelectNodes("gears/usegear"))
+                {
+                    intRating = 0;
+                    string strForceValue = "";
+                    if (objXmlAccessoryGear.Attributes["rating"] != null)
+                        intRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
+                    if (objXmlAccessoryGear.Attributes["select"] != null)
+                        strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
+
+                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
+                    Gear objGear = new Gear(_objCharacter);
+
+                    TreeNode objGearNode = new TreeNode();
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+
+                    objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                    objGear.Cost = "0";
+                    objGear.MaxRating = objGear.Rating;
+                    objGear.MinRating = objGear.Rating;
+                    objGear.IncludedInParent = true;
+                    _lstGear.Add(objGear);
+
+                    objGearNode.ContextMenuStrip = cmsAccessoryGear;
+                    objNode.Nodes.Add(objGearNode);
+                    objNode.Expand();
+                }
+            }
+
+            if (GlobalOptions.Instance.Language != "en-us")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + _strName + "\"]");

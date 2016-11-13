@@ -8452,6 +8452,10 @@
 			<rating>0</rating>
 			<avail>2</avail>
 			<cost>300</cost>
+			<gears>
+				<usegear>Camera, Micro</usegear>
+				<usegear>Vision Magnification</usegear>
+			</gears>
 			<allowgear>
 				<gearcategory>Vision Enhancements</gearcategory>
 			</allowgear>
@@ -8540,10 +8544,10 @@
 			<rating>0</rating>
 			<avail>+2R</avail>
 			<cost>Weapon Cost</cost>
-			<allowgear>
-				<gearcategory>Peripherals</gearcategory>
-				<gearcategory>Vision Enhancements</gearcategory>
-			</allowgear>
+			<gears>
+				<usegear rating="2">Laser Range Finder</usegear>
+				<usegear>Camera, Micro</usegear>
+			</gears>
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>
@@ -8555,10 +8559,10 @@
 			<rating>0</rating>
 			<avail>4R</avail>
 			<cost>200</cost>
-			<allowgear>
-				<gearcategory>Peripherals</gearcategory>
-				<gearcategory>Vision Enhancements</gearcategory>
-			</allowgear>
+			<gears>
+				<usegear rating="2">Laser Range Finder</usegear>
+				<usegear>Camera, Micro</usegear>
+			</gears>
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>

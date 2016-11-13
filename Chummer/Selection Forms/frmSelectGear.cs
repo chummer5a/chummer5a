@@ -235,7 +235,9 @@ namespace Chummer
 
 			foreach (XmlNode objXmlGear in objXmlGearList)
 			{
-				ListItem objItem = new ListItem();
+                if (objXmlGear["hidden"] != null)
+                    continue;
+                ListItem objItem = new ListItem();
 				objItem.Value = objXmlGear["name"].InnerText;
 				if (objXmlGear["translate"] != null)
 					objItem.Name = objXmlGear["translate"].InnerText;
@@ -361,7 +363,9 @@ namespace Chummer
 			bool blnAddToList;
 			foreach (XmlNode objXmlGear in objXmlGearList)
 			{
-				blnAddToList = true;
+                if (objXmlGear["hidden"] != null)
+                    continue;
+                blnAddToList = true;
 				if (_blnShowArmorCapacityOnly)
 				{
 					if (objXmlGear["armorcapacity"] == null)

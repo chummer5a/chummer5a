@@ -5489,7 +5489,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             _objCharacter.Weapons.Add(objWeapon);
 
@@ -5821,7 +5821,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Vehicle objVehicle = new Vehicle(_objCharacter);
-            objVehicle.Create(objXmlVehicle, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+            objVehicle.Create(objXmlVehicle, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
             // Update the Used Vehicle information if applicable.
             if (frmPickVehicle.UsedVehicle)
             {
@@ -7888,7 +7888,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount,Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount,Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsWeaponAccessoryGear);
             objAccessory.Parent = objWeapon;
 
             if (objAccessory.Cost.StartsWith("Variable"))
@@ -8154,7 +8154,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.VehicleMounted = true;
 
@@ -8238,7 +8238,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsVehicleWeaponAccessoryGear);
 			objAccessory.Parent = objWeapon;
             objWeapon.WeaponAccessories.Add(objAccessory);
 
@@ -8281,7 +8281,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.VehicleMounted = true;
             objWeapon.IsUnderbarrelWeapon = true;
@@ -8851,7 +8851,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
@@ -20513,7 +20513,7 @@ namespace Chummer
 
                     Weapon objWeapon = new Weapon(_objCharacter);
                     TreeNode objNode = new TreeNode();
-                    objWeapon.Create(objXmlWeaponNode, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, blnCreateChildren);
+                    objWeapon.Create(objXmlWeaponNode, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
                     _objCharacter.Weapons.Add(objWeapon);
 
                     // Look for Weapon Accessories.
@@ -20531,7 +20531,7 @@ namespace Chummer
                             string strExtraMount = "None";
                             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                                 strMount = objXmlAccessory["extramount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount }, intRating);
+                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount }, intRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                             objModNode.ContextMenuStrip = cmsWeaponAccessory;
                             objMod.Parent = objWeapon;
 
@@ -20553,7 +20553,7 @@ namespace Chummer
 
                         Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
                         TreeNode objUnderbarrelNode = new TreeNode();
-                        objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, blnCreateChildren);
+                        objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
                         objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
                         objNode.Nodes.Add(objUnderbarrelNode);
                         objNode.Expand();
@@ -20765,7 +20765,7 @@ namespace Chummer
                     Vehicle objVehicle = new Vehicle(_objCharacter);
 
                     XmlNode objXmlVehicleNode = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlVehicle["name"].InnerText + "\"]");
-                    objVehicle.Create(objXmlVehicleNode, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, blnCreateChildren);
+                    objVehicle.Create(objXmlVehicleNode, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
                     _objCharacter.Vehicles.Add(objVehicle);
 
                     // Grab the default Sensor that comes with the Vehicle.
@@ -20868,7 +20868,7 @@ namespace Chummer
                             Weapon objWeapon = new Weapon(_objCharacter);
 
                             XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                            objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, blnCreateChildren);
+                            objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
                             objWeapon.VehicleMounted = true;
 
                             // Find the first Weapon Mount in the Vehicle.
@@ -20906,7 +20906,7 @@ namespace Chummer
                                     string strExtraMount = "None";
                                     if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                                         strMount = objXmlAccessory["extramount"].InnerText;
-                                    objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount }, intRating);
+                                    objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount }, intRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                                     objModNode.ContextMenuStrip = cmsWeaponAccessory;
                                     objMod.Parent = objWeapon;
 

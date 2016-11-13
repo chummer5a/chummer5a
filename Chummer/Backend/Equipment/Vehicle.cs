@@ -73,7 +73,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="cmsVehicleWeapon">ContextMenuStrip to attach to Vehicle Weapons.</param>
 		/// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip to attach to Weapon Accessories.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
 			_strName = objXmlVehicle["name"].InnerText;
 			_strCategory = objXmlVehicle["category"].InnerText;
@@ -260,7 +260,7 @@ namespace Chummer.Backend.Equipment
 					Weapon objWeapon = new Weapon(_objCharacter);
 
 					XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-					objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+					objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 					objWeapon.Cost = 0;
 					objWeapon.VehicleMounted = true;
 
@@ -323,9 +323,10 @@ namespace Chummer.Backend.Equipment
 								strMount = objXmlAccessory["mount"].InnerText;
                             string strExtraMount = "None";
                             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
-                                strMount = objXmlAccessory["extramount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount },intRating);
-							objMod.Cost = "0";
+                                strMount = objXmlAccessory["extramount"].InnerText;      
+                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount },intRating, cmsVehicleGear, false, blnCreateChildren);
+
+                            objMod.Cost = "0";
 							objModNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
 
 							objWeapon.WeaponAccessories.Add(objMod);

@@ -5252,7 +5252,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
 			int intCost = objWeapon.TotalCost;
@@ -5625,7 +5625,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Vehicle objVehicle = new Vehicle(_objCharacter);
-			objVehicle.Create(objXmlVehicle, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+			objVehicle.Create(objXmlVehicle, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 			// Update the Used Vehicle information if applicable.
 			if (frmPickVehicle.UsedVehicle)
 			{
@@ -8876,7 +8876,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsWeaponAccessoryGear);
 			objAccessory.Parent = objWeapon;
 
             if (objAccessory.Cost.StartsWith("Variable"))
@@ -9320,7 +9320,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 			objWeapon.VehicleMounted = true;
 
 			int intCost = objWeapon.TotalCost;
@@ -9446,7 +9446,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsWeaponAccessoryGear);
 			objAccessory.Parent = objWeapon;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -9535,7 +9535,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 			objWeapon.VehicleMounted = true;
 			objWeapon.IsUnderbarrelWeapon = true;
@@ -11807,7 +11807,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 			objWeapon.IsUnderbarrelWeapon = true;
 
