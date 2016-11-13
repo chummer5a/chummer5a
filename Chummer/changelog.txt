@@ -22,6 +22,7 @@ Data Changes:
 - Added the Ambidextrous bonus node to the Ambidextrous quality. 
 - Fixed a missing weapon category for the Huge Weapon Mount. 
 - Fixed a missing damage reduction from the Sawed Off shotgun mod. 
+- Reduced the cost for YNT Softweave to the cost of the Armour rather than double.
 
 Build 187
 

@@ -2985,7 +2985,7 @@
 			<maxrating>1</maxrating>
 			<armorcapacity>[-Capacity * 0.5]</armorcapacity>
 			<avail>+4</avail>
-			<cost>Armor Cost * 2</cost>
+			<cost>Armor Cost</cost>
 			<source>RG</source>
 			<page>84</page>
 		</mod>
