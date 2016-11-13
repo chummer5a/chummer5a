@@ -67,7 +67,6 @@ namespace Chummer
 			this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tssNuyen = new System.Windows.Forms.ToolStripStatusLabel();
 			this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
-			this.lblAttributes = new System.Windows.Forms.Label();
 			this.lblMetatypeLabel = new System.Windows.Forms.Label();
 			this.lblMetatype = new System.Windows.Forms.Label();
 			this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
@@ -77,9 +76,6 @@ namespace Chummer
 			this.chkArmorEquipped = new System.Windows.Forms.CheckBox();
 			this.lblRemainingNuyenLabel = new System.Windows.Forms.Label();
 			this.lblESS = new System.Windows.Forms.Label();
-			this.lblAttributesMetatype = new System.Windows.Forms.Label();
-			this.lblAttributesBase = new System.Windows.Forms.Label();
-			this.lblAttributesAug = new System.Windows.Forms.Label();
 			this.lblFoci = new System.Windows.Forms.Label();
 			this.chkWeaponAccessoryInstalled = new System.Windows.Forms.CheckBox();
 			this.chkVehicleWeaponAccessoryInstalled = new System.Windows.Forms.CheckBox();
@@ -154,7 +150,6 @@ namespace Chummer
 			this.lblSprites = new System.Windows.Forms.Label();
 			this.tabCharacterTabs = new System.Windows.Forms.TabControl();
 			this.tabCommon = new System.Windows.Forms.TabPage();
-			this.pnlAttributes = new System.Windows.Forms.FlowLayoutPanel();
 			this.tabPeople = new System.Windows.Forms.TabControl();
 			this.tabContacts = new System.Windows.Forms.TabPage();
 			this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
@@ -1123,6 +1118,12 @@ namespace Chummer
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.pnlAttributes = new System.Windows.Forms.FlowLayoutPanel();
+			this.label5 = new System.Windows.Forms.Label();
+			this.lblAttributesAug = new System.Windows.Forms.Label();
+			this.lblAttributesBase = new System.Windows.Forms.Label();
+			this.lblAttributesMetatype = new System.Windows.Forms.Label();
+			this.lblAttributes = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
 			this.tabCommon.SuspendLayout();
@@ -1297,16 +1298,6 @@ namespace Chummer
 			this.pgbProgress.Size = new System.Drawing.Size(400, 18);
 			this.pgbProgress.Visible = false;
 			// 
-			// lblAttributes
-			// 
-			this.lblAttributes.AutoSize = true;
-			this.lblAttributes.Location = new System.Drawing.Point(285, 32);
-			this.lblAttributes.Name = "lblAttributes";
-			this.lblAttributes.Size = new System.Drawing.Size(51, 13);
-			this.lblAttributes.TabIndex = 5;
-			this.lblAttributes.Tag = "Label_Attributes";
-			this.lblAttributes.Text = "Attributes";
-			// 
 			// lblMetatypeLabel
 			// 
 			this.lblMetatypeLabel.AutoSize = true;
@@ -1400,39 +1391,6 @@ namespace Chummer
 			this.lblESS.Text = "Essence:";
 			this.tipTooltip.SetToolTip(this.lblESS, "Characters start with 6 Essence which is decreased by adding Cyberware and Biowar" +
         "e.");
-			// 
-			// lblAttributesMetatype
-			// 
-			this.lblAttributesMetatype.AutoSize = true;
-			this.lblAttributesMetatype.Location = new System.Drawing.Point(540, 32);
-			this.lblAttributesMetatype.Name = "lblAttributesMetatype";
-			this.lblAttributesMetatype.Size = new System.Drawing.Size(80, 13);
-			this.lblAttributesMetatype.TabIndex = 53;
-			this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
-			this.lblAttributesMetatype.Text = "Metatype Limits";
-			this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
-			// 
-			// lblAttributesBase
-			// 
-			this.lblAttributesBase.AutoSize = true;
-			this.lblAttributesBase.Location = new System.Drawing.Point(413, 32);
-			this.lblAttributesBase.Name = "lblAttributesBase";
-			this.lblAttributesBase.Size = new System.Drawing.Size(31, 13);
-			this.lblAttributesBase.TabIndex = 54;
-			this.lblAttributesBase.Tag = "Label_Base";
-			this.lblAttributesBase.Text = "Base";
-			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
-			// 
-			// lblAttributesAug
-			// 
-			this.lblAttributesAug.AutoSize = true;
-			this.lblAttributesAug.Location = new System.Drawing.Point(458, 32);
-			this.lblAttributesAug.Name = "lblAttributesAug";
-			this.lblAttributesAug.Size = new System.Drawing.Size(32, 13);
-			this.lblAttributesAug.TabIndex = 55;
-			this.lblAttributesAug.Tag = "Label_Augmented";
-			this.lblAttributesAug.Text = "(Aug)";
-			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
 			// 
 			// lblFoci
 			// 
@@ -2315,6 +2273,11 @@ namespace Chummer
 			// 
 			this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
 			this.tabCommon.Controls.Add(this.pnlAttributes);
+			this.tabCommon.Controls.Add(this.label5);
+			this.tabCommon.Controls.Add(this.lblAttributesAug);
+			this.tabCommon.Controls.Add(this.lblAttributesBase);
+			this.tabCommon.Controls.Add(this.lblAttributesMetatype);
+			this.tabCommon.Controls.Add(this.lblAttributes);
 			this.tabCommon.Controls.Add(this.tabPeople);
 			this.tabCommon.Controls.Add(this.cmdIncreasePowerPoints);
 			this.tabCommon.Controls.Add(this.lblPossessed);
@@ -2340,14 +2303,10 @@ namespace Chummer
 			this.tabCommon.Controls.Add(this.cmdDeleteQuality);
 			this.tabCommon.Controls.Add(this.cmdAddQuality);
 			this.tabCommon.Controls.Add(this.treQualities);
-			this.tabCommon.Controls.Add(this.lblAttributesAug);
 			this.tabCommon.Controls.Add(this.lblMysticAdeptAssignment);
-			this.tabCommon.Controls.Add(this.lblAttributesBase);
 			this.tabCommon.Controls.Add(this.lblMysticAdeptMAGAdept);
-			this.tabCommon.Controls.Add(this.lblAttributesMetatype);
 			this.tabCommon.Controls.Add(this.lblMetatype);
 			this.tabCommon.Controls.Add(this.lblMetatypeLabel);
-			this.tabCommon.Controls.Add(this.lblAttributes);
 			this.tabCommon.Location = new System.Drawing.Point(4, 22);
 			this.tabCommon.Name = "tabCommon";
 			this.tabCommon.Padding = new System.Windows.Forms.Padding(3);
@@ -2355,13 +2314,6 @@ namespace Chummer
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
 			this.tabCommon.Text = "Common";
-			// 
-			// pnlAttributes
-			// 
-			this.pnlAttributes.Location = new System.Drawing.Point(285, 48);
-			this.pnlAttributes.Name = "pnlAttributes";
-			this.pnlAttributes.Size = new System.Drawing.Size(363, 410);
-			this.pnlAttributes.TabIndex = 97;
 			// 
 			// tabPeople
 			// 
@@ -13394,6 +13346,70 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
+			// pnlAttributes
+			// 
+			this.pnlAttributes.Location = new System.Drawing.Point(289, 48);
+			this.pnlAttributes.Name = "pnlAttributes";
+			this.pnlAttributes.Size = new System.Drawing.Size(352, 410);
+			this.pnlAttributes.TabIndex = 102;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(460, 32);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(37, 13);
+			this.label5.TabIndex = 101;
+			this.label5.Tag = "String_Karma";
+			this.label5.Text = "Karma";
+			this.tipTooltip.SetToolTip(this.label5, "Base Attribute value.");
+			// 
+			// lblAttributesAug
+			// 
+			this.lblAttributesAug.AutoSize = true;
+			this.lblAttributesAug.Location = new System.Drawing.Point(509, 32);
+			this.lblAttributesAug.Name = "lblAttributesAug";
+			this.lblAttributesAug.Size = new System.Drawing.Size(50, 13);
+			this.lblAttributesAug.TabIndex = 100;
+			this.lblAttributesAug.Tag = "Label_ValAugmented";
+			this.lblAttributesAug.Text = "Val (Aug)";
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			// 
+			// lblAttributesBase
+			// 
+			this.lblAttributesBase.AutoSize = true;
+			this.lblAttributesBase.Location = new System.Drawing.Point(414, 32);
+			this.lblAttributesBase.Name = "lblAttributesBase";
+			this.lblAttributesBase.Size = new System.Drawing.Size(31, 13);
+			this.lblAttributesBase.TabIndex = 99;
+			this.lblAttributesBase.Tag = "Label_Base";
+			this.lblAttributesBase.Text = "Base";
+			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
+			// 
+			// lblAttributesMetatype
+			// 
+			this.lblAttributesMetatype.AutoSize = true;
+			this.lblAttributesMetatype.Location = new System.Drawing.Point(565, 32);
+			this.lblAttributesMetatype.Name = "lblAttributesMetatype";
+			this.lblAttributesMetatype.Size = new System.Drawing.Size(80, 13);
+			this.lblAttributesMetatype.TabIndex = 98;
+			this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
+			this.lblAttributesMetatype.Text = "Metatype Limits";
+			this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
+			// 
+			// lblAttributes
+			// 
+			this.lblAttributes.AutoSize = true;
+			this.lblAttributes.Location = new System.Drawing.Point(286, 32);
+			this.lblAttributes.Name = "lblAttributes";
+			this.lblAttributes.Size = new System.Drawing.Size(51, 13);
+			this.lblAttributes.TabIndex = 97;
+			this.lblAttributes.Tag = "Label_Attributes";
+			this.lblAttributes.Text = "Attributes";
+			this.tipTooltip.SetToolTip(this.lblAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
+        "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
+        " character creation.");
+			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -13560,7 +13576,6 @@ namespace Chummer
         #endregion
 
 		internal System.Windows.Forms.StatusStrip StatusStrip;
-		private System.Windows.Forms.Label lblAttributes;
         private System.Windows.Forms.Label lblMetatypeLabel;
         private System.Windows.Forms.Label lblMetatype;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
@@ -13778,9 +13793,6 @@ namespace Chummer
 		private System.Windows.Forms.Button cmdAddMugshot;
 		private System.Windows.Forms.TextBox txtNotes;
 		private System.Windows.Forms.Label lblNotes;
-		private System.Windows.Forms.Label lblAttributesAug;
-		private System.Windows.Forms.Label lblAttributesBase;
-		private System.Windows.Forms.Label lblAttributesMetatype;
 		private System.Windows.Forms.Label lblFoci;
 		private System.Windows.Forms.TreeView treFoci;
 		private System.Windows.Forms.ToolStripMenuItem mnuFilePrint;
@@ -14623,6 +14635,11 @@ namespace Chummer
 		private System.Windows.Forms.Label lblVehicleSeats;
 		private System.Windows.Forms.Label lblVehicleSeatsLabel;
 		private System.Windows.Forms.FlowLayoutPanel pnlAttributes;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label lblAttributesAug;
+		private System.Windows.Forms.Label lblAttributesBase;
+		private System.Windows.Forms.Label lblAttributesMetatype;
+		private System.Windows.Forms.Label lblAttributes;
 	}
 }
 

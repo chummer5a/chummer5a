@@ -45,7 +45,7 @@
 			this.cmdImproveATT.FlatAppearance.BorderSize = 0;
 			this.cmdImproveATT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cmdImproveATT.Image = global::Chummer.Properties.Resources.add;
-			this.cmdImproveATT.Location = new System.Drawing.Point(202, 1);
+			this.cmdImproveATT.Location = new System.Drawing.Point(153, -1);
 			this.cmdImproveATT.Name = "cmdImproveATT";
 			this.cmdImproveATT.Size = new System.Drawing.Size(24, 24);
 			this.cmdImproveATT.TabIndex = 75;
@@ -56,7 +56,7 @@
 			// lblValue
 			// 
 			this.lblValue.AutoSize = true;
-			this.lblValue.Location = new System.Drawing.Point(270, 7);
+			this.lblValue.Location = new System.Drawing.Point(226, 5);
 			this.lblValue.Name = "lblValue";
 			this.lblValue.Size = new System.Drawing.Size(19, 13);
 			this.lblValue.TabIndex = 74;
@@ -65,7 +65,7 @@
 			// lblAugmented
 			// 
 			this.lblAugmented.AutoSize = true;
-			this.lblAugmented.Location = new System.Drawing.Point(290, 7);
+			this.lblAugmented.Location = new System.Drawing.Point(246, 5);
 			this.lblAugmented.Name = "lblAugmented";
 			this.lblAugmented.Size = new System.Drawing.Size(19, 13);
 			this.lblAugmented.TabIndex = 73;
@@ -74,7 +74,7 @@
 			// lblName
 			// 
 			this.lblName.AutoSize = true;
-			this.lblName.Location = new System.Drawing.Point(2, 7);
+			this.lblName.Location = new System.Drawing.Point(2, 5);
 			this.lblName.Name = "lblName";
 			this.lblName.Size = new System.Drawing.Size(61, 13);
 			this.lblName.TabIndex = 71;
@@ -83,7 +83,7 @@
 			// lblLimits
 			// 
 			this.lblLimits.AutoSize = true;
-			this.lblLimits.Location = new System.Drawing.Point(311, 7);
+			this.lblLimits.Location = new System.Drawing.Point(277, 5);
 			this.lblLimits.Name = "lblLimits";
 			this.lblLimits.Size = new System.Drawing.Size(45, 13);
 			this.lblLimits.TabIndex = 72;
@@ -91,7 +91,7 @@
 			// 
 			// nudKarma
 			// 
-			this.nudKarma.Location = new System.Drawing.Point(165, 3);
+			this.nudKarma.Location = new System.Drawing.Point(165, 1);
 			this.nudKarma.Name = "nudKarma";
 			this.nudKarma.Size = new System.Drawing.Size(40, 20);
 			this.nudKarma.TabIndex = 77;
@@ -99,7 +99,7 @@
 			// 
 			// nudBase
 			// 
-			this.nudBase.Location = new System.Drawing.Point(119, 3);
+			this.nudBase.Location = new System.Drawing.Point(119, 1);
 			this.nudBase.Name = "nudBase";
 			this.nudBase.Size = new System.Drawing.Size(40, 20);
 			this.nudBase.TabIndex = 76;
@@ -114,7 +114,7 @@
 			// 
 			this.cmdBurnEdge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.delete;
-			this.cmdBurnEdge.Location = new System.Drawing.Point(227, 1);
+			this.cmdBurnEdge.Location = new System.Drawing.Point(178, -1);
 			this.cmdBurnEdge.Name = "cmdBurnEdge";
 			this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
 			this.cmdBurnEdge.TabIndex = 78;
@@ -135,7 +135,7 @@
 			this.Controls.Add(this.lblName);
 			this.Controls.Add(this.lblLimits);
 			this.Name = "AttributeControl";
-			this.Size = new System.Drawing.Size(362, 26);
+			this.Size = new System.Drawing.Size(362, 22);
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudBase)).EndInit();
 			this.ResumeLayout(false);
