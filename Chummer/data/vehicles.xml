@@ -7004,7 +7004,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<slots>5</slots>
-			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine GunsSporting Rifles</weaponmountcategories>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
 			<avail>16F</avail>
 			<cost>4000</cost>
 			<source>R5</source>

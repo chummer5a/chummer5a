@@ -39,6 +39,7 @@ namespace Chummer
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
 		private bool _blnBlackMarketDiscount;
+		private bool _blnExcludeGeneralCategory = false;
 
 		#region Control Events
 		public frmSelectArmorMod(Character objCharacter, bool blnCareer = false)
@@ -68,12 +69,19 @@ namespace Chummer
 			// Populate the Mods list.
 			string[] strAllowed = _strAllowedCategories.Split(',');
 			string strMount = "";
-			foreach (string strAllowedMount in strAllowed)
+			for (int i = 0; i < strAllowed.Length; i++)
 			{
-				if (strAllowedMount != "")
-					strMount += "category = \"" + strAllowedMount + "\" or ";
+				if (strAllowed[i] != "")
+					strMount += "category = \"" + strAllowed[i] + "\"";
+				if (i < strAllowed.Length-1 || !_blnExcludeGeneralCategory)
+				{
+					strMount += " or ";
+				}
 			}
-			strMount += "category = \"General\"";
+			if (!_blnExcludeGeneralCategory)
+			{
+				strMount += "category = \"General\"";
+			}
 			XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() + ")]");
 
 			foreach (XmlNode objXmlMod in objXmlModList)
@@ -81,13 +89,12 @@ namespace Chummer
                 bool blnHide = (objXmlMod["hide"] != null);
                 if (!blnHide)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMod["name"].InnerText;
-                    if (objXmlMod["translate"] != null)
-                        objItem.Name = objXmlMod["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlMod["name"].InnerText;
-                    lstMods.Add(objItem);
+	                ListItem objItem = new ListItem
+	                {
+		                Value = objXmlMod["name"].InnerText,
+		                Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
+	                };
+	                lstMods.Add(objItem);
                 }
 			}
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -210,6 +217,20 @@ namespace Chummer
 			set
 			{
 				_strAllowedCategories = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the General category should be included.
+		/// </summary>
+		public bool ExcludeGeneralCategory {
+			get
+			{
+				return _blnExcludeGeneralCategory;
+			}
+			set
+			{
+				_blnExcludeGeneralCategory = value;
 			}
 		}
 

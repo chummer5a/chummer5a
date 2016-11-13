@@ -2104,6 +2104,9 @@
 			<avail>12F</avail>
 			<cost>10000</cost>
 			<allowaccessory>true</allowaccessory>
+      <accessorymounts>
+        <mount>Under</mount>
+      </accessorymounts>      
 			<accessories>
 				<accessory>
 					<name>Slide Mount</name>
@@ -2129,10 +2132,6 @@
 			<avail>16F</avail>
 			<cost>2200</cost>
 			<allowaccessory>true</allowaccessory>
-			<accessorymounts>
-				<mount>Top</mount>
-				<mount>Under</mount>
-			</accessorymounts>
 			<range>Tasers</range>
 			<source>RG</source>
 			<page>50</page>
@@ -6076,7 +6075,7 @@
 			<damage>8P</damage>
 			<ap>-</ap>
 			<mode>SA/BF/FA</mode>
-			<rc>1</rc>
+			<rc>0</rc>
 			<ammo>50(d)</ammo>
 			<avail>7R</avail>
 			<cost>1000</cost>
@@ -6093,6 +6092,9 @@
 				<accessory><name>Folding Stock</name></accessory>
 				<accessory><name>Slide Mount</name></accessory>
 				<accessory><name>Slide Mount</name></accessory>
+				<accessory>
+					<name>Foregrip</name>
+				</accessory>
 				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>GH3</source>
@@ -6201,7 +6203,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Stock</name></accessory>
 				<accessory><name>Flashlight, Standard</name></accessory>
 			</accessories>
 			<source>SR5</source>
@@ -9054,6 +9056,7 @@
 			<id>225d5411-953e-4537-9e97-40bced059bd3</id>
 			<name>Sawed Off/Shortbarrel</name>
 			<mount>Barrel</mount>
+			<damage>-2</damage>
 			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>4R</avail>

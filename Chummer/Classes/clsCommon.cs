@@ -19,15 +19,10 @@
  using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Xml;
-using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Drawing;
+ using System.Text;
+ using System.Windows.Forms;
+ using System.Drawing;
  using System.Linq;
- using System.Web;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -1261,12 +1256,13 @@ namespace Chummer
 		/// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
 		/// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>
-		public void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+		/// <param name="WeaponID">The weapon </param>
+		public void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, string WeaponID = null)
 		{
 			TreeNode objNode = new TreeNode();
 			objNode.Text = objWeapon.DisplayName;
-			objNode.Tag = objWeapon.InternalId;
-			if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality"))
+			objNode.Tag = WeaponID ?? objWeapon.InternalId;
+			if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || WeaponID != null)
 				objNode.ForeColor = SystemColors.GrayText;
 			if (objWeapon.Notes != string.Empty)
 				objNode.ForeColor = Color.SaddleBrown;

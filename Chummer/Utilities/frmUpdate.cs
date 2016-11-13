@@ -159,8 +159,7 @@ namespace Chummer
 
 				string responseFromServer = reader.ReadToEnd();
 				string[] stringSeparators = new string[] {","};
-				string[] result;
-				result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+			    string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 				bool blnFoundTag = false;
 				bool blnFoundArchive = false;

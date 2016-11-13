@@ -339,7 +339,8 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					Armor objTemp = new Armor(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, null, 0);
+					List<Weapon> objWeapons = new List<Weapon>();
+					objTemp.Create(objXmlGear, objTempNode, null, 0, objWeapons);
 					try
 					{
 						int objValue = objTemp.TotalCost;
