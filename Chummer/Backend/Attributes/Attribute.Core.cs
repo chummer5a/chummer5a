@@ -588,81 +588,85 @@ namespace Chummer.Backend.Attributes
                 return intModifier;
             }
         }
+		/// <summary>
+		/// The CharacterAttribute's total value (Value + Modifiers). 
+		/// </summary>
+		public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
+		{
+			int intMeat = Value + AttributeModifiers;
+			int intReturn = intMeat;
 
-        /// <summary>
-        /// The CharacterAttribute's total value (Value + Modifiers).
-        /// </summary>
-        public int TotalValue
-        {
-            get
-            {
-                int intMeat = Value + AttributeModifiers;
-                int intReturn = intMeat;
+			//// If this is AGI or STR, factor in any Cyberlimbs.
+			if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
+			{
+				int intLimbTotal = 0;
+				int intLimbCount = 0;
+				foreach (Cyberware objCyberware in _objCharacter.Cyberware
+					.Where(objCyberware => objCyberware.Category == "Cyberlimb")
+					.Where(objCyberware => !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+				{
+					intLimbCount++;
+					switch (_strAbbrev)
+					{
+						case "STR":
+							intLimbTotal += objCyberware.TotalStrength;
+							break;
+						default:
+							intLimbTotal += objCyberware.TotalAgility;
+							break;
+					}
+				}
 
-                //// If this is AGI or STR, factor in any Cyberlimbs.
-                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
-                {
-                    int intLimbTotal = 0;
-                    int intLimbCount = 0;
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware
-                        .Where(objCyberware => objCyberware.Category == "Cyberlimb")
-                        .Where(objCyberware => !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
-                    {
-                        intLimbCount++;
-                        switch (_strAbbrev)
-                        {
-                            case "STR":
-                                intLimbTotal += objCyberware.TotalStrength;
-                                break;
-                            default:
-                                intLimbTotal += objCyberware.TotalAgility;
-                                break;
-                        }
-                    }
+				if (intLimbCount > 0)
+				{
+					intReturn = 0;
+					if (intLimbCount < _objCharacter.Options.LimbCount)
+					{
+						// Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
+						for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
+							intLimbTotal += intMeat;
+						intLimbCount = _objCharacter.Options.LimbCount;
+					}
+					int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.Instance.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.Instance.CultureInfo)));
+					intReturn += intTotal;
+				}
+			}
 
-                    if (intLimbCount > 0)
-                    {
-                        intReturn = 0;
-                        if (intLimbCount < _objCharacter.Options.LimbCount)
-                        {
-                            // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
-                            for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
-                                intLimbTotal += intMeat;
-                            intLimbCount = _objCharacter.Options.LimbCount;
-                        }
-                        int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.Instance.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.Instance.CultureInfo)));
-                        intReturn += intTotal;
-                    }
-                }
+			// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
+			if (intReturn > TotalAugmentedMaximum)
+				intReturn = TotalAugmentedMaximum;
 
-                // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
-                if (intReturn > TotalAugmentedMaximum)
-                    intReturn = TotalAugmentedMaximum;
+			// An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
+			if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
+			{
+				if (intReturn < 0)
+					return 0;
+			}
+			else
+			{
+				if (intReturn < 1)
+					return 1;
+			}
 
-                // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-                if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
-                {
-                    if (intReturn < 0)
-                        return 0;
-                }
-                else
-                {
-                    if (intReturn < 1)
-                        return 1;
-                }
+			// If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+			if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+				return 1;
 
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
-                    return 1;
+			return intReturn;
+		}
 
-                return intReturn;
-            }
-        }
+		/// <summary>
+		/// The CharacterAttribute's total value (Value + Modifiers).
+		/// </summary>
+		public int TotalValue
+		{
+			get { return CalculatedTotalValue(); }
+		}
 
-        /// <summary>
-        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
-        /// </summary>
-        public int TotalMinimum
+		/// <summary>
+		/// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
+		/// </summary>
+		public int TotalMinimum
         {
             get
             {

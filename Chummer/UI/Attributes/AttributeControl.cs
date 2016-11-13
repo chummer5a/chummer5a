@@ -43,9 +43,10 @@ namespace Chummer.UI.Attributes
                 nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Base), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.Visible = true;
-                nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.TotalMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
+
+				nudKarma.Minimum = 0;
+				nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.TotalMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.Minimum = 0;
                 nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
 	            cmdBurnEdge.Visible = false;
