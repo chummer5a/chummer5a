@@ -11,6 +11,8 @@ Application Changes:
 - Fixed a crash caused by cancelling out of text selection bonus nodes such as when creating a Fake SIN. 
 - Fixed an issue that caused Essence loss in priority creation mode to revert MAG/RES metatype minimums to 1. 
 - Fixed a crash caused by adding a a new knowledge skill after adding the PUSHeD bioware. 
+- Fixed a crash when loading the character roster caused by unreadable character files. 
+- Added the ability for qualities to qualify for discounts based on the presence of other qualities. 
 
 Data Changes: 
 
@@ -23,6 +25,8 @@ Data Changes:
 - Fixed a missing weapon category for the Huge Weapon Mount. 
 - Fixed a missing damage reduction from the Sawed Off shotgun mod. 
 - Reduced the cost for YNT Softweave to the cost of the Armour rather than double.
+- Removed redundant copies of the Mutaqua, Wendigo, Nosferatu, Blind, and Astral Hazing qualities. 
+- Removed redundant copies of the Infection power from Wendigo and Vampires. 
 
 Build 187
 

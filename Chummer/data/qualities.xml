@@ -178,12 +178,9 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Technomancer</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -210,12 +207,9 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Technomancer</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -242,12 +236,9 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Technomancer</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -273,12 +264,9 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Technomancer</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -304,12 +292,9 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Technomancer</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -335,12 +320,9 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Technomancer</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -539,12 +521,9 @@
 					<quality>Magic Resistance (Rating 2)</quality>
 					<quality>Magic Resistance (Rating 3)</quality>
 					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</forbidden>
 			<source>SR5</source>
@@ -565,12 +544,9 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magic Resistance (Rating 3)</quality>
 					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</forbidden>
 			<source>SR5</source>
@@ -590,12 +566,9 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magic Resistance (Rating 2)</quality>
 					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</forbidden>
 			<source>SR5</source>
@@ -616,12 +589,9 @@
 					<quality>Magic Resistance (Rating 2)</quality>
 					<quality>Magic Resistance (Rating 3)</quality>
 					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</forbidden>
 			<source>SR5</source>
@@ -785,12 +755,9 @@
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<source>SR5</source>
@@ -1330,12 +1297,9 @@
 					<metatype>Naga</metatype>
 					<metatype>Pixie</metatype>
 					<metatype>Sasquatch</metatype>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<forbidden>
@@ -1809,12 +1773,9 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<source>SR5</source>
@@ -3023,12 +2984,9 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3392,45 +3350,23 @@
 		</quality>
 		<quality>
 			<id>81f51f6b-672f-477b-b84a-10b602d714e0</id>
-			<name>Blind (Mundane)</name>
+			<name>Blind</name>
 			<karma>-15</karma>
+			<costdiscount>
+				<required>
+					<oneof>
+						<power>Astral Perception</power>
+						<quality>Magician</quality>
+						<quality>Aspected Magician</quality>
+						<quality>Infected: Mutaqua</quality>
+						<quality>Infected: Nosferatu</quality>
+						<quality>Infected: Wendigo</quality>
+					</oneof>
+				</required>
+				<value>-10</value>
+			</costdiscount>
 			<category>Negative</category>
 			<bonus />
-			<forbidden>
-				<oneof>
-					<quality>Magician</quality>
-					<quality>Aspected Magician</quality>
-					<quality>Reduced Sense (Sight)</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
-				</oneof>
-			</forbidden>
-			<source>RF</source>
-			<page>153</page>
-		</quality>
-		<quality>
-			<id>d6f5c7e3-62cd-44f7-b6ed-4f01d1623c35</id>
-			<name>Blind (Mage)</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<required>
-				<oneof>
-					<power>Astral Perception</power>
-					<quality>Magician</quality>
-					<quality>Aspected Magician</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Reduced Sense (Sight)</quality>
@@ -4780,12 +4716,9 @@
 				<oneof>
 					<quality>Magician</quality>
 					<quality>Aspected Magician</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Wendigo</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -6768,41 +6701,25 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<id>ff6bfa54-84e6-40aa-a4b6-63e6d9dfe5f7</id>
-			<name>Astral Hazing (non-Awakened)</name>
+			<id>8236f10b-345c-44f5-b0b1-648004f24d3f</id>
+			<name>Astral Hazing</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<forbidden>
-				<oneof>
-					<quality>Astral Hazing (Awakened)</quality>
-					<quality>Aspected Magician</quality>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-					<quality>Adept</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Nosferatu (Mundane)</quality>
-					<quality>Infected: Nosferatu (Awakened)</quality>
-					<quality>Infected: Wendigo (Mundane)</quality>
-					<quality>Infected: Wendigo (Awakened)</quality>
-				</oneof>
-			</forbidden>
-			<source>RF</source>
-			<page>119</page>
-			<metagenetic>yes</metagenetic>
-		</quality>
-		<quality>
-			<id>8236f10b-345c-44f5-b0b1-648004f24d3f</id>
-			<name>Astral Hazing (Awakened)</name>
-			<karma>-15</karma>
-			<category>Negative</category>
-			<bonus />
-			<forbidden>
-				<oneof>
-					<quality>Astral Hazing (non-Awakened)</quality>
-				</oneof>
-			</forbidden>
+			<costdiscount>
+				<required>
+					<oneof>
+						<quality>Aspected Magician</quality>
+						<quality>Magician</quality>
+						<quality>Mystic Adept</quality>
+						<quality>Adept</quality>
+						<quality>Infected: Mutaqua</quality>
+						<quality>Infected: Nosferatu</quality>
+						<quality>Infected: Wendigo</quality>
+					</oneof>
+				</required>
+				<value>-10</value>
+			</costdiscount>
 			<source>RF</source>
 			<page>119</page>
 			<metagenetic>yes</metagenetic>
@@ -9118,157 +9035,20 @@
 			<page>139</page>
 		</quality>
 		<quality>
-			<id>f74b4ef1-988f-4787-9a8c-aea493bd7e95</id>
-			<name>Infected: Mutaqua (Mundane)</name>
+			<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
+			<name>Infected: Mutaqua</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>54</karma>
-			<category>Positive</category>
-			<bonus>
-				<armor>1</armor>
-				<enabletab>
-					<name>adept</name>
-					<name>critter</name>
-				</enabletab>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-					<optionalpower>Fear</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<reach>1</reach>
-				<replaceattributes>
-					<replaceattribute>
-						<name>BOD</name>
-						<min>5</min>
-						<max>12</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>AGI</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>REA</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>STR</name>
-						<min>5</min>
-						<max>13</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>WIL</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>LOG</name>
-						<min>1</min>
-						<max>5</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>INT</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>CHA</name>
-						<min>1</min>
-						<max>4</max>
-					</replaceattribute>
-				</replaceattributes>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<attribute>AGI</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<attribute>AGI</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<val>1</val>
-					</selectattribute>
-				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power select="Fire">Vulnerability</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Extreme">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Troll</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<quality>Infected: Fomoraig</quality>
-					<quality>Infected: Dzoo-Noo-Qua</quality>
-					<quality>Infected: Ghoul (Troll)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
-					<quality>Infected: Vampire (Non-Human)</quality>
-					<quality>Magician</quality>
-					<quality>Adept</quality>
-					<quality>Mystic Adept</quality>
-				</oneof>
-			</forbidden>
-			<naturalweapons>
-				<naturalweapon>
-					<name>Infected Claws</name>
-					<reach>0</reach>
-					<damage>(STR+2)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-				<naturalweapon>
-					<name>Infected Bite</name>
-					<reach>-1</reach>
-					<damage>(STR+1)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-			</naturalweapons>
-			<source>RF</source>
-			<page>139</page>
-		</quality>
-		<quality>
-			<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
-			<name>Infected: Mutaqua (Awakened)</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>44</karma>
+			<costdiscount>
+				<required>
+					<oneof>
+						<quality>Magician</quality>
+						<quality>Adept</quality>
+						<quality>Mystic Adept</quality>
+					</oneof>
+				</required>
+				<discount>-10</discount>
+			</costdiscount>
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
@@ -9384,8 +9164,7 @@
 					<quality>Infected: Fomoraig</quality>
 					<quality>Infected: Dzoo-Noo-Qua</quality>
 					<quality>Infected: Ghoul (Troll)</quality>
-					<quality>Infected: Mutaqua (Mundane)</quality>
-					<quality>Infected: Mutaqua (Awakened)</quality>
+					<quality>Infected: Mutaqua</quality>
 					<quality>Infected: Vampire (Non-Human)</quality>
 					<quality>Mystic Adept</quality>
 				</oneof>
@@ -9417,9 +9196,19 @@
 		</quality>
 		<quality>
 			<id>39a8e176-ddbf-470e-84a0-ba25ccd92ca0</id>
-			<name>Infected: Nosferatu (Awakened)</name>
+			<name>Infected: Nosferatu</name>
 			<contributetolimit>no</contributetolimit>
-			<karma>38</karma>
+			<karma>48</karma>
+			<costdiscount>
+				<required>
+					<oneof>
+						<quality>Magician</quality>
+						<quality>Adept</quality>
+						<quality>Mystic Adept</quality>
+					</oneof>
+				</required>
+				<discount>-10</discount>
+			</costdiscount>
 			<category>Positive</category>
 			<bonus>
 				<enabletab>
@@ -9537,143 +9326,6 @@
 					<quality>Magic Resistance (Rating 3)</quality>
 					<quality>Magic Resistance (Rating 4)</quality>
 					<quality>Technomancer</quality>
-				</oneof>
-			</forbidden>
-			<naturalweapons>
-				<naturalweapon>
-					<name>Infected Bite</name>
-					<reach>-1</reach>
-					<damage>(STR+1)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-			</naturalweapons>
-			<source>RF</source>
-			<page>139</page>
-		</quality>
-		<quality>
-			<id>6c50bd74-794e-4c7a-bd94-2033369ca31a</id>
-			<name>Infected: Nosferatu (Mundane)</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>48</karma>
-			<category>Positive</category>
-			<bonus>
-				<enabletab>
-          <name>magician</name>
-          <name>adept</name>
-				  <name>critter</name>
-				</enabletab>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
-					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<replaceattributes>
-					<replaceattribute>
-						<name>BOD</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>AGI</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>REA</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>STR</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>WIL</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>LOG</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>INT</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>CHA</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-				</replaceattributes>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<attribute>AGI</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<attribute>AGI</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<attribute>LOG</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<attribute>LOG</attribute>
-						<val>1</val>
-					</selectattribute>
-				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power>Infection</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Extreme">Allergy</power>
-					<power select="Metahuman Blood">Dietary Requirement</power>
-					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-				</critterpowers>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Human</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-					<quality>Adept</quality>
 				</oneof>
 			</forbidden>
 			<naturalweapons>
@@ -9912,7 +9564,6 @@
 				<power select="Age">Immunity</power>
 				<power>Essence Loss</power>
 				<power>Dual Natured</power>
-				<power>Infection</power>
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Blood">Dietary Requirement</power>
@@ -9950,155 +9601,21 @@
 			<page>140</page>
 		</quality>
 		<quality>
-			<id>952372b4-56a5-4128-98db-69886c7a4a21</id>
-			<name>Infected: Wendigo (Mundane)</name>
+			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
+			<name>Infected: Wendigo</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>47</karma>
 			<category>Positive</category>
-			<bonus>
-				<enabletab>
-					<name>magician</name>
-					<name>critter</name>
-				</enabletab>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<replaceattributes>
-					<replaceattribute>
-						<name>BOD</name>
-						<min>4</min>
-						<max>11</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>AGI</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>REA</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>STR</name>
-						<min>3</min>
-						<max>9</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>WIL</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>LOG</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>INT</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>CHA</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-				</replaceattributes>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<attribute>LOG</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<attribute>LOG</attribute>
-						<val>1</val>
-					</selectattribute>
-				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power>Infection</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power>Infection</power>
-					<power select="Ferrous Metals, Moderate">Allergy</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Ork</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-					<quality>Adept</quality>
-				</oneof>
-			</forbidden>
-			<naturalweapons>
-				<naturalweapon>
-					<name>Infected Claws</name>
-					<reach>0</reach>
-					<damage>(STR+2)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-				<naturalweapon>
-					<name>Infected Bite</name>
-					<reach>-1</reach>
-					<damage>(STR+1)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-			</naturalweapons>
-			<source>RF</source>
-			<page>140</page>
-		</quality>
-		<quality>
-			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
-			<name>Infected: Wendigo (Awakened)</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>37</karma>
-			<category>Positive</category>
+			<costdiscount>
+				<required>
+					<oneof>
+						<quality>Magician</quality>
+						<quality>Adept</quality>
+						<quality>Mystic Adept</quality>
+					</oneof>
+				</required>
+				<discount>-10</discount>
+			</costdiscount>
 			<bonus>
 				<enabletab>
           <name>magician</name>
@@ -10193,7 +9710,6 @@
 					<power select="Age">Immunity</power>
 					<power>Essence Loss</power>
 					<power>Dual Natured</power>
-					<power>Infection</power>
 					<power select="Ferrous Metals, Moderate">Allergy</power>
 					<power select="Sunlight, Severe">Allergy</power>
 					<power select="Metahuman Flesh">Dietary Requirement</power>
@@ -10202,156 +9718,6 @@
 			<required>
 				<allof>
 					<metatype>Ork</metatype>
-				</allof>
-				<oneof>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-          <quality>Aspected Magician</quality>
-				</oneof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-				</oneof>
-			</forbidden>
-			<naturalweapons>
-				<naturalweapon>
-					<name>Infected Claws</name>
-					<reach>0</reach>
-					<damage>(STR+2)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-				<naturalweapon>
-					<name>Infected Bite</name>
-					<reach>-1</reach>
-					<damage>(STR+1)P</damage>
-					<ap>-1</ap>
-					<useskill>Unarmed Combat</useskill>
-					<accuracy>Physical</accuracy>
-					<source>RF</source>
-					<page>137</page>
-				</naturalweapon>
-			</naturalweapons>
-			<source>RF</source>
-			<page>140</page>
-		</quality>
-		<quality>
-			<id>38732eb7-e04a-44d8-882e-14cc19fbaca1</id>
-			<name>Infected: Wendigo (Adept)</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>37</karma>
-			<category>Positive</category>
-			<bonus>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<replaceattributes>
-					<replaceattribute>
-						<name>BOD</name>
-						<min>4</min>
-						<max>11</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>AGI</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>REA</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>STR</name>
-						<min>3</min>
-						<max>9</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>WIL</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>LOG</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>INT</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>CHA</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-				</replaceattributes>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<attribute>LOG</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<attribute>LOG</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power>Infection</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power>Infection</power>
-					<power select="Ferrous Metals, Moderate">Allergy</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Ork</metatype>
-					<quality>Adept</quality>
 				</allof>
 			</required>
 			<forbidden>
