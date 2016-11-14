@@ -2464,10 +2464,10 @@
 		<mod>
 			<id>3fdd4706-9052-4c6b-8c2c-61dbb5c1f16f</id>
 			<name>Feedback Clothing</name>
-			<category>Clothing</category>
+			<category>General</category>
 			<armor>0</armor>
 			<maxrating>1</maxrating>
-			<armorcapacity>[0]</armorcapacity>
+			<armorcapacity>[3]</armorcapacity>
 			<avail>8</avail>
 			<cost>500</cost>
 			<source>SR5</source>
