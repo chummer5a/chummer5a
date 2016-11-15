@@ -8545,7 +8545,7 @@
 			<avail>+2R</avail>
 			<cost>Weapon Cost</cost>
 			<gears>
-				<usegear rating="2">Laser Range Finder</usegear>
+				<usegear>Laser Range Finder</usegear>
 				<usegear>Camera, Micro</usegear>
 			</gears>
 			<source>SR5</source>
@@ -8560,7 +8560,7 @@
 			<avail>4R</avail>
 			<cost>200</cost>
 			<gears>
-				<usegear rating="2">Laser Range Finder</usegear>
+				<usegear>Laser Range Finder</usegear>
 				<usegear>Camera, Micro</usegear>
 			</gears>
 			<source>SR5</source>
