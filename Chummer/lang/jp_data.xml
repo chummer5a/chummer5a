@@ -6252,7 +6252,7 @@
       <category translate="聴覚強化機能">Audio Enhancements</category>
       <category translate="医療機器">Biotech</category>
       <category translate="コムリンク・アクセサリー">Commlink Accessories</category>
-      <category translate="ドクワゴン契約">DocWagon Contract</category>
+      <category translate="契約/営繕">Contracts/Upkeep</category>
       <category translate="ドラッグ">Drugs</category>
       <category translate="爆薬">Explosives</category>
       <category translate="収束具">Foci</category>
@@ -8280,26 +8280,26 @@
       </gear>
       <gear>
         <id>6b28b36a-416a-4041-9561-558083158d7c</id>
-        <name>DocWagon Contract, Basic</name>
-        <translate>DocWagon Contract, Basic</translate>
+        <name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Basic (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
         <id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
-        <name>DocWagon Contract, Gold</name>
-        <translate>DocWagon Contract, Gold</translate>
+        <name>DocWagon Contract, Gold (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Gold (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
         <id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
-        <name>DocWagon Contract, Platinum</name>
-        <translate>DocWagon Contract, Platinum</translate>
+        <name>DocWagon Contract, Platinum (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Platinum (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
         <id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
-        <name>DocWagon Contract, Super-Platinum</name>
-        <translate>DocWagon Contract, Super-Platinum</translate>
+        <name>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>

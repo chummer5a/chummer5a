@@ -2139,6 +2139,20 @@
 			<source>CF</source>
 			<page>158</page>
 		</bioware>
+		<bioware>
+			<id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
+			<name>Immunization</name>
+			<category>Genemods</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>20000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>164</page>
+		</bioware>
 		<!-- End Region -->
 		<!-- Region Genetic Restoration -->
 		<bioware>

@@ -18,6 +18,7 @@ namespace Chummer.Backend.Equipment
 		private Weapon _objParent;
 		private string _strName = "";
 		private string _strMount = "";
+		private string _strExtraMount = "";
 		private string _strRC = "";
 		private string _strDamage = "";
 		private string _strDamageType = "";
@@ -66,11 +67,12 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
 		/// <param name="intRating">Rating of the Weapon Accessory.</param>
-		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string strMount, int intRating)
+		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string[] strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
 		{
 			_strName = objXmlAccessory["name"].InnerText;
-			_strMount = strMount;
-			_intRating = intRating;
+			_strMount = strMount[0];
+            _strExtraMount = strMount[1];
+            _intRating = intRating;
 			_strAvail = objXmlAccessory["avail"].InnerText;
 			_strCost = objXmlAccessory["cost"].InnerText;
 			_strSource = objXmlAccessory["source"].InnerText;
@@ -99,7 +101,40 @@ namespace Chummer.Backend.Equipment
 			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
 			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
 
-			if (GlobalOptions.Instance.Language != "en-us")
+            // Add any Gear that comes with the Armor.
+            if (objXmlAccessory["gears"] != null && blnCreateChildren)
+            {
+                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                foreach (XmlNode objXmlAccessoryGear in objXmlAccessory.SelectNodes("gears/usegear"))
+                {
+                    intRating = 0;
+                    string strForceValue = "";
+                    if (objXmlAccessoryGear.Attributes["rating"] != null)
+                        intRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
+                    if (objXmlAccessoryGear.Attributes["select"] != null)
+                        strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
+
+                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
+                    Gear objGear = new Gear(_objCharacter);
+
+                    TreeNode objGearNode = new TreeNode();
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+
+                    objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                    objGear.Cost = "0";
+                    objGear.MaxRating = objGear.Rating;
+                    objGear.MinRating = objGear.Rating;
+                    objGear.IncludedInParent = true;
+                    _lstGear.Add(objGear);
+
+                    objGearNode.ContextMenuStrip = cmsAccessoryGear;
+                    objNode.Nodes.Add(objGearNode);
+                    objNode.Expand();
+                }
+            }
+
+            if (GlobalOptions.Instance.Language != "en-us")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + _strName + "\"]");
@@ -126,6 +161,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("mount", _strMount);
+			objWriter.WriteElementString("extramount", _strExtraMount);
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
@@ -191,6 +227,7 @@ namespace Chummer.Backend.Equipment
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strMount = objNode["mount"].InnerText;
+			objNode.TryGetField("extramount", out _strExtraMount, "");
 			_strRC = objNode["rc"].InnerText;
 			objNode.TryGetField("rating", out _intRating,0);
 			objNode.TryGetField("rcgroup", out _intRCGroup, 0);
@@ -311,6 +348,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteStartElement("accessory");
 			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteElementString("mount", _strMount);
+			objWriter.WriteElementString("extramount", _strExtraMount);
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("conceal", _strConceal);
 			objWriter.WriteElementString("avail", TotalAvail);
@@ -554,6 +592,21 @@ namespace Chummer.Backend.Equipment
 			set
 			{
 				_strMount = value;
+			}
+		}
+		
+		/// <summary>
+		/// Additional mount slot used (if any).
+		/// </summary>
+		public string ExtraMount
+		{
+			get
+			{
+				return _strExtraMount;
+			}
+			set
+			{
+				_strExtraMount = value;
 			}
 		}
 

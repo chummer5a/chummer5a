@@ -68,7 +68,7 @@ namespace Chummer
 			// Populate the Accessory list.
 			string[] strAllowed = _strAllowedMounts.Split('/');
 			string strMount = "";
-			foreach (string strAllowedMount in strAllowed)
+            foreach (string strAllowedMount in strAllowed)
 			{
 				if (strAllowedMount != "")
 					strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
@@ -78,8 +78,33 @@ namespace Chummer
 			XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlAccessory["name"].InnerText;
+                if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                {
+                    bool boolCanAdd = false;
+                    if (strAllowed.Length > 1)
+                    {
+                        foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')))
+                        {
+                            if (strItem != "")
+                            {
+                                foreach (string strAllowedMount in strAllowed)
+                                {
+                                    if (strAllowedMount == strItem)
+                                    {
+                                        boolCanAdd = true;
+                                        break;
+                                    }
+                                }
+                                if (boolCanAdd)
+                                    break;
+                            }
+                        }
+                    }
+                    if (!boolCanAdd)
+                        continue;
+                }
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlAccessory["name"].InnerText;
 				if (objXmlAccessory["translate"] != null)
 					objItem.Name = objXmlAccessory["translate"].InnerText;
 				else
@@ -143,6 +168,27 @@ namespace Chummer
 		{
 			UpdateGearInfo();
 		}
+
+        private void UpdateMountFields(bool boolChangeExtraMountFirst)
+        {
+            if ((cboMount.SelectedItem.ToString() != "None") && (cboExtraMount.SelectedItem.ToString() != "None") 
+                && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+            {
+                if (boolChangeExtraMountFirst)
+                    cboExtraMount.SelectedIndex = 0;
+                else
+                    cboMount.SelectedIndex = 0;
+                while ((cboMount.SelectedItem.ToString() != "None") && (cboExtraMount.SelectedItem.ToString() != "None")
+                    && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+                {
+                    if (boolChangeExtraMountFirst)
+                        cboExtraMount.SelectedIndex += 1;
+                    else
+                        cboMount.SelectedIndex += 1;
+                }
+            }
+        }
+
 		private void UpdateGearInfo()
 		{
 			// Retrieve the information for the selected Accessory.
@@ -190,13 +236,13 @@ namespace Chummer
 			{
 				if (strCurrentMount != "")
 				{
-					foreach (string strAllowedMount in strAllowed)
-					{
-						if (strCurrentMount == strAllowedMount)
-						{
-							cboMount.Items.Add(strCurrentMount);
-						}
-					}
+                    foreach (string strAllowedMount in strAllowed)
+                    {
+                        if (strCurrentMount == strAllowedMount)
+                        {
+                            cboMount.Items.Add(strCurrentMount);
+                        }
+                    }
 				}
 			}
 			if (cboMount.Items.Count <= 1)
@@ -208,9 +254,52 @@ namespace Chummer
 				cboMount.Enabled = true;
 			}
 			cboMount.SelectedIndex = 0;
-			// Avail.
-			// If avail contains "F" or "R", remove it from the string so we can use the expression.
-			string strAvail = "";
+
+            List<string> strExtraMounts = new List<string>();
+            if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+            {
+                foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')))
+                {
+                    strExtraMounts.Add(strItem);
+                }
+            }
+            strExtraMounts.Add("None");
+
+            List<string> strExtraAllowed = new List<string>();
+            foreach (string strItem in (_strAllowedMounts.Split('/')))
+            {
+                strExtraAllowed.Add(strItem);
+            }
+            strExtraAllowed.Add("None");
+            cboExtraMount.Items.Clear();
+            foreach (string strCurrentMount in strExtraMounts)
+            {
+                if (strCurrentMount != "")
+                {
+                    foreach (string strAllowedMount in strAllowed)
+                    {
+                        if (strCurrentMount == strAllowedMount)
+                        {
+                            cboExtraMount.Items.Add(strCurrentMount);
+                        }
+                    }
+                }
+            }
+            if (cboExtraMount.Items.Count <= 1)
+            {
+                cboExtraMount.Enabled = false;
+            }
+            else
+            {
+                cboExtraMount.Enabled = true;
+            }
+            cboExtraMount.SelectedIndex = 0;
+            if ((cboMount.SelectedItem.ToString() != "None") && (cboExtraMount.SelectedItem.ToString() != "None")
+                && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+                cboExtraMount.SelectedIndex += 1;
+            // Avail.
+            // If avail contains "F" or "R", remove it from the string so we can use the expression.
+            string strAvail = "";
 			string strAvailExpr = objXmlAccessory["avail"].InnerText;
 			XPathExpression xprAvail;
 			XPathNavigator nav = _objXmlDocument.CreateNavigator();
@@ -290,11 +379,11 @@ namespace Chummer
 		/// <summary>
 		/// Mount that was selected in the dialogue.
 		/// </summary>
-		public string SelectedMount
+		public string[] SelectedMount
 		{
 			get
 			{
-				return cboMount.SelectedItem.ToString();
+				return new string[] { cboMount.SelectedItem.ToString(), cboExtraMount.SelectedItem.ToString()};
 			}
 		}
 
@@ -414,5 +503,15 @@ namespace Chummer
             CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             objCommon.OpenPDF(lblSource.Text);
         }
-	}
+
+        private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateMountFields(true);
+        }
+
+        private void cboExtraMount_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateMountFields(false);
+        }
+    }
 }

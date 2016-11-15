@@ -5093,6 +5093,27 @@
 			<page>465</page>
 		</vehicle>
 		<vehicle>
+			<id>715a8171-8167-4391-8d33-f7d50217efec</id>
+			<name>Ocular Drone</name>
+			<category>Drones: Mini</category>
+			<hidden />
+			<handling>4</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>3</pilot>
+			<body>1</body>
+			<armor>0</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<avail>8</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>453</page>
+		</vehicle>
+		<vehicle>
 			<id>d187e9f7-b308-426f-ac35-957ba601c70c</id>
 			<name>MCT Fly-Spy (Minidrone)</name>
 			<category>Drones: Mini</category>
@@ -5195,6 +5216,10 @@
 				<gear rating="3" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
+				<name>Drone Arm</name>
+				<name>Drone Arm</name>
+				<name>Drone Leg</name>
+				<name>Drone Leg</name>
 				<name rating="1">Realistic Features</name>
 				<name>Weapon Mount</name>
 				<name>Weapon Mount</name>
@@ -5247,6 +5272,10 @@
 			<gears>
 				<gear rating="2" maxrating="4">Sensor Array</gear>
 			</gears>
+			<mods>
+				<name>Drone Arm</name>
+				<name>Drone Arm</name>
+			</mods>
 			<avail>4</avail>
 			<cost>8000</cost>
 			<source>SS</source>
@@ -5363,7 +5392,7 @@
 		<vehicle>
 			<id>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</id>
 			<name>Modified Renraku Manservant-3 (Large)</name>
-			<category>Drones: Large</category>
+			<category>Drones: Anthro</category>
 			<handling>2</handling>
 			<accel>2</accel>
 			<speed>2</speed>
@@ -5375,6 +5404,12 @@
 			<gears>
 				<gear rating="2" maxrating="5">Sensor Array</gear>
 			</gears>
+			<mods>
+				<name>Drone Arm</name>
+				<name>Drone Arm</name>
+				<name>Drone Leg</name>
+				<name>Drone Leg</name>
+			</mods>
 			<avail>14F</avail>
 			<cost>9000</cost>
 			<source>SS</source>
@@ -5418,6 +5453,9 @@
 			<gears>
 				<gear rating="3" maxrating="5">Sensor Array</gear>
 			</gears>
+			<mods>
+				<name>Dustoff Armored Valkyrie Module</name>
+			</mods>
 			<avail>10R</avail>
 			<cost>12000</cost>
 			<source>BB</source>
@@ -5426,7 +5464,7 @@
 		<vehicle>
 			<id>d186dbc2-52e6-4804-94ca-7db96c2afdde</id>
 			<name>Shiawase Caduceus 'CAD' 7 (Medium)</name>
-			<category>Drones: Medium</category>
+			<category>Drones: Anthro</category>
 			<handling>4</handling>
 			<accel>1</accel>
 			<speed>2</speed>
@@ -5438,6 +5476,17 @@
 			<gears>
 				<gear rating="2" maxrating="4">Sensor Array</gear>
 			</gears>
+			<mods>
+				<name>Drone Arm</name>
+				<name>Drone Arm</name>
+				<name>Drone Leg</name>
+				<name>Drone Leg</name>
+			</mods>
+			<cyberwares>
+				<cyberware>
+					<name>Snake Fingers</name>
+				</cyberware>
+			</cyberwares>
 			<avail>12R</avail>
 			<cost>16500</cost>
 			<source>BB</source>
@@ -5527,6 +5576,12 @@
 			<gears>
 				<gear rating="3" maxrating="4">Sensor Array</gear>
 			</gears>
+			<mods>
+				<name>Synthetic Drone Arm</name>
+				<name>Synthetic Drone Arm</name>
+				<name>Synthetic Drone Leg</name>
+				<name>Synthetic Drone Leg</name>
+			</mods>
 			<avail>24F</avail>
 			<cost>200000</cost>
 			<source>HT</source>
@@ -5546,7 +5601,16 @@
 			<sensor>3</sensor>
 			<gears>
 				<gear rating="3" maxrating="4">Sensor Array</gear>
+				<gear rating="1" select="Blades">Tutorsoft</gear>
+				<gear rating="1" select="Clubs">Tutorsoft</gear>
+				<gear rating="1" select="Unarmed Combat">Tutorsoft</gear>
 			</gears>
+			<mods>
+				<name>Drone Arm</name>
+				<name>Drone Arm</name>
+				<name>Drone Leg</name>
+				<name>Drone Leg</name>
+			</mods>
 			<avail>6</avail>
 			<cost>5000</cost>
 			<source>HT</source>
@@ -5580,7 +5644,7 @@
 			<category>Vehicle Weapon Mount</category>
 			<rating>0</rating>
 			<slots>0</slots>
-			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
+			<weaponmountcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponmountcategories>
 			<avail>8F</avail>
 			<cost>2500</cost>
 			<source>SR5</source>
@@ -5592,7 +5656,7 @@
 			<category>Vehicle Weapon Mount</category>
 			<rating>0</rating>
 			<slots>0</slots>
-			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
+			<weaponmountcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponmountcategories>
 			<avail>14F</avail>
 			<cost>5000</cost>
 			<source>SR5</source>
@@ -5764,6 +5828,17 @@
 			<page>?</page>
 		</mod>
 		<mod>
+			<id>bdfd51e8-ac56-42b3-8b3e-a067608a21b3</id>
+			<name>Dustoff Armored Valkyrie Module</name>
+			<category>Body</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>BB</source>
+			<page>23</page>
+		</mod>
+		<mod>
 			<id>6ac249ee-84c0-498f-9377-149ccbc2f959</id>
 			<name>Acceleration Enhancement</name>
 			<category>Powertrain</category>
@@ -5801,6 +5876,7 @@
 			<cost>5000</cost>
 			<required>
 				<bodymin>4</bodymin>
+				<bodymax>6</bodymax>
 			</required>
 			<source>R5</source>
 			<page>154</page>
@@ -6363,6 +6439,7 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>2</slots>
+			<!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
 			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
 			<avail>8F</avail>
 			<cost>1500</cost>
@@ -6375,7 +6452,8 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>4</slots>
-			<weaponmountcategories>Melee,Machine Pistols,Submachine Guns,Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Missile Launchers,Lasers</weaponmountcategories>
+			<!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Missile Launchers,Lasers</weaponmountcategories>
 			<avail>10F</avail>
 			<cost>4000</cost>
 			<source>R5</source>
@@ -6529,6 +6607,9 @@
 			<name>Increased Seating</name>
 			<category>Body</category>
 			<rating>0</rating>
+			<bonus>
+				<seats>+Seats * 0.5</seats>
+			</bonus>
 			<slots>2</slots>
 			<avail>4</avail>
 			<cost>2000</cost>
@@ -6642,7 +6723,7 @@
 			<name>Winch (Enhanced)</name>
 			<category>Body</category>
 			<rating>0</rating>
-			<slots>1</slots>
+			<slots>2</slots>
 			<avail>8</avail>
 			<cost>4000</cost>
 			<source>R5</source>
@@ -7023,6 +7104,30 @@
 			<page>124</page>
 		</mod>
 		<mod>
+			<id>45d84d77-5461-4441-a529-527aba347334</id>
+			<name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
+			<category>All</category>
+			<optionaldrone/>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>25</cost>
+			<source>R5</source>
+			<page>124</page>
+		</mod>
+		<mod>
+			<id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
+			<name>Pop-Out Weapon Mount Add-on (Drone)</name>
+			<category>All</category>
+			<optionaldrone/>
+			<rating>7</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>Rating * 100</cost>
+			<source>R5</source>
+			<page>124</page>
+		</mod>
+		<mod>
 			<id>b5b9cd7e-dbb3-42e9-abcd-f805f6a4b10e</id>
 			<name>Realistic Features (Drone)</name>
 			<category>All</category>
@@ -7089,6 +7194,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<subsystems>
+				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
@@ -7106,6 +7212,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<subsystems>
+				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
@@ -7123,6 +7230,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<subsystems>
+				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
@@ -7140,6 +7248,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<subsystems>
+				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
@@ -7157,6 +7266,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<subsystems>
+				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
@@ -7410,6 +7520,89 @@
 			<cost>Vehicle Cost * 0.05</cost>
 			<source>RF</source>
 			<page>157</page>
+		</mod>
+		<mod>
+			<id>9ab00bed-d955-4ade-b875-b6964517c137</id>
+			<name>Daihatsu-Caterpillar Horseman Passenger Pod</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>6000</cost>
+			<bonus>
+				<speed>-1</speed>
+				<accel>-1</accel>
+				<handling>-1</handling>
+				<seats>+1</seats>
+			</bonus>
+			<source>R5</source>
+			<page>42</page>
+		</mod>
+		<mod>
+			<id>5bb7fb2d-e657-4fb8-9f26-cf1f15854fbc</id>
+			<name>Daihatsu-Caterpillar Horseman Cargo Pod</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>6000</cost>
+			<bonus>
+				<speed>-1</speed>
+				<accel>-1</accel>
+				<handling>-1</handling>
+			</bonus>
+			<source>R5</source>
+			<page>42</page>
+		</mod>
+		<mod>
+			<id>e6e9ff78-b7f4-4fe4-969b-af1cb77c5c1b</id>
+			<name>Daihatsu-Caterpillar Horseman Advanced Cargo Pod</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<bonus>
+				<speed>-1</speed>
+				<accel>-1</accel>
+				<handling>-1</handling>
+			</bonus>
+			<source>R5</source>
+			<page>42</page>
+		</mod>
+		<mod>
+			<id>b7052288-0255-4f41-9827-8398c914542c</id>
+			<name>Daihatsu-Caterpillar Horseman Drone Pod</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>4000</cost>
+			<bonus>
+				<speed>-1</speed>
+				<accel>-1</accel>
+				<handling>-1</handling>
+			</bonus>
+			<source>R5</source>
+			<page>42</page>
+		</mod>
+		<mod>
+			<id>0be26038-6118-41d0-9f62-6fb831568e52</id>
+			<name>Daihatsu-Caterpillar Horseman Security Pod</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out for weapon mount -->
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
+			<avail>0</avail>
+			<cost>5500</cost>
+			<bonus>
+				<speed>-1</speed>
+				<accel>-1</accel>
+				<handling>-1</handling>
+			</bonus>
+			<source>R5</source>
+			<page>42</page>
 		</mod>
 	</mods>
 </chummer>

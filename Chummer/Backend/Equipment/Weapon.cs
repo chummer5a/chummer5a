@@ -82,7 +82,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
 			_strName = objXmlWeapon["name"].InnerText;
 			_strCategory = objXmlWeapon["category"].InnerText;
@@ -205,7 +205,7 @@ namespace Chummer.Backend.Equipment
 					TreeNode objUnderbarrelNode = new TreeNode();
 					XmlNode objXmlWeaponNode =
 						objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-					objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory);
+					objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 					objUnderbarrelWeapon.IncludedInWeapon = true;
 					objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
 					_lstUnderbarrel.Add(objUnderbarrelWeapon);
@@ -232,15 +232,23 @@ namespace Chummer.Backend.Equipment
 					{
 						intAccessoryRating = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
 					}
-					if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+                    if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
 					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
+                        if (objXmlWeaponAccessory.InnerXml.Contains("<extramount>"))
+                        {
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                        }
+                        else
+                        {
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { objXmlAccessory["mount"].InnerText, "None" }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                        }
 					}
 					else
 					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, "Internal", intAccessoryRating);
+						objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { "Internal" , "None" }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
 					}
-					objAccessory.IncludedInWeapon = true;
+
+                    objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
 					_lstAccessories.Add(objAccessory);
@@ -1862,9 +1870,10 @@ namespace Chummer.Backend.Equipment
 						bool blnFound = false;
 						foreach (WeaponAccessory objAccessory in _lstAccessories)
 						{
-							if (objAccessory.Mount == objXmlMount.InnerText)
+							if ((objAccessory.Mount == objXmlMount.InnerText) || (objAccessory.ExtraMount == objXmlMount.InnerText))
 							{
 								blnFound = true;
+								break;
 							}
 						}
 						if (!blnFound)

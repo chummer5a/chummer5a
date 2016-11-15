@@ -408,6 +408,7 @@
 			<ess>0</ess>
 			<capacity>[6]</capacity>
 			<avail>6</avail>
+			<addvehicle>Ocular Drone</addvehicle>
 			<cost>6000</cost>
 			<source>SR5</source>
 			<page>453</page>
@@ -1597,6 +1598,18 @@
 			<capacity>[1]</capacity>
 			<avail>8</avail>
 			<cost>2000</cost>
+			<bonus>
+				<specificskill>
+					<name>Mathematics</name>
+					<bonus>4</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>1</value>
+					<condition>Only for Scientific or Technical Knowledge Skills</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>80</page>
 		</cyberware>
@@ -2032,7 +2045,7 @@
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>1</value>
-					<condition>Only wfor climbing</condition>
+					<condition>Only for climbing</condition>
 				</limitmodifier>
 			</bonus>
 			<source>CF</source>
@@ -3327,10 +3340,14 @@
 			<avail>16F</avail>
 			<cost>Rating * 7500</cost>
 			<bonus>
+				<skillattribute>
+					<name>INT</name>
+					<bonus>1</bonus>
+				</skillattribute>
 				<limitmodifier>
 					<limit>Mental</limit>
 					<value>Rating</value>
-					<condition>Only with Intuition-linked skills</condition>
+					<condition>Only with Intuition-based skills</condition>
 				</limitmodifier>
 			</bonus>
 			<forcegrade>Standard</forcegrade>
@@ -3347,9 +3364,13 @@
 			<avail>16F</avail>
 			<cost>Rating * 7500</cost>
 			<bonus>
+				<skillattribute>
+					<name>LOG</name>
+					<bonus>1</bonus>
+				</skillattribute>
 				<limitmodifier>
 					<limit>Mental</limit>
-					<value>1</value>
+					<value>Rating</value>
 					<condition>Only with Logic-based skills</condition>
 				</limitmodifier>
 			</bonus>

@@ -6443,7 +6443,7 @@
 			<category translate="Audioverstärkung">Audio Enhancements</category>
 			<category translate="Biotech" translated="True">Biotech</category>
 			<category translate="Kommlink-Zubehör">Commlink Accessories</category>
-			<category translate="DocWagon-Vertrag">DocWagon Contract</category>
+			<category translate="Verträge/Unterhalt">Contracts/Upkeep</category>
 			<category translate="Drogen">Drugs</category>
 			<category translate="Sprengstoffe">Explosives</category>
 			<category translate="Foki">Foci</category>
@@ -8706,26 +8706,26 @@
 			</gear>
 			<gear translated="True">
 				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
-				<name>DocWagon Contract, Basic</name>
-				<translate>DocWagon-Vertrag, Standard</translate>
+				<name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Standard (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
-				<name>DocWagon Contract, Gold</name>
-				<translate>DocWagon-Vertrag, Gold</translate>
+				<name>DocWagon Contract, Gold (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Gold (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
-				<name>DocWagon Contract, Platinum</name>
-				<translate>DocWagon-Vertrag, Platin</translate>
+				<name>DocWagon Contract, Platinum (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Platin (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
-				<name>DocWagon Contract, Super-Platinum</name>
-				<translate>DocWagon-Vertrag, Superplatin</translate>
+				<name>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Superplatin (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
@@ -9573,6 +9573,30 @@
 				<name>Dangerous Area</name>
 				<translate>gefährliche Gegend</translate>
 				<page>374</page>
+			</quality>
+			<quality translated="True">
+				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
+				<name>DocWagon Contract, Basic</name>
+				<translate>DocWagon-Vertrag, Standard</translate>
+				<page>454</page>
+			</quality>
+			<quality translated="True">
+				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
+				<name>DocWagon Contract, Gold</name>
+				<translate>DocWagon-Vertrag, Gold</translate>
+				<page>454</page>
+			</quality>
+			<quality translated="True">
+				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
+				<name>DocWagon Contract, Platinum</name>
+				<translate>DocWagon-Vertrag, Platin</translate>
+				<page>454</page>
+			</quality>
+			<quality translated="True">
+				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
+				<name>DocWagon Contract, Super-Platinum</name>
+				<translate>DocWagon-Vertrag, Superplatin</translate>
+				<page>454</page>
 			</quality>
 		</qualities>
 	</chummer>

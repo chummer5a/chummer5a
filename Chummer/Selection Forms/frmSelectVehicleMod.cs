@@ -152,7 +152,9 @@ namespace Chummer
 			}
 			foreach (XmlNode objXmlMod in objXmlModList)
 			{
-					ListItem objItem = new ListItem();
+                if (objXmlMod["hidden"] != null)
+                    continue;
+                ListItem objItem = new ListItem();
 					objItem.Value = objXmlMod["name"].InnerText;
 					if (objXmlMod["translate"] != null)
 						objItem.Name = objXmlMod["translate"].InnerText;

@@ -296,7 +296,7 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					WeaponAccessory objTemp = new WeaponAccessory(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, "", 0);
+					objTemp.Create(objXmlGear, objTempNode, new string[] { "" , "" }, 0, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;
@@ -518,7 +518,9 @@ namespace Chummer
 					Cyberware objTemp = new Cyberware(objCharacter);
 					List<Weapon> lstWeapons = new List<Weapon>();
 					List<TreeNode> lstNodes = new List<TreeNode>();
-					objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes);
+                    List<Vehicle> objVehicles = new List<Vehicle>();
+                    List<TreeNode> objVehicleNodes = new List<TreeNode>();
+                    objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
 					try
 					{
 						int objValue = objTemp.TotalCost;

@@ -237,6 +237,10 @@
       <key>Label_Mount</key>
       <text>Halterung:</text>
     </string>
+	<string>
+      <key>Label_ExtraMount</key>
+      <text>Extra Halterung:</text>
+    </string>
     <string>
       <key>Label_DataFile</key>
       <text>Datei:</text>

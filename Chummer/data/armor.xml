@@ -1877,6 +1877,18 @@
 		<!-- End Region -->
 		<!-- Region Hard Targets -->
 		<armor>
+			<id>e3ab6aec-a4ef-4a04-92fe-ffca02ebd92a</id>
+			<name>Shiawase Arms Simoom</name>
+			<category>Specialty Armor</category>
+			<armor>+1</armor>
+			<armorcapacity>0</armorcapacity>
+			<addweapon>Shiawase Arms Simoom</addweapon>
+			<avail>14R</avail>
+			<cost>1500</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
 			<id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
 			<name>Cloak</name>
 			<category>Cloaks</category>
@@ -2452,10 +2464,10 @@
 		<mod>
 			<id>3fdd4706-9052-4c6b-8c2c-61dbb5c1f16f</id>
 			<name>Feedback Clothing</name>
-			<category>Clothing</category>
+			<category>General</category>
 			<armor>0</armor>
 			<maxrating>1</maxrating>
-			<armorcapacity>[0]</armorcapacity>
+			<armorcapacity>[3]</armorcapacity>
 			<avail>8</avail>
 			<cost>500</cost>
 			<source>SR5</source>

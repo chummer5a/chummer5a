@@ -2174,7 +2174,7 @@
         <spec>Adepts</spec>
         <spec>Shamans</spec>
         <spec>Mages</spec>
-        <spec>Magic Adepts</spec>
+        <spec>Mystic Adepts</spec>
       </specs>
     </skill>
     <skill>
@@ -2206,6 +2206,7 @@
         <spec>Blood Magic</spec>
         <spec>Toxic Magic</spec>
         <spec>Insect Spirits</spec>
+		<spec>Shadow Spirits</spec>
       </specs>
     </skill>
     <skill>
@@ -2220,6 +2221,26 @@
         <spec>Speak</spec>
         <spec>Dialect</spec>
         <spec>Lingo</spec>
+      </specs>
+    </skill>
+	<skill>
+      <id>9843709f-803a-4424-88a2-d972d3405955</id>
+      <name>Mathematics</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>No</default>
+      <skillgroup />
+      <specs>
+		<spec>Arithmetic</spec>
+		<spec>Calculus</spec>
+		<spec>Geometry</spec>
+		<spec>Algebra</spec>
+		<spec>Number Theory</spec>
+        <spec>Game Theory</spec>
+        <spec>Graph Theory</spec>
+        <spec>Group Theory</spec>
+		<spec>Combinatorics</spec>
+		<spec>Statistics</spec>
       </specs>
     </skill>
     <skill>
