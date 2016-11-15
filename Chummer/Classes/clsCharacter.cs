@@ -217,16 +217,8 @@ namespace Chummer
 		private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
 
 		// Shapeshifter Attributes.
-		private CharacterAttrib _attShifterBOD = new CharacterAttrib("BOD", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterAGI = new CharacterAttrib("AGI", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterREA = new CharacterAttrib("REA", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterSTR = new CharacterAttrib("STR", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterCHA = new CharacterAttrib("CHA", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterINT = new CharacterAttrib("INT", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterLOG = new CharacterAttrib("LOG", CharacterAttrib.AttributeCategory.Shapeshifter);
-		private CharacterAttrib _attShifterWIL = new CharacterAttrib("WIL", CharacterAttrib.AttributeCategory.Shapeshifter);
 
-		private bool _blnMAGEnabled = false;
+	    private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnGroupMember = false;
         private string _strGroupName = "";
@@ -355,14 +347,14 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
-			_attShifterBOD._objCharacter = this;
-			_attShifterAGI._objCharacter = this;
-			_attShifterREA._objCharacter = this;
-			_attShifterSTR._objCharacter = this;
-			_attShifterCHA._objCharacter = this;
-			_attShifterINT._objCharacter = this;
-			_attShifterLOG._objCharacter = this;
-			_attShifterWIL._objCharacter = this;
+			ShifterBOD._objCharacter = this;
+			ShifterAGI._objCharacter = this;
+			ShifterREA._objCharacter = this;
+			ShifterSTR._objCharacter = this;
+			ShifterCHA._objCharacter = this;
+			ShifterINT._objCharacter = this;
+			ShifterLOG._objCharacter = this;
+			ShifterWIL._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
 			SkillsSection = new SkillsSection(this);
@@ -615,14 +607,14 @@ namespace Chummer
 	        if (_strMetatypeCategory == "Shapeshifter" && _blnCreated)
 	        {
 				objWriter.WriteStartElement("shapeshifter");
-				_attShifterBOD.Save(objWriter);
-				_attShifterAGI.Save(objWriter);
-				_attShifterREA.Save(objWriter);
-				_attShifterSTR.Save(objWriter);
-				_attShifterCHA.Save(objWriter);
-				_attShifterINT.Save(objWriter);
-				_attShifterLOG.Save(objWriter);
-				_attShifterWIL.Save(objWriter);
+				ShifterBOD.Save(objWriter);
+				ShifterAGI.Save(objWriter);
+				ShifterREA.Save(objWriter);
+				ShifterSTR.Save(objWriter);
+				ShifterCHA.Save(objWriter);
+				ShifterINT.Save(objWriter);
+				ShifterLOG.Save(objWriter);
+				ShifterWIL.Save(objWriter);
 				objWriter.WriteEndElement();
 			}
             // </attributes>
@@ -1290,29 +1282,29 @@ namespace Chummer
 	        {
 		        // Attributes.
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"BOD\"]");
-		        _attShifterBOD.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"BOD\"]");
+		        ShifterBOD.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"AGI\"]");
-		        _attShifterAGI.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"AGI\"]");
+		        ShifterAGI.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"REA\"]");
-		        _attShifterREA.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"REA\"]");
+		        ShifterREA.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"STR\"]");
-		        _attShifterSTR.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"STR\"]");
+		        ShifterSTR.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"CHA\"]");
-		        _attShifterCHA.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"CHA\"]");
+		        ShifterCHA.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"INT\"]");
-		        _attShifterINT.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"INT\"]");
+		        ShifterINT.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"LOG\"]");
-		        _attShifterLOG.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"LOG\"]");
+		        ShifterLOG.Load(objXmlCharacter);
 		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/attribute/shapeshifter[name = \"WIL\"]");
-		        _attShifterWIL.Load(objXmlCharacter);
+			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"WIL\"]");
+		        ShifterWIL.Load(objXmlCharacter);
 	        }
 	        // A.I. Attributes.
 			try
@@ -3977,6 +3969,8 @@ namespace Chummer
             }
         }
 
+		public CharacterAttrib.AttributeCategory ActiveAttributeCategory { get; set; }
+
         /// <summary>
         /// Body (BOD) CharacterAttribute.
         /// </summary>
@@ -3984,7 +3978,11 @@ namespace Chummer
         {
             get
             {
-                return _attBOD;
+	            if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+	            {
+		            return ShifterBOD ?? _attBOD;
+	            }
+	            return _attBOD;
             }
         }
 
@@ -3995,7 +3993,11 @@ namespace Chummer
         {
             get
             {
-                return _attAGI;
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterAGI ?? _attAGI;
+				}
+				return _attAGI;
             }
         }
 
@@ -4006,7 +4008,11 @@ namespace Chummer
         {
             get
             {
-                return _attREA;
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterREA ?? _attREA;
+				}
+				return _attREA;
             }
         }
 
@@ -4017,7 +4023,11 @@ namespace Chummer
         {
             get
             {
-                return _attSTR;
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterSTR ?? _attSTR;
+				}
+				return _attSTR;
             }
         }
 
@@ -4027,8 +4037,12 @@ namespace Chummer
         public CharacterAttrib CHA
         {
             get
-            {
-                return _attCHA;
+			{
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterCHA ?? _attCHA;
+				}
+				return _attCHA;
             }
         }
 
@@ -4038,8 +4052,12 @@ namespace Chummer
         public CharacterAttrib INT
         {
             get
-            {
-                return _attINT;
+			{
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterINT ?? _attINT;
+				}
+				return _attINT;
             }
         }
 
@@ -4049,8 +4067,12 @@ namespace Chummer
         public CharacterAttrib LOG
         {
             get
-            {
-                return _attLOG;
+			{
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterLOG ?? _attLOG;
+				}
+				return _attLOG;
             }
         }
 
@@ -4060,19 +4082,63 @@ namespace Chummer
         public CharacterAttrib WIL
         {
             get
-            {
-                return _attWIL;
+			{
+				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+				{
+					return ShifterBOD ?? _attWIL;
+				}
+				return _attWIL;
             }
         }
 
-        /// <summary>
-        /// Initiative (INI) CharacterAttribute.
-        /// </summary>
-        public CharacterAttrib INI
+		/// <summary>
+		/// Body (BOD) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterBOD { get; set; } = new CharacterAttrib("BOD", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Agility (AGI) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterAGI { get; set; } = new CharacterAttrib("AGI", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Reaction (REA) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterREA { get; set; } = new CharacterAttrib("REA", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Strength (STR) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterSTR { get; set; } = new CharacterAttrib("STR", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Charisma (CHA) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterCHA { get; set; } = new CharacterAttrib("CHA", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Intuition (INT) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterINT { get; set; } = new CharacterAttrib("INT", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Logic (LOG) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterLOG { get; set; } = new CharacterAttrib("LOG", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Willpower (WIL) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib ShifterWIL { get; set; } = new CharacterAttrib("WIL", CharacterAttrib.AttributeCategory.Shapeshifter);
+
+	    /// <summary>
+		/// Initiative (INI) CharacterAttribute.
+		/// </summary>
+		public CharacterAttrib INI
         {
             get
-            {
-                return _attINI;
+			{
+				return _attINI;
             }
         }
 

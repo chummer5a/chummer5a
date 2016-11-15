@@ -16426,22 +16426,6 @@ namespace Chummer
                     }
                 }
 
-                //if (_objCharacter.Created)
-                //{
-                //    foreach (Skill objSkill in _objCharacter.Skills)
-                //    {
-                //        if (objSkill.RatingMaximum == 6)
-                //            objSkill.RatingMaximum = 12;
-                //        else if (objSkill.RatingMaximum == 7)
-                //            objSkill.RatingMaximum = 13;
-                //    }
-                //    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                //    {
-                //        if (objSkillGroup.RatingMaximum == 6)
-                //            objSkillGroup.RatingMaximum = 12;
-                //    }
-                //}
-
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
@@ -16509,10 +16493,40 @@ namespace Chummer
             return blnSaved;
         }
 
-        /// <summary>
-        /// Save the character as Created and re-open it in Career Mode.
-        /// </summary>
-        private void SaveCharacterAsCreated()
+		/// <summary>
+		/// Generate a Shapeshifter's metahuman form Attributes. 
+		/// </summary>
+		private void GenerateShapeshifterAttributes()
+		{
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("metatypes.xml");
+			XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metavariant + "\"]");
+			if (objNode == null) return;
+			List<CharacterAttrib> lstAttributes = new List<CharacterAttrib>
+			{
+				_objCharacter.ShifterBOD,
+				_objCharacter.ShifterAGI,
+				_objCharacter.ShifterSTR,
+				_objCharacter.ShifterREA,
+				_objCharacter.ShifterINT,
+				_objCharacter.ShifterLOG,
+				_objCharacter.ShifterCHA,
+				_objCharacter.ShifterWIL
+			};
+			foreach (CharacterAttrib objAttribute in lstAttributes)
+			{
+				string strAbbrev = objAttribute.Abbrev.ToLower();
+				objAttribute.MetatypeMinimum = Convert.ToInt32(objNode[strAbbrev + "min"].InnerText);
+				objAttribute.MetatypeMaximum = Convert.ToInt32(objNode[strAbbrev + "max"].InnerText);
+				objAttribute.MetatypeAugmentedMaximum = Convert.ToInt32(objNode[strAbbrev + "aug"].InnerText);
+				objAttribute.Base = _objCharacter.GetAttribute(objAttribute.Abbrev).Base;
+				objAttribute.Karma = _objCharacter.GetAttribute(objAttribute.Abbrev).Karma;
+			}
+		}
+
+		/// <summary>
+		/// Save the character as Created and re-open it in Career Mode.
+		/// </summary>
+		private void SaveCharacterAsCreated()
         {
             // If the character was built with Karma, record their staring Karma amount (if any).
             //if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
@@ -16539,8 +16553,14 @@ namespace Chummer
                     _objCharacter.RES.Value += _objCharacter.EssencePenalty;
             }
 
-            // Create an Expense Entry for Starting Nuyen.
-            ExpenseLogEntry objNuyen = new ExpenseLogEntry();
+			// If the character is a shapeshifter, generate their meta
+			if (_objCharacter.MetatypeCategory == "Shapeshifter")
+			{
+				GenerateShapeshifterAttributes();
+			}
+
+			// Create an Expense Entry for Starting Nuyen.
+			ExpenseLogEntry objNuyen = new ExpenseLogEntry();
             objNuyen.Create(_objCharacter.Nuyen, "Starting Nuyen", ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objNuyen);
 
