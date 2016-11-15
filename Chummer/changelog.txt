@@ -41,7 +41,7 @@ Data Changes:
 - Corrected Chameleon Coating weapon modification to require a Side slot.
 - Corrected Electronic Firing weapon modification to require a Barrel slot.
 - Corrected Mounted Crossbow and Underbarrel Laser weapon modifications to take up two weapon modification slots (Top & Underbarrel and Side & Underbarrel respectively).
-- Changed tasers have a concealability of -4. RAW justification includes indirect references to smaller size by Hidden Gun Arm Slide size restrictions, the Reach stat of Defiance EX-Shocker's contacts, and the essence/capacity cost of implanted cybertasers
+- Changed tasers have a concealability of -4. RAW justification includes indirect references to smaller size by Hidden Gun Arm Slide size restrictions, the Reach stat of Defiance EX-Shocker's contacts, and the essence/capacity cost of implanted cybertasers.
 - Added a pair of drone arms and drone legs to the Ares Duelyst.
 - Added a pair of drone arms to the Transys Office Maid (fluff text makes reference to arms but not to legs).
 - Added a pair of drone arms and drone legs to the Modified Renraku Manservant-3 and recategorized it to Anthropomorphic, as per the original being a similar model to the Criado Juan.
@@ -59,10 +59,10 @@ Data Changes:
 - Added entries to the Contracts lifestyle quality category for monthly payment of DocWagon contracts.
 - Added entries to the Contracts lifestyle quality category and the Contracts/Upkeep gear category for Datahost Subscription (e.g. Library of Alexandria), Shopsoft Network Subscription (e.g. Shoppazulu), and Mapping System Subscription (e.g. Ares' Getting Network) as found in Chrome Flesh.
 - Added entries to the Contracts/Upkeep gear category for pre-paid Skillsoft Network subscriptions.
-- Added the "Shadow Spirits" pre-written specialization to the Magical Threats knowledge skill
+- Added the "Shadow Spirits" pre-written specialization to the Magical Threats knowledge skill.
 - Added the "Mathematics" academic knowledge skill and populated it with a few specializations, as per Math SPU in Chrome Flesh.
 - Corrected Math SPU to properly give +4 dice pool to the Mathematics knowledge skill and +1 mental limit for scientific and technical knowledge skills.
-- Corrected Limbic Neural Amplifier nanoware to properly give +1 dice pool bonus to all Intuition-linked skills
+- Corrected Limbic Neural Amplifier nanoware to properly give +1 dice pool bonus to all Intuition-linked skills.
 - Corrected Neocortical Neural Amplifier nanoware to properly give +1 dice pool bonus to all Logic-linked skills and to give +Rating bonus to mental limit when using those skills instead of +1.
 - Added the Immunization genemod from Chrome Flesh.
 - Added the Phenotypic Variations positive qualities as per the optional rule in Chrome Flesh (can be ignored just like Omegaware/Gammaware).
