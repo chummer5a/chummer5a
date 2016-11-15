@@ -1101,6 +1101,7 @@ namespace Chummer
 		private QualityType _objQualityType = QualityType.Positive;
 		private QualitySource _objQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
+		private XmlNode _nodDiscounts;
 		private readonly Character _objCharacter;
 		private string _strAltName = "";
 		private string _strAltPage = "";
@@ -1308,7 +1309,10 @@ namespace Chummer
 					_objCharacter.Weapons.Add(objWeapon);
 				}
 			}
-
+			if (objXmlQuality.InnerXml.Contains("<costdiscount>"))
+			{
+				_nodDiscounts = objXmlQuality["costdiscount"];
+			}
 			// If the item grants a bonus, pass the information to the Improvement Manager.
 			if (objXmlQuality.InnerXml.Contains("<bonus>"))
 			{
@@ -1401,6 +1405,7 @@ namespace Chummer
 			_strSource = objNode["source"].InnerText;
 			_strPage = objNode["page"].InnerText;
 			_nodBonus = objNode["bonus"];
+			_nodDiscounts = objNode["costdiscount"];
 			try
 			{
 				_guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
@@ -1618,17 +1623,14 @@ namespace Chummer
 		/// </summary>
 		public int BP
 		{
-			get
-			{
-				return _intBP;
-			}
+			get { return CalculatedBP(); }
 			set
 			{
 				_intBP = value;
 			}
 		}
 
-        /// <summary>
+		/// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
         public int LP
@@ -1863,6 +1865,36 @@ namespace Chummer
 			{
 				_strNotes = value;
 			}
+		}
+
+		/// <summary>
+		/// Evaluates whether the Quality qualifies for any discounts/increases to its cost and returns the total cost.
+		/// </summary>
+		/// <returns></returns>
+		private int CalculatedBP()
+		{
+			if (_nodDiscounts == null || !_nodDiscounts.HasChildNodes)
+			{
+				return _intBP;
+			}
+			int intReturn = _intBP;
+			bool blnFound = false;
+			foreach (XmlNode objNode in _nodDiscounts)
+			{
+				if (objNode.Name == "required")
+				{
+					if (objNode["oneof"].Cast<XmlNode>().Where(objRequiredNode => objRequiredNode.Name == "quality").Any(objRequiredNode => _objCharacter.Qualities.Any(objQuality => objQuality.Name == objRequiredNode.InnerText)))
+					{
+						blnFound = true;
+						break;
+					}
+				}
+			}
+			if (blnFound)
+			{
+				intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
+			}
+			return intReturn;
 		}
 		#endregion
 

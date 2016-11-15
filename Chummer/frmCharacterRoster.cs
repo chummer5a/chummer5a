@@ -104,7 +104,17 @@ namespace Chummer
 		{
 			TreeNode objNode = new TreeNode();
 			XmlDocument objXmlSource = new XmlDocument();
-			objXmlSource.Load(strFile);
+			bool blnLoaded = true;
+			//If we run into any problems loading the character cache, fail out early. 
+			try
+			{
+				objXmlSource.Load(strFile);
+			}
+			catch
+			{
+				blnLoaded = false;
+			}
+			if (!blnLoaded) return;
 			CharacterCache objCache = new CharacterCache();
 			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
 			if (objXmlSourceNode != null)
@@ -139,7 +149,7 @@ namespace Chummer
 			objCache.FileName = strFile.Split('\\').ToArray().Last();
 			lstCharacterCache.Add(objCache);
 			objNode.Tag = lstCharacterCache.IndexOf(objCache);
-			
+
 			objNode.Text = CalculatedName(objCache);
 			treCharacterList.Nodes.Add(objNode);
 		}

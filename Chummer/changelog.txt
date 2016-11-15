@@ -11,6 +11,8 @@ Application Changes:
 - Fixed a crash caused by cancelling out of text selection bonus nodes such as when creating a Fake SIN. 
 - Fixed an issue that caused Essence loss in priority creation mode to revert MAG/RES metatype minimums to 1. 
 - Fixed a crash caused by adding a a new knowledge skill after adding the PUSHeD bioware.
+- Fixed a crash when loading the character roster caused by unreadable character files. 
+- Added the ability for qualities to qualify for discounts based on the presence of other qualities. 
 - Added the ability for weapon accesories to occupy multiple slots simultaneously.
 - Fixed a crash when browsing Negative qualities for an Advanced Lifestyle caused by the way Thrifty quality was set up.
 - Recategorized SkillSoft Networks into a new Lifestyle quality category called "Contracts", which can now be taken by Basic Lifestyles too.
@@ -30,7 +32,9 @@ Data Changes:
 - Fixed a missing weapon category for the Huge Weapon Mount. 
 - Fixed a missing damage reduction from the Sawed Off shotgun mod. 
 - Reduced the cost for YNT Softweave to the cost of the Armour rather than double.
-- Changed the Fichetti Security 600 to a Folding Stock.
+- Removed redundant copies of the Mutaqua, Wendigo, Nosferatu, Blind, and Astral Hazing qualities. 
+- Removed redundant copies of the Infection power from Wendigo and Vampires.
+- Corrected the Fichetti Security 600 to a Folding Stock.
 - Renamed the old Gecko Grip item to "Gecko Grip (for Weapon without Stock Slot)" and added a new Gecko Grip entry for weapons with a Stock slot that takes up the Stock slot.
 - Corrected the reference to the Vintage quality to GH3 page 3 instead of 53.
 - Corrected Ammo Skip weapon modification to require an Underbarrel slot.
