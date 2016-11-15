@@ -82,6 +82,7 @@ Data Changes:
 - Defiance EX-Shocker now gives a free "Defiance EX-Shocker Contacts" weapon entry for its melee contacts.
 - Ocular Drone cyberware now gives a free "Ocular Drone" vehicle entry in the vehicle tab.
 - Altered the Smartgun weapon accessories so that they now come pre-included with a Laser Range Finder and a Camera, Micro that takes vision enhancements, instead of the accessory allowing for the addition of vision enhancements.
+- Added a text field to Program Carrier so that its cyberprogram can be specified.
 
 Build 187
 

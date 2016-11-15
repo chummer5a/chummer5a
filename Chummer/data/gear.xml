@@ -30,6 +30,7 @@
 		<category>BTLs</category>
 		<category>Chemicals</category>
 		<category>Commlinks</category>
+		<category>Commlink/Cyberdeck Form Factors</category>
 		<category>Commlink Accessories</category>
 		<category>Commlink Apps</category>
 		<category>Common Programs</category>
@@ -7880,45 +7881,47 @@
 		<!-- Region Commlink and Cyberdeck Form Factors -->
 		<gear>
 			<id>f4ea77c8-e4d4-46a7-b43d-5193d4e0ea48</id>
-			<name>Form Factor: Non-Standard Commlink</name>
-			<category>Commlinks</category>
+			<name>Commlink Form Factor, Non-Standard</name>
+			<category>Commlink/Cyberdeck Form Factors</category>
 			<rating>0</rating>
-			<devicerating>0</devicerating>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<avail>+2</avail>
-			<cost>Gear Cost * 1.2</cost>
+			<cost>Gear Cost * 0.2</cost>
 			<source>DT</source>
 			<page>61</page>
 		</gear>
 		<gear>
 			<id>d57e91ee-89b6-47ab-86fc-1977b92b79aa</id>
-			<name>Form Factor: Weapon Commlink</name>
-			<category>Commlinks</category>
+			<name>Commlink Form Factor, Weapon</name>
+			<category>Commlink/Cyberdeck Form Factors</category>
 			<rating>0</rating>
-			<devicerating>0</devicerating>
 			<avail>+4R</avail>
-			<cost>Gear Cost * 1.5</cost>
+			<cost>Gear Cost * 0.5</cost>
 			<source>DT</source>
 			<page>61</page>
 		</gear>
 		<gear>
 			<id>01c28047-0446-4f3d-817d-4805317167ce</id>
-			<name>Form Factor: Non-Standard Cyberdeck</name>
-			<category>Cyberdecks</category>
+			<name>Cyberdeck Form Factor, Non-Standard</name>
+			<category>Commlink/Cyberdeck Form Factors</category>
 			<rating>0</rating>
-			<devicerating>0</devicerating>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<avail>+3</avail>
-			<cost>Gear Cost * 1.2</cost>
+			<cost>Gear Cost * 0.2</cost>
 			<source>DT</source>
 			<page>62</page>
 		</gear>
 		<gear>
 			<id>88c4b801-d7e1-4a20-9ddc-97644e15e85f</id>
-			<name>Form Factor: Weapon Cyberdeck</name>
-			<category>Cyberdecks</category>
+			<name>Cyberdeck Form Factor, Weapon</name>
+			<category>Commlink/Cyberdeck Form Factors</category>
 			<rating>0</rating>
-			<devicerating>0</devicerating>
 			<avail>+6R</avail>
-			<cost>Gear Cost * 1.5</cost>
+			<cost>Gear Cost * 0.5</cost>
 			<source>DT</source>
 			<page>62</page>
 		</gear>
@@ -7982,6 +7985,9 @@
 			<armorcapacity>[2]</armorcapacity>
 			<rating>0</rating>
 			<devicerating>0</devicerating>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<avail>2</avail>
 			<cost>900</cost>
 			<source>DT</source>
