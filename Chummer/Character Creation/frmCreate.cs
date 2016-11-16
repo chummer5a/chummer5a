@@ -22498,7 +22498,7 @@ namespace Chummer
             }
 
             // Add Locations for the character's bits that can hold Commlinks.
-            // Populate the list of Commlink Locations.
+            /* Populate the list of Commlink Locations.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
                 if (objCyberware.AllowGear != null)
@@ -22613,7 +22613,7 @@ namespace Chummer
                         }
                     }
                 }
-            }
+            }*/
 
             foreach (Gear objGear in _objCharacter.Gear)
             {

@@ -3386,6 +3386,28 @@
 			<page>153</page>
 		</quality>
 		<quality>
+			<id>8fa3b253-1e6f-439d-940e-f48a1d8959c8</id>
+			<name>Carrier (HMHVV Strain II)</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
+			<source>RF</source>
+			<page>141</page>
+		</quality>
+		<quality>
+			<id>3fc02bdc-1f3f-448c-8e8c-d1869ac4fcfc</id>
+			<name>Carrier (HMHVV Strain III)</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
+			<source>RF</source>
+			<page>141</page>
+		</quality>
+		<quality>
 			<id>bdb17940-1bb5-4d6e-925f-019cfa8090af</id>
 			<name>Computer Illiterate</name>
 			<karma>-7</karma>
@@ -9143,16 +9165,12 @@
 					<power select="Sunlight, Extreme">Allergy</power>
 					<power select="Metahuman Flesh">Dietary Requirement</power>
 				</critterpowers>
+				<unlockskills>Adept</unlockskills>
 			</bonus>
 			<required>
 				<allof>
 					<metatype>Troll</metatype>
 				</allof>
-        <oneof>
-          <quality>Adept</quality>
-          <quality>Magician</quality>
-					<quality>Aspected Magician</quality>
-        </oneof>
 			</required>
 			<forbidden>
 				<oneof>
@@ -9307,6 +9325,7 @@
 					<power select="Metahuman Blood">Dietary Requirement</power>
 					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
 				</critterpowers>
+				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<required>
 				<allof>
@@ -9714,6 +9733,7 @@
 					<power select="Sunlight, Severe">Allergy</power>
 					<power select="Metahuman Flesh">Dietary Requirement</power>
 				</critterpowers>
+				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<required>
 				<allof>

@@ -1211,6 +1211,39 @@
 			<page>436</page>
 		</gear>
 		<gear>
+			<id>df3efeef-661f-41fd-9007-01ba7db42dee</id>
+			<name>Dynamite</name>
+			<category>Explosives</category>
+			<rating>3</rating>
+			<minrating>3</minrating>
+			<avail>8R</avail>
+			<cost>350</cost>
+			<source>RG</source>
+			<page>190</page>
+		</gear>
+		<gear>
+			<id>381a235b-5282-45b4-a4c1-9c75d20f71b3</id>
+			<name>Nitroglycerin</name>
+			<category>Explosives</category>
+			<rating>6</rating>
+			<minrating>6</minrating>
+			<avail>11F</avail>
+			<cost>350</cost>
+			<source>RG</source>
+			<page>190</page>
+		</gear>
+		<gear>
+			<id>381a235b-5282-45b4-a4c1-9c75d20f71b3</id>
+			<name>TNT</name>
+			<category>Explosives</category>
+			<rating>5</rating>
+			<minrating>5</minrating>
+			<avail>12R</avail>
+			<cost>200</cost>
+			<source>RG</source>
+			<page>190</page>
+		</gear>
+		<gear>
 			<id>0183db3c-974e-40f8-ab73-ccf733beadd5</id>
 			<name>Foam Explosive</name>
 			<category>Explosives</category>

@@ -22,6 +22,7 @@ Application Changes:
 - Weapon accessories can now come with gear pre-included.
 - Fixed a crash issue when restarting Chummer through updates or the Restart menu option. Fixes #1223.
 - Fixed an issue with deleting Armour items that add Weapons. Fixes #1222.
+- Removed the automatic creation of Gear Locations for Cyberware and Weapon commlinks, as it's now redundant. 
 
 Data Changes: 
 
@@ -85,6 +86,9 @@ Data Changes:
 - Ocular Drone cyberware now gives a free "Ocular Drone" vehicle entry in the vehicle tab.
 - Altered the Smartgun weapon accessories so that they now come pre-included with a Laser Range Finder and a Camera, Micro that takes vision enhancements, instead of the accessory allowing for the addition of vision enhancements.
 - Added a text field to Program Carrier so that its cyberprogram can be specified.
+- Added missing explosives from Run and Gun. 
+- Added missing skill unlocks for the Mutaqua, Wendigo and Nosferatu. NOTE: This introduces a bug where characters that are already magically active will receive a duplicate skill control. A Nosferatu Magician will have a second Banishing skill, for example. This is a known limitation of the current skill system and will be resolved in a later patch.
+- Added missing Carrier qualities from Run Faster. 
 
 Build 187
 
