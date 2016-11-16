@@ -133,7 +133,7 @@ namespace Chummer
 			}
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Application.StartupPath + "\\Chummer.exe",
+				FileName = Application.StartupPath + "\\Chummer5.exe",
 				Arguments = arguments
 			};
 			Application.Exit();

@@ -20,6 +20,8 @@ Application Changes:
 - Added the ability for cyberware to add vehicles the same way it can add weapons (e.g. for Ocular Drone).
 - Added the ability for vehicles, vehicle mods, and gear to be hidden from their browsing menus, just like cyberweapons are in the weapons menu.
 - Weapon accessories can now come with gear pre-included.
+- Fixed a crash issue when restarting Chummer through updates or the Restart menu option. Fixes #1223.
+- Fixed an issue with deleting Armour items that add Weapons. Fixes #1222.
 
 Data Changes: 
 

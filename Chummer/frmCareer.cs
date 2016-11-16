@@ -5056,175 +5056,64 @@ namespace Chummer
 
 		private void cmdDeleteArmor_Click(object sender, EventArgs e)
 		{
-			// Delete the selected piece of Armor.
-			try
+			if (treArmor.SelectedNode.Level == 0)
 			{
-				if (treArmor.SelectedNode.Level == 0)
-				{
-					if (treArmor.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
-						return;
-
-					if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmorLocation")))
-						return;
-
-					// Move all of the child nodes in the current parent to the Selected Armor parent node.
-					foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
-					{
-						Armor objArmor = _objFunctions.FindArmor(objNode.Tag.ToString(), _objCharacter.Armor);
-
-						// Change the Location for the Armor.
-						objArmor.Location = "";
-
-						TreeNode nodNewNode = new TreeNode();
-						nodNewNode.Text = objNode.Text;
-						nodNewNode.Tag = objNode.Tag;
-						nodNewNode.ContextMenuStrip = cmsArmor;
-
-						// Add child nodes.
-						foreach (ArmorMod objChild in objArmor.ArmorMods)
-						{
-							TreeNode nodChildNode = new TreeNode();
-							nodChildNode.Text = objChild.DisplayName;
-							nodChildNode.Tag = objChild.InternalId;
-							nodChildNode.ContextMenuStrip = cmsArmorMod;
-							nodNewNode.Nodes.Add(nodChildNode);
-							nodNewNode.Expand();
-						}
-
-						foreach (Gear objChild in objArmor.Gear)
-						{
-							TreeNode nodChildNode = new TreeNode();
-							nodChildNode.Text = objChild.DisplayName;
-							nodChildNode.Tag = objChild.InternalId;
-							nodChildNode.ContextMenuStrip = cmsArmorGear;
-							nodNewNode.Nodes.Add(nodChildNode);
-							nodNewNode.Expand();
-						}
-
-						treArmor.Nodes[0].Nodes.Add(nodNewNode);
-						treArmor.Nodes[0].Expand();
-					}
-
-					// Remove the Location from the character, then remove the selected node.
-					_objCharacter.ArmorBundles.Remove(treArmor.SelectedNode.Text);
-					treArmor.SelectedNode.Remove();
-					return;
-				}
-
-				if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmor")))
+				if (treArmor.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
 					return;
 
-				if (treArmor.SelectedNode.Level == 1)
+				if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmorLocation")))
+					return;
+
+				// Move all of the child nodes in the current parent to the Selected Armor parent node.
+				foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
 				{
-					Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-					if (objArmor == null)
-						return;
-					Weapon objRemoveWeapon = new Weapon(_objCharacter);
-					// Remove any Improvements created by the Armor and its children.
-					foreach (ArmorMod objMod in objArmor.ArmorMods)
+					Armor objArmor = _objFunctions.FindArmor(objNode.Tag.ToString(), _objCharacter.Armor);
+
+					// Change the Location for the Armor.
+					objArmor.Location = "";
+
+					TreeNode nodNewNode = new TreeNode();
+					nodNewNode.Text = objNode.Text;
+					nodNewNode.Tag = objNode.Tag;
+					nodNewNode.ContextMenuStrip = cmsArmor;
+
+					// Add child nodes.
+					foreach (ArmorMod objChild in objArmor.ArmorMods)
 					{
-						// Remove the Cyberweapon created by the Mod if applicable.
-						if (objMod.WeaponID != Guid.Empty.ToString())
-						{
-
-							// Remove the Weapon from the Character.
-							foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
-							{
-								_objCharacter.Weapons.Remove(objWeapon);
-								// Remove the Weapon from the TreeView.
-								TreeNode objRemoveNode = new TreeNode();
-								foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objMod.WeaponID))
-								{
-									treWeapons.Nodes.Remove(objWeaponNode);
-								}
-							}
-						}
-
-						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-					}
-					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
-
-					// Remove any Improvements created by the Armor's Gear.
-					foreach (Gear objGear in objArmor.Gear)
-						_objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-
-					// Remove the Weapon from the Character.
-					foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
-					{
-						_objCharacter.Weapons.Remove(objWeapon);
-						// Remove the Weapon from the TreeView.
-						TreeNode objRemoveNode = new TreeNode();
-						foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objArmor.WeaponID))
-						{
-							treWeapons.Nodes.Remove(objWeaponNode);
-						}
+						TreeNode nodChildNode = new TreeNode();
+						nodChildNode.Text = objChild.DisplayName;
+						nodChildNode.Tag = objChild.InternalId;
+						nodChildNode.ContextMenuStrip = cmsArmorMod;
+						nodNewNode.Nodes.Add(nodChildNode);
+						nodNewNode.Expand();
 					}
 
-					_objCharacter.Armor.Remove(objArmor);
-					treArmor.SelectedNode.Remove();
+					foreach (Gear objChild in objArmor.Gear)
+					{
+						TreeNode nodChildNode = new TreeNode();
+						nodChildNode.Text = objChild.DisplayName;
+						nodChildNode.Tag = objChild.InternalId;
+						nodChildNode.ContextMenuStrip = cmsArmorGear;
+						nodNewNode.Nodes.Add(nodChildNode);
+						nodNewNode.Expand();
+					}
+
+					treArmor.Nodes[0].Nodes.Add(nodNewNode);
+					treArmor.Nodes[0].Expand();
 				}
-				else if (treArmor.SelectedNode.Level == 2)
-				{
-					bool blnIsMod = false;
-					ArmorMod objMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-					if (objMod != null)
-						blnIsMod = true;
 
-					if (blnIsMod)
-					{
-						// Remove the Cyberweapon created by the Mod if applicable.
-						if (objMod.WeaponID != Guid.Empty.ToString())
-						{
-							// Remove the Weapon from the TreeView.
-							TreeNode objRemoveNode = new TreeNode();
-							foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
-							{
-								if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
-									objRemoveNode = objWeaponNode;
-							}
-							treWeapons.Nodes.Remove(objRemoveNode);
-
-							// Remove the Weapon from the Character.
-							Weapon objRemoveWeapon = new Weapon(_objCharacter);
-							foreach (Weapon objWeapon in _objCharacter.Weapons)
-							{
-								if (objWeapon.InternalId == objMod.WeaponID)
-									objRemoveWeapon = objWeapon;
-							}
-							_objCharacter.Weapons.Remove(objRemoveWeapon);
-						}
-
-						// Remove any Improvements created by the ArmorMod.
-						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-						objMod.Parent.ArmorMods.Remove(objMod);
-					}
-					else
-					{
-						Armor objSelectedArmor = new Armor(_objCharacter);
-						Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
-						_objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-						objSelectedArmor.Gear.Remove(objGear);
-					}
-					treArmor.SelectedNode.Remove();
-				}
-				else if (treArmor.SelectedNode.Level > 2)
-				{
-					Armor objSelectedArmor = new Armor(_objCharacter);
-					Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
-					objGear.Parent.Children.Remove(objGear);
-					_objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-					objSelectedArmor.Gear.Remove(objGear);
-					treArmor.SelectedNode.Remove();
-				}
-				UpdateCharacterInfo();
-				RefreshSelectedArmor();
-
-				_blnIsDirty = true;
-				UpdateWindowTitle();
+				// Remove the Location from the character, then remove the selected node.
+				_objCharacter.ArmorBundles.Remove(treArmor.SelectedNode.Text);
+				treArmor.SelectedNode.Remove();
+				return;
 			}
-			catch
-			{
-			}
+
+			_objFunctions.DeleteArmor(treArmor, treWeapons, _objImprovementManager);
+			UpdateCharacterInfo();
+			RefreshSelectedArmor();
+
+			_blnIsDirty = true;
+			UpdateWindowTitle();
 		}
 
 		private void cmdAddBioware_Click(object sender, EventArgs e)
