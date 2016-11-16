@@ -478,6 +478,25 @@ namespace Chummer
 			// Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
 			// to UpdateCharacterInformation();
 			MetatypeSelected();
+			
+			if (_objCharacter.MetatypeCategory == "Shapeshifter")
+			{
+				List<ListItem> lstCategories = new List<ListItem>();
+				ListItem objFilter = new ListItem();
+				objFilter.Name = "Standard";
+				objFilter.Value = "Standard";
+				lstCategories.Add(objFilter);
+				objFilter = new ListItem();
+				objFilter.Name = "Shapeshifter";
+				objFilter.Value = "Shapeshifter";
+				lstCategories.Add(objFilter);
+				objSort = new SortListItem();
+				lstCategories.Sort(objSort.Compare);
+				cboAttributeFilter.ValueMember = "Value";
+				cboAttributeFilter.DisplayMember = "Name";
+				cboAttributeFilter.DataSource = lstCategories;
+				cboAttributeFilter.SelectedValue = "Standard";
+			}
 
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
 			int intCharacterMAG = _objCharacter.MAG.TotalValue;
@@ -1049,28 +1068,7 @@ namespace Chummer
 
 			lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
 			lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-			lstPrimaryAttributes.Add(_objCharacter.STR);
-			lstPrimaryAttributes.Add(_objCharacter.AGI);
-			lstPrimaryAttributes.Add(_objCharacter.BOD);
-			lstPrimaryAttributes.Add(_objCharacter.REA);
-			lstPrimaryAttributes.Add(_objCharacter.WIL);
-			lstPrimaryAttributes.Add(_objCharacter.LOG);
-			lstPrimaryAttributes.Add(_objCharacter.CHA);
-			lstPrimaryAttributes.Add(_objCharacter.INT);
-
-			lstSpecialAttributes.Add(_objCharacter.EDG);
-			if (_objCharacter.MAGEnabled)
-			{
-				lstSpecialAttributes.Add(_objCharacter.MAG);
-			}
-			if (_objCharacter.RESEnabled)
-			{
-				lstSpecialAttributes.Add(_objCharacter.RES);
-			}
-			if (_objCharacter.Metatype == "A.I.")
-			{
-				lstSpecialAttributes.Add(_objCharacter.DEP);
-			}
+			BuildAttributePanel();
 
 			_blnIsDirty = false;
 			UpdateWindowTitle(false);
@@ -26995,6 +26993,50 @@ namespace Chummer
 		private void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
 		{
 			PopulateExpenseList();
+		}
+
+		private void cboAttributeFilter_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (_blnLoading) return;
+			switch (cboAttributeFilter.SelectedValue.ToString())
+			{
+				case "Standard":
+					_objCharacter.ActiveAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
+					break;
+				case "Shapeshifter":
+					_objCharacter.ActiveAttributeCategory = CharacterAttrib.AttributeCategory.Shapeshifter;
+					break;
+			}
+			BuildAttributePanel();
+		}
+
+		private void BuildAttributePanel()
+		{
+			pnlAttributes.Controls.Clear();
+			lstPrimaryAttributes.Clear();
+			lstSpecialAttributes.Clear();
+			lstPrimaryAttributes.Add(_objCharacter.STR);
+			lstPrimaryAttributes.Add(_objCharacter.AGI);
+			lstPrimaryAttributes.Add(_objCharacter.BOD);
+			lstPrimaryAttributes.Add(_objCharacter.REA);
+			lstPrimaryAttributes.Add(_objCharacter.WIL);
+			lstPrimaryAttributes.Add(_objCharacter.LOG);
+			lstPrimaryAttributes.Add(_objCharacter.CHA);
+			lstPrimaryAttributes.Add(_objCharacter.INT);
+
+			lstSpecialAttributes.Add(_objCharacter.EDG);
+			if (_objCharacter.MAGEnabled)
+			{
+				lstSpecialAttributes.Add(_objCharacter.MAG);
+			}
+			if (_objCharacter.RESEnabled)
+			{
+				lstSpecialAttributes.Add(_objCharacter.RES);
+			}
+			if (_objCharacter.Metatype == "A.I.")
+			{
+				lstSpecialAttributes.Add(_objCharacter.DEP);
+			}
 		}
 	}
 }
