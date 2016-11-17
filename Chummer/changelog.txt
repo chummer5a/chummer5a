@@ -23,6 +23,7 @@ Application Changes:
 - Fixed a crash issue when restarting Chummer through updates or the Restart menu option. Fixes #1223.
 - Fixed an issue with deleting Armour items that add Weapons. Fixes #1222.
 - Removed the automatic creation of Gear Locations for Cyberware and Weapon commlinks, as it's now redundant. 
+- Removed Running Wild requirement for creating Critters, so it should now be possible to create a Critter through the menu or by clicking the Link Character Sheet button on the appropriate control. At present, only Spirits should be available for use. Sprites and other critters will be enabled in a later patch. Fixes #1225
 
 Data Changes: 
 
@@ -89,6 +90,7 @@ Data Changes:
 - Added missing explosives from Run and Gun. 
 - Added missing skill unlocks for the Mutaqua, Wendigo and Nosferatu. NOTE: This introduces a bug where characters that are already magically active will receive a duplicate skill control. A Nosferatu Magician will have a second Banishing skill, for example. This is a known limitation of the current skill system and will be resolved in a later patch.
 - Added missing Carrier qualities from Run Faster. 
+- Reorganised the critters.xml file to support creating Spirits in Chummer.
 
 Build 187
 
