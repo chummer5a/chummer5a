@@ -26,6 +26,7 @@ Application Changes:
 - Removed Running Wild requirement for creating Critters, so it should now be possible to create a Critter through the menu or by clicking the Link Character Sheet button on the appropriate control. At present, only Spirits should be available for use. Sprites and other critters will be enabled in a later patch. Fixes #1225
 - Fixed the implementation of the Stock Remova/Shortbarrel mods. Current technical limitations prevent the penalty to accuracy if both mods are installed from working, so another modification that rolls both mods in together has been added. 
 - Added the ability to forbid/require weapon accessories based on the presence of other accessories. 
+- Altered the behaviour of the Weapon Focus to avoid some silly behaviour like letting your fists be a weapon focus. 
 
 Data Changes: 
 

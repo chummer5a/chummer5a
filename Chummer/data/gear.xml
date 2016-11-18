@@ -5983,7 +5983,6 @@
 			<category>Foci</category>
 			<rating>18</rating>
 			<bonus>
-				<selecttext />
 				<selectweapon />
 			</bonus>
 			<avail>(Rating * 4)R</avail>

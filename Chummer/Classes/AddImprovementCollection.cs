@@ -3637,10 +3637,11 @@ namespace Chummer.Classes
 			{
 				string strExclude = "";
 				List <ListItem> lstWeapons = new List<ListItem>();
+				bool blnIncludeUnarmed = bonusNode.Attributes["excludecategory"]?.InnerText == "true";
 				strExclude = bonusNode.Attributes["excludecategory"]?.InnerText;
 				foreach (Weapon objWeapon in _objCharacter.Weapons)
 				{
-					bool blnAdd = !(strExclude != "" && objWeapon.WeaponType == strExclude);
+					bool blnAdd = !(strExclude != "" && objWeapon.WeaponType == strExclude || !blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack");
 					if (blnAdd)
 					{
 						ListItem objItem = new ListItem();
