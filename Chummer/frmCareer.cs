@@ -8755,6 +8755,7 @@ namespace Chummer
 
 			frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
 			frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
+			frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
 			frmPickWeaponAccessory.ShowDialog();
 
 			if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
@@ -9325,6 +9326,7 @@ namespace Chummer
 
 			frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
 			frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
+			frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
 			frmPickWeaponAccessory.ShowDialog();
 
 			if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)

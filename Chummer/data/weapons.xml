@@ -6527,7 +6527,7 @@
 			<avail>0</avail>
 			<cost>250</cost>
 			<underbarrels>
-				<underbarrel>Defiance EX Shocker Contacts</underbarrel>
+				<underbarrel>Defiance EX Shocker (Melee Contacts)</underbarrel>
 			</underbarrels>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
@@ -6543,6 +6543,7 @@
 			<name>Defiance EX Shocker (Melee Contacts)</name>
 			<category>Clubs</category>
 			<hide>yes</hide>
+			<avail>0</avail>
 			<type>Melee</type>
 			<conceal>-2</conceal>
 			<accuracy>3</accuracy>
@@ -9259,7 +9260,12 @@
 			<id>225d5411-953e-4537-9e97-40bced059bd3</id>
 			<name>Sawed Off/Shortbarrel</name>
 			<mount>Barrel</mount>
-			<damage>-2</damage>
+			<forbidden>
+				<oneof>
+					<accessory>Stock Removal</accessory>
+				</oneof>
+			</forbidden>
+			<damage>-1</damage>
 			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>4R</avail>
@@ -9272,7 +9278,32 @@
 			<name>Stock Removal</name>
 			<mount>Stock</mount>
 			<rating>0</rating>
+			<forbidden>
+				<oneof>
+					<accessory>Sawed Off/Shortbarrel</accessory>
+				</oneof>
+			</forbidden>
 			<conceal>-1</conceal>
+			<avail>2</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>01bb2926-c25f-4eba-acfc-aa4b14019607</id>
+			<name>Sawed Off/Shortbarrel and Stock Removal</name>
+			<mount>Stock</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Stock Removal</accessory>
+					<accessory>Sawed Off/Shortbarrel</accessory>
+				</oneof>
+			</forbidden>
+			<extramount>Barrel</extramount>
+			<rating>0</rating>
+			<accuracy>-1</accuracy>
+			<damage>-1</damage>
+			<conceal>-2</conceal>
 			<avail>2</avail>
 			<cost>20</cost>
 			<source>HT</source>
