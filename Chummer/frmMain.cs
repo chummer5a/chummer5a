@@ -261,38 +261,17 @@ namespace Chummer
 			// Override the defaults for the setting.
 			objCharacter.IgnoreRules = true;
 			objCharacter.IsCritter = true;
+			objCharacter.Created = true;
 			objCharacter.BuildMethod = CharacterBuildMethod.Karma;
 			objCharacter.BuildPoints = 0;
 
-			// Make sure that Running Wild is one of the allowed source books since most of the Critter Powers come from this book.
-			bool blnRunningWild = false;
-			blnRunningWild = (objCharacter.Options.Books.Contains("RW"));
-
-			if (!blnRunningWild)
-			{
-			    MessageBox.Show(LanguageManager.Instance.GetString("Message_Main_RunningWild"), LanguageManager.Instance.GetString("MessageTitle_Main_RunningWild"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-			    return;
-			}
-
 			// Show the Metatype selection window.
-            if (objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-            {
-                frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter);
-                frmSelectMetatype.XmlFile = "critters.xml";
-                frmSelectMetatype.ShowDialog();
+            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
+            frmSelectMetatype.XmlFile = "critters.xml";
+            frmSelectMetatype.ShowDialog();
 
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
-            }
-            else
-            {
-                frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
-                frmSelectMetatype.XmlFile = "critters.xml";
-                frmSelectMetatype.ShowDialog();
-
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                    return;
-            }
 
 			// Add the Unarmed Attack Weapon to the character.
 			try
@@ -308,7 +287,7 @@ namespace Chummer
 			{
 			}
 
-			frmCreate frmNewCharacter = new frmCreate(objCharacter);
+			frmCareer frmNewCharacter = new frmCareer(objCharacter);
 			frmNewCharacter.MdiParent = this;
 			frmNewCharacter.WindowState = FormWindowState.Maximized;
 			frmNewCharacter.Show();

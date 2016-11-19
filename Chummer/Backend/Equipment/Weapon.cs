@@ -123,17 +123,9 @@ namespace Chummer.Backend.Equipment
 			{
 			}
 			_strAvail = objXmlWeapon["avail"].InnerText;
-			try
-			{
-				_intCost = Convert.ToInt32(objXmlWeapon["cost"].InnerText);
-			}
-			catch { }
-			try
-			{
-				if (objXmlWeapon["cyberware"].InnerText == "yes")
-					_blnCyberware = true;
-			}
-			catch { }
+			_intCost = Convert.ToInt32(objXmlWeapon["cost"]?.InnerText);
+			if (objXmlWeapon["cyberware"]?.InnerText == "yes")
+				_blnCyberware = true;
 			_strSource = objXmlWeapon["source"].InnerText;
 			_strPage = objXmlWeapon["page"].InnerText;
 
@@ -227,10 +219,6 @@ namespace Chummer.Backend.Equipment
 					if (objXmlWeaponAccessory.InnerXml.Contains("<rating>"))
 					{
 						intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
-					}
-					else
-					{
-						intAccessoryRating = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
 					}
                     if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
 					{

@@ -22,6 +22,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+﻿using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -39,6 +40,7 @@ namespace Chummer
 		private readonly Character _objCharacter;
 		private int _intAccessoryMultiplier = 1;
 		private bool _blnBlackMarketDiscount;
+		private List<WeaponAccessory> _lstAccessories;
 
 		#region Control Events
 		public frmSelectWeaponAccessory(Character objCharacter, bool blnCareer = false)
@@ -76,41 +78,71 @@ namespace Chummer
 			strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
 			strMount += "mount = \"\"";
 			XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
-			foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
-			{
-                if (objXmlAccessory.InnerXml.Contains("<extramount>"))
-                {
-                    bool boolCanAdd = false;
-                    if (strAllowed.Length > 1)
-                    {
-                        foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')))
-                        {
-                            if (strItem != "")
-                            {
-                                foreach (string strAllowedMount in strAllowed)
-                                {
-                                    if (strAllowedMount == strItem)
-                                    {
-                                        boolCanAdd = true;
-                                        break;
-                                    }
-                                }
-                                if (boolCanAdd)
-                                    break;
-                            }
-                        }
-                    }
-                    if (!boolCanAdd)
-                        continue;
-                }
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlAccessory["name"].InnerText;
-				if (objXmlAccessory["translate"] != null)
-					objItem.Name = objXmlAccessory["translate"].InnerText;
-				else
-					objItem.Name = objXmlAccessory["name"].InnerText;
-				lstAccessories.Add(objItem);
-			}
+			if (objXmlAccessoryList != null)
+				foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
+				{
+					bool boolCanAdd = true;
+					if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+					{
+						if (strAllowed.Length > 1)
+						{
+							foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => strItem != ""))
+							{
+								if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
+								{
+									boolCanAdd = false;
+								}
+								if (boolCanAdd)
+									break;
+							}
+						}
+					}
+
+					if (objXmlAccessory["required"]?["oneof"] != null)
+					{
+						boolCanAdd = false;
+						XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
+						//Add to set for O(N log M) runtime instead of O(N * M)
+
+						HashSet<String> objRequiredAccessory = new HashSet<String>();
+						foreach (XmlNode node in objXmlRequiredList)
+						{
+							objRequiredAccessory.Add(node.InnerText);
+						}
+
+						foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+						{
+							boolCanAdd = true;
+						}
+					}
+
+					if (objXmlAccessory["forbidden"]?["oneof"] != null)
+					{
+						XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
+						//Add to set for O(N log M) runtime instead of O(N * M)
+
+						HashSet<String> objForbiddenAccessory = new HashSet<String>();
+						foreach (XmlNode node in objXmlForbiddenList)
+						{
+							objForbiddenAccessory.Add(node.InnerText);
+						}
+
+						foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+						{
+							boolCanAdd = false;
+						}
+					}
+
+					if (!boolCanAdd)
+						continue;
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlAccessory["name"].InnerText;
+					if (objXmlAccessory["translate"] != null)
+						objItem.Name = objXmlAccessory["translate"].InnerText;
+					else
+						objItem.Name = objXmlAccessory["name"].InnerText;
+					lstAccessories.Add(objItem);
+				}
 
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -461,6 +493,17 @@ namespace Chummer
 			get
 			{
 				return _intMarkup;
+			}
+		}
+
+		/// <summary>
+		/// Markup percentage.
+		/// </summary>
+		public List<WeaponAccessory> InstalledAccessories
+		{
+			set
+			{
+				_lstAccessories = value;
 			}
 		}
 		#endregion

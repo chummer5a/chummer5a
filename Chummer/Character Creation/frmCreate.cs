@@ -5293,177 +5293,69 @@ namespace Chummer
                 cmdAddComplexForm_Click(sender, e);
         }
 
-        private void cmdDeleteArmor_Click(object sender, EventArgs e)
-        {
-            // Delete the selected piece of Armor.
-            try
-            {
-                if (treArmor.SelectedNode.Level == 0)
-                {
-                    if (treArmor.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
-                        return;
+		private void cmdDeleteArmor_Click(object sender, EventArgs e)
+		{
+			if (treArmor.SelectedNode.Level == 0)
+			{
+				if (treArmor.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
+					return;
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmorLocation")))
-                        return;
+				if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmorLocation")))
+					return;
 
-                    // Move all of the child nodes in the current parent to the Selected Armor parent node.
-                    foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
-                    {
-                        Armor objArmor = _objFunctions.FindArmor(objNode.Tag.ToString(), _objCharacter.Armor);
+				// Move all of the child nodes in the current parent to the Selected Armor parent node.
+				foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
+				{
+					Armor objArmor = _objFunctions.FindArmor(objNode.Tag.ToString(), _objCharacter.Armor);
 
-                        // Change the Location for the Armor.
-                        objArmor.Location = "";
+					// Change the Location for the Armor.
+					objArmor.Location = "";
 
-                        TreeNode nodNewNode = new TreeNode();
-                        nodNewNode.Text = objNode.Text;
-                        nodNewNode.Tag = objNode.Tag;
-                        nodNewNode.ContextMenuStrip = cmsArmor;
+					TreeNode nodNewNode = new TreeNode();
+					nodNewNode.Text = objNode.Text;
+					nodNewNode.Tag = objNode.Tag;
+					nodNewNode.ContextMenuStrip = cmsArmor;
 
-                        // Add child nodes.
-                        foreach (ArmorMod objChild in objArmor.ArmorMods)
-                        {
-                            TreeNode nodChildNode = new TreeNode();
-                            nodChildNode.Text = objChild.DisplayName;
-                            nodChildNode.Tag = objChild.InternalId;
-                            nodChildNode.ContextMenuStrip = cmsArmorMod;
-                            nodNewNode.Nodes.Add(nodChildNode);
-                            nodNewNode.Expand();
-                        }
-
-                        foreach (Gear objChild in objArmor.Gear)
-                        {
-                            TreeNode nodChildNode = new TreeNode();
-                            nodChildNode.Text = objChild.DisplayName;
-                            nodChildNode.Tag = objChild.InternalId;
-                            nodChildNode.ContextMenuStrip = cmsArmorGear;
-                            nodNewNode.Nodes.Add(nodChildNode);
-                            nodNewNode.Expand();
-                        }
-
-                        treArmor.Nodes[0].Nodes.Add(nodNewNode);
-                        treArmor.Nodes[0].Expand();
-                    }
-
-                    // Remove the Location from the character, then remove the selected node.
-                    _objCharacter.ArmorBundles.Remove(treArmor.SelectedNode.Text);
-                    treArmor.SelectedNode.Remove();
-                    return;
-                }
-
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmor")))
-                    return;
-				Weapon objRemoveWeapon = new Weapon(_objCharacter);
-
-				if (treArmor.SelectedNode.Level == 1)
-                {
-                    Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                    if (objArmor == null)
-                        return;
-
-                    // Remove any Improvements created by the Armor and its children.
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
-                    {
-                        // Remove the Cyberweapon created by the Mod if applicable.
-                        if (objMod.WeaponID != Guid.Empty.ToString())
-                        {
-                            // Remove the Weapon from the TreeView.
-                            TreeNode objRemoveNode = new TreeNode();
-                            foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
-                            {
-                                if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
-                                    objRemoveNode = objWeaponNode;
-                            }
-                            treWeapons.Nodes.Remove(objRemoveNode);
-
-                            // Remove the Weapon from the Character.
-
-	                        foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
-	                        {
-		                        _objCharacter.Weapons.Remove(objWeapon);
-	                        }
-                        }
-
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-                    }
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
-
-                    // Remove any Improvements created by the Armor's Gear.
-                    foreach (Gear objGear in objArmor.Gear)
-                        _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-
-					// Remove the Weapon from the Character.
-					foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
+					// Add child nodes.
+					foreach (ArmorMod objChild in objArmor.ArmorMods)
 					{
-						_objCharacter.Weapons.Remove(objWeapon);
-						// Remove the Weapon from the TreeView.
-						TreeNode objRemoveNode = new TreeNode();
-						foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objArmor.WeaponID))
-						{
-							treWeapons.Nodes.Remove(objWeaponNode);
-						}
+						TreeNode nodChildNode = new TreeNode();
+						nodChildNode.Text = objChild.DisplayName;
+						nodChildNode.Tag = objChild.InternalId;
+						nodChildNode.ContextMenuStrip = cmsArmorMod;
+						nodNewNode.Nodes.Add(nodChildNode);
+						nodNewNode.Expand();
 					}
 
-					_objCharacter.Armor.Remove(objArmor);
-                    treArmor.SelectedNode.Remove();
-                }
-                else if (treArmor.SelectedNode.Level == 2)
-                {
-                    bool blnIsMod = false;
-                    ArmorMod objMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                    if (objMod != null)
-                        blnIsMod = true;
+					foreach (Gear objChild in objArmor.Gear)
+					{
+						TreeNode nodChildNode = new TreeNode();
+						nodChildNode.Text = objChild.DisplayName;
+						nodChildNode.Tag = objChild.InternalId;
+						nodChildNode.ContextMenuStrip = cmsArmorGear;
+						nodNewNode.Nodes.Add(nodChildNode);
+						nodNewNode.Expand();
+					}
 
-                    if (blnIsMod)
-                    {
-                        // Remove the Cyberweapon created by the Mod if applicable.
-                        if (objMod.WeaponID != Guid.Empty.ToString())
-                        {
-							// Remove the Weapon from the Character.
-							foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
-							{
-								_objCharacter.Weapons.Remove(objWeapon);
-								// Remove the Weapon from the TreeView.
-								foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objMod.WeaponID))
-								{
-									treWeapons.Nodes.Remove(objWeaponNode);
-								}
-							}
-						}
+					treArmor.Nodes[0].Nodes.Add(nodNewNode);
+					treArmor.Nodes[0].Expand();
+				}
 
-                        // Remove any Improvements created by the ArmorMod.
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-                        objMod.Parent.ArmorMods.Remove(objMod);
-                    }
-                    else
-                    {
-                        Armor objSelectedArmor = new Armor(_objCharacter);
-                        Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
-                        _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-                        objSelectedArmor.Gear.Remove(objGear);
-                    }
-                    treArmor.SelectedNode.Remove();
-                }
-                else if (treArmor.SelectedNode.Level > 2)
-                {
-                    Armor objSelectedArmor = new Armor(_objCharacter);
-                    Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
-                    objGear.Parent.Children.Remove(objGear);
-                    _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-                    objSelectedArmor.Gear.Remove(objGear);
-                    treArmor.SelectedNode.Remove();
-                }
-                UpdateCharacterInfo();
-                RefreshSelectedArmor();
+				// Remove the Location from the character, then remove the selected node.
+				_objCharacter.ArmorBundles.Remove(treArmor.SelectedNode.Text);
+				treArmor.SelectedNode.Remove();
+				return;
+			}
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
-        }
+			_objFunctions.DeleteArmor(treArmor,treWeapons,_objImprovementManager);
+			UpdateCharacterInfo();
+			RefreshSelectedArmor();
 
-        private void cmdAddBioware_Click(object sender, EventArgs e)
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
+
+		private void cmdAddBioware_Click(object sender, EventArgs e)
         {
             // Select the root Bioware node then open the Select Cyberware window.
             treCyberware.SelectedNode = treCyberware.Nodes[1];
@@ -7878,6 +7770,7 @@ namespace Chummer
 
 			frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
 			frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
+	        frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
 			frmPickWeaponAccessory.ShowDialog();
 
 			if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
@@ -8228,7 +8121,8 @@ namespace Chummer
 
             frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
             frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
-            frmPickWeaponAccessory.ShowDialog();
+			frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
+			frmPickWeaponAccessory.ShowDialog();
 
             if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                 return;
@@ -13759,79 +13653,66 @@ namespace Chummer
         #region Sourcebook Label Events
         private void lblWeaponSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblWeaponSource.Text);
         }
 
         private void lblMetatypeSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblMetatypeSource.Text);
         }
 
         private void lblQualitySource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblQualitySource.Text);
         }
 
         private void lblMartialArtSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblMartialArtSource.Text);
         }
 
         private void lblSpellSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblSpellSource.Text);
         }
 
         private void lblComplexFormSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblComplexFormSource.Text);
         }
 
         private void lblCritterPowerSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblCritterPowerSource.Text);
         }
 
         private void lblMetamagicSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblMetamagicSource.Text);
+	        _objFunctions.OpenPDF(lblMetamagicSource.Text);
         }
 
-        private void lblCyberwareSource_Click(object sender, EventArgs e)
+		private void lblCyberwareSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblCyberwareSource.Text);
         }
 
         private void lblLifestyleSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblLifestyleSource.Text);
         }
 
         private void lblArmorSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblArmorSource.Text);
         }
 
         private void lblGearSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblGearSource.Text);
+			_objFunctions.OpenPDF(lblGearSource.Text);
         }
 
         private void lblVehicleSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblVehicleSource.Text);
         }
 
@@ -22619,7 +22500,7 @@ namespace Chummer
             }
 
             // Add Locations for the character's bits that can hold Commlinks.
-            // Populate the list of Commlink Locations.
+            /* Populate the list of Commlink Locations.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
                 if (objCyberware.AllowGear != null)
@@ -22734,7 +22615,7 @@ namespace Chummer
                         }
                     }
                 }
-            }
+            }*/
 
             foreach (Gear objGear in _objCharacter.Gear)
             {
