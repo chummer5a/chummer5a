@@ -15811,7 +15811,7 @@ namespace Chummer
 
                     lblWeaponAvail.Text = objWeapon.TotalAvail;
                     lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
-                    lblWeaponConceal.Text = "+4";
+                    lblWeaponConceal.Text = objWeapon.CalculatedConcealability();
                     lblWeaponDamage.Text = objWeapon.CalculatedDamage();
                     lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                     lblWeaponRC.Text = objWeapon.TotalRC;
