@@ -1037,7 +1037,7 @@
 				</positive>
 			</qualities>
 			<bonus>
-				<armor>1</armor>
+				<armor group="0">1</armor>
 				<reach>1</reach>
 				<lifestylecost>100</lifestylecost>
 			</bonus>

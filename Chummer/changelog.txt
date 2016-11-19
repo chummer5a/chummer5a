@@ -95,6 +95,7 @@ Data Changes:
 - Added missing Carrier qualities from Run Faster. 
 - Reorganised the critters.xml file to support creating Spirits in Chummer.
 - Fixed an issue with the Defiance EX-Shocker that caused a crash. 
+- Fixed an issue that allowed the troll's natural arumour to stack with things that replace their skin.
 
 Build 187
 
