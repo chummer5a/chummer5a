@@ -2589,6 +2589,40 @@
 			<source>HKS</source>
 			<page>77</page>
 		</gear>
+		<gear>
+			<id>adea2313-b20b-4ad1-bf7a-f101f67de800</id>
+			<name>Ogre Hammer SWS Assault Cannon (Commlink)</name>
+			<category>Commlinks</category>
+			<hidden />
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>4</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>4</dataprocessing>
+			<firewall>4</firewall>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>46</page>
+		</gear>
+		<gear>
+			<id>e794709c-059f-4eda-9bbd-ae0aa7aead2a</id>
+			<name>Terracotta Arms AM-47 (Commlink)</name>
+			<category>Commlinks</category>
+			<hidden />
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>5</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>5</dataprocessing>
+			<firewall>5</firewall>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>38</page>
+		</gear>
 		<!-- End Region -->
 		<!-- Region RCCs -->
 		<gear>

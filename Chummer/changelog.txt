@@ -27,6 +27,11 @@ Application Changes:
 - Fixed the implementation of the Stock Remova/Shortbarrel mods. Current technical limitations prevent the penalty to accuracy if both mods are installed from working, so another modification that rolls both mods in together has been added. 
 - Added the ability to forbid/require weapon accessories based on the presence of other accessories. 
 - Altered the behaviour of the Weapon Focus to avoid some silly behaviour like letting your fists be a weapon focus. 
+- Added the ability for weapons with built-in accessories to attach extra gear to said built-in accessories.
+- Corrected the issue where weapons would receive +4 concealability for each underbarrel weapon.
+- Fixed the issue where changing metatypes under priority or sum-to-ten generation would save the incorrect amount of points spent on an attribute if it also had karma spent on it.
+- Fixed the issue where the magic dropdown menu and the metatype selection list would not update properly when the priority selection screen was initialised.
+- Fixed the issue where Edge was not properly re-adjusted when changing metatypes during character creation.
 
 Data Changes: 
 
@@ -95,6 +100,8 @@ Data Changes:
 - Added missing Carrier qualities from Run Faster. 
 - Reorganised the critters.xml file to support creating Spirits in Chummer.
 - Fixed an issue with the Defiance EX-Shocker that caused a crash. 
+- Added commlink gear to the built-in weapon commlinks of the Ogre Hammer SWS Assault Cannon and the Terracotta Arms AM-47
+- Added missing Imaging Scope addons for the Imaging Scopes that are built into the Ogre Hammer SWS Assault Cannon, the Krupp Arms Kriegfaust, the Ultimax Rain Forest Carbine, the Terracotta Arms AM-47, the Marlin X71, and the Springfield M1A. 
 
 Build 187
 

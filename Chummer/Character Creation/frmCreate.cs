@@ -21043,17 +21043,17 @@ namespace Chummer
                 intEssenceLoss = _objCharacter.EssencePenalty;
 
             // Determine the number of points that have been put into Attributes.
-            int intBOD = _objCharacter.BOD.Value - _objCharacter.BOD.MetatypeMinimum;
-            int intAGI = _objCharacter.AGI.Value - _objCharacter.AGI.MetatypeMinimum;
-            int intREA = _objCharacter.REA.Value - _objCharacter.REA.MetatypeMinimum;
-            int intSTR = _objCharacter.STR.Value - _objCharacter.STR.MetatypeMinimum;
-            int intCHA = _objCharacter.CHA.Value - _objCharacter.CHA.MetatypeMinimum;
-            int intINT = _objCharacter.INT.Value - _objCharacter.INT.MetatypeMinimum;
-            int intLOG = _objCharacter.LOG.Value - _objCharacter.LOG.MetatypeMinimum;
-            int intWIL = _objCharacter.WIL.Value - _objCharacter.WIL.MetatypeMinimum;
-            int intEDG = _objCharacter.EDG.Value - _objCharacter.EDG.MetatypeMinimum;
-	        int intMAG = Math.Max(_objCharacter.MAG.Value - _objCharacter.MAG.MetatypeMinimum, 0);
-	        int intRES = Math.Max(_objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum, 0);
+            int intBOD = _objCharacter.BOD.Base - _objCharacter.BOD.MetatypeMinimum;
+            int intAGI = _objCharacter.AGI.Base - _objCharacter.AGI.MetatypeMinimum;
+            int intREA = _objCharacter.REA.Base - _objCharacter.REA.MetatypeMinimum;
+            int intSTR = _objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum;
+            int intCHA = _objCharacter.CHA.Base - _objCharacter.CHA.MetatypeMinimum;
+            int intINT = _objCharacter.INT.Base - _objCharacter.INT.MetatypeMinimum;
+            int intLOG = _objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum;
+            int intWIL = _objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum;
+            int intEDG = _objCharacter.EDG.Base - _objCharacter.EDG.MetatypeMinimum;
+	        int intMAG = Math.Max(_objCharacter.MAG.Base - _objCharacter.MAG.MetatypeMinimum, 0);
+	        int intRES = Math.Max(_objCharacter.RES.Base - _objCharacter.RES.MetatypeMinimum, 0);
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
             List<Improvement> lstImprovement = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage).ToList();

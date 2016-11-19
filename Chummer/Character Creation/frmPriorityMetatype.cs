@@ -364,8 +364,18 @@ namespace Chummer
 				SumtoTen();
 			}
 
-			// Add Possession and Inhabitation to the list of Critter Tradition variations.
-			tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.Instance.GetString("Tip_Metatype_PossessionTradition"));
+            // Make sure lists are properly populated so that you can't e.g. select Magician if you're reprioritizing a Mundane
+            string strMetatype = "";
+            if (lstMetatypes.SelectedIndex >= 0)
+            {
+                strMetatype = lstMetatypes.SelectedValue.ToString();
+            }
+            LoadMetatypes();
+            lstMetatypes.SelectedValue = strMetatype;
+            PopulateTalents();
+
+            // Add Possession and Inhabitation to the list of Critter Tradition variations.
+            tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.Instance.GetString("Tip_Metatype_PossessionTradition"));
 			tipTooltip.SetToolTip(chkBloodSpirit, LanguageManager.Instance.GetString("Tip_Metatype_BloodSpirit"));
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
@@ -609,6 +619,7 @@ namespace Chummer
 							cboSkill2.DisplayMember = "Name";
 							cboSkill2.DataSource = lstSkills;
 							cboSkill2.Visible = true;
+                            cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
 						}
 						lblMetatypeSkillSelection.Visible = true;
 					}
@@ -633,7 +644,7 @@ namespace Chummer
 			}
 		}
 
-	    private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
 			XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
@@ -1175,7 +1186,8 @@ namespace Chummer
 					_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 					_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
-					_objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
+                    _objCharacter.EDG.Value = _objCharacter.EDG.TotalMinimum;
+                    _objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
 					_objCharacter.RES.Value = _objCharacter.RES.TotalMinimum;
 					_objCharacter.DEP.Value = _objCharacter.DEP.TotalMinimum;
 
@@ -1187,7 +1199,8 @@ namespace Chummer
                     _objCharacter.INT.Base = _objCharacter.INT.TotalMinimum;
                     _objCharacter.LOG.Base = _objCharacter.LOG.TotalMinimum;
                     _objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
-					_objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
+                    _objCharacter.EDG.Base = _objCharacter.EDG.TotalMinimum;
+                    _objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
 					_objCharacter.RES.Base = _objCharacter.RES.TotalMinimum;
 					_objCharacter.DEP.Base = _objCharacter.DEP.TotalMinimum;
 

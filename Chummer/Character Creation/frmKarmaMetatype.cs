@@ -836,7 +836,8 @@ namespace Chummer
 					_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 					_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
-					_objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
+                    _objCharacter.EDG.Value = _objCharacter.EDG.TotalMinimum;
+                    _objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
 					_objCharacter.RES.Value = _objCharacter.RES.TotalMinimum;
 					_objCharacter.DEP.Value = _objCharacter.DEP.TotalMinimum;
 
@@ -847,7 +848,8 @@ namespace Chummer
 					_objCharacter.CHA.Base = _objCharacter.CHA.TotalMinimum;
 					_objCharacter.INT.Base = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Base = _objCharacter.LOG.TotalMinimum;
-					_objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
+                    _objCharacter.EDG.Base = _objCharacter.EDG.TotalMinimum;
+                    _objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
 					_objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
 					_objCharacter.RES.Base = _objCharacter.RES.TotalMinimum;
 					_objCharacter.DEP.Base = _objCharacter.DEP.TotalMinimum;
