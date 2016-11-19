@@ -1375,8 +1375,8 @@ namespace Chummer
                 if (!_objOptions.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
                 nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
-                nudMAG.Maximum = _objCharacter.MAG.MetatypeMaximum;
-                nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum;
+                nudMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
+                nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
 
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
@@ -1424,6 +1424,7 @@ namespace Chummer
                     intEssenceLoss = _objCharacter.EssencePenalty;
                 nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
                 nudRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
+                nudKRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
                 // If the character options permit submersion in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
@@ -21119,11 +21120,11 @@ namespace Chummer
             nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
-                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-                nudKRES.Maximum = _objCharacter.RES.TotalMaximum;
+                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
+                nudKRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
             }
-            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-            nudRES.Maximum = _objCharacter.RES.TotalMaximum;
+            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
+            nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
 
             nudBOD.Minimum = _objCharacter.BOD.MetatypeMinimum;
             nudAGI.Minimum = _objCharacter.AGI.MetatypeMinimum;

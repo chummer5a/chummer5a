@@ -32,6 +32,7 @@ Application Changes:
 - Fixed the issue where changing metatypes under priority or sum-to-ten generation would save the incorrect amount of points spent on an attribute if it also had karma spent on it.
 - Fixed the issue where the magic dropdown menu and the metatype selection list would not update properly when the priority selection screen was initialised.
 - Fixed the issue where Edge was not properly re-adjusted when changing metatypes during character creation.
+- Fixed a crash issue where changing metatypes or the magic priority mid-creation would not take essence loss into account when setting new values for magic or resonance. Fixes #1229.
 
 Data Changes: 
 
