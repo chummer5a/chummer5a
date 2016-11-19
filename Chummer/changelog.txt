@@ -100,8 +100,9 @@ Data Changes:
 - Added missing Carrier qualities from Run Faster. 
 - Reorganised the critters.xml file to support creating Spirits in Chummer.
 - Fixed an issue with the Defiance EX-Shocker that caused a crash. 
+- Fixed an issue that allowed the troll's natural arumour to stack with things that replace their skin.
 - Added commlink gear to the built-in weapon commlinks of the Ogre Hammer SWS Assault Cannon and the Terracotta Arms AM-47
-- Added missing Imaging Scope addons for the Imaging Scopes that are built into the Ogre Hammer SWS Assault Cannon, the Krupp Arms Kriegfaust, the Ultimax Rain Forest Carbine, the Terracotta Arms AM-47, the Marlin X71, and the Springfield M1A. 
+- Added missing Imaging Scope addons for the Imaging Scopes that are built into the Ogre Hammer SWS Assault Cannon, the Krupp Arms Kriegfaust, the Ultimax Rain Forest Carbine, the Terracotta Arms AM-47, the Marlin X71, and the Springfield M1A.
 
 Build 187
 
