@@ -95,13 +95,14 @@
 	</grades>
 	<categories>
 		<category>Basic</category>
-		<category>Orthoskin Upgrades</category>
-		<category>Cultured</category>
-		<category>Symbionts</category>
-		<category>Genemods</category>
 		<category>Biosculpting</category>
-		<category>Cosmetic Bioware</category>
 		<category>Bio-Weapons</category>
+		<category>Chemical Gland Modifications</category>
+		<category>Cosmetic Bioware</category>
+		<category>Cultured</category>
+		<category>Genemods</category>
+		<category>Orthoskin Upgrades</category>
+		<category>Symbionts</category>
 	</categories>
 	<biowares>
 		<!-- Region Shadowrun 5-->
@@ -501,9 +502,12 @@
 			<name>Chemical Gland</name>
 			<category>Basic</category>
 			<ess>0.1</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<avail>12R</avail>
 			<cost>20000</cost>
+			<subsystems>
+				<subsystem>Chemical Gland Modifications</subsystem>
+			</subsystems>
 			<bonus>
 				<selecttext />
 			</bonus>
@@ -513,7 +517,7 @@
 		<bioware>
 			<id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
 			<name>Chemical Gland Exhalation Sprayer</name>
-			<category>Basic</category>
+			<category>Chemical Gland Modifications</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>12R</avail>
@@ -524,7 +528,7 @@
 		<bioware>
 			<id>47608117-a4af-4dfe-81bb-0dc8c6c5122d</id>
 			<name>Chemical Gland Spitter</name>
-			<category>Basic</category>
+			<category>Chemical Gland Modifications</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>12R</avail>
@@ -612,7 +616,7 @@
 		<bioware>
 			<id>915b1458-e33c-4010-a093-47d40cfa11de</id>
 			<name>Chemical Gland Weapon Reservoir</name>
-			<category>Basic</category>
+			<category>Chemical Gland Modifications</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>12F</avail>
@@ -623,7 +627,7 @@
 		<bioware>
 			<id>d2064cf2-e9f7-479f-92cc-7da7c6024121</id>
 			<name>Chemical Gland Expanded Reservoir</name>
-			<category>Basic</category>
+			<category>Chemical Gland Modifications</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>12</avail>
@@ -1324,10 +1328,14 @@
 			<id>e53383b8-ed64-4840-a2bf-baaa8885c61b</id>
 			<name>Sensitive Skin</name>
 			<category>Cosmetic Bioware</category>
+			<rating>20</rating>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>4</avail>
-			<cost>500</cost>
+			<cost>Rating * 500</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -1685,7 +1693,7 @@
 			<avail>6</avail>
 			<cost>8000</cost>
 			<bonus>
-				<lifestylecost>10</lifestylecost>
+				<lifestylecost>-10</lifestylecost>
 			</bonus>
 			<source>CF</source>
 			<page>160</page>
@@ -2366,6 +2374,9 @@
 			<name>Bilateral Coordination Co-processor</name>
 			<category>Basic</category>
 			<ess>0.2</ess>
+			<bonus>
+				<ambidextrous />
+			</bonus>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>4500</cost>

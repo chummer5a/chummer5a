@@ -22732,6 +22732,8 @@ namespace Chummer
 
 			frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
 
+			frmPickCyberware.Subsystems = objSelectedCyberware.Subsytems;
+
 			frmPickCyberware.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -22837,10 +22839,7 @@ namespace Chummer
 			}
 
 			// Select the node that was just added.
-			if (objSource == Improvement.ImprovementSource.Cyberware)
-				objNode.ContextMenuStrip = cmsCyberware;
-			else if (objSource == Improvement.ImprovementSource.Bioware)
-				objNode.ContextMenuStrip = cmsBioware;
+			objNode.ContextMenuStrip = cmsCyberware;
 
 			foreach (Weapon objWeapon in objWeapons)
 				_objCharacter.Weapons.Add(objWeapon);
@@ -26462,7 +26461,7 @@ namespace Chummer
 			{
 				if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
 				{
-					_objFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[1], cmsBioware, cmsCyberwareGear);
+					_objFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[1], cmsCyberware, cmsCyberwareGear);
 				}
 			}
 		}

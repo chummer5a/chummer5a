@@ -1103,6 +1103,8 @@
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Adept</quality>
+					<metatypecategory>Metasapient</metatypecategory>
+					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
 			<source>SR5</source>
@@ -9073,6 +9075,9 @@
 			</costdiscount>
 			<category>Positive</category>
 			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<armor>1</armor>
 				<enabletab>
           <name>adept</name>
@@ -9229,6 +9234,9 @@
 			</costdiscount>
 			<category>Positive</category>
 			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
           <name>magician</name>
 				  <name>critter</name>
@@ -9591,11 +9599,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
-					<metatype>Free Spirit</metatype>
-					<metatype>Pixie</metatype>
-					<metatype>Human</metatype>
-					<metatype>Centaur</metatype>
-					<metatype>Naga</metatype>
+					<metatypecategory>Metasapient</metatypecategory>
 					<metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Magic Resistance (Rating 1)</quality>
 					<quality>Magic Resistance (Rating 2)</quality>
@@ -9636,6 +9640,9 @@
 				<discount>-10</discount>
 			</costdiscount>
 			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
           <name>magician</name>
 					<name>critter</name>
@@ -9870,6 +9877,11 @@
 			<bonus>
 				<fadingresist>2</fadingresist>
 			</bonus>
+			<required>
+				<oneof>
+					<quality>Technomancer</quality>
+				</oneof>
+			</required>
 			<source>DT</source>
 			<page>45</page>
 		</quality>

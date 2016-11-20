@@ -112,9 +112,26 @@ namespace Chummer
 					break;
 			}
 
-			// Populate the Cyberware Category list.
-			XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-			foreach (XmlNode objXmlCategory in objXmlCategoryList)
+			XmlNodeList objXmlCategoryList;
+			if (_strSubsystems.Length > 0)
+	        {
+		        // Populate the Cyberware Category list.
+		        string strSubsystem = ". = \"";
+		        if (_strSubsystems.Contains(','))
+		        {
+			        strSubsystem += _strSubsystems.Replace(",", "\" or . = \"");
+		        }
+		        else
+		        {
+			        strSubsystem += _strSubsystems;
+		        }
+		        objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[" + strSubsystem + "\"]");
+			}
+	        else
+	        {
+				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+			}
+	        foreach (XmlNode objXmlCategory in objXmlCategoryList)
 			{
 				// Make sure the Category isn't in the exclusion list.
 				bool blnAddItem = true;
@@ -245,19 +262,18 @@ namespace Chummer
 		        cboGrade.SelectedValue = "Standard";
 	        }
 
-            // Retrieve the list of Cyberware for the selected Category.
+			// Retrieve the list of Cyberware for the selected Category.
 			if (_blnShowOnlySubsystems)
 				objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ") and contains(capacity, \"[\")]");
 			else
 				objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCyberware["name"].InnerText;
-				if (objXmlCyberware["translate"] != null)
-					objItem.Name = objXmlCyberware["translate"].InnerText;
-				else
-					objItem.Name = objXmlCyberware["name"].InnerText;
+				ListItem objItem = new ListItem
+				{
+					Value = objXmlCyberware["name"].InnerText,
+					Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText
+				};
 				lstCyberwares.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
@@ -290,32 +306,32 @@ namespace Chummer
 			if (objXmlCyberware.InnerXml.Contains("<rating>"))
 			{
 				nudRating.Enabled = true;
-			    if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
+			    switch (objXmlCyberware["rating"].InnerText)
 			    {
-                    if (_objVehicle != null)
-                    {
-                        nudRating.Maximum = _objVehicle.TotalBody*2;
-	                    nudRating.Minimum = _objVehicle.TotalBody;
-                    }
-                    else
-                    {
-                        nudRating.Maximum = _objCharacter.STR.TotalMaximum;
-                    }
-                }
-                else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
-			    {
-                    if (_objVehicle != null)
-                    {
-                        nudRating.Maximum = _objVehicle.Pilot*2;
-                    }
-                    else
-                    {
-                        nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
-                    }
-                }
-			    else
-			    {
-			        nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+				    case "MaximumSTR":
+					    if (_objVehicle != null)
+					    {
+						    nudRating.Maximum = _objVehicle.TotalBody*2;
+						    nudRating.Minimum = _objVehicle.TotalBody;
+					    }
+					    else
+					    {
+						    nudRating.Maximum = _objCharacter.STR.TotalMaximum;
+					    }
+					    break;
+				    case "MaximumAGI":
+					    if (_objVehicle != null)
+					    {
+						    nudRating.Maximum = _objVehicle.Pilot*2;
+					    }
+					    else
+					    {
+						    nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
+					    }
+					    break;
+				    default:
+					    nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+					    break;
 			    }
 				if (objXmlCyberware["minrating"] != null)
 				{

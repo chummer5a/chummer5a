@@ -207,9 +207,14 @@ namespace Chummer.Backend.Equipment
 			if (objXmlCyberware.InnerXml.Contains("subsystems"))
 			{
 				string strSubsystem = "";
-				foreach (XmlNode objXmlSubsystem in objXmlCyberware.SelectNodes("subsystems/subsystem"))
+				XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("subsystems/subsystem");
+				for (int i = 0; i < lstSubSystems.Count; i++)
 				{
-					strSubsystem += objXmlSubsystem.InnerText + ",";
+					strSubsystem += lstSubSystems[i].InnerText;
+					if (i != lstSubSystems.Count - 1)
+					{
+						strSubsystem += ",";
+					}
 				}
 				_strSubsystems = strSubsystem;
 			}
@@ -1606,7 +1611,10 @@ namespace Chummer.Backend.Equipment
 				}
 
 				decReturn = Math.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-
+				if (SourceType == Improvement.ImprovementSource.Bioware)
+				{
+					decReturn += _objChildren.Sum(objChild => objChild.CalculatedESS);
+				}
 				return decReturn;
 			}
 		}

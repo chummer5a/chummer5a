@@ -33,6 +33,7 @@ Application Changes:
 - Fixed the issue where the magic dropdown menu and the metatype selection list would not update properly when the priority selection screen was initialised.
 - Fixed the issue where Edge was not properly re-adjusted when changing metatypes during character creation.
 - Fixed a crash issue where changing metatypes or the magic priority mid-creation would not take essence loss into account when setting new values for magic or resonance. Fixes #1229.
+- Fixed the filtering behaviour of cyberware subsystems to properly filter down to those subsystems. This shouldn't impact existing cyberware in any noticeable way, but this will allow adding subsystems to bioware. 
 - Weapon accessories now only need to contain "Expanded Clip" in their name for the application to recognize the accessory as an expanded clip.
 - Added a prototypical, custom filtering system that checks raw XML. Currently, this is only used for weapon accessories to hide ineligible ones from the selection menu, but if placed in a global context, it should be flexible enough to support anything.
 
@@ -106,6 +107,14 @@ Data Changes:
 - Fixed an issue that allowed the troll's natural arumour to stack with things that replace their skin.
 - Added commlink gear to the built-in weapon commlinks of the Ogre Hammer SWS Assault Cannon and the Terracotta Arms AM-47
 - Added missing Imaging Scope addons for the Imaging Scopes that are built into the Ogre Hammer SWS Assault Cannon, the Krupp Arms Kriegfaust, the Ultimax Rain Forest Carbine, the Terracotta Arms AM-47, the Marlin X71, and the Springfield M1A.
+- Added a category for Chemical Gland bioware modifications. 
+- Added the Chemical Gland Modifications subsystem to the Chemical Gland bioware. 
+- Tweaked the behaviour of the Sensitive Skin bioware to be more descriptive. 
+- Fixed the Thickened Digestive Tract Lining bioware to properly reduce lifestyle costs. 
+- Fixed the magical unlock behaviour of the mutaqua, wendigo and nosferatu. 
+- Fixed the ability for metsapients and shapeshifters to take the Technomancer quality incorrectly.
+- Fixed the Otaku to Technomancer quality not having a Technomancer prerequisite. 
+- Fixed the mount location for the Easy Breakdown weapon mods. 
 - Corrected Explosive Magazine not lowering ammo count by 2.
 - Added an entry for the Rating 2-only Expanded Clip for Machine Pistols that are considered to have an R1 Expanded Clip by default.
 - Added custom filters to the following accessories to make sure they only show up for weapons that are eligible: Ares Light Fire 70 Silencer, Ares Light Fire 75 Silencer, Airburst Link, Concealable Holster, Hidden Gun Arm Slide, Quick-Draw Holster, Silencer, Sound Suppressor, Spare Clip, Speed Loader, PSK-3 Collapsible Heavy Pistol Silencer, Collapsed Frame, Ares Executioner Extra Case, Vindicator 200-Round Belt, Bayonet, Foregrip, Gecko Grip, most Underbarrel Weapon accessories, Ammo Skip, Explosive Magazine, Extended Clip, Chameleon Coating, Overclocked, Sawed Off/Shortbarrel, and Stock Removal. 

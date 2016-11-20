@@ -4396,7 +4396,7 @@ namespace Chummer
 							decCyberware += objCyberware.CalculatedESS;
 						else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
 						{
-								decBioware += objCyberware.CalculatedESS;
+							decBioware += objCyberware.CalculatedESS;
 						}
                     }
                 }
