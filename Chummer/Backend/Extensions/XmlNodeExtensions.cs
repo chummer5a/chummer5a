@@ -11,10 +11,10 @@ namespace Chummer.Backend
         /// </summary>
         public static bool processFilterOperationNode(XmlNode objXmlParentNode, XmlNode objXmlOperationNode, bool boolIsOrNode = false)
         {
-            bool boolReturnValue = !boolIsOrNode;
             if (objXmlParentNode == null || objXmlOperationNode == null)
-                return boolReturnValue;
+                return false;
 
+            bool boolReturnValue = !boolIsOrNode;
             XmlNodeList objXmlNodeList = objXmlOperationNode.SelectNodes("*");
             bool boolInvert = false;
             string strOperationType = "==";
@@ -37,7 +37,7 @@ namespace Chummer.Backend
                 else
                 {
                     XmlNodeList objXmlTargetNodeList = objXmlParentNode.SelectNodes(objXmlOperationChildNode.Name);
-                    // default is "any"
+                    // default is "any", replace with switch() if more check modes are necessary
                     boolOperationChildNodeResult = false;
                     if (objXmlOperationChildNode?.Attributes?["checktype"]?.InnerText == "all")
                         boolOperationChildNodeResult = true;
@@ -50,8 +50,6 @@ namespace Chummer.Backend
                         {
                             if (objXmlOperationChildNode.SelectNodes("*").Count > 0)
                                 boolSubNodeResult = processFilterOperationNode(objXmlTargetNode, objXmlOperationChildNode, objXmlOperationChildNode.Attributes?["OR"] != null) != boolInvert;
-                            else
-                                boolSubNodeResult = boolInvert;
                         }
                         else
                         {
@@ -92,31 +90,15 @@ namespace Chummer.Backend
                                     break;
                             }
                         }
-                        if (objXmlOperationChildNode.Attributes?["checktype"] != null)
+                        if (objXmlOperationChildNode.Attributes?["checktype"]?.InnerText == "all")
                         {
-                            bool boolExitLoop = false;
-                            switch (objXmlOperationChildNode.Attributes["checktype"].InnerText)
+                            if (!boolSubNodeResult)
                             {
-                                case "all":
-                                    if (!boolSubNodeResult)
-                                    {
-                                        boolOperationChildNodeResult = false;
-                                        boolExitLoop = true;
-                                    }
-                                    break;
-                                case "any":
-                                default:
-                                    if (boolSubNodeResult)
-                                    {
-                                        boolOperationChildNodeResult = true;
-                                        boolExitLoop = true;
-                                    }
-                                    break;
-                            }
-                            if (boolExitLoop)
+                                boolOperationChildNodeResult = false;
                                 break;
+                            }
                         }
-                        // default is "any"
+                        // default is "any", replace above with a switch() should more than two checktypes be required
                         else if (boolSubNodeResult)
                         {
                             boolOperationChildNodeResult = true;
