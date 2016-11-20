@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -193,7 +194,7 @@ namespace Chummer
 
 		public List<string> BookLinq()
 		{
-			return Books;
+			return Books.ToList();
 		}
 		#endregion
 
@@ -224,6 +225,7 @@ namespace Chummer
 	    /// <summary>
 		/// Exclude a particular Limb Slot from count towards the Limb Count.
 		/// </summary>
+        [DisplayIgnore] //TODO: Do something
 		[SavePropertyAs("excludelimbslot")]
 		//TODO: Handler for comboboxes
 		public string ExcludeLimbSlot { get; set; } = "";
@@ -986,16 +988,18 @@ namespace Chummer
 		/// <summary>
 		/// Sourcebooks.
 		/// </summary>
-		public List<string> Books { get; } = new List<string>();
+		public HashSet<string> Books { get; } = new HashSet<string>();
 
 	    /// <summary>
 		/// Setting name.
 		/// </summary>
+		[DisplayIgnore] //TODO: Do something
 		public string Name { get; set; } = "Default Settings";
 
 	    /// <summary>
 		/// 
 		/// </summary>
-		public string RecentImageFolder { get; set; } = "";
+		[DisplayIgnore] //TODO: Do something
+	    public string RecentImageFolder { get; set; } = "";
 	}
 }

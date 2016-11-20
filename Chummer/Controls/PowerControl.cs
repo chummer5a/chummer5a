@@ -20,13 +20,15 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-// PowerRatingChanged Event Handler.
-public delegate void PowerRatingChangedHandler(Object sender);
-// DeletePower Event Handler;
-public delegate void DeletePowerHandler(Object sender);
+
 
 namespace Chummer
 {
+    // PowerRatingChanged Event Handler.
+    public delegate void PowerRatingChangedHandler(Object sender);
+    // DeletePower Event Handler;
+    public delegate void DeletePowerHandler(Object sender);
+
     public partial class PowerControl : UserControl
     {
 		private Power _objPower;

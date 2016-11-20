@@ -256,7 +256,7 @@ namespace Chummer
                 try
                 {
                     SourcebookInfo objSource = new SourcebookInfo();
-                    string strTemp = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook").GetValue(objXmlBook["code"].InnerText).ToString();
+                    string strTemp = "|0"; //Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook").GetValue(objXmlBook["code"].InnerText).ToString();
                     string[] strParts = strTemp.Split('|');
                     objSource.Code = objXmlBook["code"].InnerText;
                     objSource.Path = strParts[0];
@@ -264,7 +264,7 @@ namespace Chummer
 
                     _lstSourcebookInfo.Add(objSource);
                 }
-                catch
+                catch(Exception ex)
                 {
                 }
             }

@@ -26,17 +26,19 @@ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
 
-// ServicesOwedChanged Event Handler.
-public delegate void ServicesOwedChangedHandler(Object sender);
-// ForceChanged Event Handler.
-public delegate void ForceChangedHandler(Object sender);
-// BoundChanged Event Handler.
-public delegate void BoundChangedHandler(Object sender);
-// DeleteSpirit Event Handler.
-public delegate void DeleteSpiritHandler(Object sender);
+
 
 namespace Chummer
 {
+    // ServicesOwedChanged Event Handler.
+    public delegate void ServicesOwedChangedHandler(Object sender);
+    // ForceChanged Event Handler.
+    public delegate void ForceChangedHandler(Object sender);
+    // BoundChanged Event Handler.
+    public delegate void BoundChangedHandler(Object sender);
+    // DeleteSpirit Event Handler.
+    public delegate void DeleteSpiritHandler(Object sender);
+
     public partial class SpiritControl : UserControl
     {
 		private Spirit _objSpirit;

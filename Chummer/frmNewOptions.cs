@@ -43,7 +43,7 @@ namespace Chummer
             //TODO: dropdown that allows you to select/add multiple
             CharacterOptions o = Program.OptionsManager.Default; 
             optionTree = GetInitialTree(o);
-
+            optionTree.Children.Add(new BookNode(o.Books));
 
             PopulateTree(treeView1.Nodes, optionTree);
 
@@ -102,6 +102,7 @@ namespace Chummer
 	        //Collect all properties in groups based on their option path
 	        foreach (PropertyInfo info in o.GetType().GetProperties())
 	        {
+	            if (info.GetCustomAttribute<DisplayIgnoreAttribute>() != null) continue;
 	            if (info.GetCustomAttribute<OptionAttributes>() != null)
 	            {
 	                currentName = info.GetCustomAttribute<OptionAttributes>().Path;

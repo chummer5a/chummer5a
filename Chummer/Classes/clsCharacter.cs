@@ -32,56 +32,60 @@ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
 
-// MAGEnabledChanged Event Handler
-public delegate void MAGEnabledChangedHandler(Chummer.Character sender);
-// RESEnabledChanged Event Handler
-public delegate void RESEnabledChangedHandler(Chummer.Character sender);
-// DEPEnabledChanged Event Handler
-public delegate void DEPEnabledChangedHandler(Object sender);
-// HomeNodeChanged Event Handler
-public delegate void HomeNodeChangedHandler(Object sender);
-// AdeptTabEnabledChanged Event Handler
-public delegate void AdeptTabEnabledChangedHandler(Object sender);
-// MagicianTabEnabledChanged Event Handler
-public delegate void MagicianTabEnabledChangedHandler(Object sender);
-// TechnomancerTabEnabledChanged Event Handler
-public delegate void TechnomancerTabEnabledChangedHandler(Object sender);
-// InitiationTabEnabledChanged Event Handler
-public delegate void InitiationTabEnabledChangedHandler(Object sender);
-// CritterTabEnabledChanged Event Handler
-public delegate void CritterTabEnabledChangedHandler(Object sender);
-// UneducatedChanged Event Handler
-public delegate void UneducatedChangedHandler(Object sender);
-// JackOfAllTradesChanged Event Handler
-public delegate void JackOfAllTradesChangedHandler(Object sender);
-// PrototypeTranshumanChanged Event Handler
-public delegate void PrototypeTranshumanChangedHandler(Object sender);
-// CollegeEducationChanged Event Handler
-public delegate void CollegeEducationChangedHandler(Object sender);
-// SchoolOfHardKnocksChanged Event Handler
-public delegate void SchoolOfHardKnocksChangedHandler(Object sender);
-// UncouthChanged Event Handler
-public delegate void UncouthChangedHandler(Object sender);
-// FriendsInHighPlacesChanged Event Handler
-public delegate void FriendsInHighPlacesChangedHandler(Object sender);
-// CharacterNameChanged Event Handler
-public delegate void CharacterNameChangedHandler(Object sender);
-// BlackMarketDiscountEnabledChanged Event Handler
-public delegate void BlackMarketDiscountEnabledChangedHandler(Object sender);
-public delegate void ExConChangedHandler(Object sender);
-public delegate void TrustFundChangedHandler(Object sender);
-public delegate void TechSchoolChangedHandler(Object sender);
-public delegate void RestrictedGearChangedHandler(Object sender);
-public delegate void OverclockerChangedHandler(Object sender);
-public delegate void MadeManChangedHandler(Object sender);
-public delegate void LinguistChangedHandler(Object sender);
-public delegate void LightningReflexesChangedHandler(Object sender);
-public delegate void FameChangedHandler(Object sender);
-public delegate void BornRichChangedHandler(Object sender);
-public delegate void ErasedChangedHandler(Object sender);
+
 
 namespace Chummer
 {
+
+
+
+    // MAGEnabledChanged Event Handler
+    public delegate void MAGEnabledChangedHandler(Chummer.Character sender);
+    // RESEnabledChanged Event Handler
+    public delegate void RESEnabledChangedHandler(Chummer.Character sender);
+    // DEPEnabledChanged Event Handler
+    public delegate void DEPEnabledChangedHandler(Object sender);
+    // HomeNodeChanged Event Handler
+    public delegate void HomeNodeChangedHandler(Object sender);
+    // AdeptTabEnabledChanged Event Handler
+    public delegate void AdeptTabEnabledChangedHandler(Object sender);
+    // MagicianTabEnabledChanged Event Handler
+    public delegate void MagicianTabEnabledChangedHandler(Object sender);
+    // TechnomancerTabEnabledChanged Event Handler
+    public delegate void TechnomancerTabEnabledChangedHandler(Object sender);
+    // InitiationTabEnabledChanged Event Handler
+    public delegate void InitiationTabEnabledChangedHandler(Object sender);
+    // CritterTabEnabledChanged Event Handler
+    public delegate void CritterTabEnabledChangedHandler(Object sender);
+    // UneducatedChanged Event Handler
+    public delegate void UneducatedChangedHandler(Object sender);
+    // JackOfAllTradesChanged Event Handler
+    public delegate void JackOfAllTradesChangedHandler(Object sender);
+    // PrototypeTranshumanChanged Event Handler
+    public delegate void PrototypeTranshumanChangedHandler(Object sender);
+    // CollegeEducationChanged Event Handler
+    public delegate void CollegeEducationChangedHandler(Object sender);
+    // SchoolOfHardKnocksChanged Event Handler
+    public delegate void SchoolOfHardKnocksChangedHandler(Object sender);
+    // UncouthChanged Event Handler
+    public delegate void UncouthChangedHandler(Object sender);
+    // FriendsInHighPlacesChanged Event Handler
+    public delegate void FriendsInHighPlacesChangedHandler(Object sender);
+    // CharacterNameChanged Event Handler
+    public delegate void CharacterNameChangedHandler(Object sender);
+    // BlackMarketDiscountEnabledChanged Event Handler
+    public delegate void BlackMarketDiscountEnabledChangedHandler(Object sender);
+    public delegate void ExConChangedHandler(Object sender);
+    public delegate void TrustFundChangedHandler(Object sender);
+    public delegate void TechSchoolChangedHandler(Object sender);
+    public delegate void RestrictedGearChangedHandler(Object sender);
+    public delegate void OverclockerChangedHandler(Object sender);
+    public delegate void MadeManChangedHandler(Object sender);
+    public delegate void LinguistChangedHandler(Object sender);
+    public delegate void LightningReflexesChangedHandler(Object sender);
+    public delegate void FameChangedHandler(Object sender);
+    public delegate void BornRichChangedHandler(Object sender);
+    public delegate void ErasedChangedHandler(Object sender);
     public enum CharacterBuildMethod
     {
         Karma = 0,

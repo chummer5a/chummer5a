@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,17 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+ using System.Globalization;
+ using System.IO;
 using System.Linq;
 ﻿using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
 ﻿using Chummer.Backend;
 ﻿using Chummer.Backend.Debugging;
-﻿using Chummer.Debugging;
+ using Chummer.Backend.UI;
+ using Chummer.Debugging;
 
 namespace Chummer
 {
@@ -38,7 +40,7 @@ namespace Chummer
 		[STAThread]
 		static void Main()
 		{
-			Stopwatch sw = Stopwatch.StartNew();
+		    Stopwatch sw = Stopwatch.StartNew();
 			//If debuging and launched from other place (Bootstrap), launch debugger
 			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
 			{
@@ -69,6 +71,8 @@ namespace Chummer
 			Log.Info( info);
 			
 	        sw.TaskEnd("infoprnt");
+
+		    GlobalOptions.Instance.SourcebookInfo.Any();
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -108,6 +112,7 @@ namespace Chummer
 			Log.Info(ExceptionMap);
 		}
 
+	    public static BookImageManager BookImageManager { get; private set; } = new BookImageManager();
 	    public static OptionsManager OptionsManager { get; private set; }
 	    static ExceptionHeatMap heatmap = new ExceptionHeatMap();
 	    

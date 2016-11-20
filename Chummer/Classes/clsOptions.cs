@@ -17,12 +17,14 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// MRUChanged Event Handler.
-public delegate void MRUChangedHandler();
+
 
 namespace Chummer
 {
-	public enum ClipboardContentType
+
+    // MRUChanged Event Handler.
+    public delegate void MRUChangedHandler();
+    public enum ClipboardContentType
 	{
 		None = 0,
 		Gear = 1,
@@ -38,46 +40,13 @@ namespace Chummer
 
 	public class SourcebookInfo
 	{
-		string _strCode = "";
-		string _strPath = "";
-		int _intOffset = 0;
+	    #region Properties
+		public string Code { get; set; } = "";
 
-		#region Properties
-		public string Code
-		{
-			get
-			{
-				return _strCode;
-			}
-			set
-			{
-				_strCode = value;
-			}
-		}
+	    public string Path { get; set; } = "";
 
-		public string Path
-		{
-			get
-			{
-				return _strPath;
-			}
-			set
-			{
-				_strPath = value;
-			}
-		}
+	    public int Offset { get; set; } = 0;
 
-		public int Offset
-		{
-			get
-			{
-				return _intOffset;
-			}
-			set
-			{
-				_intOffset = value;
-			}
-		}
-		#endregion
+	    #endregion
 	}
 }

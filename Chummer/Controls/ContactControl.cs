@@ -25,23 +25,25 @@ using System.Collections.Generic;
 ﻿using System.Runtime.CompilerServices;
 ﻿using System.Xml;
 
-// ConnectionRatingChanged Event Handler.
-public delegate void ConnectionRatingChangedHandler(Object sender);
-// GroupRatingChanged Event Handler.
-public delegate void ConnectionGroupRatingChangedHandler(Object sender);
-// FreeRatingChanged Event Handler.
-public delegate void FreeRatingChangedHandler(Object sender);
-// LoyaltyRatingChanged Event Handler.
-public delegate void LoyaltyRatingChangedHandler(Object sender);
-// DeleteContact Event Handler.
-public delegate void DeleteContactHandler(Object sender);
-// FileNameChanged Event Handler.
-public delegate void FileNameChangedHandler(Object sender);
-// OtherCostChanged Event Handler.
-public delegate void OtherCostChangedHandler(Object sender);
+
 
 namespace Chummer
 {
+    // ConnectionRatingChanged Event Handler.
+    public delegate void ConnectionRatingChangedHandler(Object sender);
+// GroupRatingChanged Event Handler.
+    public delegate void ConnectionGroupRatingChangedHandler(Object sender);
+// FreeRatingChanged Event Handler.
+    public delegate void FreeRatingChangedHandler(Object sender);
+// LoyaltyRatingChanged Event Handler.
+    public delegate void LoyaltyRatingChangedHandler(Object sender);
+// DeleteContact Event Handler.
+    public delegate void DeleteContactHandler(Object sender);
+// FileNameChanged Event Handler.
+    public delegate void FileNameChangedHandler(Object sender);
+// OtherCostChanged Event Handler.
+    public delegate void OtherCostChangedHandler(Object sender);
+
     public partial class ContactControl : UserControl
     {
         private Contact _objContact;

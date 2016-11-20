@@ -50,9 +50,7 @@ namespace Chummer.Backend
                 if (property.GetCustomAttribute<SaveIgnorePropertyAttribute>() != null)
                     continue;
 
-                if (!(AttemptSaveList.Contains(property.PropertyType) ||
-                    (AttemptSaveList.Contains(typeof(Enum)) && property.PropertyType.IsSubclassOf(typeof(Enum)))
-                 )) continue;
+                if (Unsupported(property)) continue;
 
                 string name = property.GetCustomAttribute<SavePropertyAsAttribute>()?.Name ??
                               property.Name.ToLowerInvariant();
@@ -77,7 +75,7 @@ namespace Chummer.Backend
 
             }
         }
-
+        
         private static void SaveInner(object toSave, Action<string, string> save)
         {
             PropertyInfo[] properties = toSave.GetType().GetProperties();
@@ -86,9 +84,7 @@ namespace Chummer.Backend
             {
                 if (property.GetCustomAttribute<SaveIgnorePropertyAttribute>() != null) continue;
 
-                if (!(AttemptSaveList.Contains(property.PropertyType) || 
-                    (AttemptSaveList.Contains(typeof(Enum)) && property.PropertyType.IsSubclassOf(typeof(Enum)))
-                 )) continue;
+                if (Unsupported(property)) continue;
 
                 string name = property.GetCustomAttribute<SavePropertyAsAttribute>()?.Name ??
                               property.Name.ToLowerInvariant();
@@ -97,5 +93,18 @@ namespace Chummer.Backend
                 save(name, property.GetValue(toSave)?.ToString() ?? "null");
             }
         }
+
+        private static bool Unsupported(PropertyInfo property)
+        {
+            bool supported = AttemptSaveList.Contains(property.PropertyType) ||
+                             AttemptSaveList.Contains(typeof(Enum)) && property.PropertyType.IsSubclassOf(typeof(Enum)) ;//||
+
+                //Dark magic that checks if type property is collection type of allowed properties
+                //(property.PropertyType.IsGenericType && typeof(ICollection<>).IsAssignableFrom(property.PropertyType.GetGenericTypeDefinition()));
+
+
+            return !supported;
+        }
+
     }
 }

@@ -20,14 +20,16 @@
 using System.Windows.Forms;
 using System.Xml;
 
-// OmaeDownloadClicked Event Handler.
-public delegate void OmaeDownloadClickedHandler(Object sender);
-public delegate void OmaePostUpdateClickedHandler(Object sender);
-public delegate void OmaeDeleteClickedHandler(Object sender);
+
 
 namespace Chummer
 {
-	public partial class OmaeRecord : UserControl
+    // OmaeDownloadClicked Event Handler.
+    public delegate void OmaeDownloadClickedHandler(Object sender);
+    public delegate void OmaePostUpdateClickedHandler(Object sender);
+    public delegate void OmaeDeleteClickedHandler(Object sender);
+
+    public partial class OmaeRecord : UserControl
 	{
 		// Events.
 		public event OmaeDownloadClickedHandler OmaeDownloadClicked;

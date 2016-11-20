@@ -152,7 +152,7 @@ namespace Chummer.UI.Options
                 }
                 else
                 {
-                    //Utils.BreakIfDebug();
+                    Utils.BreakIfDebug();
                 }
 
                 

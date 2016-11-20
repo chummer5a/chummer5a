@@ -33,12 +33,14 @@ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
 
-public delegate void DiceRollerOpenHandler(Object sender);
-public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
 
 namespace Chummer
 {
-	[System.ComponentModel.DesignerCategory("Form")]
+    public delegate void DiceRollerOpenHandler(Object sender);
+    public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
+
+
+    [System.ComponentModel.DesignerCategory("Form")]
 	public partial class frmCareer : CharacterShared
 	{
 		// Set the default culture to en-US so we work with decimals correctly.

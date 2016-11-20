@@ -26,6 +26,10 @@
       <key>String_Search</key>
       <text>Search:</text>
     </string>
+    	<string>
+    		<key>String_Books</key>
+    		<text>Books</text>
+    	</string>
 		<string>
 			<key>String_Limit</key>
 			<text>Limit:</text>

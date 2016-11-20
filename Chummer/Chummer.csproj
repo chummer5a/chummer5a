@@ -120,10 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\OptionDisplayAttributes\DisplayConfigurationAttribute.cs" />
+    <Compile Include="Backend\Attributes\OptionDisplayAttributes\DisplayIgnoreAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionDisplayAttributes\OptionDisplayAttribute.cs" />
     <Compile Include="Backend\Attributes\SaveAttributes\SaveIgnorePropertyAttribute.cs" />
     <Compile Include="Backend\Attributes\SaveAttributes\SavePropertyAsAttribute.cs" />
     <Compile Include="Backend\ClassSaver.cs" />
+    <Compile Include="Backend\ColorUtilities.cs" />
     <Compile Include="Backend\Datastructures\DictionaryList.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
@@ -146,6 +148,7 @@
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
+    <Compile Include="Backend\Extensions\HashSetExtensions.cs" />
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\OptionsManager.cs" />
@@ -157,6 +160,7 @@
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
+    <Compile Include="Backend\UI\BookImageManager.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -315,6 +319,7 @@
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Options\BookControl.cs" />
     <Compile Include="UI\Options\OptionItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1590,13 +1595,6 @@
       <LastGenOutput>Contributors.cs</LastGenOutput>
     </Content>
     <Content Include="Admin\manifestlang.xml" />
-    <Content Include="data\options.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Properties\Contributors.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Contributors.cs</LastGenOutput>
-    </Content>
     <Content Include="data\armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
