@@ -584,7 +584,7 @@
 				<name>Custom Fit</name>
 			</mods>
 			<gears>
-				<usegear>Concealable Holster</usegear>
+				<usegear>Holster</usegear>
 			</gears>
 			<source>RG</source>
 			<page>61</page>
@@ -634,6 +634,9 @@
 				<name>Newest Model</name>
 				<name rating="3">Ruthenium Polymer Coating</name>
 			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
 			<source>RG</source>
 			<page>61</page>
 		</armor>
@@ -816,7 +819,9 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>10</avail>
 			<cost>1300</cost>
-			<addmodcategory>Globetrotter Jacket Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
 			<gears>
 				<usegear>Holster</usegear>
 			</gears>
@@ -831,7 +836,9 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>7</avail>
 			<cost>900</cost>
-			<addmodcategory>Globetrotter Vest Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
 			<source>RG</source>
 			<page>63</page>
 		</armor>
@@ -843,7 +850,12 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>6</avail>
 			<cost>600</cost>
-			<addmodcategory>Globetrotter Clothing Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
+			<mods>
+				<name>Gear Access</name>
+			</mods>
 			<source>RG</source>
 			<page>63</page>
 		</armor>
@@ -855,7 +867,9 @@
 			<armorcapacity>10</armorcapacity>
 			<avail>12</avail>
 			<cost>3000</cost>
-			<addmodcategory>Victory Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Victory Liners</category>
+			</selectmodsfromcategory>
 			<mods>
 				<name>Gear Access</name>
 			</mods>
@@ -894,7 +908,9 @@
 			<armorcapacity>12</armorcapacity>
 			<avail>12</avail>
 			<cost>5000</cost>
-			<addmodcategory>Victory Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Victory Liners</category>
+			</selectmodsfromcategory>
 			<mods>
 				<name>Custom Fit</name>
 				<name>Gear Access</name>
@@ -1457,7 +1473,9 @@
 					<condition>Must be visible</condition>
 				</limitmodifier>
 			</bonus>
-			<addmodcategory>Globetrotter Jacket Liners</addmodcategory>
+			<selectmodsfromcategory>
+				<category>Globetrotter Jacket Liners</category>
+			</selectmodsfromcategory>
 			<source>RG</source>
 			<page>75</page>
 		</armor>
@@ -1858,6 +1876,18 @@
 		</armor>
 		<!-- End Region -->
 		<!-- Region Hard Targets -->
+		<armor>
+			<id>e3ab6aec-a4ef-4a04-92fe-ffca02ebd92a</id>
+			<name>Shiawase Arms Simoom</name>
+			<category>Specialty Armor</category>
+			<armor>+1</armor>
+			<armorcapacity>0</armorcapacity>
+			<addweapon>Shiawase Arms Simoom</addweapon>
+			<avail>14R</avail>
+			<cost>1500</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
 		<armor>
 			<id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
 			<name>Cloak</name>
@@ -2434,10 +2464,10 @@
 		<mod>
 			<id>3fdd4706-9052-4c6b-8c2c-61dbb5c1f16f</id>
 			<name>Feedback Clothing</name>
-			<category>Clothing</category>
+			<category>General</category>
 			<armor>0</armor>
 			<maxrating>1</maxrating>
-			<armorcapacity>[0]</armorcapacity>
+			<armorcapacity>[3]</armorcapacity>
 			<avail>8</avail>
 			<cost>500</cost>
 			<source>SR5</source>
@@ -2967,7 +2997,7 @@
 			<maxrating>1</maxrating>
 			<armorcapacity>[-Capacity * 0.5]</armorcapacity>
 			<avail>+4</avail>
-			<cost>Armor Cost * 2</cost>
+			<cost>Armor Cost</cost>
 			<source>RG</source>
 			<page>84</page>
 		</mod>

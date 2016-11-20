@@ -93,6 +93,14 @@
 			<extreme>150</extreme>
 		</range>
 		<range>
+			<category>Shotguns (flechette)</category>
+			<min>0</min>
+			<short>15</short>
+			<medium>30</medium>
+			<long>45</long>
+			<extreme>60</extreme>
+		</range>
+		<range>
 			<category>Sniper Rifles</category>
 			<min>0</min>
 			<short>50</short>

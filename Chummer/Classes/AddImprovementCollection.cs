@@ -72,63 +72,6 @@ namespace Chummer.Classes
 
 		#region
 
-		public void selecttext(XmlNode bonusNode)
-		{
-			Log.Info("selecttext");
-
-			if (_objCharacter != null)
-			{
-				if (ForcedValue != "")
-				{
-					LimitSelection = ForcedValue;
-				}
-				else if (_objCharacter.Pushtext.Count != 0)
-				{
-					LimitSelection = _objCharacter.Pushtext.Pop();
-				}
-			}
-
-			Log.Info("_strForcedValue = " + SelectedValue);
-			Log.Info("_strLimitSelection = " + LimitSelection);
-
-			// Display the Select Text window and record the value that was entered.
-			frmSelectText frmPickText = new frmSelectText();
-			frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-				.Replace("{0}", this._strFriendlyName);
-
-			if (LimitSelection != "")
-			{
-				frmPickText.SelectedValue = LimitSelection;
-				frmPickText.Opacity = 0;
-			}
-
-			frmPickText.ShowDialog();
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickText.DialogResult == DialogResult.Cancel)
-			{
-
-				Rollback();
-				ForcedValue = "";
-				LimitSelection = "";
-				Log.Exit("CreateImprovements");
-				throw new AbortedException();
-			}
-
-			SelectedValue = frmPickText.SelectedValue;
-			if (this._blnConcatSelectedValue)
-				SourceName += " (" + SelectedValue + ")";
-			Log.Info("_strSelectedValue = " + SelectedValue);
-			Log.Info("strSourceName = " +SourceName);
-
-			// Create the Improvement.
-			Log.Info("Calling CreateImprovement");
-
-			CreateImprovement(frmPickText.SelectedValue, _objImprovementSource, SourceName, 
-				Improvement.ImprovementType.Text,
-				_strUnique);
-		}
-
 		public void qualitylevel(XmlNode bonusNode)
 		{
 			//List of qualities to work with
@@ -152,9 +95,9 @@ namespace Chummer.Classes
 			//	set list[top] active
 		}
 
-		public void addattribute(XmlNode bonusNode)
+		public void enableattribute(XmlNode bonusNode)
 		{
-			Log.Info("addattribute");
+			Log.Info("enableattribute");
 			if (bonusNode["name"].InnerText == "MAG")
 			{
 				_objCharacter.MAGEnabled = true;
@@ -214,7 +157,7 @@ namespace Chummer.Classes
 						break;
 					case "adept":
 						_objCharacter.AdeptEnabled = true;
-						Log.Info("adept");
+                        Log.Info("adept");
 						CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
 							"enabletab",
 							0, 0);
@@ -285,6 +228,49 @@ namespace Chummer.Classes
 				Utils.BreakIfDebug();
 			}
 
+		}
+
+		public void blockskillgroupdefaulting(XmlNode bonusNode)
+		{
+			Log.Info("blockskillgroupdefaulting");
+			string strExclude = "";
+			if (bonusNode.Attributes["excludecategory"] != null)
+				strExclude = bonusNode.Attributes["excludecategory"].InnerText;
+
+			frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
+			if (_strFriendlyName != "")
+				frmPickSkillGroup.Description =
+					LanguageManager.Instance.GetString("String_Improvement_SelectSkillGroupName").Replace("{0}", _strFriendlyName);
+			else
+				frmPickSkillGroup.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillGroup");
+
+			Log.Info("_strForcedValue = " + ForcedValue);
+			Log.Info("_strLimitSelection = " + LimitSelection);
+
+			if (ForcedValue != "")
+			{
+				frmPickSkillGroup.OnlyGroup = ForcedValue;
+				frmPickSkillGroup.Opacity = 0;
+			}
+
+			if (strExclude != string.Empty)
+				frmPickSkillGroup.ExcludeCategory = strExclude;
+
+			frmPickSkillGroup.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
+
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("SourceName = " + SourceName);
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillDefault,
+				_strUnique, 0, 0, 0, 1, 0, 0, strExclude);
 		}
 
 		// Select a Skill.
@@ -1905,6 +1891,16 @@ namespace Chummer.Classes
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptLinguistics, _strUnique,
 				1);
+		}
+
+		// Check for Ambidextrous modifiers.
+		public void ambidextrous(XmlNode bonusNode)
+		{
+			Log.Info("Ambidextrous");
+			Log.Info("Ambidextrous = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Ambidextrous, _strUnique);
+			_objCharacter.Ambidextrous = true;
 		}
 
 		// Check for Weapon Category DV modifiers.
@@ -3533,20 +3529,30 @@ namespace Chummer.Classes
 				LimitSelection = ForcedValue;
 
 			// Display the Select Item window and record the value that was entered.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+			XmlNodeList objXmlNodeList;
+			
+			if (!string.IsNullOrEmpty(bonusNode.InnerText))
+			{
+				objXmlNodeList = objXmlDocument.SelectNodes("/chummer/armors/armor[name starts-with " + bonusNode.InnerText + "(" + _objCharacter.Options.BookXPath() +
+															") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
+			}
+			else
+			{
+				objXmlNodeList =
+					objXmlDocument.SelectNodes("/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() +
+											   ") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
+			}
+
+			//.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
 
 			List<ListItem> lstArmors = new List<ListItem>();
-			foreach (Armor objArmor in _objCharacter.Armor)
+			foreach (XmlNode objNode in objXmlNodeList)
 			{
-				foreach (ArmorMod objMod in objArmor.ArmorMods)
-				{
-					if (objMod.Name.StartsWith("Custom Fit"))
-					{
-						ListItem objItem = new ListItem();
-						objItem.Value = objArmor.Name;
-						objItem.Name = objArmor.DisplayName;
-						lstArmors.Add(objItem);
-					}
-				}
+				ListItem objItem = new ListItem();
+				objItem.Value = objNode["name"].InnerText;
+				objItem.Name = objNode.Attributes["translate"]?.InnerText ?? objNode["name"].InnerText;
+				lstArmors.Add(objItem);
 			}
 
 			if (lstArmors.Count > 0)
@@ -3631,10 +3637,11 @@ namespace Chummer.Classes
 			{
 				string strExclude = "";
 				List <ListItem> lstWeapons = new List<ListItem>();
+				bool blnIncludeUnarmed = bonusNode.Attributes["excludecategory"]?.InnerText == "true";
 				strExclude = bonusNode.Attributes["excludecategory"]?.InnerText;
 				foreach (Weapon objWeapon in _objCharacter.Weapons)
 				{
-					bool blnAdd = !(strExclude != "" && objWeapon.WeaponType == strExclude);
+					bool blnAdd = !(strExclude != "" && objWeapon.WeaponType == strExclude || !blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack");
 					if (blnAdd)
 					{
 						ListItem objItem = new ListItem();

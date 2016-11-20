@@ -83,104 +83,25 @@ namespace Chummer.Backend.Equipment
 			_strName = objXmlGear["name"].InnerText;
 			_strCategory = objXmlGear["category"].InnerText;
 			_strAvail = objXmlGear["avail"].InnerText;
-			try
-			{
-				_strAvail3 = objXmlGear["avail3"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAvail6 = objXmlGear["avail6"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAvail10 = objXmlGear["avail10"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCapacity = objXmlGear["capacity"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strArmorCapacity = objXmlGear["armorcapacity"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intCostFor = Convert.ToInt32(objXmlGear["costfor"].InnerText);
-				_intQty = Convert.ToInt32(objXmlGear["costfor"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost = objXmlGear["cost"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost3 = objXmlGear["cost3"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost6 = objXmlGear["cost6"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost10 = objXmlGear["cost10"].InnerText;
-			}
-			catch
-			{
-			}
+			objXmlGear.TryGetField("avail3", out _strAvail3, "");
+			objXmlGear.TryGetField("avail6", out _strAvail6, "");
+			objXmlGear.TryGetField("avail10", out _strAvail10, "");
+			objXmlGear.TryGetField("capacity", out _strCapacity, "");
+			objXmlGear.TryGetField("armorcapacity", out _strArmorCapacity, "");
+			objXmlGear.TryGetField("costfor", out _intCostFor, 1);
+			objXmlGear.TryGetField("costfor", out _intQty, 1);
+			objXmlGear.TryGetField("cost", out _strCost, "");
+			objXmlGear.TryGetField("cost3", out _strCost3, "");
+			objXmlGear.TryGetField("cost6", out _strCost6, "");
+			objXmlGear.TryGetField("cost10", out _strCost10, "");
 			_nodBonus = objXmlGear["bonus"];
 			_intMaxRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
-			try
-			{
-				_intMinRating = Convert.ToInt32(objXmlGear["minrating"].InnerText);
-			}
-			catch
-			{
-			}
+			objXmlGear.TryGetField("minrating", out _intMinRating);
 			_intRating = intRating;
 			_strSource = objXmlGear["source"].InnerText;
 			_strPage = objXmlGear["page"].InnerText;
-
-			try
-			{
-				_intChildCostMultiplier = Convert.ToInt32(objXmlGear["childcostmultiplier"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intChildAvailModifier = Convert.ToInt32(objXmlGear["childavailmodifier"].InnerText);
-			}
-			catch
-			{
-			}
+			objXmlGear.TryGetField("childcostmultiplier", out _intChildCostMultiplier, 1);
+			objXmlGear.TryGetField("childavailmodifier", out _intChildAvailModifier, 0);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -212,6 +133,7 @@ namespace Chummer.Backend.Equipment
 			if (objXmlGear["name"].InnerText == "Custom Item")
 			{
 				frmSelectText frmPickText = new frmSelectText();
+				frmPickText.PreventXPathErrors = true;
 				frmPickText.Description = LanguageManager.Instance.GetString("String_CustomItem_SelectText");
 				frmPickText.ShowDialog();
 
@@ -344,7 +266,7 @@ namespace Chummer.Backend.Equipment
 			{
 				// Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
 				// to the character which is incorrect, and once when the Focus is actually Bonded).
-				bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selecttext"));
+				bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selectweapon"));
 
 				if (blnApply)
 				{
@@ -911,7 +833,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("category_english", _strCategory);
 			objWriter.WriteElementString("iscommlink", false.ToString());
 			objWriter.WriteElementString("ispersona", false.ToString());
-			objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
+			//objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
 			objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
 			objWriter.WriteElementString("isprogram", IsProgram.ToString());
 			objWriter.WriteElementString("isos", false.ToString());
@@ -1813,7 +1735,7 @@ namespace Chummer.Backend.Equipment
 		}
 
 		/// <summary>
-		/// Caculated Armor Capacity of the Gear.
+		/// Caculated Capacity of the Gear when attached to Armor.
 		/// </summary>
 		public string CalculatedArmorCapacity
 		{

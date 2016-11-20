@@ -23,8 +23,15 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+ using System.Windows;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
+ using Application = System.Windows.Forms.Application;
+ using DataFormats = System.Windows.Forms.DataFormats;
+ using DragDropEffects = System.Windows.Forms.DragDropEffects;
+ using DragEventArgs = System.Windows.Forms.DragEventArgs;
+ using MessageBox = System.Windows.Forms.MessageBox;
+ using Size = System.Drawing.Size;
 
 namespace Chummer
 {
@@ -254,38 +261,17 @@ namespace Chummer
 			// Override the defaults for the setting.
 			objCharacter.IgnoreRules = true;
 			objCharacter.IsCritter = true;
+			objCharacter.Created = true;
 			objCharacter.BuildMethod = CharacterBuildMethod.Karma;
 			objCharacter.BuildPoints = 0;
 
-			// Make sure that Running Wild is one of the allowed source books since most of the Critter Powers come from this book.
-			bool blnRunningWild = false;
-			blnRunningWild = (objCharacter.Options.Books.Contains("RW"));
-
-			if (!blnRunningWild)
-			{
-			    MessageBox.Show(LanguageManager.Instance.GetString("Message_Main_RunningWild"), LanguageManager.Instance.GetString("MessageTitle_Main_RunningWild"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-			    return;
-			}
-
 			// Show the Metatype selection window.
-            if (objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-            {
-                frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter);
-                frmSelectMetatype.XmlFile = "critters.xml";
-                frmSelectMetatype.ShowDialog();
+            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
+            frmSelectMetatype.XmlFile = "critters.xml";
+            frmSelectMetatype.ShowDialog();
 
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
-            }
-            else
-            {
-                frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
-                frmSelectMetatype.XmlFile = "critters.xml";
-                frmSelectMetatype.ShowDialog();
-
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                    return;
-            }
 
 			// Add the Unarmed Attack Weapon to the character.
 			try
@@ -301,7 +287,7 @@ namespace Chummer
 			{
 			}
 
-			frmCreate frmNewCharacter = new frmCreate(objCharacter);
+			frmCareer frmNewCharacter = new frmCareer(objCharacter);
 			frmNewCharacter.MdiParent = this;
 			frmNewCharacter.WindowState = FormWindowState.Maximized;
 			frmNewCharacter.Show();
@@ -361,16 +347,23 @@ namespace Chummer
 				{
 					TabPage tp = new TabPage();
 					// Add a tab page.
-					tp.Text = LanguageManager.Instance.GetString(this.ActiveMdiChild.GetType() == typeof (frmCharacterRoster) ? "String_CharacterRoster" : "String_UnnamedCharacter");
 					tp.Tag = this.ActiveMdiChild;
 					tp.Parent = tabForms;
-
+                    
 					if (this.ActiveMdiChild.GetType() == typeof(frmCareer))
 					{
 						tp.Text = ((frmCareer)this.ActiveMdiChild).CharacterName;
 					}
+                    else if (this.ActiveMdiChild.GetType() == typeof(frmCreate))
+                    {
+                        tp.Text = ((frmCreate)this.ActiveMdiChild).CharacterName;
+                    }
+                    else if (this.ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
+                    {
+                        tp.Text = LanguageManager.Instance.GetString("String_CharacterRoster");
+                    }
 
-					tabForms.SelectedTab = tp;
+                    tabForms.SelectedTab = tp;
 
 					this.ActiveMdiChild.Tag = tp;
 					this.ActiveMdiChild.FormClosed += ActiveMdiChild_FormClosed;
@@ -515,6 +508,20 @@ namespace Chummer
 
 		private void frmMain_Load(object sender, EventArgs e)
 		{
+			if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0)
+			{
+				this.Size = new Size(1191, 752);
+			}
+			else
+			{
+				this.WindowState = Properties.Settings.Default.WindowState;
+
+				if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
+
+				this.Location = Properties.Settings.Default.Location;
+				this.Size = Properties.Settings.Default.Size;
+			}
+
 			if (GlobalOptions.Instance.StartupFullscreen)
 				this.WindowState = FormWindowState.Maximized;
 
@@ -932,6 +939,19 @@ namespace Chummer
 				frmRoller.Show();
 			}
 		}
+
+		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
+		{
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
+			{
+				GlobalOptions.Instance.RemoveFromMRUList(strFile);
+			}
+		}
+
+		private void mnuRestart_Click(object sender, EventArgs e)
+		{
+			Utils.RestartApplication();
+		}
 		#endregion
 
 		#region Application Properties
@@ -972,12 +992,21 @@ namespace Chummer
 		}
 		#endregion
 
-		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
+		private void frmMain_Closing(object sender, FormClosingEventArgs e)
 		{
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
+			Properties.Settings.Default.WindowState = this.WindowState;
+			if (this.WindowState == FormWindowState.Normal)
 			{
-				GlobalOptions.Instance.RemoveFromMRUList(strFile);
+				Properties.Settings.Default.Location = this.Location;
+				Properties.Settings.Default.Size = this.Size;
 			}
+			else
+			{
+				Properties.Settings.Default.Location = this.RestoreBounds.Location;
+				Properties.Settings.Default.Size = this.RestoreBounds.Size;
+			}
+
+			Properties.Settings.Default.Save();
 		}
 	}
 }

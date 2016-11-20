@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
@@ -34,6 +35,7 @@ namespace Chummer.Skills
 		protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
 		private string _translatedCategory = null;
+		private bool _blnDefault;
 
 
 
@@ -449,7 +451,17 @@ namespace Chummer.Skills
 			get { return false; }
 		}
 
-		public bool Default { get; private set; }
+		public bool Default
+		{
+			get
+			{
+				return RelevantImprovements().All(objImprovement => objImprovement.ImproveType != Improvement.ImprovementType.BlockSkillDefault) && _blnDefault;
+			}
+			set
+			{
+				_blnDefault = value; 
+			}
+		}
 
 		public virtual bool IsExoticSkill
 		{
@@ -639,7 +651,7 @@ namespace Chummer.Skills
 
 						int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
 
-						if (cyberware.Location == CharacterObject.PrimaryArm)
+						if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous)
 						{
 							s.Append(pool);
 						}
@@ -986,7 +998,13 @@ namespace Chummer.Skills
 			{
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
-			
+			//TODO: Doesn't work
+			else if (
+				improvements.Any(
+					imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault))
+			{
+				OnPropertyChanged(nameof(PoolToolTip));
+			}
 		}
 
 	}

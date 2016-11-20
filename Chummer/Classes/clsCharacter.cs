@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -27,10 +27,11 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-﻿﻿using Chummer.Annotations;
-﻿using Chummer.Backend;
- using Chummer.Backend.Equipment;
- using Chummer.Skills;
+using Chummer.Annotations;
+using Chummer.Backend;
+using Chummer.Backend.Equipment;
+using Chummer.Skills;
+using System.Reflection;
 
 // MAGEnabledChanged Event Handler
 public delegate void MAGEnabledChangedHandler(Chummer.Character sender);
@@ -972,8 +973,8 @@ namespace Chummer
             {
                 if (objXmlCharacter["gameedition"].InnerText != string.Empty && objXmlCharacter["gameedition"].InnerText != "SR5")
                 {
-				    MessageBox.Show(LanguageManager.Instance.GetString("Message_IncorrectGameVersion_SR4"),
-					    LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.OK,
+				    MessageBox.Show(LanguageManager.Instance.GetString("Message_OutdatedChummerSave"),
+					    LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo,
 					    MessageBoxIcon.Error);
                     return false;
                 }
@@ -982,8 +983,32 @@ namespace Chummer
             {
             }
 
+            //Check to see if the character was created in a version of Chummer later than the currently installed one.
+            if (objXmlCharacter["appversion"].InnerText != string.Empty)
+            {
+                Version verSavedVersion = new Version();
+                var strVersion = objXmlCharacter["appversion"].InnerText;
+                if (strVersion.StartsWith("0."))
+                {
+                    strVersion = strVersion.Substring(2);
+                }
+                Version.TryParse(strVersion, out verSavedVersion);
+                Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
+                int intResult = verCurrentversion.CompareTo(verSavedVersion);
+                if (intResult == -1)
+                {
+                    string strMessage = LanguageManager.Instance.GetString("Message_OutdatedChummerSave").Replace("{0}", verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
+                    DialogResult result = MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+                    if (result != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             // Get the name of the settings file in use if possible.
-		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
+            objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
 		    
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
@@ -1999,6 +2024,10 @@ namespace Chummer
                 strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
                 strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
                 strDrain = strDrain.Replace("MAG", _attMAG.TotalValue.ToString());
+                if (strDrain == "")
+                {
+                    strDrain = "0";
+                }
 				XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
@@ -4367,7 +4396,7 @@ namespace Chummer
 							decCyberware += objCyberware.CalculatedESS;
 						else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
 						{
-								decBioware += objCyberware.CalculatedESS;
+							decBioware += objCyberware.CalculatedESS;
 						}
                     }
                 }
@@ -5540,59 +5569,34 @@ namespace Chummer
                 intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
-                int intStacking = 0;
-                foreach (Armor objArmor in _lstArmor)
-                {
-                    if (objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped)
-                    {
-                        intStacking += objArmor.TotalArmor;
-                    }
-                }
+                int intStacking = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
 
-                // Run through the list of Armor currently worn again and look at High-Fashion Armor Clothing items that start with "+" since they stack with eachother.
+	            // Run through the list of Armor currently worn again and look at High-Fashion Armor Clothing items that start with "+" since they stack with eachother.
                 int intFashionClothing = 0;
                 int intFashionClothingStack = 0;
                 string strFashionClothing = "";
-                foreach (Armor objArmor in _lstArmor)
+                foreach (Armor objArmor in _lstArmor.Where(objArmor => objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing"))
                 {
-                    
-                    if (objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing")
-                    {
-                        //Find the highest fancy suit armour value.
-                        if (!objArmor.ArmorValue.StartsWith("+") && objArmor.TotalArmor > intFashionClothing)
-                        {
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
-                                if (objMod.Name != "Custom Fit (Stack)")
-                                {
-                                    intFashionClothing = objArmor.TotalArmor;
-                                    strFashionClothing = objArmor.Name;
-                                }
-                        }
-                        //Find the fancy suits that stack with other fancy suits.
-                        else if (objArmor.ArmorOverrideValue.StartsWith("+"))
-                        {
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
-                            {
-                                if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strFashionClothing)
-                                {
-                                    intFashionClothingStack += Convert.ToInt32(objArmor.TotalArmor);
-                                }
-                            }
-                        }
-                    }
+	                //Find the highest fancy suit armour value.
+	                if (!objArmor.ArmorValue.StartsWith("+") && objArmor.TotalArmor > intFashionClothing)
+	                {
+		                foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => objMod.Name != "Custom Fit (Stack)"))
+		                {
+			                intFashionClothing = objArmor.TotalArmor;
+			                strFashionClothing = objArmor.Name;
+		                }
+	                }
+	                //Find the fancy suits that stack with other fancy suits.
+	                else if (objArmor.ArmorOverrideValue.StartsWith("+"))
+	                {
+		                intFashionClothingStack += objArmor.ArmorMods.Where(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strFashionClothing).Sum(objMod => Convert.ToInt32(objArmor.TotalArmor));
+	                }
                 }
                 intFashionClothing += intFashionClothingStack;
                 // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
-                int intClothing = 0;
-                foreach (Armor objArmor in _lstArmor)
-                {
-                    if (objArmor.ArmorValue.StartsWith("+") && objArmor.Equipped && objArmor.Category == "Clothing")
-                    {
-                        intClothing += objArmor.TotalArmor;
-                    }
-                }
+                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Equipped && objArmor.Category == "Clothing").Sum(objArmor => objArmor.TotalArmor);
 
-                int[] intArmorMax = new[] { intClothing, intArmor, intFashionClothing };
+	            int[] intArmorMax = new[] { intClothing, intArmor, intFashionClothing };
                 intArmor = intArmorMax.Max();
 
                 // Add any Armor modifiers.
@@ -6263,7 +6267,7 @@ namespace Chummer
 					{
 						if (strMovementType == "Swim")
 						{
-							intWalk = (intAGI + _attSTR.TotalValue / 2)* intWalkMultiplier;
+							intWalk = (intAGI + _attSTR.CalculatedTotalValue(false) / 2)* intWalkMultiplier;
 						}
 						else
 						{
@@ -6276,12 +6280,12 @@ namespace Chummer
 				{
 					if (strMovementType == "Swim")
 					{
-						intWalk = (_attAGI.TotalValue + _attSTR.TotalValue/2)*intWalkMultiplier;
+						intWalk = (_attAGI.TotalValue + _attSTR.TotalValue / 2)*intWalkMultiplier;
 					}
 					else
 					{
-						intWalk = (_attAGI.TotalValue*intWalkMultiplier);
-						intRun = (_attAGI.TotalValue*intRunMultiplier);
+						intWalk = (_attAGI.CalculatedTotalValue(false) * intWalkMultiplier);
+						intRun = (_attAGI.CalculatedTotalValue(false) * intRunMultiplier);
 					}
 				}
 				if (strMovementType == "Swim")
@@ -7404,6 +7408,9 @@ namespace Chummer
             get { return _intRedlinerBonus; }
             set { _intRedlinerBonus = value; }
         }
+
+		public bool Ambidextrous { get; internal set; }
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 	    [NotifyPropertyChangedInvocator]

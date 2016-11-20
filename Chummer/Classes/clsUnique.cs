@@ -593,17 +593,15 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The CharacterAttribute's total value (Value + Modifiers).
+		/// The CharacterAttribute's total value (Value + Modifiers). 
 		/// </summary>
-		public int TotalValue
+		public int CalculatedTotalValue (bool blnIncludeCyberlimbs = true)
 		{
-			get
-			{
 				int intMeat = Value + AttributeModifiers;
 				int intReturn = intMeat;
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
-                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
+                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
                 {
                     int intLimbTotal = 0;
                     int intLimbCount = 0;
@@ -659,9 +657,15 @@ namespace Chummer
 					return 1;
 
 				return intReturn;
-			}
 		}
 
+		/// <summary>
+		/// The CharacterAttribute's total value (Value + Modifiers).
+		/// </summary>
+		public int TotalValue
+		{
+			get { return CalculatedTotalValue(); }
+		}
 		/// <summary>
 		/// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
 		/// </summary>
@@ -698,11 +702,9 @@ namespace Chummer
 						// the CharacterAttribute's total maximum, in which case the minimum becomes 0.
 						if (_objCharacter.EssencePenalty >= _objCharacter.MAG.TotalMaximum)
 							intReturn = 0;
-						else
-							intReturn = 1;
 					}
 					else
-						intReturn = Math.Max(_intMetatypeMin - _objCharacter.EssencePenalty, 0);
+						intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
 				}
 
 				// If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
@@ -1099,6 +1101,7 @@ namespace Chummer
 		private QualityType _objQualityType = QualityType.Positive;
 		private QualitySource _objQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
+		private XmlNode _nodDiscounts;
 		private readonly Character _objCharacter;
 		private string _strAltName = "";
 		private string _strAltPage = "";
@@ -1306,7 +1309,10 @@ namespace Chummer
 					_objCharacter.Weapons.Add(objWeapon);
 				}
 			}
-
+			if (objXmlQuality.InnerXml.Contains("<costdiscount>"))
+			{
+				_nodDiscounts = objXmlQuality["costdiscount"];
+			}
 			// If the item grants a bonus, pass the information to the Improvement Manager.
 			if (objXmlQuality.InnerXml.Contains("<bonus>"))
 			{
@@ -1399,6 +1405,7 @@ namespace Chummer
 			_strSource = objNode["source"].InnerText;
 			_strPage = objNode["page"].InnerText;
 			_nodBonus = objNode["bonus"];
+			_nodDiscounts = objNode["costdiscount"];
 			try
 			{
 				_guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
@@ -1616,17 +1623,14 @@ namespace Chummer
 		/// </summary>
 		public int BP
 		{
-			get
-			{
-				return _intBP;
-			}
+			get { return CalculatedBP(); }
 			set
 			{
 				_intBP = value;
 			}
 		}
 
-        /// <summary>
+		/// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
         public int LP
@@ -1720,25 +1724,37 @@ namespace Chummer
 		{
 			get
 			{
-				bool blnReturn;
+				bool blnReturn = _blnContributeToLimit;
 
-				if (!_blnContributeToLimit || _objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
-					blnReturn = false;
-				else
-					blnReturn = true;
+				if (!_blnContributeToLimit)
+				{
+					return false;
+				}
+				if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
+					return false;
 
-                if (_strMetagenetic == "yes")
-                {
-                    foreach (Quality objQuality in _objCharacter.Qualities)
-                    {
-                        if (objQuality.Name == "Changeling (Class I SURGE)" || objQuality.Name == "Changeling (Class II SURGE)" || objQuality.Name == "Changeling (Class III SURGE)")
-                        { 
-                            _blnContributeToLimit = false;
-                        }
-                    }
-                    blnReturn = _blnContributeToLimit;
-                }
+				//Positive Metagenetic Qualities are free if you're a Changeling. 
+				if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
+				{
+					return false;
+				}
 
+				//The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+				switch (_strName)
+				{
+					case "Mentor Spirit":
+						if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+							return false;
+						break;
+					case "High Pain Tolerance (Rating 1)":
+						if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem."))
+						{
+							return false;
+						}
+						break;
+					default:
+						return true;
+				}
 				return blnReturn;
 			}
 			set
@@ -1754,55 +1770,33 @@ namespace Chummer
 		{
 			get
 			{
-				bool blnReturn;
+				if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
+					return false;
 
-
-                if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
-                    blnReturn = false;
-                else
-                {
-                    bool blnContribute = true;
                     //Positive Metagenetic Qualities are free if you're a Changeling. 
-                    if (_strMetagenetic == "yes")
+                    if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
                     {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
-                            if (objQuality.Name == "Changeling (Class I SURGE)" || objQuality.Name == "Changeling (Class II SURGE)" || objQuality.Name == "Changeling (Class III SURGE)")
-                            { blnContribute = false; }
-                        }
-                        blnReturn = blnContribute;
+	                    return false;
                     }
-                    //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                    else if (_strName == "Mentor Spirit")
-                    {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
 
-                            if (objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way")
-                            {
-                                blnContribute = false;
-                            }
-                        }
-                        blnReturn = blnContribute;
+					//The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+					switch (_strName)
+                    {
+	                    case "Mentor Spirit":
+							if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+								return false;
+		                    break;
+						case "High Pain Tolerance (Rating 1)":
+							if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem."))
+							{
+								return false;
+							}
+							break;
+	                    default:
+		                    return true;
                     }
-                    //Characters with the "Pie Iesu Domine. Dona Eis Requiem." Quality gain High Pain Tolerance (Rating 1) for free.
-                    else if (_strName == "High Pain Tolerance (Rating 1)")
-                    {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
 
-                            if (objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem.")
-                            {
-                                blnContribute = false;
-                            }
-                        }
-                        blnReturn = blnContribute;
-                    }                        
-                    else
-                        blnReturn = true;
-                }
-
-				return blnReturn;
+				return true;
 			}
 		}
 
@@ -1871,6 +1865,36 @@ namespace Chummer
 			{
 				_strNotes = value;
 			}
+		}
+
+		/// <summary>
+		/// Evaluates whether the Quality qualifies for any discounts/increases to its cost and returns the total cost.
+		/// </summary>
+		/// <returns></returns>
+		private int CalculatedBP()
+		{
+			if (_nodDiscounts == null || !_nodDiscounts.HasChildNodes)
+			{
+				return _intBP;
+			}
+			int intReturn = _intBP;
+			bool blnFound = false;
+			foreach (XmlNode objNode in _nodDiscounts)
+			{
+				if (objNode.Name == "required")
+				{
+					if (objNode["oneof"].Cast<XmlNode>().Where(objRequiredNode => objRequiredNode.Name == "quality").Any(objRequiredNode => _objCharacter.Qualities.Any(objQuality => objQuality.Name == objRequiredNode.InnerText)))
+					{
+						blnFound = true;
+						break;
+					}
+				}
+			}
+			if (blnFound)
+			{
+				intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
+			}
+			return intReturn;
 		}
 		#endregion
 
@@ -6927,7 +6951,12 @@ namespace Chummer
         {
             get
             {
-                return Free ? 0 : (_intConnection + _intLoyalty);
+                if (Free) return 0;
+                int intReturn = 0;
+                if (Family) intReturn += 1;
+                if (Blackmail) intReturn += 2;
+                intReturn += _intConnection + _intLoyalty;
+                return intReturn;
             }
         }
 

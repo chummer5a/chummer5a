@@ -589,10 +589,7 @@ namespace Chummer.Skills
 			{
 				ListItem objSkill = new ListItem();
 				objSkill.Value = objXmlSkill["name"].InnerText;
-				if (objXmlSkill["translate"] != null)
-					objSkill.Name = objXmlSkill["translate"].InnerText;
-				else
-					objSkill.Name = objXmlSkill["name"].InnerText;
+				objSkill.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
 				lstSkillOrder.Add(objSkill);
 			}
 			SortListItem objSort = new SortListItem();

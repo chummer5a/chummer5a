@@ -207,39 +207,18 @@ namespace Chummer
                     foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
                     {
                         if (objMetamagic.Name == objXmlMetamagic["name"].InnerText)
-                        {
-                            try
-                            {
-                                if (objXmlMetamagic["limit"].InnerText == "no")
-                                    blnNew = true;
-                                else
-                                    blnNew = false;
-                                break;
-                            }
-                            catch
-                            {
-                            }
-                            blnNew = false;
-                            break;
-                        }
+						{
+							blnNew = false;
+							blnNew = objXmlMetamagic["limit"]?.InnerText == "no";
+						}
                     }
 
                     if (blnNew)
                     {
 					    ListItem objItem = new ListItem();
 					    objItem.Value = objXmlMetamagic["name"].InnerText;
-                        try
-                        {
-                            if (objXmlMetamagic["translate"] != null)
-                                objItem.Name = objXmlMetamagic["translate"].InnerText;
-                            else
-                                objItem.Name = objXmlMetamagic["name"].InnerText;
-                        }
-                        catch
-                        {
-                            objItem.Name = objXmlMetamagic["name"].InnerText;
-                        }
-					    lstMetamagics.Add(objItem);
+						objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText;
+						lstMetamagics.Add(objItem);
                     }
 				}
 			}
@@ -310,15 +289,7 @@ namespace Chummer
 				// Metamagic requirements.
 				foreach (XmlNode objXmlMetamagic in objXmlCheckMetamagic.SelectNodes("required/allof/metamagic"))
 				{
-					bool blnFound = false;
-					foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-					{
-						if (objMetamagic.Name == objXmlMetamagic.InnerText)
-						{
-							blnFound = true;
-							break;
-						}
-					}
+					bool blnFound = _objCharacter.Metamagics.Any(objMetamagic => objMetamagic.Name == objXmlMetamagic.InnerText);
 
 					if (!blnFound)
 					{
@@ -334,17 +305,9 @@ namespace Chummer
                 // Power requirements.
                 foreach (XmlNode objXmlPower in objXmlCheckMetamagic.SelectNodes("required/allof/power"))
                 {
-                    bool blnFound = false;
-                    foreach (Power objPower in _objCharacter.Powers)
-                    {
-                        if (objPower.Name == objXmlPower.InnerText)
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
+                    bool blnFound = _objCharacter.Powers.Any(objPower => objPower.Name == objXmlPower.InnerText);
 
-                    if (!blnFound)
+	                if (!blnFound)
                     {
                         blnRequirementMet = false;
                         strRequirement += "\n\t" + objXmlPower.InnerText;
@@ -357,17 +320,9 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/allof/art"))
                     {
-                        bool blnFound = false;
-                        foreach (Art objArt in _objCharacter.Arts)
-                        {
-                            if (objArt.Name == objXmlArt.InnerText)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
+                        bool blnFound = _objCharacter.Arts.Any(objArt => objArt.Name == objXmlArt.InnerText);
 
-                        if (!blnFound)
+	                    if (!blnFound)
                         {
                             blnRequirementMet = false;
                             strRequirement += "\n\t" + objXmlArt.InnerText;
@@ -378,15 +333,7 @@ namespace Chummer
                 // Echo requirements.
 				foreach (XmlNode objXmlEcho in objXmlCheckMetamagic.SelectNodes("required/allof/echo"))
 				{
-					bool blnFound = false;
-					foreach (Metamagic objEcho in _objCharacter.Metamagics)
-					{
-						if (objEcho.Name == objXmlEcho.InnerText)
-						{
-							blnFound = true;
-							break;
-						}
-					}
+					bool blnFound = _objCharacter.Metamagics.Any(objEcho => objEcho.Name == objXmlEcho.InnerText);
 
 					if (!blnFound)
 					{
@@ -415,14 +362,11 @@ namespace Chummer
 						}
 
 						XmlNode objNode =
-							_objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlMetatype.InnerText + "\"]");
-						if (objNode == null)
-							objNode =
-								_objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlMetatype.InnerText + "\"]");
-						if (objNode["translate"] != null)
-							strMetatypeRequirement += "\n\t" + objNode["translate"].InnerText;
-						else
-							strMetatypeRequirement += "\n\t" + objXmlMetatype.InnerText;
+							_objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlMetatype.InnerText + "\"]") ??
+							_objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlMetatype.InnerText + "\"]");
+						strMetatypeRequirement += objNode?["translate"] != null
+							? "\n\t" + objNode["translate"].InnerText
+							: "\n\t" + objXmlMetatype.InnerText;
 					}
 					if (!blnMetatypeFound)
 					{
@@ -450,10 +394,9 @@ namespace Chummer
 
 							XmlNode objNode =
 								_objQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-							if (objNode["translate"] != null)
-								strQualityRequirement += "\n\t" + objNode["translate"].InnerText;
-							else
-								strQualityRequirement += "\n\t" + objXmlQuality.InnerText;
+							strQualityRequirement += objNode["translate"] != null
+								? "\n\t" + objNode["translate"].InnerText
+								: "\n\t" + objXmlQuality.InnerText;
 						}
 					}
 					if (!blnQualityFound)
@@ -465,46 +408,33 @@ namespace Chummer
 
                 // Check OneOf requirements
                 string strOneOfRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_OneOf");
-                bool blnOneOfRequirementMet = false;
-
-                if (!objXmlCheckMetamagic.InnerXml.Contains("<oneof>"))
-                {
-                    blnOneOfRequirementMet = true;
-                }
+                bool blnOneOfRequirementMet = !objXmlCheckMetamagic.InnerXml.Contains("<oneof>");
 
                 foreach (XmlNode objXmlQuality in objXmlCheckMetamagic.SelectNodes("required/oneof/quality"))
                 {
-                    foreach (Quality objQuality in _objCharacter.Qualities)
-                    {
-                        if (objQuality.Name == objXmlQuality.InnerText)
-                        {
-                            blnOneOfRequirementMet = true;
-                            break;
-                        }
-                    }
+	                if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText))
+	                {
+		                blnOneOfRequirementMet = true;
+	                }
 
-                    if (!blnOneOfRequirementMet)
+	                if (!blnOneOfRequirementMet)
                         strOneOfRequirement += "\n\t" + objXmlQuality.InnerText;
                     else
                         break;
                 }
 
 
-			    foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/oneof/art"))
+				foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/oneof/art"))
 			    {
 			        if (!blnStreetGrimoire || _objCharacter.Options.IgnoreArt)
 			        {
                         blnOneOfRequirementMet = true;
                         break;
                     }
-                    foreach (Art objArt in _objCharacter.Arts)
-			        {
-			            if (objArt.Name == objXmlArt.InnerText)
-			            {
-			                blnOneOfRequirementMet = true;
-			                break;
-			            }
-			        }
+                    if (_objCharacter.Arts.Any(objArt => objArt.Name == objXmlArt.InnerText))
+                    {
+	                    blnOneOfRequirementMet = true;
+                    }
 
 			        if (!blnOneOfRequirementMet)
 			            strOneOfRequirement += "\n\t" + objXmlArt.InnerText;

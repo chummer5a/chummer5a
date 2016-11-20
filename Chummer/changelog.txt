@@ -1,5 +1,159 @@
+Build 188
+
+Application Changes: 
+- Fixed an issue that prevented Gear items from showing their Capacity usage while attached to Armor items. 
+- Fixed the implementation of the Incompetent quality to prevent defaulting in the selected skillgroup.
+- Added the <blockskillgroupdefaulting> node, used for the above. 
+- Altered the calculation of movement speeds to exclude cyberlimb stats, with the exception of Swimming and/or the Houserule to have your cyberlegs serve as the total agility for the test. tl;dr cyberarms don't make you fast anymore. 
+- Added an Ambidextrous Improvement to manage whether to show a cyberlimb's dicepool as offhand or not. 
+- Fixed an issue with the use of Restricted Gear that caused it to incorrectly flag child items as the parent. 
+- Fixed an issue with the update mechanism that would prevent the Chummer executable from restarting properly until the application is closed. 
+- Fixed a crash caused by cancelling out of text selection bonus nodes such as when creating a Fake SIN. 
+- Fixed an issue that caused Essence loss in priority creation mode to revert MAG/RES metatype minimums to 1. 
+- Fixed a crash caused by adding a a new knowledge skill after adding the PUSHeD bioware.
+- Fixed a crash when loading the character roster caused by unreadable character files. 
+- Added the ability for qualities to qualify for discounts based on the presence of other qualities. 
+- Added the ability for weapon accessories to occupy multiple slots simultaneously.
+- Fixed a crash when browsing Negative qualities for an Advanced Lifestyle caused by the way Thrifty quality was set up.
+- Recategorized SkillSoft Networks into a new Lifestyle quality category called "Contracts", which can now be taken by Basic Lifestyles too.
+- Renamed the "DocWagon Contracts" Gear category to "Contracts/Upkeep", which now houses every type of advance payment for contracts, 'ware upkeep, and the like.
+- Added the ability for cyberware to add vehicles the same way it can add weapons (e.g. for Ocular Drone).
+- Added the ability for vehicles, vehicle mods, and gear to be hidden from their browsing menus, just like cyberweapons are in the weapons menu.
+- Weapon accessories can now come with gear pre-included.
+- Fixed a crash issue when restarting Chummer through updates or the Restart menu option. Fixes #1223.
+- Fixed an issue with deleting Armour items that add Weapons. Fixes #1222.
+- Removed the automatic creation of Gear Locations for Cyberware and Weapon commlinks, as it's now redundant. 
+- Removed Running Wild requirement for creating Critters, so it should now be possible to create a Critter through the menu or by clicking the Link Character Sheet button on the appropriate control. At present, only Spirits should be available for use. Sprites and other critters will be enabled in a later patch. Fixes #1225
+- Fixed the implementation of the Stock Remova/Shortbarrel mods. Current technical limitations prevent the penalty to accuracy if both mods are installed from working, so another modification that rolls both mods in together has been added. 
+- Added the ability to forbid/require weapon accessories based on the presence of other accessories. 
+- Altered the behaviour of the Weapon Focus to avoid some silly behaviour like letting your fists be a weapon focus. 
+- Added the ability for weapons with built-in accessories to attach extra gear to said built-in accessories.
+- Corrected the issue where weapons would receive +4 concealability for each underbarrel weapon.
+- Fixed the issue where changing metatypes under priority or sum-to-ten generation would save the incorrect amount of points spent on an attribute if it also had karma spent on it.
+- Fixed the issue where the magic dropdown menu and the metatype selection list would not update properly when the priority selection screen was initialised.
+- Fixed the issue where Edge was not properly re-adjusted when changing metatypes during character creation.
+- Fixed a crash issue where changing metatypes or the magic priority mid-creation would not take essence loss into account when setting new values for magic or resonance. Fixes #1229.
+- Fixed the filtering behaviour of cyberware subsystems to properly filter down to those subsystems. This shouldn't impact existing cyberware in any noticeable way, but this will allow adding subsystems to bioware. 
+
+Data Changes: 
+
+- Added a missing Foregrip for the Ares SIGMA-3. 
+- Changed the P93 Praetor to a standard Stock.
+- Fixed the Aspected Magician to properly grant their Magic attribute.
+- Fixed an issue with the Safety Third lifestyle quality that caused a crash.
+- Fixed missing/incorrect Mods for various pieces of Armour. Specifically the Ares Victory set, Vashon Island Synergist and Sleeping Tiger.
+- Added the Ambidextrous bonus node to the Ambidextrous quality. 
+- Fixed a missing weapon category for the Huge Weapon Mount. 
+- Fixed a missing damage reduction from the Sawed Off shotgun mod. 
+- Reduced the cost for YNT Softweave to the cost of the Armour rather than double.
+- Removed redundant copies of the Mutaqua, Wendigo, Nosferatu, Blind, and Astral Hazing qualities. 
+- Removed redundant copies of the Infection power from Wendigo and Vampires.
+- Corrected the Fichetti Security 600 to a Folding Stock.
+- Renamed the old Gecko Grip item to "Gecko Grip (for Weapon without Stock Slot)" and added a new Gecko Grip entry for weapons with a Stock slot that takes up the Stock slot.
+- Corrected the reference to the Vintage quality to GH3 page 3 instead of 53.
+- Corrected Ammo Skip weapon modification to require an Underbarrel slot.
+- Corrected Chameleon Coating weapon modification to require a Side slot.
+- Corrected Electronic Firing weapon modification to require a Barrel slot.
+- Corrected Mounted Crossbow and Underbarrel Laser weapon modifications to take up two weapon modification slots (Top & Underbarrel and Side & Underbarrel respectively).
+- Changed tasers have a concealability of -4. RAW justification includes indirect references to smaller size by Hidden Gun Arm Slide size restrictions, the Reach stat of Defiance EX-Shocker's contacts, and the essence/capacity cost of implanted cybertasers.
+- Added a pair of drone arms and drone legs to the Ares Duelyst.
+- Added a pair of drone arms to the Transys Office Maid (fluff text makes reference to arms but not to legs).
+- Added a pair of drone arms and drone legs to the Modified Renraku Manservant-3 and recategorized it to Anthropomorphic, as per the original being a similar model to the Criado Juan.
+- Added a pair of drone arms, a pair of drone legs, and the Snake Fingers cyberware to the Caduceus CAD and recategorized it to Anthropomorphic.
+- Added a pair of synthetic drone arms and a pair of synthetic drone legs to the Mitsuhama Akiyama.
+- Added a pair of drone arms, a pair of drone legs, and all three R1 close combat tutorsofts to the Sparring Drone.
+- Added the following missing categories to the vehicle weapon mounts found in the core rulebook: Blades, Clubs, Exotic Melee Weapons, Crossbows, and Sporting Rifles to Standard Mounts, and Blades, Clubs, Exotic Melee Weapons, Crossbows, and Exotic Ranged Weapons for Heavy Mounts.
+- Removed the Sniper Rifle category from the Standard Weapon Mount found in the core rulebook (it is bigger than an Assault Rifle).
+- Gecko Tips vehicle modification will no longer show up for vehicles with a higher body than 6.
+- Removed the Melee, Machine Pistols, and Submachine Guns categories from the Rigger 5.0 Standard and Heavy Vehicle Weapon Mounts, but added a note to add them back once errata has been released.
+- Corrected Winch (Enhanced) to require 2 body slot mods instead of 1.
+- Added two new items for drone weapon mounts: blow-away panels and pop-out mods. Pop-out mod rating serves as the modified MP of the weapon mount in question.
+- Added entries for the Daihatsu-Caterpillar Horseman ModPods.
+- Added missing Holster to Sleeping Tiger.
+- Added entries to the Contracts lifestyle quality category for monthly payment of DocWagon contracts.
+- Added entries to the Contracts lifestyle quality category and the Contracts/Upkeep gear category for Datahost Subscription (e.g. Library of Alexandria), Shopsoft Network Subscription (e.g. Shoppazulu), and Mapping System Subscription (e.g. Ares' Getting Network) as found in Chrome Flesh.
+- Added entries to the Contracts/Upkeep gear category for pre-paid Skillsoft Network subscriptions.
+- Added the "Shadow Spirits" pre-written specialization to the Magical Threats knowledge skill.
+- Added the "Mathematics" academic knowledge skill and populated it with a few specializations, as per Math SPU in Chrome Flesh.
+- Corrected Math SPU to properly give +4 dice pool to the Mathematics knowledge skill and +1 mental limit for scientific and technical knowledge skills.
+- Corrected Limbic Neural Amplifier nanoware to properly give +1 dice pool bonus to all Intuition-linked skills.
+- Corrected Neocortical Neural Amplifier nanoware to properly give +1 dice pool bonus to all Logic-linked skills and to give +Rating bonus to mental limit when using those skills instead of +1.
+- Added the Immunization genemod from Chrome Flesh.
+- Added the Phenotypic Variations positive qualities as per the optional rule in Chrome Flesh (can be ignored just like Omegaware/Gammaware).
+- Added entries for commlink and cyberdeck form factor modifications from Data Trails.
+- Stun Dongle commlink accessory now gives a free "Stun Dongle" weapon entry in the weapons tab.
+- Added entries for commlink apps from Data Trails. Since their prices aren't specified, they have customizable pricing from 0 to 50, 50 being the cost of the most expensive entertainment software listed in Run Faster.
+- Corrected the bug where Camera, Micro could not be added to armor.
+- Added an entry for Microphone, Omni-Directional, Micro.
+- Added entries for 1-month Symbiotes Upkeep and 6-month Hard Nanohive Upkeep to the Contracts/Upkeep gear category.
+- Added an entry for the Shiawase Arms Simoom to Specialty Armor (it adds a corresponding entry in the weapons tab).
+- Corrected the bug where Riot Shield and Ballistic Shield would charge players twice (once for the armor, once for the weapon entry that was added with the armor). Riot Shield and Ballistic Shield can no longer be directly added from the weapons tab.
+- Hid all weapons entries for cyberweapons and gear items so that they cannot be mistakenly added for free (the player needs to buy the item through its main tab).
+- Added missing Stock and Side weapon accessory slots to all tasers, light pistols, and heavy pistols, as per HeroLab, as well as a few SMGs and a sniper rifle that was missing these slots.
+- Added missing Top and Underbarrel weapon accessory slots to the Ares Armatus.
+- Added built-in Vision Magnification and Camera, Micro to the Imaging Scope weapon accessory.
+- Feedback Clothing can now be added to armor as an armor mod with a capacity cost of 3, as per Herolab.
+- Defiance EX-Shocker now gives a free "Defiance EX-Shocker Contacts" weapon entry for its melee contacts.
+- Ocular Drone cyberware now gives a free "Ocular Drone" vehicle entry in the vehicle tab.
+- Altered the Smartgun weapon accessories so that they now come pre-included with a Laser Range Finder and a Camera, Micro that takes vision enhancements, instead of the accessory allowing for the addition of vision enhancements.
+- Added a text field to Program Carrier so that its cyberprogram can be specified.
+- Added missing explosives from Run and Gun. 
+- Added missing skill unlocks for the Mutaqua, Wendigo and Nosferatu. NOTE: This introduces a bug where characters that are already magically active will receive a duplicate skill control. A Nosferatu Magician will have a second Banishing skill, for example. This is a known limitation of the current skill system and will be resolved in a later patch.
+- Added missing Carrier qualities from Run Faster. 
+- Reorganised the critters.xml file to support creating Spirits in Chummer.
+- Fixed an issue with the Defiance EX-Shocker that caused a crash. 
+- Fixed an issue that allowed the troll's natural arumour to stack with things that replace their skin.
+- Added commlink gear to the built-in weapon commlinks of the Ogre Hammer SWS Assault Cannon and the Terracotta Arms AM-47
+- Added missing Imaging Scope addons for the Imaging Scopes that are built into the Ogre Hammer SWS Assault Cannon, the Krupp Arms Kriegfaust, the Ultimax Rain Forest Carbine, the Terracotta Arms AM-47, the Marlin X71, and the Springfield M1A.
+- Added a category for Chemical Gland bioware modifications. 
+- Added the Chemical Gland Modifications subsystem to the Chemical Gland bioware. 
+- Tweaked the behaviour of the Sensitive Skin bioware to be more descriptive. 
+- Fixed the Thickened Digestive Tract Lining bioware to properly reduce lifestyle costs. 
+- Fixed the magical unlock behaviour of the mutaqua, wendigo and nosferatu. 
+- Fixed the ability for metsapients and shapeshifters to take the Technomancer quality incorrectly.
+- Fixed the Otaku to Technomancer quality not having a Technomancer prerequisite. 
+- Fixed the mount location for the Easy Breakdown weapon mods. 
+
+Build 187
+
+Application Changes:
+
+- Fixed an issue that prevented characters in karmagen from unlocking special attributes by taking the relevant qualities. 
+- Renamed the addattribute improvement to enableattribute.
+- Fixed an issue that prevented the Enable/Disable Sourcebook button from actually changing the settings. 
+- Fixed an issue with the display of calculated Limit modifiers. Fixes #1175.
+- Removed the ability to mark an item as Hacked.
+- Made some minor tweaks to the calculation of whether a quality contributes to the limit during chargen.
+- Fixed an issue that prevented initiation in create mode from allowing MAG or RES to exceed the Metatype Maximum. 
+- Added code to preserve the window position of the main form on exit. Looking for feedback on if this is a useful feature that should carry through to the rest of the application's forms.
+- Fixed a missing binding for PDF offsets in the Options menu. 
+- Fixed an issue with custom knowledge skills that could cause a crash when not using English strings. 
+- Fixed an issue where Priority Aspected Magicians didn't get their unlocked skill group. 
+- Fixed an issue that prevented the Blackmail and Family options from forcing a cost refresh for contacts in Create mode.
+- Fixed the addweapon node for Armour to actually add the weapon to the character.
+- Added support for <required/oneof/lifestyle> to lifestyle qualities. 
+
+Data Changes: 
+
+- Removed most existing addattribute elements to be enableattribute instead. Affects the Pixie, Centaur, Sasquatch, Naga and Drake qualities. 
+- Fixed an issue that prevented metavariants with a karma cost from properly charging the Karma cost.
+- Fixed an issue that caused a crash when searching for certain strings in the weapon selection form. 
+- Hid a bunch of weapons that shouldn't normally be visible.
+- Added a missing Sensor Function to the gear category. Fixes #1176.
+- Added Blood Magic metamagics from Street Grimoire.
+- Added an Under mod slot for the Shiawase Incinerator flamethrower.
+- Removed the mod slots from the Shiawase Blazer.
+- Fixed the implementation of Mutaqua, Wendigo and Nosferatu to not require adding a Mystic Adept quality. 
+- Updated the Thrifty negative lifestyle quality to properly require the Traveler lifestyle.
+
+Sheet Changes:
+
+- Character sheets now default to displaying the Alias of a character as a header in preference to their Name attribute when printing.
+
 Build 186:
-Data Changes:
+
+Application Changes:
+
 - Fixed missing values for Metahuman adjustment on several vehicles.
 - Properly applied localisation to the character roster form.
 - Fixed the karma costs for new knowledge skills in career mode to not improperly charge twice. 
@@ -8,17 +162,59 @@ Data Changes:
 - Altered the SelectWeapon improvement to allow excluding a specific weapon type. Prevents spare clips from trying to select melee weapons.
 - Fixed the Expense Log entry for Knowledge Skill increases to properly indicate it's a Knowledge Skill entry. Removed an accidental double-charge for creating skills.
 - Slightly refactored weapon selection to use GUIDs instead of names. 
+- Altered the underbarrel weapon node to allow multiple child items.
+- Added the ability to hide weapons from being visible in the selection window. 
+- Added a File Path label to the Character Roster.
+- Added the ability to delete items from the Character Roster by pressing the Delete button. This will ONLY remove the file from the relevant MRU lists, no .chum5 files will be deleted.
+- Suppressed the ability to attempt to add a Nexus to vehicle or gear items. 
+- Added the ability to filter qualities by their karma values, applying a minimum, maximum and value boundary to the quality list. 
+- Made some alterations to the display of characters in the Roster. Added the Game Notes field, removed the ability to edit the text (It wasn't saving anyway.)
+- Fixed the calculation method of Custom Fit (Stack) mods to work more reliably.
+- Fixed the implementation of Awakened Infected (Mutaqua, Wendigo, etc.) to not add the relevant qualities. 
+- Added logic to prevent weapon accessories from applying their bonuses while uninstalled. 
+- Added naming logic to the Create Mode form, similar to the behaviour for Career Mode. In order of precedence, characters will use their Alias, Real Name or the localised string for Unnamed Character. 
+- Fixed the 'Increase Qty' button in career mode to properly select the currently selected item. 
+- Altered the crash handler logic to jump directly into the crash handler form. Important note: We still only receive the report if you click Send Error Report. 
+- Nightly builds are now configured as Release, fixing an issue with launching the Crash Handler.
+- Added a warning that porevents creating invalid Custom Item names. 
+- Added missing 'dirty' flags for changing options in the Options menu. Ensures that changing any option in the Options menu properly flags it as dirty and requests a restart.
+- Added Restart Chummer menu option to Tools menu.
+- Did some general UI cleanup for the Options menu, ensuring that the full text of a book is always visible. 
+- Fixed an error caused by users not entering Drain attributes for their Custom Tradition.
+- Added logic to check whether a character was saved in a later version of Chummer than the current one.
 
 Data Changes:
+
+- Fixed an incorrect spelling for the Personafix gear item.
 - Added Dissonant Echoes from Data Trails, courtesy of gamingharry. As it's not normally possible to become a dissonant technomancer, these echoes have been attached to the Data Trails (Dissonant Echoes) book, and will need to be enabled in the Options menu. 
 - Added content from Lockdown, Shadows in Focus: San Francisco, and the Hong Kong Sourcebook.
+- Added a range category for Shotgun (flechette).
+- Added the Shotgun (Flechette) weapon range.
+- Added missing weapons from the Schattenhandbuch, courtesy of gamingharry.
+- Fixed the display of magic traditions in the core character sheets.
+- Moved the selecttext method back out of AddImprovementCollection. 
+- Altered the Magician, Adept, Mystic Adept, and Technomancer to not need special treatment when adding their special tabs. 
+- Added code to prevent Bone Density and Bone Lacing from being taken together. 
+- Added code to prevent Orthoskin and Dermal Plating from being taken together. 
 
 New Strings:
+
 - Label_VehicleSeats
 - Label_Biography
+- Label_File_Path
+- Label_Roster_File_Name
+- Tab_Roster_Description
+- Tab_Roster_Concept
+- Tab_Roster_Background
+- Tab_Roster_CharacterNotes
+- Tab_Roster_GameNotes
+- Message_Options_Restart
+- Message_OutdatedChummerSave
 
 Changed Strings: 
+
 - Message_ConfirmKarmaExpenseKnowledgeSkill
+- Message_Options_CloseForms
 
 Build 185:
 Application Changes: 

@@ -583,6 +583,10 @@
 			<text>Mount:</text>
 		</string>
 		<string>
+			<key>Label_ExtraMount</key>
+			<text>Extra Mount:</text>
+		</string>
+		<string>
 			<key>Label_DataFile</key>
 			<text>Data File:</text>
 		</string>
@@ -750,7 +754,7 @@
 			<key>String_StackedFocus</key>
 			<text>Stacked Focus</text>
 		</string>
-		<!-- End Region-->
+		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>
 			<key>String_UnarmedAttack</key>
@@ -826,6 +830,10 @@
 			<key>MessageTitle_RemoveCharacterAssociation</key>
 			<text>Remove Character Association</text>
 		</string>
+    <string>
+      <key>Message_OutdatedChummerSave</key>
+      <text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}). \nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+    </string>
 		<string>
 			<key>Message_IncorrectGameVersion_SR4</key>
 			<text>This save file is intended to be used with Shadowrun 4th Edition while this version of Chummer is for Shadowrun 5th Edition. Please use the Shadowrun 4th Edition version of Chummer to open this file.</text>
@@ -1067,6 +1075,32 @@
 			<text>&amp;About...</text>
 		</string>
 		<!-- End Region -->
+    <!-- Region Character Roster -->
+    <string>
+      <key>Label_Roster_File_Name</key>
+      <text>File Name:</text>
+    </string>
+    <string>
+      <key>Tab_Roster_Description</key>
+      <text>Description</text>
+    </string>
+		<string>
+			<key>Tab_Roster_Concept</key>
+			<text>Concept</text>
+		</string>
+		<string>
+			<key>Tab_Roster_Background</key>
+			<text>Background</text>
+		</string>
+		<string>
+			<key>Tab_Roster_CharacterNotes</key>
+			<text>Character Notes</text>
+		</string>
+		<string>
+			<key>Tab_Roster_GameNotes</key>
+			<text>Game Notes</text>
+		</string>
+    <!-- End Region -->
 		<!-- Region Create/Career Window -->
 		<string>
 			<key>Menu_Special</key>
@@ -6676,6 +6710,10 @@ Do you want to continue?</text>
 			<text>Limit Drone Armor Enhance ment to Drone Armor</text>
 		</string>
 		<string>
+			<key>Message_Options_Restart</key>
+			<text>Are you sure you want to restart?</text>
+		</string>
+		<string>
 			<key>Message_Options_CloseForms</key>
 			<text>Options are only enumerated on character load. Should we restart the application?</text>
 		</string>
@@ -7002,6 +7040,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Transgenic</key>
 			<text>Add as Transgenic</text>
+		</string>
+		<string>
+			<key>Message_SelectCyberware_CyberwareRestriction</key>
+			<text>You cannot select this Cyberware/Bioware because of the following forbidden items you have already taken.</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Cyberware Suite Window -->
@@ -8101,6 +8143,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Label_Condition</key>
 			<text>Condition:</text>
+		</string>
+		<string>
+			<key>Message_InvalidCharacters</key>
+			<text>This text contains one or more invalid characters. Invalid character(s): "\n Please remove any invalid characters and try again.</text>
 		</string>
 		<!-- End Region -->
 		<!-- End Region -->

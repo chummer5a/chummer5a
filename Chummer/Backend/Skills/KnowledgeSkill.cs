@@ -32,12 +32,12 @@ namespace Chummer.Skills
 			DefaultKnowledgeSkillCatagories = new List<ListItem>();
 			foreach (XmlNode objXmlSkill in objXmlSkillList)
 			{
+				string display = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
-					_translator.Add(objXmlSkill["name"].InnerText, objXmlSkill["translate"]?.InnerText);
+					_translator.Add(objXmlSkill["name"].InnerText, display);
 				}
-
-				string display = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
 
 				DefaultKnowledgeSkillCatagories.Add(new ListItem(objXmlSkill["name"].InnerText, display));
 

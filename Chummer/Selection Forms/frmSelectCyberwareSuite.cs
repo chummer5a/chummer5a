@@ -234,8 +234,10 @@ namespace Chummer
 				TreeNode objTreeNode = new TreeNode();
 				List<Weapon> lstWeapons = new List<Weapon>();
 				List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-				Cyberware objCyberware = new Cyberware(_objCharacter);
-				objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, objTreeNode, lstWeapons, lstWeaponNodes, false, false);
+                List<Vehicle> objVehicles = new List<Vehicle>();
+                List<TreeNode> objVehicleNodes = new List<TreeNode>();
+                Cyberware objCyberware = new Cyberware(_objCharacter);
+				objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, objTreeNode, lstWeapons, lstWeaponNodes, objVehicles, objVehicleNodes, false, false);
 				objCyberware.Suite = true;
 
 				if (objParent == null)

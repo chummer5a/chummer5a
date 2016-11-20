@@ -279,7 +279,8 @@ namespace Chummer.Skills
 
 		private IEnumerable<Improvement> RelevantImprovements()
 		{
-			foreach (Improvement objImprovement in CharacterObject.Improvements)
+            if (string.IsNullOrWhiteSpace(Name)) yield break;
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
 			{
 				if(!objImprovement.Enabled) continue;
 
@@ -299,6 +300,10 @@ namespace Chummer.Skills
 						break;
 					case Improvement.ImprovementType.SkillAttribute:
 						if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
+							yield return objImprovement;
+						break;
+					case Improvement.ImprovementType.BlockSkillDefault:
+						if (objImprovement.ImprovedName == SkillGroup)
 							yield return objImprovement;
 						break;
 					case Improvement.ImprovementType.EnhancedArticulation:

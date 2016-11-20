@@ -17,7 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.Windows.Forms;
+﻿using System.Linq;
+﻿using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -34,8 +35,15 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strReturnValue = txtValue.Text;
-            this.DialogResult = DialogResult.OK;
+			if (PreventXPathErrors && txtValue.Text.Contains('"'))
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_InvalidCharacters"), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			else
+			{
+				_strReturnValue = txtValue.Text;
+				this.DialogResult = DialogResult.OK;
+			}
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -77,6 +85,8 @@ namespace Chummer
                 lblDescription.Text = value;
             }
         }
+
+		public bool PreventXPathErrors { get; internal set; }
 		#endregion
-    }
+	}
 }

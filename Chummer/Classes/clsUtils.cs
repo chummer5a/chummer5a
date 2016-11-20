@@ -65,7 +65,6 @@ namespace Chummer
 		{
 			if (Debugger.IsAttached)
 				Debugger.Break();
-			
 		}
 
 		public static bool IsRunningInVisualStudio()
@@ -90,12 +89,12 @@ namespace Chummer
 			// Read the content.
 
 			string responseFromServer = reader.ReadToEnd();
-			string[] stringSeparators = new string[] { "," };
-			var result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+			string[] stringSeparators = { "," };
+			string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string line in result.Where(line => line.Contains("tag_name")))
 			{
-				var strVersion = line.Split(':')[1];
+				string strVersion = line.Split(':')[1];
 				strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
 				strVersion = strVersion + ".0";
 				Version.TryParse(strVersion, out verLatestVersion);
@@ -114,6 +113,31 @@ namespace Chummer
 			Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
 			int intResult = GitVersion().CompareTo(verCurrentversion);
 			return intResult;
+		}
+		
+		public static void RestartApplication(string strText = "Message_Options_Restart")
+		{
+			string text = LanguageManager.Instance.GetString(strText);
+			string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+			if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+				return;
+			// Get the parameters/arguments passed to program if any
+			string arguments = string.Empty;
+			arguments += GlobalOptions.Instance.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
+			arguments = arguments.Trim();
+			// Restart current application, with same arguments/parameters
+			foreach (Form objForm in GlobalOptions.Instance.MainForm.MdiChildren)
+			{
+				objForm.Close();
+			}
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Application.StartupPath + "\\Chummer5.exe",
+				Arguments = arguments
+			};
+			Application.Exit();
+			Process.Start(startInfo);
 		}
 	}
 }

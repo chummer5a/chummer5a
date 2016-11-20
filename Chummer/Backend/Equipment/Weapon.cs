@@ -82,7 +82,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
 			_strName = objXmlWeapon["name"].InnerText;
 			_strCategory = objXmlWeapon["category"].InnerText;
@@ -123,17 +123,9 @@ namespace Chummer.Backend.Equipment
 			{
 			}
 			_strAvail = objXmlWeapon["avail"].InnerText;
-			try
-			{
-				_intCost = Convert.ToInt32(objXmlWeapon["cost"].InnerText);
-			}
-			catch { }
-			try
-			{
-				if (objXmlWeapon["cyberware"].InnerText == "yes")
-					_blnCyberware = true;
-			}
-			catch { }
+			_intCost = Convert.ToInt32(objXmlWeapon["cost"]?.InnerText);
+			if (objXmlWeapon["cyberware"]?.InnerText == "yes")
+				_blnCyberware = true;
 			_strSource = objXmlWeapon["source"].InnerText;
 			_strPage = objXmlWeapon["page"].InnerText;
 
@@ -197,18 +189,21 @@ namespace Chummer.Backend.Equipment
 			objNode.Tag = _guiID.ToString();
 
 			// If the Weapon comes with an Underbarrel Weapon, add it.
-			if (objXmlWeapon.InnerXml.Contains("<underbarrel>") && blnCreateChildren)
+			if (objXmlWeapon.InnerXml.Contains("<underbarrels>") && blnCreateChildren)
 			{
-				XmlNode objXmlUnderbarrel = objXmlWeapon.SelectSingleNode("underbarrel");
-				Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
-				TreeNode objUnderbarrelNode = new TreeNode();
-				XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-				objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory);
-				objUnderbarrelWeapon.IncludedInWeapon = true;
-				objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
-				_lstUnderbarrel.Add(objUnderbarrelWeapon);
-				objUnderbarrelNode.ContextMenuStrip = cmsWeapon;
-				objNode.Nodes.Add(objUnderbarrelNode);
+				foreach (XmlNode objXmlUnderbarrel in objXmlWeapon["underbarrels"].ChildNodes)
+				{
+					Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
+					TreeNode objUnderbarrelNode = new TreeNode();
+					XmlNode objXmlWeaponNode =
+						objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
+					objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+					objUnderbarrelWeapon.IncludedInWeapon = true;
+					objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
+					_lstUnderbarrel.Add(objUnderbarrelWeapon);
+					objUnderbarrelNode.ContextMenuStrip = cmsWeapon;
+					objNode.Nodes.Add(objUnderbarrelNode);
+				}
 			}
 
 			// If there are any Accessories that come with the Weapon, add them.
@@ -225,19 +220,55 @@ namespace Chummer.Backend.Equipment
 					{
 						intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
 					}
+                    if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+					{
+                        if (objXmlWeaponAccessory.InnerXml.Contains("<extramount>"))
+                        {
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                        }
+                        else
+                        {
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { objXmlAccessory["mount"].InnerText, "None" }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                        }
+					}
 					else
 					{
-						intAccessoryRating = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
+						objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { "Internal" , "None" }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
 					}
-					if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
-					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
-					}
-					else
-					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, "Internal", intAccessoryRating);
-					}
-					objAccessory.IncludedInWeapon = true;
+                    // Add any extra Gear that comes with the Weapon Accessory.
+                    if (objXmlWeaponAccessory["gears"] != null && blnCreateChildren)
+                    {
+                        XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                        foreach (XmlNode objXmlAccessoryGear in objXmlWeaponAccessory.SelectNodes("gears/usegear"))
+                        {
+                            int intGearRating = 0;
+                            string strForceValue = "";
+                            if (objXmlAccessoryGear.Attributes["rating"] != null)
+                                intGearRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
+                            if (objXmlAccessoryGear.Attributes["select"] != null)
+                                strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
+
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
+                            Gear objGear = new Gear(_objCharacter);
+
+                            TreeNode objGearNode = new TreeNode();
+                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+
+                            objGear.Create(objXmlGear, _objCharacter, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, true);
+                            objGear.Cost = "0";
+                            objGear.MaxRating = objGear.Rating;
+                            objGear.MinRating = objGear.Rating;
+                            objGear.IncludedInParent = true;
+                            objAccessory.Gear.Add(objGear);
+
+                            objGearNode.ContextMenuStrip = cmsWeaponAccessoryGear;
+                            objAccessoryNode.Nodes.Add(objGearNode);
+                            objAccessoryNode.Expand();
+                        }
+                    }
+
+                    objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
 					_lstAccessories.Add(objAccessory);
@@ -1179,6 +1210,7 @@ namespace Chummer.Backend.Equipment
 					intReturn += objAccessory.Concealability;
 			}
 
+            /* Commented out because there's no reference to this in RAW
 			// Add +4 for each Underbarrel Weapon installed.
 			if (_lstUnderbarrel.Count > 0)
 			{
@@ -1188,6 +1220,7 @@ namespace Chummer.Backend.Equipment
 						intReturn += 4;
 				}
 			}
+            */
 
 			// Factor in the character's Concealability modifiers.
 			ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
@@ -1859,9 +1892,10 @@ namespace Chummer.Backend.Equipment
 						bool blnFound = false;
 						foreach (WeaponAccessory objAccessory in _lstAccessories)
 						{
-							if (objAccessory.Mount == objXmlMount.InnerText)
+							if ((objAccessory.Mount == objXmlMount.InnerText) || (objAccessory.ExtraMount == objXmlMount.InnerText))
 							{
 								blnFound = true;
+								break;
 							}
 						}
 						if (!blnFound)
@@ -2038,7 +2072,7 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				foreach (WeaponAccessory objAccessory in _lstAccessories)
+				foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objAccessory.Installed))
 				{
 					// Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
 					if (!(objAccessory.DamageType.Contains("(f)") && _strDamage.Contains("(f)")))

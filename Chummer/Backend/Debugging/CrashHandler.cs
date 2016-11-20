@@ -109,9 +109,6 @@ namespace Chummer.Backend.Debugging
 
 		internal static void WebMiniDumpHandler(Exception ex)
 		{
-
-			if (MessageBox.Show("Chummer5a crashed.\nDo you want to send a crash report to the developer?", "Crash!", MessageBoxButtons.YesNo) == DialogResult.Yes)
-			{
 				try
 				{
 					DumpData dump = new DumpData();
@@ -128,8 +125,6 @@ namespace Chummer.Backend.Debugging
 				{
 					MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
 				}
-			}
-
 		}
 	}
 }

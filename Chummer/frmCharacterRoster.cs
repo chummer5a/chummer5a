@@ -11,12 +11,14 @@ namespace Chummer
 	public partial class frmCharacterRoster : Form
 	{
 		List<CharacterCache> lstCharacterCache = new List<CharacterCache>();
-		
+		ToolTip tipTooltip = new ToolTip();
+
 		public frmCharacterRoster()
 		{
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-            LoadCharacters();
+			
+			LoadCharacters();
 			MoveControls();
 		}
 
@@ -34,7 +36,7 @@ namespace Chummer
 			lblMetatypeLabel.Left = tabCharacterText.Left;
 			lblCharacterAliasLabel.Left = tabCharacterText.Left;
 			lblEssenceLabel.Left = tabCharacterText.Left;
-
+            lblFilePathLabel.Left = tabCharacterText.Left;
 			intWidth = lblPlayerNameLabel.Right;
 			if (lblCareerKarmaLabel.Right > intWidth)
 			{
@@ -55,13 +57,19 @@ namespace Chummer
 			if (lblEssenceLabel.Right > intWidth)
 			{
 				intWidth = lblEssenceLabel.Right;
-			}
-			lblEssence.Left = intWidth + 12;
-			lblPlayerName.Left = intWidth + 12;
-			lblCareerKarma.Left = intWidth + 12;
-			lblCharacterAlias.Left = intWidth + 12;
-			lblMetatype.Left = intWidth + 12;
-			lblCharacterName.Left = intWidth + 12;
+            }
+            if (lblFilePathLabel.Right > intWidth)
+            {
+                intWidth = lblFilePathLabel.Right;
+            }
+            intWidth += 12;
+            lblEssence.Left = intWidth;
+			lblPlayerName.Left = intWidth;
+			lblCareerKarma.Left = intWidth;
+			lblCharacterAlias.Left = intWidth;
+			lblMetatype.Left = intWidth;
+			lblCharacterName.Left = intWidth;
+            lblFilePath.Left = intWidth;
 		}
 
 		private void LoadCharacters()
@@ -96,7 +104,17 @@ namespace Chummer
 		{
 			TreeNode objNode = new TreeNode();
 			XmlDocument objXmlSource = new XmlDocument();
-			objXmlSource.Load(strFile);
+			bool blnLoaded = true;
+			//If we run into any problems loading the character cache, fail out early. 
+			try
+			{
+				objXmlSource.Load(strFile);
+			}
+			catch
+			{
+				blnLoaded = false;
+			}
+			if (!blnLoaded) return;
 			CharacterCache objCache = new CharacterCache();
 			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
 			if (objXmlSourceNode != null)
@@ -104,7 +122,8 @@ namespace Chummer
 				objCache.Description = objXmlSourceNode["description"]?.InnerText;
 				objCache.BuildMethod = objXmlSourceNode["buildmethod"]?.InnerText;
 				objCache.Background = objXmlSourceNode["background"]?.InnerText;
-				objCache.Notes = objXmlSourceNode["gamenotes"]?.InnerText;
+				objCache.CharacterNotes = objXmlSourceNode["notes"]?.InnerText;
+				objCache.GameNotes = objXmlSourceNode["gamenotes"]?.InnerText;
 				objCache.Concept = objXmlSourceNode["concept"]?.InnerText;
 				objCache.Karma = objXmlSourceNode["totalkarma"]?.InnerText;
 				objCache.Metatype = objXmlSourceNode["metatype"]?.InnerText;
@@ -127,9 +146,10 @@ namespace Chummer
 				}
 			}
 			objCache.FilePath = strFile;
+			objCache.FileName = strFile.Split('\\').ToArray().Last();
 			lstCharacterCache.Add(objCache);
 			objNode.Tag = lstCharacterCache.IndexOf(objCache);
-			
+
 			objNode.Text = CalculatedName(objCache);
 			treCharacterList.Nodes.Add(objNode);
 		}
@@ -141,10 +161,10 @@ namespace Chummer
 		/// <returns></returns>
 		private static string CalculatedName(CharacterCache objCache)
 		{
-			string strName = objCache.CharacterName;
+			string strName = objCache.CharacterAlias;
 			if (string.IsNullOrEmpty(strName))
 			{
-                strName = LanguageManager.Instance.GetString("String_UnnamedCharacter");
+				strName = string.IsNullOrEmpty(objCache.CharacterName) ? LanguageManager.Instance.GetString("String_UnnamedCharacter") : objCache.CharacterName;
 			}
 			string strBuildMethod = LanguageManager.Instance.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
 			bool blnCreated = objCache.Created;
@@ -162,7 +182,8 @@ namespace Chummer
 		{
 			txtCharacterBio.Text = objCache.Description;
 			txtCharacterBackground.Text = objCache.Background;
-			txtCharacterNotes.Text = objCache.Notes;
+			txtCharacterNotes.Text = objCache.CharacterNotes;
+			txtGameNotes.Text = objCache.GameNotes;
 			txtCharacterConcept.Text = objCache.Concept;
 			lblCareerKarma.Text = objCache.Karma;
 			lblMetatype.Text = objCache.Metatype;
@@ -170,6 +191,8 @@ namespace Chummer
 			lblCharacterName.Text = objCache.CharacterName;
 			lblCharacterAlias.Text = objCache.CharacterAlias;
 			lblEssence.Text = objCache.Essence;
+            lblFilePath.Text = objCache.FileName;
+			tipTooltip.SetToolTip(lblFilePath,objCache.FilePath);
 			picMugshot.Image = objCache.Mugshot;
 		}
 
@@ -185,15 +208,24 @@ namespace Chummer
 			GlobalOptions.Instance.MainForm.LoadCharacter(objCache.FilePath);
 		}
 
-		/// <summary>
-		/// Caches a subset of a full character's properties for loading purposes. 
-		/// </summary>
-		private class CharacterCache
+        private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode != null)
+            {
+                RemoveSelected(treCharacterList.SelectedNode);
+            }
+        }
+        /// <summary>
+        /// Caches a subset of a full character's properties for loading purposes. 
+        /// </summary>
+        private class CharacterCache
 		{
 			internal string FilePath { get; set; }
+			internal string FileName { get; set; }
 			internal string Description { get; set; }
 			internal string Background { get; set; }
-			internal string Notes { get; set; }
+			internal string GameNotes { get; set; }
+			internal string CharacterNotes { get; set; }
 			internal string Concept { get; set; }
 			internal string Karma { get; set; }
 			internal string Metatype { get; set; }
@@ -205,5 +237,13 @@ namespace Chummer
 			public bool Created { get; internal set; }
 			public string Essence { get; internal set; }
 		}
+
+        private void RemoveSelected(TreeNode sender)
+        {
+            CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
+            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
+            GlobalOptions.Instance.RemoveFromStickyMRUList(objCache.FilePath);
+            treCharacterList.Nodes.RemoveAt(sender.Index);
+        }
 	}
 }

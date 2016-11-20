@@ -109,7 +109,6 @@
 			this.lblPDFOffset = new System.Windows.Forms.Label();
 			this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
 			this.cmdPDFTest = new System.Windows.Forms.Button();
-			this.cboPDFParameters = new Chummer.helpers.ComboBox();
 			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
 			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
 			this.chkLifeModule = new System.Windows.Forms.CheckBox();
@@ -266,6 +265,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.cboPDFParameters = new Chummer.helpers.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1040,6 +1040,7 @@
 			this.cmdEnableSourcebooks.Tag = "Button_ToggleSourcebooks";
 			this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
 			this.cmdEnableSourcebooks.UseVisualStyleBackColor = true;
+			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.OptionsChanged);
 			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.cmdEnableSourcebooks_Click);
 			// 
 			// tabControl2
@@ -1127,6 +1128,7 @@
 			this.cmdPDFLocation.TabIndex = 14;
 			this.cmdPDFLocation.Text = "...";
 			this.cmdPDFLocation.UseVisualStyleBackColor = true;
+			this.cmdPDFLocation.Click += new System.EventHandler(this.OptionsChanged);
 			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
 			// 
 			// lblPDFOffset
@@ -1151,6 +1153,7 @@
 			this.nudPDFOffset.Name = "nudPDFOffset";
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
 			// 
 			// cmdPDFTest
@@ -1166,16 +1169,6 @@
 			this.cmdPDFTest.UseVisualStyleBackColor = true;
 			this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
 			// 
-			// cboPDFParameters
-			// 
-			this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboPDFParameters.FormattingEnabled = true;
-			this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
-			this.cboPDFParameters.Name = "cboPDFParameters";
-			this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
-			this.cboPDFParameters.TabIndex = 26;
-			this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.cboPDFParameters_SelectedIndexChanged);
-			// 
 			// chkPreferNightlyBuilds
 			// 
 			this.chkPreferNightlyBuilds.AutoSize = true;
@@ -1186,6 +1179,7 @@
 			this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
 			this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
 			this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
+			this.chkPreferNightlyBuilds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkOmaeEnabled
 			// 
@@ -1198,6 +1192,7 @@
 			this.chkOmaeEnabled.Text = "[Omae enabled]";
 			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
 			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
+			this.chkLifeModule.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkLifeModule
 			// 
@@ -1291,6 +1286,7 @@
 			this.cboXSLT.Name = "cboXSLT";
 			this.cboXSLT.Size = new System.Drawing.Size(266, 21);
 			this.cboXSLT.TabIndex = 8;
+			this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblLanguage
 			// 
@@ -1310,7 +1306,7 @@
 			this.cboLanguage.Name = "cboLanguage";
 			this.cboLanguage.Size = new System.Drawing.Size(162, 21);
 			this.cboLanguage.TabIndex = 1;
-			this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+			this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cmdVerify
 			// 
@@ -1384,7 +1380,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(548, 524);
+			this.tabPage2.Size = new System.Drawing.Size(548, 530);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Tag = "Tab_Options_Character";
 			this.tabPage2.Text = "Character and Printing";
@@ -1449,6 +1445,7 @@
 			this.cboEssenceDecimals.Name = "cboEssenceDecimals";
 			this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
 			this.cboEssenceDecimals.TabIndex = 17;
+			this.cboEssenceDecimals.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblEssenceDecimals
 			// 
@@ -1470,6 +1467,7 @@
 			this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
 			this.chkPrintNotes.Text = "Print Notes";
 			this.chkPrintNotes.UseVisualStyleBackColor = true;
+			this.chkPrintNotes.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblLimbCount
 			// 
@@ -1580,7 +1578,7 @@
 			this.tabPage1.Controls.Add(this.chkEnforceSkillMaximumModifiedRating);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(548, 524);
+			this.tabPage1.Size = new System.Drawing.Size(548, 530);
 			this.tabPage1.TabIndex = 2;
 			this.tabPage1.Tag = "Tab_Options_Miscellaneous";
 			this.tabPage1.Text = "Miscellaneous";
@@ -1704,7 +1702,7 @@
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(548, 524);
+			this.tabPage3.Size = new System.Drawing.Size(548, 530);
 			this.tabPage3.TabIndex = 3;
 			this.tabPage3.Text = "Github Issues";
 			// 
@@ -3135,6 +3133,16 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
+			// 
+			// cboPDFParameters
+			// 
+			this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPDFParameters.FormattingEnabled = true;
+			this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
+			this.cboPDFParameters.Name = "cboPDFParameters";
+			this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
+			this.cboPDFParameters.TabIndex = 26;
+			this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// frmOptions
 			// 

@@ -19,15 +19,10 @@
  using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Xml;
-using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Drawing;
+ using System.Text;
+ using System.Windows.Forms;
+ using System.Drawing;
  using System.Linq;
- using System.Web;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -989,6 +984,123 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Method to delete an Armor object.
+		/// </summary>
+		/// <param name="treArmor"></param>
+		/// <param name="treWeapons"></param>
+		/// <param name="_objImprovementManager"></param>
+		public void DeleteArmor(TreeView treArmor, TreeView treWeapons, ImprovementManager _objImprovementManager)
+		{
+			if (!ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmor")))
+				return;
+
+			if (treArmor.SelectedNode.Level == 1)
+			{
+				Armor objArmor = FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+				if (objArmor == null)
+					return;
+				// Remove any Improvements created by the Armor and its children.
+				foreach (ArmorMod objMod in objArmor.ArmorMods)
+				{
+					// Remove the Cyberweapon created by the Mod if applicable.
+					if (objMod.WeaponID != Guid.Empty.ToString())
+					{
+
+						// Remove the Weapon from the Character.
+						foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
+						{
+							_objCharacter.Weapons.Remove(objWeapon);
+							// Remove the Weapon from the TreeView.
+							foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objMod.WeaponID))
+							{
+								treWeapons.Nodes.Remove(objWeaponNode);
+							}
+						}
+					}
+
+					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+				}
+				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
+
+				// Remove any Improvements created by the Armor's Gear.
+				foreach (Gear objGear in objArmor.Gear)
+					DeleteGear(objGear, treWeapons, _objImprovementManager);
+
+				List<Weapon> lstRemoveWeapons = new List<Weapon>();
+				// Remove the Weapon from the Character.
+				foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
+				{
+					lstRemoveWeapons.Add(objWeapon);
+					// Remove the Weapon from the TreeView.
+					foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objArmor.WeaponID))
+					{
+						treWeapons.Nodes.Remove(objWeaponNode);
+					}
+				}
+				foreach (Weapon objWeapon in lstRemoveWeapons)
+				{
+					_objCharacter.Weapons.Remove(objWeapon);
+				}
+
+				_objCharacter.Armor.Remove(objArmor);
+				treArmor.SelectedNode.Remove();
+			}
+			else if (treArmor.SelectedNode.Level == 2)
+			{
+				bool blnIsMod = false;
+				ArmorMod objMod = FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+				if (objMod != null)
+					blnIsMod = true;
+
+				if (blnIsMod)
+				{
+					// Remove the Cyberweapon created by the Mod if applicable.
+					if (objMod.WeaponID != Guid.Empty.ToString())
+					{
+						// Remove the Weapon from the TreeView.
+						TreeNode objRemoveNode = new TreeNode();
+						foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
+						{
+							if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
+								objRemoveNode = objWeaponNode;
+						}
+						treWeapons.Nodes.Remove(objRemoveNode);
+
+						// Remove the Weapon from the Character.
+						Weapon objRemoveWeapon = new Weapon(_objCharacter);
+						foreach (Weapon objWeapon in _objCharacter.Weapons)
+						{
+							if (objWeapon.InternalId == objMod.WeaponID)
+								objRemoveWeapon = objWeapon;
+						}
+						_objCharacter.Weapons.Remove(objRemoveWeapon);
+					}
+
+					// Remove any Improvements created by the ArmorMod.
+					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+					objMod.Parent.ArmorMods.Remove(objMod);
+				}
+				else
+				{
+					Armor objSelectedArmor = new Armor(_objCharacter);
+					Gear objGear = FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+					DeleteGear(objGear, treWeapons, _objImprovementManager);
+					objSelectedArmor.Gear.Remove(objGear);
+				}
+				treArmor.SelectedNode.Remove();
+			}
+			else if (treArmor.SelectedNode.Level > 2)
+			{
+				Armor objSelectedArmor = new Armor(_objCharacter);
+				Gear objGear = FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+				objGear.Parent.Children.Remove(objGear);
+				DeleteGear(objGear, treWeapons, _objImprovementManager);
+				objSelectedArmor.Gear.Remove(objGear);
+				treArmor.SelectedNode.Remove();
+			}
+		}
+
+		/// <summary>
 		/// Verify that the user wants to delete an item.
 		/// </summary>
 		public bool ConfirmDelete(string strMessage)
@@ -1261,12 +1373,13 @@ namespace Chummer
 		/// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
 		/// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>
-		public void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+		/// <param name="WeaponID">The weapon </param>
+		public void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, string WeaponID = null)
 		{
 			TreeNode objNode = new TreeNode();
 			objNode.Text = objWeapon.DisplayName;
-			objNode.Tag = objWeapon.InternalId;
-			if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality"))
+			objNode.Tag = WeaponID ?? objWeapon.InternalId;
+			if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || WeaponID != null)
 				objNode.ForeColor = SystemColors.GrayText;
 			if (objWeapon.Notes != string.Empty)
 				objNode.ForeColor = Color.SaddleBrown;

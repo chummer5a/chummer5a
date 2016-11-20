@@ -18,7 +18,8 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows;
+ using System.Linq;
+ using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -835,7 +836,8 @@ namespace Chummer
 					_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 					_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
-					_objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
+                    _objCharacter.EDG.Value = _objCharacter.EDG.TotalMinimum;
+                    _objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
 					_objCharacter.RES.Value = _objCharacter.RES.TotalMinimum;
 					_objCharacter.DEP.Value = _objCharacter.DEP.TotalMinimum;
 
@@ -846,7 +848,8 @@ namespace Chummer
 					_objCharacter.CHA.Base = _objCharacter.CHA.TotalMinimum;
 					_objCharacter.INT.Base = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Base = _objCharacter.LOG.TotalMinimum;
-					_objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
+                    _objCharacter.EDG.Base = _objCharacter.EDG.TotalMinimum;
+                    _objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
 					_objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
 					_objCharacter.RES.Base = _objCharacter.RES.TotalMinimum;
 					_objCharacter.DEP.Base = _objCharacter.DEP.TotalMinimum;
@@ -939,197 +942,131 @@ namespace Chummer
 					}
 				}
 
-				// If this is a Blood Spirit, add their free Critter Powers.
-				//if (chkBloodSpirit.Checked)
-				//{
-				//	XmlNode objXmlCritterPower;
-				//	TreeNode objNode;
-				//	CritterPower objPower;
-				//	bool blnAddPower = true;
+	            if (cboCategory.SelectedValue.ToString() == "Spirits")
+	            {
+		            if (objXmlMetatype["optionalpowers"] != null)
+		            {
+						//For every 3 full points of Force a spirit has, it may gain one Optional Power. 
+			            for (int i = intForce -3; i >= 0; i -= 3)
+			            {
+							XmlDocument objDummyDocument = new XmlDocument();
+							XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
+				            objDummyDocument.AppendChild(bonusNode);
+							XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true),true);
+							objDummyDocument.ImportNode(powerNode, true);
+							bonusNode.AppendChild(powerNode);
+							objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), bonusNode, false, 1, lstMetatypes.SelectedValue.ToString());
+						}
+		            }
+		            //If this is a Blood Spirit, add their free Critter Powers.
+					if (chkBloodSpirit.Checked)
+		            {
+			            XmlNode objXmlCritterPower;
+			            TreeNode objNode;
+			            CritterPower objPower;
+			            bool blnAddPower = _objCharacter.CritterPowers.All(objFindPower => objFindPower.Name != "Energy Drain");
 
-				//	// Energy Drain.
-				//	foreach (CritterPower objFindPower in _objCharacter.CritterPowers)
-				//	{
-				//		if (objFindPower.Name == "Energy Drain")
-				//		{
-				//			blnAddPower = false;
-				//			break;
-				//		}
-				//	}
-				//	if (blnAddPower)
-				//	{
-				//		objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Energy Drain\"]");
-				//		objNode = new TreeNode();
-				//		objPower = new CritterPower(_objCharacter);
-				//		objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
-				//		objPower.CountTowardsLimit = false;
-				//		_objCharacter.CritterPowers.Add(objPower);
-				//	}
+			            //Energy Drain.
+			            if (blnAddPower)
+			            {
+				            objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Energy Drain\"]");
+				            objNode = new TreeNode();
+				            objPower = new CritterPower(_objCharacter);
+				            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
+				            objPower.CountTowardsLimit = false;
+				            _objCharacter.CritterPowers.Add(objPower);
+			            }
 
-				//	// Fear.
-				//	blnAddPower = true;
-				//	foreach (CritterPower objFindPower in _objCharacter.CritterPowers)
-				//	{
-				//		if (objFindPower.Name == "Fear")
-				//		{
-				//			blnAddPower = false;
-				//			break;
-				//		}
-				//	}
-				//	if (blnAddPower)
-				//	{
-				//		objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Fear\"]");
-				//		objNode = new TreeNode();
-				//		objPower = new CritterPower(_objCharacter);
-				//		objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
-				//		objPower.CountTowardsLimit = false;
-				//		_objCharacter.CritterPowers.Add(objPower);
-				//	}
+			            //Fear.
+			            blnAddPower = _objCharacter.CritterPowers.All(objFindPower => objFindPower.Name != "Fear");
+			            if (blnAddPower)
+			            {
+				            objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Fear\"]");
+				            objNode = new TreeNode();
+				            objPower = new CritterPower(_objCharacter);
+				            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
+				            objPower.CountTowardsLimit = false;
+				            _objCharacter.CritterPowers.Add(objPower);
+			            }
 
-				//	// Natural Weapon.
-				//	objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Natural Weapon\"]");
-				//	objNode = new TreeNode();
-				//	objPower = new CritterPower(_objCharacter);
-				//	objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "DV " + intForce.ToString() + "P, AP 0");
-				//	objPower.CountTowardsLimit = false;
-				//	_objCharacter.CritterPowers.Add(objPower);
+			            //Natural Weapon.
+			            objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Natural Weapon\"]");
+			            objNode = new TreeNode();
+			            objPower = new CritterPower(_objCharacter);
+			            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "DV " + intForce.ToString() + "P, AP 0");
+			            objPower.CountTowardsLimit = false;
+			            _objCharacter.CritterPowers.Add(objPower);
 
-				//	// Evanescence.
-				//	blnAddPower = true;
-				//	foreach (CritterPower objFindPower in _objCharacter.CritterPowers)
-				//	{
-				//		if (objFindPower.Name == "Evanescence")
-				//		{
-				//			blnAddPower = false;
-				//			break;
-				//		}
-				//	}
-				//	if (blnAddPower)
-				//	{
-				//		objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Evanescence\"]");
-				//		objNode = new TreeNode();
-				//		objPower = new CritterPower(_objCharacter);
-				//		objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
-				//		objPower.CountTowardsLimit = false;
-				//		_objCharacter.CritterPowers.Add(objPower);
-				//	}
-				//}
+			            //Evanescence.
+			            blnAddPower = _objCharacter.CritterPowers.All(objFindPower => objFindPower.Name != "Evanescence");
+			            if (blnAddPower)
+			            {
+				            objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Evanescence\"]");
+				            objNode = new TreeNode();
+				            objPower = new CritterPower(_objCharacter);
+				            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
+				            objPower.CountTowardsLimit = false;
+				            _objCharacter.CritterPowers.Add(objPower);
+			            }
+		            }
 
-				//// Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
-				//if (chkPossessionBased.Checked)
-				//{
-				//	foreach (CritterPower objCritterPower in _objCharacter.CritterPowers)
-				//	{
-				//		if (objCritterPower.Name == "Materialization")
-				//		{
-				//			_objCharacter.CritterPowers.Remove(objCritterPower);
-				//			break;
-				//		}
-				//	}
+		            //Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
+		            if (chkPossessionBased.Checked)
+		            {
+			            foreach (
+				            CritterPower objCritterPower in
+					            _objCharacter.CritterPowers.Where(objCritterPower => objCritterPower.Name == "Materialization"))
+			            {
+				            _objCharacter.CritterPowers.Remove(objCritterPower);
+				            break;
+			            }
 
-				//	// Add the selected Power.
-				//	XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + cboPossessionMethod.SelectedValue.ToString() + "\"]");
-				//	TreeNode objNode = new TreeNode();
-				//	CritterPower objPower = new CritterPower(_objCharacter);
-				//	objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
-				//	objPower.CountTowardsLimit = false;
-				//	_objCharacter.CritterPowers.Add(objPower);
-				//}
+			            //Add the selected Power.
+			            XmlNode objXmlCritterPower =
+				            objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" +
+				                                            cboPossessionMethod.SelectedValue.ToString() + "\"]");
+			            TreeNode objNode = new TreeNode();
+			            CritterPower objPower = new CritterPower(_objCharacter);
+			            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "");
+			            objPower.CountTowardsLimit = false;
+			            _objCharacter.CritterPowers.Add(objPower);
+		            }
+	            }
+	            XmlDocument objSkillDocument = XmlManager.Instance.Load("skills.xml");
+				//Set the Skill Ratings for the Critter.
+				foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
+				{
+					XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objXmlSkill.InnerText + "\"]");
+					Skill.FromData(objXmlSkillNode, _objCharacter);
+					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
+					{
+						if (objXmlSkill.Attributes?["rating"]?.InnerText == "F")
+						{
+							objSkill.Karma = intForce;
+						}
+						else if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
+						{
+							objSkill.Karma = Convert.ToInt32(objXmlSkill.Attributes?["rating"]?.InnerText);
+						}
+					}
+				}
 
-				//// Set the Skill Ratings for the Critter.
-				//foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
-				//{
-				//	if (objXmlSkill.InnerText.Contains("Exotic"))
-				//	{
-				//		Skill objExotic = new Skill(_objCharacter);
-				//		objExotic.ExoticSkill = true;
-				//		objExotic.Attribute = "AGI";
-    //                    if (objXmlSkill.Attributes["spec"] != null)
-    //                    {
-    //                        SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-    //                        objExotic.Specializations.Add(objSpec);
-    //                    }
-				//		if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0)) > 6)
-				//			objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-				//		objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-				//		objExotic.Name = objXmlSkill.InnerText;
-				//		_objCharacter.Skills.Add(objExotic);
-				//	}
-				//	else
-				//	{
-				//		foreach (Skill objSkill in _objCharacter.Skills)
-				//		{
-				//			if (objSkill.Name == objXmlSkill.InnerText)
-				//			{
-				//				if (objXmlSkill.Attributes["spec"] != null)
-    //                            {
-    //                                SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-    //                                objSkill.Specializations.Add(objSpec);
-    //                            }
-				//				if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0)) > 6)
-				//					objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-				//				objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-				//				break;
-				//			}
-				//		}
-				//	}
-				//}
+				//Set the Skill Ratings for the Critter.
+				foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
+				{
+					XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + objXmlSkill.InnerText + "\"]");
+					Skill.FromData(objXmlSkillNode, _objCharacter);
+					if (intForce > 0)
+					{
+						foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
+						{
+							objSkill.Karma = intForce;
+						}
+					}
+				}
 
-				//// Set the Skill Group Ratings for the Critter.
-				//foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
-				//{
-				//	foreach (SkillGroup objSkill in _objCharacter.SkillGroups)
-				//	{
-				//		if (objSkill.Name == objXmlSkill.InnerText)
-				//		{
-				//			objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-				//			objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-				//			break;
-				//		}
-				//	}
-				//}
-
-				//// Set the Knowledge Skill Ratings for the Critter.
-				//foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
-				//{
-				//	Skill objKnowledge = new Skill(_objCharacter);
-				//	objKnowledge.Name = objXmlSkill.InnerText;
-				//	objKnowledge.KnowledgeSkill = true;
-				//	if (objXmlSkill.Attributes["spec"] != null)
-    //                {
-    //                    SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-    //                    objKnowledge.Specializations.Add(objSpec);
-    //                }
-				//	objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
- 			//		if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
-				//		objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-				//	objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-				//	_objCharacter.Skills.Add(objKnowledge);
-				//}
-
-				//// If this is a Critter with a Force (which dictates their Skill Rating/Maximum Skill Rating), set their Skill Rating Maximums.
-				//if (intForce > 0)
-				//{
-				//	int intMaxRating = intForce;
-				//	// Determine the highest Skill Rating the Critter has.
-				//	foreach (Skill objSkill in _objCharacter.Skills)
-				//	{
-				//		if (objSkill.RatingMaximum > intMaxRating)
-				//			intMaxRating = objSkill.RatingMaximum;
-				//	}
-
-				//	// Now that we know the upper limit, set all of the Skill Rating Maximums to match.
-				//	foreach (Skill objSkill in _objCharacter.Skills)
-				//		objSkill.RatingMaximum = intMaxRating;
-				//	foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-				//		objGroup.RatingMaximum = intMaxRating;
-
-				//	// Set the MaxSkillRating for the character so it can be used later when they add new Knowledge Skills or Exotic Skills.
-				//	_objCharacter.MaxSkillRating = intMaxRating;
-				//}
-
-            	// Add any Complex Forms the Critter comes with (typically Sprites)
-                XmlDocument objXmlProgramDocument = XmlManager.Instance.Load("complexforms.xml");
+				// Add any Complex Forms the Critter comes with (typically Sprites)
+				XmlDocument objXmlProgramDocument = XmlManager.Instance.Load("complexforms.xml");
 				foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
 				{
 					string strForceValue = "";

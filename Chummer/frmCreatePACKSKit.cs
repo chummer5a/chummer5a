@@ -536,8 +536,9 @@ namespace Chummer
 									objWriter.WriteStartElement("accessory");
 									objWriter.WriteElementString("name", objAccessory.Name);
 									objWriter.WriteElementString("mount", objAccessory.Mount);
+                                    objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
 
-									if (objAccessory.Gear.Count > 0)
+                                    if (objAccessory.Gear.Count > 0)
 										WriteGear(objWriter, objAccessory.Gear);
 
 									// </accessory>
@@ -642,8 +643,9 @@ namespace Chummer
 											objWriter.WriteStartElement("accessory");
 											objWriter.WriteElementString("name", objAccessory.Name);
 											objWriter.WriteElementString("mount", objAccessory.Mount);
-											// </accessory>
-											objWriter.WriteEndElement();
+                                            objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
+                                            // </accessory>
+                                            objWriter.WriteEndElement();
 										}
 									}
 									// </accessories>

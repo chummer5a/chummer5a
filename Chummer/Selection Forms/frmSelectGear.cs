@@ -203,6 +203,8 @@ namespace Chummer
 
 			if (_strSelectedGear != "")
 				lstGear.SelectedValue = _strSelectedGear;
+			else
+				txtSearch.Text = DefaultSearchText;
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -233,7 +235,9 @@ namespace Chummer
 
 			foreach (XmlNode objXmlGear in objXmlGearList)
 			{
-				ListItem objItem = new ListItem();
+                if (objXmlGear["hidden"] != null)
+                    continue;
+                ListItem objItem = new ListItem();
 				objItem.Value = objXmlGear["name"].InnerText;
 				if (objXmlGear["translate"] != null)
 					objItem.Name = objXmlGear["translate"].InnerText;
@@ -359,7 +363,9 @@ namespace Chummer
 			bool blnAddToList;
 			foreach (XmlNode objXmlGear in objXmlGearList)
 			{
-				blnAddToList = true;
+                if (objXmlGear["hidden"] != null)
+                    continue;
+                blnAddToList = true;
 				if (_blnShowArmorCapacityOnly)
 				{
 					if (objXmlGear["armorcapacity"] == null)
@@ -737,6 +743,11 @@ namespace Chummer
 				return _blnBlackMarketDiscount;
 			}
 		}
+
+		/// <summary>
+		/// Default text string to filter by. 
+		/// </summary>
+		public string DefaultSearchText { get; set; }
 		#endregion
 
 		#region Methods
@@ -781,23 +792,26 @@ namespace Chummer
 				else
 					chkInherentProgram.Visible = false;
 
-				if (objXmlGear["category"].InnerText == "Commlinks" || objXmlGear["category"].InnerText == "Cyberdecks" || objXmlGear["category"].InnerText == "Commlink Upgrade")
+				switch (objXmlGear["category"].InnerText)
 				{
-					lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
-				}
-				else if (objXmlGear["category"].InnerText == "Commlink Operating System" || objXmlGear["category"].InnerText == "Commlink Operating System Upgrade")
-				{
-					lblGearDeviceRating.Text = "";
-				}
-				else
-				{
-					lblGearDeviceRating.Text = "";
+					case "Commlinks":
+					case "Cyberdecks":
+					case "Commlink Upgrade":
+						lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
+						break;
+					case "Commlink Operating System":
+					case "Commlink Operating System Upgrade":
+						lblGearDeviceRating.Text = "";
+						break;
+					default:
+						lblGearDeviceRating.Text = "";
+						break;
 				}
 
-				if (objXmlGear["category"].InnerText.EndsWith("Software") || objXmlGear["category"].InnerText.EndsWith("Programs") || objXmlGear["category"].InnerText == "Program Options" || objXmlGear["category"].InnerText.StartsWith("Autosofts") || objXmlGear["category"].InnerText.StartsWith("Skillsoft") || objXmlGear["category"].InnerText == "Program Packages" || objXmlGear["category"].InnerText == "Software Suites")
+				/*if (objXmlGear["category"].InnerText.EndsWith("Software") || objXmlGear["category"].InnerText.EndsWith("Programs") || objXmlGear["category"].InnerText == "Program Options" || objXmlGear["category"].InnerText.StartsWith("Autosofts") || objXmlGear["category"].InnerText.StartsWith("Skillsoft") || objXmlGear["category"].InnerText == "Program Packages" || objXmlGear["category"].InnerText == "Software Suites")
 					chkHacked.Visible = true;
 				else
-					chkHacked.Visible = false;
+					chkHacked.Visible = false;*/
 
 				string strBook = _objCharacter.Options.LanguageBookShort(objXmlGear["source"].InnerText);
 				string strPage = objXmlGear["page"].InnerText;
