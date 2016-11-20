@@ -235,6 +235,38 @@ namespace Chummer.Backend.Equipment
 					{
 						objAccessory.Create(objXmlAccessory, objAccessoryNode, new string[] { "Internal" , "None" }, intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
 					}
+                    // Add any extra Gear that comes with the Weapon Accessory.
+                    if (objXmlWeaponAccessory["gears"] != null && blnCreateChildren)
+                    {
+                        XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                        foreach (XmlNode objXmlAccessoryGear in objXmlWeaponAccessory.SelectNodes("gears/usegear"))
+                        {
+                            int intGearRating = 0;
+                            string strForceValue = "";
+                            if (objXmlAccessoryGear.Attributes["rating"] != null)
+                                intGearRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
+                            if (objXmlAccessoryGear.Attributes["select"] != null)
+                                strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
+
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
+                            Gear objGear = new Gear(_objCharacter);
+
+                            TreeNode objGearNode = new TreeNode();
+                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+
+                            objGear.Create(objXmlGear, _objCharacter, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, true);
+                            objGear.Cost = "0";
+                            objGear.MaxRating = objGear.Rating;
+                            objGear.MinRating = objGear.Rating;
+                            objGear.IncludedInParent = true;
+                            objAccessory.Gear.Add(objGear);
+
+                            objGearNode.ContextMenuStrip = cmsWeaponAccessoryGear;
+                            objAccessoryNode.Nodes.Add(objGearNode);
+                            objAccessoryNode.Expand();
+                        }
+                    }
 
                     objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
@@ -1178,6 +1210,7 @@ namespace Chummer.Backend.Equipment
 					intReturn += objAccessory.Concealability;
 			}
 
+            /* Commented out because there's no reference to this in RAW
 			// Add +4 for each Underbarrel Weapon installed.
 			if (_lstUnderbarrel.Count > 0)
 			{
@@ -1187,6 +1220,7 @@ namespace Chummer.Backend.Equipment
 						intReturn += 4;
 				}
 			}
+            */
 
 			// Factor in the character's Concealability modifiers.
 			ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);

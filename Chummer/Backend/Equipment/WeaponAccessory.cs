@@ -101,7 +101,7 @@ namespace Chummer.Backend.Equipment
 			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
 			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
 
-            // Add any Gear that comes with the Armor.
+            // Add any Gear that comes with the Weapon Accessory.
             if (objXmlAccessory["gears"] != null && blnCreateChildren)
             {
                 XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");

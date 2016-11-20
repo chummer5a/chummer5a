@@ -206,9 +206,17 @@
 				</accessory>
 				<accessory>
 					<name>Weapon Commlink</name>
+					<gears>
+						<usegear rating="4">Ogre Hammer SWS Assault Cannon (Commlink)</usegear>
+					</gears>
 				</accessory>
 				<accessory>
 					<name>Imaging Scope</name>
+					<gears>
+						<usegear>Image Link</usegear>
+						<usegear>Flare Compensation</usegear>
+						<usegear>Low Light</usegear>
+					</gears>
 				</accessory>
 			</accessories>
 			<source>RG</source>
@@ -715,6 +723,9 @@
 			<accessories>
 				<accessory>
 					<name>Imaging Scope</name>
+					<gears>
+						<usegear rating="1">Vision Enhancement</usegear>
+					</gears>
 				</accessory>
 			</accessories>
 			<source>GH3</source>
@@ -852,10 +863,15 @@
 			<accessories>
 				<accessory>
 					<name>Imaging Scope</name>
-			</accessory>
+					<gears>
+						<usegear>Image Link</usegear>
+						<usegear>Flare Compensation</usegear>
+						<usegear>Low Light</usegear>
+					</gears>
+				</accessory>
 				<accessory>
 					<name>Folding Stock</name>
-			</accessory>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>32</page>
@@ -5486,12 +5502,19 @@
 				</accessory>
 				<accessory>
 					<name>Weapon Commlink</name>
+					<gears>
+						<usegear rating="5">Terracotta Arms AM-47 (Commlink)</usegear>
+					</gears>
 				</accessory>
 				<accessory>
 					<name>Smartgun System, Internal</name>
 				</accessory>
 				<accessory>
 					<name>Imaging Scope</name>
+					<gears>
+						<usegear>Image Link</usegear>
+						<usegear>Low Light</usegear>
+					</gears>
 				</accessory>
 				<accessory>
 					<name>Underbarrel Weight</name>
@@ -5971,7 +5994,13 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory><name>Imaging Scope</name></accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+					<gears>
+						<usegear>Low Light</usegear>
+						<usegear rating="2">Vision Enhancement</usegear>
+					</gears>
+				</accessory>
 				<accessory>
 					<name>Extreme Environment Modification</name>
 					<rating>1</rating>
@@ -6035,7 +6064,13 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory><name>Imaging Scope</name></accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+					<gears>
+						<usegear>Image Link</usegear>
+						<usegear rating="1">Vision Enhancement</usegear>
+					</gears>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>26</page>
