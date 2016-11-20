@@ -9199,7 +9199,7 @@
 		<accessory>
 			<id>83902f51-5f87-444f-a3ff-a74ce865e1af</id>
 			<name>Easy Breakdown (Unpowered)</name>
-			<mount />
+			<mount>Side</mount>
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>750</cost>
@@ -9209,7 +9209,7 @@
 		<accessory>
 			<id>f27402fa-2845-4314-a97d-2747b3263e0d</id>
 			<name>Easy Breakdown (Powered)</name>
-			<mount />
+			<mount>Side</mount>
 			<rating>0</rating>
 			<avail>10R</avail>
 			<cost>1250</cost>

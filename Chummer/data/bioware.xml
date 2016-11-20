@@ -2374,6 +2374,9 @@
 			<name>Bilateral Coordination Co-processor</name>
 			<category>Basic</category>
 			<ess>0.2</ess>
+			<bonus>
+				<ambidextrous />
+			</bonus>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>4500</cost>

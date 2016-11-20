@@ -109,6 +109,10 @@ Data Changes:
 - Added the Chemical Gland Modifications subsystem to the Chemical Gland bioware. 
 - Tweaked the behaviour of the Sensitive Skin bioware to be more descriptive. 
 - Fixed the Thickened Digestive Tract Lining bioware to properly reduce lifestyle costs. 
+- Fixed the magical unlock behaviour of the mutaqua, wendigo and nosferatu. 
+- Fixed the ability for metsapients and shapeshifters to take the Technomancer quality incorrectly.
+- Fixed the Otaku to Technomancer quality not having a Technomancer prerequisite. 
+- Fixed the mount location for the Easy Breakdown weapon mods. 
 
 Build 187
 
