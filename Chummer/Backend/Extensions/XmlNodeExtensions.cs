@@ -58,11 +58,11 @@ namespace Chummer.Backend
                             strOperationType = "==";
                             if (objXmlOperationChildNode.Attributes["operation"] != null)
                                 strOperationType = objXmlOperationChildNode.Attributes["operation"].InnerText;
+                            // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
                             switch (strOperationType)
                             {
                                 case "doesnotequal":
                                 case "notequals":
-                                case "<>":
                                 case "!=":
                                     boolInvert = !boolInvert;
                                     goto case "==";
