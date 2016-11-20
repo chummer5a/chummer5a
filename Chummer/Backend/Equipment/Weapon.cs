@@ -1595,7 +1595,7 @@ namespace Chummer.Backend.Equipment
 			string strReturn = "";
 			int intAmmoBonus = 0;
 
-			int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name == "Extended Clip" ? 1 : 0) * x.Rating) : 0;
+			int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name.Contains("Extended Clip") ? 1 : 0) * x.Rating) : 0;
 
 			foreach (WeaponAccessory objAccessory in _lstAccessories)
 			{
