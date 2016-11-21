@@ -3776,13 +3776,13 @@
 			<accessories>
 				<accessory>
 					<name>Slide Mount</name>
-			</accessory>
+				</accessory>
 				<accessory>
 					<name>Slide Mount</name>
-			</accessory>
+				</accessory>
 				<accessory>
 					<name>Smartgun System, Internal</name>
-			</accessory>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>42</page>
@@ -5258,7 +5258,7 @@
 				<accessory><name>Smartgun System, Internal</name></accessory>
 				<accessory>
 					<name>Sound Suppressor</name>
-			</accessory>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>40</page>
@@ -8379,6 +8379,11 @@
 			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>750</cost>
+			<required>
+				<weapondetails>
+					<name>Ares Light Fire 70</name>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>425</page>
 		</accessory>
@@ -8388,7 +8393,12 @@
 			<mount>Barrel</mount>
 			<rating>0</rating>
 			<avail>6F</avail>
-			<cost>750</cost>
+			<cost>0</cost>
+			<required>
+				<weapondetails>
+					<name>Ares Light Fire 75</name>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>425</page>
 		</accessory>
@@ -8399,6 +8409,20 @@
 			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>600</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<category>Grenade Launchers</category>
+						<spec>Grenade Launchers</spec>
+						<spec2>Grenade Launchers</spec2>
+						<ammocategory>Grenade Launchers</ammocategory>
+						<category>Missile Launchers</category>
+						<spec>Missile Launchers</spec>
+						<spec2>Missile Launchers</spec2>
+						<ammocategory>Missile Launchers</ammocategory>
+					</OR>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>431</page>
 		</accessory>
@@ -8422,6 +8446,11 @@
 			<conceal>-1</conceal>
 			<avail>2</avail>
 			<cost>150</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="lessthanequals">0</conceal>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>431</page>
 		</accessory>
@@ -8478,6 +8507,11 @@
 			<conceal>-1</conceal>
 			<avail>4R</avail>
 			<cost>350</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="lessthanequals">-2</conceal>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -8526,6 +8560,11 @@
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>175</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="lessthanequals">0</conceal>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -8549,6 +8588,20 @@
 			<rating>0</rating>
 			<avail>9F</avail>
 			<cost>500</cost>
+			<forbidden>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(cy)</ammo>
+						<spec>Revolvers</spec>
+						<spec2>Revolvers</spec2>
+						<category>Shotguns</category>
+						<spec>Shotguns</spec>
+						<spec2>Shotguns</spec2>
+						<ammocategory>Shotguns</ammocategory>
+						<name>PSK-3 Collapsible Heavy Pistol</name>
+					</OR>
+				</weapondetails>
+			</forbidden>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -8559,6 +8612,20 @@
 			<rating>0</rating>
 			<avail>9F</avail>
 			<cost>500</cost>
+			<forbidden>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(cy)</ammo>
+						<spec>Revolvers</spec>
+						<spec2>Revolvers</spec2>
+						<category>Shotguns</category>
+						<spec>Shotguns</spec>
+						<spec2>Shotguns</spec2>
+						<ammocategory>Shotguns</ammocategory>
+						<name>PSK-3 Collapsible Heavy Pistol</name>
+					</OR>
+				</weapondetails>
+			</forbidden>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -8576,6 +8643,11 @@
 			<id>d57d2c64-1f61-4f5f-a465-8ce0dfacec6a</id>
 			<name>Smartgun System, Internal</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Ceramic/Plasteel Components</accessory>
+				</oneof>
+			</forbidden>
 			<accuracy>2</accuracy>
 			<rating>0</rating>
 			<avail>+2R</avail>
@@ -8591,6 +8663,11 @@
 			<id>b3562903-b1c6-4300-9f6e-25e0102aa69b</id>
 			<name>Smartgun System, External</name>
 			<mount>Top/Under</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Ceramic/Plasteel Components</accessory>
+				</oneof>
+			</forbidden>
 			<accuracy>2</accuracy>
 			<rating>0</rating>
 			<avail>4R</avail>
@@ -8610,6 +8687,14 @@
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>5</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(c)</ammo>
+						<ammo operation="contains">(d)</ammo>
+					</OR>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>
@@ -8621,6 +8706,11 @@
 			<rating>0</rating>
 			<avail>2</avail>
 			<cost>25</cost>
+			<required>
+				<weapondetails>
+					<ammo operation="contains">(cy)</ammo>
+				</weapondetails>
+			</required>
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>
@@ -8643,6 +8733,14 @@
 			<id>06e128ee-00fd-4992-8bf5-4be35815fd11</id>
 			<name>Advanced Safety System, Basic</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Advanced Safety System, Immobilization</accessory>
+					<accessory>Advanced Safety System, Self Destruct</accessory>
+					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
+					<accessory>Advanced Safety System, Electro Shocker</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>600</cost>
@@ -8656,6 +8754,11 @@
 			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>700</cost>
+			<required>
+				<weapondetails>
+					<name>PSK-3 Collapsible Heavy Pistol</name>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>32</page>
 		</accessory>
@@ -8667,8 +8770,13 @@
 			<conceal>-6</conceal>
 			<avail>0</avail>
 			<cost>0</cost>
+			<required>
+				<weapondetails>
+					<name>PPSK-4 Collapsible Machine Pistol</name>
+				</weapondetails>
+			</required>
 			<source>RG</source>
-			<page>32</page>
+			<page>34</page>
 		</accessory>
 		<accessory>
 			<id>b895c431-3fb0-49b7-a3fc-ddb4e54b69ee</id>
@@ -8677,6 +8785,11 @@
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>400</cost>
+			<required>
+				<weapondetails>
+					<name>Ares Executioner</name>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>35</page>
 		</accessory>
@@ -8687,6 +8800,11 @@
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>100</cost>
+			<required>
+				<weapondetails>
+					<name>GE Vindicator Mini-Gun</name>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>42</page>
 		</accessory>
@@ -8694,6 +8812,14 @@
 			<id>fad8757c-622f-41ce-8412-8bbb6fbf6445</id>
 			<name>Advanced Safety System, Immobilization</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Advanced Safety System, Basic</accessory>
+					<accessory>Advanced Safety System, Self Destruct</accessory>
+					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
+					<accessory>Advanced Safety System, Electro Shocker</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>700</cost>
@@ -8704,6 +8830,14 @@
 			<id>c9739e50-bbaf-47e7-a19b-c3d7fd2b95af</id>
 			<name>Advanced Safety System, Self Destruct</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Advanced Safety System, Immobilization</accessory>
+					<accessory>Advanced Safety System, Basic</accessory>
+					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
+					<accessory>Advanced Safety System, Electro Shocker</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>800</cost>
@@ -8714,6 +8848,14 @@
 			<id>25b695f8-ed5a-4b75-baf0-164dcde74f2d</id>
 			<name>Advanced Safety System, Explosive Self Destruct</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Advanced Safety System, Immobilization</accessory>
+					<accessory>Advanced Safety System, Self Destruct</accessory>
+					<accessory>Advanced Safety System, Basic</accessory>
+					<accessory>Advanced Safety System, Electro Shocker</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>11F</avail>
 			<cost>1000</cost>
@@ -8724,6 +8866,14 @@
 			<id>b64d5256-0c24-4842-b05d-25ee735c9b6a</id>
 			<name>Advanced Safety System, Electro Shocker</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Advanced Safety System, Immobilization</accessory>
+					<accessory>Advanced Safety System, Self Destruct</accessory>
+					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
+					<accessory>Advanced Safety System, Basic</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>950</cost>
@@ -8737,6 +8887,11 @@
 			<rating>0</rating>
 			<avail>4R</avail>
 			<cost>50</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>50</page>
 		</accessory>
@@ -8826,6 +8981,15 @@
 			<conceal>1</conceal>
 			<avail>2</avail>
 			<cost>100</cost>
+			<forbidden>
+				<weapondetails>
+					<OR>
+						<useskill>Pistols</useskill>
+						<category>Machine Pistols</category>
+						<conceal operation="lessthanequals">0</conceal>
+					</OR>
+				</weapondetails>
+			</forbidden>
 			<source>RG</source>
 			<page>52</page>
 		</accessory>
@@ -8836,16 +9000,30 @@
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>100</cost>
+			<forbidden>
+				<weapondetails>
+					<accessorymounts>
+						<mount>Stock</mount>
+					</accessorymounts>
+				</weapondetails>
+			</forbidden>
 			<source>RG</source>
 			<page>52</page>
 		</accessory>
 		<accessory>
 			<id>bf18c385-77bf-4f45-a51c-c17fd702526f</id>
-			<name>Gecko Grip (for Weapon with Stock Slot)</name>
+			<name>Gecko Grip</name>
 			<mount>Stock</mount>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>100</cost>
+			<required>
+				<weapondetails>
+					<accessorymounts>
+						<mount>Stock</mount>
+					</accessorymounts>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>52</page>
 		</accessory>
@@ -8931,6 +9109,11 @@
 			<id>fbf1ac2e-b131-499c-809e-c2c93c5ec286</id>
 			<name>Safe Target System, Additional set of RFID or GPS data (10 data sets)</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Safe Target System, Base</accessory>
+				</oneof>
+			</required>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>25</cost>
@@ -8941,6 +9124,11 @@
 			<id>9147a5ee-fba6-4915-9123-709df5835998</id>
 			<name>Safe Target System, Image Recognition Capabilities</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Safe Target System, Base</accessory>
+				</oneof>
+			</required>
 			<rating>0</rating>
 			<avail>8</avail>
 			<cost>300</cost>
@@ -8951,6 +9139,11 @@
 			<id>69e7431a-cf62-4712-8e71-728297385d20</id>
 			<name>Safe Target System, Extra image profiles (10 profiles)</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Safe Target System, Base</accessory>
+				</oneof>
+			</required>
 			<rating>0</rating>
 			<avail>8</avail>
 			<cost>25</cost>
@@ -8994,6 +9187,11 @@
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>350</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -9004,6 +9202,11 @@
 			<rating>0</rating>
 			<avail>10R</avail>
 			<cost>500</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -9014,6 +9217,11 @@
 			<rating>0</rating>
 			<avail>2</avail>
 			<cost>200</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -9024,6 +9232,11 @@
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>600</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -9034,6 +9247,11 @@
 			<rating>0</rating>
 			<avail>10F</avail>
 			<cost>3500</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -9105,6 +9323,14 @@
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>250</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(cy)</ammo>
+						<ammo operation="contains">(d)</ammo>
+					</OR>
+				</weapondetails>
+			</required>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -9116,6 +9342,15 @@
 			<rating>0</rating>
 			<avail>2F</avail>
 			<cost>20</cost>
+			<ammobonus>-2</ammobonus>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(c)</ammo>
+						<ammo operation="contains">(d)</ammo>
+					</OR>
+				</weapondetails>
+			</required>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -9128,6 +9363,43 @@
 			<conceal>Rating</conceal>
 			<avail>6R</avail>
 			<cost>35</cost>
+			<required>
+				<weapondetails>
+					<ammo operation="contains">(c)</ammo>
+				</weapondetails>
+			</required>
+			<forbidden>
+				<weapondetails>
+					<OR>
+						<name>Ares Crusader II</name>
+						<name>Ceska Black Scorpion</name>
+						<name>PPSK-4 Collapsible Machine Pistol</name>
+						<name>Steyr TMP</name>
+					</OR>
+				</weapondetails>
+			</forbidden>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5f672085-49f9-4fed-9a1f-4bebfea82e8d</id>
+			<name>Extended Clip (Large Ammo Machine Pistols)</name>
+			<ammoslots>1</ammoslots>
+			<mount />
+			<rating>1</rating>
+			<conceal>2</conceal>
+			<avail>6R</avail>
+			<cost>35</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<name>Ares Crusader II</name>
+						<name>Ceska Black Scorpion</name>
+						<name>PPSK-4 Collapsible Machine Pistol</name>
+						<name>Steyr TMP</name>
+					</OR>
+				</weapondetails>
+			</required>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -9135,6 +9407,14 @@
 			<id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
 			<name>Ceramic/Plasteel Components</name>
 			<mount />
+			<forbidden>
+				<oneof>
+					<accessory>Smartgun System, Internal</accessory>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Chameleon Coating (Pistol)</accessory>
+					<accessory>Chameleon Coating (Rifle)</accessory>
+				</oneof>
+			</forbidden>
 			<rating>6</rating>
 			<avail>12 + Rating</avail>
 			<cost>Weapon Cost * Rating</cost>
@@ -9145,6 +9425,16 @@
 			<id>5cc39a55-3973-4368-81ee-c7a5c0432323</id>
 			<name>Chameleon Coating (Pistol)</name>
 			<mount>Side</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Ceramic/Plasteel Components</accessory>
+				</oneof>
+			</forbidden>
+			<required>
+				<weapondetails>
+					<conceal operation="lessthanequals">0</conceal>
+				</weapondetails>
+			</required>
 			<rating>0</rating>
 			<conceal>-2</conceal>
 			<avail>10R</avail>
@@ -9156,6 +9446,16 @@
 			<id>98c9ed33-2636-40bb-a455-334e8fb8e65f</id>
 			<name>Chameleon Coating (Rifle)</name>
 			<mount>Side</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Ceramic/Plasteel Components</accessory>
+				</oneof>
+			</forbidden>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>10R</avail>
@@ -9235,6 +9535,12 @@
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>1000</cost>
+			<required>
+				<OR>
+					<category>Assault Rifles</category>
+					<useskill>Longarms</useskill>
+				</OR>
+			</required>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -9256,6 +9562,13 @@
 			<rating>0</rating>
 			<avail>5R</avail>
 			<cost>600</cost>
+			<required>
+				<OR>
+					<category>Assault Rifles</category>
+					<useskill>Longarms</useskill>
+					<useskill>Heavy Weapons</useskill>
+				</OR>
+			</required>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -9268,6 +9581,12 @@
 			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>200</cost>
+			<required>
+				<weapondetails>
+					<type>Melee</type>
+					<damage operation="contains">S(e)</damage>
+				</weapondetails>
+			</required>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -9298,8 +9617,18 @@
 			<forbidden>
 				<oneof>
 					<accessory>Stock Removal</accessory>
+					<accessory>Sawed Off/Shortbarrel and Stock Removal</accessory>
 				</oneof>
 			</forbidden>
+			<required>
+				<weapondetails>
+					<OR>
+						<category>Heavy Pistols</category>
+						<category>Assault Rifles</category>
+						<useskill>Longarms</useskill>
+					</OR>
+				</weapondetails>
+			</required>
 			<damage>-1</damage>
 			<rating>0</rating>
 			<conceal>-1</conceal>
@@ -9316,8 +9645,14 @@
 			<forbidden>
 				<oneof>
 					<accessory>Sawed Off/Shortbarrel</accessory>
+					<accessory>Sawed Off/Shortbarrel and Stock Removal</accessory>
 				</oneof>
 			</forbidden>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<conceal>-1</conceal>
 			<avail>2</avail>
 			<cost>20</cost>
@@ -9334,6 +9669,16 @@
 					<accessory>Sawed Off/Shortbarrel</accessory>
 				</oneof>
 			</forbidden>
+			<required>
+				<weapondetails>
+					<OR>
+						<category>Heavy Pistols</category>
+						<category>Assault Rifles</category>
+						<useskill>Longarms</useskill>
+					</OR>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
 			<extramount>Barrel</extramount>
 			<rating>0</rating>
 			<accuracy>-1</accuracy>

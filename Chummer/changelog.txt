@@ -34,6 +34,8 @@ Application Changes:
 - Fixed the issue where Edge was not properly re-adjusted when changing metatypes during character creation.
 - Fixed a crash issue where changing metatypes or the magic priority mid-creation would not take essence loss into account when setting new values for magic or resonance. Fixes #1229.
 - Fixed the filtering behaviour of cyberware subsystems to properly filter down to those subsystems. This shouldn't impact existing cyberware in any noticeable way, but this will allow adding subsystems to bioware. 
+- Weapon accessories now only need to contain "Expanded Clip" in their name for the application to recognize the accessory as an expanded clip.
+- Added a prototypical, custom, XML node filtering system that checks raw XML. Currently, this is only used for weapon accessories to hide ineligible ones from the selection menu, but it should be flexible enough to support anything.
 
 Data Changes: 
 
@@ -113,6 +115,13 @@ Data Changes:
 - Fixed the ability for metsapients and shapeshifters to take the Technomancer quality incorrectly.
 - Fixed the Otaku to Technomancer quality not having a Technomancer prerequisite. 
 - Fixed the mount location for the Easy Breakdown weapon mods. 
+- Corrected Explosive Magazine not lowering ammo count by 2.
+- Added an entry for the Rating 2-only Expanded Clip for Machine Pistols that are considered to have an R1 Expanded Clip by default.
+- Added custom filters to the following accessories to make sure they only show up for weapons that are eligible: Ares Light Fire 70 Silencer, Ares Light Fire 75 Silencer, Airburst Link, Concealable Holster, Hidden Gun Arm Slide, Quick-Draw Holster, Silencer, Sound Suppressor, Spare Clip, Speed Loader, PSK-3 Collapsible Heavy Pistol Silencer, Collapsed Frame, Ares Executioner Extra Case, Vindicator 200-Round Belt, Bayonet, Foregrip, Gecko Grip, most Underbarrel Weapon accessories, Ammo Skip, Explosive Magazine, Extended Clip, Chameleon Coating, Overclocked, Sawed Off/Shortbarrel, and Stock Removal. 
+- Made the Ceramic/Plasteel Components modification mutually exclusive with the Chameleon Coating modifications and both Smartgun accessories.
+- Made the Advanced Safety System accessories mutually exclusive with one another.
+- Made the Safe Target System addons require the Safe Target System, Base accessory.
+- Made the Sawed Off/Shortbarrel and Stock Removal accessory entry mutually exclusive with both the Sawed Off/Shortbarrel accessory and the Stock Removal accessory.
 
 Build 187
 
@@ -5254,3 +5263,4 @@ Build 32
 - added support for Armor Modifications
 - added support for Cyberweapons
 - added support for Weapon Accessories
+

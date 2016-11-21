@@ -34,6 +34,7 @@ namespace Chummer
 		private string _strAllowedMounts = "";
 		private int _intWeaponCost = 0;
 		private int _intRating = 0;
+        private string _strCurrentWeaponName = "";
 		private bool _blnAddAgain = false;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -67,8 +68,10 @@ namespace Chummer
 			// Load the Weapon information.
 			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-			// Populate the Accessory list.
-			string[] strAllowed = _strAllowedMounts.Split('/');
+            XmlNode objXmlWeaponNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strCurrentWeaponName + "\"]");
+
+            // Populate the Accessory list.
+            string[] strAllowed = _strAllowedMounts.Split('/');
 			string strMount = "";
             foreach (string strAllowedMount in strAllowed)
 			{
@@ -98,7 +101,41 @@ namespace Chummer
 						}
 					}
 
-					if (objXmlAccessory["required"]?["oneof"] != null)
+                    if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["forbidden"]["weapondetails"], false))
+                        {
+                            goto NextItem;
+                        }
+                    }
+                    if (objXmlAccessory["required"]?["weapondetails"] != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (!Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["required"]["weapondetails"], false))
+                        {
+                            goto NextItem;
+                        }
+                    }
+
+                    if (objXmlAccessory["forbidden"]?["oneof"] != null)
+                    {
+                        XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
+                        //Add to set for O(N log M) runtime instead of O(N * M)
+
+                        HashSet<String> objForbiddenAccessory = new HashSet<String>();
+                        foreach (XmlNode node in objXmlForbiddenList)
+                        {
+                            objForbiddenAccessory.Add(node.InnerText);
+                        }
+
+                        foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                        {
+                            goto NextItem;
+                        }
+                    }
+
+                    if (objXmlAccessory["required"]?["oneof"] != null)
 					{
 						boolCanAdd = false;
 						XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
@@ -113,23 +150,7 @@ namespace Chummer
 						foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
 						{
 							boolCanAdd = true;
-						}
-					}
-
-					if (objXmlAccessory["forbidden"]?["oneof"] != null)
-					{
-						XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
-						//Add to set for O(N log M) runtime instead of O(N * M)
-
-						HashSet<String> objForbiddenAccessory = new HashSet<String>();
-						foreach (XmlNode node in objXmlForbiddenList)
-						{
-							objForbiddenAccessory.Add(node.InnerText);
-						}
-
-						foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
-						{
-							boolCanAdd = false;
+                            break;
 						}
 					}
 
@@ -142,6 +163,7 @@ namespace Chummer
 					else
 						objItem.Name = objXmlAccessory["name"].InnerText;
 					lstAccessories.Add(objItem);
+                NextItem:;
 				}
 
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -441,10 +463,21 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Whether or not the item should be added for free.
+        /// <summary>
+		/// GUID of the current weapon for which the accessory is being selected
 		/// </summary>
-		public bool FreeCost
+		public string CurrentWeaponName
+        {
+            set
+            {
+                _strCurrentWeaponName = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the item should be added for free.
+        /// </summary>
+        public bool FreeCost
 		{
 			get
 			{
@@ -506,13 +539,13 @@ namespace Chummer
 				_lstAccessories = value;
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Accept the selected item and close the form.
-		/// </summary>
-		private void AcceptForm()
+        #region Methods
+        /// <summary>
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
 		{
 			_strSelectedAccessory = lstAccessory.SelectedValue.ToString();
 			_intRating = Convert.ToInt32(nudRating.Value.ToString());
