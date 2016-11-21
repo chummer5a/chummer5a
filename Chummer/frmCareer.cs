@@ -219,16 +219,10 @@ namespace Chummer
 					objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
 				objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-				if (objMetatypeNode["translate"] != null)
-					strMetatype = objMetatypeNode["translate"].InnerText;
-				else
-					strMetatype = _objCharacter.Metatype;
+				strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
 
 				strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-				if (objMetatypeNode["altpage"] != null)
-					strPage = objMetatypeNode["altpage"].InnerText;
-				else
-					strPage = objMetatypeNode["page"].InnerText;
+				strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
 				if (_objCharacter.Metavariant != "")
 				{
@@ -240,10 +234,7 @@ namespace Chummer
 						strMetatype += " (" + _objCharacter.Metavariant + ")";
 
 					strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-					if (objMetatypeNode["altpage"] != null)
-						strPage = objMetatypeNode["altpage"].InnerText;
-					else
-						strPage = objMetatypeNode["page"].InnerText;
+					strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 				}
 			}
 			lblMetatype.Text = strMetatype;
