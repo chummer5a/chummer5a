@@ -378,7 +378,8 @@ namespace Chummer
 			lblVehiclePilot.Text = objXmlVehicle["pilot"].InnerText;
 			lblVehicleBody.Text = objXmlVehicle["body"].InnerText;
 			lblVehicleArmor.Text = objXmlVehicle["armor"].InnerText;
-			lblVehicleSensor.Text = objXmlVehicle["sensor"].InnerText;
+            lblVehicleSeats.Text = objXmlVehicle["seats"].InnerText;
+            lblVehicleSensor.Text = objXmlVehicle["sensor"].InnerText;
 
 			if (chkUsedVehicle.Checked)
 			{
@@ -484,15 +485,18 @@ namespace Chummer
 
 			intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehiclePilotLabel.Width);
 			intWidth = Math.Max(intWidth, lblVehicleArmorLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehicleSeatsLabel.Width);
 
-			lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 60;
+            lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 60;
 			lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
 			lblVehiclePilotLabel.Left = lblVehicleHandling.Left + 60;
 			lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
 			lblVehicleArmorLabel.Left = lblVehicleHandling.Left + 60;
 			lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
+            lblVehicleSeatsLabel.Left = lblVehicleHandling.Left + 60;
+            lblVehicleSeats.Left = lblVehicleSeatsLabel.Left + intWidth + 6;
 
-			lblUsedVehicleDiscountLabel.Left = chkUsedVehicle.Left + chkUsedVehicle.Width + 6;
+            lblUsedVehicleDiscountLabel.Left = chkUsedVehicle.Left + chkUsedVehicle.Width + 6;
 			nudUsedVehicleDiscount.Left = lblUsedVehicleDiscountLabel.Left + lblUsedVehicleDiscountLabel.Width + 6;
 			lblUsedVehicleDiscountPercentLabel.Left = nudUsedVehicleDiscount.Left + nudUsedVehicleDiscount.Width;
 

@@ -530,7 +530,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Markup percentage.
+		/// Currently Installed Accessories
 		/// </summary>
 		public List<WeaponAccessory> InstalledAccessories
 		{

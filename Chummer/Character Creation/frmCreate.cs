@@ -7957,8 +7957,9 @@ namespace Chummer
             frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter);
 			// Set the Vehicle properties for the window.
 			frmPickVehicleMod.SelectedVehicle = objSelectedVehicle;
+            frmPickVehicleMod.InstalledMods = objSelectedVehicle.Mods;
 
-			frmPickVehicleMod.ShowDialog(this);
+            frmPickVehicleMod.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
@@ -17692,7 +17693,7 @@ namespace Chummer
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
-	            lblVehicleSeats.Text = objVehicle.Seats.ToString();
+	            lblVehicleSeats.Text = objVehicle.TotalSeats.ToString();
 
 				// Update the vehicle mod slots
 				if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
