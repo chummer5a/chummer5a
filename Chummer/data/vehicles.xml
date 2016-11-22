@@ -5876,6 +5876,15 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>0</cost>
+			<required>
+				<vehicledetails>
+					<OR>
+						<name>Daihatsu-Caterpillar Horseman</name>
+						<name>Echo Motors Metaway</name>
+						<name>Ruhrmetal Wolf II</name>
+					</OR>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>?</page>
 		</mod>
@@ -5887,6 +5896,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>0</cost>
+			<required>
+				<vehicledetails>
+					<name>Mack Hellhound</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>?</page>
 		</mod>
@@ -5898,6 +5912,15 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>0</cost>
+			<required>
+				<vehicledetails>
+					<OR>
+						<name>Ares-Segway Terrier</name>
+						<name>Horizon-Doble Revolution</name>
+						<name>Entertainment Systems Cyclops</name>
+					</OR>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>?</page>
 		</mod>
@@ -5909,6 +5932,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>0</cost>
+			<required>
+				<vehicledetails>
+					<name>Horizon-Doble Revolution</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>?</page>
 		</mod>
@@ -5920,6 +5948,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>0</cost>
+			<required>
+				<vehicledetails>
+					<name operation="contains">Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone</name>
+				</vehicledetails>
+			</required>
 			<source>BB</source>
 			<page>23</page>
 		</mod>
@@ -7098,6 +7131,11 @@
 			<slots>0</slots>
 			<avail>8R</avail>
 			<cost>400</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7111,6 +7149,11 @@
 			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Grenades,Blades,Clubs</weaponmountcategories>
 			<avail>4R</avail>
 			<cost>800</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7123,6 +7166,11 @@
 			<slots>1</slots>
 			<avail>4R</avail>
 			<cost>Body * 150</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7136,6 +7184,11 @@
 			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponmountcategories>
 			<avail>8R</avail>
 			<cost>1600</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7149,6 +7202,11 @@
 			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponmountcategories>
 			<avail>10F</avail>
 			<cost>2400</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7162,6 +7220,11 @@
 			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Sporting Rifles</weaponmountcategories>
 			<avail>12F</avail>
 			<cost>3200</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7175,6 +7238,11 @@
 			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
 			<avail>16F</avail>
 			<cost>4000</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7187,6 +7255,11 @@
 			<slots>6</slots>
 			<avail>20F</avail>
 			<cost>4800</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7199,6 +7272,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>25</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7211,6 +7289,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>Rating * 100</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>124</page>
 		</mod>
@@ -7223,6 +7306,11 @@
 			<slots>0</slots>
 			<avail>FixedValues(2,4,8,12R)</avail>
 			<cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000,Body * Body * 5000)</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7235,6 +7323,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>Body * Body * 100</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7247,6 +7340,11 @@
 			<slots>2</slots>
 			<avail>0</avail>
 			<cost>Body * Body * 1000</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7259,6 +7357,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>Body * 100</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7271,6 +7374,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>Variable(10-10000)</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7289,6 +7397,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>7500</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7307,6 +7420,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>10000</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7325,6 +7443,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>1500</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7343,6 +7466,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>7500</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7361,6 +7489,11 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>10000</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -7379,6 +7512,11 @@
 				<speed>0</speed>
 				<offroadspeed>0</offroadspeed>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>126</page>
 		</mod>
@@ -7391,6 +7529,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>5</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>126</page>
 		</mod>
@@ -7403,6 +7546,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>50</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>126</page>
 		</mod>
@@ -7415,6 +7563,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>Body * 300</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>126</page>
 		</mod>
@@ -7427,6 +7580,11 @@
 			<slots>0</slots>
 			<avail>0</avail>
 			<cost>Body * 75</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>126</page>
 		</mod>
@@ -7442,6 +7600,11 @@
 			<bonus>
 				<pilot>Rating</pilot>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>126</page>
 		</mod>
@@ -7470,6 +7633,11 @@
 				<handling>Rating</handling>
 				<offroadhandling>Rating</offroadhandling>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7487,6 +7655,11 @@
 				<speed>Rating</speed>
 				<offroadspeed>Rating</offroadspeed>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7504,6 +7677,11 @@
 				<accel>Rating</accel>
 				<offroadaccel>Rating</offroadaccel>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7519,6 +7697,11 @@
 			<bonus>
 				<body>-Rating</body>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7535,6 +7718,11 @@
 			<bonus>
 				<armor>Rating</armor>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7551,6 +7739,11 @@
 			<bonus>
 				<armor>Rating</armor>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7567,6 +7760,11 @@
 			<bonus>
 				<armor>Rating</armor>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7583,6 +7781,11 @@
 			<bonus>
 				<sensor>Rating</sensor>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7599,6 +7802,11 @@
 			<bonus>
 				<sensor>Rating</sensor>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>123</page>
 		</mod>
@@ -7629,6 +7837,11 @@
 				<handling>-1</handling>
 				<seats>+1</seats>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<name>Daihatsu-Caterpillar Horseman</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>42</page>
 		</mod>
@@ -7647,6 +7860,11 @@
 				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<name>Daihatsu-Caterpillar Horseman</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>42</page>
 		</mod>
@@ -7665,6 +7883,11 @@
 				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<name>Daihatsu-Caterpillar Horseman</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>42</page>
 		</mod>
@@ -7683,6 +7906,11 @@
 				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<name>Daihatsu-Caterpillar Horseman</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>42</page>
 		</mod>
@@ -7703,6 +7931,11 @@
 				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
+			<required>
+				<vehicledetails>
+					<name>Daihatsu-Caterpillar Horseman</name>
+				</vehicledetails>
+			</required>
 			<source>R5</source>
 			<page>42</page>
 		</mod>

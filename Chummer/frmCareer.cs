@@ -9032,8 +9032,9 @@ namespace Chummer
 			frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, true);
 			// Pass the selected vehicle on to the form.
 			frmPickVehicleMod.SelectedVehicle = objSelectedVehicle;
+            frmPickVehicleMod.InstalledMods = objSelectedVehicle.Mods;
 
-			frmPickVehicleMod.ShowDialog(this);
+            frmPickVehicleMod.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
 			if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)

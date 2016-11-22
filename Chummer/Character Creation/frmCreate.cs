@@ -7957,8 +7957,9 @@ namespace Chummer
             frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter);
 			// Set the Vehicle properties for the window.
 			frmPickVehicleMod.SelectedVehicle = objSelectedVehicle;
+            frmPickVehicleMod.InstalledMods = objSelectedVehicle.Mods;
 
-			frmPickVehicleMod.ShowDialog(this);
+            frmPickVehicleMod.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
