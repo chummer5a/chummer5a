@@ -1615,7 +1615,6 @@ namespace Chummer.Backend.Equipment
                 int intBaseOffroadSpeed = OffroadSpeed;
                 int intTotalArmor = 0;
 				int intPenalty = 0;
-                bool boolCheckOffroad = OffroadSpeed > 0;
 
                 // First check for mods that overwrite the speed value or add to armor
                 foreach (VehicleMod objMod in _lstVehicleMods)
@@ -1630,7 +1629,7 @@ namespace Chummer.Backend.Equipment
 								intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString())));
 							}
 						}
-                        if (boolCheckOffroad && objMod.Bonus.InnerXml.Contains("<offroadspeed>"))
+                        if (objMod.Bonus.InnerXml.Contains("<offroadspeed>"))
                         {
                             chrFirstCharacter = objMod.Bonus["offroadspeed"].InnerText[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
@@ -1667,7 +1666,7 @@ namespace Chummer.Backend.Equipment
                                 intTotalBonusSpeed += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.Instance.CultureInfo);
                             }
                         }
-                        if (boolCheckOffroad && objMod.Bonus.InnerXml.Contains("<offroadspeed>"))
+                        if (objMod.Bonus.InnerXml.Contains("<offroadspeed>"))
                         {
                             chrFirstCharacter = objMod.Bonus["offroadspeed"].InnerText[0];
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
@@ -1690,7 +1689,7 @@ namespace Chummer.Backend.Equipment
 					intPenalty = (int) Math.Floor(dblResult);
 				}
 
-                if (boolCheckOffroad)
+                if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed != intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
                 {
                     return ((intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString() + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString());
                 }
@@ -1713,7 +1712,6 @@ namespace Chummer.Backend.Equipment
                 int intBaseOffroadAccel = OffroadAccel;
                 int intTotalArmor = 0;
                 int intPenalty = 0;
-                bool boolCheckOffroad = OffroadAccel > 0;
 
                 // First check for mods that overwrite the accel value or add to armor
                 foreach (VehicleMod objMod in _lstVehicleMods)
@@ -1728,7 +1726,7 @@ namespace Chummer.Backend.Equipment
                                 intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (boolCheckOffroad && objMod.Bonus.InnerXml.Contains("<offroadaccel>"))
+                        if (objMod.Bonus.InnerXml.Contains("<offroadaccel>"))
                         {
                             chrFirstCharacter = objMod.Bonus["offroadaccel"].InnerText[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
@@ -1765,7 +1763,7 @@ namespace Chummer.Backend.Equipment
                                 intTotalBonusAccel += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.Instance.CultureInfo);
                             }
                         }
-                        if (boolCheckOffroad && objMod.Bonus.InnerXml.Contains("<offroadaccel>"))
+                        if (objMod.Bonus.InnerXml.Contains("<offroadaccel>"))
                         {
                             chrFirstCharacter = objMod.Bonus["offroadspeed"].InnerText[0];
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
@@ -1788,7 +1786,7 @@ namespace Chummer.Backend.Equipment
 					intPenalty = (int)Math.Floor(dblResult);
 				}
 
-                if (boolCheckOffroad)
+                if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel != intBaseOffroadAccel + intTotalBonusOffroadAccel)
                 {
                     return ((intTotalAccel + intTotalBonusAccel - intPenalty).ToString() + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString());
                 }
@@ -1843,7 +1841,6 @@ namespace Chummer.Backend.Equipment
                 int intBaseOffroadHandling = OffroadHandling;
                 int intPenalty = 0;
                 int intTotalArmor = 0;
-                bool boolCheckOffroad = OffroadHandling > 0;
 
                 // First check for mods that overwrite the handling value or add to armor
                 foreach (VehicleMod objMod in _lstVehicleMods)
@@ -1858,7 +1855,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (boolCheckOffroad && objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
+                        if (objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
                         {
                             chrFirstCharacter = objMod.Bonus["offroadhandling"].InnerText[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
@@ -1895,7 +1892,7 @@ namespace Chummer.Backend.Equipment
                                 intTotalBonusHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.Instance.CultureInfo);
                             }
                         }
-                        if (boolCheckOffroad && objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
+                        if (objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
                         {
                             chrFirstCharacter = objMod.Bonus["offroadhandling"].InnerText[0];
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
@@ -1918,7 +1915,7 @@ namespace Chummer.Backend.Equipment
                     intPenalty = (int)Math.Floor(dblResult);
                 }
 
-                if (boolCheckOffroad)
+                if (Handling != OffroadHandling || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
                 {
                     return ((intBaseHandling + intTotalBonusHandling - intPenalty).ToString() + '/' + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString());
                 }
