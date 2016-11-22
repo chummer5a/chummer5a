@@ -36,6 +36,9 @@ Application Changes:
 - Fixed the filtering behaviour of cyberware subsystems to properly filter down to those subsystems. This shouldn't impact existing cyberware in any noticeable way, but this will allow adding subsystems to bioware. 
 - Weapon accessories now only need to contain "Expanded Clip" in their name for the application to recognize the accessory as an expanded clip.
 - Added a prototypical, custom, XML node filtering system that checks raw XML. Currently, this is only used for weapon accessories to hide ineligible ones from the selection menu, but it should be flexible enough to support anything.
+- Added the ability to distinguish between primary and offroad speed and acceleration, in addition to primary and offroad handling.
+- Added the ability for vehicle mods to alter seat count.
+- Added the ability for vehicle mods that alter speed, handling, and/or acceleration to properly subtract values and also to support percentage modifications instead of just flat ones.
 
 Data Changes: 
 
@@ -122,6 +125,11 @@ Data Changes:
 - Made the Advanced Safety System accessories mutually exclusive with one another.
 - Made the Safe Target System addons require the Safe Target System, Base accessory.
 - Made the Sawed Off/Shortbarrel and Stock Removal accessory entry mutually exclusive with both the Sawed Off/Shortbarrel accessory and the Stock Removal accessory.
+- Added the Coriolis complex form from Chrome Flesh.
+- Added vehicle entries for the Cocotaxi and the Camellos from Hard Targets and the Ares Garuda and the Evo Aquavida 2 from Rigger 5.0.
+- Added stats for secondary acceleration and speed (i.e. offroad acceleration and speed for ground vehicles, alternate locomotion for all others) where they were missing, e.g. from the Evo Falcon-EX, the Corsair Trident, and the Evo Krokodil.
+- Corrected the seats for all vehicles that have separate front/back sections so that Chummer always displays the total seat count, not just the seat count for the larger section.
+- Corrected the availability of most vehicles from Stolen Souls (to 4) and the Ares Roadmaster (to 8).
 
 Build 187
 

@@ -17692,7 +17692,7 @@ namespace Chummer
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
-	            lblVehicleSeats.Text = objVehicle.Seats.ToString();
+	            lblVehicleSeats.Text = objVehicle.TotalSeats.ToString();
 
 				// Update the vehicle mod slots
 				if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)

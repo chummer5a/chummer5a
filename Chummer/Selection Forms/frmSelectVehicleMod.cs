@@ -661,7 +661,7 @@ namespace Chummer
 				//Used for Metahuman Adjustments.
 				else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
 				{
-					nudRating.Maximum = _objVehicle.Seats;
+					nudRating.Maximum = _objVehicle.TotalSeats;
 					nudRating.Minimum = 1;
 					nudRating.Enabled = true;
 					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
@@ -794,9 +794,11 @@ namespace Chummer
 			strInput = strInput.Replace("Handling", _objVehicle.Handling.ToString());
 			strInput = strInput.Replace("Offroad Handling", _objVehicle.OffroadHandling.ToString());
 			strInput = strInput.Replace("Speed", _objVehicle.Speed.ToString());
-			strInput = strInput.Replace("Acceleration", _objVehicle.Accel.ToString());
+            strInput = strInput.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString());
+            strInput = strInput.Replace("Acceleration", _objVehicle.Accel.ToString());
+            strInput = strInput.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString());
 
-			return strInput;
+            return strInput;
 		}
 		#endregion
 

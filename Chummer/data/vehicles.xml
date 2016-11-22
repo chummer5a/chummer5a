@@ -38,6 +38,7 @@
 		<category>Drones: Anthro</category>
 		<category>Drones: Large</category>
 		<category>Drones: Huge</category>
+		<category>Drones: Missile</category>
 	</categories>
   	<modcategories>
     		<category>All</category>
@@ -148,8 +149,8 @@
 			<name>Evo Falcon-EX</name>
 			<category>Bikes</category>
 			<handling>3/5</handling>
-			<accel>2</accel>
-			<speed>3</speed>
+			<accel>1/2</accel>
+			<speed>2/3</speed>
 			<pilot>1</pilot>
 			<body>7</body>
 			<armor>9</armor>
@@ -345,7 +346,7 @@
 			<category>Cars</category>
 			<handling>3/2</handling>
 			<accel>2</accel>
-			<speed>4</speed>
+			<speed>4/3</speed>
 			<pilot>2</pilot>
 			<body>8</body>
 			<armor>6</armor>
@@ -492,7 +493,7 @@
 			<category>Cars</category>
 			<handling>3/3</handling>
 			<accel>2</accel>
-			<speed>4</speed>
+			<speed>4/3</speed>
 			<pilot>2</pilot>
 			<body>12</body>
 			<armor>10</armor>
@@ -538,11 +539,11 @@
 			<category>Cars</category>
 			<handling>5/3</handling>
 			<accel>2</accel>
-			<speed>5</speed>
+			<speed>5/3</speed>
 			<pilot>3</pilot>
 			<body>16</body>
 			<armor>12</armor>
-			<seats>8</seats>
+			<seats>10</seats>
 			<sensor>4</sensor>
 			<gears>
 				<gear rating="4" maxrating="7">Sensor Array</gear>
@@ -616,7 +617,7 @@
 			<pilot>1</pilot>
 			<body>13</body>
 			<armor>10</armor>
-			<seats>2</seats>
+			<seats>6</seats>
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
@@ -696,11 +697,11 @@
 			<category>Cars</category>
 			<handling>3/3</handling>
 			<accel>1</accel>
-			<speed>4</speed>
+			<speed>4/3</speed>
 			<pilot>2</pilot>
 			<body>16</body>
 			<armor>8</armor>
-			<seats>4</seats>
+			<seats>8</seats>
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
@@ -807,11 +808,11 @@
 			<category>Cars</category>
 			<handling>3/3</handling>
 			<accel>1</accel>
-			<speed>4</speed>
+			<speed>4/3</speed>
 			<pilot>3</pilot>
 			<body>14</body>
 			<armor>8</armor>
-			<seats>14</seats>
+			<seats>16</seats>
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
@@ -1167,7 +1168,7 @@
 			<category>Trucks</category>
 			<handling>3/2</handling>
 			<accel>1</accel>
-			<speed>4</speed>
+			<speed>4/3</speed>
 			<pilot>2</pilot>
 			<body>14</body>
 			<armor>12</armor>
@@ -1193,7 +1194,7 @@
 			<category>Trucks</category>
 			<handling>3/3</handling>
 			<accel>1</accel>
-			<speed>4</speed>
+			<speed>4/4</speed>
 			<pilot>2</pilot>
 			<body>16</body>
 			<armor>12</armor>
@@ -1219,7 +1220,7 @@
 			<category>Trucks</category>
 			<handling>3/4</handling>
 			<accel>1</accel>
-			<speed>3</speed>
+			<speed>3/4</speed>
 			<pilot>2</pilot>
 			<body>14</body>
 			<armor>12</armor>
@@ -1246,7 +1247,7 @@
 			<category>Trucks</category>
 			<handling>3/2</handling>
 			<accel>1</accel>
-			<speed>4</speed>
+			<speed>4/3</speed>
 			<pilot>3</pilot>
 			<body>20</body>
 			<armor>15</armor>
@@ -1453,7 +1454,7 @@
 			<pilot>3</pilot>
 			<body>14</body>
 			<armor>9</armor>
-			<seats>12</seats>
+			<seats>14</seats>
 			<sensor>3</sensor>
 			<gears>
 				<gear rating="3" maxrating="7">Sensor Array</gear>
@@ -2020,7 +2021,7 @@
 			<pilot>1</pilot>
 			<body>10</body>
 			<armor>6</armor>
-			<seats>6</seats>
+			<seats>8</seats>
 			<sensor>1</sensor>
 			<gears>
 				<gear rating="1" maxrating="7">Sensor Array</gear>
@@ -2106,9 +2107,9 @@
 			<id>9dfc2603-8289-474c-842b-dd74ac406fb7</id>
 			<name>Corsair Elysium</name>
 			<category>Boats</category>
-			<handling>3</handling>
-			<accel>2</accel>
-			<speed>4</speed>
+			<handling>1/3</handling>
+			<accel>1/2</accel>
+			<speed>1/4</speed>
 			<pilot>2</pilot>
 			<body>14</body>
 			<armor>10</armor>
@@ -2131,9 +2132,9 @@
 			<id>c7d3a2bb-bad0-49a3-964f-b48911b37dcc</id>
 			<name>Corsair Panther</name>
 			<category>Boats</category>
-			<handling>3</handling>
-			<accel>3</accel>
-			<speed>5</speed>
+			<handling>1/3</handling>
+			<accel>1/3</accel>
+			<speed>2/5</speed>
 			<pilot>2</pilot>
 			<body>18</body>
 			<armor>10</armor>
@@ -2159,9 +2160,9 @@
 			<id>db3526df-3370-4b28-84cd-e113ad69ee5a</id>
 			<name>Corsair Trident</name>
 			<category>Boats</category>
-			<handling>3</handling>
-			<accel>3</accel>
-			<speed>5</speed>
+			<handling>1/3</handling>
+			<accel>2/3</accel>
+			<speed>4/5</speed>
 			<pilot>2</pilot>
 			<body>16</body>
 			<armor>10</armor>
@@ -2283,7 +2284,7 @@
 		</vehicle>
 		<vehicle>
 			<id>1312f26a-4cac-45a9-a8f2-f74b2a80a468</id>
-			<name>Evo Aquavida</name>
+			<name>Evo Aquavida 1</name>
 			<category>Boats</category>
 			<handling>2</handling>
 			<accel>2</accel>
@@ -2291,7 +2292,7 @@
 			<pilot>1</pilot>
 			<body>20</body>
 			<armor>16</armor>
-			<seats>8</seats>
+			<seats>10</seats>
 			<sensor>3</sensor>
 			<gears>
 				<gear rating="3" maxrating="7">Sensor Array</gear>
@@ -2302,6 +2303,30 @@
 			</mods>
 			<avail>10</avail>
 			<cost>115000</cost>
+			<source>R5</source>
+			<page>90</page>
+		</vehicle>
+		<vehicle>
+			<id>ea80540c-83e1-4ff3-b411-a990e19fdc33</id>
+			<name>Evo Aquavida 2</name>
+			<category>Boats</category>
+			<handling>2</handling>
+			<accel>2</accel>
+			<speed>1</speed>
+			<pilot>1</pilot>
+			<body>20</body>
+			<armor>16</armor>
+			<seats>12</seats>
+			<sensor>3</sensor>
+			<gears>
+				<gear rating="3" maxrating="7">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Amenities (Middle)</name>
+				<name>Winch (Basic)</name>
+			</mods>
+			<avail>10</avail>
+			<cost>135000</cost>
 			<source>R5</source>
 			<page>90</page>
 		</vehicle>
@@ -3039,8 +3064,8 @@
 			<gears>
 				<gear rating="4" maxrating="4">Sensor Array</gear>
 			</gears>
-			<avail>8</avail>
-			<cost>4000</cost>
+			<avail>12</avail>
+			<cost>30000</cost>
 			<source>R5</source>
 			<page>131</page>
 		</vehicle>
@@ -3105,8 +3130,8 @@
 			<name>Festo Sewer Snake (Small)</name>
 			<category>Drones: Small</category>
 			<handling>3</handling>
-			<accel>1</accel>
-			<speed>1</speed>
+			<accel>1/1</accel>
+			<speed>1/1</speed>
 			<pilot>2</pilot>
 			<body>2</body>
 			<armor>0</armor>
@@ -3605,7 +3630,7 @@
 			<category>Drones: Medium</category>
 			<handling>3</handling>
 			<accel>1</accel>
-			<speed>2</speed>
+			<speed>2/3</speed>
 			<pilot>2</pilot>
 			<body>3</body>
 			<armor>6</armor>
@@ -4203,7 +4228,7 @@
 			<category>Bikes</category>
 			<handling>4/5</handling>
 			<accel>1</accel>
-			<speed>3</speed>
+			<speed>3/4</speed>
 			<pilot>1</pilot>
 			<body>5</body>
 			<armor>5</armor>
@@ -4399,7 +4424,7 @@
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
 			</gears>
-			<avail>0</avail>
+			<avail>4</avail>
 			<cost>51000</cost>
 			<source>SS</source>
 			<page>186</page>
@@ -4419,7 +4444,7 @@
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
 			</gears>
-			<avail>0</avail>
+			<avail>4</avail>
 			<cost>49000</cost>
 			<source>SS</source>
 			<page>186</page>
@@ -4439,7 +4464,7 @@
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
 			</gears>
-			<avail>0</avail>
+			<avail>4</avail>
 			<cost>40000</cost>
 			<source>SS</source>
 			<page>186</page>
@@ -4609,7 +4634,7 @@
 			<gears>
 				<gear rating="2" maxrating="7">Sensor Array</gear>
 			</gears>
-			<avail>0</avail>
+			<avail>4</avail>
 			<cost>33000</cost>
 			<source>SS</source>
 			<page>186</page>
@@ -4629,7 +4654,7 @@
 			<gears>
 				<gear rating="3" maxrating="7">Sensor Array</gear>
 			</gears>
-			<avail>4</avail>
+			<avail>8</avail>
 			<cost>52000</cost>
 			<source>SR5</source>
 			<page>464</page>
@@ -5522,6 +5547,66 @@
 			<page>23</page>
 		</vehicle>
 		<vehicle>
+			<id>57f83415-4b13-47d2-8a80-20483d356a09</id>
+			<name>Cocotaxi</name>
+			<category>Bikes</category>
+			<handling>4/2</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>1</pilot>
+			<body>5</body>
+			<armor>4</armor>
+			<seats>3</seats>
+			<sensor>1</sensor>
+			<gears>
+				<gear rating="1" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>4000</cost>
+			<source>HT</source>
+			<page>139</page>
+		</vehicle>
+		<vehicle>
+			<id>b5f962ae-d541-4271-812b-3a4d0eb812e4</id>
+			<name>Camellos</name>
+			<category>Municipal/Construction</category>
+			<handling>3/2</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>1</pilot>
+			<body>16</body>
+			<armor>5</armor>
+			<seats>200</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>150000</cost>
+			<source>HT</source>
+			<page>139</page>
+		</vehicle>
+		<vehicle>
+			<id>b5f962ae-d541-4271-812b-3a4d0eb812e4</id>
+			<name>Ares Garuda</name>
+			<category>Drones: Missile</category>
+			<handling>6</handling>
+			<accel>2/4</accel>
+			<speed>3/6</speed>
+			<pilot>4</pilot>
+			<body>2</body>
+			<armor>2</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<gears>
+				<gear rating="3" maxrating="6">Sensor Array</gear>
+			</gears>
+			<avail>20F</avail>
+			<cost>8500</cost>
+			<source>R5</source>
+			<page>149</page>
+		</vehicle>
+		<vehicle>
 			<id>2013dff9-f313-441b-9207-3fdb8a44c8ba</id>
 			<name>Ammo Drone (Small)</name>
 			<category>Drones: Small</category>
@@ -5848,6 +5933,7 @@
 			<cost>FixedValues(Acceleration * 10000,Acceleration * 25000)</cost>
 			<bonus>
 				<accel>+Rating</accel>
+				<offroadaccel>+Rating</offroadaccel>
 			</bonus>
 			<source>R5</source>
 			<page>154</page>
@@ -6092,6 +6178,7 @@
 			<cost>FixedValues(Speed * 2000,Speed * 5000,Speed * 12000)</cost>
 			<bonus>
 				<speed>+Rating</speed>
+				<offroadspeed>+Rating</offroadspeed>
 			</bonus>
 			<source>R5</source>
 			<page>157</page>
@@ -7288,7 +7375,9 @@
 			<cost>0</cost>
 			<bonus>
 				<accel>0</accel>
+				<offroadaccel>0</offroadaccel>
 				<speed>0</speed>
+				<offroadspeed>0</offroadspeed>
 			</bonus>
 			<source>R5</source>
 			<page>126</page>
@@ -7379,6 +7468,7 @@
 			<cost>Body * Rating * 200</cost>
 			<bonus>
 				<handling>Rating</handling>
+				<offroadhandling>Rating</offroadhandling>
 			</bonus>
 			<source>R5</source>
 			<page>123</page>
@@ -7395,6 +7485,7 @@
 			<cost>Body * Rating * 400</cost>
 			<bonus>
 				<speed>Rating</speed>
+				<offroadspeed>Rating</offroadspeed>
 			</bonus>
 			<source>R5</source>
 			<page>123</page>
@@ -7411,6 +7502,7 @@
 			<cost>Body * Rating * 200</cost>
 			<bonus>
 				<accel>Rating</accel>
+				<offroadaccel>Rating</offroadaccel>
 			</bonus>
 			<source>R5</source>
 			<page>123</page>
@@ -7531,7 +7623,9 @@
 			<cost>6000</cost>
 			<bonus>
 				<speed>-1</speed>
+				<offroadspeed>-1</offroadspeed>
 				<accel>-1</accel>
+				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 				<seats>+1</seats>
 			</bonus>
@@ -7548,7 +7642,9 @@
 			<cost>6000</cost>
 			<bonus>
 				<speed>-1</speed>
+				<offroadspeed>-1</offroadspeed>
 				<accel>-1</accel>
+				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
 			<source>R5</source>
@@ -7564,7 +7660,9 @@
 			<cost>5000</cost>
 			<bonus>
 				<speed>-1</speed>
+				<offroadspeed>-1</offroadspeed>
 				<accel>-1</accel>
+				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
 			<source>R5</source>
@@ -7580,7 +7678,9 @@
 			<cost>4000</cost>
 			<bonus>
 				<speed>-1</speed>
+				<offroadspeed>-1</offroadspeed>
 				<accel>-1</accel>
+				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
 			<source>R5</source>
@@ -7598,7 +7698,9 @@
 			<cost>5500</cost>
 			<bonus>
 				<speed>-1</speed>
+				<offroadspeed>-1</offroadspeed>
 				<accel>-1</accel>
+				<offroadaccel>-1</offroadaccel>
 				<handling>-1</handling>
 			</bonus>
 			<source>R5</source>
