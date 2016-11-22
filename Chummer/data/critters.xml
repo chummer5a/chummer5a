@@ -109,67 +109,74 @@
 		</metatype>
 		<metatype>
 			<id>522d14b3-9f8f-485d-9796-cd15fc94f044</id>
-			<name>Polar Bear</name>
+			<name>Bear</name>
 			<category>Mundane Critters</category>
 			<karma>0</karma>
-			<bodmin>7</bodmin>
-			<bodmax>7</bodmax>
-			<bodaug>7</bodaug>
-			<agimin>4</agimin>
-			<agimax>4</agimax>
-			<agiaug>4</agiaug>
-			<reamin>3</reamin>
-			<reamax>3</reamax>
-			<reaaug>3</reaaug>
-			<strmin>6</strmin>
-			<strmax>6</strmax>
-			<straug>6</straug>
-			<chamin>2</chamin>
-			<chamax>2</chamax>
-			<chaaug>2</chaaug>
-			<intmin>3</intmin>
-			<intmax>3</intmax>
-			<intaug>3</intaug>
-			<logmin>1</logmin>
-			<logmax>1</logmax>
-			<logaug>1</logaug>
-			<wilmin>3</wilmin>
-			<wilmax>3</wilmax>
-			<wilaug>3</wilaug>
-			<inimin>2</inimin>
-			<inimax>12</inimax>
-			<iniaug>12</iniaug>
-			<edgmin>3</edgmin>
-			<edgmax>3</edgmax>
-			<edgaug>3</edgaug>
+			<bodmin>6</bodmin>
+			<bodmax>12</bodmax>
+			<bodaug>16</bodaug>
+			<agimin>1</agimin>
+			<agimax>7</agimax>
+			<agiaug>11</agiaug>
+			<reamin>2</reamin>
+			<reamax>8</reamax>
+			<reaaug>12</reaaug>
+			<strmin>5</strmin>
+			<strmax>11</strmax>
+			<straug>15</straug>
+			<chamin>0</chamin>
+			<chamax>6</chamax>
+			<chaaug>10</chaaug>
+			<intmin>0</intmin>
+			<intmax>5</intmax>
+			<intaug>9</intaug>
+			<logmin>0</logmin>
+			<logmax>4</logmax>
+			<logaug>8</logaug>
+			<wilmin>1</wilmin>
+			<wilmax>7</wilmax>
+			<wilaug>11</wilaug>
+			<inimin>1</inimin>
+			<inimax>13</inimax>
+			<iniaug>21</iniaug>
+			<edgmin>0</edgmin>
+			<edgmax>6</edgmax>
+			<edgaug>6</edgaug>
 			<magmin>0</magmin>
-			<magmax>6</magmax>
-			<magaug>6</magaug>
+			<magmax>3</magmax>
+			<magaug>3</magaug>
 			<resmin>0</resmin>
-			<resmax>6</resmax>
-			<resaug>6</resaug>
+			<resmax>3</resmax>
+			<resaug>3</resaug>
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
-			<movement>15/40</movement>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
+			<walk>2/1/0</walk>
+			<run>8/0/0</run>
+			<sprint>2/1/0</sprint>
 			<bonus>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
 			</bonus>
 			<powers>
-				<power select="Claw/Bite: DV 5P, AP 0">Natural Weapon</power>
+				<power select="Claw/Bite: DV (STR+3)P, AP -1">Natural Weapon</power>
+				<power select="Smell">Enhanced Senses</power>
+				<power rating="3">Armor</power>
 			</powers>
 			<skills>
+				<skill rating="3">Gymnastics</skill>
 				<skill rating="3">Intimidation</skill>
-				<skill rating="3">Perception</skill>
-				<skill rating="2">Swimming</skill>
-				<skill rating="1">Tracking</skill>
+				<skill rating="4">Perception</skill>
+				<skill rating="3">Running</skill>
+				<skill rating="4">Tracking</skill>
 				<skill rating="4">Unarmed Combat</skill>
 			</skills>
-			<source>HP</source>
-			<page>72</page>
+			<source>HS</source>
+			<page>39</page>
 		</metatype>
 		<metatype>
 			<id>10c99d1f-6125-43d0-95db-13ac9293459a</id>
@@ -1020,109 +1027,122 @@
       <name>Dog</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>2</bodmin>
-      <bodmax>2</bodmax>
-      <bodaug>2</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>2</strmin>
-      <strmax>2</strmax>
-      <straug>2</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
+      <bodmin>1</bodmin>
+      <bodmax>7</bodmax>
+      <bodaug>11</bodaug>
+      <agimin>0</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>1</strmin>
+      <strmax>7</strmax>
+      <straug>11</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
       <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>18</iniaug>
-      <edgmin>3</edgmin>
-      <edgmax>3</edgmax>
+      <inimax>14</inimax>
+      <iniaug>22</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
       <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/45</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>8/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
+		<power>Domesticated</power>
         <power select="Smell">Enhanced Senses</power>
-        <power select="Claws/Bite: DV 2P, AP 0">Natural Weapon</power>
+		<power select="Hearing">Enhanced Senses</power>
+        <power select="Claws/Bite: DV (STR+1)P, AP 0">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="2">Intimidation</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Tracking</skill>
-        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="4">Intimidation</skill>
+        <skill rating="5" spec="Smell">Perception</skill>
+		<skill rating="5">Running</skill>
+        <skill rating="6">Tracking</skill>
+        <skill rating="5">Unarmed Combat</skill>
       </skills>
-      <source>DIS</source>
-      <page>299</page>
+      <source>SR5</source>
+      <page>402</page>
     </metatype>
     <metatype>
       <id>7983859b-5c38-47b7-b127-2649f0c8c1b0</id>
       <name>Great Cat</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>6</bodmin>
-      <bodmax>6</bodmax>
-      <bodaug>6</bodaug>
-      <agimin>5</agimin>
-      <agimax>5</agimax>
-      <agiaug>5</agiaug>
-      <reamin>4</reamin>
-      <reamax>4</reamax>
-      <reaaug>4</reaaug>
-      <strmin>5</strmin>
-      <strmax>5</strmax>
-      <straug>5</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>2</logmin>
-      <logmax>2</logmax>
-      <logaug>2</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
+      <bodmin>3</bodmin>
+      <bodmax>9</bodmax>
+      <bodaug>13</bodaug>
+      <agimin>2</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>2</strmin>
+      <strmax>8</strmax>
+      <straug>12</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>0</intmin>
+      <intmax>6</intmax>
+      <intaug>10</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
       <inimin>2</inimin>
-      <inimax>13</inimax>
-      <iniaug>13</iniaug>
-      <edgmin>4</edgmin>
-      <edgmax>4</edgmax>
-      <edgaug>4</edgaug>
+      <inimax>14</inimax>
+      <iniaug>22</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/60</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -1130,179 +1150,203 @@
         <initiativepass>1</initiativepass>
       </bonus>
       <powers>
-        <power select="Claws/Bite: DV 5P, AP 0">Natural Weapon</power>
+        <power select="Claws/Bite: DV (STR+3)P, AP -1">Natural Weapon</power>
+		<power select="Low-light Vision">Enhanced Senses</power>
       </powers>
       <skills>
-        <skill rating="3">Infiltration</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Tracking</skill>
-        <skill rating="4">Unarmed Combat</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="5">Perception</skill>
+		<skill rating="5">Running</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="7">Unarmed Combat</skill>
       </skills>
-      <source>DIS</source>
-      <page>299</page>
+      <source>SR5</source>
+      <page>402</page>
     </metatype>
     <metatype>
       <id>d4a66987-de45-4bd1-a1f3-c8573ba6d8cf</id>
       <name>Horse</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>8</bodmin>
-      <bodmax>8</bodmax>
-      <bodaug>8</bodaug>
-      <agimin>5</agimin>
-      <agimax>5</agimax>
-      <agiaug>5</agiaug>
-      <reamin>5</reamin>
-      <reamax>5</reamax>
-      <reaaug>5</reaaug>
-      <strmin>8</strmin>
-      <strmax>8</strmax>
-      <straug>8</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>2</wilmin>
-      <wilmax>2</wilmax>
-      <wilaug>2</wilaug>
-      <inimin>3</inimin>
+      <bodmin>5</bodmin>
+      <bodmax>11</bodmax>
+      <bodaug>15</bodaug>
+      <agimin>2</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>2</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
+      <strmin>5</strmin>
+      <strmax>11</strmax>
+      <straug>15</straug>
+      <chamin>1</chamin>
+      <chamax>7</chamax>
+      <chaaug>11</chaaug>
+      <intmin>0</intmin>
+      <intmax>6</intmax>
+      <intaug>10</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
+      <inimin>2</inimin>
       <inimax>14</inimax>
-      <iniaug>14</iniaug>
-      <edgmin>2</edgmin>
-      <edgmax>2</edgmax>
-      <edgaug>2</edgaug>
+      <iniaug>22</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>20/100</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>3/1/0</walk>
+	  <run>10/0/0</run>
+	  <sprint>6/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
+	  <powers>
+        <power select="Kick: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
+		<power>Domesticated</power>
+      </powers>
       <skills>
-        <skill rating="3">Running</skill>
+        <skill rating="6">Running</skill>
+		<skill rating="1">Unarmed Combat</skill>
       </skills>
-      <source>DIS</source>
-      <page>299</page>
+      <source>SR5</source>
+      <page>403</page>
     </metatype>
     <metatype>
       <id>a38329e9-cdfb-441f-9594-1ecf5fcdd787</id>
       <name>Shark</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>3</bodmin>
-      <bodmax>3</bodmax>
-      <bodaug>3</bodaug>
-      <agimin>5</agimin>
-      <agimax>5</agimax>
-      <agiaug>5</agiaug>
-      <reamin>5</reamin>
-      <reamax>5</reamax>
-      <reaaug>5</reaaug>
-      <strmin>3</strmin>
-      <strmax>3</strmax>
-      <straug>3</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>4</intmin>
-      <intmax>4</intmax>
-      <intaug>4</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>2</wilmin>
-      <wilmax>2</wilmax>
-      <wilaug>2</wilaug>
+      <bodmin>2</bodmin>
+      <bodmax>8</bodmax>
+      <bodaug>12</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>2</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
+      <strmin>2</strmin>
+      <strmax>8</strmax>
+      <straug>12</straug>
+      <chamin>0</chamin>
+      <chamax>4</chamax>
+      <chaaug>8</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
       <inimin>3</inimin>
       <inimax>15</inimax>
-      <iniaug>15</iniaug>
-      <edgmin>2</edgmin>
-      <edgmax>2</edgmax>
-      <edgaug>2</edgaug>
+      <iniaug>23</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>20/60</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>0/3/0</walk>
+	  <run>0/8/0</run>
+	  <sprint>0/4/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power select="Bite: DV 5P, AP 0">Natural Weapon</power>
+        <power select="Bite: DV (STR+2)P, AP -2">Natural Weapon</power>
+		<power rating="2">Armor</power>
+		<power>Gills</power>
       </powers>
       <skills>
-        <skill rating="2">Perception</skill>
-        <skill rating="4">Swimming</skill>
-        <skill rating="4">Unarmed Combat</skill>
+        <skill rating="6" spec="Smell">Perception</skill>
+        <skill rating="10">Swimming</skill>
+        <skill rating="8">Unarmed Combat</skill>
       </skills>
-      <source>DIS</source>
-      <page>299</page>
+      <source>SR5</source>
+      <page>403</page>
     </metatype>
     <metatype>
       <id>d6da129f-65b2-4fb4-aae3-a73e6937a2a6</id>
       <name>Wolf</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>2</bodmin>
-      <bodmax>2</bodmax>
-      <bodaug>2</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
+      <bodmin>3</bodmin>
+      <bodmax>9</bodmax>
+      <bodaug>13</bodaug>
+      <agimin>0</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>2</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
       <strmin>2</strmin>
-      <strmax>2</strmax>
-      <straug>2</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>2</logmin>
-      <logmax>2</logmax>
-      <logaug>2</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
-      <edgmin>3</edgmin>
-      <edgmax>3</edgmax>
-      <edgaug>3</edgaug>
+      <strmax>8</strmax>
+      <straug>12</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
+      <inimin>3</inimin>
+      <inimax>15</inimax>
+      <iniaug>23</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/50</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>8/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -1310,16 +1354,19 @@
         <initiativepass>1</initiativepass>
       </bonus>
       <powers>
-        <power select="Claws/Bite: DV 2P, AP 0">Natural Weapon</power>
+        <power select="Claws/Bite: DV (STR+2)P, AP -1">Natural Weapon</power>
+		<power select="Hearing">Enhanced Senses</power>
+		<power select="Smell">Enhanced Senses</power>
       </powers>
       <skills>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Tracking</skill>
-        <skill rating="4">Unarmed Combat</skill>
+        <skill rating="5">Running</skill>
+        <skill rating="5" spec="Smell">Perception</skill>
+		<skill rating="5">Sneaking</skill>
+        <skill rating="6">Tracking</skill>
+        <skill rating="7">Unarmed Combat</skill>
       </skills>
-      <source>DIS</source>
-      <page>299</page>
+      <source>SR5</source>
+      <page>403</page>
     </metatype>
     <metatype>
       <id>bee84e0e-069c-4f02-bffd-11e757229506</id>
@@ -1390,64 +1437,70 @@
       <name>Squid</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>2</bodmin>
-      <bodmax>2</bodmax>
-      <bodaug>2</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
-      <strmin>3</strmin>
-      <strmax>3</strmax>
-      <straug>3</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>4</logmin>
-      <logmax>4</logmax>
-      <logaug>4</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>2</inimin>
-      <inimax>11</inimax>
-      <iniaug>11</iniaug>
+      <bodmin>1</bodmin>
+      <bodmax>7</bodmax>
+      <bodaug>11</bodaug>
+      <agimin>2</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>0</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>2</strmin>
+      <strmax>8</strmax>
+      <straug>12</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>1</inimin>
+      <inimax>13</inimax>
+      <iniaug>21</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Swim 15/25</movement>
+	  <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <walk>0/3/0</walk>
+	  <run>0/8/0</run>
+	  <sprint>0/2/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <reach>2</reach>
+        <reach>3</reach>
       </bonus>
       <powers>
         <power>Gills</power>
         <power select="Ink">Substance Extrusion</power>
       </powers>
       <skills>
-        <skill rating="3">Escape Artist</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="3">Swimming</skill>
-        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="5">Escape Artist</skill>
+		<skill rating="6">Gymnastics</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="5">Swimming</skill>
+        <skill rating="4">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>88</page>
+      <source>HS</source>
+      <page>43</page>
     </metatype>
     <metatype>
       <id>e5b5e5b4-534a-49a0-ab18-3390fdc73371</id>
@@ -1699,49 +1752,54 @@
     </metatype>
     <metatype>
       <id>1f7ea859-8fa3-42cc-8252-bab7da65f87f</id>
-      <name>Bottlenose Dolphin</name>
+      <name>Dolphin</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>8</bodmin>
-      <bodmax>8</bodmax>
-      <bodaug>8</bodaug>
-      <agimin>5</agimin>
-      <agimax>5</agimax>
-      <agiaug>5</agiaug>
-      <reamin>5</reamin>
-      <reamax>5</reamax>
-      <reaaug>5</reaaug>
-      <strmin>8</strmin>
-      <strmax>8</strmax>
-      <straug>8</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>4</intmin>
-      <intmax>4</intmax>
-      <intaug>4</intaug>
-      <logmin>4</logmin>
-      <logmax>4</logmax>
-      <logaug>4</logaug>
-      <wilmin>4</wilmin>
-      <wilmax>4</wilmax>
-      <wilaug>4</wilaug>
+      <bodmin>5</bodmin>
+      <bodmax>11</bodmax>
+      <bodaug>15</bodaug>
+      <agimin>2</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>2</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
+      <strmin>4</strmin>
+      <strmax>10</strmax>
+      <straug>14</straug>
+      <chamin>1</chamin>
+      <chamax>7</chamax>
+      <chaaug>11</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>7</wilmax>
+      <wilaug>11</wilaug>
       <inimin>3</inimin>
       <inimax>15</inimax>
-      <iniaug>15</iniaug>
+      <iniaug>23</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Swim 20/80</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>0/2/0</walk>
+	  <run>0/8/0</run>
+	  <sprint>0/4/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -1749,16 +1807,17 @@
       </bonus>
       <powers>
         <power select="Sonar">Enhanced Senses</power>
+		<power rating="2">Armor</power>
       </powers>
       <skills>
-        <skill rating="2">Diving</skill>
-        <skill rating="4">Gymnastics</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="4">Swimming</skill>
-        <skill rating="2">Unarmed Combat</skill>
+        <skill rating="3">Diving</skill>
+        <skill rating="7">Gymnastics</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="5">Swimming</skill>
+        <skill rating="3">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>89</page>
+      <source>HS</source>
+      <page>42</page>
     </metatype>
     <metatype>
       <id>594663d1-dc12-4a91-a619-9772162f06a5</id>
@@ -2463,63 +2522,69 @@
       <name>Sea Lion</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>7</bodmin>
-      <bodmax>7</bodmax>
-      <bodaug>7</bodaug>
-      <agimin>5</agimin>
-      <agimax>5</agimax>
-      <agiaug>5</agiaug>
-      <reamin>4</reamin>
-      <reamax>4</reamax>
-      <reaaug>4</reaaug>
-      <strmin>6</strmin>
-      <strmax>6</strmax>
-      <straug>6</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>4</intmin>
-      <intmax>4</intmax>
-      <intaug>4</intaug>
-      <logmin>3</logmin>
-      <logmax>3</logmax>
-      <logaug>3</logaug>
-      <wilmin>4</wilmin>
-      <wilmax>4</wilmax>
-      <wilaug>4</wilaug>
+      <bodmin>4</bodmin>
+      <bodmax>10</bodmax>
+      <bodaug>14</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>2</strmin>
+      <strmax>8</strmax>
+      <straug>12</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
       <inimin>2</inimin>
       <inimax>14</inimax>
-      <iniaug>14</iniaug>
+      <iniaug>22</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Swim 10/30</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>1/3/0</walk>
+	  <run>0/8/0</run>
+	  <sprint>1/4/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power select="Bite: DV 4P, AP 0">Natural Weapon</power>
+        <power select="Bite: DV (STR+2)P, AP 0">Natural Weapon</power>
+		<power rating="2">Armor</power>
       </powers>
       <skills>
         <skill rating="2">Diving</skill>
-        <skill rating="3">Gymanstics</skill>
+        <skill rating="3">Gymnastics</skill>
         <skill rating="2">Perception</skill>
         <skill rating="4">Swimming</skill>
         <skill rating="4">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>89</page>
+      <source>HS</source>
+      <page>43</page>
     </metatype>
     <metatype>
       <id>5206088d-c55a-4650-8ec1-74aa3497464b</id>
@@ -2576,7 +2641,7 @@
       </powers>
       <skills>
         <skill rating="2">Diving</skill>
-        <skill rating="2">Gymanstics</skill>
+        <skill rating="2">Gymnastics</skill>
         <skill rating="2">Perception</skill>
         <skill rating="4">Swimming</skill>
         <skill rating="2">Unarmed Combat</skill>
@@ -2640,7 +2705,7 @@
       </powers>
       <skills>
         <skill rating="2">Diving</skill>
-        <skill rating="3">Gymanstics</skill>
+        <skill rating="3">Gymnastics</skill>
         <skill rating="2">Perception</skill>
         <skill rating="4">Swimming</skill>
         <skill rating="1">Unarmed Combat</skill>
@@ -2781,46 +2846,51 @@
       <name>Barracuda</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>2</bodmin>
-      <bodmax>2</bodmax>
-      <bodaug>2</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
-      <strmin>2</strmin>
-      <strmax>2</strmax>
-      <straug>2</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>2</intmin>
-      <intmax>2</intmax>
-      <intaug>2</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
-      <inimax>10</inimax>
-      <iniaug>10</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <bodmin>0</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>0</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>0</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>0</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
+      <chamin>0</chamin>
+      <chamax>4</chamax>
+      <chaaug>8</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>3</logmax>
+      <logaug>7</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>0</inimin>
+      <inimax>11</inimax>
+      <iniaug>19</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Swim 20/60</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>0/2/0</walk>
+	  <run>0/6/0</run>
+	  <sprint>0/2/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -2829,15 +2899,16 @@
       <powers>
         <power select="Smell">Enhanced Senses</power>
         <power>Gills</power>
-        <power select="Bite: DV 3P, AP 0">Natural Weapon</power>
+        <power select="Bite: DV (STR+1)P, AP 0">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="2">Perception</skill>
-        <skill rating="4">Swimming</skill>
-        <skill rating="3">Unarmed Combat</skill>
+		<skill rating="3">Gymnastics</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="6">Swimming</skill>
+        <skill rating="4">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>90</page>
+      <source>HS</source>
+      <page>42</page>
     </metatype>
     <metatype>
       <id>14e32e75-f5ba-488c-a15e-400e94dff11b</id>
@@ -3217,65 +3288,72 @@
     </metatype>
     <metatype>
       <id>2cdf4a25-6866-49a2-be90-e508980ad219</id>
-      <name>Whale Shark</name>
+      <name>Killer Whale</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>10</bodmin>
-      <bodmax>10</bodmax>
-      <bodaug>10</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>4</reamin>
-      <reamax>4</reamax>
-      <reaaug>4</reaaug>
-      <strmin>6</strmin>
-      <strmax>6</strmax>
-      <straug>6</straug>
-      <chamin>2</chamin>
-      <chamax>2</chamax>
-      <chaaug>2</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>2</logmin>
-      <logmax>2</logmax>
-      <logaug>2</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>2</inimin>
-      <inimax>13</inimax>
-      <iniaug>13</iniaug>
-      <edgmin>2</edgmin>
-      <edgmax>2</edgmax>
-      <edgaug>2</edgaug>
+      <bodmin>9</bodmin>
+      <bodmax>15</bodmax>
+      <bodaug>19</bodaug>
+      <agimin>3</agimin>
+      <agimax>9</agimax>
+      <agiaug>13</agiaug>
+      <reamin>3</reamin>
+      <reamax>9</reamax>
+      <reaaug>13</reaaug>
+      <strmin>10</strmin>
+      <strmax>16</strmax>
+      <straug>20</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>2</intmin>
+      <intmax>8</intmax>
+      <intaug>12</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>5</wilmin>
+      <wilmax>11</wilmax>
+      <wilaug>15</wilaug>
+      <inimin>5</inimin>
+      <inimax>17</inimax>
+      <iniaug>25</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Swim 15/20</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>0/3/0</walk>
+	  <run>0/8/0</run>
+	  <sprint>0/4/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power>Gills</power>
+        <power rating="4">Armor</power>
+		<power select="Sonar">Enhanced Senses</power>
+		<power select="Bite: DV (STR+2)P, AP 0">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Swimming</skill>
-        <skill rating="2">Unarmed Combat</skill>
+        <skill rating="3">Diving</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="4">Swimming</skill>
+        <skill rating="4">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>90</page>
+      <source>HS</source>
+      <page>43</page>
     </metatype>
     <metatype>
       <id>46c8e7e9-086d-41b7-bdb2-98c2cb6df206</id>
@@ -3521,64 +3599,70 @@
       <name>Alligator</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>7</bodmin>
-      <bodmax>7</bodmax>
-      <bodaug>7</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>4</reamin>
-      <reamax>4</reamax>
-      <reaaug>4</reaaug>
-      <strmin>7</strmin>
-      <strmax>7</strmax>
-      <straug>7</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>2</logmin>
-      <logmax>2</logmax>
-      <logaug>2</logaug>
-      <wilmin>2</wilmin>
-      <wilmax>2</wilmax>
-      <wilaug>2</wilaug>
-      <inimin>2</inimin>
-      <inimax>13</inimax>
-      <iniaug>13</iniaug>
+      <bodmin>5</bodmin>
+      <bodmax>11</bodmax>
+      <bodaug>15</bodaug>
+      <agimin>2</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>6</strmin>
+      <strmax>12</strmax>
+      <straug>16</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>8</wilaug>
+      <inimin>0</inimin>
+      <inimax>12</inimax>
+      <iniaug>20</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>15/35</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power select="Bite: DV 6P, AP -2">Natural Weapon</power>
+        <power select="Bite: DV (STR+2)P, AP -2">Natural Weapon</power>
         <power select="Smell">Enhanced Senses</power>
+		<power rating="2">Toughness</power>
+		<power rating="6">Armor</power>
       </powers>
       <skills>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="3">Shadowing</skill>
-        <skill rating="3">Tracking</skill>
-        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="4">Sneaking</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="4">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>90</page>
+      <source>HS</source>
+      <page>39</page>
     </metatype>
     <metatype>
       <id>dc50e70e-a428-4692-ac06-e79aac93c12f</id>
@@ -3843,63 +3927,69 @@
       <name>Boar</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>5</bodmin>
-      <bodmax>5</bodmax>
-      <bodaug>5</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>4</reamin>
-      <reamax>4</reamax>
-      <reaaug>4</reaaug>
-      <strmin>5</strmin>
-      <strmax>5</strmax>
-      <straug>5</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>2</logmin>
-      <logmax>2</logmax>
-      <logaug>2</logaug>
-      <wilmin>2</wilmin>
-      <wilmax>2</wilmax>
-      <wilaug>2</wilaug>
-      <inimin>2</inimin>
-      <inimax>13</inimax>
-      <iniaug>13</iniaug>
+      <bodmin>3</bodmin>
+      <bodmax>9</bodmax>
+      <bodaug>13</bodaug>
+      <agimin>0</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>2</strmin>
+      <strmax>8</strmax>
+      <straug>12</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>0</inimin>
+      <inimax>12</inimax>
+      <iniaug>20</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/40</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>2/1/0</walk>
+	  <run>8/0/0</run>
+	  <sprint>2/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power select="Bite/Tusk: DV 3P, AP 0">Natural Weapon</power>
+        <power select="Bite/Tusk: DV (STR+2)P, AP -1">Natural Weapon</power>
         <power select="Smell">Enhanced Senses</power>
+		<power rating="4">Armor</power>
       </powers>
       <skills>
-        <skill rating="2">Perception</skill>
-        <skill rating="1">Running</skill>
-        <skill rating="3">Tracking</skill>
-        <skill rating="2">Unarmed Combat</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="2">Running</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="4">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>90</page>
+      <source>HS</source>
+      <page>40</page>
     </metatype>
     <metatype>
       <id>5adc42b0-97c7-495e-824b-828147fd8250</id>
@@ -5159,67 +5249,75 @@
     </metatype>
     <metatype>
       <id>be4c5fce-f717-4f96-92d1-103de839d9a2</id>
-      <name>Norwegian Rat</name>
+      <name>Rat</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
       <bodmin>0</bodmin>
-      <bodmax>0</bodmax>
-      <bodaug>0</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>0</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>0</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
       <strmin>0</strmin>
-      <strmax>0</strmax>
-      <straug>0</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>1</intmin>
-      <intmax>1</intmax>
-      <intaug>1</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
+      <strmax>3</strmax>
+      <straug>7</straug>
+      <chamin>0</chamin>
+      <chamax>4</chamax>
+      <chaaug>8</chaaug>
+      <intmin>0</intmin>
+      <intmax>4</intmax>
+      <intaug>8</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>8</wilaug>
+      <inimin>0</inimin>
       <inimax>9</inimax>
-      <iniaug>9</iniaug>
+      <iniaug>17</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>5/15</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<initiativepass>1</initiativepass>
         <reach>-1</reach>
       </bonus>
       <powers>
+		<power select="Bite: DV 1P, AP 0, Reach -1">Natural Weapon</power>
         <power select="Smell">Enhanced Senses</power>
         <power>Gestalt Consciousness</power>
+		<power rating="3">Fragile</power>
       </powers>
       <skills>
-        <skill rating="2">Climbing</skill>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="1">Unarmed Combat</skill>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="3">Sneaking</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="2">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>93</page>
+      <source>HS</source>
+      <page>46</page>
     </metatype>
     <metatype>
       <id>7d1395db-f082-499e-8224-add6a371436c</id>
@@ -6233,46 +6331,51 @@
       <name>Elephant</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>12</bodmin>
-      <bodmax>12</bodmax>
-      <bodaug>12</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>16</strmin>
-      <strmax>16</strmax>
-      <straug>16</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>3</logmin>
-      <logmax>3</logmax>
-      <logaug>3</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <bodmin>9</bodmin>
+      <bodmax>15</bodmax>
+      <bodaug>19</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>13</strmin>
+      <strmax>19</strmax>
+      <straug>23</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>0</intmin>
+      <intmax>6</intmax>
+      <intaug>10</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>1</inimin>
+      <inimax>13</inimax>
+      <iniaug>21</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>24/45</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>18/0/0</run>
+	  <sprint>2/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -6280,76 +6383,86 @@
         <reach>2</reach>
       </bonus>
       <powers>
-        <power select="Tusk: DV 12P, AP -2">Natural Weapon</power>
+        <power select="Tusk: DV (STR+2)P, AP -2">Natural Weapon</power>
+		<power select="Low Frequency">Enhanced Senses</power>
+		<power rating="6">Armor</power>
       </powers>
       <skills>
-        <skill rating="3">Clubs</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="3">Running</skill>
+        <skill rating="5">Clubs</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="4">Running</skill>
         <skill rating="2">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>94</page>
+      <source>HS</source>
+      <page>41</page>
     </metatype>
     <metatype>
       <id>3ffa4934-12e0-4ace-b314-20d1a84c4284</id>
       <name>Giraffe</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>12</bodmin>
-      <bodmax>12</bodmax>
-      <bodaug>12</bodaug>
-      <agimin>2</agimin>
-      <agimax>2</agimax>
-      <agiaug>2</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
-      <strmin>9</strmin>
-      <strmax>9</strmax>
-      <straug>9</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>1</intmin>
-      <intmax>1</intmax>
-      <intaug>1</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
-      <inimax>8</inimax>
-      <iniaug>8</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <bodmin>7</bodmin>
+      <bodmax>13</bodmax>
+      <bodaug>17</bodaug>
+      <agimin>0</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>0</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>5</strmin>
+      <strmax>11</strmax>
+      <straug>15</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>0</inimin>
+      <inimax>11</inimax>
+      <iniaug>19</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>15/50</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>8/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <reach>2</reach>
       </bonus>
-      <powers />
+      <powers>
+        <power select="Kick: DV (STR+1)P, AP 0, Reach 2">Natural Weapon</power>
+		<power rating="2">Armor</power>
+      </powers>
       <skills>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Running</skill>
-        <skill rating="1">Unarmed Combat</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="3">Running</skill>
+        <skill rating="2">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>94</page>
+      <source>HS</source>
+      <page>41</page>
     </metatype>
     <metatype>
       <id>7ec1f78b-4887-4e01-8626-f846407f92f7</id>
@@ -7076,63 +7189,69 @@
       <name>Chimpanzee</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>4</bodmin>
-      <bodmax>4</bodmax>
-      <bodaug>4</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>5</reamin>
-      <reamax>5</reamax>
-      <reaaug>5</reaaug>
-      <strmin>4</strmin>
-      <strmax>4</strmax>
-      <straug>4</straug>
-      <chamin>2</chamin>
-      <chamax>2</chamax>
-      <chaaug>2</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>4</logmin>
-      <logmax>4</logmax>
-      <logaug>4</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>3</inimin>
+      <bodmin>1</bodmin>
+      <bodmax>7</bodmax>
+      <bodaug>11</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>1</strmin>
+      <strmax>7</strmax>
+      <straug>11</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
+      <inimin>2</inimin>
       <inimax>14</inimax>
-      <iniaug>14</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <iniaug>22</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>15/30</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>2/1/0</walk>
+	  <run>4/0/0</run>
+	  <sprint>2/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power select="Bite: DV 4P, AP 0">Natural Weapon</power>
+		<power>Brachiation</power>
+        <power select="Bite: DV (STR+2)P, AP 0">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="2">Clubs</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="1">Throwing Weapons</skill>
-        <skill rating="4">Unarmed Combat</skill>
-        <group rating="3">Athletics</group>
+        <skill rating="3">Clubs</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="2">Throwing Weapons</skill>
+        <skill rating="6">Unarmed Combat</skill>
+        <group rating="4">Athletics</group>
       </skills>
-      <source>RW</source>
-      <page>94</page>
+      <source>HS</source>
+      <page>40</page>
     </metatype>
     <metatype>
       <id>5e61ede1-b0e1-41de-b8dd-6ad3be6dfcc9</id>
@@ -9361,46 +9480,51 @@
       <name>Domestic Cat</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>1</bodmin>
-      <bodmax>1</bodmax>
-      <bodaug>1</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>1</strmin>
-      <strmax>1</strmax>
-      <straug>1</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <bodmin>0</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>0</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>0</strmin>
+      <strmax>4</strmax>
+      <straug>8</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>0</inimin>
+      <inimax>11</inimax>
+      <iniaug>19</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/40</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>8/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -9408,16 +9532,18 @@
       </bonus>
       <powers>
         <power rating="2">Fragile</power>
+		<power>Domesticated</power>
+		<power select="Low-light Vision">Enhanced Senses</power>
       </powers>
       <skills>
-        <skill rating="2">Climbing</skill>
-        <skill rating="1">Infiltration</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Tracking</skill>
-        <skill rating="2">Unarmed Combat</skill>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="2">Sneaking</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="3">Tracking</skill>
+        <skill rating="3">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>96</page>
+      <source>HS</source>
+      <page>45</page>
     </metatype>
     <metatype>
       <id>4535aa3a-02a4-4f17-8842-511b340d4f28</id>
@@ -9487,63 +9613,70 @@
       <name>Ferret</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>1</bodmin>
-      <bodmax>1</bodmax>
-      <bodaug>1</bodaug>
-      <agimin>2</agimin>
-      <agimax>2</agimax>
-      <agiaug>2</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <bodmin>0</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>0</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>0</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
       <strmin>0</strmin>
-      <strmax>0</strmax>
-      <straug>0</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>2</intmin>
-      <intmax>2</intmax>
-      <intaug>2</intaug>
-      <logmin>2</logmin>
-      <logmax>2</logmax>
-      <logaug>2</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
+      <strmax>4</strmax>
+      <straug>8</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
+      <inimin>0</inimin>
       <inimax>10</inimax>
-      <iniaug>10</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <iniaug>18</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/30</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<reach>-1</reach>
       </bonus>
       <powers>
-        <power select="Bite: DV 2P, AP 0, -1 Reach">Natural Weapon</power>
+        <power select="Bite: DV (STR+1)P, AP 0, -1 Reach">Natural Weapon</power>
         <power rating="1">Fragile</power>
       </powers>
       <skills>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Tracking</skill>
-        <skill rating="2">Unarmed Combat</skill>
+		<skill rating="3">Gymnastics</skill>
+        <skill rating="3">Sneaking</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="3">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>96</page>
+      <source>HS</source>
+      <page>46</page>
     </metatype>
     <metatype>
       <id>b31a9f94-4de7-4ffc-8c90-3dced66fe2d1</id>
@@ -9804,46 +9937,51 @@
       <name>Raccoon</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>1</bodmin>
-      <bodmax>1</bodmax>
-      <bodaug>1</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>1</strmin>
-      <strmax>1</strmax>
-      <straug>1</straug>
-      <chamin>3</chamin>
-      <chamax>3</chamax>
-      <chaaug>3</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>3</logmin>
-      <logmax>3</logmax>
-      <logaug>3</logaug>
-      <wilmin>2</wilmin>
-      <wilmax>2</wilmax>
-      <wilaug>2</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
-      <edgmin>2</edgmin>
-      <edgmax>2</edgmax>
-      <edgaug>2</edgaug>
+      <bodmin>0</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>0</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>0</strmin>
+      <strmax>4</strmax>
+      <straug>8</straug>
+      <chamin>0</chamin>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
+      <inimin>1</inimin>
+      <inimax>13</inimax>
+      <iniaug>21</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>8/20</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -9855,13 +9993,14 @@
         <power rating="1">Fragile</power>
       </powers>
       <skills>
-        <skill rating="2">Climbing</skill>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="1">Unarmed Combat</skill>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="3">Sneaking</skill>
+		<skill rating="3">Palming</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="2">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>96</page>
+      <source>HS</source>
+      <page>46</page>
     </metatype>
     <metatype>
       <id>dbcf8f5f-8e43-43f4-84ab-ab0ed7192824</id>
@@ -10169,61 +10308,77 @@
     </metatype>
     <metatype>
       <id>7fcca21c-729f-414b-95aa-ced043d851cc</id>
-      <name>Grass Snake</name>
+      <name>Snake</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
       <bodmin>0</bodmin>
-      <bodmax>0</bodmax>
-      <bodaug>0</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>1</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>0</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
       <strmin>0</strmin>
-      <strmax>0</strmax>
-      <straug>0</straug>
-      <chamin>2</chamin>
-      <chamax>2</chamax>
-      <chaaug>2</chaaug>
-      <intmin>1</intmin>
-      <intmax>1</intmax>
-      <intaug>1</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
-      <inimax>8</inimax>
-      <iniaug>8</iniaug>
-      <edgmin>1</edgmin>
-      <edgmax>1</edgmax>
-      <edgaug>1</edgaug>
+      <strmax>6</strmax>
+      <straug>10</straug>
+      <chamin>0</chamin>
+      <chamax>4</chamax>
+      <chaaug>8</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>0</logmin>
+      <logmax>3</logmax>
+      <logaug>7</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>0</inimin>
+      <inimax>10</inimax>
+      <iniaug>18</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>5/8</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+      <walk>2/1/0</walk>
+	  <run>3/0/0</run>
+	  <sprint>2/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<initiativepass>1</initiativepass>
       </bonus>
-      <powers />
+      <powers>
+		<power select="Bite: DV (STR+2)P, AP 0">Natural Weapon</power>
+		<power select="Thermographic Vision">Enhanced Senses</power>
+		<power rating="3">Armor</power>
+	  </powers>
+	  <optionalpowers>
+		<optionalpower>Venom</optionalpower>
+	  </optionalpowers>
       <skills>
-        <skill rating="2">Perception</skill>
-        <skill rating="1">Unarmed Combat</skill>
+        <skill rating="3">Perception</skill>
+		<skill rating="3">Gymnastics</skill>
+		<skill rating="3">Sneaking</skill>
+		<skill rating="3">Tracking</skill>
+        <skill rating="5">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>96</page>
+      <source>HS</source>
+      <page>42</page>
     </metatype>
     <metatype>
       <id>eb903b98-e5eb-4f2e-9335-0f1d9b8fe0db</id>
@@ -10586,62 +10741,69 @@
       <category>Mundane Critters</category>
       <karma>0</karma>
       <bodmin>0</bodmin>
-      <bodmax>0</bodmax>
-      <bodaug>0</bodaug>
-      <agimin>1</agimin>
-      <agimax>1</agimax>
-      <agiaug>1</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>0</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>2</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
       <strmin>0</strmin>
-      <strmax>0</strmax>
-      <straug>0</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>2</intmin>
-      <intmax>2</intmax>
-      <intaug>2</intaug>
+      <strmax>3</strmax>
+      <straug>7</straug>
+      <chamin>0</chamin>
+      <chamax>3</chamax>
+      <chaaug>7</chaaug>
+      <intmin>0</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
       <logmin>0</logmin>
-      <logmax>0</logmax>
-      <logaug>0</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
-      <inimax>8</inimax>
-      <iniaug>8</iniaug>
+      <logmax>3</logmax>
+      <logaug>7</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>1</inimin>
+      <inimax>13</inimax>
+      <iniaug>21</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>2/5</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/0</walk>
+	  <run>8/0/0</run>
+	  <sprint>4/1/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<initiativepass>1</initiativepass>
         <reach>-1</reach>
       </bonus>
       <powers>
         <power>Gestalt Consciousness</power>
         <power>Wall Walking</power>
+		<power>Extra Fragile</power>
       </powers>
       <skills>
-        <skill rating="3">Dodge</skill>
-        <skill rating="3">Infiltration</skill>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="4">Sneaking</skill>
         <skill rating="2">Perception</skill>
       </skills>
-      <source>RW</source>
-      <page>96</page>
+      <source>HS</source>
+      <page>45</page>
     </metatype>
     <metatype>
       <id>168fa92d-4093-472e-980e-249e4ac79a5d</id>
@@ -11098,62 +11260,69 @@
       <category>Mundane Critters</category>
       <karma>0</karma>
       <bodmin>0</bodmin>
-      <bodmax>0</bodmax>
-      <bodaug>0</bodaug>
-      <agimin>2</agimin>
-      <agimax>2</agimax>
-      <agiaug>2</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>0</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>0</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
       <strmin>0</strmin>
-      <strmax>0</strmax>
-      <straug>0</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>2</intmin>
-      <intmax>2</intmax>
-      <intaug>2</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
-      <inimax>10</inimax>
-      <iniaug>10</iniaug>
+      <strmax>3</strmax>
+      <straug>7</straug>
+      <chamin>0</chamin>
+      <chamax>4</chamax>
+      <chaaug>8</chaaug>
+      <intmin>0</intmin>
+      <intmax>4</intmax>
+      <intaug>8</intaug>
+      <logmin>0</logmin>
+      <logmax>3</logmax>
+      <logaug>7</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>8</wilaug>
+      <inimin>0</inimin>
+      <inimax>9</inimax>
+      <iniaug>17</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>3/8</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/0/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>4/0/0</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <reach>-1</reach>
+		<initiativepass>1</initiativepass>
       </bonus>
       <powers>
         <power>Gestalt Consciousness</power>
         <power>Wall Walking</power>
+		<power rating="1">Fragile</power>
       </powers>
       <skills>
-        <skill rating="1">Climbing</skill>
-        <skill rating="2">Infiltration</skill>
-        <skill rating="2">Perception</skill>
+        <skill rating="4">Gymnastics</skill>
+        <skill rating="4">Sneaking</skill>
+        <skill rating="3">Perception</skill>
       </skills>
-      <source>RW</source>
-      <page>98</page>
+      <source>HS</source>
+      <page>47</page>
     </metatype>
     <metatype>
       <id>73b1606c-4838-4e60-95f4-851ba5c9e1c6</id>
@@ -11919,46 +12088,51 @@
       <name>Crow</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>1</bodmin>
-      <bodmax>1</bodmax>
-      <bodaug>1</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>2</reamin>
-      <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <bodmin>0</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>0</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>0</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
       <strmin>0</strmin>
-      <strmax>0</strmax>
-      <straug>0</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>4</intmin>
-      <intmax>4</intmax>
-      <intaug>4</intaug>
-      <logmin>3</logmin>
-      <logmax>3</logmax>
-      <logaug>3</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
+      <strmax>4</strmax>
+      <straug>8</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>2</intmin>
+      <intmax>8</intmax>
+      <intaug>12</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>1</inimin>
+      <inimax>13</inimax>
+      <iniaug>21</iniaug>
       <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Fly 20/40</movement>
+      <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/3</walk>
+	  <run>4/0/6</run>
+	  <sprint>4/1/5</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
@@ -11970,12 +12144,12 @@
         <power>Gestalt Consciousness</power>
       </powers>
       <skills>
-        <skill rating="4">Flight</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="1">Unarmed Combat</skill>
+        <skill rating="6">Flight</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="2">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>98</page>
+      <source>HS</source>
+      <page>45</page>
     </metatype>
     <metatype>
       <id>553deb0a-8ee0-4fdc-9782-f6c8ebf5f96f</id>
@@ -12657,62 +12831,68 @@
       <name>Eagle</name>
       <category>Mundane Critters</category>
       <karma>0</karma>
-      <bodmin>2</bodmin>
-      <bodmax>2</bodmax>
-      <bodaug>2</bodaug>
-      <agimin>5</agimin>
-      <agimax>5</agimax>
-      <agiaug>5</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>2</strmin>
-      <strmax>2</strmax>
-      <straug>2</straug>
-      <chamin>2</chamin>
-      <chamax>2</chamax>
-      <chaaug>2</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>3</logmin>
-      <logmax>3</logmax>
-      <logaug>3</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
+      <bodmin>0</bodmin>
+      <bodmax>6</bodmax>
+      <bodaug>10</bodaug>
+      <agimin>2</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>1</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>0</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
+      <chamin>0</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>1</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>0</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
       <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
-      <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <inimax>14</inimax>
+      <iniaug>22</iniaug>
+      <edgmin>1</edgmin>
+      <edgmax>7</edgmax>
+      <edgaug>7</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Fly 20/80</movement>
+	  <depmin>0</depmin>
+	  <depmax>0</depmax>
+	  <depaug>0</depaug>
+	  <walk>2/1/3</walk>
+	  <run>4/0/7</run>
+	  <sprint>4/1/6</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
-        <power select="Bite/Claw: DV 3P, AP 0">Natural Weapon</power>
+        <power select="Bite/Claw: DV (STR+2)P, AP 0">Natural Weapon</power>
+		<power select="Vision Magnification">Enhanced Senses</power>
       </powers>
       <skills>
         <skill rating="3">Flight</skill>
-        <skill rating="3">Perception</skill>
+        <skill rating="5">Perception</skill>
         <skill rating="2">Tracking</skill>
         <skill rating="3">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>99</page>
+      <source>HS</source>
+      <page>41</page>
     </metatype>
     <metatype>
       <id>02c44024-04af-4242-8c20-f8b5a447c311</id>
@@ -34831,24 +35011,24 @@
       <chamin>F</chamin>
       <chamax>F</chamax>
       <chaaug>F</chaaug>
-      <intmin>F+1</intmin>
-      <intmax>F+1</intmax>
-      <intaug>F+1</intaug>
+      <intmin>F+3</intmin>
+      <intmax>F+3</intmax>
+      <intaug>F+3</intaug>
       <logmin>F+1</logmin>
       <logmax>F+1</logmax>
       <logaug>F+1</logaug>
-      <wilmin>0</wilmin>
-      <wilmax>0</wilmax>
-      <wilaug>0</wilaug>
-      <inimin>(F*3)</inimin>
-      <inimax>(F*3)</inimax>
-      <iniaug>(F*3)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <wilmin>F+2</wilmin>
+      <wilmax>F+2</wilmax>
+      <wilaug>F+2</wilaug>
+      <inimin>(F*2)+1</inimin>
+      <inimax>(F*2)+1</inimax>
+      <iniaug>(F*2)+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
       <resmin>F</resmin>
       <resmax>F</resmax>
       <resaug>F</resaug>
@@ -34868,25 +35048,10 @@
       </powers>
       <skills>
         <skill rating="F">Computer</skill>
-        <skill rating="F">Data Search</skill>
         <skill rating="F">Hacking</skill>
       </skills>
-      <complexforms>
-        <complexform rating="F">Analyze</complexform>
-        <complexform rating="F">Edit</complexform>
-        <complexform rating="F">Encrypt</complexform>
-        <complexform rating="F">Stealth</complexform>
-        <complexform rating="F">Track</complexform>
-      </complexforms>
-      <optionalcomplexforms>
-        <complexform rating="F">Browse</complexform>
-        <complexform rating="F">Command</complexform>
-        <complexform rating="F">Decrypt</complexform>
-        <complexform rating="F">Exploit</complexform>
-        <complexform rating="F">Scan</complexform>
-      </optionalcomplexforms>
-      <source>DIS</source>
-      <page>242</page>
+      <source>SR5</source>
+      <page>258</page>
     </metatype>
     <metatype>
       <id>1eabd4d6-b759-4e89-8478-1d327e2755c3</id>
@@ -34909,24 +35074,24 @@
       <chamin>F</chamin>
       <chamax>F</chamax>
       <chaaug>F</chaaug>
-      <intmin>F+1</intmin>
-      <intmax>F+1</intmax>
-      <intaug>F+1</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>0</wilmin>
-      <wilmax>0</wilmax>
-      <wilaug>0</wilaug>
-      <inimin>(F*3)</inimin>
-      <inimax>(F*3)</inimax>
-      <iniaug>(F*3)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <intmin>F+3</intmin>
+      <intmax>F+3</intmax>
+      <intaug>F+3</intaug>
+      <logmin>F+2</logmin>
+      <logmax>F+2</logmax>
+      <logaug>F+2</logaug>
+      <wilmin>F+1</wilmin>
+      <wilmax>F+1</wilmax>
+      <wilaug>F+1</wilaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
       <resmin>F</resmin>
       <resmax>F</resmax>
       <resaug>F</resaug>
@@ -34948,20 +35113,8 @@
         <skill rating="F">Electronic Warfare</skill>
         <skill rating="F">Hacking</skill>
       </skills>
-      <complexforms>
-        <complexform rating="F">Analyze</complexform>
-        <complexform rating="F">Exploit</complexform>
-        <complexform rating="F">Stealth</complexform>
-      </complexforms>
-      <optionalcomplexforms>
-        <complexform rating="F">Decrypt</complexform>
-        <complexform rating="F">Defuse</complexform>
-        <complexform rating="F">Edit</complexform>
-        <complexform rating="F">Scan</complexform>
-        <complexform rating="F">Spoof</complexform>
-      </optionalcomplexforms>
-      <source>DIS</source>
-      <page>242</page>
+      <source>SR5</source>
+      <page>258</page>
     </metatype>
     <metatype>
       <id>4742c36a-baa9-467b-b2c1-9dc6889a46e2</id>
@@ -34981,27 +35134,27 @@
       <strmin>0</strmin>
       <strmax>0</strmax>
       <straug>0</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
       <intmin>F</intmin>
       <intmax>F</intmax>
       <intaug>F</intaug>
-      <logmin>F-2</logmin>
-      <logmax>F-2</logmax>
-      <logaug>F-2</logaug>
-      <wilmin>0</wilmin>
-      <wilmax>0</wilmax>
-      <wilaug>0</wilaug>
-      <inimin>(F*2)</inimin>
-      <inimax>(F*2)</inimax>
-      <iniaug>(F*2)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <logmin>F+4</logmin>
+      <logmax>F+4</logmax>
+      <logaug>F+4</logaug>
+      <wilmin>F+1</wilmin>
+      <wilmax>F+1</wilmax>
+      <wilaug>F+1</wilaug>
+      <inimin>(F*2)+4</inimin>
+      <inimax>(F*2)+4</inimax>
+      <iniaug>(F*2)+4</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
       <resmin>F</resmin>
       <resmax>F</resmax>
       <resaug>F</resaug>
@@ -35016,29 +35169,15 @@
         </enabletab>
       </bonus>
       <powers>
-        <power>Steganography</power>
+        <power>Camouflage</power>
         <power>Watermark</power>
       </powers>
       <skills>
         <skill rating="F">Computer</skill>
-        <skill rating="F">Data Search</skill>
         <skill rating="F">Electronic Warfare</skill>
       </skills>
-      <complexforms>
-        <complexform rating="F">Analyze</complexform>
-        <complexform rating="F">Browse</complexform>
-        <complexform rating="F">Edit</complexform>
-        <complexform rating="F">Decrypt</complexform>
-      </complexforms>
-      <optionalcomplexforms>
-        <complexform rating="F">Defuse</complexform>
-        <complexform rating="F">Encrypt</complexform>
-        <complexform rating="F">Sniffer</complexform>
-        <complexform rating="F">Stealth</complexform>
-        <complexform rating="F">Linguasoft</complexform>
-      </optionalcomplexforms>
-      <source>DIS</source>
-      <page>242</page>
+      <source>SR5</source>
+      <page>258</page>
     </metatype>
     <metatype>
       <id>72b6f335-4351-4af7-b103-350cb15d2bca</id>
@@ -35058,27 +35197,27 @@
       <strmin>0</strmin>
       <strmax>0</strmax>
       <straug>0</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
-      <intmin>F+2</intmin>
-      <intmax>F+2</intmax>
-      <intaug>F+2</intaug>
+      <chamin>F+3</chamin>
+      <chamax>F+3</chamax>
+      <chaaug>F+3</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
       <logmin>F+1</logmin>
       <logmax>F+1</logmax>
       <logaug>F+1</logaug>
-      <wilmin>0</wilmin>
-      <wilmax>0</wilmax>
-      <wilaug>0</wilaug>
-      <inimin>(F*3)</inimin>
-      <inimax>(F*3)</inimax>
-      <iniaug>(F*3)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <wilmin>F+2</wilmin>
+      <wilmax>F+2</wilmax>
+      <wilaug>F+2</wilaug>
+      <inimin>(F*2)+1</inimin>
+      <inimax>(F*2)+1</inimax>
+      <iniaug>(F*2)+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
       <resmin>F</resmin>
       <resmax>F</resmax>
       <resaug>F</resaug>
@@ -35100,20 +35239,8 @@
         <skill rating="F">Cybercombat</skill>
         <skill rating="F">Hacking</skill>
       </skills>
-      <complexforms>
-        <complexform rating="F">Analyze</complexform>
-        <complexform rating="F">Armor</complexform>
-        <complexform rating="F">Attack</complexform>
-        <complexform rating="F">Stealth</complexform>
-      </complexforms>
-      <optionalcomplexforms>
-        <complexform rating="F">Black Hammer</complexform>
-        <complexform rating="F">Blackout</complexform>
-        <complexform rating="F">Exploit</complexform>
-        <complexform rating="F">Medic</complexform>
-      </optionalcomplexforms>
-      <source>DIS</source>
-      <page>242</page>
+      <source>SR5</source>
+      <page>258</page>
     </metatype>
     <metatype>
       <id>1a34d4b2-2055-47e7-b750-39aa724ce19c</id>
@@ -35133,27 +35260,27 @@
       <strmin>0</strmin>
       <strmax>0</strmax>
       <straug>0</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
+      <chamin>F+1</chamin>
+      <chamax>F+1</chamax>
+      <chaaug>F+1</chaaug>
       <intmin>F</intmin>
       <intmax>F</intmax>
       <intaug>F</intaug>
-      <logmin>F+2</logmin>
-      <logmax>F+2</logmax>
-      <logaug>F+2</logaug>
-      <wilmin>0</wilmin>
-      <wilmax>0</wilmax>
-      <wilaug>0</wilaug>
-      <inimin>(F*2)</inimin>
-      <inimax>(F*2)</inimax>
-      <iniaug>(F*2)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <logmin>F+3</logmin>
+      <logmax>F+3</logmax>
+      <logaug>F+3</logaug>
+      <wilmin>F+2</wilmin>
+      <wilmax>F+2</wilmax>
+      <wilaug>F+2</wilaug>
+      <inimin>(F*2)+3</inimin>
+      <inimax>(F*2)+3</inimax>
+      <iniaug>(F*2)+3</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
       <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
       <resmin>F</resmin>
       <resmax>F</resmax>
       <resaug>F</resaug>
@@ -35169,7 +35296,7 @@
       </bonus>
       <powers>
         <power>Diagnostics</power>
-        <power>Gremlins</power>
+        <power>Gremlins (Sprite)</power>
         <power>Stability</power>
       </powers>
       <skills>
@@ -35177,18 +35304,8 @@
         <skill rating="F">Electronic Warfare</skill>
         <skill rating="F">Hardware</skill>
       </skills>
-      <complexforms>
-        <complexform rating="F">Analyze</complexform>
-        <complexform rating="F">Command</complexform>
-      </complexforms>
-      <optionalcomplexforms>
-        <complexform rating="F">Decrypt</complexform>
-        <complexform rating="F">Edit</complexform>
-        <complexform rating="F">Medic</complexform>
-        <complexform rating="F" category="Autosoft" />
-      </optionalcomplexforms>
-      <source>DIS</source>
-      <page>242</page>
+      <source>SR5</source>
+      <page>258</page>
     </metatype>
     <metatype>
       <id>14c73902-04f5-4638-81b1-c7d8cbe1df7e</id>
