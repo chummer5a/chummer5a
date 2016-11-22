@@ -997,28 +997,18 @@ namespace Chummer
 				lblAGILabel.Enabled = false;
 				lblREALabel.Enabled = false;
 				lblSTRLabel.Enabled = false;
-				lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributePilot");
-				lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeResponse");
-				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeFirewall");
-				lblWILLabel.Enabled = false;
-			}
-			else if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-			{
-				lblRatingLabel.Visible = true;
-				lblRating.Visible = true;
-				lblSystemLabel.Visible = true;
-				lblSystem.Visible = true;
-				lblFirewallLabel.Visible = true;
-				lblFirewall.Visible = true;
-				lblResponseLabel.Visible = true;
-				nudResponse.Visible = true;
-				nudResponse.Enabled = true;
-				nudResponse.Value = _objCharacter.Response;
-				lblSignalLabel.Visible = true;
-				nudSignal.Visible = true;
-				nudSignal.Enabled = true;
-				nudSignal.Value = _objCharacter.Signal;
-			}
+				lblCHALabel.Text = LanguageManager.Instance.GetString("String_Attack");
+				lblINTLabel.Text = LanguageManager.Instance.GetString("String_Sleaze");
+				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_DataProcessing");
+				lblWILLabel.Text = LanguageManager.Instance.GetString("String_Firewall");
+            }
+            else if (_objCharacter.DEP.Value > 0)
+            {
+                lblBODLabel.Enabled = false;
+                lblAGILabel.Enabled = false;
+                lblREALabel.Enabled = false;
+                lblSTRLabel.Enabled = false;
+            }
 
 			mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
 
