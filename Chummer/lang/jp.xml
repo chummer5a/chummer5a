@@ -168,6 +168,10 @@
       <key>Label_Armor</key>
       <text>装甲値:</text>
     </string>
+	<string>
+      <key>Label_Seats</key>
+      <text>席値:</text>
+    </string>
     <string>
       <key>Label_Sensor</key>
       <text>センサー:</text>
