@@ -196,11 +196,8 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objCyberwareNode != null)
-				{
-					if (objCyberwareNode.Attributes["translate"] != null)
-						_strAltCategory = objCyberwareNode.Attributes["translate"].InnerText;
-				}
+				if (objCyberwareNode?.Attributes?["translate"] != null)
+					_strAltCategory = objCyberwareNode.Attributes["translate"].InnerText;
 			}
 
 			// Add Subsytem information if applicable.

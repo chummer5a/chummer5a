@@ -1062,8 +1062,12 @@ namespace Chummer
 				}
 				else
 				{
-					Utils.BreakIfDebug();
-					Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+					if (bonusNode.OuterXml != "<selecttext />")
+					{
+						Utils.BreakIfDebug();
+						Log.Warning(new object[]
+						{"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+					}
 				}
 			}
 			catch (TargetInvocationException ex) when (ex.InnerException.GetType() == typeof(AbortedException))

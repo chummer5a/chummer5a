@@ -3840,11 +3840,22 @@ namespace Chummer.Classes
 			}
 
 			SkillsSection.FilterOptions skills;
+			string strName = "";
 			if (Enum.TryParse(final, out skills))
 			{
-				_objCharacter.SkillsSection.AddSkills(skills);
-				CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, SourceName,
-					Improvement.ImprovementType.SpecialSkills, _strUnique);
+				bool blnAdd = true;
+				if (bonusNode.Attributes["name"] != null)
+				{
+					strName = bonusNode.Attributes["name"].InnerText;
+					blnAdd = _objCharacter.SkillsSection.Skills.All(objSkill => objSkill.Name != strName);
+				}
+
+				if (blnAdd)
+				{
+					_objCharacter.SkillsSection.AddSkills(skills, strName);
+					CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, SourceName,
+						Improvement.ImprovementType.SpecialSkills, _strUnique);
+				}
 			}
 			else
 			{

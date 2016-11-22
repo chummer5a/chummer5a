@@ -4843,6 +4843,9 @@
 					<metatype>Pixie</metatype>
 				</allof>
 			</required>
+			<bonus>
+				<unlockskills name="Assensing">Name</unlockskills>
+			</bonus>
 			<source>SR5</source>
 			<page>309</page>
 		</quality>

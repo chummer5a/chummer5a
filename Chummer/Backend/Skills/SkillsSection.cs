@@ -48,9 +48,9 @@ namespace Chummer.Skills
 			}
 		}
 
-		internal void AddSkills(FilterOptions skills)
+		internal void AddSkills(FilterOptions skills,string strName = "")
 		{
-			var list = GetSkillList(_character, skills);
+			var list = GetSkillList(_character, skills, strName);
 
 			//TODO: Handle adept? Only unlocks assencing if s/he has astral perception power
 			Skills.MergeInto(list, CompareSkills);
@@ -573,7 +573,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		private static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter)
+		public static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
 		{
 			//TODO less retarded way please
 			List<Skill> b = new List<Skill>();
@@ -581,7 +581,7 @@ namespace Chummer.Skills
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
 			// Populate the Skills list.
-			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
+			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter,strName) + "]");
 
 			// First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
 			List<ListItem> lstSkillOrder = new List<ListItem>();
@@ -609,7 +609,7 @@ namespace Chummer.Skills
 			return b;
 		}
 
-		private static string SkillFilter(FilterOptions filter)
+		private static string SkillFilter(FilterOptions filter, string name = "")
 		{
 			switch (filter)
 			{
@@ -631,12 +631,14 @@ namespace Chummer.Skills
 					return " and category = 'Magical Active' and name = 'Spellcasting'";
 				case FilterOptions.Technomancer:
 					return " and category = 'Resonance Active'";
+				case FilterOptions.Name:
+					return $" and name = '{name}'";
 				default:
 					throw new ArgumentOutOfRangeException(nameof(filter), filter, null);
 			}
 		}
 
-		internal enum FilterOptions
+		public enum FilterOptions
 		{
 			All,
 			NonSpecial,
@@ -646,7 +648,8 @@ namespace Chummer.Skills
 			Enchanting,
 			Adept,
 			Technomancer,
-			Spellcasting
+			Spellcasting,
+			Name
 		}
 
 		internal void ForceProperyChangedNotificationAll(string name)

@@ -35,6 +35,9 @@
       <name>Astral Perception</name>
       <points>1</points>
       <adeptway>.5</adeptway>
+			<bonus>
+				<unlockskills name="Assensing">Name</unlockskills>
+			</bonus>
       <levels>no</levels>
       <limit>1</limit>
       <source>SR5</source>
@@ -1148,7 +1151,7 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<unlockskills>Spellcasting</unlockskills>
+				<unlockskills name="Spellcasting">Name</unlockskills>
 				<selectspell ignorerequirements ="true" />
 			</bonus>
 			<source>HT</source>

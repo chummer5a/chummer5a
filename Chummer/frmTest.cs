@@ -97,7 +97,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -105,7 +105,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAccel\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAccel\r\n";
 					}
 					try
 					{
@@ -113,7 +113,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\r\n";
 					}
 					try
 					{
@@ -121,7 +121,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\r\n";
 					}
 					try
 					{
@@ -129,7 +129,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalHandling\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalHandling\r\n";
 					}
 					try
 					{
@@ -137,7 +137,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalSpeed\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalSpeed\r\n";
 					}
 					try
 					{
@@ -145,12 +145,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAvail\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 
@@ -170,7 +170,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -178,7 +178,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -186,12 +186,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedSlots\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedSlots\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -222,7 +222,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -230,7 +230,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAP\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAP\r\n";
 					}
 					try
 					{
@@ -238,7 +238,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -246,7 +246,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalRC\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalRC\r\n";
 					}
 					try
 					{
@@ -254,7 +254,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalReach\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalReach\r\n";
 					}
 					try
 					{
@@ -262,7 +262,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAmmo\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAmmo\r\n";
 					}
 					try
 					{
@@ -270,7 +270,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedConcealability\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedConcealability\r\n";
 					}
 					try
 					{
@@ -278,12 +278,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedDamage\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedDamage\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 
@@ -303,7 +303,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\r\n";
 					}
 					try
 					{
@@ -311,12 +311,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -347,7 +347,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -355,7 +355,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\r\n";
 					}
 					try
 					{
@@ -363,7 +363,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -371,12 +371,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 
@@ -398,7 +398,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -406,12 +406,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -443,7 +443,7 @@ namespace Chummer
 					catch
 					{
 						if (objXmlGear["category"].InnerText != "Mook")
-							txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+							txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -451,7 +451,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -459,7 +459,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedArmorCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedArmorCapacity\r\n";
 					}
 					try
 					{
@@ -467,7 +467,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 					try
 					{
@@ -476,12 +476,12 @@ namespace Chummer
 					catch
 					{
 						if (objXmlGear["category"].InnerText != "Mook")
-							txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\n";
+							txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -527,7 +527,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -535,7 +535,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -543,7 +543,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAgility\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAgility\r\n";
 					}
 					try
 					{
@@ -551,7 +551,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\r\n";
 					}
 					try
 					{
@@ -559,7 +559,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalStrength\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalStrength\r\n";
 					}
 					try
 					{
@@ -567,7 +567,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 					try
 					{
@@ -575,12 +575,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedESS\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedESS\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -608,7 +608,7 @@ namespace Chummer
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -928,7 +928,7 @@ namespace Chummer
 				}
 				catch
 				{
-					txtOutput.Text += _objCharacter.Metatype + " general failure\n";
+					txtOutput.Text += _objCharacter.Metatype + " general failure\r\n";
 				}
 			}
 		}
