@@ -109,6 +109,7 @@
 		<category>Headware</category>
 		<category>Nanocybernetics</category>
 		<category>Soft Nanoware</category>
+		<category>Special Biodrone Cyberware</category>
 	</categories>
 	<cyberwares>
 		<!-- Region Shadowrun 5 -->
@@ -3519,6 +3520,87 @@
 			<cost>750</cost>
 			<source>HT</source>
 			<page>186</page>
+		</cyberware>
+		<!-- End Region -->
+		<!-- Region Howling Shadows -->
+		<cyberware>
+			<id>e36646df-68cf-4289-84e9-cd6fd4859b3c</id>
+			<name>Chameleon Pelt</name>
+			<category>Special Biodrone Cyberware</category>
+			<rating>4</rating>
+			<ess>Rating * 0.3</ess>
+			<capacity>0</capacity>
+			<avail>20F</avail>
+			<cost>Rating * 6000</cost>
+			<source>HS</source>
+			<page>181</page>
+		</cyberware>
+		<cyberware>
+			<id>8538aff0-ab67-4d7b-9310-deae1672e003</id>
+			<name>CAST</name>
+			<category>Special Biodrone Cyberware</category>
+			<ess>0.5</ess>
+			<capacity>0</capacity>
+			<avail>25</avail>
+			<cost>25000</cost>
+			<source>HS</source>
+			<page>181</page>
+		</cyberware>
+		<cyberware>
+			<id>5c5fd1d5-1c45-4fe9-ad03-df83457b33e6</id>
+			<name>CAST w/ Friend or Foe Recognition</name>
+			<category>Special Biodrone Cyberware</category>
+			<ess>0.5</ess>
+			<capacity>0</capacity>
+			<avail>26</avail>
+			<cost>30000</cost>
+			<source>HS</source>
+			<page>181</page>
+		</cyberware>
+		<cyberware>
+			<id>26cd4d9b-60dd-4f3e-b086-7a966c3ed358</id>
+			<name>Orientation Goad</name>
+			<category>Special Biodrone Cyberware</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>500</cost>
+			<source>HS</source>
+			<page>181</page>
+		</cyberware>
+		<cyberware>
+			<id>e7c8dbfa-1b75-44df-9ad0-a5ba65e46cc3</id>
+			<name>Stirrup Interface</name>
+			<category>Special Biodrone Cyberware</category>
+			<rating>3</rating>
+			<ess>3.2 + Rating</ess>
+			<capacity>0</capacity>
+			<avail>FixedValues(15R,21R,28R)</avail>
+			<cost>FixedValues(45000,135000,220000)</cost>
+			<source>HS</source>
+			<page>182</page>
+		</cyberware>
+		<cyberware>
+			<id>ff56647d-300f-4b6c-9744-40eb70210cee</id>
+			<name>SEIS</name>
+			<category>Special Biodrone Cyberware</category>
+			<ess>0.7</ess>
+			<capacity>0</capacity>
+			<avail>25F</avail>
+			<cost>20000</cost>
+			<source>HS</source>
+			<page>182</page>
+		</cyberware>
+		<cyberware>
+			<id>2e510666-bc55-42d8-abcb-d79a907ac646</id>
+			<name>TRACES</name>
+			<category>Special Biodrone Cyberware</category>
+			<ess>0.7</ess>
+			<capacity>0</capacity>
+			<avail>25F</avail>
+			<cost>25000</cost>
+			<source>HS</source>
+			<page>182</page>
 		</cyberware>
 		<!-- End Region -->
 	</cyberwares>

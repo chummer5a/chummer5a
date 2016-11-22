@@ -1063,8 +1063,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>818bf01a-b959-4bb9-b202-45efd3b9819b</id>
@@ -1074,8 +1074,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
@@ -1085,19 +1085,19 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>b561f86f-683c-4ae3-b867-9c628d5f8953</id>
 			<name>Diagnostics</name>
 			<category>Emergent</category>
 			<type />
-			<action />
+			<action>Simple</action>
 			<range />
-			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<duration>Sustained</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>4dc7af87-675c-4014-aa05-de6246fc8c14</id>
@@ -1107,19 +1107,30 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f8ae2d3f-cd93-47d3-bf4c-652464a871ba</id>
+			<name>Gremlins (Sprite)</name>
+			<category>Emergent</category>
+			<type>Device</type>
+			<action>Complex</action>
+			<range />
+			<duration>Instant</duration>
+			<source>SR5</source>
+			<page>257</page>
+		</power>
+		<power>
+			<id>b947d60a-8ac6-4185-8a5c-fc7a24ef69eb</id>
 			<name>Gremlins</name>
 			<category>Emergent</category>
 			<type />
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>217</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>c04021ed-c7c8-4138-881f-30c86f01e43c</id>
@@ -1140,8 +1151,19 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>217</page>
+			<source>HS</source>
+			<page>195</page>
+		</power>
+		<power>
+			<id>f861c488-9818-4a40-a985-0138d3f164d5</id>
+			<name>Resonance Feed</name>
+			<category>Emergent</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>fb24283f-c6d2-4f06-a380-16edb6982cb2</id>
@@ -1173,19 +1195,19 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f4026d71-afcb-430f-9336-56a280a77d36</id>
 			<name>Suppression</name>
 			<category>Emergent</category>
-			<type />
-			<action />
+			<type>Host</type>
+			<action>Complex</action>
 			<range />
-			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<duration>Sustained</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>faa5e5c8-aa8a-45d5-b3f5-dd18c454ba07</id>
@@ -1209,8 +1231,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>7a2a318f-4c30-46e0-9603-7b58dcb48150</id>
@@ -1220,8 +1242,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>e08eeffc-6350-4e4d-9365-6f8530801d12</id>
@@ -1231,8 +1253,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>25316188-db17-4504-b422-07332e908d07</id>
@@ -1564,37 +1586,48 @@
 			<page>304</page>
 		</power>
 		<power>
+			<id>83289bc7-6c5d-4782-9523-bc8e08b0f521</id>
+			<name>Camouflage</name>
+			<category>Emergent</category>
+			<type>File</type>
+			<action>Complex</action>
+			<range />
+			<duration>Permanent</duration>
+			<source>SR5</source>
+			<page>256</page>
+		</power>
+		<power>
 			<id>fc132915-118e-4fd2-a443-2f9799a83b4a</id>
 			<name>Cookie</name>
 			<category>Emergent</category>
-			<type />
-			<action>OT</action>
-			<range>Node</range>
+			<type>Persona</type>
+			<action>Complex</action>
+			<range />
 			<duration>Predetermined by Sprite</duration>
-			<source>SR4</source>
-			<page>242</page>
+			<source>SR5</source>
+			<page>256</page>
 		</power>
 		<power>
 			<id>db290d50-c208-4de6-ad30-85b1b078370c</id>
 			<name>Electron Storm</name>
 			<category>Emergent</category>
-			<type>S</type>
-			<action>C</action>
-			<range>Node</range>
-			<duration>Instant</duration>
-			<source>SR4</source>
-			<page>242</page>
+			<type>Persona</type>
+			<action>Complex</action>
+			<range />
+			<duration>Sustained</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>93507c52-d8fc-4b03-9e27-b24048d87526</id>
 			<name>Hash</name>
 			<category>Emergent</category>
-			<type />
-			<action>Complex</action>
-			<range>Node</range>
-			<duration>Sustained</duration>
-			<source>SR4</source>
-			<page>243</page>
+			<type>File</type>
+			<action>Special</action>
+			<range />
+			<duration>F x 10 Combat Turns</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>384dd7b0-d639-4eeb-894b-31fdc1cbf578</id>
@@ -1611,23 +1644,23 @@
 			<id>b733200f-9911-489d-b555-ebacd16110b0</id>
 			<name>Stability</name>
 			<category>Emergent</category>
-			<type />
+			<type>Persona or Device</type>
 			<action>Complex</action>
-			<range>Node</range>
+			<range />
 			<duration>Sustained</duration>
-			<source>SR4</source>
-			<page>243</page>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>c8840b92-07ae-40a3-bd04-20152bae16b8</id>
 			<name>Watermark</name>
 			<category>Emergent</category>
-			<type />
+			<type>Icon</type>
 			<action>Complex</action>
-			<range>Node</range>
-			<duration>Indefinate</duration>
-			<source>SR4</source>
-			<page>243</page>
+			<range />
+			<duration>Permanent</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>a94dba2a-7699-4eb4-80a8-862f07beb6f6</id>
@@ -2302,6 +2335,257 @@
 			</bonus>
 			<source>HS</source>
 			<page>164</page>
+		</power>
+		<power>
+			<id>64437e82-ac50-40f3-8916-751c124e5676</id>
+			<name>Alienate</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>None</action>
+			<range>LOS</range>
+			<duration>Sustained</duration>
+			<source>HS</source>
+			<page>188</page>
+		</power>
+		<power>
+			<id>adf34ad4-0040-49df-a6dd-bde198c44a44</id>
+			<name>Astral Venom</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>188</page>
+		</power>
+		<power>
+			<id>2cf990bd-f80b-4e56-803d-b8595ef96244</id>
+			<name>Brachiation</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>188</page>
+		</power>
+		<power>
+			<id>6bd03b55-d6fb-4ecb-a098-1c01017bc81c</id>
+			<name>Create Alchera</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>LOS</range>
+			<duration>Sustained</duration>
+			<source>HS</source>
+			<page>189</page>
+		</power>
+		<power>
+			<id>8af6b45a-ed52-4063-a60e-7428a818a7ab</id>
+			<name>Darkness</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>LOS</range>
+			<duration>Sustained</duration>
+			<source>HS</source>
+			<page>189</page>
+		</power>
+		<power>
+			<id>4b017336-7806-4905-a1ca-f540cf88b7b9</id>
+			<name>Deathlock</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>190</page>
+		</power>
+		<power>
+			<id>d769a388-1f25-4ec0-9a7f-9bd37585723b</id>
+			<name>Dive Attack</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<source>HS</source>
+			<page>190</page>
+		</power>
+		<power>
+			<id>faf2f307-c094-4139-ab88-e06f0804d282</id>
+			<name>Entropic Aura</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>190</page>
+		</power>
+		<power>
+			<id>9c80e4ad-5999-4795-a890-0d6a1e5b542e</id>
+			<name>Extra Fragile</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>RF</source>
+			<page>191</page>
+		</power>
+		<power>
+			<id>ce067614-a47e-4536-a13d-09d02b918d3a</id>
+			<name>Flay Touch</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<source>HS</source>
+			<page>191</page>
+		</power>
+		<power>
+			<id>685c4e5c-d21a-4485-aa12-7deb3377d0c5</id>
+			<name>Ghost Chain</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Special</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>192</page>
+		</power>
+		<power>
+			<id>fa15d90c-5e9d-4c3f-b92a-b9cd772091b6</id>
+			<name>Haunt</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Special</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>192</page>
+		</power>
+		<power>
+			<id>9c04aead-af8d-4b17-a6b3-016c855db186</id>
+			<name>Innate Ritual</name>
+			<category>Paranormal</category>
+			<type>As ritual</type>
+			<action>As ritual</action>
+			<range>As ritual</range>
+			<duration>As ritual</duration>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HS</source>
+			<page>193</page>
+		</power>
+		<power>
+			<id>5edec7e8-281d-46f8-bb06-c332e8b1ba59</id>
+			<name>Manipulate Magic</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Touch</range>
+			<duration>Permanent</duration>
+			<source>HS</source>
+			<page>193</page>
+		</power>
+		<power>
+			<id>9c59fb9c-85b4-449a-978a-a07d6ccf31a2</id>
+			<name>Pounce</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<source>HS</source>
+			<page>193</page>
+		</power>
+		<power>
+			<id>fc522b4a-e281-4de0-a824-b1d636fff59b</id>
+			<name>Toughness</name>
+			<category>Mundane</category>
+			<rating>yes</rating>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<bonus>
+				<conditionmonitor>
+					<physical>Rating</physical>
+				</conditionmonitor>
+			</bonus>
+			<source>HS</source>
+			<page>194</page>
+		</power>
+		<power>
+			<id>6be87e77-1073-47fd-a137-b536a8700009</id>
+			<name>Domesticated</name>
+			<category>Mundane</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>fbeb215d-fb20-4151-9fd1-4d3259db9402</id>
+			<name>Gliding</name>
+			<category>Mundane</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>f5515a8b-4c5e-4917-881a-363777ba03e9</id>
+			<name>Critter Cyberpsychosis</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>bfa9a7ec-f184-44cb-8599-96c5c7787595</id>
+			<name>CI3D (Critter Implant Induced Immune Deficiency)</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>03c9acab-d172-4633-8dbf-23ec3b7faf7e</id>
+			<name>CTLE-X (Critter Temporal Lobe Epilepsy)</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>f1a36576-1664-413b-a65f-e3b6115c266e</id>
+			<name>Precarious Physiology</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
 		</power>
 	</powers>
 </chummer>
