@@ -427,6 +427,12 @@ namespace Chummer.Skills
 		{
 			get
 			{
+                if (Name.Contains("Flight"))
+                {
+                    string strFlyString = CharacterObject.Fly;
+                    if (strFlyString == "" || strFlyString == "0" || strFlyString.Contains("Special"))
+                        return false;
+                }
 				//TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
 				if (CharacterObject.Metatype == "A.I.")
 				{
