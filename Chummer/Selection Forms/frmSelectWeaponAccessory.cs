@@ -158,10 +158,7 @@ namespace Chummer
 						continue;
 					ListItem objItem = new ListItem();
 					objItem.Value = objXmlAccessory["name"].InnerText;
-					if (objXmlAccessory["translate"] != null)
-						objItem.Name = objXmlAccessory["translate"].InnerText;
-					else
-						objItem.Name = objXmlAccessory["name"].InnerText;
+					objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objXmlAccessory["name"].InnerText;
 					lstAccessories.Add(objItem);
                 NextItem:;
 				}
@@ -225,7 +222,7 @@ namespace Chummer
 
         private void UpdateMountFields(bool boolChangeExtraMountFirst)
         {
-            if ((cboMount.SelectedItem.ToString() != "None") && (cboExtraMount.SelectedItem.ToString() != "None") 
+            if ((cboMount.SelectedItem.ToString() != "None") && cboExtraMount.SelectedItem != null && (cboExtraMount.SelectedItem.ToString() != "None") 
                 && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
             {
                 if (boolChangeExtraMountFirst)
