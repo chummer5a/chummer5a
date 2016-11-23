@@ -135,6 +135,10 @@ Data Changes:
 - Added custom filters to relevant vehicle/drone mods to stop them from showing up in the list of vehicle/drone mods unless specific conditions are fulfilled (e.g. drone mods only appear when modifying drones, Horseman modpods only appear when modifying a Horseman, etc.).
 - Added a variety of knowledge skills, courtesy of Lochabar. 
 
+Sheet Changes: 
+
+- Fixed an issue with the Fancy Blocks character sheet not preserving linebreaks properly.
+
 Build 187
 
 Application Changes:
