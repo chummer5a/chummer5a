@@ -1925,7 +1925,10 @@
 				<br />
 			</xsl:if>
 			<span style="color:darkgreen;">
-				<sup><i><xsl:value-of select="notes" /></i></sup>
+				<sup><i>
+						<xsl:call-template name="PreserveLineBreaks">
+							<xsl:with-param name="text" select="notes"/>
+						</xsl:call-template></i></sup>
 			</span>
 		</xsl:if>
 	</xsl:template>
