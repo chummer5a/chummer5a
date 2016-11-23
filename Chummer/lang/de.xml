@@ -149,6 +149,10 @@
       <key>Label_Armor</key>
       <text>Panzerung:</text>
     </string>
+	<string>
+		<key>Label_Seats</key>
+		<text>Sitzplätze:</text>
+	</string>
     <string>
       <key>Label_Sensor</key>
       <text>Sensor:</text>

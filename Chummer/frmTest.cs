@@ -101,7 +101,7 @@ namespace Chummer
 					}
 					try
 					{
-						int objValue = objTemp.TotalAccel;
+                        string objValue = objTemp.TotalAccel;
 					}
 					catch
 					{
@@ -133,7 +133,7 @@ namespace Chummer
 					}
 					try
 					{
-						int objValue = objTemp.TotalSpeed;
+						string objValue = objTemp.TotalSpeed;
 					}
 					catch
 					{

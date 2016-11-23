@@ -162,6 +162,10 @@
       <key>Label_Armor</key>
       <text>Blindage :</text>
     </string>
+	<string>
+      <key>Label_Seats</key>
+      <text>Sièges :</text>
+    </string>
     <string>
       <key>Label_Sensor</key>
       <text>Senseurs :</text>
