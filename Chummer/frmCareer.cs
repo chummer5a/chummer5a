@@ -991,7 +991,7 @@ namespace Chummer
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
             // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.EndsWith("Sprite"))
+            if (_objCharacter.Metatype.Contains("Sprite"))
 			{
 				lblBODLabel.Enabled = false;
 				lblAGILabel.Enabled = false;
@@ -1002,7 +1002,7 @@ namespace Chummer
 				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_DataProcessing");
 				lblWILLabel.Text = LanguageManager.Instance.GetString("String_Firewall");
             }
-            else if (_objCharacter.DEP.Value > 0)
+            else if (_objCharacter.Metatype.Contains("Protosapients") || _objCharacter.Metatype.Contains("A.I."))
             {
                 lblBODLabel.Enabled = false;
                 lblAGILabel.Enabled = false;
