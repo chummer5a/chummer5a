@@ -15202,7 +15202,6 @@
 				<power>Engulf</power>
 				<power select="Shatter">Innate Spell</power>
 				<power select="Bite: DV 2P, AP 0, -1 Reach">Natural Weapon</power>
-				<power>Phasing</power>
 			</powers>
 			<skills>
 				<skill rating="2">Perception</skill>
@@ -16071,7 +16070,6 @@
 				</enabletab>
 			</bonus>
 			<powers>
-				<power>Corrosive Secretions</power>
 				<power>Venom</power>
 			</powers>
 			<skills>
@@ -16442,7 +16440,6 @@
 				<power select="Tremorsense">Enhanced Senses</power>
 				<power select="Bite: DV 4P, AP 0">Natural Weapon</power>
 				<power>Regeneration</power>
-				<power>Taint</power>
 				<power select="Sunlight, Mild">Allergy</power>
 			</powers>
 			<skills>
@@ -17490,7 +17487,6 @@
       </bonus>
       <powers>
         <power>Binding</power>
-        <power>Corrosive Secretions</power>
         <power select="Fire">Immunity</power>
         <power select="Cold, Mild">Allergy</power>
       </powers>
@@ -27201,7 +27197,6 @@
         <reach>-1</reach>
       </bonus>
       <powers>
-        <power>Corrosive Secretions</power>
         <power>Engulf</power>
         <power select="Pathogens, Toxins">Immunity</power>
         <power select="Bite: DV 2P, AP 0">Natural Weapon</power>
@@ -32187,7 +32182,6 @@
         <power>Materialization</power>
         <power>Movement</power>
         <power>Personal Domain</power>
-        <power>Phasing</power>
         <power>Sapience</power>
         <power>Search</power>
       </powers>
@@ -33015,8 +33009,6 @@
         <power>Influence</power>
         <power>Noxious Breath</power>
         <power>Venom</power>
-        <power>Metahuman Form</power>
-        <power>Twist Fate</power>
       </powers>
       <skills>
         <skill rating="8">Assensing</skill>
@@ -33110,8 +33102,6 @@
         <power>Influence</power>
         <power>Noxious Breath</power>
         <power>Venom</power>
-        <power>Metahuman Form</power>
-        <power>Twist Fate</power>
       </powers>
       <skills>
         <skill rating="8">Assensing</skill>
@@ -33205,8 +33195,6 @@
         <power>Influence</power>
         <power>Noxious Breath</power>
         <power>Venom</power>
-        <power>Metahuman Form</power>
-        <power>Twist Fate</power>
       </powers>
       <skills>
         <skill rating="8">Assensing</skill>
@@ -33300,8 +33288,6 @@
         <power>Influence</power>
         <power>Noxious Breath</power>
         <power>Venom</power>
-        <power>Metahuman Form</power>
-        <power>Twist Fate</power>
       </powers>
       <skills>
         <skill rating="8">Assensing</skill>
@@ -33881,7 +33867,6 @@
         <power>Dragonspeech</power>
         <power>Engulf</power>
         <power rating="12">Hardened Armor</power>
-        <power>Metahuman Form</power>
         <power rating="12">Mystic Armor</power>
       </powers>
       <optionalpowers>
@@ -34204,7 +34189,7 @@
         </positive>
         <negative>
           <quality>Fragmentation</quality>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -34277,7 +34262,7 @@
         </positive>
         <negative>
           <quality>Fragmentation</quality>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -34351,7 +34336,7 @@
         </positive>
         <negative>
           <quality>Corruptor</quality>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -34427,7 +34412,7 @@
           <quality>Snooper</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -34502,7 +34487,7 @@
           <quality>Rootkit</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -34578,7 +34563,7 @@
           <quality>Spawn</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -34654,7 +34639,7 @@
           <quality>Improved Realignment</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <skills>
@@ -36212,7 +36197,6 @@
       <powers>
         <power rating="3">Armor (Ballistic)</power>
         <power rating="3">Armor (Impact)</power>
-        <power>Corrosive Secretions</power>
         <power>Magical Guard</power>
         <power select="Calws/Bite: (STR/2)+1P, AP 0">Natural Weapon</power>
         <power>Sapience</power>
@@ -36975,6 +36959,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
 		<initiativepass>1</initiativepass>
       </bonus>
       <powers>
@@ -37062,6 +37049,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
       </bonus>
       <powers>
         <power rating="2">Fragile</power>
@@ -37146,6 +37136,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
         <initiativepass>1</initiativepass>
       </bonus>
       <powers>
@@ -37230,6 +37223,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
 		<initiativepass>1</initiativepass>
         <reach>-1</reach>
       </bonus>
@@ -37313,6 +37309,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
         <reach>-1</reach>
 		<initiativepass>1</initiativepass>
       </bonus>
@@ -37396,6 +37395,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
       </bonus>
       <powers>
         <power select="Sonar">Enhanced Senses</power>
@@ -37481,6 +37483,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
       </bonus>
       <powers>
         <power select="Smell">Enhanced Senses</power>
@@ -37563,6 +37568,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
         <reach>-1</reach>
       </bonus>
       <powers>
@@ -37646,6 +37654,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
       </bonus>
       <powers>
 		<power>Domesticated</power>
@@ -37726,6 +37737,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
         <initiativepass>1</initiativepass>
       </bonus>
       <powers>
@@ -37806,6 +37820,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
 		<initiativepass>1</initiativepass>
         <reach>-1</reach>
       </bonus>
@@ -37973,6 +37990,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
         <reach>-1</reach>
       </bonus>
       <powers>
@@ -38051,6 +38071,9 @@
           <name>critter</name>
 		  <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>RES</name>
+        </enableattribute>
       </bonus>
       <powers>
         <power select="Bite/Claw: DV (STR+2)P, AP 0">Natural Weapon</power>
@@ -38130,13 +38153,16 @@
           <quality>Munge</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="3">Computer</skill>
@@ -38203,13 +38229,16 @@
           <quality>Snooper</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="4">Computer</skill>
@@ -38273,13 +38302,16 @@
           <quality>Munge</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="5">Computer</skill>
@@ -38343,7 +38375,7 @@
           <quality>Teergrube</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -38351,6 +38383,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F-1">Computer</skill>
@@ -38421,7 +38456,7 @@
           <quality select="Specific Color in Images">Datavore</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -38429,6 +38464,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -38499,7 +38537,7 @@
           <quality>Redundancy</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -38507,6 +38545,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -38577,13 +38618,16 @@
           <quality>Munge</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="2">Computer</skill>
@@ -38647,13 +38691,16 @@
           <quality>Munge</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="3">Computer</skill>
@@ -38717,13 +38764,16 @@
           <quality>Munge</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="3">Computer</skill>
@@ -38787,7 +38837,7 @@
           <quality select="Unused Process Memory">Datavore</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -38795,6 +38845,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -38863,13 +38916,16 @@
           <quality>Munge</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="3">Computer</skill>
@@ -38939,6 +38995,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -39018,6 +39077,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -39090,7 +39152,7 @@
           <quality>Uncertainty</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -39098,6 +39160,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -39166,7 +39231,7 @@
           <quality select="Running Programs">Datavore</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -39174,6 +39239,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -39244,7 +39312,7 @@
           <quality>Uncertainty</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -39252,6 +39320,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -39324,13 +39395,16 @@
           <quality>Redundancy</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="4">Computer</skill>
@@ -39394,7 +39468,7 @@
           <quality>Sapper</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -39402,6 +39476,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill rating="F">Computer</skill>
@@ -39474,7 +39551,7 @@
           <quality>Redundancy</quality>
         </positive>
         <negative>
-          <quality>Real World Naivete</quality>
+          <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
       <bonus>
@@ -39482,6 +39559,9 @@
           <name>critter</name>
           <name>technomancer</name>
         </enabletab>
+		<enableattribute>
+          <name>DEP</name>
+        </enableattribute>
       </bonus>
       <skills>
         <skill>Computer</skill>
