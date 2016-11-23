@@ -180,11 +180,26 @@ namespace Chummer
 			cboAttribute.DisplayMember = "Name";
         }
 
-		/// <summary>
-		/// Limit the list to a single Attribute.
-		/// </summary>
-		/// <param name="strValue">Single Attribute to display.</param>
-		public void SingleAttribute(string strValue)
+        /// <summary>
+        /// Add DEP to the list of selectable Attributes.
+        /// </summary>
+        public void AddDEP()
+        {
+            ListItem objDEP = new ListItem();
+            objDEP.Value = "DEP";
+            objDEP.Name = LanguageManager.Instance.GetString("String_AttributeDEPShort");
+            _lstAttributes.Add(objDEP);
+            cboAttribute.DataSource = null;
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
+        }
+
+        /// <summary>
+        /// Limit the list to a single Attribute.
+        /// </summary>
+        /// <param name="strValue">Single Attribute to display.</param>
+        public void SingleAttribute(string strValue)
 		{
 			List<ListItem> lstItems = new List<ListItem>();
 			ListItem objItem = new ListItem();

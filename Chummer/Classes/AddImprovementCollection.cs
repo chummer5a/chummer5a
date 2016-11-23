@@ -112,7 +112,14 @@ namespace Chummer.Classes
 				CreateImprovement("RES", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
 					"enableattribute", 0, 0);
 			}
-		}
+            else if (bonusNode["name"].InnerText == "DEP")
+            {
+                _objCharacter.DEPEnabled = true;
+                Log.Info("Calling CreateImprovement for DEP");
+                CreateImprovement("DEP", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
+                    "enableattribute", 0, 0);
+            }
+        }
 
 		// Add an Attribute Replacement.
 		public void replaceattributes(XmlNode bonusNode)
@@ -464,8 +471,10 @@ namespace Chummer.Classes
 					frmPickAttribute.AddMAG();
 				if (_objCharacter.RESEnabled)
 					frmPickAttribute.AddRES();
+                if (_objCharacter.DEPEnabled)
+                    frmPickAttribute.AddDEP();
 
-				Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
+                Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
 
 				if (objXmlAttribute.InnerXml.Contains("<attribute>"))
 				{
@@ -556,8 +565,10 @@ namespace Chummer.Classes
 				frmPickAttribute.AddMAG();
 			if (_objCharacter.RESEnabled)
 				frmPickAttribute.AddRES();
+            if (_objCharacter.DEPEnabled)
+                frmPickAttribute.AddDEP();
 
-			Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
+            Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
 
 			if (bonusNode.InnerXml.Contains("<attribute>"))
 			{
@@ -2509,8 +2520,10 @@ namespace Chummer.Classes
 						frmPickAttribute.AddMAG();
 					if (_objCharacter.RESEnabled)
 						frmPickAttribute.AddRES();
+                    if (_objCharacter.DEPEnabled)
+                        frmPickAttribute.AddDEP();
 
-					if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
+                    if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
 					{
 						List<string> strValue = new List<string>();
 						foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
@@ -2950,8 +2963,10 @@ namespace Chummer.Classes
 								frmPickAttribute.AddMAG();
 							if (_objCharacter.RESEnabled)
 								frmPickAttribute.AddRES();
+                            if (_objCharacter.DEPEnabled)
+                                frmPickAttribute.AddDEP();
 
-							if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
+                            if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
 							{
 								List<string> strValue = new List<string>();
 								foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))

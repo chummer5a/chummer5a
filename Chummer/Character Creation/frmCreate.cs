@@ -70,6 +70,7 @@ namespace Chummer
 			// Add EventHandlers for the various events MAG, RES, Qualities, etc.
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
             _objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
+            _objCharacter.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
             _objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
             _objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
@@ -368,17 +369,14 @@ namespace Chummer
 	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
-			if (_objCharacter.Metatype == "A.I.")
-			{
-				lblDEPAug.Enabled = true;
-				lblDEPLabel.Enabled = true;
-				if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
-				{ 
-					nudDEP.Enabled = true;
-				}
-				nudKDEP.Enabled = true;
-				lblDEPMetatype.Enabled = true;
-			}
+			lblDEPAug.Enabled = _objCharacter.DEPEnabled;
+			lblDEPLabel.Enabled = _objCharacter.DEPEnabled;
+            if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
+			{ 
+				nudDEP.Enabled = _objCharacter.DEPEnabled;
+            }
+			nudKDEP.Enabled = _objCharacter.DEPEnabled;
+            lblDEPMetatype.Enabled = _objCharacter.DEPEnabled;
 
             lblRESLabel.Enabled = _objCharacter.RESEnabled;
             lblRESAug.Enabled = _objCharacter.RESEnabled;
@@ -1052,7 +1050,7 @@ namespace Chummer
                 lblWILLabel.Enabled = false;
                 nudWIL.Enabled = false;
             }
-            else if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+            else if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
             {
                 lblRatingLabel.Visible = true;
                 lblRating.Visible = true;
@@ -1148,6 +1146,7 @@ namespace Chummer
                 // Unsubscribe from events.
                 _objCharacter.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 _objCharacter.RESEnabledChanged -= objCharacter_RESEnabledChanged;
+                _objCharacter.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
                 _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
                 _objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
                 _objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
@@ -1447,6 +1446,38 @@ namespace Chummer
                 // Put RES back to the Metatype minimum.
                 nudRES.Value = nudRES.Minimum;
                 nudKRES.Value = nudKRES.Minimum;
+            }
+        }
+
+        private void objCharacter_DEPEnabledChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            // Change to the status of DEP being enabled.
+            lblDEPLabel.Enabled = _objCharacter.DEPEnabled;
+            lblDEPAug.Enabled = _objCharacter.DEPEnabled;
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                nudDEP.Enabled = _objCharacter.DEPEnabled;
+            }
+            nudKDEP.Enabled = _objCharacter.DEPEnabled;
+            lblDEPMetatype.Enabled = _objCharacter.DEPEnabled;
+
+            if (_objCharacter.DEPEnabled)
+            {
+                int intEssenceLoss = 0;
+                if (!_objOptions.ESSLossReducesMaximumOnly)
+                    intEssenceLoss = _objCharacter.EssencePenalty;
+                nudDEP.Minimum = _objCharacter.DEP.MetatypeMinimum;
+                nudDEP.Maximum = _objCharacter.DEP.MetatypeMaximum + intEssenceLoss;
+                nudKDEP.Maximum = _objCharacter.DEP.MetatypeMaximum + intEssenceLoss;
+            }
+            else
+            {
+                // Put DEP back to the Metatype minimum.
+                nudDEP.Value = nudDEP.Minimum;
+                nudKDEP.Value = nudKDEP.Minimum;
             }
         }
 
@@ -1898,8 +1929,9 @@ namespace Chummer
             _objCharacter.LOG.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.LOG.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
             _objCharacter.WIL.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.WIL.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
             _objCharacter.EDG.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.EDG.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.CHA.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
-            _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.REA.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
+            _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.MAG.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
+            _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.RES.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
+            _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.DEP.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
 
             _objCharacter.BOD.MetatypeMinimum = _objCharacter.BOD.Value;
             _objCharacter.AGI.MetatypeMinimum = _objCharacter.AGI.Value;
@@ -1912,6 +1944,7 @@ namespace Chummer
             _objCharacter.EDG.MetatypeMinimum = _objCharacter.EDG.Value;
             _objCharacter.MAG.MetatypeMinimum = _objCharacter.MAG.Value;
             _objCharacter.RES.MetatypeMinimum = _objCharacter.RES.Value;
+            _objCharacter.DEP.MetatypeMinimum = _objCharacter.DEP.Value;
 
             // Count the number of Skill points the Critter currently has.
             foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
@@ -2108,6 +2141,7 @@ namespace Chummer
             // Record the status of any flags that normally trigger character events.
             bool blnMAGEnabled = _objCharacter.MAGEnabled;
             bool blnRESEnabled = _objCharacter.RESEnabled;
+            bool blnDEPEnabled = _objCharacter.DEPEnabled;
             bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
             bool blnUncouth = _objCharacter.SkillsSection.Uncouth;
             bool blnFriendsInHighPlaces = _objCharacter.FriendsInHighPlaces;
@@ -2586,6 +2620,8 @@ namespace Chummer
                 objCharacter_MAGEnabledChanged(this);
             if (blnRESEnabled != _objCharacter.RESEnabled)
                 objCharacter_RESEnabledChanged(this);
+            if (blnDEPEnabled != _objCharacter.DEPEnabled)
+                objCharacter_DEPEnabledChanged(this);
             if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
                 objCharacter_UneducatedChanged(this);
             if (blnUncouth != _objCharacter.SkillsSection.Uncouth)
@@ -13817,6 +13853,7 @@ namespace Chummer
             {
                 nudMAG.Value = _objCharacter.MAG.Base;
                 nudRES.Value = _objCharacter.RES.Base;
+                nudDEP.Value = _objCharacter.DEP.Base;
             }
 
 			// Metatypes cost Karma.
@@ -14081,7 +14118,7 @@ namespace Chummer
 			        intAtt += Convert.ToInt32(nudMAG.Value - _objCharacter.MAG.TotalMinimum);
 		        if (_objCharacter.RESEnabled)
 			        intAtt += Convert.ToInt32(nudRES.Value - nudRES.Minimum);
-	            if (_objCharacter.Metatype == "A.I.")
+	            if (_objCharacter.DEPEnabled)
 	                intAtt += Convert.ToInt32(nudDEP.Value - nudDEP.Minimum);
 	        }
 
@@ -14108,7 +14145,7 @@ namespace Chummer
 				        intRES += ((Convert.ToInt32(nudRES.Value) + i)*_objOptions.KarmaAttribute);
 			        }
 		        }
-		        if (_objCharacter.Metatype == "A.I.")
+		        if (_objCharacter.DEPEnabled)
 		        {
 			        for (int i = 1; i <= nudKDEP.Value; i++)
 			        {
@@ -14137,7 +14174,7 @@ namespace Chummer
 						intRES += ((1 + i) * _objOptions.KarmaAttribute);
 					}
 				}
-				if (_objCharacter.Metatype == "A.I.")
+				if (_objCharacter.DEPEnabled)
 				{
 					for (int i = 1; i <= nudKDEP.Value; i++)
 					{
@@ -14160,6 +14197,10 @@ namespace Chummer
                 {
                     intRES += intEssenceLoss * Convert.ToInt32(nudRES.Value + nudKRES.Value) * _objOptions.KarmaAttribute;
                 }
+                if (_objCharacter.DEPEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
+                {
+                    intDEP += intEssenceLoss * Convert.ToInt32(nudDEP.Value + nudKDEP.Value) * _objOptions.KarmaAttribute;
+                }
             }
 
             string strTooltip = _objCharacter.EDG.Abbrev + "\t" + intEDG + "\n";
@@ -14171,7 +14212,7 @@ namespace Chummer
             {
                 strTooltip += _objCharacter.RES.Abbrev + "\t" + intRES + "\n";
             }
-            if (_objCharacter.Metatype == "A.I.")
+            if (_objCharacter.DEPEnabled)
             {
                 strTooltip += _objCharacter.DEP.Abbrev + "\t" + intDEP + "\n";
             }
@@ -14736,10 +14777,8 @@ namespace Chummer
 	            RedlinerCheck(); 
 
                 // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
-                if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+                if (_objCharacter.DEPEnabled)
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
-
-                
 
                 // Calculate Free Contacts Points. Free points = (CHA) * 2.
 	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
@@ -14802,6 +14841,7 @@ namespace Chummer
                 {
                     _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intReduction * -1);
                     _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intReduction * -1);
+                    _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intReduction * -1);
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -14953,33 +14993,22 @@ namespace Chummer
                 }
 
                 // Update Living Persona values.
-                if (_objCharacter.RESEnabled)
+                if (_objCharacter.RESEnabled || _objCharacter.DEPEnabled)
                 {
+                    int intMainAttribute = _objCharacter.RES.TotalValue;
+                    if (_objCharacter.DEPEnabled)
+                        intMainAttribute = _objCharacter.DEP.TotalValue;
                     string strPersonaTip = "";
                     int intFirewall = _objCharacter.WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaFirewall);
                     int intResponse = _objCharacter.INT.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaResponse);
-                    int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_objCharacter.RES.TotalValue, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
+                    int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(intMainAttribute, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
                     int intSystem = _objCharacter.LOG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSystem);
                     int intBiofeedback = _objCharacter.CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaBiofeedback);
 
-                    // If this is a Technocritter, their Matrix Attributes always equal their RES.
-                    if (_objCharacter.MetatypeCategory == "Technocritters")
-                    {
-                        intFirewall = _objCharacter.RES.TotalValue;
-                        intSystem = _objCharacter.RES.TotalValue;
-                        intResponse = _objCharacter.RES.TotalValue;
-                        intSignal = _objCharacter.RES.TotalValue;
-                        intBiofeedback = _objCharacter.RES.TotalValue;
-                    }
-
-                    // Make sure none of the Attributes exceed the Technomancer's RES.
-                    intFirewall = Math.Min(intFirewall, _objCharacter.RES.TotalValue);
-                    intResponse = Math.Min(intResponse, _objCharacter.RES.TotalValue);
-                    intSignal = Math.Min(intSignal, _objCharacter.RES.TotalValue);
-                    intSystem = Math.Min(intSystem, _objCharacter.RES.TotalValue);
-
-                    lblLivingPersonaDeviceRating.Text = _objCharacter.RES.TotalValue.ToString();
-                    strPersonaTip = "RES (" + _objCharacter.RES.TotalValue.ToString() + ")";
+                    lblLivingPersonaDeviceRating.Text = intMainAttribute.ToString();
+                    strPersonaTip = "RES (" + intMainAttribute.ToString() + ")";
+                    if (_objCharacter.DEPEnabled)
+                        strPersonaTip = "DEP (" + intMainAttribute.ToString() + ")";
                     tipTooltip.SetToolTip(lblLivingPersonaDeviceRating, strPersonaTip);
 
                     lblLivingPersonaAttack.Text = _objCharacter.CHA.TotalValue.ToString();
@@ -15125,14 +15154,6 @@ namespace Chummer
                 if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Memory) != 0)
                     strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory).ToString() + ")";
                 tipTooltip.SetToolTip(lblMemory, strTip);
-
-                // Update A.I. Attributes.
-                if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-                {
-                    lblRating.Text = _objCharacter.Rating.ToString();
-                    lblSystem.Text = _objCharacter.System.ToString();
-                    lblFirewall.Text = _objCharacter.Firewall.ToString();
-                }
 
                 // If this is a Mutant Critter, determine their Essence loss: -1 for each of: Every 2 points added to a Skill, Each Quality (or Quality Rating). This can be offset by a Negative Quality (or Quality Rating)
                 if (_objCharacter.MetatypeCategory == "Mutant Critters")
@@ -16686,12 +16707,14 @@ namespace Chummer
             //}
 
             // If the character has an Essence Penalty, this needs to be added as a positive value to the character's MAG/RES so that it's correctly shown in Career Mode.
-            if (_objCharacter.EssencePenalty > 0 && (_objCharacter.MAGEnabled || _objCharacter.RESEnabled))
+            if (_objCharacter.EssencePenalty > 0 && (_objCharacter.MAGEnabled || _objCharacter.RESEnabled || _objCharacter.DEPEnabled))
             {
                 if (_objCharacter.MAGEnabled)
                     _objCharacter.MAG.Value += _objCharacter.EssencePenalty;
                 if (_objCharacter.RESEnabled)
                     _objCharacter.RES.Value += _objCharacter.EssencePenalty;
+                if (_objCharacter.DEPEnabled)
+                    _objCharacter.DEP.Value += _objCharacter.EssencePenalty;
             }
 
             // Create an Expense Entry for Starting Nuyen.
@@ -16950,7 +16973,7 @@ namespace Chummer
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSelectedGear.Name + "\" and category = \"" + objSelectedGear.Category + "\"]");
 
             bool blnFakeCareerMode = false;
-            if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+            if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier);
             try
@@ -17161,7 +17184,7 @@ namespace Chummer
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSelectedGear.Name + "\" and category = \"" + objSelectedGear.Category + "\"]");
 
             bool blnFakeCareerMode = false;
-            if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+            if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
@@ -17724,7 +17747,7 @@ namespace Chummer
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 chkVehicleIncludedInWeapon.Checked = false;
 
-                if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+                if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objVehicle.HomeNode;

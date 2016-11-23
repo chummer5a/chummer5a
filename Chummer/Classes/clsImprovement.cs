@@ -1288,7 +1288,28 @@ namespace Chummer
 						if (!blnFound)
 							_objCharacter.RESEnabled = false;
 					}
-				}
+                    else if (objImprovement.ImprovedName == "DEP")
+                    {
+                        // See if the character has anything else that is granting them access to RES.
+                        bool blnFound = false;
+                        foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                        {
+                            // Skip items from the current Improvement source.
+                            if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                            {
+                                if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                                    objCharacterImprovement.UniqueName == "enableattribute" && objCharacterImprovement.ImprovedName == "DEP")
+                                {
+                                    blnFound = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!blnFound)
+                            _objCharacter.DEPEnabled = false;
+                    }
+                }
 
 				// Determine if access to any special tabs have been lost.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialTab && objImprovement.UniqueName == "enabletab")
