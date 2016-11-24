@@ -41,6 +41,8 @@ Application Changes:
 - Added the ability for vehicle mods that alter speed, handling, and/or acceleration to properly subtract values and also to support percentage modifications instead of just flat ones.
 - Added a label for seats to the vehicle selection screen.
 - Vehicle mods can now be configured to be mutually exclusive with other vehicle mods.
+- Vehicles now properly show their total Seats, rather than their base Seats.
+- New Improvement Type: UnarmedReach. Used for granting bonuses to the Unarmed Attack weapon. 
 
 Data Changes: 
 
@@ -134,6 +136,7 @@ Data Changes:
 - Corrected the availability of most vehicles from Stolen Souls (to 4) and the Ares Roadmaster (to 8).
 - Added custom filters to relevant vehicle/drone mods to stop them from showing up in the list of vehicle/drone mods unless specific conditions are fulfilled (e.g. drone mods only appear when modifying drones, Horseman modpods only appear when modifying a Horseman, etc.).
 - Added a variety of knowledge skills, courtesy of Lochabar. 
+- Added a bonus node to the Kick Attack martial art technique that grants additional Reach to the Unarmed Attack weapon. 
 
 Sheet Changes: 
 

@@ -617,8 +617,8 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("pilot", Pilot.ToString());
 			objWriter.WriteElementString("body", TotalBody.ToString());
 			objWriter.WriteElementString("armor", TotalArmor.ToString());
-			objWriter.WriteElementString("seats", _intSeats.ToString());
-			objWriter.WriteElementString("sensor", _intSensor.ToString());
+			objWriter.WriteElementString("seats", TotalSeats.ToString());
+			objWriter.WriteElementString("sensor", CalculatedSensor.ToString());
 			objWriter.WriteElementString("avail", CalculatedAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());
 			objWriter.WriteElementString("owncost", OwnCost.ToString());

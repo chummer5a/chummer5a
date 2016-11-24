@@ -1825,6 +1825,9 @@
     <technique>
       <id>5a29bdb8-5233-44ab-b5e0-5cf892559fc1</id>
       <name>Kick Attack</name>
+			<bonus>
+				<unarmedreach>1</unarmedreach>
+			</bonus>
       <source>RG</source>
       <page>138</page>
     </technique>
