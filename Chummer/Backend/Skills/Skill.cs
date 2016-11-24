@@ -98,7 +98,7 @@ namespace Chummer.Skills
 			objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
 			objWriter.WriteElementString("base", Base.ToString());
 			objWriter.WriteElementString("karma", Karma.ToString());
-			objWriter.WriteElementString("spec", Specialization);
+			objWriter.WriteElementString("spec", DisplaySpecialization);
 			objWriter.WriteElementString("attribute", Attribute);
 			objWriter.WriteElementString("displayattribute", DisplayAttribute);
 			objWriter.WriteElementString("notes", _strNotes);

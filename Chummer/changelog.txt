@@ -41,6 +41,7 @@ Application Changes:
 - Added the ability for vehicle mods that alter speed, handling, and/or acceleration to properly subtract values and also to support percentage modifications instead of just flat ones.
 - Added a label for seats to the vehicle selection screen.
 - Vehicle mods can now be configured to be mutually exclusive with other vehicle mods.
+- Vehicles now properly show their total Seats, rather than their base Seats.
 
 Data Changes: 
 
