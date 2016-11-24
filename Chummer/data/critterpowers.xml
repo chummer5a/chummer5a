@@ -62,6 +62,9 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>SR5</source>
 			<page>394</page>
 		</power>
@@ -168,18 +171,6 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>SR5</source>
-			<page>396</page>
-		</power>
-		<power>
-			<id>33be7248-a267-4085-a5d8-b15bd79d7e5f</id>
-			<name>Engulf</name>
-			<category>Mundane</category>
-			<toxic>yes</toxic>
-			<type>P</type>
-			<action>Complex</action>
-			<range>Touch</range>
-			<duration>Sustained</duration>
 			<source>SR5</source>
 			<page>396</page>
 		</power>
