@@ -2387,11 +2387,11 @@ namespace Chummer.Backend.Equipment
 				if (_strType == "Melee")
 				{
 					// Run through the Character's Improvements and add any Reach Improvements.
-					foreach (Improvement objImprovement in _objCharacter.Improvements)
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled)
-							intReach += Convert.ToInt32(objImprovement.Value);
-					}
+					intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled).Sum(objImprovement => Convert.ToInt32(objImprovement.Value));
+				}
+				if (_strName == "Unarmed Attack")
+				{
+					intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach && objImprovement.Enabled).Sum(objImprovement => Convert.ToInt32(objImprovement.Value));
 				}
 
 				return intReach;

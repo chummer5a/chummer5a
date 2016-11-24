@@ -1561,6 +1561,16 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
+		// Check for Unarmed Armor Penetration.
+		public void unarmedreach(XmlNode bonusNode)
+		{
+			Log.Info("unarmedreach");
+			Log.Info("unarmedreach = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
+				ValueToInt(bonusNode.InnerText, _intRating));
+		}
+
 		// Check for Initiative modifiers.
 		public void initiative(XmlNode bonusNode)
 		{

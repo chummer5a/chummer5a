@@ -174,8 +174,9 @@ namespace Chummer
 			MovementMultiplier,
 			DataStore,
 			BlockSkillDefault,
-			Ambidextrous
-		}
+			Ambidextrous,
+	        UnarmedReach
+        }
 
         public enum ImprovementSource
         {
