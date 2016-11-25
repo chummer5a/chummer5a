@@ -1712,6 +1712,11 @@
 					<quality>Wanted by GOD</quality>
 				</negative>
 			</qualityrestriction>
+			<bonus>
+				<enableattribute>
+					<name>DEP</name>
+				</enableattribute>
+			</bonus>
 			<movement>Special</movement>
 			<source>DT</source>
 			<page>88</page>
@@ -1871,6 +1876,11 @@
 							<quality>Social Stress</quality>
 						</negative>
 					</qualities>
+					<bonus>
+						<enableattribute>
+							<name>DEP</name>
+						</enableattribute>
+					</bonus>
 					<source>DT</source>
 					<page>88</page>
 				</metavariant>
@@ -2029,6 +2039,11 @@
 							<quality select="Original Programming">Driven</quality>
 						</negative>
 					</qualities>
+					<bonus>
+						<enableattribute>
+							<name>DEP</name>
+						</enableattribute>
+					</bonus>
 					<source>DT</source>
 					<page>88</page>
 				</metavariant>
@@ -2194,6 +2209,11 @@
 							<quality select="Original Programming">Driven</quality>
 						</negative>
 					</qualities>
+					<bonus>
+						<enableattribute>
+							<name>DEP</name>
+						</enableattribute>
+					</bonus>
 					<source>DT</source>
 					<page>88</page>
 				</metavariant>

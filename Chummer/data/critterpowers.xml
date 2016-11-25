@@ -50,8 +50,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>SR5</source>
+			<page>394</page>
 		</power>
 		<power>
 			<id>1814f970-111f-4d56-9402-f584daa02663</id>
@@ -62,8 +62,11 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>208</page>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>SR5</source>
+			<page>394</page>
 		</power>
 		<power>
 			<id>0ea84be4-a293-44bf-bc60-52314495cc9a</id>
@@ -73,8 +76,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>SR5</source>
+			<page>394</page>
 		</power>
 		<power>
 			<id>aca5b1a9-6b7f-49fa-aee4-ba20b4ee2f26</id>
@@ -84,8 +87,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Instant</duration>
-			<source>SR4</source>
-			<page>293</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>f6631c45-a705-434c-b4a6-ba2a889d38ff</id>
@@ -95,8 +98,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>1898d408-116a-4f98-b413-939660692ce7</id>
@@ -106,8 +109,8 @@
 			<action>Simple</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>4517126f-6dcf-4c73-b7f5-cac77532c1f5</id>
@@ -118,8 +121,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>1ddf4e08-8249-477c-ba8b-1b910428bf45</id>
@@ -130,8 +133,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>6ca4a4af-7da0-4cc2-b545-0fe0396cfb46</id>
@@ -141,8 +144,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>210</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>37e62625-1099-426f-94c9-2750aaa9902b</id>
@@ -156,8 +159,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>210</page>
+			<source>SR5</source>
+			<page>396</page>
 		</power>
 		<power>
 			<id>37bc7c80-beb9-424d-a4b4-db8d3a31612c</id>
@@ -168,20 +171,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>210</page>
-		</power>
-		<power>
-			<id>33be7248-a267-4085-a5d8-b15bd79d7e5f</id>
-			<name>Engulf</name>
-			<category>Mundane</category>
-			<toxic>yes</toxic>
-			<type>P</type>
-			<action>Complex</action>
-			<range>Touch</range>
-			<duration>Sustained</duration>
-			<source>SR4</source>
-			<page>294</page>
+			<source>SR5</source>
+			<page>396</page>
 		</power>
 		<power>
 			<id>b289f6de-dc68-49a2-9d08-a9dcafdf9bac</id>
@@ -195,8 +186,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>204</page>
+			<source>SR5</source>
+			<page>396</page>
 		</power>
 		<power>
 			<id>24455a2c-c98c-4748-a720-1403a726fd57</id>
@@ -206,8 +197,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Permanent</duration>
-			<source>RF</source>
-			<page>211</page>
+			<source>SR5</source>
+			<page>396</page>
 		</power>
 		<power>
 			<id>953d3e23-cba0-440d-bab4-4234f1090ac5</id>
@@ -218,8 +209,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>212</page>
+			<source>SR5</source>
+			<page>397</page>
 		</power>
 		<power>
 			<id>13dc5c5d-ef46-433e-b27b-5775a57035a8</id>
@@ -229,8 +220,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>212</page>
+			<source>SR5</source>
+			<page>397</page>
 		</power>
 		<power>
 			<id>08b3b1bd-94cc-4468-a61f-31baade2a08e</id>
@@ -244,8 +235,8 @@
 			<bonus>
 				<armor>Rating</armor>
 			</bonus>
-			<source>RF</source>
-			<page>212</page>
+			<source>SR5</source>
+			<page>397</page>
 		</power>
 		<power>
 			<id>c8ad6b5e-5520-4ea6-a472-a1fa51634c74</id>
@@ -259,8 +250,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>212</page>
+			<source>SR5</source>
+			<page>397</page>
 		</power>
 		<power>
 			<id>951cb295-b6c6-4ff2-9a9e-2a49cc047fd1</id>
@@ -270,8 +261,8 @@
 			<action>Auto</action>
 			<range>Touch</range>
 			<duration>Permanent</duration>
-			<source>RF</source>
-			<page>212</page>
+			<source>SR5</source>
+			<page>398</page>
 		</power>
 		<power>
 			<id>e8013773-9497-472e-b2af-e96e49405290</id>
@@ -281,8 +272,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>398</page>
 		</power>
 		<power>
 			<id>fe38ce43-3cf2-456d-aec2-0029e0bf173f</id>
@@ -295,8 +286,8 @@
 			<bonus>
 				<selectspell />
 			</bonus>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>398</page>
 		</power>
 		<power>
 			<id>bf6c7543-0fa6-4297-8690-8230db5e46a8</id>
@@ -306,8 +297,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>398</page>
 		</power>
 		<power>
 			<id>153bc9aa-1a5e-41ac-877d-751470624bc7</id>
@@ -317,8 +308,8 @@
 			<action>Simple</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>398</page>
 		</power>
 		<power>
 			<id>b43373c3-5006-4396-bbbb-a154b8c92eae</id>
@@ -328,8 +319,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>398</page>
 		</power>
 		<power>
 			<id>5090e9d2-07ba-4fb0-965c-5d5de29062b7</id>
@@ -339,8 +330,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>399</page>
 		</power>
 		<power>
 			<id>aa886ded-bf17-43e6-a7b5-82d77ed96a9c</id>
@@ -351,8 +342,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>399</page>
 		</power>
 		<power>
 			<id>9fc065db-9d63-4e8b-aba9-e19dfba07652</id>
@@ -365,8 +356,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>206</page>
+			<source>SR5</source>
+			<page>399</page>
 		</power>
 		<power>
 			<id>4709630d-f2d0-40cc-915b-4f41eb8a4092</id>
@@ -377,8 +368,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>399</page>
 		</power>
 		<power>
 			<id>f2c04372-d264-42fa-b0b4-534035888ad7</id>
@@ -388,8 +379,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SR5</source>
+			<page>399</page>
 		</power>
 		<power>
 			<id>46ee1218-4b63-458d-b9b9-ec5b2bb607f0</id>
@@ -399,8 +390,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>214</page>
+			<source>SR5</source>
+			<page>400</page>
 		</power>
 		<power>
 			<id>244ccf0f-fc77-4690-9441-1cfeb7a6dc2a</id>
@@ -410,8 +401,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>215</page>
+			<source>SR5</source>
+			<page>400</page>
 		</power>
 		<power>
 			<id>4f694634-7c91-4534-a9ff-7f8ae3002a1e</id>
@@ -421,8 +412,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>215</page>
+			<source>SR5</source>
+			<page>400</page>
 		</power>
 		<power>
 			<id>bd881fa0-89e4-4734-816f-7ffe7cf5f35f</id>
@@ -432,8 +423,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>206</page>
+			<source>SR5</source>
+			<page>400</page>
 		</power>
 		<power>
 			<id>5e45dcc0-ec66-4bd5-a855-d3ce577dd2b4</id>
@@ -444,8 +435,8 @@
 			<action>Auto</action>
 			<range>Touch</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>8b460350-fca3-427d-90af-4648666e8723</id>
@@ -458,8 +449,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>215</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>5dad2b71-d7b0-443f-9871-ea01a381b9d0</id>
@@ -469,8 +460,8 @@
 			<action>Complex</action>
 			<range>LOS (A)</range>
 			<duration>Sustained</duration>
-			<source>SM</source>
-			<page>98</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>89ad414a-9854-44b0-b505-ad0186ccb29f</id>
@@ -480,8 +471,8 @@
 			<action>Free</action>
 			<range>Self</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>ae00c4e4-c036-44b2-894b-1a5cd3fc8fae</id>
@@ -491,8 +482,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>c3e2ee0c-7c4d-479f-997d-7079cb4dee7a</id>
@@ -502,8 +493,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>cf03e546-90d9-4c3d-8246-19bf57821731</id>
@@ -513,8 +504,8 @@
 			<action>Special</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>210</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>de152825-2002-4a58-b2a7-08247aae72be</id>
@@ -524,8 +515,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Sustained</duration>
-			<source>SM</source>
-			<page>99</page>
+			<source>SG</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>d10138cc-924a-4f2b-a59b-44e0611fb019</id>
@@ -535,8 +526,8 @@
 			<action>Complex</action>
 			<range>Touch or LOS</range>
 			<duration>Permanent</duration>
-			<source>RF</source>
-			<page>210</page>
+			<source>SG</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f6fb5ceb-91f8-418b-99ee-413e8c16230e</id>
@@ -546,8 +537,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>210</page>
+			<source>SR5</source>
+			<page>396</page>
 		</power>
 		<power>
 			<id>30918b00-6dae-4989-9b6e-219c4bd6ac7e</id>
@@ -557,8 +548,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>SM</source>
-			<page>100</page>
+			<source>SG</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f5a654a0-91e3-4555-aa22-792d012348b8</id>
@@ -568,8 +559,8 @@
 			<action>Free</action>
 			<range>LOS</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SG</source>
+			<page>196</page>
 		</power>
 		<power>
 			<id>033185f0-bade-4824-8569-8604a734e02b</id>
@@ -579,8 +570,8 @@
 			<action>Simple</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SG</source>
+			<page>196</page>
 		</power>
 		<power>
 			<id>a142b612-2f4c-4c97-8b1b-fd15c9f68866</id>
@@ -590,8 +581,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>214</page>
+			<source>SG</source>
+			<page>197</page>
 		</power>
 		<power>
 			<id>21768675-ea17-48f4-abdc-301c3441bf8c</id>
@@ -601,8 +592,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>214</page>
+			<source>SG</source>
+			<page>197</page>
 		</power>
 		<power>
 			<id>2381a322-1b0c-4282-b3af-b28828cdf786</id>
@@ -623,8 +614,8 @@
 			<action>Free</action>
 			<range>Self</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>215</page>
+			<source>SG</source>
+			<page>198</page>
 		</power>
 		<power>
 			<id>4881c2cc-1e45-43ad-89df-9e5b264648f2</id>
@@ -634,8 +625,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>215</page>
+			<source>SG</source>
+			<page>199</page>
 		</power>
 		<power>
 			<id>ea7d01c8-50f5-4d2a-9fac-a750b189ca36</id>
@@ -645,8 +636,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>215</page>
+			<source>SG</source>
+			<page>199</page>
 		</power>
 		<power>
 			<id>f1750d16-5dc2-4c4e-afae-1ad86c520fc6</id>
@@ -656,8 +647,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>SM</source>
-			<page>109</page>
+			<source>SG</source>
+			<page>204</page>
 		</power>
 		<power>
 			<id>189ab2b7-9688-414b-b8ec-35a01db372d4</id>
@@ -667,8 +658,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SG</source>
+			<page>204</page>
 		</power>
 		<power>
 			<id>37a152ee-83ce-4a32-b81b-31e79b42c970</id>
@@ -678,8 +669,8 @@
 			<action>Auto</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>214</page>
+			<source>SG</source>
+			<page>205</page>
 		</power>
 		<power>
 			<id>8e1d96d9-53c9-4924-855c-059815ef973c</id>
@@ -689,8 +680,8 @@
 			<action>Special</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>SM</source>
-			<page>110</page>
+			<source>SG</source>
+			<page>205</page>
 		</power>
 		<power>
 			<id>e6add326-0ed1-41bd-9d00-40ad5b17a35d</id>
@@ -700,8 +691,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Permanent</duration>
-			<source>RF</source>
-			<page>212</page>
+			<source>SG</source>
+			<page>205</page>
 		</power>
 		<power>
 			<id>9942f3f2-b486-44ff-ad34-c56fd9453d41</id>
@@ -711,8 +702,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Instant</duration>
-			<source>SM</source>
-			<page>110</page>
+			<source>SG</source>
+			<page>205</page>
 		</power>
 		<power>
 			<id>ad40556c-6632-4287-bd69-94ff25c7280e</id>
@@ -722,8 +713,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>216</page>
+			<source>SG</source>
+			<page>205</page>
 		</power>
 		<power>
 			<id>44dd8deb-891e-4361-bc0c-47c4258ea6fd</id>
@@ -734,8 +725,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>SG</source>
+			<page>193</page>
 		</power>
 		<power>
 			<id>3c6b961c-cac8-4e45-91ec-03cf612ac3c3</id>
@@ -746,8 +737,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>SG</source>
+			<page>196</page>
 		</power>
 		<power>
 			<id>e525a62b-5762-477d-b242-6e166fdcd6e9</id>
@@ -758,8 +749,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>ea6c345d-1df6-42b9-92bb-b94fef3360f7</id>
@@ -769,8 +760,8 @@
 			<action>Auto</action>
 			<range>Special</range>
 			<duration>Always</duration>
-			<source>SM</source>
-			<page>154</page>
+			<source>SG</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>ecbab218-1ba9-41b6-9add-897ccbbf1d52</id>
@@ -781,8 +772,8 @@
 			<action>Auto</action>
 			<range>Touch</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>206</page>
+			<source>SG</source>
+			<page>197</page>
 		</power>
 		<power>
 			<id>e5859447-89ad-40f1-aea0-8c5f1e53e9de</id>
@@ -792,8 +783,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Special</duration>
-			<source>SM</source>
-			<page>154</page>
+			<source>SG</source>
+			<page>198</page>
 		</power>
 		<power>
 			<id>d9fdc768-9ce4-4c19-8744-b46833349cea</id>
@@ -803,19 +794,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>215</page>
-		</power>
-		<power>
-			<id>ffd80da4-dd7f-40e3-9374-7ccbfe19ada2</id>
-			<name>Adaptive Camouflage</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Auto</action>
-			<range>Self</range>
-			<duration>Always</duration>
-			<source>RF</source>
-			<page>204</page>
+			<source>SG</source>
+			<page>199</page>
 		</power>
 		<power>
 			<id>94e58008-2ab1-41ed-886c-74773ec60067</id>
@@ -825,8 +805,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>205</page>
+			<source>HS</source>
+			<page>192</page>
 		</power>
 		<power>
 			<id>c5a7a660-a036-4b52-a8ab-1e9d7705e65d</id>
@@ -836,12 +816,12 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>205</page>
+			<source>HS</source>
+			<page>192</page>
 		</power>
 		<power>
 			<id>224f6093-af49-4fd4-a30a-b0c38673ffb7</id>
-			<name>Substance Extrusion</name>
+			<name>Secretion/Substance Extrusion</name>
 			<category>Mundane</category>
 			<type>P</type>
 			<action>Auto</action>
@@ -850,8 +830,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>207</page>
+			<source>HS</source>
+			<page>193</page>
 		</power>
 		<power>
 			<id>7cdbe90b-b16a-43c0-a20e-b4a54b83c6ed</id>
@@ -861,8 +841,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>7f98220b-95c4-4b76-aca7-6f0308cf25a7</id>
@@ -872,8 +852,8 @@
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
-			<source>RF</source>
-			<page>208</page>
+			<source>HS</source>
+			<page>188</page>
 		</power>
 		<power>
 			<id>71a78fd2-c75a-46a8-a0f3-320e268a9b4d</id>
@@ -884,8 +864,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>73b0e681-fa65-4253-9010-4bac1f7c3179</id>
@@ -895,20 +875,8 @@
 			<action>Auto</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>209</page>
-		</power>
-		<power>
-			<id>43599de0-dd30-4525-b524-9952283aeb42</id>
-			<name>Corrosive Secretions</name>
-			<category>Paranormal</category>
-			<toxic>yes</toxic>
-			<type>P</type>
-			<action>Auto</action>
-			<range>Self</range>
-			<duration>Always</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>HS</source>
+			<page>188</page>
 		</power>
 		<power>
 			<id>f654869b-d381-4f90-82d6-835f5a4aa0ab</id>
@@ -918,8 +886,8 @@
 			<action>Simple</action>
 			<range>Special</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>209</page>
+			<source>SG</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>6bd7dbfd-1603-4333-86aa-b4b798caf9d1</id>
@@ -929,8 +897,8 @@
 			<action>Auto</action>
 			<range>LOS</range>
 			<duration>Instant</duration>
-			<source>RF</source>
-			<page>210</page>
+			<source>SR5</source>
+			<page>395</page>
 		</power>
 		<power>
 			<id>8df0b8ba-ef4e-41ea-a571-8c21f221cfde</id>
@@ -940,8 +908,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>210</page>
+			<source>HS</source>
+			<page>190</page>
 		</power>
 		<power>
 			<id>ca80b896-a524-435f-a787-8df807567de8</id>
@@ -951,8 +919,8 @@
 			<action>Complex</action>
 			<range>Special</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>212</page>
+			<source>HS</source>
+			<page>191</page>
 		</power>
 		<power>
 			<id>e36812c9-c918-4d38-a71f-79f04a77a924</id>
@@ -963,8 +931,8 @@
 			<action>Auto</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>213</page>
+			<source>HS</source>
+			<page>193</page>
 		</power>
 		<power>
 			<id>525746a4-bd59-4150-8861-2eb2fc7665ac</id>
@@ -985,8 +953,8 @@
 			<action>Complex</action>
 			<range>Touch</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>214</page>
+			<source>SR5</source>
+			<page>400</page>
 		</power>
 		<power>
 			<id>90c79eb4-665a-4844-90f3-e495f8cd3e61</id>
@@ -996,19 +964,8 @@
 			<action>Complex</action>
 			<range>LOS</range>
 			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>214</page>
-		</power>
-		<power>
-			<id>775ee1b0-9e70-4006-8e5c-c1588ac9bfd6</id>
-			<name>Phasing</name>
-			<category>Paranormal</category>
-			<type>P</type>
-			<action>Complex</action>
-			<range>Self</range>
-			<duration>Sustained</duration>
-			<source>RF</source>
-			<page>214</page>
+			<source>SR5</source>
+			<page>400</page>
 		</power>
 		<power>
 			<id>2cadebe7-a32d-4852-ac94-e8b86ca3619a</id>
@@ -1018,20 +975,8 @@
 			<action>Special</action>
 			<range>Special</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>215</page>
-		</power>
-		<power>
-			<id>fb19be93-d1dc-408f-86ca-bc57f25e4790</id>
-			<name>Taint</name>
-			<category>Paranormal</category>
-			<toxic>yes</toxic>
-			<type>M</type>
-			<action>Complex</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<source>RF</source>
-			<page>215</page>
+			<source>SG</source>
+			<page>205</page>
 		</power>
 		<power>
 			<id>a8090271-057c-41d5-bd68-df117ea15b7d</id>
@@ -1041,19 +986,8 @@
 			<action>Free</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RF</source>
-			<page>215</page>
-		</power>
-		<power>
-			<id>4998785a-154e-48f4-98db-c36d3b8f28a3</id>
-			<name>Anthropomorphism</name>
-			<category>Emergent</category>
-			<type />
-			<action />
-			<range />
-			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>bfe55ba6-5625-425d-ad5c-08dd84ef07ca</id>
@@ -1063,8 +997,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>818bf01a-b959-4bb9-b202-45efd3b9819b</id>
@@ -1074,8 +1008,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
@@ -1085,19 +1019,19 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>b561f86f-683c-4ae3-b867-9c628d5f8953</id>
 			<name>Diagnostics</name>
 			<category>Emergent</category>
 			<type />
-			<action />
+			<action>Simple</action>
 			<range />
-			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<duration>Sustained</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>4dc7af87-675c-4014-aa05-de6246fc8c14</id>
@@ -1107,30 +1041,30 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>216</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f8ae2d3f-cd93-47d3-bf4c-652464a871ba</id>
+			<name>Gremlins (Sprite)</name>
+			<category>Emergent</category>
+			<type>Device</type>
+			<action>Complex</action>
+			<range />
+			<duration>Instant</duration>
+			<source>SR5</source>
+			<page>257</page>
+		</power>
+		<power>
+			<id>b947d60a-8ac6-4185-8a5c-fc7a24ef69eb</id>
 			<name>Gremlins</name>
 			<category>Emergent</category>
 			<type />
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>217</page>
-		</power>
-		<power>
-			<id>c04021ed-c7c8-4138-881f-30c86f01e43c</id>
-			<name>Hardening</name>
-			<category>Emergent</category>
-			<type />
-			<action />
-			<range />
-			<duration />
-			<source>RF</source>
-			<page>217</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f66e1630-7b3a-4595-868a-9143b372e6f4</id>
@@ -1140,30 +1074,19 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>217</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
-			<id>fb24283f-c6d2-4f06-a380-16edb6982cb2</id>
-			<name>Resonance Bond</name>
+			<id>f861c488-9818-4a40-a985-0138d3f164d5</id>
+			<name>Resonance Feed</name>
 			<category>Emergent</category>
 			<type />
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>217</page>
-		</power>
-		<power>
-			<id>adc687c3-1af1-430d-bdbb-53b4f4bc943b</id>
-			<name>Resonant Conditioning</name>
-			<category>Emergent</category>
-			<type />
-			<action />
-			<range />
-			<duration />
-			<source>RF</source>
-			<page>217</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>cf509fe7-6b69-4996-8e79-8105e02c2855</id>
@@ -1173,33 +1096,19 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>f4026d71-afcb-430f-9336-56a280a77d36</id>
 			<name>Suppression</name>
 			<category>Emergent</category>
-			<type />
-			<action />
+			<type>Host</type>
+			<action>Complex</action>
 			<range />
-			<duration />
-			<source>RF</source>
-			<page>218</page>
-		</power>
-		<power>
-			<id>faa5e5c8-aa8a-45d5-b3f5-dd18c454ba07</id>
-			<name>Technovantage [Echo]</name>
-			<category>Emergent</category>
-			<type />
-			<action />
-			<range />
-			<duration />
-			<bonus>
-				<selecttext />
-			</bonus>
-			<source>RF</source>
-			<page>218</page>
+			<duration>Sustained</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>1629d45d-f64e-4a39-a2d4-a07f7844f1e4</id>
@@ -1209,8 +1118,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>7a2a318f-4c30-46e0-9603-7b58dcb48150</id>
@@ -1220,8 +1129,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>e08eeffc-6350-4e4d-9365-6f8530801d12</id>
@@ -1231,19 +1140,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>218</page>
-		</power>
-		<power>
-			<id>25316188-db17-4504-b422-07332e908d07</id>
-			<name>Virtual Mimicry</name>
-			<category>Emergent</category>
-			<type />
-			<action />
-			<range />
-			<duration />
-			<source>RF</source>
-			<page>218</page>
+			<source>HS</source>
+			<page>195</page>
 		</power>
 		<power>
 			<id>cc29cf63-fd2b-47bc-8f68-c0c84c4e2986</id>
@@ -1454,8 +1352,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>219</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>f4de6eca-de5c-436b-955d-b322a9ce1a08</id>
@@ -1468,8 +1366,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>219</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>f4865138-c3f0-46e8-8010-6003b1491b96</id>
@@ -1479,8 +1377,8 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>219</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>95dcc093-88b8-4182-b62a-575428b84c84</id>
@@ -1490,25 +1388,25 @@
 			<action />
 			<range />
 			<duration />
-			<source>RF</source>
-			<page>219</page>
+			<source>SG</source>
+			<page>101</page>
 		</power>
 		<power>
 			<id>031c2ae5-80d4-4cda-a2ce-65525970f281</id>
 			<name>Fragile</name>
 			<category>Weakness</category>
-			<type />
-			<action />
-			<range />
-			<duration />
+			<rating>20</rating>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
 			<bonus>
 				<conditionmonitor>
-					<physical>Rating * -2</physical>
-					<stun>Rating * -2</stun>
+					<physical>-Rating</physical>
 				</conditionmonitor>
 			</bonus>
-			<source>RF</source>
-			<page>219</page>
+			<source>HS</source>
+			<page>192</page>
 		</power>
 		<power>
 			<id>e44f268f-de46-4a03-93e8-69570dd7a2eb</id>
@@ -1521,8 +1419,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>219</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>a38a6e6e-c8be-477b-91a9-f285ec1941fa</id>
@@ -1535,8 +1433,8 @@
 			<bonus>
 				<uneducated />
 			</bonus>
-			<source>RF</source>
-			<page>219</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>cc5d600e-c1fd-47d2-affd-38a939cc21ab</id>
@@ -1549,85 +1447,74 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RF</source>
-			<page>219</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
-			<id>dc81347f-7516-42b2-a3fb-e2676dedec1f</id>
-			<name>Twist Fate</name>
-			<category>Dracoforms</category>
-			<type />
-			<action />
+			<id>83289bc7-6c5d-4782-9523-bc8e08b0f521</id>
+			<name>Camouflage</name>
+			<category>Emergent</category>
+			<type>File</type>
+			<action>Complex</action>
 			<range />
-			<duration />
-			<source>SR4</source>
-			<page>304</page>
+			<duration>Permanent</duration>
+			<source>SR5</source>
+			<page>256</page>
 		</power>
 		<power>
 			<id>fc132915-118e-4fd2-a443-2f9799a83b4a</id>
 			<name>Cookie</name>
 			<category>Emergent</category>
-			<type />
-			<action>OT</action>
-			<range>Node</range>
+			<type>Persona</type>
+			<action>Complex</action>
+			<range />
 			<duration>Predetermined by Sprite</duration>
-			<source>SR4</source>
-			<page>242</page>
+			<source>SR5</source>
+			<page>256</page>
 		</power>
 		<power>
 			<id>db290d50-c208-4de6-ad30-85b1b078370c</id>
 			<name>Electron Storm</name>
 			<category>Emergent</category>
-			<type>S</type>
-			<action>C</action>
-			<range>Node</range>
-			<duration>Instant</duration>
-			<source>SR4</source>
-			<page>242</page>
+			<type>Persona</type>
+			<action>Complex</action>
+			<range />
+			<duration>Sustained</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>93507c52-d8fc-4b03-9e27-b24048d87526</id>
 			<name>Hash</name>
 			<category>Emergent</category>
-			<type />
-			<action>Complex</action>
-			<range>Node</range>
-			<duration>Sustained</duration>
-			<source>SR4</source>
-			<page>243</page>
-		</power>
-		<power>
-			<id>384dd7b0-d639-4eeb-894b-31fdc1cbf578</id>
-			<name>Steganography</name>
-			<category>Emergent</category>
-			<type />
-			<action>Complex</action>
-			<range>Node</range>
-			<duration>Indefinate</duration>
-			<source>SR4</source>
-			<page>243</page>
+			<type>File</type>
+			<action>Special</action>
+			<range />
+			<duration>F x 10 Combat Turns</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>b733200f-9911-489d-b555-ebacd16110b0</id>
 			<name>Stability</name>
 			<category>Emergent</category>
-			<type />
+			<type>Persona or Device</type>
 			<action>Complex</action>
-			<range>Node</range>
+			<range />
 			<duration>Sustained</duration>
-			<source>SR4</source>
-			<page>243</page>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>c8840b92-07ae-40a3-bd04-20152bae16b8</id>
 			<name>Watermark</name>
 			<category>Emergent</category>
-			<type />
+			<type>Icon</type>
 			<action>Complex</action>
-			<range>Node</range>
-			<duration>Indefinate</duration>
-			<source>SR4</source>
-			<page>243</page>
+			<range />
+			<duration>Permanent</duration>
+			<source>SR5</source>
+			<page>257</page>
 		</power>
 		<power>
 			<id>a94dba2a-7699-4eb4-80a8-862f07beb6f6</id>
@@ -1637,8 +1524,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RC</source>
-			<page>85</page>
+			<source>RF</source>
+			<page>102</page>
 		</power>
 		<power>
 			<id>9f4e4ee5-5d7b-4360-b91a-15a0c97b2fd9</id>
@@ -1648,8 +1535,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RC</source>
-			<page>85</page>
+			<source>RF</source>
+			<page>102</page>
 		</power>
 		<power>
 			<id>6b9cb5f4-cf9a-4cf2-bfd1-dc585f96e66d</id>
@@ -1659,8 +1546,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RC</source>
-			<page>85</page>
+			<source>RF</source>
+			<page>102</page>
 		</power>
 		<power>
 			<id>3215688d-7c67-46da-ab78-d7c6c6196e65</id>
@@ -1670,8 +1557,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RC</source>
-			<page>85</page>
+			<source>RF</source>
+			<page>102</page>
 		</power>
 		<power>
 			<id>6c64785b-f9f7-4f6b-80de-4065867a9a74</id>
@@ -1681,8 +1568,8 @@
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RC</source>
-			<page>85</page>
+			<source>RF</source>
+			<page>102</page>
 		</power>
 		<power>
 			<id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>
@@ -1706,8 +1593,8 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-			<source>RC</source>
-			<page>83</page>
+			<source>SR5</source>
+			<page>401</page>
 		</power>
 		<power>
 			<id>e6ca8880-91eb-4a09-acee-478bddca145a</id>
@@ -1719,100 +1606,6 @@
 			<duration />
 			<source>RC</source>
 			<page>85</page>
-		</power>
-		<power>
-			<id>f266d2fe-21c7-4ea5-88b2-b346021f26bb</id>
-			<name>Attribute Enhancement</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus>
-				<selectattribute />
-			</bonus>
-			<source>RF</source>
-			<page>28</page>
-		</power>
-		<power>
-			<id>425bdf7b-8587-4506-8c78-f3d4ba959b5a</id>
-			<name>Skill Enhancement</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus>
-				<selectskill>
-					<val>2</val>
-				</selectskill>
-			</bonus>
-			<source>RF</source>
-			<page>28</page>
-		</power>
-		<power>
-			<id>52211b54-9dd0-4eed-9737-643b993c06aa</id>
-			<name>Thicker Hide</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus />
-			<source>RF</source>
-			<page>28</page>
-		</power>
-		<power>
-			<id>66620f18-d1aa-4496-a4c2-3dc538f84a5f</id>
-			<name>Pheromone Coding</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus />
-			<source>RF</source>
-			<page>28</page>
-		</power>
-		<power>
-			<id>f991778b-a46f-42cc-a05d-826aa926e0cb</id>
-			<name>Potent Venom</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus />
-			<source>RF</source>
-			<page>28</page>
-		</power>
-		<power>
-			<id>7e387a67-9e03-4054-aa58-32cafeb2b6f9</id>
-			<name>Chimeric Ability</name>
-			<category>Mundane</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus />
-			<source>RF</source>
-			<page>28</page>
-		</power>
-		<power>
-			<id>e5500bd1-bb07-42bc-b69f-cfc4116548bd</id>
-			<name>Firewall Upgrade</name>
-			<category>Echoes</category>
-			<type>P</type>
-			<action>Special</action>
-			<range>Special</range>
-			<duration>Special</duration>
-			<bonus>
-				<livingpersona>
-					<firewall>1</firewall>
-				</livingpersona>
-			</bonus>
-			<source>SR4</source>
-			<page>243</page>
 		</power>
 		<power>
 			<id>9c5bcd33-ef29-487a-8f3d-5c4f3b314723</id>
@@ -2302,6 +2095,263 @@
 			</bonus>
 			<source>HS</source>
 			<page>164</page>
+		</power>
+		<power>
+			<id>64437e82-ac50-40f3-8916-751c124e5676</id>
+			<name>Alienate</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>None</action>
+			<range>LOS</range>
+			<duration>Sustained</duration>
+			<source>HS</source>
+			<page>188</page>
+		</power>
+		<power>
+			<id>adf34ad4-0040-49df-a6dd-bde198c44a44</id>
+			<name>Astral Venom</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>188</page>
+		</power>
+		<power>
+			<id>2cf990bd-f80b-4e56-803d-b8595ef96244</id>
+			<name>Brachiation</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>188</page>
+		</power>
+		<power>
+			<id>6bd03b55-d6fb-4ecb-a098-1c01017bc81c</id>
+			<name>Create Alchera</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>LOS</range>
+			<duration>Sustained</duration>
+			<source>HS</source>
+			<page>189</page>
+		</power>
+		<power>
+			<id>8af6b45a-ed52-4063-a60e-7428a818a7ab</id>
+			<name>Darkness</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>LOS</range>
+			<duration>Sustained</duration>
+			<source>HS</source>
+			<page>189</page>
+		</power>
+		<power>
+			<id>4b017336-7806-4905-a1ca-f540cf88b7b9</id>
+			<name>Deathlock</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>190</page>
+		</power>
+		<power>
+			<id>d769a388-1f25-4ec0-9a7f-9bd37585723b</id>
+			<name>Dive Attack</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<source>HS</source>
+			<page>190</page>
+		</power>
+		<power>
+			<id>faf2f307-c094-4139-ab88-e06f0804d282</id>
+			<name>Entropic Aura</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>190</page>
+		</power>
+		<power>
+			<id>9c80e4ad-5999-4795-a890-0d6a1e5b542e</id>
+			<name>Extra Fragile</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<bonus>
+				<conditionmonitor>
+					<physical>-20</physical>
+					<stun>-20</stun>
+				</conditionmonitor>
+			</bonus>
+			<source>RF</source>
+			<page>191</page>
+		</power>
+		<power>
+			<id>ce067614-a47e-4536-a13d-09d02b918d3a</id>
+			<name>Flay Touch</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<source>HS</source>
+			<page>191</page>
+		</power>
+		<power>
+			<id>685c4e5c-d21a-4485-aa12-7deb3377d0c5</id>
+			<name>Ghost Chain</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Special</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>192</page>
+		</power>
+		<power>
+			<id>fa15d90c-5e9d-4c3f-b92a-b9cd772091b6</id>
+			<name>Haunt</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Special</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>192</page>
+		</power>
+		<power>
+			<id>9c04aead-af8d-4b17-a6b3-016c855db186</id>
+			<name>Innate Ritual</name>
+			<category>Paranormal</category>
+			<type>As ritual</type>
+			<action>As ritual</action>
+			<range>As ritual</range>
+			<duration>As ritual</duration>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HS</source>
+			<page>193</page>
+		</power>
+		<power>
+			<id>5edec7e8-281d-46f8-bb06-c332e8b1ba59</id>
+			<name>Manipulate Magic</name>
+			<category>Paranormal</category>
+			<type>M</type>
+			<action>Auto</action>
+			<range>Touch</range>
+			<duration>Permanent</duration>
+			<source>HS</source>
+			<page>193</page>
+		</power>
+		<power>
+			<id>9c59fb9c-85b4-449a-978a-a07d6ccf31a2</id>
+			<name>Pounce</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<source>HS</source>
+			<page>193</page>
+		</power>
+		<power>
+			<id>fc522b4a-e281-4de0-a824-b1d636fff59b</id>
+			<name>Toughness</name>
+			<category>Mundane</category>
+			<rating>yes</rating>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<bonus>
+				<conditionmonitor>
+					<physical>Rating</physical>
+				</conditionmonitor>
+			</bonus>
+			<source>HS</source>
+			<page>194</page>
+		</power>
+		<power>
+			<id>6be87e77-1073-47fd-a137-b536a8700009</id>
+			<name>Domesticated</name>
+			<category>Mundane</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>fbeb215d-fb20-4151-9fd1-4d3259db9402</id>
+			<name>Gliding</name>
+			<category>Mundane</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>f5515a8b-4c5e-4917-881a-363777ba03e9</id>
+			<name>Critter Cyberpsychosis</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>bfa9a7ec-f184-44cb-8599-96c5c7787595</id>
+			<name>CI3D (Critter Implant Induced Immune Deficiency)</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>03c9acab-d172-4633-8dbf-23ec3b7faf7e</id>
+			<name>CTLE-X (Critter Temporal Lobe Epilepsy)</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
+		</power>
+		<power>
+			<id>f1a36576-1664-413b-a65f-e3b6115c266e</id>
+			<name>Precarious Physiology</name>
+			<category>Weakness</category>
+			<type />
+			<action />
+			<range />
+			<duration />
+			<source>HS</source>
+			<page>186</page>
 		</power>
 	</powers>
 </chummer>

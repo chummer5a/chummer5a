@@ -76,7 +76,8 @@ namespace Chummer
 			// Add EventHandlers for the MAG and RES enabled events and tab enabled events.
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
 			_objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
-			_objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
+            _objCharacter.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
+            _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
@@ -273,10 +274,10 @@ namespace Chummer
 			treFoci.Visible = _objCharacter.MAGEnabled;
 			cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
-			lblDEPLabel.Enabled = (_objCharacter.Metatype == "A.I.");
-			lblDEPAug.Enabled = (_objCharacter.Metatype == "A.I.");
-			lblDEP.Enabled = (_objCharacter.Metatype == "A.I.");
-			lblDEPMetatype.Enabled = (_objCharacter.Metatype == "A.I.");
+			lblDEPLabel.Enabled = (_objCharacter.DEPEnabled);
+			lblDEPAug.Enabled = (_objCharacter.DEPEnabled);
+			lblDEP.Enabled = (_objCharacter.DEPEnabled);
+			lblDEPMetatype.Enabled = (_objCharacter.DEPEnabled);
 
 			lblRESLabel.Enabled = _objCharacter.RESEnabled;
 			lblRESAug.Enabled = _objCharacter.RESEnabled;
@@ -991,34 +992,24 @@ namespace Chummer
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
             // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.EndsWith("Sprite"))
+            if (_objCharacter.Metatype.Contains("Sprite"))
 			{
 				lblBODLabel.Enabled = false;
 				lblAGILabel.Enabled = false;
 				lblREALabel.Enabled = false;
 				lblSTRLabel.Enabled = false;
-				lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributePilot");
-				lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeResponse");
-				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeFirewall");
-				lblWILLabel.Enabled = false;
-			}
-			else if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-			{
-				lblRatingLabel.Visible = true;
-				lblRating.Visible = true;
-				lblSystemLabel.Visible = true;
-				lblSystem.Visible = true;
-				lblFirewallLabel.Visible = true;
-				lblFirewall.Visible = true;
-				lblResponseLabel.Visible = true;
-				nudResponse.Visible = true;
-				nudResponse.Enabled = true;
-				nudResponse.Value = _objCharacter.Response;
-				lblSignalLabel.Visible = true;
-				nudSignal.Visible = true;
-				nudSignal.Enabled = true;
-				nudSignal.Value = _objCharacter.Signal;
-			}
+				lblCHALabel.Text = LanguageManager.Instance.GetString("String_Attack");
+				lblINTLabel.Text = LanguageManager.Instance.GetString("String_Sleaze");
+				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_DataProcessing");
+				lblWILLabel.Text = LanguageManager.Instance.GetString("String_Firewall");
+            }
+            else if (_objCharacter.Metatype.Contains("Protosapients") || _objCharacter.Metatype.Contains("A.I."))
+            {
+                lblBODLabel.Enabled = false;
+                lblAGILabel.Enabled = false;
+                lblREALabel.Enabled = false;
+                lblSTRLabel.Enabled = false;
+            }
 
 			mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
 
@@ -1115,7 +1106,8 @@ namespace Chummer
 				// Unsubscribe from events.
 				_objCharacter.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
 				_objCharacter.RESEnabledChanged -= objCharacter_RESEnabledChanged;
-				_objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
+                _objCharacter.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
+                _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
 				_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 				_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
 				_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
@@ -1380,7 +1372,19 @@ namespace Chummer
 			}
 		}
 
-		private void objCharacter_AdeptTabEnabledChanged(object sender)
+        private void objCharacter_DEPEnabledChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            // Change to the status of DEP being enabled.
+            lblDEPLabel.Enabled = _objCharacter.DEPEnabled;
+            lblDEPAug.Enabled = _objCharacter.DEPEnabled;
+            lblDEP.Enabled = _objCharacter.DEPEnabled;
+            lblDEPMetatype.Enabled = _objCharacter.DEPEnabled;
+        }
+
+        private void objCharacter_AdeptTabEnabledChanged(object sender)
 		{
 			if (_blnReapplyImprovements)
 				return;
@@ -1716,7 +1720,9 @@ namespace Chummer
 				frmPickAttribute.AddMAG();
 			if (_objCharacter.RESEnabled)
 				frmPickAttribute.AddRES();
-			frmPickAttribute.ShowMetatypeMaximum = true;
+            if (_objCharacter.DEPEnabled)
+                frmPickAttribute.AddDEP();
+            frmPickAttribute.ShowMetatypeMaximum = true;
 			frmPickAttribute.ShowDialog(this);
 
 			if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1780,7 +1786,8 @@ namespace Chummer
 			// Record the status of any flags that normally trigger character events.
 			bool blnMAGEnabled = _objCharacter.MAGEnabled;
 			bool blnRESEnabled = _objCharacter.RESEnabled;
-			bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
+            bool blnDEPEnabled = _objCharacter.DEPEnabled;
+            bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
 			bool blnUncouth = _objCharacter.SkillsSection.Uncouth;
 
 			_blnReapplyImprovements = true;
@@ -2231,7 +2238,9 @@ namespace Chummer
 				objCharacter_MAGEnabledChanged(this);
 			if (blnRESEnabled != _objCharacter.RESEnabled)
 				objCharacter_RESEnabledChanged(this);
-			if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
+            if (blnDEPEnabled != _objCharacter.DEPEnabled)
+                objCharacter_DEPEnabledChanged(this);
+            if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
 				objCharacter_UneducatedChanged(this);
 			if (blnUncouth != _objCharacter.SkillsSection.Uncouth)
 				objCharacter_UncouthChanged(this);
@@ -20419,7 +20428,12 @@ namespace Chummer
 					if (_objCharacter.RES.Value > _objCharacter.RES.TotalMaximum)
 						intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
 				}
-			}
+                else if (_objCharacter.DEPEnabled)
+                {
+                    if (_objCharacter.DEP.Value > _objCharacter.DEP.TotalMaximum)
+                        intEssenceLoss = _objCharacter.DEP.Value - _objCharacter.DEP.TotalMaximum;
+                }
+            }
 
 			lblBOD.Text = _objCharacter.BOD.Value.ToString();
 			lblAGI.Text = _objCharacter.AGI.Value.ToString();
@@ -20603,7 +20617,12 @@ namespace Chummer
 						if (_objCharacter.RES.Value > _objCharacter.RES.TotalMaximum)
 							intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
 					}
-				}
+                    else if (_objCharacter.DEPEnabled)
+                    {
+                        if (_objCharacter.DEP.Value > _objCharacter.DEP.TotalMaximum)
+                            intEssenceLoss = _objCharacter.DEP.Value - _objCharacter.DEP.TotalMaximum;
+                    }
+                }
 
 				// Update the CharacterAttribute information.
 				lblBOD.Text = _objCharacter.BOD.Value.ToString();
@@ -20737,7 +20756,7 @@ namespace Chummer
                     _objCharacter.MAGAdept = _objCharacter.MAG.TotalValue;
 
 				// If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
-				if (_objCharacter.Metatype == "A.I.")
+				if (_objCharacter.DEPEnabled)
 					_objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
 				// If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -20790,14 +20809,18 @@ namespace Chummer
 						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
+                        tipTooltip.SetToolTip(cmdImproveDEP, strTooltip);
+                    }
 					else
 					{
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value + _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value + _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.DEP.Value + _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
+                        tipTooltip.SetToolTip(cmdImproveDEP, strTooltip);
+                    }
 				}
 				else
 				{
@@ -20825,14 +20848,18 @@ namespace Chummer
 						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
+                        tipTooltip.SetToolTip(cmdImproveDEP, strTooltip);
+                    }
 					else
 					{
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveRES, strTooltip);
-					}
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1).ToString()).Replace("{1}", ((_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute).ToString());
+                        tipTooltip.SetToolTip(cmdImproveDEP, strTooltip);
+                    }
 				}
 
 				// Disable any CharacterAttribute Karma buttons that have reached their Total Metatype Maximum.
@@ -20844,7 +20871,6 @@ namespace Chummer
 				cmdImproveINT.Enabled = !(_objCharacter.INT.Value == _objCharacter.INT.TotalMaximum);
 				cmdImproveLOG.Enabled = !(_objCharacter.LOG.Value == _objCharacter.LOG.TotalMaximum);
 				cmdImproveWIL.Enabled = !(_objCharacter.WIL.Value == _objCharacter.WIL.TotalMaximum);
-				cmdImproveDEP.Enabled = !(_objCharacter.DEP.Value == _objCharacter.DEP.TotalMaximum);
 				cmdImproveEDG.Enabled = !(_objCharacter.EDG.Value == _objCharacter.EDG.TotalMaximum);
 
 				// Disable the Magic or Resonance Karma buttons if they have reached their current limits.
@@ -20858,8 +20884,13 @@ namespace Chummer
 				else
 					cmdImproveRES.Enabled = false;
 
-				// Condition Monitor.
-				UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip, _objImprovementManager);
+                if (_objCharacter.DEPEnabled)
+                    cmdImproveDEP.Enabled = !(_objCharacter.DEP.Value - intEssenceLoss >= _objCharacter.DEP.TotalMaximum);
+                else
+                    cmdImproveDEP.Enabled = false;
+
+                // Condition Monitor.
+                UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip, _objImprovementManager);
 				int intCMPhysical = _objCharacter.PhysicalCM;
 				int intCMStun = _objCharacter.StunCM;
 				int intCMOverflow = _objCharacter.CMOverflow;
@@ -21102,33 +21133,22 @@ namespace Chummer
 				}
 
                 // Update Living Persona values.
-                if (_objCharacter.RESEnabled)
+                if (_objCharacter.RESEnabled || _objCharacter.DEPEnabled)
                 {
+                    int intMainAttribute = _objCharacter.RES.TotalValue;
+                    if (_objCharacter.DEPEnabled)
+                        intMainAttribute = _objCharacter.DEP.TotalValue;
                     string strPersonaTip = "";
                     int intFirewall = _objCharacter.WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaFirewall);
                     int intResponse = _objCharacter.INT.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaResponse);
-                    int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_objCharacter.RES.TotalValue, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
+                    int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(intMainAttribute, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
                     int intSystem = _objCharacter.LOG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSystem);
                     int intBiofeedback = _objCharacter.CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaBiofeedback);
 
-                    // If this is a Technocritter, their Matrix Attributes always equal their RES.
-                    if (_objCharacter.MetatypeCategory == "Technocritters")
-                    {
-                        intFirewall = _objCharacter.RES.TotalValue;
-                        intSystem = _objCharacter.RES.TotalValue;
-                        intResponse = _objCharacter.RES.TotalValue;
-                        intSignal = _objCharacter.RES.TotalValue;
-                        intBiofeedback = _objCharacter.RES.TotalValue;
-                    }
-
-                    // Make sure none of the Attributes exceed the Technomancer's RES.
-                    intFirewall = Math.Min(intFirewall, _objCharacter.RES.TotalValue);
-                    intResponse = Math.Min(intResponse, _objCharacter.RES.TotalValue);
-                    intSignal = Math.Min(intSignal, _objCharacter.RES.TotalValue);
-                    intSystem = Math.Min(intSystem, _objCharacter.RES.TotalValue);
-
-                    lblLivingPersonaDeviceRating.Text = _objCharacter.RES.TotalValue.ToString();
-                    strPersonaTip = "RES (" + _objCharacter.RES.TotalValue.ToString() + ")";
+                    lblLivingPersonaDeviceRating.Text = intMainAttribute.ToString();
+                    strPersonaTip = "RES (" + intMainAttribute.ToString() + ")";
+                    if (_objCharacter.DEPEnabled)
+                        strPersonaTip = "DEP (" + intMainAttribute.ToString() + ")";
                     tipTooltip.SetToolTip(lblLivingPersonaDeviceRating, strPersonaTip);
 
                     lblLivingPersonaAttack.Text = _objCharacter.CHA.TotalValue.ToString();
@@ -21257,14 +21277,6 @@ namespace Chummer
 
 				// Career Nuyen.
 				lblCareerNuyen.Text = String.Format("{0:###,###,##0¥}", _objCharacter.CareerNuyen);
-
-				// Update A.I. Attributes.
-				if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-				{
-					lblRating.Text = _objCharacter.Rating.ToString();
-					lblSystem.Text = _objCharacter.System.ToString();
-					lblFirewall.Text = _objCharacter.Firewall.ToString();
-				}
 
 				// Update Damage Resistance Pool.
 				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) + _objCharacter.TotalArmorRating).ToString();
@@ -23893,7 +23905,7 @@ namespace Chummer
 				chkVehicleWeaponAccessoryInstalled.Enabled = false;
 				chkVehicleIncludedInWeapon.Checked = false;
 
-				if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+				if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
 				{
 					chkVehicleHomeNode.Visible = true;
 					chkVehicleHomeNode.Checked = objVehicle.HomeNode;

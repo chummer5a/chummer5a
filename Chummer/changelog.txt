@@ -43,6 +43,8 @@ Application Changes:
 - Vehicle mods can now be configured to be mutually exclusive with other vehicle mods.
 - Vehicles now properly show their total Seats, rather than their base Seats.
 - New Improvement Type: UnarmedReach. Used for granting bonuses to the Unarmed Attack weapon. 
+- Fixed the bug where Matrix entities would have SR4 stats in career mode.
+- Depth is now properly handled in ways similar to Resonance and Magic. While this currently only affects critters, it should be a precursor to AI chargen.
 
 Data Changes: 
 
@@ -137,6 +139,11 @@ Data Changes:
 - Added custom filters to relevant vehicle/drone mods to stop them from showing up in the list of vehicle/drone mods unless specific conditions are fulfilled (e.g. drone mods only appear when modifying drones, Horseman modpods only appear when modifying a Horseman, etc.).
 - Added a variety of knowledge skills, courtesy of Lochabar. 
 - Added a bonus node to the Kick Attack martial art technique that grants additional Reach to the Unarmed Attack weapon. 
+- Added and/or updated all critter powers to SR5, complete with proper references.
+- Added the Flight skill as described by the core rulebook. It will only show up for characters with a non-zero Fly speed.
+- Added and/or updated the following critter types from SR5: mundane critters from both CRB and HS, paracritters from both CRB and HS, technocritters from HS, insect spirits from SG, sprites from CRB, protosapients from HS, infected critters from HS, toxic spirits from SG, shadow spirits from SG, shedim from SG, and blood spirits from SG. Currently, the following entries are missing: toxic critters from HS, otherworldly beings from HS, and the Manananggal and Engkanto from SG.
+- Added all missing Critter Gear from HS.
+- Added Specialized Biodrone Cyberware from HS.
 
 Sheet Changes: 
 
