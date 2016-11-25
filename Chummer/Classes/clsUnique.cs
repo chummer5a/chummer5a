@@ -141,8 +141,8 @@ namespace Chummer
 			{
 				_intMetatypeMin = value;
 				// If changing the Minimum would cause the current value to be outside of its bounds, bring it back within acceptable limits.
-				if (Value < value)
-					Value = value;
+				if (Value < value + MinimumModifiers)
+					Value = value + MinimumModifiers;
 			}
 		}
 
@@ -164,8 +164,8 @@ namespace Chummer
 			{
 				_intMetatypeMax = value;
 				// If changing the Maximum would cause the current value to be outside of its bounds, bring it back within acceptable limits.
-				if (Value > value)
-					Value = value;
+				if (Value > value + MaximumModifiers)
+					Value = value + MaximumModifiers;
 			}
 		}
 
@@ -641,7 +641,7 @@ namespace Chummer
 					intReturn = TotalAugmentedMaximum;
 
 				// An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
+				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES" || _strAbbrev == "DEP")))
 				{
 					if (intReturn < 0)
 						return 0;
@@ -694,7 +694,7 @@ namespace Chummer
 					intReturn = 0;
 				}*/
 
-				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
+				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES" || _strAbbrev == "DEP"))
 				{
 					if (_objCharacter.Options.ESSLossReducesMaximumOnly || _objCharacter.OverrideSpecialAttributeEssenceLoss)
 					{
@@ -743,8 +743,8 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				if (_strAbbrev == "EDG" || _strAbbrev == "MAG" || _strAbbrev == "RES")
-					intReturn = TotalMaximum + AugmentedMaximumModifiers;
+				if (_strAbbrev == "EDG" || _strAbbrev == "MAG" || _strAbbrev == "RES" || _strAbbrev == "DEP")
+                    intReturn = TotalMaximum + AugmentedMaximumModifiers;
 				else
 					intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
                     // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.Instance.CultureInfo) / 2))) + AugmentedMaximumModifiers;
@@ -972,7 +972,7 @@ namespace Chummer
 		{
 			int intBP = 0;
 
-			if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "RES")
+			if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
 			{
 				if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
 				{

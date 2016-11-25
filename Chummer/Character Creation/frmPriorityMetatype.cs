@@ -1562,6 +1562,17 @@ namespace Chummer
                 if (objXmlTalentList[0]["maxresonance"] != null)
                     _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
 
+                // Set starting depth
+                objXmlTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
+                if (objXmlTalentList[0]["depth"] != null)
+                {
+                    _objCharacter.DEP.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["depth"].InnerText);
+                    _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentList[0]["cfp"].InnerText);
+                }
+
+                if (objXmlTalentList[0]["maxdepth"] != null)
+                    _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["depth"].InnerText);
+
                 // Set Free Skills/Skill Groups
                 int intFreeLevels = 0;
                 switch ((cboTalent.SelectedValue.ToString().Split(',')[0]))

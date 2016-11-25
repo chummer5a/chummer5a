@@ -20595,6 +20595,7 @@ namespace Chummer
 				{
                     _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
                     _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                    _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
 
                     if (_objCharacter.AdeptEnabled)
                     {

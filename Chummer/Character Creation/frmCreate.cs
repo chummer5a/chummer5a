@@ -1032,49 +1032,17 @@ namespace Chummer
             // Merge the ToolStrips.
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
-
-            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.EndsWith("Sprite"))
+            
+            if (_objCharacter.Metatype.EndsWith("Sprite") || _objCharacter.DEPEnabled)
             {
-                lblBODLabel.Enabled = false;
-                nudBOD.Enabled = false;
-                lblAGILabel.Enabled = false;
-                nudAGI.Enabled = false;
-                lblREALabel.Enabled = false;
-                nudREA.Enabled = false;
-                lblSTRLabel.Enabled = false;
-                nudSTR.Enabled = false;
-                lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributePilot");
-                lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeResponse");
-                lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeFirewall");
-                lblWILLabel.Enabled = false;
-                nudWIL.Enabled = false;
-            }
-            else if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
-            {
-                lblRatingLabel.Visible = true;
-                lblRating.Visible = true;
-                lblSystemLabel.Visible = true;
-                lblSystem.Visible = true;
-                lblFirewallLabel.Visible = true;
-                lblFirewall.Visible = true;
-                lblResponseLabel.Visible = true;
-                nudResponse.Visible = true;
-                nudResponse.Enabled = true;
-                nudResponse.Value = _objCharacter.Response;
-                lblSignalLabel.Visible = true;
-                nudSignal.Visible = true;
-                nudSignal.Enabled = true;
-                nudSignal.Value = _objCharacter.Signal;
-
                 // Disable the Physical CharacterAttribute controls.
                 lblBODLabel.Enabled = false;
-                lblAGILabel.Enabled = false;
-                lblREALabel.Enabled = false;
-                lblSTRLabel.Enabled = false;
                 nudBOD.Enabled = false;
+                lblAGILabel.Enabled = false;
                 nudAGI.Enabled = false;
+                lblREALabel.Enabled = false;
                 nudREA.Enabled = false;
+                lblSTRLabel.Enabled = false;
                 nudSTR.Enabled = false;
             }
 

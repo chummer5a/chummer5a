@@ -45,6 +45,9 @@ Application Changes:
 - New Improvement Type: UnarmedReach. Used for granting bonuses to the Unarmed Attack weapon. 
 - Fixed the bug where Matrix entities would have SR4 stats in career mode.
 - Depth is now properly handled in ways similar to Resonance and Magic. While this currently only affects critters, it should be a precursor to AI chargen.
+- Fixed a bug where setting the metatype maximum of an attribute to a value lower than the current value would lower the current value, even if the current value was not higher than the total maximum.
+- Removed SR4 labels from Matrix entities in Create mode.
+- Added the ability for priorities to add to Depth.
 
 Data Changes: 
 
