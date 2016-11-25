@@ -48,7 +48,12 @@ namespace Chummer
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
 		}
 
-		private void objCharacter_AdeptTabEnabledChanged(object sender)
+        private void objCharacter_DEPEnabledChanged(object sender)
+        {
+            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
+        }
+
+        private void objCharacter_AdeptTabEnabledChanged(object sender)
 		{
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
 		}
@@ -97,7 +102,8 @@ namespace Chummer
 			// Attach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
 			_objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
-			_objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
+            _objCharacter.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
+            _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
 			_objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
@@ -109,7 +115,8 @@ namespace Chummer
 			// Detach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
 			_objCharacter.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
 			_objCharacter.RESEnabledChanged -= objCharacter_RESEnabledChanged;
-			_objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
+            _objCharacter.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
+            _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
 			_objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
@@ -605,10 +612,7 @@ namespace Chummer
                     _objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetavariant["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resaug"].InnerText, intForce, 0));
                     _objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetavariant["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgaug"].InnerText, intForce, 0));
                     _objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetavariant["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essaug"].InnerText, intForce, 0));
-					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
-					{
-						_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetavariant["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depaug"].InnerText, intForce, 0));
-					}
+					_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetavariant["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depaug"].InnerText, intForce, 0));
 				}
 				else if (_strXmlFile != "critters.xml" || lstMetatypes.SelectedValue.ToString() == "Ally Spirit")
 				{
@@ -625,34 +629,34 @@ namespace Chummer
 					_objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resaug"].InnerText, intForce, 0));
 					_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgaug"].InnerText, intForce, 0));
 					_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
-					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
-					{
-						_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
-					}
+					_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
 				}
 				else
 				{
-					int intMinModifier = -3;
-					if (cboCategory.SelectedValue.ToString() == "Mutant Critters")
-						intMinModifier = 0;
-					_objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3));
-					_objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3));
-					_objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3));
-					_objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, 3));
-					_objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, 3));
-					_objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 3));
-					_objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 3));
-					_objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 3));
-					_objCharacter.INI.AssignLimits(ExpressionToString(objXmlMetatype["inimin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["iniaug"].InnerText, intForce, 0));
-					_objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 3));
-					_objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 3));
-					_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3));
-					_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
-					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
-					{
-						_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
-					}
-				}
+                    int intMinModifier = -3;
+                    int intMaxModifier = 3;
+                    if (cboCategory.SelectedValue.ToString() == "Mutant Critters")
+                        intMinModifier = 0;
+                    if (cboCategory.SelectedValue.ToString() == "Technocritters")
+                    {
+                        intMinModifier = -1;
+                        intMaxModifier = 1;
+                    }
+                    _objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.INI.AssignLimits(ExpressionToString(objXmlMetatype["inimin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["iniaug"].InnerText, intForce, 0));
+                    _objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMaxModifier));
+                    _objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
+                    _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMaxModifier));
+                }
 
 				// If we're working with a Critter, set the Attributes to their default values.
 				if (_strXmlFile == "critters.xml")
@@ -669,29 +673,19 @@ namespace Chummer
 					_objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
 					_objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
 					_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
-					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
-					{
-						_objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0));
-					}
+					_objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0));
 				}
 
-				// Sprites can never have Physical Attributes or WIL.
-				if ((lstMetatypes.SelectedValue.ToString().EndsWith("Sprite") || cboCategory.SelectedValue.ToString().EndsWith("A.I.")))
+				// Sprites can never have Physical Attributes
+				if (_objCharacter.DEPEnabled || lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
 				{
 					_objCharacter.BOD.AssignLimits("0", "0", "0");
 					_objCharacter.AGI.AssignLimits("0", "0", "0");
 					_objCharacter.REA.AssignLimits("0", "0", "0");
 					_objCharacter.STR.AssignLimits("0", "0", "0");
-					_objCharacter.WIL.AssignLimits("0", "0", "0");
-					_objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
+                    _objCharacter.MAG.AssignLimits("0", "0", "0");
+                    _objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
 					_objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
-				}
-
-				// Sprites can never have MAG or RES attributes.
-				if (cboCategory.SelectedValue.ToString().EndsWith("A.I."))
-				{
-					_objCharacter.MAG.AssignLimits("0", "0", "0");
-					_objCharacter.RES.AssignLimits("0", "0", "0");
 				}
 
 				// If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.

@@ -36,6 +36,7 @@
 		<category>Common Programs</category>
 		<category>Communications and Countermeasures</category>
 		<category>Contracts/Upkeep</category>
+		<category>Critter Gear</category>
 		<category>Custom</category>
 		<category>Cyberdeck Modules</category>
 		<category>Cyberdecks</category>
@@ -4213,38 +4214,6 @@
 			<cost>50</cost>
 			<source>SR5</source>
 			<page>443</page>
-		</gear>
-		<gear>
-			<id>bedcaf29-5b6e-4135-8589-d8b5a1291afb</id>
-			<name>Critter Earphones</name>
-			<category>Audio Devices</category>
-			<rating>6</rating>
-			<capacity>Rating</capacity>
-			<avail>3</avail>
-			<cost>Rating * 50</cost>
-			<source>HS</source>
-			<page>185</page>
-		</gear>
-		<gear>
-			<id>098beed4-c197-432e-adb9-bedba3eda18a</id>
-			<name>Critter Goggles</name>
-			<category>Vision Devices</category>
-			<rating>6</rating>
-			<capacity>Rating</capacity>
-			<avail>3</avail>
-			<cost>Rating * 50</cost>
-			<source>HS</source>
-			<page>185</page>
-		</gear>
-		<gear>
-			<id>df3e6d75-4f97-4ad3-a944-02b8f0733b78</id>
-			<name>Training Kit</name>
-			<category>Miscellany</category>
-			<rating>0</rating>
-			<avail>1</avail>
-			<cost>250</cost>
-			<source>HS</source>
-			<page>185</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Audio Enhancements -->
@@ -10575,6 +10544,64 @@
 			<cost>250</cost>
 			<source>CF</source>
 			<page>152</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Critter Gear -->
+		<gear>
+			<id>1f78e254-59a9-45ae-8936-cccc71484402</id>
+			<name>Sensor Collar</name>
+			<category>Critter Gear</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>200</cost>
+			<gears>
+				<usegear>
+					<name>Camera</name>
+					<category>Vision Devices</category>
+					<rating>2</rating>
+					<capacity>2</capacity>
+				</usegear>
+				<usegear>
+					<name>Microphone, Omni-Directional</name>
+					<category>Audio Devices</category>
+					<rating>2</rating>
+					<capacity>2</capacity>
+				</usegear>
+			</gears>
+			<source>HS</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>bedcaf29-5b6e-4135-8589-d8b5a1291afb</id>
+			<name>Critter Earphones</name>
+			<category>Audio Devices</category>
+			<rating>6</rating>
+			<capacity>Rating</capacity>
+			<avail>3</avail>
+			<cost>Rating * 50</cost>
+			<source>HS</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>098beed4-c197-432e-adb9-bedba3eda18a</id>
+			<name>Critter Goggles</name>
+			<category>Vision Devices</category>
+			<rating>6</rating>
+			<capacity>Rating</capacity>
+			<avail>3</avail>
+			<cost>Rating * 50</cost>
+			<source>HS</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>df3e6d75-4f97-4ad3-a944-02b8f0733b78</id>
+			<name>Training Kit</name>
+			<category>Critter Gear</category>
+			<rating>0</rating>
+			<avail>1</avail>
+			<cost>250</cost>
+			<source>HS</source>
+			<page>185</page>
 		</gear>
 		<!-- End Region -->
 		<gear>

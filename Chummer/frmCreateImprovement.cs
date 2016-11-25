@@ -173,7 +173,9 @@ namespace Chummer
 					frmPickAttribute.AddMAG();
 				if (_objCharacter.RESEnabled)
 					frmPickAttribute.AddRES();
-				frmPickAttribute.ShowDialog(this);
+                if (_objCharacter.DEPEnabled)
+                    frmPickAttribute.AddDEP();
+                frmPickAttribute.ShowDialog(this);
 
 				if (frmPickAttribute.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickAttribute.SelectedAttribute;

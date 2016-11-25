@@ -652,6 +652,24 @@
 			<page>144</page>
 		</skill>
 		<skill>
+			<id>27db6e2a-a49f-4232-b150-e676b8dacb52</id>
+			<name>Flight</name>
+			<attribute>AGI</attribute>
+			<category>Physical Active</category>
+			<default>No</default>
+			<skillgroup>Athletics</skillgroup>
+			<specs>
+				<spec>Desert</spec>
+				<spec>Distance</spec>
+				<spec>Sprinting</spec>
+				<spec>Urban</spec>
+				<spec>Wilderness</spec>
+				<spec>[Terrain]</spec>
+			</specs>
+			<source>SR5</source>
+			<page>394</page>
+		</skill>
+		<skill>
 			<id>c9f52f97-a284-44a7-8af6-802dd3ed554f</id>
 			<name>Forgery</name>
 			<attribute>LOG</attribute>

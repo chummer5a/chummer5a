@@ -217,6 +217,7 @@ namespace Chummer
 
 		private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
+        private bool _blnDEPEnabled = false;
         private bool _blnGroupMember = false;
         private string _strGroupName = "";
         private string _strGroupNotes = "";
@@ -318,7 +319,8 @@ namespace Chummer
 		public event OverclockerChangedHandler OverclockerChanged;
 		public event PrototypeTranshumanChangedHandler PrototypeTranshumanChanged;
 		public event RESEnabledChangedHandler RESEnabledChanged;
-		public event RestrictedGearChangedHandler RestrictedGearChanged;
+        public event DEPEnabledChangedHandler DEPEnabledChanged;
+        public event RestrictedGearChangedHandler RestrictedGearChanged;
 	    public event TechnomancerTabEnabledChangedHandler TechnomancerTabEnabledChanged;
 	    public event TrustFundChangedHandler TrustFundChanged;
 
@@ -585,13 +587,7 @@ namespace Chummer
             _attMAG.Save(objWriter);
             _attRES.Save(objWriter);
             _attESS.Save(objWriter);
-			// Include any special A.I. Attributes if applicable.
-			if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-			{
-				_attDEP.Save(objWriter);
-				objWriter.WriteElementString("response", _intResponse.ToString());
-                objWriter.WriteElementString("signal", _intSignal.ToString());
-            }
+			_attDEP.Save(objWriter);
             // </attributes>
             objWriter.WriteEndElement();
 
@@ -603,6 +599,8 @@ namespace Chummer
             objWriter.WriteElementString("resenabled", _blnRESEnabled.ToString());
             // <submersiongrade />
             objWriter.WriteElementString("submersiongrade", _intSubmersionGrade.ToString());
+            // <depenabled />
+            objWriter.WriteElementString("depenabled", _blnDEPEnabled.ToString());
             // <groupmember />
             objWriter.WriteElementString("groupmember", _blnGroupMember.ToString());
             // <groupname />
@@ -1181,7 +1179,14 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("initiategrade", out _intInitiateGrade);
             _blnRESEnabled = Convert.ToBoolean(objXmlCharacter["resenabled"].InnerText);
 		    objXmlCharacter.TryGetField("submersiongrade", out _intSubmersionGrade);
-		    objXmlCharacter.TryGetField("groupmember", out _blnGroupMember);
+            try
+            {
+                _blnDEPEnabled = Convert.ToBoolean(objXmlCharacter["depenabled"].InnerText);
+            }
+            catch
+            {
+            }
+            objXmlCharacter.TryGetField("groupmember", out _blnGroupMember);
             try
             {
                 _strGroupName = objXmlCharacter["groupname"].InnerText;
@@ -1258,8 +1263,6 @@ namespace Chummer
 			{
 				objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
 				_attDEP.Load(objXmlCharacter);
-				_intSignal = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/signal").InnerText);
-                _intResponse = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/response").InnerText);
             }
             catch
             {
@@ -2108,15 +2111,7 @@ namespace Chummer
             _attEDG.Print(objWriter);
             _attMAG.Print(objWriter);
             _attRES.Print(objWriter);
-            if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-			{
-				_attDEP.Print(objWriter);
-				objWriter.WriteElementString("signal", _intSignal.ToString());
-                objWriter.WriteElementString("response", _intResponse.ToString());
-                objWriter.WriteElementString("system", System.ToString());
-                objWriter.WriteElementString("firewall", Firewall.ToString());
-                objWriter.WriteElementString("rating", Rating.ToString());
-            }
+			_attDEP.Print(objWriter);
 
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name", "ESS");
@@ -2184,6 +2179,8 @@ namespace Chummer
             objWriter.WriteElementString("resenabled", _blnRESEnabled.ToString());
             // <submersiongrade />
             objWriter.WriteElementString("submersiongrade", _intSubmersionGrade.ToString());
+            // <depenabled />
+            objWriter.WriteElementString("depenabled", _blnDEPEnabled.ToString());
             // <groupmember />
             objWriter.WriteElementString("groupmember", _blnGroupMember.ToString());
             // <groupname />
@@ -2666,6 +2663,7 @@ namespace Chummer
 			_attDEP._objCharacter = this;
 			_blnMAGEnabled = false;
             _blnRESEnabled = false;
+            _blnDEPEnabled = false;
             _blnGroupMember = false;
             _strGroupName = "";
             _strGroupNotes = "";
@@ -4303,6 +4301,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Is the DEP CharacterAttribute enabled?
+        /// </summary>
+        public bool DEPEnabled
+        {
+            get
+            {
+                return _blnDEPEnabled;
+            }
+            set
+            {
+                bool blnOldValue = _blnDEPEnabled;
+                _blnDEPEnabled = value;
+                if (value && Created)
+                    _decEssenceAtSpecialStart = Essence;
+                try
+                {
+                    if (blnOldValue != value)
+                        DEPEnabledChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
         /// Submersion Grade.
         /// </summary>
         public int SubmersionGrade
@@ -5663,7 +5687,7 @@ namespace Chummer
             get
             {
 				int intCMPhysical = 0;
-				if (_strMetatype == "A.I.")
+				if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
 				{
 					// A.I.s add 1/2 their System to Physical CM since they do not have BOD.
 					double dblDEP = _attDEP.TotalValue;
@@ -5691,7 +5715,7 @@ namespace Chummer
                 int intCMStun = (int)Math.Ceiling(dblWIL / 2) + 8;
                 // Include Improvements in the Condition Monitor values.
                 intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
+                if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
                 {
                     // A.I. do not have a Stun Condition Monitor.
                     intCMStun = 0;
@@ -5735,7 +5759,7 @@ namespace Chummer
                 // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
                 double dblBOD = _attBOD.TotalValue;
                 int intCMOverflow = Convert.ToInt32(dblBOD) + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
+                if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
                 {
                     // A.I. do not have an Overflow Condition Monitor.
                     intCMOverflow = 0;

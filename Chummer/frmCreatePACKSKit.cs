@@ -124,7 +124,8 @@ namespace Chummer
 				int intWIL = _objCharacter.WIL.Value - (_objCharacter.WIL.MetatypeMinimum - 1);
 				int intEDG = _objCharacter.EDG.Value - (_objCharacter.EDG.MetatypeMinimum - 1);
 				int intMAG = _objCharacter.MAG.Value - (_objCharacter.MAG.MetatypeMinimum - 1);
-				int intRES = _objCharacter.RES.Value - (_objCharacter.RES.MetatypeMinimum - 1);
+                int intDEP = _objCharacter.DEP.Value - (_objCharacter.DEP.MetatypeMinimum - 1);
+                int intRES = _objCharacter.RES.Value - (_objCharacter.RES.MetatypeMinimum - 1);
 				// <attributes>
 				objWriter.WriteStartElement("attributes");
 				objWriter.WriteElementString("bod", intBOD.ToString());
@@ -140,8 +141,10 @@ namespace Chummer
 					objWriter.WriteElementString("mag", intMAG.ToString());
 				if (_objCharacter.RESEnabled)
 					objWriter.WriteElementString("res", intRES.ToString());
-				// </attributes>
-				objWriter.WriteEndElement();
+                if (_objCharacter.DEPEnabled)
+                    objWriter.WriteElementString("dep", intDEP.ToString());
+                // </attributes>
+                objWriter.WriteEndElement();
 			}
 
 			// Export Qualities.
