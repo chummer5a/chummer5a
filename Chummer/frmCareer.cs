@@ -20015,6 +20015,7 @@ namespace Chummer
 			_objCharacter.PhysicalCMFilled = intFillCount;
 
 			UpdateCharacterInfo();
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -20058,11 +20059,12 @@ namespace Chummer
 			}
 			
 			_objCharacter.StunCMFilled = intFillCount;
-			
-			UpdateCharacterInfo();
+		    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
+		    UpdateCharacterInfo();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
+
 		}
 
 		private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)

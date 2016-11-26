@@ -49,6 +49,7 @@ Application Changes:
 - Removed SR4 labels from Matrix entities in Create mode.
 - Added the ability for priorities to add to Depth.
 - Added the AddSkillSpecialisation bonus type, which allows for adding a free specialisation to a skill. 
+- Changes to the condition monitor now immediately refresh skill dicepools.
 
 Data Changes: 
 
