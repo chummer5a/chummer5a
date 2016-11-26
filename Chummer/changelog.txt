@@ -49,6 +49,7 @@ Application Changes:
 - Removed SR4 labels from Matrix entities in Create mode.
 - Added the ability for priorities to add to Depth.
 - Wound modifiers now can't cause dicepools to go below zero.
+- Changes to the condition monitor now imediatly refreshes skill dicepools.
 
 Data Changes: 
 
