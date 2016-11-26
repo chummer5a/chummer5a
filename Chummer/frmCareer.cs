@@ -20013,8 +20013,8 @@ namespace Chummer
 
 			_objCharacter.PhysicalCMFilled = intFillCount;
 
-		    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
 			UpdateCharacterInfo();
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
