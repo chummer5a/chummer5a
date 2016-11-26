@@ -374,10 +374,14 @@ namespace Chummer.Skills
 
 			cost = Math.Max(0, cost); //Don't give karma back...
 
-			cost +=  //Spec
-					(!string.IsNullOrWhiteSpace(Specialization) && (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma || _character.BuildMethod == CharacterBuildMethod.LifeModule)) ?
-					_character.Options.KarmaSpecialization : 0;
-
+			foreach (SkillSpecialization objSpec in Specializations.Where(objSpec => !objSpec.Free))
+			{
+				cost += //Spec
+					(BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma ||
+					  _character.BuildMethod == CharacterBuildMethod.LifeModule)
+						? _character.Options.KarmaSpecialization
+						: 0;
+			}
 
 			if (Unaware()) cost *= 2;
 
@@ -459,7 +463,7 @@ namespace Chummer.Skills
             string strSkillType = "";
             if (IsKnowledgeSkill)
             {
-                strSkillType = "String_ExpenseActiveSkill";
+                strSkillType = "String_ExpenseKnowledgeSkill";
             }
             else
             {

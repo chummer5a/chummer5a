@@ -6053,6 +6053,7 @@ namespace Chummer
                         }
                     }
 
+					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArt, objMartialArt.InternalID);
 					// Remove the Improvements for any Advantages for the Martial Art that is being removed.
 					foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
 					{

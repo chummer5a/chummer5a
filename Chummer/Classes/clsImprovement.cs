@@ -175,8 +175,9 @@ namespace Chummer
 			DataStore,
 			BlockSkillDefault,
 			Ambidextrous,
-	        UnarmedReach
-        }
+	        UnarmedReach,
+			SkillSpecialization
+		}
 
         public enum ImprovementSource
         {
@@ -210,7 +211,8 @@ namespace Chummer
             Art,
             Enhancement,
 			Custom,
-	        Heritage
+	        Heritage,
+	        MartialArt
         }
 
 		private string _strImprovedName = "";
@@ -2013,6 +2015,15 @@ namespace Chummer
 					{
 						_objCharacter.Qualities.Remove(objQuality);
 						break;
+					}
+				}
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillSpecialization)
+				{
+					Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objImprovement.ImprovedName);
+					if (objSkill != null)
+					{
+						SkillSpecialization objSkillSpec = objSkill.Specializations.First(x => x.Name == objImprovement.UniqueName);
+						objSkill.Specializations.Remove(objSkillSpec);
 					}
 				}
 			}

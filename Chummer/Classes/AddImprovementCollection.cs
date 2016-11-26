@@ -3922,6 +3922,19 @@ namespace Chummer.Classes
 			}
 		}
 
+		public void addskillspecialization(XmlNode bonusNode)
+		{
+			
+			Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
+			if (objSkill != null)
+			{
+				// Create the Improvement.
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement(bonusNode["skill"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
+				SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
+				objSkill.Specializations.Add(nspec);
+			}
+		}
 		#endregion
 	}
 
