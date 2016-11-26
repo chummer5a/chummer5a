@@ -23,6 +23,12 @@
     <martialart>
       <id>de351d4e-4384-4dda-a37f-e0e4537e1445</id>
       <name>52 Blocks</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>52 Blocks</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Disarm)</name>
@@ -55,6 +61,12 @@
     <martialart>
       <id>f0b55f24-a184-4d91-a4c2-71b480bace0b</id>
       <name>Aikido</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Aikido</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Disarm)</name>
@@ -87,6 +99,12 @@
     <martialart>
       <id>906a51fa-584d-4d5d-8608-f28e08d61902</id>
       <name>Arnis De Mano</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Clubs</skill>
+					<spec>Arnis De Mano</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Close Quarter Defense Against Firearms</name>
@@ -119,6 +137,12 @@
     <martialart>
       <id>d866e4b6-01fe-4ec6-b7b9-292d06015fc0</id>
       <name>Bartitsu</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Clubs</skill>
+					<spec>Bartitsu</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Ballestra</name>
@@ -151,6 +175,12 @@
     <martialart>
       <id>03c1ba09-e8b5-492d-8752-bb9fb2ab438d</id>
       <name>Boxing (Brawler Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Boxing (Brawler Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -183,6 +213,12 @@
     <martialart>
       <id>5e02ce33-4cbd-4003-bc93-5d5971749eae</id>
       <name>Boxing (Classic Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Boxing (Classic Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Bending of the Reed</name>
@@ -215,6 +251,12 @@
     <martialart>
       <id>39b7d61b-b95e-4787-b3b0-df3c2a8bec5c</id>
       <name>Boxing (Swarmer Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Boxing (Swarmer Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Bending of the Reed</name>
@@ -247,6 +289,12 @@
     <martialart>
       <id>5debcf68-304d-4ce6-97ee-9c00fc47f449</id>
       <name>Capoeira</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Capoeira</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Bending of the Reed</name>
@@ -279,6 +327,12 @@
     <martialart>
       <id>6ff0927a-ba0c-44cf-abea-0d180768f73b</id>
       <name>Carromeleg</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Carromeleg</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Counterstrike</name>
@@ -343,6 +397,12 @@
     <martialart>
       <id>2327a330-3b9c-49a9-a392-8f34579e5bce</id>
       <name>Drunken Boxing</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Drunken Boxing</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Disarm)</name>
@@ -375,6 +435,12 @@
     <martialart>
       <id>15ea5191-d615-4320-84e5-bffa90f8873e</id>
       <name>Fiore Dei Liberi</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Blades</skill>
+					<spec>Fiore dei Liberi</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Break Weapon)</name>
@@ -407,6 +473,12 @@
     <martialart>
       <id>3a16d253-73cb-41e0-8c52-8f5b79d27a58</id>
       <name>Firefight</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Firearms</skill>
+					<spec>Firefight</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -439,6 +511,12 @@
     <martialart>
       <id>23c0c9dc-da26-40ab-a578-7cd1a2231ba1</id>
       <name>Gun Kata</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Firearms</skill>
+					<spec>Gun Kata</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Close Quarter Firearms (Pistols)</name>
@@ -471,6 +549,12 @@
     <martialart>
       <id>8940f70e-e81d-4e64-b8e0-52256ee28cf9</id>
       <name>Jeet Kune Do</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Jeet Kune Do</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Bending of the Reed</name>
@@ -503,6 +587,12 @@
     <martialart>
       <id>fa11a3e1-a658-4353-8d74-71337e3e1f29</id>
       <name>Jogo Du Pau</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Clubs</skill>
+					<spec>Jogo Du Pau</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Barbed Hooks</name>
@@ -535,6 +625,12 @@
     <martialart>
       <id>7415286a-11b7-41b6-ad18-a4c72067cb71</id>
       <name>Jujitsu</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Jujitsu</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Disarm)</name>
@@ -567,6 +663,12 @@
     <martialart>
       <id>16391532-2476-4a9f-b5d8-ae058b7e0f27</id>
       <name>Karate</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Karate</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Counterstrike</name>
@@ -599,6 +701,12 @@
     <martialart>
       <id>922b9b42-6e88-4ab6-a255-00fe2b025f2a</id>
       <name>Kenjutsu</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Blades</skill>
+					<spec>Kenjutsu</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Bending of the Reed</name>
@@ -663,6 +771,12 @@
     <martialart>
       <id>3b3c2299-5a76-4cf4-962f-160fecbdd38b</id>
       <name>Krav Maga</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Krav Maga</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Disarm)</name>
@@ -695,6 +809,12 @@
     <martialart>
       <id>69097cfa-cfdd-49d9-b65a-e866d2296b7e</id>
       <name>Kunst Des Fechtens</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Blades</skill>
+					<spec>Kunst Des Fechtens (Long Sword Fighting)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Half Sword</name>
@@ -727,6 +847,12 @@
     <martialart>
       <id>7a2eb5f6-fbb5-4952-95dc-352570c00e52</id>
       <name>Kyujutsu</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Archery</skill>
+					<spec>Kyujutsu</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Pin)</name>
@@ -759,6 +885,12 @@
     <martialart>
       <id>21bc338f-7b28-49df-9d11-e4db076404be</id>
       <name>La Verdadera Destreza</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Blades</skill>
+					<spec>La Verdadera Destreza (Rapier Fighting)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Ballestra</name>
@@ -826,6 +958,12 @@
     <martialart>
       <id>af544c56-2c65-403a-a83b-e861e02c72bb</id>
       <name>Muay Thai</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Muay Thai</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -890,6 +1028,12 @@
     <martialart>
       <id>f8c89602-b72f-4613-81b8-72951dcad4c9</id>
       <name>Okichitaw</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Clubs</skill>
+					<spec>Okichitaw</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Pin)</name>
@@ -922,6 +1066,12 @@
     <martialart>
       <id>e613f285-bc8d-40a2-a968-da4aa567cbcc</id>
       <name>Parkour</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Gymnastics</skill>
+					<spec>Parkour</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Bending of the Reed</name>
@@ -954,6 +1104,12 @@
     <martialart>
       <id>0b792f6c-c12e-4e93-b830-1f201e267bbc</id>
       <name>Pentjak-Silat</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Blades</skill>
+					<spec>Pentjak-Silat</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Break Weapon)</name>
@@ -986,6 +1142,12 @@
     <martialart>
       <id>36e8103e-a362-49d5-959b-689d06dac350</id>
       <name>Quarterstaff Fighting</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Clubs</skill>
+					<spec>Quarterstaff Fighting</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Jiao Di (Knock Down)</name>
@@ -1018,6 +1180,12 @@
     <martialart>
       <id>3771abcc-6307-4ddf-9ab5-df86bc591da6</id>
       <name>Sangre Y Acero</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Sangre Y Acero</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Break Weapon)</name>
@@ -1050,6 +1218,12 @@
     <martialart>
       <id>3e0d63a0-b784-4315-aa66-89b92818a267</id>
       <name>Tae Kwon Do</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Tae Kwon Do</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Counterstrike</name>
@@ -1082,6 +1256,12 @@
     <martialart>
       <id>f5829122-0973-4e27-98b4-f54c9343a57c</id>
       <name>The Cowboy Way</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Firearms</skill>
+					<spec>The Cowboy Way</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Entanglement)</name>
@@ -1114,6 +1294,12 @@
     <martialart>
       <id>6b5ae017-9fb1-46df-839b-4548ad360534</id>
       <name>Turkish Archery</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Archery</skill>
+					<spec>Turkish Archery</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Called Shot (Pin)</name>
@@ -1178,6 +1364,12 @@
     <martialart>
       <id>df0b9bb0-bad9-4bb9-b543-eb73edfe34e8</id>
       <name>Wildcat</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Wildcat</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -1210,6 +1402,12 @@
     <martialart>
       <id>24ee13d8-9b6d-4fc0-908c-d9904db364c7</id>
       <name>Wrestling (Sport Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Wrestling (Sport Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -1242,6 +1440,12 @@
     <martialart>
       <id>03e7e806-2bf6-43d2-ae51-9a724aca67fc</id>
       <name>Wrestling (Sumo Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Wrestling (Sumo Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Barbed Hooks</name>
@@ -1274,6 +1478,12 @@
     <martialart>
       <id>06d5eac3-1ec1-4164-8014-e8f6ae47de0f</id>
       <name>Wrestling (Professional Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Wrestling (Professional Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -1306,6 +1516,12 @@
     <martialart>
       <id>43aedfbf-c4ef-4682-a8a3-9f53363a3e60</id>
       <name>Wrestling (MMA Style)</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Unarmed Combat</skill>
+					<spec>Wrestling (MMA Style)</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Clinch</name>
@@ -1338,6 +1554,12 @@
     <martialart>
       <id>bd876c27-26b0-4b37-a236-b5da99d5c503</id>
       <name>Wudang Sword</name>
+			<bonus>
+				<addskillspecialization>
+					<skill>Blades</skill>
+					<spec>Wudang Sword</spec>
+				</addskillspecialization>
+			</bonus>
       <techniques>
         <technique>
           <name>Ballestra</name>

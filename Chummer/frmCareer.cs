@@ -6053,6 +6053,7 @@ namespace Chummer
                         }
                     }
 
+					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArt, objMartialArt.InternalID);
 					// Remove the Improvements for any Advantages for the Martial Art that is being removed.
 					foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
 					{
@@ -20014,6 +20015,7 @@ namespace Chummer
 			_objCharacter.PhysicalCMFilled = intFillCount;
 
 			UpdateCharacterInfo();
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -20057,11 +20059,12 @@ namespace Chummer
 			}
 			
 			_objCharacter.StunCMFilled = intFillCount;
-			
-			UpdateCharacterInfo();
+		    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
+		    UpdateCharacterInfo();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
+
 		}
 
 		private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
