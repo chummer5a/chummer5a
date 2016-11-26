@@ -220,11 +220,11 @@ namespace Chummer.Skills
 		{
 			if (Rating > 0)
 			{
-				return Math.Max(Rating + attribute + PoolModifiers + WoundModifier, 0);
+				return Rating + attribute + PoolModifiers + WoundModifier;
 			}
 			if (Default)
 			{
-				return Math.Max(attribute + PoolModifiers + DefaultModifier + WoundModifier, 0);
+				return attribute + PoolModifiers + DefaultModifier + WoundModifier;
 			}
 			return 0;
 		}

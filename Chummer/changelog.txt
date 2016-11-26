@@ -48,7 +48,6 @@ Application Changes:
 - Fixed a bug where setting the metatype maximum of an attribute to a value lower than the current value would lower the current value, even if the current value was not higher than the total maximum.
 - Removed SR4 labels from Matrix entities in Create mode.
 - Added the ability for priorities to add to Depth.
-- Wound modifiers now can't cause dicepools to go below zero.
 - Changes to the condition monitor now imediatly refreshes skill dicepools.
 
 Data Changes: 
