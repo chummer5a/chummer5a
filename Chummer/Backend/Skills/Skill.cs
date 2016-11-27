@@ -533,7 +533,7 @@ namespace Chummer.Skills
 
 				if (Specializations.Count > 0)
 				{
-					return Specializations[0].Name;
+					return Specializations[0].DisplayName;
 				}
 
 				return "";

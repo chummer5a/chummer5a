@@ -3,6 +3,7 @@ Build 189
 Application Changes:
 
 - Fixed an issue caused by missing Depth values for certain metatypes. 
+- Fixed an issue with default specialisations not translating properly. 
 
 Build 188
 

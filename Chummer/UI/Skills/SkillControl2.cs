@@ -231,7 +231,7 @@ namespace Chummer.UI.Skills
 			//TODO turn this into a databinding, but i don't care enough right now
 			lblCareerSpec.Text = string.Join(", ",
 					(from specialization in _skill.Specializations
-					 select specialization.Name));
+					 select specialization.DisplayName));
 
 			parrent?.UpdateCharacterInfo();
 		}
