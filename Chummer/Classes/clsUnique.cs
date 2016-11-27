@@ -5821,10 +5821,330 @@ namespace Chummer
 		#endregion
 	}
 
-	/// <summary>
-	/// A Martial Art.
+    /// <summary>
+	/// An AI Program or Advanced Program.
 	/// </summary>
-	public class MartialArt
+	public class AIProgram
+    {
+        private Guid _guiID = new Guid();
+        private string _strName = "";
+        private string _strRequiresProgram = "";
+        private string _strSource = "";
+        private string _strPage = "";
+        private string _strNotes = "";
+        private string _strExtra = "";
+        private string _strAltName = "";
+        private string _strAltPage = "";
+        private bool _boolIsAdvancedProgram = false;
+        private readonly Character _objCharacter;
+
+        #region Constructor, Create, Save, Load, and Print Methods
+        public AIProgram(Character objCharacter)
+        {
+            // Create the GUID for the new Program.
+            _guiID = Guid.NewGuid();
+            _objCharacter = objCharacter;
+        }
+
+        /// Create a Program from an XmlNode.
+        /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
+        /// <param name="objCharacter">Character the Gear is being added to.</param>
+        /// <param name="objNode">TreeNode to populate a TreeView.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "")
+        {
+            if (GlobalOptions.Instance.Language != "en-us")
+            {
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+                XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + _strName + "\"]");
+                if (objSpellNode != null)
+                {
+                    if (objSpellNode["translate"] != null)
+                        _strAltName = objSpellNode["translate"].InnerText;
+                    if (objSpellNode["altpage"] != null)
+                        _strAltPage = objSpellNode["altpage"].InnerText;
+                }
+            }
+            _strName = objXmlProgramNode["name"].InnerText;
+            _strRequiresProgram = objXmlProgramNode["require"].InnerText;
+            _strSource = objXmlProgramNode["source"].InnerText;
+            _strPage = objXmlProgramNode["page"].InnerText;
+            _strExtra = strExtra;
+            _boolIsAdvancedProgram = boolIsAdvancedProgram;
+
+            try
+            {
+                _strNotes = objXmlProgramNode["notes"].InnerText;
+            }
+            catch { }
+
+            objNode.Text = DisplayName;
+            objNode.Tag = _guiID.ToString();
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("aiprogram");
+            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("requiresprogram", _strRequiresProgram);
+            objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram ? "true" : "false");
+            objWriter.WriteEndElement();
+            _objCharacter.SourceProcess(_strSource);
+        }
+
+        /// <summary>
+        /// Load the Complex Form from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public void Load(XmlNode objNode)
+        {
+            try
+            {
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+            }
+            catch
+            {
+            }
+            _strName = objNode["name"].InnerText;
+            try
+            {
+                _strRequiresProgram = objNode["requiresprogram"].InnerText;
+            }
+            catch
+            {
+            }
+            try
+            {
+                _strExtra = objNode["extra"].InnerText;
+            }
+            catch
+            {
+            }
+            try
+            {
+                _strSource = objNode["source"].InnerText;
+            }
+            catch
+            {
+            }
+            try
+            {
+                _strPage = objNode["page"].InnerText;
+            }
+            catch
+            {
+            }
+            try
+            {
+                _strNotes = objNode["notes"].InnerText;
+            }
+            catch
+            {
+            }
+            try
+            {
+                _boolIsAdvancedProgram = objNode["isadvancedprogram"].InnerText == "true";
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Print(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("aiprogram");
+            objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+            objWriter.WriteElementString("page", Page);
+            if (_objCharacter.Options.PrintNotes)
+                objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteEndElement();
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Internal identifier which will be used to identify this AI Program in the Improvement system.
+        /// </summary>
+        public string InternalId
+        {
+            get
+            {
+                return _guiID.ToString();
+            }
+        }
+
+        /// <summary>
+        /// AI Program's name.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return _strName;
+            }
+            set
+            {
+                _strName = value;
+            }
+        }
+
+        /// <summary>
+        /// AI Program's extra info.
+        /// </summary>
+        public string Extra
+        {
+            get
+            {
+                return _strExtra;
+            }
+            set
+            {
+                _strExtra = value;
+            }
+        }
+
+        /// <summary>
+		/// The name of the object as it should be displayed on printouts (translated name only).
+		/// </summary>
+		public string DisplayNameShort
+        {
+            get
+            {
+                string strReturn = _strName;
+                if (_strExtra != "")
+                    strReturn += " (" + _strExtra + ")";
+                // Get the translated name if applicable.
+                if (GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + _strName + "\"]");
+                    if (objNode != null)
+                    {
+                        if (objNode["translate"] != null)
+                            strReturn = objNode["translate"].InnerText;
+                    }
+                }
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                string strReturn = DisplayNameShort;
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+		/// AI Advanced Program's requirement program.
+		/// </summary>
+		public string RequiresProgram
+        {
+            get
+            {
+                return _strRequiresProgram;
+            }
+            set
+            {
+                _strRequiresProgram = value;
+            }
+        }
+
+        /// <summary>
+		/// AI Program's Source.
+		/// </summary>
+		public string Source
+        {
+            get
+            {
+                return _strSource;
+            }
+            set
+            {
+                _strSource = value;
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page
+        {
+            get
+            {
+                string strReturn = _strPage;
+                // Get the translated name if applicable.
+                //if (GlobalOptions.Instance.Language != "en-us")
+                //{
+                //    XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
+                //    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + _strName + "\"]");
+                //    if (objNode != null)
+                //    {
+                //        if (objNode["altpage"] != null)
+                //            strReturn = objNode["altpage"].InnerText;
+                //    }
+                //}
+
+                return strReturn;
+            }
+            set
+            {
+                _strPage = value;
+            }
+        }
+
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public string Notes
+        {
+            get
+            {
+                return _strNotes;
+            }
+            set
+            {
+                _strNotes = value;
+            }
+        }
+
+        /// <summary>
+		/// If the AI Program is an Advanced Program.
+		/// </summary>
+		public bool IsAdvancedProgram
+        {
+            get
+            {
+                return _boolIsAdvancedProgram;
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// A Martial Art.
+    /// </summary>
+    public class MartialArt
 	{
 		private string _strName = "";
 		private string _strSource = "";

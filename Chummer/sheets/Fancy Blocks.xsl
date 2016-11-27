@@ -269,6 +269,14 @@
 							</td>
 						</tr>
 					</xsl:if>
+          <xsl:if test="depenabled='True'">
+            <xsl:call-template name="page_breaker" />
+            <tr>
+              <td class="fill100">
+                <xsl:call-template name="print_ai_programs" />
+              </td>
+            </tr>
+          </xsl:if>
 					<xsl:if test="magenabled = 'True'">
 						<xsl:call-template name="page_breaker" />
 						<xsl:choose>
@@ -1428,6 +1436,42 @@
 			
 		</xsl:if>
 	</xsl:template>
+
+  <xsl:template name="print_ai_programs">
+    <xsl:if test="count(aiprograms/aiprogram) &gt; 0">
+
+      <table class="stats matrix">
+        <tr>
+          <td colspan="2">
+            <div class="bigheader">[AI Programs and Advanced Programs]</div>
+          </td>
+        </tr>
+        <tr class="smallheader">
+          <td>Name</td>
+          <td>Requires Program</td>
+        </tr>
+
+        <xsl:for-each select="aiprograms/aiprogram">
+          <xsl:sort select="name" />
+
+          <tr>
+            <td>
+              <xsl:value-of select="name" />
+              <xsl:if test="extra!=''">
+                (<xsl:value-of select="extra" />)
+              </xsl:if>
+              <xsl:call-template name="print_source_page" />
+              <xsl:call-template name="print_notes" />
+            </td>
+            <td>
+              <xsl:value-of select="requiresprogram" />
+            </td>
+          </tr>
+        </xsl:for-each>
+      </table>
+
+    </xsl:if>
+  </xsl:template>
 	
 	<xsl:template name="print_magic">
 		<table class="stats magic">

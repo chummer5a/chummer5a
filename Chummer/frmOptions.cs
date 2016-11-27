@@ -158,6 +158,8 @@ namespace Chummer
             _characterOptions.KarmaSpell = Convert.ToInt32(nudKarmaSpell.Value);
             _characterOptions.KarmaNewComplexForm = Convert.ToInt32(nudKarmaNewComplexForm.Value);
             _characterOptions.KarmaImproveComplexForm = Convert.ToInt32(nudKarmaImproveComplexForm.Value);
+            _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
+            _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
             _characterOptions.KarmaMetamagic = Convert.ToInt32(nudKarmaMetamagic.Value);
             _characterOptions.KarmaNuyenPer = Convert.ToInt32(nudKarmaNuyenPer.Value);
             _characterOptions.KarmaContact = Convert.ToInt32(nudKarmaContact.Value);
@@ -481,6 +483,8 @@ namespace Chummer
             intWidth = Math.Max(intWidth, lblKarmaSustainingFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaSymbolicLinkFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaWeaponFocus.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNewAIProgram.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNewAIAdvancedProgram.Width);
 
             nudKarmaMetamagic.Left = lblKarmaMetamagic.Left + intWidth + 6;
             nudKarmaJoinGroup.Left = nudKarmaMetamagic.Left;
@@ -501,6 +505,8 @@ namespace Chummer
             nudKarmaSustainingFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaSymbolicLinkFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaWeaponFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaNewAIProgram.Left = nudKarmaMetamagic.Left;
+            nudKarmaNewAIAdvancedProgram.Left = nudKarmaMetamagic.Left;
 
             lblKarmaAnchoringFocusExtra.Left = nudKarmaAnchoringFocus.Left + nudKarmaAnchoringFocus.Width + 6;
             lblKarmaBanishingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
@@ -666,7 +672,9 @@ namespace Chummer
 	        nudKarmaSpell.Value = _characterOptions.KarmaSpell;
 	        nudKarmaNewComplexForm.Value = _characterOptions.KarmaNewComplexForm;
 	        nudKarmaImproveComplexForm.Value = _characterOptions.KarmaImproveComplexForm;
-	        nudKarmaComplexFormOption.Value = _characterOptions.KarmaComplexFormOption;
+            nudKarmaNewAIProgram.Value = _characterOptions.KarmaNewAIProgram;
+            nudKarmaNewAIAdvancedProgram.Value = _characterOptions.KarmaNewAIAdvancedProgram;
+            nudKarmaComplexFormOption.Value = _characterOptions.KarmaComplexFormOption;
 	        nudKarmaComplexFormSkillsoft.Value = _characterOptions.KarmaComplexFormSkillsoft;
 	        nudKarmaNuyenPer.Value = _characterOptions.KarmaNuyenPer;
 	        nudKarmaContact.Value = _characterOptions.KarmaContact;
@@ -770,6 +778,8 @@ namespace Chummer
             nudKarmaSpell.Value = 5;
             nudKarmaNewComplexForm.Value = 4;
             nudKarmaImproveComplexForm.Value = 1;
+            nudKarmaNewAIProgram.Value = 5;
+            nudKarmaNewAIAdvancedProgram.Value = 8;
             nudKarmaComplexFormOption.Value = 2;
             nudKarmaComplexFormSkillsoft.Value = 1;
             nudKarmaSpirit.Value = 1;

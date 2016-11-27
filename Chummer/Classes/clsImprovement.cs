@@ -212,7 +212,8 @@ namespace Chummer
             Enhancement,
 			Custom,
 	        Heritage,
-	        MartialArt
+	        MartialArt,
+            AIProgram
         }
 
 		private string _strImprovedName = "";
@@ -1377,6 +1378,25 @@ namespace Chummer
 							if (!blnFound)
 								_objCharacter.TechnomancerEnabled = false;
 							break;
+                        case "Advanced Programs":
+                            // See if the character has anything else that is granting them access to the Advanced Programs tab.
+                            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                            {
+                                // Skip items from the current Improvement source.
+                                if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                                {
+                                    if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
+                                        objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Advanced Programs")
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!blnFound)
+                                _objCharacter.AdvancedProgramsEnabled = false;
+                            break;
 						case "Critter":
 							// See if the character has anything else that is granting them access to the Critter tab.
 							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)

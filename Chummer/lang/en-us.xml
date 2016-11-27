@@ -7469,6 +7469,24 @@ Do you want to continue?</text>
 			<text>Select a Program Option</text>
 		</string>
 		<!-- End Region-->
+		<!-- Select AI Program Window -->
+		<string>
+			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Advanced Program Requirement</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectAIProgram_LimitList</key>
+			<text>Show only Advanced Programs I can take</text>
+		</string>
+		<string>
+			<key>Message_DeleteAIProgram</key>
+			<text>Are you sure you want to delete this AI Program?</text>
+		</string>
+		<!-- End Region -->
 		<!-- Region Select Quality Window -->
 		<string>
 			<key>Title_SelectQuality</key>

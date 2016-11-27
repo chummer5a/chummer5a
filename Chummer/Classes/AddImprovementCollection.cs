@@ -175,7 +175,13 @@ namespace Chummer.Classes
 						CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
 							"enabletab", 0, 0);
 						break;
-					case "critter":
+                    case "advanced programs":
+                        _objCharacter.AdvancedProgramsEnabled = true;
+                        Log.Info("advanced programs");
+                        CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                            "enabletab", 0, 0);
+                        break;
+                    case "critter":
 						_objCharacter.CritterEnabled = true;
 						Log.Info("critter");
 						CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,

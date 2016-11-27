@@ -1713,6 +1713,9 @@
 				</negative>
 			</qualityrestriction>
 			<bonus>
+				<enabletab>
+					<name>advanced programs</name>
+				</enabletab>
 				<enableattribute>
 					<name>DEP</name>
 				</enableattribute>
@@ -1877,6 +1880,9 @@
 						</negative>
 					</qualities>
 					<bonus>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
 						<enableattribute>
 							<name>DEP</name>
 						</enableattribute>
@@ -2040,6 +2046,9 @@
 						</negative>
 					</qualities>
 					<bonus>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
 						<enableattribute>
 							<name>DEP</name>
 						</enableattribute>
@@ -2213,6 +2222,9 @@
 						<enableattribute>
 							<name>DEP</name>
 						</enableattribute>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
 					</bonus>
 					<source>DT</source>
 					<page>88</page>

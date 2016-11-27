@@ -696,10 +696,26 @@ namespace Chummer
             _objCharacter.ComplexForms.Clear();
 		}
 
-		/// <summary>
-		/// Clear all Critter tab elements from the character.
+        /// <summary>
+		/// Clear all Advanced Programs tab elements from the character.
 		/// </summary>
-		public void ClearCritterTab(TreeView treCritterPowers)
+		public void ClearAdvancedProgramsTab(TreeView treAIPrograms)
+        {
+            // Run through all of the Advanced Programs and remove their Improvements.
+            foreach (AIProgram objProgram in _objCharacter.AIPrograms)
+                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+
+            // Clear the list of Advanced Programs.
+            foreach (TreeNode objNode in treAIPrograms.Nodes)
+                objNode.Nodes.Clear();
+
+            _objCharacter.AIPrograms.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Critter tab elements from the character.
+        /// </summary>
+        public void ClearCritterTab(TreeView treCritterPowers)
 		{
 			// Run through all of the Critter Powers and remove their Improvements.
 			foreach (CritterPower objPower in _objCharacter.CritterPowers)

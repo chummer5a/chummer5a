@@ -47,6 +47,8 @@ public delegate void AdeptTabEnabledChangedHandler(Object sender);
 public delegate void MagicianTabEnabledChangedHandler(Object sender);
 // TechnomancerTabEnabledChanged Event Handler
 public delegate void TechnomancerTabEnabledChangedHandler(Object sender);
+// TechnomancerTabEnabledChanged Event Handler
+public delegate void AdvancedProgramsTabEnabledChangedHandler(Object sender);
 // InitiationTabEnabledChanged Event Handler
 public delegate void InitiationTabEnabledChangedHandler(Object sender);
 // CritterTabEnabledChanged Event Handler
@@ -121,6 +123,8 @@ namespace Chummer
         private int _intTotalAttributes = 0;
         private int _intSpellLimit = 0;
         private int _intCFPLimit = 0;
+        private int _intAINormalProgramLimit = 0;
+        private int _intAIAdvancedProgramLimit = 0;
         private int _intContactPoints = 0;
         private int _intContactPointsUsed = 0;
         private int _intMetageneticLimit = 0;
@@ -182,6 +186,7 @@ namespace Chummer
 		private bool _blnAdeptEnabled = false;
         private bool _blnMagicianEnabled = false;
         private bool _blnTechnomancerEnabled = false;
+        private bool _blnAdvancedProgramsEnabled = false;
         private bool _blnInitiationEnabled = false;
         private bool _blnCritterEnabled = false;
 	    private bool _blnIsCritter = false;
@@ -272,6 +277,7 @@ namespace Chummer
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
         private List<Power> _lstPowers = new List<Power>();
         private List<ComplexForm> _lstComplexForms = new List<ComplexForm>();
+        private List<AIProgram> _lstAIPrograms = new List<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
@@ -322,7 +328,8 @@ namespace Chummer
         public event DEPEnabledChangedHandler DEPEnabledChanged;
         public event RestrictedGearChangedHandler RestrictedGearChanged;
 	    public event TechnomancerTabEnabledChangedHandler TechnomancerTabEnabledChanged;
-	    public event TrustFundChangedHandler TrustFundChanged;
+        public event AdvancedProgramsTabEnabledChangedHandler AdvancedProgramsTabEnabledChanged;
+        public event TrustFundChangedHandler TrustFundChanged;
 
 	    private frmViewer _frmPrintView;
 
@@ -487,6 +494,10 @@ namespace Chummer
             objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString());
             // <cfplimit />
             objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString());
+            // <totalaiprogramlimit />
+            objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString());
+            // <aiadvancedprogramlimit />
+            objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString());
             // <streetcred />
             objWriter.WriteElementString("streetcred", _intStreetCred.ToString());
             // <notoriety />
@@ -537,6 +548,8 @@ namespace Chummer
             objWriter.WriteElementString("magician", _blnMagicianEnabled.ToString());
             // <technomancer />
             objWriter.WriteElementString("technomancer", _blnTechnomancerEnabled.ToString());
+            // <ai />
+            objWriter.WriteElementString("ai", _blnAdvancedProgramsEnabled.ToString());
             // <initiationoverride />
             objWriter.WriteElementString("initiationoverride", _blnInitiationEnabled.ToString());
             // <critter />
@@ -712,6 +725,15 @@ namespace Chummer
                 objProgram.Save(objWriter);
             }
             // </complexforms>
+            objWriter.WriteEndElement();
+
+            // <aiprograms>
+            objWriter.WriteStartElement("aiprograms");
+            foreach (AIProgram objProgram in _lstAIPrograms)
+            {
+                objProgram.Save(objWriter);
+            }
+            // </aiprograms>
             objWriter.WriteEndElement();
 
             // <martialarts>
@@ -1110,7 +1132,9 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("contactpoints", out _intContactPoints);
 		    objXmlCharacter.TryGetField("contactpointsused", out _intContactPointsUsed);
 		    objXmlCharacter.TryGetField("cfplimit", out _intCFPLimit);
-		    objXmlCharacter.TryGetField("spelllimit", out _intSpellLimit);
+            objXmlCharacter.TryGetField("ainormalprogramlimit", out _intAINormalProgramLimit);
+            objXmlCharacter.TryGetField("aiadvancedprogramlimit", out _intAIAdvancedProgramLimit);
+            objXmlCharacter.TryGetField("spelllimit", out _intSpellLimit);
 		    objXmlCharacter.TryGetField("karma", out _intKarma);
 		    objXmlCharacter.TryGetField("totalkarma", out _intTotalKarma);
 
@@ -1160,7 +1184,8 @@ namespace Chummer
             _blnAdeptEnabled = Convert.ToBoolean(objXmlCharacter["adept"].InnerText);
             _blnMagicianEnabled = Convert.ToBoolean(objXmlCharacter["magician"].InnerText);
             _blnTechnomancerEnabled = Convert.ToBoolean(objXmlCharacter["technomancer"].InnerText);
-		    objXmlCharacter.TryGetField("initiationoverride", out _blnInitiationEnabled);
+            _blnAdvancedProgramsEnabled = Convert.ToBoolean(objXmlCharacter["ai"].InnerText);
+            objXmlCharacter.TryGetField("initiationoverride", out _blnInitiationEnabled);
 		    objXmlCharacter.TryGetField("critter", out _blnCritterEnabled);
 		   
 		    objXmlCharacter.TryGetField("friendsinhighplaces", out _blnFriendsInHighPlaces);
@@ -1464,7 +1489,19 @@ namespace Chummer
             }
 
 			Timekeeper.Finish("load_char_complex");
-			Timekeeper.Start("load_char_marts");
+            Timekeeper.Start("load_char_aiprogram");
+
+            // Compex Forms/Technomancer Programs.
+            objXmlNodeList = objXmlDocument.SelectNodes("/character/aiprograms/aiprogram");
+            foreach (XmlNode objXmlProgram in objXmlNodeList)
+            {
+                AIProgram objProgram = new AIProgram(this);
+                objProgram.Load(objXmlProgram);
+                _lstAIPrograms.Add(objProgram);
+            }
+
+            Timekeeper.Finish("load_char_aiprogram");
+            Timekeeper.Start("load_char_marts");
 
 			// Martial Arts.
 			objXmlNodeList = objXmlDocument.SelectNodes("/character/martialarts/martialart");
@@ -1940,6 +1977,10 @@ namespace Chummer
             objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString());
             // <cfplimit />
             objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString());
+            // <totalaiprogramlimit />
+            objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString());
+            // <aiadvancedprogramlimit />
+            objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString());
             // <spelllimit />
             objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString());
             // <karma />
@@ -1987,6 +2028,8 @@ namespace Chummer
             objWriter.WriteElementString("magician", _blnMagicianEnabled.ToString());
             // <technomancer />
             objWriter.WriteElementString("technomancer", _blnTechnomancerEnabled.ToString());
+            // <ai />
+            objWriter.WriteElementString("ai", _blnAdvancedProgramsEnabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", _blnCritterEnabled.ToString());
 
@@ -2353,6 +2396,15 @@ namespace Chummer
             // </complexforms>
             objWriter.WriteEndElement();
 
+            // <aiprograms>
+            objWriter.WriteStartElement("aiprograms");
+            foreach (AIProgram objProgram in _lstAIPrograms)
+            {
+                objProgram.Print(objWriter);
+            }
+            // </aiprograms>
+            objWriter.WriteEndElement();
+
             // <martialarts>
             objWriter.WriteStartElement("martialarts");
             foreach (MartialArt objMartialArt in _lstMartialArts)
@@ -2608,6 +2660,8 @@ namespace Chummer
             _decNuyenMaximumBP = 50m;
             _intSpellLimit = 0;
             _intCFPLimit = 0;
+            _intAINormalProgramLimit = 0;
+            _intAIAdvancedProgramLimit = 0;
             _intContactPoints = 0;
             _intContactPointsUsed = 0;
             _intKarma = 0;
@@ -2629,6 +2683,7 @@ namespace Chummer
             _blnAdeptEnabled = false;
             _blnMagicianEnabled = false;
             _blnTechnomancerEnabled = false;
+            _blnAdvancedProgramsEnabled = false;
             _blnInitiationEnabled = false;
             _blnCritterEnabled = false;
 
@@ -2686,6 +2741,7 @@ namespace Chummer
             _lstStackedFoci = new List<StackedFocus>();
             _lstPowers = new List<Power>();
             _lstComplexForms = new List<ComplexForm>();
+            _lstAIPrograms = new List<AIProgram>();
             _lstMartialArts = new List<MartialArt>();
             _lstMartialArtManeuvers = new List<MartialArtManeuver>();
             _lstLimitModifiers = new List<LimitModifier>();
@@ -2859,6 +2915,16 @@ namespace Chummer
                     break;
                 case Improvement.ImprovementSource.ComplexForm:
                     foreach (ComplexForm objProgram in _lstComplexForms)
+                    {
+                        if (objProgram.InternalId == objImprovement.SourceName)
+                        {
+                            strReturn = objProgram.DisplayNameShort;
+                            break;
+                        }
+                    }
+                    break;
+                case Improvement.ImprovementSource.AIProgram:
+                    foreach (AIProgram objProgram in _lstAIPrograms)
                     {
                         if (objProgram.InternalId == objImprovement.SourceName)
                         {
@@ -3640,6 +3706,36 @@ namespace Chummer
             set
             {
                 _intCFPLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// Total AI Program Limit.
+        /// </summary>
+        public int AINormalProgramLimit
+        {
+            get
+            {
+                return _intAINormalProgramLimit;
+            }
+            set
+            {
+                _intAINormalProgramLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// AI Advanced Program Limit.
+        /// </summary>
+        public int AIAdvancedProgramLimit
+        {
+            get
+            {
+                return _intAIAdvancedProgramLimit;
+            }
+            set
+            {
+                _intAIAdvancedProgramLimit = value;
             }
         }
 
@@ -5248,6 +5344,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// AI Programs and Advanced Programs
+        /// </summary>
+        public List<AIProgram> AIPrograms
+        {
+            get
+            {
+                return _lstAIPrograms;
+            }
+        }
+
+        /// <summary>
         /// Martial Arts.
         /// </summary>
         public List<MartialArt> MartialArts
@@ -6514,6 +6621,30 @@ namespace Chummer
             {
                 bool blnOldValue = _blnTechnomancerEnabled;
                 _blnTechnomancerEnabled = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        TechnomancerTabEnabledChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not Advanced Program options are enabled.
+        /// </summary>
+        public bool AdvancedProgramsEnabled
+        {
+            get
+            {
+                return _blnAdvancedProgramsEnabled;
+            }
+            set
+            {
+                bool blnOldValue = _blnAdvancedProgramsEnabled;
+                _blnAdvancedProgramsEnabled = value;
                 try
                 {
                     if (blnOldValue != value)
