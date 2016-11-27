@@ -42,30 +42,19 @@ namespace Chummer
         {
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+			nudRating.DataBindings.Add("Minimum", _objPower, nameof(PowerObject.FreeLevels), false, DataSourceUpdateMode.OnPropertyChanged);
+			nudRating.DataBindings.Add("Maximum", _objPower, nameof(PowerObject.MaxLevels), false, DataSourceUpdateMode.OnPropertyChanged);
+			nudRating.DataBindings.Add("Value", _objPower, nameof(PowerObject.Levels), false, DataSourceUpdateMode.OnPropertyChanged);
+			nudRating.DataBindings.Add("Enabled", _objPower, nameof(PowerObject.LevelsEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblPowerName.DataBindings.Add("Text", _objPower, nameof(PowerObject.DisplayNameShort), false, DataSourceUpdateMode.OnPropertyChanged);
+			chkDiscountedAdeptWay.DataBindings.Add("Checked", _objPower, nameof(PowerObject.DiscountedAdeptWay), false, DataSourceUpdateMode.OnPropertyChanged);
+			chkDiscountedGeas.DataBindings.Add("Checked", _objPower, nameof(PowerObject.DiscountedGeas), false, DataSourceUpdateMode.OnPropertyChanged);
 			MoveControls();
         }
 
 		private void PowerControl_Load(object sender, EventArgs e)
 		{
 			this.Width = cmdDelete.Left + cmdDelete.Width;
-
-			decimal actualRating = _objPower.Rating - _objPower.FreeLevels;
-			decimal newRating = actualRating + _objPower.FreeLevels;
-
-			nudRating.Maximum = Math.Max(1, _objPower.MaxLevels);
-            nudRating.Minimum = _objPower.FreeLevels;
-
-            if (newRating < _objPower.FreeLevels)
-            {
-                newRating = _objPower.FreeLevels;
-            }
-
-            if (newRating > Convert.ToDecimal(_objPower.CharacterObject.MAG.Value))
-            {
-                newRating = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value);
-            }
-			//if(_objPower.LevelsEnabled)
-				nudRating.Value = newRating;
         }
         
 		private void nudRating_ValueChanged(object sender, EventArgs e)
@@ -393,8 +382,8 @@ namespace Chummer
 		public void RefreshTooltip()
 		{
 			string strTooltip = _objPower.CharacterObject.Options.LanguageBookLong(_objPower.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + _objPower.Page;
-			if (_objPower.DoubledPoints > 0)
-				strTooltip += "\n" + LanguageManager.Instance.GetString("Tip_Power_DoublePoints").Replace("{0}", _objPower.DoubledPoints.ToString());
+			//if (_objPower.DoubledPoints > 0)
+			//	strTooltip += "\n" + LanguageManager.Instance.GetString("Tip_Power_DoublePoints").Replace("{0}", _objPower.DoubledPoints.ToString());
 			tipTooltip.SetToolTip(lblPowerName, strTooltip);
 		}
 

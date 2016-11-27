@@ -2778,7 +2778,7 @@ namespace Chummer.Classes
 
 				if (!blnExistingPower)
 				{
-					// Display the Select Skill window and record which Skill was selected.
+					// Display the Select Power window and record which Power was selected.
 					frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
 					Log.Info("selectpower = " + objNode.OuterXml.ToString());
 

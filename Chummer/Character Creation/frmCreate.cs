@@ -4963,9 +4963,6 @@ namespace Chummer
             objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
             objPowerControl.DeletePower += objPower_DeletePower;
             objPowerControl.PowerName = frmPickPower.SelectedPower;
-            objPowerControl.PointsPerLevel = frmPickPower.PointsPerLevel;
-            objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
-            objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
 
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
@@ -4988,7 +4985,7 @@ namespace Chummer
                 objPowerControl.Extra = _objImprovementManager.SelectedValue;
             }
 
-	        if (frmPickPower.MaxLevels() > 0)
+	        /*if (frmPickPower.MaxLevels() > 0)
 	        {
 		        if (objPower.Name == "Improved Ability (skill)")
 		        {
@@ -5011,7 +5008,7 @@ namespace Chummer
 		        {
 			        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
 		        }
-	        }
+	        }*/
 	        // Set the control's Maximum.
 			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
             objPowerControl.Top = i * objPowerControl.Height;
@@ -12724,13 +12721,10 @@ namespace Chummer
                                 _objImprovementManager.ForcedValue = objSelectedFocus.Extra;
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
 
-                            foreach (Power objPower in _objCharacter.Powers)
+                            foreach (Power objPower in _objCharacter.Powers.Where(objPower => objFocus.GearId == objPower.BonusSource))
                             {
-                                if (objFocus.GearId == objPower.BonusSource)
-                                {
-                                    objSelectedFocus.Extra = objPower.Name;
-                                    break;
-                                }
+	                            objSelectedFocus.Extra = objPower.Name;
+	                            break;
                             }
 
                             RefreshPowers();
@@ -15562,8 +15556,8 @@ namespace Chummer
 
             foreach (PowerControl pc in panPowers.Controls)
             {
-                pc.PowerRatingChanged += objPower_PowerRatingChanged;
-                pc.DeletePower += objPower_DeletePower;
+                pc.PowerRatingChanged -= objPower_PowerRatingChanged;
+                pc.DeletePower -= objPower_DeletePower;
             }
 
             // Remove Adept Powers.

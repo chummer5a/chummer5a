@@ -27,11 +27,7 @@ namespace Chummer
     public partial class frmSelectPower : Form
     {
         private string _strSelectedPower = "";
-        private bool _blnLevels = false;
-        private decimal _decPointsPerLevel = 0;
-        private decimal _decAdeptWayDiscount = 0;
-		private int _intMaxLevels = 0;
-		private string _strLimitToPowers = "";
+		private string _strLimitToPowers;
 
 		private bool _blnAddAgain = false;
 
@@ -39,7 +35,7 @@ namespace Chummer
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
-		#region Control Events
+	    #region Control Events
 		public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
@@ -83,10 +79,7 @@ namespace Chummer
 			{
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlPower["name"].InnerText;
-				if (objXmlPower["translate"] != null)
-					objItem.Name = objXmlPower["translate"].InnerText;
-				else
-					objItem.Name = objXmlPower["name"].InnerText;
+				objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 				lstPower.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
@@ -157,10 +150,7 @@ namespace Chummer
 			{
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlPower["name"].InnerText;
-				if (objXmlPower["translate"] != null)
-					objItem.Name = objXmlPower["translate"].InnerText;
-				else
-					objItem.Name = objXmlPower["name"].InnerText;
+				objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 				lstPower.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
@@ -241,46 +231,6 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Is Power level enabled for this Power?
-        /// </summary>
-        public bool LevelEnabled
-        {
-            get
-            {
-                return _blnLevels;
-            }
-        }
-
-        /// <summary>
-        /// Power Points per level cost for the Power.
-        /// </summary>
-        public decimal PointsPerLevel
-        {
-            get
-            {
-                return _decPointsPerLevel;
-            }
-        }
-
-        /// <summary>
-        /// Power Point discount for an Adept Way.
-        /// </summary>
-        public decimal AdeptWayDiscount
-        {
-            get
-            {
-                return _decAdeptWayDiscount;
-            }
-        }
-
-        /// <summary>
-		/// Maximum number of levels allowed by the Power. Standard rules apply if this is 0.
-		/// </summary>
-		public int MaxLevels()
-		{
-			return _intMaxLevels;
-		}
 
 		/// <summary>
 		/// Only the provided Skills should be shown in the list.
@@ -312,15 +262,7 @@ namespace Chummer
 				// Quality requirements.
 				foreach (XmlNode objXmlQuality in objXmlPower.SelectNodes("required/allof/quality"))
 				{
-					bool blnFound = false;
-					foreach (Quality objQuality in _objCharacter.Qualities)
-					{
-						if (objQuality.Name == objXmlQuality.InnerText)
-						{
-							blnFound = true;
-							break;
-						}
-					}
+					bool blnFound = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText);
 
 					if (!blnFound)
 					{
@@ -331,15 +273,7 @@ namespace Chummer
 
 				foreach (XmlNode objXmlQuality in objXmlPower.SelectNodes("required/oneof/quality"))
 				{
-					blnRequirementMet = false;
-					foreach (Quality objQuality in _objCharacter.Qualities)
-					{
-						if (objQuality.Name == objXmlQuality.InnerText)
-						{
-							blnRequirementMet = true;
-							break;
-						}
-					}
+					blnRequirementMet = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText);
 
 					if (!blnRequirementMet)
 						strRequirement += "\n\t" + objXmlQuality.InnerText;
@@ -356,21 +290,6 @@ namespace Chummer
 					return;
 				}
 			}
-
-            // Retrieve the Power Level information.
-			if (objXmlPower["levels"].InnerText != "no")
-			{
-				_blnLevels = true;
-                if (objXmlPower["maxlevel"] != null)
-                    _intMaxLevels = Convert.ToInt32(objXmlPower["maxlevel"].InnerText);
-                else
-                    _intMaxLevels = 100;
-			}
-			else
-				_blnLevels = false;
-
-			_decPointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-            _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
 			
             _strSelectedPower = lstPowers.SelectedValue.ToString();
             this.DialogResult = DialogResult.OK;

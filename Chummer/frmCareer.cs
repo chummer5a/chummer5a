@@ -4586,11 +4586,6 @@ namespace Chummer
 			objPowerControl.DeletePower += objPower_DeletePower;
 
 			objPowerControl.PowerName = frmPickPower.SelectedPower;
-			objPowerControl.PointsPerLevel = frmPickPower.PointsPerLevel;
-            objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
-            objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
-			if (frmPickPower.MaxLevels() > 0)
-				objPowerControl.MaxLevels = frmPickPower.MaxLevels();
 
 			// Open the Cyberware XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");

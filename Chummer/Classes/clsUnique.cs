@@ -4801,7 +4801,7 @@ namespace Chummer
 		private string _strExtra = "";
 		private string _strSource = "";
 		private string _strPage = "";
-		private decimal _decPointsPerLevel = 0;
+		private string _strPointsPerLevel = "0";
 		private decimal _intRating = 1;
 		private bool _blnLevelsEnabled = false;
 		private int _intMaxLevel = 0;
@@ -4812,7 +4812,7 @@ namespace Chummer
 		private bool _blnDoubleCost = true;
         private bool _blnFree = false;
         private int _intFreeLevels = 0;
-        private decimal _decAdeptWayDiscount = 0;
+        private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = "";
         private decimal _decFreePoints = 0;
         private List<Enhancement> _lstEnhancements = new List<Enhancement>();
@@ -4837,8 +4837,8 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString(GlobalOptions.Instance.CultureInfo));
-            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString(GlobalOptions.Instance.CultureInfo));
+			objWriter.WriteElementString("pointsperlevel", _strPointsPerLevel);
+            objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
             objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
 			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString());
@@ -4875,9 +4875,9 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strExtra = objNode["extra"].InnerText;
-			_decPointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.Instance.CultureInfo);
+			_strPointsPerLevel = objNode["pointsperlevel"].InnerText;
             if (objNode["adeptway"] != null)
-                _decAdeptWayDiscount = Convert.ToDecimal(objNode["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
+                _strAdeptWayDiscount = objNode["adeptway"].InnerText;
             else
             {
                 string strPowerName = _strName;
@@ -4885,7 +4885,7 @@ namespace Chummer
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
+	            _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
             }
             _intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_blnLevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
@@ -4893,63 +4893,15 @@ namespace Chummer
             _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
             _intMaxLevel = Convert.ToInt32(objNode["maxlevel"].InnerText);
 
-			try
-			{
-				_blnDiscountedAdeptWay = Convert.ToBoolean(objNode["discounted"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnDiscountedGeas = Convert.ToBoolean(objNode["discountedgeas"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _strBonusSource = objNode["bonussource"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _decFreePoints = Convert.ToDecimal(objNode["freepoints"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-			{
-				_strSource = objNode["source"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnDoubleCost = Convert.ToBoolean(objNode["doublecost"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("discounted", out _blnDiscountedAdeptWay);
+			objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
+			objNode.TryGetField("bonussource", out _strBonusSource);
+			objNode.TryGetField("freepoints", out _decFreePoints);
+			objNode.TryGetField("source", out _strSource);
+			objNode.TryGetField("page", out _strPage);
+			objNode.TryGetField("doublecost", out _blnDoubleCost);
+			objNode.TryGetField("notes", out _strNotes);
 			_nodBonus = objNode["bonus"];
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
             if (objNode.InnerXml.Contains("enhancements"))
             {
                 XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
@@ -4972,12 +4924,9 @@ namespace Chummer
 			objWriter.WriteStartElement("power");
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString());
-            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString());
-            if (_blnLevelsEnabled)
-				objWriter.WriteElementString("rating", _intRating.ToString());
-			else
-				objWriter.WriteElementString("rating", "0");
+			objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString());
+            objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString());
+			objWriter.WriteElementString("rating", _blnLevelsEnabled ? _intRating.ToString() : "0");
 			objWriter.WriteElementString("totalpoints", PowerPoints.ToString());
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
@@ -5116,11 +5065,21 @@ namespace Chummer
 		{
 			get
 			{
-				return _decPointsPerLevel;
+				decimal decReturn = 0;
+				if (_strPointsPerLevel.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strPointsPerLevel.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					decReturn = Convert.ToDecimal(strValues[(int) (Convert.ToDecimal(_intRating) - 1)]);
+				}
+				else
+				{
+					decReturn = Convert.ToDecimal(_strPointsPerLevel);
+				}
+				return decReturn;
 			}
 			set
 			{
-				_decPointsPerLevel = value;
+				_strPointsPerLevel = value.ToString();
 			}
 		}
 
@@ -5131,11 +5090,21 @@ namespace Chummer
         {
             get
             {
-                return _decAdeptWayDiscount;
+				decimal decReturn = 0;
+				if (_strAdeptWayDiscount.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strAdeptWayDiscount.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					decReturn = Convert.ToDecimal(strValues[(int)(Convert.ToDecimal(_intRating) - 1)]);
+				}
+				else
+				{
+					decReturn = Convert.ToDecimal(_strAdeptWayDiscount);
+				}
+				return decReturn;
             }
             set
             {
-                _decAdeptWayDiscount = value;
+				_strAdeptWayDiscount = value.ToString();
             }
         }
 
@@ -5146,7 +5115,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _decPointsPerLevel;
+				return PointsPerLevel;
 			}
 		}
 
@@ -5155,12 +5124,8 @@ namespace Chummer
 		/// </summary>
 		private decimal Discount
 		{
-			get
-			{
-                if (_blnDiscountedAdeptWay)
-                    return _decAdeptWayDiscount;
-                else
-                    return _decFreePoints;
+			get {
+				return _blnDiscountedAdeptWay ? AdeptWayDiscount : _decFreePoints;
 			}
 		}
 
@@ -5222,27 +5187,6 @@ namespace Chummer
                 {
                     decimal decReturn = (_intRating - _intFreeLevels) * PointsPerLevel;
                     decReturn -= Discount;
-
-                    // Look at the Improvements created by the Power and determine if it has taken an CharacterAttribute above its Metatype Maximum.
-                    //if (_blnDoubleCost)
-                    //{
-                    //    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    //    {
-                    //        if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.CharacterAttribute && objImprovement.Enabled)
-                    //        {
-                    //            CharacterAttribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
-                    //            if (objAttribute.Value + objAttribute.AttributeValueModifiers > objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers)
-                    //            {
-                    //                // Use the lower of the difference between Augmented Maximum and the Power's Rating.
-                    //                int intDiff = (objAttribute.Value + objAttribute.AttributeValueModifiers) - (objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers);
-                    //                intDiff = Math.Min(intDiff, Convert.ToInt32(_intRating));
-
-                    //                // Double the number of Power Points used to make up this difference.
-                    //                decReturn += CalculatedPointsPerLevel * intDiff;
-                    //            }
-                    //        }
-                    //    }
-                    //}
 
                     return decReturn;
                 }
@@ -5426,9 +5370,32 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Total levels of the Power.
+		/// </summary>
+	    public decimal Levels
+	    {
+		    get
+		    {
+				decimal actualRating = Rating - FreeLevels;
+				decimal newRating = actualRating + FreeLevels;
+
+				if (newRating < FreeLevels)
+				{
+					newRating = FreeLevels;
+				}
+
+				if (newRating > Convert.ToDecimal(CharacterObject.MAG.Value))
+				{
+					newRating = Convert.ToDecimal(CharacterObject.MAG.Value);
+				}
+			    return newRating;
+		    }
+	    }
+
+	    /// <summary>
 		/// The number of Power Points that have been doubled because of exceeding the Metatype's Maximum CharacterAttribute values.
 		/// </summary>
-		public int DoubledPoints
+		/*public int DoubledPoints
 		{
 			get
 			{
@@ -5465,7 +5432,7 @@ namespace Chummer
 				return intDoubledPoints;
                 }
             }
-		}
+		}*/
 		#endregion
 	}
 
