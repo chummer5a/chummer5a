@@ -1,3 +1,9 @@
+Build 189
+
+Application Changes:
+
+- Fixed an issue caused by missing Depth values for certain metatypes. 
+
 Build 188
 
 Application Changes: 
