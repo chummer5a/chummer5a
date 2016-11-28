@@ -150,8 +150,6 @@
             // chkLimitList
             // 
             this.chkLimitList.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkLimitList.Checked = true;
-            this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkLimitList.Location = new System.Drawing.Point(276, 169);
             this.chkLimitList.Name = "chkLimitList";
             this.chkLimitList.Size = new System.Drawing.Size(228, 62);
@@ -160,6 +158,7 @@
             this.chkLimitList.Text = "Show only Advanced Programs I can take";
             this.chkLimitList.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkLimitList.UseVisualStyleBackColor = true;
+            this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
             // 
             // lblCategory
             // 
@@ -179,6 +178,7 @@
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(196, 21);
             this.cboCategory.TabIndex = 36;
+            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // lstAIPrograms
             // 
@@ -187,6 +187,7 @@
             this.lstAIPrograms.Name = "lstAIPrograms";
             this.lstAIPrograms.Size = new System.Drawing.Size(255, 381);
             this.lstAIPrograms.TabIndex = 37;
+            this.lstAIPrograms.SelectedIndexChanged += new System.EventHandler(this.lstAIPrograms_SelectedIndexChanged);
             // 
             // frmSelectAIProgram
             // 

@@ -3589,11 +3589,11 @@ namespace Chummer
 		private void cmdImproveDEP_Click(object sender, EventArgs e)
 		{
 			// Make sure the character has enough Karma to improve the Attribute.
-			int intKarmaCost = 0;
+			int intKarmaCost = 10;
 			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intKarmaCost = (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
+				intKarmaCost += (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			else
-				intKarmaCost = (_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
+				intKarmaCost += (_objCharacter.DEP.Value + 1) * _objOptions.KarmaAttribute;
 
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -3601,11 +3601,9 @@ namespace Chummer
 				return;
 			}
 
-			int intFromValue = 0;
+			int intFromValue = _objCharacter.DEP.Value;
 			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
-				intFromValue = _objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers;
-			else
-				intFromValue = _objCharacter.DEP.Value - _objCharacter.EssencePenalty;
+				intFromValue += _objCharacter.DEP.AttributeValueModifiers;
 
 			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeDEPShort")).Replace("{1}", (intFromValue + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
 				return;
@@ -20431,11 +20429,6 @@ namespace Chummer
 					if (_objCharacter.RES.Value > _objCharacter.RES.TotalMaximum)
 						intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
 				}
-                else if (_objCharacter.DEPEnabled)
-                {
-                    if (_objCharacter.DEP.Value > _objCharacter.DEP.TotalMaximum)
-                        intEssenceLoss = _objCharacter.DEP.Value - _objCharacter.DEP.TotalMaximum;
-                }
             }
 
 			lblBOD.Text = _objCharacter.BOD.Value.ToString();
@@ -20449,7 +20442,7 @@ namespace Chummer
 			lblEDG.Text = _objCharacter.EDG.Value.ToString();
 			lblMAG.Text = (_objCharacter.MAG.Value - intEssenceLoss).ToString();
 			lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
-			lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
+			lblDEP.Text = _objCharacter.DEP.Value.ToString();
 
 			_blnSkipUpdate = false;
 
@@ -20646,10 +20639,7 @@ namespace Chummer
 					lblRES.Text = "0";
 				else
 					lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
-				if (_objCharacter.DEP.Value - intEssenceLoss < 0)
-					lblDEP.Text = "0";
-				else
-					lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
+				lblDEP.Text = _objCharacter.DEP.Value.ToString();
 
 				// If the CharacterAttribute reaches 0, the character has burned out.
 				if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
@@ -20889,7 +20879,7 @@ namespace Chummer
 					cmdImproveRES.Enabled = false;
 
                 if (_objCharacter.DEPEnabled)
-                    cmdImproveDEP.Enabled = !(_objCharacter.DEP.Value - intEssenceLoss >= _objCharacter.DEP.TotalMaximum);
+                    cmdImproveDEP.Enabled = !(_objCharacter.DEP.Value >= _objCharacter.DEP.TotalMaximum);
                 else
                     cmdImproveDEP.Enabled = false;
 

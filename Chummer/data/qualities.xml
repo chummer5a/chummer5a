@@ -10145,7 +10145,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<selecttext />
+				<selectaiprogram />
 			</bonus>
 			<required>
 				<oneof>

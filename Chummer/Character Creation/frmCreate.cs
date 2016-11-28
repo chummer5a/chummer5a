@@ -1456,12 +1456,9 @@ namespace Chummer
 
             if (_objCharacter.DEPEnabled)
             {
-                int intEssenceLoss = 0;
-                if (!_objOptions.ESSLossReducesMaximumOnly)
-                    intEssenceLoss = _objCharacter.EssencePenalty;
                 nudDEP.Minimum = _objCharacter.DEP.MetatypeMinimum;
-                nudDEP.Maximum = _objCharacter.DEP.MetatypeMaximum + intEssenceLoss;
-                nudKDEP.Maximum = _objCharacter.DEP.MetatypeMaximum + intEssenceLoss;
+                nudDEP.Maximum = _objCharacter.DEP.MetatypeMaximum;
+                nudKDEP.Maximum = _objCharacter.DEP.MetatypeMaximum;
             }
             else
             {
@@ -6901,18 +6898,18 @@ namespace Chummer
             {
                 if (treAIPrograms.SelectedNode.Level == 1)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteAIProgram")))
-                        return;
-
                     // Locate the Program that is selected in the tree.
                     AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
 
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+                    if (objProgram.CanDelete)
+                    {
+                        if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteAIProgram")))
+                            return;
 
-                    _objCharacter.AIPrograms.Remove(objProgram);
-                    treAIPrograms.SelectedNode.Remove();
-                }
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
 
+                        _objCharacter.AIPrograms.Remove(objProgram);
+                        treAIPrograms.SelectedNode.Remove();
                 /*
                 int intComplexForms = 0;
                 foreach (ComplexForm tp in _objCharacter.ComplexForms)
@@ -6922,10 +6919,12 @@ namespace Chummer
                 lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
                 */
 
-                UpdateCharacterInfo();
+                        UpdateCharacterInfo();
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
             }
             catch
             {
@@ -7142,6 +7141,8 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateCharacterInfo();
             RefreshMartialArts();
+            RefreshAIPrograms();
+            RefreshLimitModifiers();
             RefreshPowers();
             RefreshContacts();
 			RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
@@ -7393,7 +7394,8 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateCharacterInfo();
             RefreshMartialArts();
-			RefreshLimitModifiers();
+            RefreshAIPrograms();
+            RefreshLimitModifiers();
             RefreshPowers();
             RefreshContacts();
 			_blnIsDirty = true;
@@ -9604,6 +9606,8 @@ namespace Chummer
 
                     if (objAIProgram.Notes != string.Empty)
                         treAIPrograms.SelectedNode.ForeColor = Color.SaddleBrown;
+                    else if (!objAIProgram.CanDelete)
+                        treAIPrograms.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treAIPrograms.SelectedNode.ForeColor = SystemColors.WindowText;
                     treAIPrograms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
@@ -14368,7 +14372,7 @@ namespace Chummer
 		        {
 			        for (int i = 1; i <= nudKDEP.Value; i++)
 			        {
-				        intDEP += ((Convert.ToInt32(nudDEP.Value) + i)*_objOptions.KarmaAttribute);
+				        intDEP += (10 + (Convert.ToInt32(nudDEP.Value) + i)*_objOptions.KarmaAttribute);
 			        }
 		        }
 	        }
@@ -14397,7 +14401,7 @@ namespace Chummer
 				{
 					for (int i = 1; i <= nudKDEP.Value; i++)
 					{
-						intDEP += ((1 + i) * _objOptions.KarmaAttribute);
+						intDEP += (10 + (1 + i) * _objOptions.KarmaAttribute);
 					}
 				}
 			}
@@ -14415,10 +14419,6 @@ namespace Chummer
                 if (_objCharacter.RESEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
                     intRES += intEssenceLoss * Convert.ToInt32(nudRES.Value + nudKRES.Value) * _objOptions.KarmaAttribute;
-                }
-                if (_objCharacter.DEPEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
-                {
-                    intDEP += intEssenceLoss * Convert.ToInt32(nudDEP.Value + nudKDEP.Value) * _objOptions.KarmaAttribute;
                 }
             }
 
@@ -14866,10 +14866,13 @@ namespace Chummer
             int intAIAdvancedProgramPointsUsed = 0;
             foreach (AIProgram objProgram in _objCharacter.AIPrograms)
             {
-                if (objProgram.IsAdvancedProgram)
-                    intAIAdvancedProgramPointsUsed += 1;
-                else
-                    intAINormalProgramPointsUsed += 1;
+                if (objProgram.CanDelete)
+                {
+                    if (objProgram.IsAdvancedProgram)
+                        intAIAdvancedProgramPointsUsed += 1;
+                    else
+                        intAINormalProgramPointsUsed += 1;
+                }
             }
             int intKarmaCost = 0;
             int intNumAdvancedProgramPointsAsNormalPrograms = 0;
@@ -14888,8 +14891,8 @@ namespace Chummer
                 intKarmaCost += (intAIAdvancedProgramPointsUsed - _objCharacter.AIAdvancedProgramLimit) * _objOptions.KarmaNewAIAdvancedProgram;
             }
             intKarmaPointsRemain -= intKarmaCost;
-            lblAINormalProgramsBP.Text = String.Format("{0} " + strPoints, intAINormalProgramPointsUsed.ToString());
-            lblAIAdvancedProgramsBP.Text = String.Format("{0} " + strPoints, (intAIAdvancedProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms).ToString());
+            lblAINormalProgramsBP.Text = String.Format("{0} " + strPoints, ((intAINormalProgramPointsUsed - _objCharacter.AINormalProgramLimit) * _objOptions.KarmaNewAIProgram).ToString());
+            lblAIAdvancedProgramsBP.Text = String.Format("{0} " + strPoints, ((intAIAdvancedProgramPointsUsed - _objCharacter.AIAdvancedProgramLimit) * _objOptions.KarmaNewAIAdvancedProgram).ToString());
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
 
             // ------------------------------------------------------------------------------
@@ -15092,7 +15095,6 @@ namespace Chummer
                 {
                     _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intReduction * -1);
                     _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intReduction * -1);
-                    _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intReduction * -1);
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -15906,6 +15908,28 @@ namespace Chummer
                 panPowers.Controls.Add(objPowerControl);
             }
             _blnLoading = false;
+        }
+
+        public void RefreshAIPrograms()
+        {
+            treAIPrograms.Nodes[0].Nodes.Clear();
+
+            // Populate AI Programs.
+            foreach (AIProgram objAIProgram in _objCharacter.AIPrograms)
+            {
+                TreeNode objNode = new TreeNode();
+                objNode.Text = objAIProgram.DisplayName;
+                objNode.Tag = objAIProgram.InternalId;
+                if (objAIProgram.Notes != string.Empty)
+                    objNode.ForeColor = Color.SaddleBrown;
+                else if (!objAIProgram.CanDelete)
+                    objNode.ForeColor = SystemColors.GrayText;
+                else
+                    objNode.ForeColor = SystemColors.WindowText;
+                objNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
+                treAIPrograms.Nodes[0].Nodes.Add(objNode);
+            }
+            treAIPrograms.Nodes[0].Expand();
         }
 
         public void RefreshMartialArts()
@@ -16958,14 +16982,12 @@ namespace Chummer
             //}
 
             // If the character has an Essence Penalty, this needs to be added as a positive value to the character's MAG/RES so that it's correctly shown in Career Mode.
-            if (_objCharacter.EssencePenalty > 0 && (_objCharacter.MAGEnabled || _objCharacter.RESEnabled || _objCharacter.DEPEnabled))
+            if (_objCharacter.EssencePenalty > 0 && (_objCharacter.MAGEnabled || _objCharacter.RESEnabled))
             {
                 if (_objCharacter.MAGEnabled)
                     _objCharacter.MAG.Value += _objCharacter.EssencePenalty;
                 if (_objCharacter.RESEnabled)
                     _objCharacter.RES.Value += _objCharacter.EssencePenalty;
-                if (_objCharacter.DEPEnabled)
-                    _objCharacter.DEP.Value += _objCharacter.EssencePenalty;
             }
 
             // Create an Expense Entry for Starting Nuyen.
@@ -21853,7 +21875,7 @@ namespace Chummer
             intLeft = lblAIProgramsRequiresLabel.Width;
             intLeft = Math.Max(intLeft, lblAIProgramsSourceLabel.Width);
 
-            lblAIProgramsRequiresLabel.Left = lblAIProgramsRequiresLabel.Left + intLeft + 6;
+            lblAIProgramsRequires.Left = lblAIProgramsRequiresLabel.Left + intLeft + 6;
             lblAIProgramsSource.Left = lblAIProgramsSourceLabel.Left + intLeft + 6;
 
             // Critter Powers tab.

@@ -5836,6 +5836,7 @@ namespace Chummer
         private string _strAltName = "";
         private string _strAltPage = "";
         private bool _boolIsAdvancedProgram = false;
+        private bool _boolCanDelete = true;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -5851,7 +5852,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "")
+        public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
             if (GlobalOptions.Instance.Language != "en-us")
             {
@@ -5866,7 +5867,10 @@ namespace Chummer
                 }
             }
             _strName = objXmlProgramNode["name"].InnerText;
-            _strRequiresProgram = objXmlProgramNode["require"].InnerText;
+            _strRequiresProgram = LanguageManager.Instance.GetString("String_None");
+            _boolCanDelete = boolCanDelete;
+            if (objXmlProgramNode["require"] != null)
+                _strRequiresProgram = objXmlProgramNode["require"].InnerText;
             _strSource = objXmlProgramNode["source"].InnerText;
             _strPage = objXmlProgramNode["page"].InnerText;
             _strExtra = strExtra;
@@ -5902,7 +5906,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Complex Form from the XmlNode.
+        /// Load the Program from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
@@ -6067,6 +6071,21 @@ namespace Chummer
             set
             {
                 _strRequiresProgram = value;
+            }
+        }
+
+        /// <summary>
+		/// If the AI Advanced Program is added from a quality.
+		/// </summary>
+		public bool CanDelete
+        {
+            get
+            {
+                return _boolCanDelete;
+            }
+            set
+            {
+                _boolCanDelete = value;
             }
         }
 

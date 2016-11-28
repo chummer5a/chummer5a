@@ -113,7 +113,7 @@ namespace Chummer
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            lstAIPrograms_SelectedIndexChanged(sender, e);
+            cboCategory_SelectedIndexChanged(sender, e);
         }
 
         private void lstAIPrograms_SelectedIndexChanged(object sender, EventArgs e)
@@ -139,7 +139,7 @@ namespace Chummer
                 objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + lstAIPrograms.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
             }
 
-            UpdateProgramInfo();
+            UpdateProgramInfo(objXmlProgram);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -256,30 +256,13 @@ namespace Chummer
         /// <summary>
         /// Update the Program's information based on the Program selected.
         /// </summary>
-        private void UpdateProgramInfo()
+        private void UpdateProgramInfo(XmlNode objXmlProgram)
         {
             if (lstAIPrograms.Text != "")
             {
-                // Retireve the information for the selected piece of Cyberware.
-                XmlNode objXmlProgram;
-
-                // Filtering is also done on the Category in case there are non-unique names across categories.
-                if (lstAIPrograms.SelectedValue.ToString().Contains('^'))
-                {
-                    // If the SelectedValue contains ^, then it also includes the English Category name which needs to be extracted.
-                    int intIndexOf = lstAIPrograms.SelectedValue.ToString().IndexOf('^');
-                    string strValue = lstAIPrograms.SelectedValue.ToString().Substring(0, intIndexOf);
-                    string strCategory = lstAIPrograms.SelectedValue.ToString().Substring(intIndexOf + 1, lstAIPrograms.SelectedValue.ToString().Length - intIndexOf - 1);
-                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + strValue + "\" and category = \"" + strCategory + "\"]");
-                }
-                else
-                {
-                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + lstAIPrograms.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
-                }
-
-                string strRequiresProgram = objXmlProgram["require"].InnerText;
-                if (strRequiresProgram == "")
-                    strRequiresProgram = LanguageManager.Instance.GetString("String_None");
+                string strRequiresProgram = LanguageManager.Instance.GetString("String_None");
+                if (objXmlProgram["require"] != null)
+                    strRequiresProgram = objXmlProgram["require"].InnerText;
 
                 lblRequiresProgram.Text = strRequiresProgram;
 
@@ -385,10 +368,11 @@ namespace Chummer
                 _strSelectedCategory = objXmlProgram["category"].InnerText;
 
                 // Check to make sure requirement is met
-                string strRequiresProgram = objXmlProgram["require"].InnerText;
+                string strRequiresProgram = ""; 
                 bool boolRequirementMet = true;
-                if (strRequiresProgram != "" && strRequiresProgram != LanguageManager.Instance.GetString("String_None"))
+                if (objXmlProgram["require"] != null)
                 {
+                    strRequiresProgram = objXmlProgram["require"].InnerText;
                     boolRequirementMet = false;
                     foreach (AIProgram objLoopAIProgram in _objCharacter.AIPrograms)
                     {
@@ -415,11 +399,9 @@ namespace Chummer
 		{
             int intLeft = lblRequiresProgramLabel.Width;
             intLeft = Math.Max(intLeft, lblSourceLabel.Width);
-            intLeft = Math.Max(intLeft, chkLimitList.Width);
 
             lblRequiresProgram.Left = lblRequiresProgramLabel.Left + intLeft + 6;
             lblSource.Left = lblSourceLabel.Left + intLeft + 6;
-            chkLimitList.Left = chkLimitList.Left + intLeft + 6;
 
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
 		}

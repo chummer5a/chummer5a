@@ -176,7 +176,8 @@ namespace Chummer
 			BlockSkillDefault,
 			Ambidextrous,
 	        UnarmedReach,
-			SkillSpecialization
+			SkillSpecialization,
+            AIProgram
 		}
 
         public enum ImprovementSource
@@ -2046,7 +2047,17 @@ namespace Chummer
 						objSkill.Specializations.Remove(objSkillSpec);
 					}
 				}
-			}
+
+                // Remove AI programs that were granted by the Improvement.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.AIProgram)
+                {
+                    foreach (AIProgram objProgram in _objCharacter.AIPrograms.Where(objProgram => objImprovement.ImprovedName == objProgram.InternalId))
+                    {
+                        _objCharacter.AIPrograms.Remove(objProgram);
+                        break;
+                    }
+                }
+            }
 
 
 			_objCharacter.ImprovementHook(objImprovementList, this);

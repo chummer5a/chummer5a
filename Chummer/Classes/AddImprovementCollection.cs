@@ -868,8 +868,62 @@ namespace Chummer.Classes
 				_strUnique);
 		}
 
-		// Select a Contact
-		public void selectcontact(XmlNode bonusNode)
+        // Select an AI program.
+        public void selectaiprogram(XmlNode bonusNode)
+        {
+            Log.Info("selectaiprogram");
+            // Display the Select Spell window.
+            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
+
+            Log.Info("selectaiprogram = " + bonusNode.OuterXml.ToString());
+
+            frmPickProgram.ShowDialog();
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickProgram.DialogResult == DialogResult.Cancel)
+            {
+                throw new AbortedException();
+            }
+
+            SelectedValue = frmPickProgram.SelectedProgram;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+
+            // Check for SelectText.
+            string strExtra = "";
+            if (objXmlProgram["bonus"] != null)
+            {
+                if (objXmlProgram["bonus"]["selecttext"] != null)
+                {
+                    frmSelectText frmPickText = new frmSelectText();
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.ShowDialog();
+                    strExtra = frmPickText.SelectedValue;
+                }
+            }
+
+            TreeNode objNode = new TreeNode();
+            AIProgram objProgram = new AIProgram(_objCharacter);
+            objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra, false);
+            if (objProgram.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.AIPrograms.Add(objProgram);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.AIProgram,
+                _strUnique);
+        }
+
+        // Select a Contact
+        public void selectcontact(XmlNode bonusNode)
 		{
 			Log.Info("selectcontact");
 			XmlNode nodSelect = bonusNode;

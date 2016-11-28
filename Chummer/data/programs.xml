@@ -24,7 +24,6 @@
 	<category>Advanced Programs</category>
     <category>Common Programs</category>
     <category>Hacking Programs</category>
-	<category>Skillsofts</category>
     <category>Software</category>
   </categories>
   <programs>
@@ -434,70 +433,6 @@
       <source>SR5</source>
       <page>246</page>
     </program>
-    <program>
-      <id>deb8de75-a07f-4d6d-8b1b-6c5aaa2e9110</id>
-      <name>Activesoft</name>
-      <skill>Varies</skill>
-      <category>Skillsofts</category>
-      <rating>6</rating>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Activesoft</tag>
-      </tags>
-      <bonus>
-        <selectskill />
-      </bonus>
-      <avail>8</avail>
-      <cost>Rating * 5000</cost>
-      <source>SR5</source>
-      <page>442</page>
-    </program>
-    <program>
-      <id>54df23dc-c60e-4e58-96ca-19ddb63e9c9d</id>
-      <name>Knowsoft</name>
-      <skill>Varies</skill>
-      <category>Skillsofts</category>
-      <rating>6</rating>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Knowsoft</tag>
-      </tags>
-      <bonus>
-        <knowsoft>
-          <pick/>
-          <val>Rating</val>
-          <notgroup>Language</notgroup>
-		  <!-- <require>skilljack</require> -->
-        </knowsoft>
-      </bonus>
-      <avail>4</avail>
-      <cost>Rating * 2000</cost>
-      <source>SR5</source>
-      <page>442</page>
-    </program>
-    <program>
-      <id>c8916096-7a71-4351-97b4-d13c9e58391d</id>
-      <name>Linguasoft</name>
-      <skill>Varies</skill>
-      <category>Skillsofts</category>
-      <rating>6</rating>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Linguasoft</tag>
-      </tags>
-      <bonus>
-        <knowsoft>
-          <pick/>
-          <val>Rating</val>
-          <group>Language</group>
-          <!-- <require>skilljack</require> -->
-        </knowsoft>
-      </bonus>
-      <avail>2</avail>
-      <cost>Rating * 1000</cost>
-      <source>SR5</source>
-      <page>442</page>
-    </program>
 	<program>
 		<id>8ba242b1-87c7-4f07-a318-e41d9241ca25</id>
 		<name>Swarm</name>
@@ -508,55 +443,6 @@
 		<source>R5</source>
 		<page>31</page>
 	</program>
-    <program>
-      <id>ebf68c9c-6e17-4fb7-8dd3-7f245a91ca02</id>
-      <name>Datasoft</name>
-      <category>Software</category>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <avail>4</avail>
-      <cost>120</cost>
-      <source>SR5</source>
-      <page>441</page>
-    </program>
-    <program>
-      <id>64c971fb-f42c-4f76-88ac-ffe4870b5dd9</id>
-      <name>Mapsoft</name>
-      <category>Software</category>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <avail>4</avail>
-      <cost>100</cost>
-      <source>SR5</source>
-      <page>441</page>
-    </program>
-    <program>
-      <id>4762f25a-99bc-499f-a9d0-68e6aba542d3</id>
-      <name>Shopsoft</name>
-      <category>Software</category>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <avail>4</avail>
-      <cost>150</cost>
-      <source>SR5</source>
-      <page>441</page>
-    </program>
-    <program>
-      <id>5b08c062-4612-42f5-ae05-1209970db6bb</id>
-      <name>Tutorsoft</name>
-      <category>Software</category>
-      <rating>6</rating>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <avail>Rating</avail>
-      <cost>Rating * 400</cost>
-      <source>SR5</source>
-      <page>442</page>
-    </program>
 	<!-- Region Autosofts -->
 		<program>
 			<id>012d2de2-79cb-4f3b-9571-47c8b550a505</id>
@@ -818,6 +704,9 @@
       <name>Spotter</name>
       <category>Advanced Programs</category>
 	  <require>[Weapon] Targeting Autosoft</require>
+		<bonus>
+			<selecttext />
+		</bonus>
       <avail>0F</avail>
       <cost>0</cost>
       <source>DT</source>
@@ -848,6 +737,9 @@
       <name>WTLM</name>
       <category>Advanced Programs</category>
 	  <require>[Model] Maneuvering Autosoft</require>
+		<bonus>
+			<selecttext />
+		</bonus>
       <avail>0F</avail>
       <cost>0</cost>
       <source>DT</source>
