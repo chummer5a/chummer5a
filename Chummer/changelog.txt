@@ -6,6 +6,10 @@ Application Changes:
 - Fixed an issue with default specialisations not translating properly. 
 - Fixed an issue that caused drones using the modification rules from Rigger 5 to lose their Armour Rating. 
 
+Data Changes: 
+
+- Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
+
 Build 188
 
 Application Changes: 
