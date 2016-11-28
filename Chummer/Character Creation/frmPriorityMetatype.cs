@@ -373,13 +373,19 @@ namespace Chummer
 
             // Make sure lists are properly populated so that you can't e.g. select Magician if you're reprioritizing a Mundane
             string strMetatype = "";
+	        string strMetavariant = "";
             if (lstMetatypes.SelectedIndex >= 0)
             {
                 strMetatype = lstMetatypes.SelectedValue.ToString();
-            }
+				strMetavariant = cboMetavariant.SelectedValue.ToString();
+			}
             LoadMetatypes();
-            lstMetatypes.SelectedValue = strMetatype;
-            PopulateTalents();
+	        if (lstMetatypes.SelectedIndex >= 0)
+	        {
+		        lstMetatypes.SelectedValue = strMetatype;
+		        cboMetavariant.SelectedValue = strMetavariant;
+	        }
+	        PopulateTalents();
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.Instance.GetString("Tip_Metatype_PossessionTradition"));

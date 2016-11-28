@@ -122,6 +122,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Shiva Arms (1 Pair)</quality>
