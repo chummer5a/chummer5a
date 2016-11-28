@@ -5,6 +5,7 @@ Application Changes:
 - Fixed an issue caused by missing Depth values for certain metatypes. 
 - Fixed an issue with default specialisations not translating properly. 
 - Fixed an issue that caused drones using the modification rules from Rigger 5 to lose their Armour Rating. 
+- Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus. 
 
 Data Changes: 
 
