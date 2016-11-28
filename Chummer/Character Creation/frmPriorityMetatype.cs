@@ -1960,7 +1960,7 @@ namespace Chummer
 		private XmlNodeList GetMagicalSkillList(XmlNodeList objNodeList = null)
         {
 			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Magical Active\"]");
+            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]");
             return objXmlSkillList;
         }
 
