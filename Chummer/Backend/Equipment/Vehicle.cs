@@ -1942,17 +1942,13 @@ namespace Chummer.Backend.Equipment
 				else
 					intModArmor = _intArmor;
 
-				foreach (VehicleMod objMod in _lstVehicleMods)
+				foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)))
 				{
-					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
+					// Add the Modification's Armor to the Vehicle's base Armor. 
+					if (objMod.Bonus.InnerXml.Contains("<armor>"))
 					{
 						blnArmorMod = true;
-						// Add the Modification's Armor to the Vehicle's base Armor. 
-						if (objMod.Bonus.InnerXml.Contains("<armor>"))
-						{
-							//intBaseArmor = 0;
-							intModArmor += Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
-						}
+						intModArmor += Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 					}
 				}
 				// Drones have no theoretical armor cap in the optional rules, otherwise, it's capped

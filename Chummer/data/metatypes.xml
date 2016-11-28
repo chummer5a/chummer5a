@@ -122,6 +122,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Shiva Arms (1 Pair)</quality>
@@ -180,6 +183,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>2/1/0</sprint>
@@ -235,6 +241,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -291,6 +300,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -349,6 +361,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -404,6 +419,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -462,6 +480,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>1/1/0</sprint>
@@ -520,6 +541,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Arcane Arrester</quality>
@@ -574,7 +598,10 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>				
+					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>	
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -632,7 +659,10 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>				
+					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>	
 					<qualities>
 						<positive>
 							<quality>Celerity</quality>
@@ -689,7 +719,10 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>					
+					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>		
 					<qualities>
 						<positive>
 							<quality>Resistance to Pathogens/Toxins</quality>
@@ -749,6 +782,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>2/1/0</sprint>
@@ -804,6 +840,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -861,6 +900,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -915,6 +957,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -970,6 +1015,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -977,7 +1025,6 @@
 						</positive>
 					</qualities>
 					<karma>50</karma>
-
 					<bonus />
 					<source>RF</source>
 					<page>104</page>
@@ -1028,6 +1075,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>1/1/0</sprint>
@@ -1087,6 +1137,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<negative>
 							<quality>Cyclopean Eye</quality>
@@ -1143,6 +1196,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1200,6 +1256,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1257,6 +1316,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1317,6 +1379,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>4/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>4/1/0</sprint>
@@ -1390,6 +1455,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>1/1/0</sprint>
@@ -1465,6 +1533,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>1/1/2</walk>
 			<run>2/0/6</run>
 			<sprint>1/1/2</sprint>
@@ -1535,6 +1606,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>2/2/0</sprint>

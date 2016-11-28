@@ -93,9 +93,17 @@ namespace Chummer
 		/// <summary>
 		/// Skill Specialization's name.
 		/// </summary>
-		public string Name
+		public string DisplayName
 		{
 			get { return _translator.Read(_name, ref _translated); }
+		}
+
+		/// <summary>
+		/// Skill Specialization's name.
+		/// </summary>
+		public string Name
+		{
+			get { return _name; }
 		}
 
 		/// <summary>
