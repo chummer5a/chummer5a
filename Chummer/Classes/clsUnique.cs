@@ -4866,6 +4866,47 @@ namespace Chummer
 			_objCharacter.SourceProcess(_strSource);
 		}
 
+	    public void Create(XmlNode objNode, ImprovementManager _objImprovementManager)
+	    {
+			_strName = objNode["name"].InnerText;
+			_strPointsPerLevel = objNode["points"].InnerText;
+			_strAdeptWayDiscount = objNode["adeptway"].InnerText;
+			_blnLevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
+		    _intRating = 1;
+		    objNode.TryGetField("maxlevels", out _intMaxLevel, 1);
+			objNode.TryGetField("discounted", out _blnDiscountedAdeptWay);
+			objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
+			objNode.TryGetField("bonussource", out _strBonusSource);
+			objNode.TryGetField("freepoints", out _decFreePoints);
+			objNode.TryGetField("source", out _strSource);
+			objNode.TryGetField("page", out _strPage);
+			objNode.TryGetField("doublecost", out _blnDoubleCost);
+			objNode.TryGetField("notes", out _strNotes);
+			_nodBonus = objNode["bonus"];
+			if (objNode.InnerXml.Contains("enhancements"))
+			{
+				XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
+				foreach (XmlNode nodEnhancement in nodEnhancements)
+				{
+					Enhancement objEnhancement = new Enhancement(_objCharacter);
+					objEnhancement.Load(nodEnhancement);
+					objEnhancement.Parent = this;
+					_lstEnhancements.Add(objEnhancement);
+				}
+			}
+		    if (_nodBonus != null && _nodBonus.HasChildNodes)
+		    {
+			    if (
+				    !_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false,
+					    Convert.ToInt32(Rating), DisplayNameShort))
+			    {
+				    _objCharacter.Powers.Remove(this);
+				    return;
+			    }
+		    }
+		    Extra = _objImprovementManager.SelectedValue;
+		}
+
 		/// <summary>
 		/// Load the Power from the XmlNode.
 		/// </summary>
@@ -5392,47 +5433,51 @@ namespace Chummer
 		    }
 	    }
 
-	    /// <summary>
-		/// The number of Power Points that have been doubled because of exceeding the Metatype's Maximum CharacterAttribute values.
-		/// </summary>
-		/*public int DoubledPoints
-		{
-			get
-			{
-                if (_blnFree)
-                    return 0;
-                else
-                {
-                    decimal decReturn = (_intRating - _intFreeLevels) * PointsPerLevel;
-                    decReturn -= Discount;
-                    int intDoubledPoints = 0;
+		#endregion
+		#region Complex Properties 
 
-                    // Look at the Improvements created by the Power and determine if it has taken an CharacterAttribute above its Metatype Maximum.
-                    if (_blnDoubleCost)
-                    {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
-                        {
-                            if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
-                            {
-                                CharacterAttrib objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
-                                if (objAttribute.Value + objAttribute.AttributeValueModifiers > objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers)
-                                {
-                                    // Use the lower of the difference between Augmented Maximum and the Power's Rating.
-                                    int intDiff = (objAttribute.Value + objAttribute.AttributeValueModifiers) - (objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers);
-                                    intDiff = Math.Min(intDiff, Convert.ToInt32(_intRating));
-
-                                    // Double the number of Power Points used to make up this difference.
-                                    decReturn += CalculatedPointsPerLevel * intDiff;
-                                    intDoubledPoints = intDiff;
-                                }
-                            }
-                        }
-                    }
-
-				return intDoubledPoints;
-                }
-            }
-		}*/
+	    public int TotalMaximumLevels
+	    {
+		    get
+		    {
+			    int intReturn = MaxLevels;
+			    if (LevelsEnabled)
+			    {
+				    intReturn = Math.Max(MaxLevels, _objCharacter.MAG.TotalValue);
+			    }
+				if (Name == "Improved Ability (skill)")
+				{
+					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+					{
+						if (Name == "Improved Ability (skill)" && (Extra == objSkill.Name || (objSkill.IsExoticSkill && Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
+						{
+							double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+							intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+							intReturn = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+						}
+					}
+				}
+				if (intReturn > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
+				{
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+					intReturn = _objCharacter.MAG.TotalValue;
+				}
+				else
+				{
+					// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+					if (Bonus != null)
+					{
+						if (Bonus.InnerXml.Contains("Rating"))
+						{
+							CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+							CharacterObject.ObjImprovementManager.ForcedValue = Extra;
+							CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
+						}
+					}
+				}
+			    return intReturn;
+		    }
+	    }
 		#endregion
 	}
 

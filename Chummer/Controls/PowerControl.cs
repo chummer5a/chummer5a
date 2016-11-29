@@ -30,7 +30,6 @@ namespace Chummer
     public partial class PowerControl : UserControl
     {
 		private Power _objPower;
-		private CommonFunctions functions = new CommonFunctions();
 
         // Events.
         public event PowerRatingChangedHandler PowerRatingChanged;
@@ -38,17 +37,25 @@ namespace Chummer
 
 
 		#region Control Events
-		public PowerControl()
-        {
+		public PowerControl(Power objPower)
+		{
+			this.PowerObject = objPower;
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			nudRating.DataBindings.Add("Minimum", _objPower, nameof(PowerObject.FreeLevels), false, DataSourceUpdateMode.OnPropertyChanged);
-			nudRating.DataBindings.Add("Maximum", _objPower, nameof(PowerObject.MaxLevels), false, DataSourceUpdateMode.OnPropertyChanged);
-			nudRating.DataBindings.Add("Value", _objPower, nameof(PowerObject.Levels), false, DataSourceUpdateMode.OnPropertyChanged);
-			nudRating.DataBindings.Add("Enabled", _objPower, nameof(PowerObject.LevelsEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-			lblPowerName.DataBindings.Add("Text", _objPower, nameof(PowerObject.DisplayNameShort), false, DataSourceUpdateMode.OnPropertyChanged);
-			chkDiscountedAdeptWay.DataBindings.Add("Checked", _objPower, nameof(PowerObject.DiscountedAdeptWay), false, DataSourceUpdateMode.OnPropertyChanged);
-			chkDiscountedGeas.DataBindings.Add("Checked", _objPower, nameof(PowerObject.DiscountedGeas), false, DataSourceUpdateMode.OnPropertyChanged);
+			nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+			if (PowerObject.LevelsEnabled)
+			{
+				nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				nudRating.DataBindings.Add("Maximum", PowerObject, nameof(PowerObject.TotalMaximumLevels), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				nudRating.DataBindings.Add("Value", PowerObject, nameof(PowerObject.Rating), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				
+			}
+			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayNameShort), false, DataSourceUpdateMode.OnPropertyChanged);
+			chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false, DataSourceUpdateMode.OnPropertyChanged);
+			chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, DataSourceUpdateMode.OnPropertyChanged);
 			MoveControls();
         }
 
@@ -129,7 +136,7 @@ namespace Chummer
 				string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
 				if (_objPower.Notes != string.Empty)
 					strTooltip += "\n\n" + _objPower.Notes;
-				tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+				//tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 			}
 		}
 

@@ -25,7 +25,7 @@
       <name>Adrenaline Boost</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -38,7 +38,7 @@
 			<bonus>
 				<unlockskills name="Assensing">Name</unlockskills>
 			</bonus>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -48,7 +48,7 @@
       <name>Attribute Boost</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <bonus>
         <selectattribute>
@@ -66,7 +66,7 @@
       <name>Combat Sense</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -76,7 +76,7 @@
       <name>Critical Strike</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>no</limit>
       <bonus>
         <weaponcategorydv>
@@ -93,7 +93,7 @@
       <name>Danger Sense</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -103,7 +103,7 @@
       <name>Enhanced Perception</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <bonus>
         <specificskill>
@@ -123,7 +123,7 @@
       <name>Enhanced Accuracy (skill)</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <bonus>
         <selectskill skillcategory="Combat Active">
@@ -139,7 +139,7 @@
       <name>Improved Ability (skill)</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>100</limit>
       <bonus>
         <selectskill>
@@ -155,7 +155,7 @@
       <name>Improved Physical Attribute</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>12</limit>
       <bonus>
         <selectattribute>
@@ -175,7 +175,7 @@
 			<name>Improved Potential (Social)</name>
 			<points>.5</points>
 			<adeptway>.25</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<bonus>
 				<sociallimit>1</sociallimit>
@@ -188,7 +188,7 @@
 			<name>Improved Potential (Mental)</name>
 			<points>.5</points>
 			<adeptway>.25</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<bonus>
 				<mentallimit>1</mentallimit>
@@ -201,7 +201,7 @@
       <name>Improved Potential (Physical)</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <bonus>
 				<physicallimit>1</physicallimit>
@@ -232,7 +232,7 @@
       <name>Improved Reflexes 1</name>
       <points>1.5</points>
       <adeptway>.75</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <doublecost>no</doublecost>
       <bonus>
@@ -250,7 +250,7 @@
       <name>Improved Reflexes 2</name>
       <points>2.5</points>
       <adeptway>.75</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <doublecost>no</doublecost>
       <bonus>
@@ -268,7 +268,7 @@
       <name>Improved Reflexes 3</name>
       <points>3.5</points>
       <adeptway>.75</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <doublecost>no</doublecost>
       <bonus>
@@ -286,7 +286,7 @@
       <name>Improved Sense</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <bonus>
         <selecttext />
@@ -299,7 +299,7 @@
       <name>Killing Hands</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <bonus>
         <unarmeddvphysical />
@@ -312,7 +312,7 @@
       <name>Kinesics</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -322,7 +322,7 @@
       <name>Light Body</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -332,7 +332,7 @@
       <name>Missile Parry</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -342,7 +342,7 @@
       <name>Mystic Armor</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <bonus>
         <armor>Rating</armor>
@@ -355,7 +355,7 @@
       <name>Natural Immunity</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -365,7 +365,7 @@
       <name>Pain Resistance</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <bonus>
         <conditionmonitor>
@@ -380,7 +380,7 @@
       <name>Rapid Healing</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -390,7 +390,7 @@
       <name>Spell Resistance</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -400,7 +400,7 @@
       <name>Traceless Walk</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -410,7 +410,7 @@
       <name>Voice Control</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>20</limit>
       <bonus>
         <sociallimit>Rating</sociallimit>
@@ -423,7 +423,7 @@
       <name>Wall Running</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -433,7 +433,7 @@
       <name>Analytics</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -443,7 +443,7 @@
       <name>Animal Empathy</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <bonus>
         <specificskill>
           <name>Animal Handling</name>
@@ -459,7 +459,7 @@
       <name>Berserk</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -469,7 +469,7 @@
       <name>Berserker's Rage</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <required>
         <oneof>
           <power>Berserk</power>
@@ -484,7 +484,7 @@
       <name>Blind Fighting</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -494,7 +494,7 @@
       <name>Cloak</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -504,7 +504,7 @@
       <name>Cool Resolve</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <bonus>
         <specificskill>
@@ -548,7 +548,7 @@
       <name>Authoritative Tone</name>
       <points>.50</points>
       <adeptway>0.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <maxlevel>3</maxlevel>
       <limit>1</limit>
       <source>SG</source>
@@ -559,7 +559,7 @@
       <name>Counterstrike</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>170</page>
@@ -569,7 +569,7 @@
       <name>Elemental Body</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <bonus>
         <selecttext />
@@ -582,7 +582,7 @@
       <name>Elemental Strike</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <bonus>
         <selecttext />
@@ -595,7 +595,7 @@
       <name>Elemental Weapon</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <bonus>
         <selecttext />
@@ -608,7 +608,7 @@
       <name>Empathic Healing</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -618,7 +618,7 @@
       <name>Facial Sculpt</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <bonus>
         <specificskill>
           <name>Disguise</name>
@@ -634,7 +634,7 @@
       <name>Flexibility</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <maxlevel>3</maxlevel>
       <limit>1</limit>
       <source>SG</source>
@@ -645,7 +645,7 @@
       <name>Freefall</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -655,7 +655,7 @@
       <name>Hang Time</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <bonus>
         <specificskill>
           <name>Climbing</name>
@@ -671,7 +671,7 @@
       <name>Inertia Strike</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -681,7 +681,7 @@
       <name>Kinesics Mastery</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <required>
         <oneof>
           <power>Kinesics</power>
@@ -696,7 +696,7 @@
       <name>Linguistics</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <bonus>
         <adeptlinguistics />
@@ -709,7 +709,7 @@
       <name>Magic Sense</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -719,7 +719,7 @@
       <name>Melanin Control</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -729,7 +729,7 @@
       <name>Metabolic Control</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -739,7 +739,7 @@
 			<name>Missile Mastery</name>
 			<points>1</points>
 			<adeptway>.5</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<bonus>
 				<throwstr>1</throwstr>
@@ -756,7 +756,7 @@
       <name>Motion Sense</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -766,7 +766,7 @@
       <name>Nerve Strike</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -776,7 +776,7 @@
       <name>Nimble Fingers</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <bonus>
         <specificskill>
           <name>Palming</name>
@@ -792,7 +792,7 @@
       <name>Pain Relief</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -802,7 +802,7 @@
       <name>Penetrating Strike</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
 			<bonus>
 				<unarmedap>-Rating</unarmedap>
 			</bonus>
@@ -816,7 +816,7 @@
       <name>Plague Cloud</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -826,7 +826,7 @@
       <name>Rapid Draw</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -836,7 +836,7 @@
       <name>Riposte</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -846,7 +846,7 @@
       <name>Skate</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -856,7 +856,7 @@
       <name>Smashing Blow</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -866,7 +866,7 @@
       <name>Spirit Claw</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -876,7 +876,7 @@
       <name>Spirit Ram</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -886,7 +886,7 @@
       <name>Stillness</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <maxlevel>3</maxlevel>
       <limit>1</limit>
       <source>SG</source>
@@ -897,7 +897,7 @@
       <name>Sustenance</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -907,7 +907,7 @@
       <name>Temperature Tolerance</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
@@ -917,7 +917,7 @@
       <name>Three-Dimensional Memory</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
@@ -927,7 +927,7 @@
       <name>Toxic Strike</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <source>SG</source>
       <page>176</page>
@@ -937,7 +937,7 @@
       <name>Feign Illness</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
@@ -947,7 +947,7 @@
       <name>Feign Death</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
@@ -957,7 +957,7 @@
       <name>Transmit Damage</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
@@ -967,7 +967,7 @@
       <name>Light Touch</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>100</limit>
       <source>SS</source>
       <page>191</page>
@@ -977,7 +977,7 @@
       <name>Mimic</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>6</limit>
       <source>SS</source>
       <page>191</page>
@@ -987,7 +987,7 @@
       <name>Commanding Voice</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
@@ -997,7 +997,7 @@
       <name>Living Focus</name>
       <points>1</points>
       <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>1</page>
@@ -1007,7 +1007,7 @@
       <name>Keratin Control</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>1</page>
@@ -1016,7 +1016,7 @@
       <name>Demara</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1025,7 +1025,7 @@
       <name>Eidetic Sense Memory</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1034,7 +1034,7 @@
       <name>Enthralling Performance</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>100</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1043,7 +1043,7 @@
       <name>Heightened Concern</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1052,7 +1052,7 @@
       <name>Indomitable Will</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1061,7 +1061,7 @@
       <name>Iron Gut</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1070,7 +1070,7 @@
       <name>Iron Lungs</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1079,7 +1079,7 @@
       <name>Iron Will</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1088,7 +1088,7 @@
       <name>Keratin Control</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1097,7 +1097,7 @@
       <name>Living Focus</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1106,7 +1106,7 @@
       <name>Maintain Warmth</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1115,7 +1115,7 @@
       <name>Memory Displacement</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1124,7 +1124,7 @@
       <name>Piercing Senses</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1133,7 +1133,7 @@
       <name>Power Swimming</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
-      <levels>no</levels>
+      <levels>false</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1142,7 +1142,7 @@
       <name>Rooting</name>
       <points>.25</points>
       <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1151,7 +1151,7 @@
       <name>Supernatural Toughness</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
-      <levels>yes</levels>
+      <levels>true</levels>
       <limit>1</limit>
 	  <bonus>
 		<conditionmonitor>
@@ -1166,7 +1166,7 @@
 			<name>Adept Spell</name>
 			<points>1</points>
 			<adeptway>0.5</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<bonus>
 				<unlockskills name="Spellcasting">Name</unlockskills>
@@ -1180,7 +1180,7 @@
 			<name>Adept Accident</name>
 			<points>.5</points>
 			<adeptway>.25</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<source>HT</source>
 			<page>190</page>
@@ -1190,7 +1190,7 @@
 			<name>Focused Archery</name>
 			<points>.25</points>
 			<adeptway>0</adeptway>
-			<levels>yes</levels>
+			<levels>true</levels>
 			<limit>3</limit>
 			<source>HT</source>
 			<page>190</page>
@@ -1200,7 +1200,7 @@
 			<name>Kiai</name>
 			<points>.25</points>
 			<adeptway>0</adeptway>
-			<levels>yes</levels>
+			<levels>true</levels>
 			<limit>6</limit>
 			<source>HT</source>
 			<page>190</page>
@@ -1210,7 +1210,7 @@
 			<name>Master Archer</name>
 			<points>1</points>
 			<adeptway>0.5</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<source>HT</source>
 			<page>191</page>
@@ -1220,7 +1220,7 @@
 			<name>Precision Throwing</name>
 			<points>.25</points>
 			<adeptway>0</adeptway>
-			<levels>yes</levels>
+			<levels>true</levels>
 			<limit>3</limit>
 			<source>HT</source>
 			<page>190</page>
@@ -1230,7 +1230,7 @@
 			<name>Body Sculpt</name>
 			<points>1</points>
 			<adeptway>0.5</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<required>
         			<oneof>

@@ -60,7 +60,7 @@ namespace Chummer
 			// Populate the Powers list.
 			XmlNodeList objXmlPowerList;
 			
-				if (_strLimitToPowers != "")
+				if (!String.IsNullOrWhiteSpace(_strLimitToPowers))
 				{
 					string strFilter = "(";
 					string[] strValue = _strLimitToPowers.Split(',');

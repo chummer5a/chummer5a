@@ -712,50 +712,11 @@ namespace Chummer
             foreach (Power objPower in _objCharacter.Powers)
             {
                 i++;
-                PowerControl objPowerControl = new PowerControl();
-                objPowerControl.PowerObject = objPower;
+                PowerControl objPowerControl = new PowerControl(objPower);
 
                 // Attach an EventHandler for the PowerRatingChanged Event.
                 objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
                 objPowerControl.DeletePower += objPower_DeletePower;
-
-                objPowerControl.PowerName = objPower.Name;
-                objPowerControl.Extra = objPower.Extra;
-                objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
-                objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
-                objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-                if (objPower.MaxLevels > 0)
-				{
-					if (objPower.Name == "Improved Ability (skill)")
-					{
-                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
-                        {
-                            int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                            if (intImprovedAbilityMaximum == 0)
-                            {
-                                intImprovedAbilityMaximum = 1;
-                            }
-                            objPower.MaxLevels = intImprovedAbilityMaximum;
-                        }
-                        else
-                        {
-                            objPowerControl.MaxLevels = objPower.MaxLevels;
-                        }
-					}
-					else
-					{
-						objPowerControl.MaxLevels = objPower.MaxLevels;
-					}
-				}
-                objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-                if (objPower.Rating < 1)
-                    objPower.Rating = 1;
-                objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
-                if (objPower.DiscountedAdeptWay)
-                    objPowerControl.DiscountedByAdeptWay = true;
-                if (objPower.DiscountedGeas)
-                    objPowerControl.DiscountedByGeas = true;
 
                 objPowerControl.Top = i * objPowerControl.Height;
                 panPowers.Controls.Add(objPowerControl);
@@ -4484,41 +4445,6 @@ namespace Chummer
         #region PowerControl Events
         private void objPower_PowerRatingChanged(Object sender)
         {
-            // Handle the PowerRatingChange Event for the PowerControl object.
-            PowerControl objPowerControl = (PowerControl)sender;
-
-			if (objPowerControl.PowerName == "Improved Ability (skill)")
-			{
-            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-            {
-					if (objPowerControl.PowerObject.Name == "Improved Ability (skill)" && (objPowerControl.PowerObject.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPowerControl.PowerObject.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
-                    {
-                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-						objPowerControl.PowerObject.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                    }
-            }
-			}
-            if (objPowerControl.PowerLevel > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
-            {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				objPowerControl.PowerLevel = _objCharacter.MAG.TotalValue;
-			}
-            else
-            {
-                // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                if (objPowerControl.PowerObject.Bonus != null)
-                {
-                    if (objPowerControl.PowerObject.Bonus.InnerXml.Contains("Rating"))
-                    {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPowerControl.PowerObject.InternalId);
-                        _objImprovementManager.ForcedValue = objPowerControl.Extra;
-                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPowerControl.PowerObject.InternalId, objPowerControl.PowerObject.Bonus, false, Convert.ToInt32(objPowerControl.PowerObject.Rating), objPowerControl.PowerObject.DisplayNameShort);
-                    }
-                }
-            }
-
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -4956,65 +4882,21 @@ namespace Chummer
             Power objPower = new Power(_objCharacter);
             _objCharacter.Powers.Add(objPower);
 
-            PowerControl objPowerControl = new PowerControl();
-            objPowerControl.PowerObject = objPower;
+            PowerControl objPowerControl = new PowerControl(objPower);
 
             // Attach an EventHandler for the PowerRatingChanged Event.
             objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
             objPowerControl.DeletePower += objPower_DeletePower;
-            objPowerControl.PowerName = frmPickPower.SelectedPower;
 
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-
-            objPower.Source = objXmlPower["source"].InnerText;
-            objPower.Page = objXmlPower["page"].InnerText;
-            if (objXmlPower["doublecost"] != null)
-                objPower.DoubleCost = false;
-
-            if (objXmlPower.InnerXml.Contains("bonus"))
-            {
-                objPower.Bonus = objXmlPower["bonus"];
-                if (!_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-                {
-                    _objCharacter.Powers.Remove(objPower);
-                    return;
-                }
-                objPowerControl.Extra = _objImprovementManager.SelectedValue;
-            }
-
-	        /*if (frmPickPower.MaxLevels() > 0)
-	        {
-		        if (objPower.Name == "Improved Ability (skill)")
-		        {
-			        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-			        {
-				        if (objPower.Extra == objSkill.Name ||
-				            (objSkill.IsExoticSkill &&
-				             objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
-				        {
-					        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating/2);
-					        if (intImprovedAbilityMaximum == 0)
-					        {
-						        intImprovedAbilityMaximum = 1;
-					        }
-					        objPower.MaxLevels = intImprovedAbilityMaximum;
-				        }
-			        }
-		        }
-		        else
-		        {
-			        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-		        }
-	        }*/
-	        // Set the control's Maximum.
-			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
+	        objPower.Create(objXmlPower, _objImprovementManager);
             objPowerControl.Top = i * objPowerControl.Height;
             objPowerControl.RefreshTooltip();
             panPowers.Controls.Add(objPowerControl);
-
+			objPowerControl.ResetBindings();
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -6976,7 +6858,7 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateCharacterInfo();
             RefreshMartialArts();
-            RefreshPowers();
+            
             RefreshContacts();
 			RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
             _blnIsDirty = true;
@@ -7228,7 +7110,7 @@ namespace Chummer
             UpdateCharacterInfo();
             RefreshMartialArts();
 			RefreshLimitModifiers();
-            RefreshPowers();
+            
             RefreshContacts();
 			_blnIsDirty = true;
             UpdateWindowTitle();
@@ -11618,7 +11500,7 @@ namespace Chummer
                     }
                     if (blnAddBonus)
                         _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                    RefreshPowers();
+                    
                 }
 
                 _objController.PopulateFocusList(treFoci);
@@ -12727,7 +12609,7 @@ namespace Chummer
 	                            break;
                             }
 
-                            RefreshPowers();
+                            
                             _objController.PopulateFocusList(treFoci);
                         }
                     }
@@ -12834,7 +12716,7 @@ namespace Chummer
                             break;
                         }
                     }
-                    RefreshPowers();
+                    
                 }
                 else
                 {
@@ -15074,7 +14956,7 @@ namespace Chummer
 	            if (_objCharacter.AdeptEnabled)
 	            {
 		            CalculatePowerPoints();
-		            RefreshPowers();
+		            
 	            }
                 if ((_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter) || _objCharacter.MetatypeCategory.EndsWith("Spirits"))
                 {
@@ -15548,75 +15430,6 @@ namespace Chummer
 				panContacts.Controls.Add(ctrl);
 			}
 
-        }
-
-        public void RefreshPowers()
-        {
-            _blnLoading = true;
-
-            foreach (PowerControl pc in panPowers.Controls)
-            {
-                pc.PowerRatingChanged -= objPower_PowerRatingChanged;
-                pc.DeletePower -= objPower_DeletePower;
-            }
-
-            // Remove Adept Powers.
-            panPowers.Controls.Clear();
-
-            // Populate Adept Powers.
-            int i = -1;
-            foreach (Power objPower in _objCharacter.Powers)
-            {
-                i++;
-                PowerControl objPowerControl = new PowerControl();
-                objPowerControl.PowerObject = objPower;
-
-                // Attach an EventHandler for the PowerRatingChanged Event.
-                objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-                objPowerControl.DeletePower += objPower_DeletePower;
-
-                objPowerControl.PowerName = objPower.Name;
-                objPowerControl.Extra = objPower.Extra;
-                objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
-                objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
-                objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-				if (objPower.MaxLevels > 0)
-				{
-					if (objPower.Name == "Improved Ability (skill)")
-					{
-						foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
-							{
-								int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-								if (intImprovedAbilityMaximum == 0)
-								{
-									intImprovedAbilityMaximum = 1;
-								}
-								objPower.MaxLevels = intImprovedAbilityMaximum;
-							}
-							else
-							{
-								objPowerControl.MaxLevels = objPower.MaxLevels;
-							}
-					}
-					else
-					{
-						objPowerControl.MaxLevels = objPower.MaxLevels;
-					}
-				}
-				objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-                if (objPower.Rating < 1)
-                    objPower.Rating = 1;
-                objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
-                if (objPower.DiscountedAdeptWay)
-                    objPowerControl.DiscountedByAdeptWay = true;
-                if (objPower.DiscountedGeas)
-                    objPowerControl.DiscountedByGeas = true;
-
-                objPowerControl.Top = i * objPowerControl.Height;
-                panPowers.Controls.Add(objPowerControl);
-            }
-            _blnLoading = false;
         }
 
         public void RefreshMartialArts()
@@ -20051,31 +19864,12 @@ namespace Chummer
                     Power objPower = new Power(_objCharacter);
                     _objCharacter.Powers.Add(objPower);
 
-                    PowerControl objPowerControl = new PowerControl();
+                    PowerControl objPowerControl = new PowerControl(objPower);
                     objPowerControl.PowerObject = objPower;
 
                     // Attach an EventHandler for the PowerRatingChanged Event.
                     objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
                     objPowerControl.DeletePower += objPower_DeletePower;
-
-                    objPowerControl.PowerName = objXmlPowerNode["name"].InnerText;
-                    objPowerControl.PointsPerLevel = Convert.ToDecimal(objXmlPowerNode["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-                    objPowerControl.AdeptWayDiscount = Convert.ToDecimal(objXmlPowerNode["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
-                    if (objXmlPowerNode["levels"].InnerText == "no")
-                    {
-                        objPowerControl.LevelEnabled = false;
-                    }
-                    else
-                    {
-                        objPowerControl.LevelEnabled = true;
-                        if (objXmlPowerNode["levels"].InnerText != "yes")
-                            objPower.MaxLevels = Convert.ToInt32(objXmlPowerNode["levels"].InnerText);
-                    }
-
-                    objPower.Source = objXmlPowerNode["source"].InnerText;
-                    objPower.Page = objXmlPowerNode["page"].InnerText;
-                    if (objXmlPowerNode["doublecost"] != null)
-                        objPower.DoubleCost = false;
 
                     if (objXmlPowerNode.InnerXml.Contains("bonus"))
                     {
@@ -20085,15 +19879,11 @@ namespace Chummer
                             _objImprovementManager.ForcedValue = objXmlPower["name"].Attributes["select"].InnerText;
 
                         _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort);
-                        objPowerControl.Extra = _objImprovementManager.SelectedValue;
+                        objPower.Extra = _objImprovementManager.SelectedValue;
                     }
 
                     objPowerControl.Top = i * objPowerControl.Height;
                     panPowers.Controls.Add(objPowerControl);
-
-                    // Set the Rating of the Power if applicable.
-                    if (objXmlPower["rating"] != null)
-                        objPowerControl.PowerLevel = Convert.ToInt32(objXmlPower["rating"].InnerText);
                 }
             }
 

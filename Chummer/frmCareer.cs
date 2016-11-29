@@ -655,28 +655,11 @@ namespace Chummer
 			foreach (Power objPower in _objCharacter.Powers)
 			{
 				i++;
-				PowerControl objPowerControl = new PowerControl();
-				objPowerControl.PowerObject = objPower;
+				PowerControl objPowerControl = new PowerControl(objPower);
 
 				// Attach an EventHandler for the PowerRatingChanged Event.
 				objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
 				objPowerControl.DeletePower += objPower_DeletePower;
-
-				objPowerControl.PowerName = objPower.Name;
-				objPowerControl.Extra = objPower.Extra;
-				objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
-                objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
-                objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-				if (objPower.MaxLevels > 0)
-					objPowerControl.MaxLevels = objPower.MaxLevels;
-				objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-				if (objPower.Rating < 1)
-					objPower.Rating = 1;
-				objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
-				if (objPower.DiscountedAdeptWay)
-					objPowerControl.DiscountedByAdeptWay = true;
-				if (objPower.DiscountedGeas)
-					objPowerControl.DiscountedByGeas = true;
 
 				objPowerControl.Top = i * objPowerControl.Height;
 				panPowers.Controls.Add(objPowerControl);
@@ -4578,14 +4561,11 @@ namespace Chummer
 			Power objPower = new Power(_objCharacter);
 			_objCharacter.Powers.Add(objPower);
 
-			PowerControl objPowerControl = new PowerControl();
-			objPowerControl.PowerObject = objPower;
+			PowerControl objPowerControl = new PowerControl(objPower);
 
 			// Attach an EventHandler for the PowerRatingChanged Event.
 			objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
 			objPowerControl.DeletePower += objPower_DeletePower;
-
-			objPowerControl.PowerName = frmPickPower.SelectedPower;
 
 			// Open the Cyberware XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
@@ -4608,8 +4588,6 @@ namespace Chummer
 				objPowerControl.Extra = _objImprovementManager.SelectedValue;
 			}
 
-			// Set the control's Maximum.
-			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
 			objPowerControl.Top = i * objPowerControl.Height;
 			objPowerControl.RefreshTooltip();
 			panPowers.Controls.Add(objPowerControl);
@@ -21544,36 +21522,19 @@ namespace Chummer
 
             // Populate Adept Powers.
             int i = -1;
-            foreach (Power objPower in _objCharacter.Powers)
-            {
-                i++;
-                PowerControl objPowerControl = new PowerControl();
-                objPowerControl.PowerObject = objPower;
+			foreach (Power objPower in _objCharacter.Powers)
+			{
+				i++;
+				PowerControl objPowerControl = new PowerControl(objPower);
 
-                // Attach an EventHandler for the PowerRatingChanged Event.
-                objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-                objPowerControl.DeletePower += objPower_DeletePower;
+				// Attach an EventHandler for the PowerRatingChanged Event.
+				objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
+				objPowerControl.DeletePower += objPower_DeletePower;
 
-                objPowerControl.PowerName = objPower.Name;
-                objPowerControl.Extra = objPower.Extra;
-                objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
-                objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
-                objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-                if (objPower.MaxLevels > 0)
-                    objPowerControl.MaxLevels = objPower.MaxLevels;
-                objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-                if (objPower.Rating < 1)
-                    objPower.Rating = 1;
-                objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
-                if (objPower.DiscountedAdeptWay)
-                    objPowerControl.DiscountedByAdeptWay = true;
-                if (objPower.DiscountedGeas)
-                    objPowerControl.DiscountedByGeas = true;
-
-                objPowerControl.Top = i * objPowerControl.Height;
-                panPowers.Controls.Add(objPowerControl);
-            }
-            _blnLoading = false;
+				objPowerControl.Top = i * objPowerControl.Height;
+				panPowers.Controls.Add(objPowerControl);
+			}
+			_blnLoading = false;
         }
 
         public void RefreshLimitModifiers()
