@@ -5797,6 +5797,7 @@ namespace Chummer
             this.treAIPrograms.Size = new System.Drawing.Size(295, 554);
             this.treAIPrograms.TabIndex = 71;
             this.treAIPrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAIPrograms_AfterSelect);
+            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treAIPrograms_KeyDown);
             // 
             // cmdDeleteAIProgram
             // 

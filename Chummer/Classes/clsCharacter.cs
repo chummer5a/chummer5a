@@ -1184,7 +1184,14 @@ namespace Chummer
             _blnAdeptEnabled = Convert.ToBoolean(objXmlCharacter["adept"].InnerText);
             _blnMagicianEnabled = Convert.ToBoolean(objXmlCharacter["magician"].InnerText);
             _blnTechnomancerEnabled = Convert.ToBoolean(objXmlCharacter["technomancer"].InnerText);
-            _blnAdvancedProgramsEnabled = Convert.ToBoolean(objXmlCharacter["ai"].InnerText);
+            try
+            {
+                _blnAdvancedProgramsEnabled = Convert.ToBoolean(objXmlCharacter["ai"].InnerText);
+            }
+            catch
+            {
+                _blnAdvancedProgramsEnabled = false;
+            }
             objXmlCharacter.TryGetField("initiationoverride", out _blnInitiationEnabled);
 		    objXmlCharacter.TryGetField("critter", out _blnCritterEnabled);
 		   

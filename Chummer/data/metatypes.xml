@@ -1639,6 +1639,7 @@
 			<name>A.I.</name>
 			<category>Metasapient</category>
 			<karma>180</karma>
+			<halveattributepoints />
 			<bodmin>0</bodmin>
 			<bodmax>0</bodmax>
 			<bodaug>0</bodaug>
@@ -1802,6 +1803,7 @@
 					<name>E-Ghost</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -1968,6 +1970,7 @@
 					<name>Xenosapient</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -2134,6 +2137,7 @@
 					<name>Protosapient</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>

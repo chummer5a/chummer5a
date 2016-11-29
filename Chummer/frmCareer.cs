@@ -27591,5 +27591,137 @@ namespace Chummer
 		{
 			PopulateExpenseList();
 		}
-	}
+
+        private void cmdAddAIProgram_Click(object sender, EventArgs e)
+        {
+            // Let the user select a Program.
+            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
+            frmPickProgram.ShowDialog(this);
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                return;
+
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+
+            // Check for SelectText.
+            string strExtra = "";
+            if (objXmlProgram["bonus"] != null)
+            {
+                if (objXmlProgram["bonus"]["selecttext"] != null)
+                {
+                    frmSelectText frmPickText = new frmSelectText();
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.ShowDialog(this);
+                    strExtra = frmPickText.SelectedValue;
+                }
+            }
+
+            TreeNode objNode = new TreeNode();
+            AIProgram objProgram = new AIProgram(_objCharacter);
+            objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra);
+            if (objProgram.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.AIPrograms.Add(objProgram);
+
+            treAIPrograms.Nodes[0].Nodes.Add(objNode);
+            treAIPrograms.Nodes[0].Expand();
+            treAIPrograms.SortCustom();
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+
+            /*
+            int intComplexForms = 0;
+            foreach (ComplexForm tp in _objCharacter.ComplexForms)
+            {
+                intComplexForms++;
+            }
+
+            //if (_objCharacter.CFPLimit - intComplexForms < 0)
+            //    lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.CFPLimit.ToString());
+            //else
+            lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+            */
+
+            if (frmPickProgram.AddAgain)
+                cmdAddAIProgram_Click(sender, e);
+        }
+
+        private void cmdDeleteAIProgram_Click(object sender, EventArgs e)
+        {
+            // Delete the selected AI Program.
+            try
+            {
+                if (treAIPrograms.SelectedNode.Level == 1)
+                {
+                    // Locate the Program that is selected in the tree.
+                    AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+
+                    if (objProgram.CanDelete)
+                    {
+                        if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteAIProgram")))
+                            return;
+
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+
+                        _objCharacter.AIPrograms.Remove(objProgram);
+                        treAIPrograms.SelectedNode.Remove();
+                        /*
+                        int intComplexForms = 0;
+                        foreach (ComplexForm tp in _objCharacter.ComplexForms)
+                        {
+                            intComplexForms++;
+                        }
+                        lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+                        */
+
+                        UpdateCharacterInfo();
+
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            try
+            {
+                if (treAIPrograms.SelectedNode.Level == 1)
+                {
+                    // Locate the Program that is selected in the tree.
+                    AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+
+                    string strRequires = objProgram.RequiresProgram;
+
+                    lblAIProgramsRequires.Text = strRequires;
+
+                    string strBook = _objOptions.LanguageBookShort(objProgram.Source);
+                    string strPage = objProgram.Page;
+                    lblAIProgramsSource.Text = strBook + " " + strPage;
+                    tipTooltip.SetToolTip(lblAIProgramsSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objProgram.Page);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void treAIPrograms_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmdDeleteAIProgram_Click(sender, e);
+            }
+        }
+    }
 }

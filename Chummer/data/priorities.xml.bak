@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@
 	</categories>
 	<priorities>
 		<!-- Region Metatypes-->
-		<!-- Region Standard -->
 		<priority>
 			<id>55bc32fb-e097-4234-bdd5-a70e4f043b3d</id>
 			<name>A - Any metatype</name>
@@ -36,26 +35,9 @@
 			<category>Heritage</category>
 			<metatypes>
 				<metatype>
-					<name>A.I.</name>
-					<value>4</value>
+					<name>E-Ghost</name>
+					<value>9</value>
 					<karma>0</karma>
-					<metavariants>
-						<metavariant>
-							<name>E-Ghost</name>
-							<value>4</value>
-							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Xenosapient</name>
-							<value>4</value>
-							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Protosapient</name>
-							<value>4</value>
-							<karma>0</karma>
-						</metavariant>
-					</metavariants>
 				</metatype>
 				<metatype>
 					<name>Human</name>
@@ -257,28 +239,6 @@
 			<category>Heritage</category>
 			<metatypes>
 				<metatype>
-					<name>A.I.</name>
-					<value>2</value>
-					<karma>0</karma>
-					<metavariants>
-						<metavariant>
-							<name>E-Ghost</name>
-							<value>2</value>
-							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Xenosapient</name>
-							<value>2</value>
-							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Protosapient</name>
-							<value>2</value>
-							<karma>0</karma>
-						</metavariant>
-					</metavariants>
-				</metatype>
-				<metatype>
 					<name>Human</name>
 					<value>7</value>
 					<karma>0</karma>
@@ -473,32 +433,10 @@
 		</priority>
 		<priority>
 			<id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
-			<name>C - Human, Dwarf, Elf, Ork or A.I.</name>
+			<name>C - Human, Dwarf, Elf, or Ork</name>
 			<value>C,2</value>
 			<category>Heritage</category>
 			<metatypes>
-				<metatype>
-					<name>A.I.</name>
-					<value>0</value>
-					<karma>0</karma>
-					<metavariants>
-						<metavariant>
-							<name>E-Ghost</name>
-							<value>0</value>
-							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Xenosapient</name>
-							<value>0</value>
-							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Protosapient</name>
-							<value>0</value>
-							<karma>0</karma>
-						</metavariant>
-					</metavariants>
-				</metatype>
 				<metatype>
 					<name>Human</name>
 					<value>5</value>
@@ -745,9 +683,6 @@
 			<id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
 			<name>A - Magician or Technomancer</name>
 			<value>A,4</value>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<category>Talent</category>
 			<talents>
 				<talent>
@@ -792,9 +727,6 @@
 			<id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
 			<name>B - Adept, Magician, or Technomancer</name>
 			<value>B,3</value>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<category>Talent</category>
 			<talents>
 				<talent>
@@ -866,9 +798,6 @@
 			<id>aae3a140-d306-4811-a9d2-874140600150</id>
 			<name>C - Adept, Magician, or Technomancer</name>
 			<value>C,2</value>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<category>Talent</category>
 			<talents>
 				<talent>
@@ -931,9 +860,6 @@
 			<id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
 			<name>D - Adept or Aspected Magician</name>
 			<value>D,1</value>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<category>Talent</category>
 			<talents>
 				<talent>
@@ -966,105 +892,11 @@
 			<id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
 			<name>E - Mundane</name>
 			<value>E,0</value>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<category>Talent</category>
 			<talents>
 				<talent>
 					<name>Mundane</name>
 					<value>Mundane</value>
-				</talent>
-			</talents>
-		</priority>
-		<!-- End Region -->
-		<!-- Region AI Metatype-->
-		<priority>
-			<id>d6ed86fb-86cb-430a-821b-932aac12b6b1</id>
-			<name>A - 6 Depth, 2 Matrix Skills</name>
-			<value>A,4</value>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<category>Talent</category>
-			<talents>
-				<talent>
-					<name>AI - 6 Depth</name>
-					<value>A.I.</value>
-					<depth>6</depth>
-					<skillqty>2</skillqty>
-					<skillval>5</skillval>
-					<skilltype>matrix</skilltype>
-				</talent>
-			</talents>
-		</priority>
-		<priority>
-			<id>ad2e57e9-4746-41f8-9f22-a1647aae3602</id>
-			<name>B - 4 Depth, 2 Matrix Skills</name>
-			<value>B,3</value>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<category>Talent</category>
-			<talents>
-				<talent>
-					<name>AI - 4 Depth</name>
-					<value>AI</value>
-					<depth>4</depth>
-					<skillqty>2</skillqty>
-					<skillval>4</skillval>
-					<skilltype>matrix</skilltype>
-				</talent>
-			</talents>
-		</priority>
-		<priority>
-			<id>6d45e7c0-8be3-47c4-9ed3-3074f852eb8b</id>
-			<name>C - 3 Depth, 1 Matrix Skill</name>
-			<value>C,2</value>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<category>Talent</category>
-			<talents>
-				<talent>
-					<name>AI - 3 Depth</name>
-					<value>AI</value>
-					<depth>3</depth>
-					<skillqty>1</skillqty>
-					<skillval>2</skillval>
-					<skilltype>matrix</skilltype>
-				</talent>
-			</talents>
-		</priority>
-		<priority>
-			<id>a10cc4cb-3063-4aa7-baf8-2a9aa974f23a</id>
-			<name>D - 2 Depth</name>
-			<value>D,1</value>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<category>Talent</category>
-			<talents>
-				<talent>
-					<name>AI - 2 Depth</name>
-					<value>AI</value>
-					<depth>2</depth>
-				</talent>
-			</talents>
-		</priority>
-		<priority>
-			<id>07c091eb-b7a3-48f6-a8aa-a1b62f4c689b</id>
-			<name>E - 1 Depth</name>
-			<value>E,0</value>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<category>Talent</category>
-			<talents>
-				<talent>
-					<name>AI - 2 Depth</name>
-					<value>AI</value>
-					<depth>1</depth>
 				</talent>
 			</talents>
 		</priority>
@@ -1075,9 +907,6 @@
 		<priority>
 			<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
 			<name>A - 24 Attributes</name>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<value>A,4</value>
 			<category>Attributes</category>
 			<attributes>24</attributes>
@@ -1085,9 +914,6 @@
 		<priority>
 			<id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
 			<name>B - 20 Attributes</name>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<value>B,3</value>
 			<category>Attributes</category>
 			<attributes>20</attributes>
@@ -1095,9 +921,6 @@
 		<priority>
 			<id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
 			<name>C - 16 Attributes</name>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<value>C,2</value>
 			<category>Attributes</category>
 			<attributes>16</attributes>
@@ -1105,9 +928,6 @@
 		<priority>
 			<id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
 			<name>D - 14 Attributes</name>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<value>D,1</value>
 			<category>Attributes</category>
 			<attributes>14</attributes>
@@ -1115,64 +935,9 @@
 		<priority>
 			<id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
 			<name>E - 12 Attributes</name>
-			<forbidden>
-				<metatype>A.I.</metatype>
-			</forbidden>
 			<value>E,0</value>
 			<category>Attributes</category>
 			<attributes>12</attributes>
-		</priority>
-		<!-- End Region -->
-		<!-- Region AI Metatype-->
-		<priority>
-			<id>964fe759-4f7f-4cc7-9512-881a948e59d5</id>
-			<name>A - 12 Attributes</name>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<value>A,4</value>
-			<category>Attributes</category>
-			<attributes>12</attributes>
-		</priority>
-		<priority>
-			<id>7e371202-6ada-4d89-a701-482287739446</id>
-			<name>B - 10 Attributes</name>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<value>B,3</value>
-			<category>Attributes</category>
-			<attributes>10</attributes>
-		</priority>
-		<priority>
-			<id>03c8373a-8d03-457a-bc71-41d886e991ad</id>
-			<name>C - 8 Attributes</name>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<value>C,2</value>
-			<category>Attributes</category>
-			<attributes>8</attributes>
-		</priority>
-		<priority>
-			<id>197bccb8-50c0-412b-a57d-b44d15fe768e</id>
-			<name>D - 7 Attributes</name>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<value>D,1</value>
-			<category>Attributes</category>
-			<attributes>7</attributes>
-		</priority>
-		<priority>
-			<id>995524b6-0652-437b-987c-03d05a6eb02e</id>
-			<name>E - 6 Attributes</name>
-			<required>
-				<metatype>A.I.</metatype>
-			</required>
-			<value>E,0</value>
-			<category>Attributes</category>
-			<attributes>6</attributes>
 		</priority>
 		<!-- End Region -->
 		<!-- End Region -->
