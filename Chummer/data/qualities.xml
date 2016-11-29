@@ -10113,9 +10113,42 @@
 			<id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
 			<name>Exceptional Entity</name>
 			<karma>25</karma>
-			<implemented>False</implemented>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>INT</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>WIL</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>DEP</name>
+					<max>99</max>
+				</specificattribute>
+				<selectattributes>
+					<selectattribute>
+						<excludeattribute>EDG</excludeattribute>
+						<excludeattribute>MAG</excludeattribute>
+						<excludeattribute>RES</excludeattribute>
+						<excludeattribute>DEP</excludeattribute>
+						<excludeattribute>BOD</excludeattribute>
+						<excludeattribute>AGI</excludeattribute>
+						<excludeattribute>STR</excludeattribute>
+						<excludeattribute>REA</excludeattribute>
+						<max>96</max>
+					</selectattribute>
+				</selectattributes>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>
@@ -10188,7 +10221,12 @@
 			<name>Munge</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<specificattribute>
+					<name>ESS</name>
+					<max>6</max>
+				</specificattribute>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>
@@ -10408,7 +10446,9 @@
 			<name>Persnickety Renter</name>
 			<karma>-6</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>
