@@ -2675,11 +2675,12 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
-				<spec>Desert</spec>
-				<spec>Distance</spec>
-				<spec>Sprinting</spec>
+        <spec>Arctic</spec>
+        <spec>Desert</spec>
+				<spec>Forest</spec>
+        <spec>Jungle</spec>
+        <spec>Mountains</spec>
 				<spec>Urban</spec>
-				<spec>Wilderness</spec>
 				<spec>[Terrain]</spec>
 			</specs>
 		</skill>

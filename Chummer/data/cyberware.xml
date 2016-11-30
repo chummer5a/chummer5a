@@ -1230,6 +1230,11 @@
 			<rating>MaximumSTR</rating>
 			<minrating>MinimumSTR</minrating>
 			<ess>0</ess>
+			<forbidden>
+				<oneof>
+					<metatype>Pixie</metatype>
+				</oneof>
+			</forbidden>
 			<capacity>[0]</capacity>
 			<avail>+Rating - MinRating</avail>
 			<cost>(Rating - MinRating) * 5000</cost>

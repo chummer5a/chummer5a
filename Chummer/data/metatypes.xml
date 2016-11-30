@@ -1546,6 +1546,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+        <unlockskills name="Assensing">Name</unlockskills>
 			</bonus>
 			<qualities>
 				<positive> 
