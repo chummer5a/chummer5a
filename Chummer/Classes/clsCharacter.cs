@@ -49,6 +49,8 @@ public delegate void MagicianTabEnabledChangedHandler(Object sender);
 public delegate void TechnomancerTabEnabledChangedHandler(Object sender);
 // TechnomancerTabEnabledChanged Event Handler
 public delegate void AdvancedProgramsTabEnabledChangedHandler(Object sender);
+// CyberwareTabDisabledChanged Event Handler
+public delegate void CyberwareTabDisabledChangedHandler(Object sender);
 // InitiationTabEnabledChanged Event Handler
 public delegate void InitiationTabEnabledChangedHandler(Object sender);
 // CritterTabEnabledChanged Event Handler
@@ -187,6 +189,7 @@ namespace Chummer
         private bool _blnMagicianEnabled = false;
         private bool _blnTechnomancerEnabled = false;
         private bool _blnAdvancedProgramsEnabled = false;
+        private bool _blnCyberwareDisabled = false;
         private bool _blnInitiationEnabled = false;
         private bool _blnCritterEnabled = false;
 	    private bool _blnIsCritter = false;
@@ -329,6 +332,7 @@ namespace Chummer
         public event RestrictedGearChangedHandler RestrictedGearChanged;
 	    public event TechnomancerTabEnabledChangedHandler TechnomancerTabEnabledChanged;
         public event AdvancedProgramsTabEnabledChangedHandler AdvancedProgramsTabEnabledChanged;
+        public event CyberwareTabDisabledChangedHandler CyberwareTabDisabledChanged;
         public event TrustFundChangedHandler TrustFundChanged;
 
 	    private frmViewer _frmPrintView;
@@ -550,6 +554,8 @@ namespace Chummer
             objWriter.WriteElementString("technomancer", _blnTechnomancerEnabled.ToString());
             // <ai />
             objWriter.WriteElementString("ai", _blnAdvancedProgramsEnabled.ToString());
+            // <cyberwaredisabled />
+            objWriter.WriteElementString("cyberwaredisabled", _blnCyberwareDisabled.ToString());
             // <initiationoverride />
             objWriter.WriteElementString("initiationoverride", _blnInitiationEnabled.ToString());
             // <critter />
@@ -1191,6 +1197,14 @@ namespace Chummer
             catch
             {
                 _blnAdvancedProgramsEnabled = false;
+            }
+            try
+            {
+                _blnCyberwareDisabled = Convert.ToBoolean(objXmlCharacter["cyberwaredisabled"].InnerText);
+            }
+            catch
+            {
+                _blnCyberwareDisabled = false;
             }
             objXmlCharacter.TryGetField("initiationoverride", out _blnInitiationEnabled);
 		    objXmlCharacter.TryGetField("critter", out _blnCritterEnabled);
@@ -2037,6 +2051,8 @@ namespace Chummer
             objWriter.WriteElementString("technomancer", _blnTechnomancerEnabled.ToString());
             // <ai />
             objWriter.WriteElementString("ai", _blnAdvancedProgramsEnabled.ToString());
+            // <cyberwaredisabled />
+            objWriter.WriteElementString("cyberwaredisabled", _blnCyberwareDisabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", _blnCritterEnabled.ToString());
 
@@ -2691,6 +2707,7 @@ namespace Chummer
             _blnMagicianEnabled = false;
             _blnTechnomancerEnabled = false;
             _blnAdvancedProgramsEnabled = false;
+            _blnCyberwareDisabled = false;
             _blnInitiationEnabled = false;
             _blnCritterEnabled = false;
 
@@ -6656,6 +6673,30 @@ namespace Chummer
                 {
                     if (blnOldValue != value)
                         AdvancedProgramsTabEnabledChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not Cyberware options are disabled.
+        /// </summary>
+        public bool CyberwareDisabled
+        {
+            get
+            {
+                return _blnCyberwareDisabled;
+            }
+            set
+            {
+                bool blnOldValue = _blnCyberwareDisabled;
+                _blnCyberwareDisabled = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        CyberwareTabDisabledChanged(this);
                 }
                 catch
                 {

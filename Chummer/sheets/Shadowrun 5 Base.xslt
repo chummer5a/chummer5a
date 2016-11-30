@@ -3382,7 +3382,7 @@
           </xsl:if>
         </td>
         <td width="40%">
-          <xsl:if test="extra != ''">
+          <xsl:if test="requiresprogram != ''">
             <xsl:value-of select="requiresprogram"/>
           </xsl:if>
         </td>

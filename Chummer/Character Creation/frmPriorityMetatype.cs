@@ -66,6 +66,11 @@ namespace Chummer
             // Do nothing. This is just an Event trap so an exception doesn't get thrown.
         }
 
+        private void objCharacter_CyberwareTabDisabledChanged(object sender)
+        {
+            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
+        }
+
         private void objCharacter_InitiationTabEnabledChanged(object sender)
 		{
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
@@ -228,6 +233,7 @@ namespace Chummer
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
             _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
             _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
 		}
@@ -242,6 +248,7 @@ namespace Chummer
 			_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
             _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
             _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
 		}

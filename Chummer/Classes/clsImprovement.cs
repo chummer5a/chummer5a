@@ -1439,8 +1439,36 @@ namespace Chummer
 					}
 				}
 
-				// Turn of the Black Market flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
+                // Determine if access to any special tabs has been regained
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialTab && objImprovement.UniqueName == "disabletab")
+                {
+                    bool blnFound = false;
+                    switch (objImprovement.ImprovedName)
+                    {
+                        case "Cyberware":
+                            // See if the character has anything else that is prohibiting them access to the Cyberware tab.
+                            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                            {
+                                // Skip items from the current Improvement source.
+                                if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                                {
+                                    if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
+                                        objCharacterImprovement.UniqueName == "disabletab" && objCharacterImprovement.ImprovedName == "Cyberware")
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!blnFound)
+                                _objCharacter.CyberwareDisabled = false;
+                            break;
+                    }
+                }
+
+                // Turn of the Black Market flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
 				{
 					bool blnFound = false;
 					// See if the character has anything else that is granting them access to Black Market.

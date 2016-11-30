@@ -81,6 +81,7 @@ namespace Chummer
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
             _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
 			_objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
@@ -153,6 +154,8 @@ namespace Chummer
 				tabCharacterTabs.TabPages.Remove(tabTechnomancer);
             if (!_objCharacter.AdvancedProgramsEnabled)
                 tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+            if (_objCharacter.CyberwareDisabled)
+                tabCharacterTabs.TabPages.Remove(tabCyberware);
             if (!_objCharacter.CritterEnabled)
 				tabCharacterTabs.TabPages.Remove(tabCritter);
 
@@ -1133,6 +1136,7 @@ namespace Chummer
 				_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 				_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
                 _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
+                _objCharacter.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
 				_objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
@@ -1512,6 +1516,24 @@ namespace Chummer
             {
                 ClearAdvancedProgramsTab();
                 tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+            }
+        }
+
+        private void objCharacter_CyberwareTabDisabledChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            // Change to the status of Advanced Programs being enabled.
+            if (_objCharacter.CyberwareDisabled)
+            {
+                ClearCyberwareTab();
+                tabCharacterTabs.TabPages.Remove(tabCyberware);
+            }
+            else
+            {
+                if (!tabCharacterTabs.TabPages.Contains(tabCyberware))
+                    tabCharacterTabs.TabPages.Insert(6, tabCyberware);
             }
         }
 
@@ -20061,6 +20083,17 @@ namespace Chummer
         private void ClearAdvancedProgramsTab()
         {
             _objController.ClearAdvancedProgramsTab(treAIPrograms);
+
+            _blnIsDirty = true;
+            UpdateCharacterInfo();
+        }
+
+        /// <summary>
+        /// Clear the contents of the Cyberware Tab.
+        /// </summary>
+        private void ClearCyberwareTab()
+        {
+            _objController.ClearCyberwareTab(treCyberware, treWeapons, treVehicles, treQualities);
 
             _blnIsDirty = true;
             UpdateCharacterInfo();

@@ -31,18 +31,20 @@ namespace Chummer
 
         private bool _blnAddAgain = false;
         private bool _blnAdvancedProgramAllowed = true;
+        private bool _blnInherentProgram = false;
         private readonly Character _objCharacter;
         private List<ListItem> _lstCategory = new List<ListItem>();
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 
 		#region Control Events
-		public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true)
+		public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			_objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
+            _blnInherentProgram = blnInherentProgram;
             MoveControls();
         }
 
@@ -61,6 +63,8 @@ namespace Chummer
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
+                if (_blnInherentProgram && objXmlCategory.InnerText != "Common Programs" && objXmlCategory.InnerText != "Hacking Programs")
+                    continue;
                 if (!_blnAdvancedProgramAllowed && objXmlCategory.InnerText == "Advanced Programs")
                     continue;
                 bool blnAddItem = true;

@@ -9789,26 +9789,6 @@
 		<!-- Region Data Trails-->
 		<!--Region Data Trails Positive Qualities -->
 		<quality>
-			<id>5878014A-B7FB-45BC-859A-A22F907B0EA8</id>
-			<name>Chatty</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>1</value>
-					<condition>Limited to Communication via AR or VR</condition>
-				</limitmodifier>
-			</bonus>
-			<required>
-				<oneof>
-					<metatype>A.I.</metatype>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>146</page>
-		</quality>
-		<quality>
 			<id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
 			<name>Data Anomaly</name>
 			<karma>3</karma>
@@ -10178,7 +10158,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<selectaiprogram />
+				<selectinherentaiprogram />
 			</bonus>
 			<required>
 				<oneof>

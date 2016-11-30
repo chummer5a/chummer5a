@@ -77,7 +77,7 @@ namespace Chummer
 
 		private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+            foreach (Label objLabel in this.Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = "";
@@ -85,7 +85,10 @@ namespace Chummer
 
 			_objXmlDocument = XmlManager.Instance.Load(_strType + ".xml");
 
-			XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
+            if (_objCharacter.DEPEnabled)
+                return;
+
+            XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
 
 			foreach (XmlNode objXmlSuite in objXmlSuiteList)
 			{
