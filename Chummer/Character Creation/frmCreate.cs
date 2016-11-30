@@ -74,6 +74,7 @@ namespace Chummer
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
             _objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
             _objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
+            _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
             _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
             _objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketDiscountChanged;
@@ -183,8 +184,6 @@ namespace Chummer
                 lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - _objCharacter.Spells.Count).ToString(), _objCharacter.SpellLimit.ToString());
                 lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
                 tabInfo.TabPages.RemoveAt(0);
-
-
             }
             else
             {
@@ -193,9 +192,7 @@ namespace Chummer
 
             int count = 0;
             foreach (Contact contact in _objCharacter.Contacts)
-                count += contact.ContactPoints;
-
-            
+                count += contact.ContactPoints;            
 
             // Set the movement speed defaults
             lblMovement.Text = _objCharacter.Movement;
@@ -853,7 +850,12 @@ namespace Chummer
                 objNode.Tag = objProgram.InternalId;
                 if (objProgram.Notes != string.Empty)
                     objNode.ForeColor = Color.SaddleBrown;
+                else if (!objProgram.CanDelete)
+                    objNode.ForeColor = SystemColors.GrayText;
+                else
+                    objNode.ForeColor = SystemColors.WindowText;
                 objNode.ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100);
+                objNode.ContextMenuStrip = cmsAdvancedProgram;
                 treAIPrograms.Nodes[0].Nodes.Add(objNode);
                 treAIPrograms.Nodes[0].Expand();
             }
@@ -1134,6 +1136,7 @@ namespace Chummer
                 _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
                 _objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
                 _objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
+                _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
                 _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 _objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
@@ -5394,7 +5397,16 @@ namespace Chummer
                 return;
 
             _objCharacter.AIPrograms.Add(objProgram);
-
+            objNode.Text = objProgram.DisplayName;
+            objNode.Tag = objProgram.InternalId;
+            if (objProgram.Notes != string.Empty)
+                objNode.ForeColor = Color.SaddleBrown;
+            else if (!objProgram.CanDelete)
+                objNode.ForeColor = SystemColors.GrayText;
+            else
+                objNode.ForeColor = SystemColors.WindowText;
+            objNode.ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100);
+            objNode.ContextMenuStrip = cmsAdvancedProgram;
             treAIPrograms.Nodes[0].Nodes.Add(objNode);
             treAIPrograms.Nodes[0].Expand();
             treAIPrograms.SortCustom();
@@ -13460,7 +13472,7 @@ namespace Chummer
                     // Locate the Program that is selected in the tree.
                     AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
 
-                    string strRequires = objProgram.RequiresProgram;
+                    string strRequires = objProgram.DisplayRequiresProgram;
 
                     lblAIProgramsRequires.Text = strRequires;
 
@@ -15927,6 +15939,7 @@ namespace Chummer
                 else
                     objNode.ForeColor = SystemColors.WindowText;
                 objNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
+                objNode.ContextMenuStrip = cmsAdvancedProgram;
                 treAIPrograms.Nodes[0].Nodes.Add(objNode);
             }
             treAIPrograms.Nodes[0].Expand();
@@ -20452,6 +20465,16 @@ namespace Chummer
                     TreeNode objNode = new TreeNode();
                     AIProgram objProgram = new AIProgram(_objCharacter);
                     objProgram.Create(objXmlProgramNode, _objCharacter, objNode, boolIsAdvancedProgram);
+                    objNode.Text = objProgram.DisplayName;
+                    objNode.Tag = objProgram.InternalId;
+                    if (objProgram.Notes != string.Empty)
+                        objNode.ForeColor = Color.SaddleBrown;
+                    else if (!objProgram.CanDelete)
+                        objNode.ForeColor = SystemColors.GrayText;
+                    else
+                        objNode.ForeColor = SystemColors.WindowText;
+                    objNode.ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100);
+                    objNode.ContextMenuStrip = cmsAdvancedProgram;
 
                     treAIPrograms.Nodes[0].Nodes.Add(objNode);
                     treAIPrograms.Nodes[0].Expand();

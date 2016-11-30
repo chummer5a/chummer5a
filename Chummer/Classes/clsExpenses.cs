@@ -54,6 +54,8 @@ namespace Chummer
 		QuickeningMetamagic = 22,
         AddPowerPoint = 23,
         AddSpecialization = 24,
+        AddAIProgram = 25,
+        AddAIAdvancedProgram = 26
 	}
 
 	public enum NuyenExpenseType

@@ -2715,6 +2715,10 @@
 			<text>Complex Form Option</text>
 		</string>
 		<string>
+			<key>String_ExpenseLearnProgram</key>
+			<text>Learned AI Program</text>
+		</string>
+		<string>
 			<key>String_ExpenseQuickenMetamagic</key>
 			<text>Quickened</text>
 		</string>

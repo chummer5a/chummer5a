@@ -10221,12 +10221,7 @@
 			<name>Munge</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-				<specificattribute>
-					<name>ESS</name>
-					<max>6</max>
-				</specificattribute>
-			</bonus>
+			<bonus />
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>

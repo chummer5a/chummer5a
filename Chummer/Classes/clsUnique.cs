@@ -5971,6 +5971,10 @@ namespace Chummer
         {
             objWriter.WriteStartElement("aiprogram");
             objWriter.WriteElementString("name", DisplayNameShort);
+            if (_strRequiresProgram == "" || _strRequiresProgram == LanguageManager.Instance.GetString("String_None"))
+                objWriter.WriteElementString("requiresprogram", LanguageManager.Instance.GetString("String_None")); 
+            else
+                objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             if (_objCharacter.Options.PrintNotes)
@@ -6071,6 +6075,30 @@ namespace Chummer
             set
             {
                 _strRequiresProgram = value;
+            }
+        }
+
+        /// <summary>
+		/// AI Advanced Program's requirement program.
+		/// </summary>
+		public string DisplayRequiresProgram
+        {
+            get
+            {
+                string strReturn = RequiresProgram;
+                // Get the translated name if applicable.
+                if (GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
+                    if (objNode != null)
+                    {
+                        if (objNode["translate"] != null)
+                            strReturn = objNode["translate"].InnerText;
+                    }
+                }
+
+                return strReturn;
             }
         }
 

@@ -6655,7 +6655,7 @@ namespace Chummer
                 try
                 {
                     if (blnOldValue != value)
-                        TechnomancerTabEnabledChanged(this);
+                        AdvancedProgramsTabEnabledChanged(this);
                 }
                 catch
                 {

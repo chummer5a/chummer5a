@@ -2276,12 +2276,6 @@
 						</negative>
 					</qualityrestriction>
 					<movement>Special</movement>
-					<qualityrestriction>
-						<positive>
-						</positive>
-						<negative>
-						</negative>
-					</qualityrestriction>
 					<qualities>
 						<positive>
 							<quality>Home Ground</quality>

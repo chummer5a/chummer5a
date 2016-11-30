@@ -61,7 +61,12 @@ namespace Chummer
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
 		}
 
-		private void objCharacter_InitiationTabEnabledChanged(object sender)
+        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender)
+        {
+            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
+        }
+
+        private void objCharacter_InitiationTabEnabledChanged(object sender)
 		{
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
 		}
@@ -222,7 +227,8 @@ namespace Chummer
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
-			_objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
+            _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
 		}
 
@@ -235,7 +241,8 @@ namespace Chummer
             _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
-			_objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
+            _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
 		}
 
@@ -1138,18 +1145,6 @@ namespace Chummer
 					_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
                     _objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0));
                 }
-
-				// Sprites can never have Physical Attributes
-				if (_objCharacter.DEPEnabled || lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
-				{
-					_objCharacter.BOD.AssignLimits("0", "0", "0");
-					_objCharacter.AGI.AssignLimits("0", "0", "0");
-					_objCharacter.REA.AssignLimits("0", "0", "0");
-					_objCharacter.STR.AssignLimits("0", "0", "0");
-                    _objCharacter.MAG.AssignLimits("0", "0", "0");
-                    _objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
-					_objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
-				}
 				
 				// If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
 				if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
@@ -1536,8 +1531,25 @@ namespace Chummer
                     _objCharacter.ComplexForms.Add(objProgram);
                 }
 
-				// Add any Gear the Critter comes with (typically Programs for A.I.s)
-				XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                // Add any Advanced Programs the Critter comes with (typically Sprites)
+                XmlDocument objXmlAIProgramDocument = XmlManager.Instance.Load("programs.xml");
+                foreach (XmlNode objXmlAIProgram in objXmlCritter.SelectNodes("programs/program"))
+                {
+                    string strForceValue = "";
+                    if (objXmlAIProgram.Attributes["select"] != null)
+                        strForceValue = objXmlAIProgram.Attributes["select"].InnerText;
+                    XmlNode objXmlProgram = objXmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + objXmlAIProgram.InnerText + "\"]");
+                    if (objXmlProgram != null)
+                    {
+                        TreeNode objNode = new TreeNode();
+                        AIProgram objProgram = new AIProgram(_objCharacter);
+                        objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"]?.InnerText == "Advanced Programs", strForceValue);
+                        _objCharacter.AIPrograms.Add(objProgram);
+                    }
+                }
+
+                // Add any Gear the Critter comes with (typically Programs for A.I.s)
+                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
 				foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
 				{
 					int intRating = 0;
@@ -1706,8 +1718,20 @@ namespace Chummer
                     }
                 }
 
+                // Sprites can never have Physical Attributes
+                if (_objCharacter.DEPEnabled || lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
+                {
+                    _objCharacter.BOD.AssignLimits("0", "0", "0");
+                    _objCharacter.AGI.AssignLimits("0", "0", "0");
+                    _objCharacter.REA.AssignLimits("0", "0", "0");
+                    _objCharacter.STR.AssignLimits("0", "0", "0");
+                    _objCharacter.MAG.AssignLimits("0", "0", "0");
+                    _objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
+                    _objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
+                }
+
                 // Load the Priority information.
-				XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
+                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
 				XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
 				string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;

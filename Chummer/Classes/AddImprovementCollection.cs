@@ -877,12 +877,21 @@ namespace Chummer.Classes
 
             Log.Info("selectaiprogram = " + bonusNode.OuterXml.ToString());
 
-            frmPickProgram.ShowDialog();
+            Log.Info("_strForcedValue = " + ForcedValue);
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickProgram.DialogResult == DialogResult.Cancel)
+            if (ForcedValue != "")
             {
-                throw new AbortedException();
+                frmPickProgram.SelectedProgram = ForcedValue;
+            }
+            else
+            {
+                frmPickProgram.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
             }
 
             SelectedValue = frmPickProgram.SelectedProgram;

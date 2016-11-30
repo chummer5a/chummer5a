@@ -39719,9 +39719,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -39734,6 +39830,13 @@
         <skill rating="3">Hacking</skill>
         <skill rating="3">Intimidation</skill>
       </skills>
+	  <programs>
+		<program>Armor</program>
+		<program>Cascade</program>
+		<program>Fork</program>
+		<program>Stealth</program>
+		<program>Tantrum</program>
+	  </programs>
       <source>HS</source>
       <page>153</page>
     </metatype>
@@ -39795,9 +39898,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -39808,6 +40007,13 @@
         <skill rating="8">Cybercombat</skill>
         <skill rating="4">Hacking</skill>
       </skills>
+	  <programs>
+		<program>Cat's Paw</program>
+		<program>Exploit</program>
+		<program>Guard</program>
+		<program>Mugger</program>
+		<program>Poke</program>
+	  </programs>
       <source>HS</source>
       <page>153</page>
     </metatype>
@@ -39868,9 +40074,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -39881,6 +40183,14 @@
         <skill rating="8">Cybercombat</skill>
         <skill rating="4">Hacking</skill>
       </skills>
+	  <programs>
+		<program>Armor</program>
+		<program>Cascade</program>
+		<program>Decryption</program>
+		<program>Fnord</program>
+		<program>Mugger</program>
+		<program>Poke</program>
+	  </programs>
       <source>HS</source>
       <page>154</page>
     </metatype>
@@ -40184,9 +40494,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -40197,6 +40603,13 @@
         <skill rating="2">Software</skill>
         <skill rating="3">Hacking</skill>
       </skills>
+	  <programs>
+		<program>Cat's Paw</program>
+		<program>Fnord</program>
+		<program>Guard</program>
+		<program>Sneak</program>
+		<program>Stealth</program>
+	  </programs>
       <source>HS</source>
       <page>155</page>
     </metatype>
@@ -40257,9 +40670,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -40270,6 +40779,11 @@
         <skill rating="3">Cybercombat</skill>
         <skill rating="2">Hacking</skill>
       </skills>
+	  <programs>
+		<program>Fork</program>
+		<program>Stealth</program>
+		<program>Tantrum</program>
+	  </programs>
       <source>HS</source>
       <page>155</page>
     </metatype>
@@ -40330,9 +40844,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -40345,6 +40955,12 @@
 		<skill rating="3">Electronic Warfare</skill>
 		<skill rating="3">Intimidation</skill>
       </skills>
+	  <programs>
+		<program>Armor</program>
+		<program>Fork</program>
+		<program>Stealth</program>
+		<program>Tantrum</program>
+	  </programs>
       <source>HS</source>
       <page>153</page>
     </metatype>
@@ -40482,9 +41098,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -40496,6 +41208,11 @@
         <skill rating="3">Hacking</skill>
         <skill rating="5">Intimidation</skill>
       </skills>
+	  <programs>
+		<program>Armor</program>
+		<program>Fork</program>
+		<program>Tantrum</program>
+	  </programs>
       <source>HS</source>
       <page>154</page>
     </metatype>
@@ -40961,9 +41678,105 @@
           <quality>Real World Naiveté</quality>
         </negative>
       </qualities>
+	  <qualityrestriction>
+		<positive>
+			<quality>Animal Empathy</quality>
+			<quality>Aptitude</quality>
+			<quality>Brand Loyalty</quality>
+			<quality>Bilingual</quality>
+			<quality>Chatty</quality>
+			<quality>Codeslinger</quality>
+			<quality>College Educatation</quality>
+			<quality>Data Anomaly</quality>
+			<quality>Designer</quality>
+			<quality>Exceptional Entity</quality>
+			<quality>Fade to Black</quality>
+			<quality>Fame</quality>
+			<quality>Membership</quality>
+			<quality>First Impression</quality>
+			<quality>Friends in High Places</quality>
+			<quality>Gearhead</quality>
+			<quality>Gifted Healer</quality>
+			<quality>Go Big or Go Home</quality>
+			<quality>Golden Screwdriver</quality>
+			<quality>Guts</quality>
+			<quality>Hello World!</quality>
+			<quality>High Pain Tolerance</quality>
+			<quality>Home Ground</quality>
+			<quality>I C U</quality>
+			<quality>Indomitable</quality>
+			<quality>Inherent Program</quality>
+			<quality>Improved Restoration</quality>
+			<quality>Inspired</quality>
+			<quality>Juryrigger</quality>
+			<quality>Linguist</quality>
+			<quality>Low Profile</quality>
+			<quality>Lucky</quality>
+			<quality>Multiprocessing</quality>
+			<quality>Munge</quality>
+			<quality>Ninja Vanish</quality>
+			<quality>Overclocker</quality>
+			<quality>Perceptive</quality>
+			<quality>Photographic Memory</quality>
+			<quality>Pilot Origins (Rating 1)</quality>
+			<quality>Pilot Origins (Rating 2)</quality>
+			<quality>Pilot Origins (Rating 3)</quality>
+			<quality>Prime Data-Haven</quality>
+			<quality>Quick Healer</quality>
+			<quality>Redundancy</quality>
+			<quality>Restricted Gear</quality>
+			<quality>Sapper</quality>
+			<quality>Sensor Upgrade</quality>
+			<quality>Snooper</quality>
+			<quality>Speed Reading</quality>
+			<quality>Strive For Perfection</quality>
+			<quality>Steely-Eyed Wheelman</quality>
+			<quality>Sense of Direction</quality>
+			<quality>Sharpshooter</quality>
+			<quality>Sensei</quality>
+			<quality>Virtual Stability</quality>
+			<quality>Solid/Legendary Rep</quality>
+			<quality>Trustworthy</quality>
+			<quality>Vehicle Empathy</quality>
+			<quality>Technical School Education</quality>
+		</positive>
+		<negative>
+			<quality>Bad Luck</quality>
+			<quality>Low Pain Tolerance</quality>
+			<quality>Bad Rep</quality>
+			<quality>Loss of Confidence</quality>
+			<quality>Code of Honor</quality>
+			<quality>Pacifist</quality>
+			<quality>Codeblock</quality>
+			<quality>Persnickety Renter</quality>
+			<quality>Combat Paralysis</quality>
+			<quality>Prank Warrior</quality>
+			<quality>Corrupter</quality>
+			<quality>Prejudiced</quality>
+			<quality>Curiosity Killed the Cat</quality>
+			<quality>Real World Naiveté</quality>
+			<quality>Data Liberator</quality>
+			<quality>Records On File</quality>
+			<quality>Day Job</quality>
+			<quality>Signature</quality>
+			<quality>Did You Just Call Me Dumb?</quality>
+			<quality>SINner</quality>
+			<quality>Distinctive Style</quality>
+			<quality>Uneducated</quality>
+			<quality>Driven</quality>
+			<quality>Uncouth</quality>
+			<quality>Easily Exploitable</quality>
+			<quality>Vendetta</quality>
+			<quality>Fragmentation</quality>
+			<quality>Wanted</quality>
+			<quality>Incompetent</quality>
+			<quality>Wanted by GOD</quality>
+		</negative>
+	  </qualityrestriction>
       <bonus>
         <enabletab>
           <name>critter</name>
+		  <name>advanced programs</name>
         </enabletab>
 		<enableattribute>
           <name>DEP</name>
@@ -40974,6 +41787,10 @@
         <skill rating="2">Software</skill>
         <skill rating="3">Hacking</skill>
       </skills>
+	  <programs>
+		<program>Armor</program>
+		<program>Exploit</program>
+	  </programs>
       <source>HS</source>
       <page>156</page>
     </metatype>

@@ -80,7 +80,8 @@ namespace Chummer
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
-			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
+            _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
 			_objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
 			_objCharacter.FameChanged += objCharacter_FameChanged;
@@ -150,7 +151,9 @@ namespace Chummer
 				tabCharacterTabs.TabPages.Remove(tabAdept);
 			if (!_objCharacter.TechnomancerEnabled)
 				tabCharacterTabs.TabPages.Remove(tabTechnomancer);
-			if (!_objCharacter.CritterEnabled)
+            if (!_objCharacter.AdvancedProgramsEnabled)
+                tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+            if (!_objCharacter.CritterEnabled)
 				tabCharacterTabs.TabPages.Remove(tabCritter);
 
 			mnuSpecialAddBiowareSuite.Visible = _objCharacter.Options.AllowBiowareSuites;
@@ -760,8 +763,26 @@ namespace Chummer
 				treComplexForms.Nodes[0].Expand();
 			}
 
-			// Populate Martial Arts.
-			foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
+            // Populate AI Programs and Advanced Programs.
+            foreach (AIProgram objProgram in _objCharacter.AIPrograms)
+            {
+                TreeNode objNode = new TreeNode();
+                objNode.Text = objProgram.DisplayName;
+                objNode.Tag = objProgram.InternalId;
+                if (objProgram.Notes != string.Empty)
+                    objNode.ForeColor = Color.SaddleBrown;
+                else if (!objProgram.CanDelete)
+                    objNode.ForeColor = SystemColors.GrayText;
+                else
+                    objNode.ForeColor = SystemColors.WindowText;
+                objNode.ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100);
+                objNode.ContextMenuStrip = cmsAdvancedProgram;
+                treAIPrograms.Nodes[0].Nodes.Add(objNode);
+                treAIPrograms.Nodes[0].Expand();
+            }
+
+            // Populate Martial Arts.
+            foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
 			{
 				TreeNode objMartialArtNode = new TreeNode();
 				objMartialArtNode.Text = objMartialArt.DisplayName;
@@ -1036,7 +1057,8 @@ namespace Chummer
 			treCyberware.SortCustom();
 			treSpells.SortCustom();
 			treComplexForms.SortCustom();
-			treQualities.SortCustom();
+            treAIPrograms.SortCustom();
+            treQualities.SortCustom();
 			treCritterPowers.SortCustom();
 			treMartialArts.SortCustom();
 			UpdateMentorSpirits();
@@ -1110,7 +1132,8 @@ namespace Chummer
                 _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
 				_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 				_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
-				_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
+                _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
+                _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
 				_objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
@@ -1231,7 +1254,13 @@ namespace Chummer
 					objLabel.Text = "";
 			}
 
-			foreach (Label objLabel in tabCyberware.Controls.OfType<Label>())
+            foreach (Label objLabel in tabAdvancedPrograms.Controls.OfType<Label>())
+            {
+                if (objLabel.Text.StartsWith("["))
+                    objLabel.Text = "";
+            }
+
+            foreach (Label objLabel in tabCyberware.Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = "";
@@ -1468,7 +1497,25 @@ namespace Chummer
 			}
 		}
 
-		private void objCharacter_CritterTabEnabledChanged(object sender)
+        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            // Change to the status of Technomancer being enabled.
+            if (_objCharacter.AdvancedProgramsEnabled)
+            {
+                if (!tabCharacterTabs.TabPages.Contains(tabAdvancedPrograms))
+                    tabCharacterTabs.TabPages.Insert(3, tabAdvancedPrograms);
+            }
+            else
+            {
+                ClearAdvancedProgramsTab();
+                tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+            }
+        }
+
+        private void objCharacter_CritterTabEnabledChanged(object sender)
 		{
 			if (_blnReapplyImprovements)
 				return;
@@ -1892,8 +1939,58 @@ namespace Chummer
 				}
 			}
 
-			// Refresh Critter Powers.
-			objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+            // Refresh Complex Forms.
+            objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
+            foreach (ComplexForm objProgram in _objCharacter.ComplexForms)
+            {
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objProgram.Name + "\"]");
+                if (objNode != null)
+                {
+                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
+                    if (objNode["bonus"] != null)
+                    {
+                        foreach (TreeNode objParentNode in treComplexForms.Nodes)
+                        {
+                            foreach (TreeNode objChildNode in objParentNode.Nodes)
+                            {
+                                if (objChildNode.Tag.ToString() == objProgram.InternalId)
+                                {
+                                    objChildNode.Text = objProgram.DisplayName;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Refresh AI Programs and Advanced Programs
+            objXmlDocument = XmlManager.Instance.Load("programs.xml");
+            foreach (AIProgram objProgram in _objCharacter.AIPrograms)
+            {
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + objProgram.Name + "\"]");
+                if (objNode != null)
+                {
+                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+                    if (objNode["bonus"] != null)
+                    {
+                        foreach (TreeNode objParentNode in treAIPrograms.Nodes)
+                        {
+                            foreach (TreeNode objChildNode in objParentNode.Nodes)
+                            {
+                                if (objChildNode.Tag.ToString() == objProgram.InternalId)
+                                {
+                                    objChildNode.Text = objProgram.DisplayName;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Refresh Critter Powers.
+            objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
 			foreach (CritterPower objPower in _objCharacter.CritterPowers)
 			{
 				string strSelected = objPower.Extra;
@@ -7467,10 +7564,13 @@ namespace Chummer
 			treQualities.SortCustom();
 			UpdateMentorSpirits();
 			UpdateCharacterInfo();
+            RefreshMartialArts();
+            RefreshAIPrograms();
+            RefreshLimitModifiers();
             RefreshPowers();
             RefreshContacts();
-
-			_blnIsDirty = true;
+            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+            _blnIsDirty = true;
 			UpdateWindowTitle();
 
 			if (frmPickQuality.AddAgain)
@@ -7657,8 +7757,13 @@ namespace Chummer
 				_objCharacter.Weapons.Remove(objRemoveWeapon);
 			}
 
-			UpdateMentorSpirits();
+            RefreshQualities(treQualities, cmsQuality, true);
+            UpdateMentorSpirits();
 			UpdateCharacterInfo();
+            RefreshMartialArts();
+            RefreshAIPrograms();
+            RefreshLimitModifiers();
+            RefreshPowers();
             RefreshContacts();
 
 			_blnIsDirty = true;
@@ -19950,10 +20055,21 @@ namespace Chummer
 			UpdateCharacterInfo();
 		}
 
-		/// <summary>
-		/// Clear the conents of the Critter Powers Tab.
-		/// </summary>
-		private void ClearCritterTab()
+        /// <summary>
+        /// Clear the contents of the Advanced Programs Tab.
+        /// </summary>
+        private void ClearAdvancedProgramsTab()
+        {
+            _objController.ClearAdvancedProgramsTab(treAIPrograms);
+
+            _blnIsDirty = true;
+            UpdateCharacterInfo();
+        }
+
+        /// <summary>
+        /// Clear the conents of the Critter Powers Tab.
+        /// </summary>
+        private void ClearCritterTab()
 		{
 			_objController.ClearCritterTab(treCritterPowers);
 
@@ -21571,6 +21687,41 @@ namespace Chummer
                 panPowers.Controls.Add(objPowerControl);
             }
             _blnLoading = false;
+        }
+
+        public void RefreshAIPrograms()
+        {
+            treAIPrograms.Nodes[0].Nodes.Clear();
+
+            // Populate AI Programs.
+            foreach (AIProgram objAIProgram in _objCharacter.AIPrograms)
+            {
+                TreeNode objNode = new TreeNode();
+                objNode.Text = objAIProgram.DisplayName;
+                objNode.Tag = objAIProgram.InternalId;
+                if (objAIProgram.Notes != string.Empty)
+                    objNode.ForeColor = Color.SaddleBrown;
+                else if (!objAIProgram.CanDelete)
+                    objNode.ForeColor = SystemColors.GrayText;
+                else
+                    objNode.ForeColor = SystemColors.WindowText;
+                objNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
+                objNode.ContextMenuStrip = cmsAdvancedProgram;
+                treAIPrograms.Nodes[0].Nodes.Add(objNode);
+            }
+            treAIPrograms.Nodes[0].Expand();
+        }
+
+        public void RefreshMartialArts()
+        {
+            treMartialArts.Nodes[0].Nodes.Clear();
+            treMartialArts.Nodes[1].Nodes.Clear();
+
+            // Populate Martial Arts.
+            foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
+            {
+                treMartialArts.Add(objMartialArt, cmsMartialArts);
+            }
         }
 
         public void RefreshLimitModifiers()
@@ -27596,8 +27747,14 @@ namespace Chummer
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
+            // Make sure the character has enough Karma before letting them select a Spell.
+            if (_objCharacter.Karma < _objOptions.KarmaNewAIProgram && _objCharacter.Karma < _objOptions.KarmaNewAIAdvancedProgram)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             // Let the user select a Program.
-            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
+            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, _objCharacter.Karma >= _objOptions.KarmaNewAIAdvancedProgram);
             frmPickProgram.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
@@ -27607,6 +27764,7 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
 
             XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+            bool boolIsAdvancedProgram = objXmlProgram["category"].InnerText == "Advanced Programs";
 
             // Check for SelectText.
             string strExtra = "";
@@ -27621,16 +27779,40 @@ namespace Chummer
                 }
             }
 
+
             TreeNode objNode = new TreeNode();
             AIProgram objProgram = new AIProgram(_objCharacter);
-            objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra);
+            objProgram.Create(objXmlProgram, _objCharacter, objNode, boolIsAdvancedProgram, strExtra);
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
-            _objCharacter.AIPrograms.Add(objProgram);
+            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayName).Replace("{1}", (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram).ToString())))
+                return;
 
+            _objCharacter.AIPrograms.Add(objProgram);
+            objNode.Text = objProgram.DisplayName;
+            objNode.Tag = objProgram.InternalId;
+            if (objProgram.Notes != string.Empty)
+                objNode.ForeColor = Color.SaddleBrown;
+            else if (!objProgram.CanDelete)
+                objNode.ForeColor = SystemColors.GrayText;
+            else
+                objNode.ForeColor = SystemColors.WindowText;
+            objNode.ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100);
+            objNode.ContextMenuStrip = cmsAdvancedProgram;
             treAIPrograms.Nodes[0].Nodes.Add(objNode);
             treAIPrograms.Nodes[0].Expand();
+
+            // Create the Expense Log Entry.
+            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            objEntry.Create((boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnProgram") + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
+            _objCharacter.ExpenseEntries.Add(objEntry);
+            _objCharacter.Karma -= (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram);
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateKarma((boolIsAdvancedProgram ? KarmaExpenseType.AddAIAdvancedProgram : KarmaExpenseType.AddAIProgram), objProgram.InternalId);
+            objEntry.Undo = objUndo;
+
             treAIPrograms.SortCustom();
             UpdateCharacterInfo();
 
@@ -27703,7 +27885,7 @@ namespace Chummer
                     // Locate the Program that is selected in the tree.
                     AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
 
-                    string strRequires = objProgram.RequiresProgram;
+                    string strRequires = objProgram.DisplayRequiresProgram;
 
                     lblAIProgramsRequires.Text = strRequires;
 
@@ -27723,6 +27905,46 @@ namespace Chummer
             if (e.KeyCode == Keys.Delete)
             {
                 cmdDeleteAIProgram_Click(sender, e);
+            }
+        }
+
+        private void tsAIProgramNotes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bool blnFound = false;
+                AIProgram objAIProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+                if (objAIProgram != null)
+                    blnFound = true;
+
+                if (blnFound)
+                {
+                    frmNotes frmItemNotes = new frmNotes();
+                    frmItemNotes.Notes = objAIProgram.Notes;
+                    string strOldValue = objAIProgram.Notes;
+                    frmItemNotes.ShowDialog(this);
+
+                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    {
+                        objAIProgram.Notes = frmItemNotes.Notes;
+                        if (objAIProgram.Notes != strOldValue)
+                        {
+                            _blnIsDirty = true;
+                            UpdateWindowTitle();
+                        }
+                    }
+
+                    if (objAIProgram.Notes != string.Empty)
+                        treAIPrograms.SelectedNode.ForeColor = Color.SaddleBrown;
+                    else if (!objAIProgram.CanDelete)
+                        treAIPrograms.SelectedNode.ForeColor = SystemColors.GrayText;
+                    else
+                        treAIPrograms.SelectedNode.ForeColor = SystemColors.WindowText;
+                    treAIPrograms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
+                }
+            }
+            catch
+            {
             }
         }
     }
