@@ -16195,14 +16195,14 @@ namespace Chummer
 			//Indirect Dodge
 			lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
 			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-			                  LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ") + " +
+			                  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ") + " +
 			                  LanguageManager.Instance.GetString("String_AttributeREAShort") + "(" + _objCharacter.REA.TotalValue.ToString() + ")";
 			tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
 			//Indirect Soak
 			lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
 			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": "+ 
 							  LanguageManager.Instance.GetString("Tip_Armor") + " ("+ _objCharacter.TotalArmorRating.ToString()+ ") + "+ 
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " ("+ _objCharacter.BOD.TotalValue.ToString()+ ")";
+							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " ("+ _objCharacter.BOD.TotalValue.ToString()+ ")";
 			tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
 			//Direct Soak - Mana
 			lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
@@ -16300,8 +16300,8 @@ namespace Chummer
 			lblSpellDefenceIllusionPhysical.Text =
 				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
 			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-			                  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() +
-			                  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")" +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")" +
 							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
 			tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
 			//Manipulation - Mental

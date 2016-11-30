@@ -1,4 +1,4 @@
-Build 189
+﻿Build 189
 
 Application Changes:
 
@@ -8,6 +8,12 @@ Application Changes:
 - Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus. 
 - Fixed an issue with printing skills not correctly showing translated strings. 
 - Added a metatype filter for selecting cyberware that will prevent Pixies from taking Customised Strength on their cyberlimbs, as it breaks everything awfully. 
+- Fixed an issue with Spell Defence Tooltips.
+- Fixed behaviour of the Change Priority Selection menu to properly preserve metavariant settings. 
+
+Data Changes: 
+
+- Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
 
 Build 188
 
