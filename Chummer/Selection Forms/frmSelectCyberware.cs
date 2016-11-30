@@ -1330,6 +1330,17 @@ namespace Chummer
 									strForbidden += "\n\t" + objCharacterCyberware.DisplayNameShort;
 								}
 								break;
+                            case "metatype":
+                                // Check if the character's Metatype is banned. 
+						        if (_objCharacter != null)
+						        {
+						            if (_objCharacter.Metatype == objXmlForbidden.InnerText)
+						            {
+						                blnRequirementForbidden = true;
+                                        strForbidden += "\n\t" + LanguageManager.Instance.GetString("Label_Metatype") + " " + _objCharacter.Metatype;
+                                    }
+						        }
+						        break;
 						}
 					}
 				}

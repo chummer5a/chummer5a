@@ -6,6 +6,8 @@ Application Changes:
 - Fixed an issue with default specialisations not translating properly. 
 - Fixed an issue that caused drones using the modification rules from Rigger 5 to lose their Armour Rating. 
 - Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus. 
+- Fixed an issue with printing skills not correctly showing translated strings. 
+- Added a metatype filter for selecting cyberware that will prevent Pixies from taking Customised Strength on their cyberlimbs, as it breaks everything awfully. 
 
 Build 188
 

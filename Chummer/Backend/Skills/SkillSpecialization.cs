@@ -74,7 +74,7 @@ namespace Chummer
 		{
 
 			objWriter.WriteStartElement("skillspecialization");
-			objWriter.WriteElementString("name", Name);
+			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteEndElement();
 		}
 

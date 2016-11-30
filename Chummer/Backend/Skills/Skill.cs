@@ -515,7 +515,7 @@ namespace Chummer.Skills
 		private string _cachedStringSpec = null;
 		public virtual string DisplaySpecialization
 		{
-			get { return _cachedStringSpec = _cachedStringSpec ?? string.Join(", ", Specializations.Select(x => x.Name)); }
+			get { return _cachedStringSpec = _cachedStringSpec ?? string.Join(", ", Specializations.Select(x => x.DisplayName)); }
 		}
 
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
