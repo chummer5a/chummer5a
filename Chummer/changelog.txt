@@ -10,10 +10,11 @@ Application Changes:
 - Added a metatype filter for selecting cyberware that will prevent Pixies from taking Customised Strength on their cyberlimbs, as it breaks everything awfully. 
 - Fixed an issue with Spell Defence Tooltips.
 - Fixed behaviour of the Change Priority Selection menu to properly preserve metavariant settings. 
-
 Data Changes: 
 
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
+- Fixed default specialisations for the Small Unit Tactics skills.
+- Fixed the ability for Pixies to receive the Assensing skill without requiring a quality like Magician.
 
 Build 188
 
