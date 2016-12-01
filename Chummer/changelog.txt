@@ -25,6 +25,7 @@ Application Changes:
 - Added the ability for an improvement to add an AI program.
 - Added the ability for an improvement to add either a Common Program or a Hacking Program as an AI program.
 - Added the ability for a metatype to receive only half points from attribute priority.
+- Added the enableattribute, replaceattribute, enabletab, cyberseeker, blockskillgroupdefaulting, attributelevel, skilllevel, knowsoft and specificpower to the Custom Improvement Manager. 
 
 Data Changes: 
 
