@@ -7414,5 +7414,71 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Tip_Skill_AddSpecialization</key>
       <text>Add Specialization for {0} Karma</text>
     </string>
+	<!-- Advanced Programs Region -->
+			<string>
+			<key>Label_SummaryAINormalPrograms</key>
+			<text>Programmes Normales</text>
+		</string>
+		<string>
+			<key>Label_SummaryAIAdvancedPrograms</key>
+			<text>Programmes Avancés</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIProgram</key>
+			<text>Nouveau Programme (IA)</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIAdvancedProgram</key>
+			<text>Nouveau Programme Avancé (IA)</text>
+		</string>
+		<!-- Advanced Programs Tab -->
+		<string>
+			<key>Tab_AdvancedPrograms</key>
+			<text>Programmes Avancés</text>
+		</string>
+		<string>
+			<key>Label_AIProgramsAdvancedPrograms</key>
+			<text>Programmes et Programmes Avancés d'IA</text>
+		</string>
+		<string>
+			<key>Button_AddProgram</key>
+			<text>Ajouter Programme</text>
+		</string>
+		<string>
+			<key>String_Requires</key>
+			<text>Prérequis du Programme:</text>
+		</string>
+		<string>
+			<key>Node_SelectedAIPrograms</key>
+			<text>Programmes et Programmes Avancés d'IA qui sont Selectionnés</text>
+		</string>
+		<!-- End Region-->
+		<!-- Select AI Program Window -->
+		<string>
+			<key>Title_SelectAIProgram</key>
+			<text>Sélection d'un Programme ou Programme Avancé</text>
+		</string>
+		<string>
+			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Vous ne réunissez pas les conditions minimales pour ce programme avancé. Vous devez savoir tout les programmes suivants: </text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Prérequis du Programme Avancé</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectAIProgram_LimitList</key>
+			<text>N'afficher que les programmes d'IA pouvant être prises</text>
+		</string>
+		<string>
+			<key>Message_DeleteAIProgram</key>
+			<text>Êtes-vous sûr de vouloir supprimer ce programme d'IA?</text>
+		</string>
+		<!-- End Region -->
+		<string>
+			<key>String_ExpenseLearnProgram</key>
+			<text>Apprentissage du programme d'IA</text>
+		</string>
+	<!-- End Region -->
   </strings>
 </chummer>

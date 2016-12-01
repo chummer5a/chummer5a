@@ -7555,6 +7555,71 @@
 		<key>Label_SpellDefenceManipPhysical</key>
 		<text>Manipulation - Körperlich</text>
 	</string>
+	<!-- Advanced Programs Region -->
+			<string>
+			<key>Label_SummaryAINormalPrograms</key>
+			<text>Normale Programme</text>
+		</string>
+		<string>
+			<key>Label_SummaryAIAdvancedPrograms</key>
+			<text>Fortgeschrittene Programme</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIProgram</key>
+			<text>Neues Programm (KI)</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIAdvancedProgram</key>
+			<text>Neues fortgeschrittene Programm (KI)</text>
+		</string>
+		<!-- Advanced Programs Tab -->
+		<string>
+			<key>Tab_AdvancedPrograms</key>
+			<text>Fortgeschrittene Programme</text>
+		</string>
+		<string>
+			<key>Label_AIProgramsAdvancedPrograms</key>
+			<text>KI Programme und fortgeschrittene Programme</text>
+		</string>
+		<string>
+			<key>Button_AddProgram</key>
+			<text>Programm hinzufügen</text>
+		</string>
+		<string>
+			<key>String_Requires</key>
+			<text>Benötigt:</text>
+		</string>
+		<string>
+			<key>Node_SelectedAIPrograms</key>
+			<text>Ausgewählte KI Programme und fortgeschrittene Programme</text>
+		</string>
+		<!-- End Region-->
+		<!-- Select AI Program Window -->
+		<string>
+			<key>Title_SelectAIProgram</key>
+			<text>KI Programm oder fortgeschrittenes Programm auswählen</text>
+		</string>
+		<string>
+			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgende Programme müssen gelernt werden: </text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Anforderung des Fortgeschrittenen Programm</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectAIProgram_LimitList</key>
+			<text>Nur Fortgeschrittene Programme anzeigen, die ich wählen kann.</text>
+		</string>
+		<string>
+			<key>Message_DeleteAIProgram</key>
+			<text>Möchten Sie dieses Programm wirklich löschen?</text>
+		</string>
+		<!-- End Region -->
+		<string>
+			<key>String_ExpenseLearnProgram</key>
+			<text>Erlernte KI Programm</text>
+		</string>
 	<!-- End Region -->
   </strings>
 </chummer>
