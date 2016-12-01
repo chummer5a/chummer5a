@@ -24,6 +24,7 @@ Application Changes:
 - Added the ability for an improvement to remove the cyberware tab through the disabletab bonus (currently unused).
 - Added the ability for an improvement to add an AI program.
 - Added the ability for an improvement to add either a Common Program or a Hacking Program as an AI program.
+- Added the ability for a metatype to receive only half points from attribute priority.
 
 Data Changes: 
 
