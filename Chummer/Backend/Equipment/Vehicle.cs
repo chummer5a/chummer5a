@@ -1765,13 +1765,13 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objMod.Bonus.InnerXml.Contains("<offroadaccel>"))
                         {
-                            chrFirstCharacter = objMod.Bonus["offroadspeed"].InnerText[0];
+                            chrFirstCharacter = objMod.Bonus["offroadaccel"].InnerText[0];
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
                                 XmlDocument objXmlDocument = new XmlDocument();
                                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                                XPathExpression xprSeats = nav.Compile(objMod.Bonus["offroadspeed"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString()));
+                                XPathExpression xprSeats = nav.Compile(objMod.Bonus["offroadaccel"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString()));
                                 intTotalBonusOffroadAccel += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.Instance.CultureInfo);
                             }
                         }
