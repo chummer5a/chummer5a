@@ -12450,6 +12450,7 @@
 			<category translate="Hackingprogramme">Hacking Programs</category>
 			<category translate="PI-Tac" translated="True">PI-Tac</category>
 			<category translate="Software" translated="True">Software</category>
+			<category translate="Fortgeschrittene Programme" translated="True">Advanced Programs</category>
 		</categories>
 		<programs>
 			<program>
@@ -12745,6 +12746,74 @@
 				<name>WTLM</name>
 				<translate>Natürlicher Gang</translate>
 				<page>168</page>
+			</program>
+			<!-- End Region -->
+			<!-- Region Autosofts -->
+			<program>
+				<id>012d2de2-79cb-4f3b-9571-47c8b550a505</id>
+				<name>Clearsight Autosoft</name>
+				<translate>Clearsight Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>434e08f4-43c1-4684-8b65-c55f5db61405</id>
+				<name>Electronic Warfare Autosoft</name>
+				<translate>Elektronische Kriegsführung Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>f4c2f78b-1659-469d-acf0-7264c8c5c65f</id>
+				<name>[Model] Evasion Autosoft</name>
+				<translate>Ausweichen [Modell] Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>e9110525-4261-4626-b765-8668eec04fd3</id>
+				<name>[Model] Maneuvering Autosoft</name>
+				<translate>Manövrieren [Modell] Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>9255a84b-b146-4998-bb17-36c5d6b4fa7d</id>
+				<name>[Model] Stealth Autosoft</name>
+				<translate>Stealth [Modell] Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>052220bd-c15e-41e6-8455-d3a7c5c8e639</id>
+				<name>[Weapon] Targeting Autosoft</name>
+				<translate>Zielerfassung [Waffe] Autosoft</translate>
+				<page></page>
+			</program>
+			<program>
+				<id>0cc0ac2e-542d-4762-bd8c-70e734d96be1</id>
+				<name>Smartsoft</name>
+				<translate>Smartsoft</translate>
+				<page>134</page>
+			</program>
+			<program>
+				<id>37334b00-4143-4587-bffa-85b7f96c59bb</id>
+				<name>Group Autosoft</name>
+				<translate>Gruppierung Autosoft</translate>
+				<page>134</page>
+			</program>
+			<program>
+				<id>1310e977-beee-46f6-afce-91d851d89dc4</id>
+				<name>Skill Autosoft</name>
+				<translate>Fertigkeit Autosoft</translate>
+				<page>134</page>
+			</program>
+			<program>
+				<id>c52e0caa-d520-4f4b-ae02-f741ca1bf356</id>
+				<name>Skill Autosoft (Restricted)</name>
+				<translate>Fertigkeit Autosoft (Eingeschränkt)</translate>
+				<page></page>
+			</program>
+			<program>
+				<id>af2fcad7-0ef5-454a-aac7-64c9ad495654</id>
+				<name>[Weapon] Melee Autosoft</name>
+				<translate>[Waffe] Nahkampf Autosoft</translate>
+				<page>134</page>
 			</program>
 			<!-- End Region -->
 		</programs>
