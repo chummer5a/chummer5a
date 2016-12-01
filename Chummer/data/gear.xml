@@ -25,6 +25,7 @@
 		<category>Armor Enhancements</category>
 		<category>Audio Devices</category>
 		<category>Audio Enhancements</category>
+		<category>Autosofts</category>
 		<category>Biotech</category>
 		<category>Breaking and Entering Gear</category>
 		<category>BTLs</category>
@@ -2984,7 +2985,7 @@
 		</gear>
 		<gear>
 			<id>5217388a-e2ce-4add-bcc0-b0b1672f156c</id>
-			<name>Decrypt</name>
+			<name>Decryption</name>
 			<category>Hacking Programs</category>
 			<rating>0</rating>
 			<avail>4R</avail>
@@ -3174,7 +3175,7 @@
 		</gear>
 		<gear>
 			<id>e1e3753e-9e94-4e6e-860d-a8a03782baf3</id>
-			<name>Crash'</name>
+			<name>Crash (Program)</name>
 			<category>Hacking Programs</category>
 			<rating>0</rating>
 			<avail>4R</avail>
@@ -3360,19 +3361,6 @@
 			<page>442</page>
 		</gear>
 		<gear>
-			<id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
-			<name>Autosoft</name>
-			<category>Software</category>
-			<rating>6</rating>
-			<bonus>
-				<selecttext />
-			</bonus>
-			<avail>Rating * 2</avail>
-			<cost>Rating * 500</cost>
-			<source>SR5</source>
-			<page>269</page>
-		</gear>
-		<gear>
 			<id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
 			<name>Swarm</name>
 			<category>Software</category>
@@ -3381,17 +3369,6 @@
 			<cost>600</cost>
 			<source>R5</source>
 			<page>31</page>
-		</gear>
-		<gear>
-			<id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
-			<name>Smartsoft</name>
-			<category>Software</category>
-			<rating>3</rating>
-			<minrating>3</minrating>
-			<avail>6</avail>
-			<cost>1500</cost>
-			<source>R5</source>
-			<page>127</page>
 		</gear>
 		<gear>
 			<id>1a55fbe3-b3c1-4568-882f-abe4dedb8572</id>
@@ -3446,6 +3423,141 @@
 			<page>442</page>
 		</gear>
 		<!-- End Region-->
+		<!-- Region Autosofts -->
+		<gear>
+			<id>149a8dd2-dfef-473f-94a4-1bdd77e4f855</id>
+			<name>Clearsight Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>SR5</source>
+			<page>269</page>
+		</gear>
+		<gear>
+			<id>f84179b8-34b2-4fb1-bb24-099b0b700b5b</id>
+			<name>Electronic Warfare Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>SR5</source>
+			<page>269</page>
+		</gear>
+		<gear>
+			<id>80137629-41f0-41da-bfed-c8a1388b759e</id>
+			<name>[Model] Evasion Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>SR5</source>
+			<page>269</page>
+		</gear>
+		<gear>
+			<id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
+			<name>[Model] Maneuvering Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>SR5</source>
+			<page>269</page>
+		</gear>
+		<gear>
+			<id>c29a96f9-25bf-4ebc-8c56-f4c8afc3c002</id>
+			<name>[Model] Stealth Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>SR5</source>
+			<page>270</page>
+		</gear>
+		<gear>
+			<id>0949997a-acb7-49d9-9905-5ae2cd35626f</id>
+			<name>[Weapon] Targeting Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>SR5</source>
+			<page>270</page>
+		</gear>
+		<gear>
+			<id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
+			<name>Smartsoft</name>
+			<category>Autosofts</category>
+			<rating>3</rating>
+			<minrating>3</minrating>
+			<avail>6R</avail>
+			<cost>1500</cost>
+			<source>R5</source>
+			<page>127</page>
+		</gear>
+		<gear>
+			<id>25235dcf-089a-4c17-bc8f-6a1f5b2fb0b6</id>
+			<name>Group Autosoft</name>
+			<category>Autosofts</category>
+			<rating>2</rating>
+			<minrating>2</minrating>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>R5</source>
+			<page>127</page>
+		</gear>
+		<gear>
+			<id>87d24cff-e63b-4f73-a115-7aa5e29ea467</id>
+			<name>Skill Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>R5</source>
+			<page>127</page>
+		</gear>
+		<gear>
+			<id>a3137d6f-6b02-4dd5-912f-554d07f4adee</id>
+			<name>Skill Autosoft (Restricted)</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selectskill />
+			</bonus>
+			<avail>(Rating * 2)R</avail>
+			<cost>Rating * 500</cost>
+			<source>R5</source>
+			<page>127</page>
+		</gear>
+		<gear>
+			<id>3f653543-fe65-433e-821d-1188016c0686</id>
+			<name>[Weapon] Melee Autosoft</name>
+			<category>Autosofts</category>
+			<rating>6</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 500</cost>
+			<source>R5</source>
+			<page>127</page>
+		</gear>
+		<!-- End Region -->
 		<!-- Region Software Tweaks -->
 		<gear>
 			<id>40c2e56e-ec66-45a6-b1aa-65372d939f61</id>

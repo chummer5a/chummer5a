@@ -283,6 +283,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Selection Forms\frmSelectAIProgram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selection Forms\frmSelectAIProgram.Designer.cs">
+      <DependentUpon>frmSelectAIProgram.cs</DependentUpon>
+    </Compile>
     <Compile Include="Selection Forms\frmSelectSkillSpec.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -837,6 +843,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selection Forms\frmSelectAIProgram.resx">
+      <DependentUpon>frmSelectAIProgram.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>

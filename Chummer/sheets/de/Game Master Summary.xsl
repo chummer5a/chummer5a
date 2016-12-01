@@ -450,15 +450,15 @@
 										<xsl:if test="position() != last()">, </xsl:if>
 									</xsl:for-each></p>
 								</xsl:if>
-								
-								<xsl:if test="techprograms/techprogram">
+
+                <xsl:if test="complexforms/complexform">
 									<p><strong>Komplexe Formen: </strong>
-									<xsl:for-each select="techprograms/techprogram">
+									<xsl:for-each select="complexforms/complexform">
 										<xsl:sort select="name" />
 										<xsl:value-of select="name" />
 										<xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-										<xsl:text> </xsl:text><xsl:value-of select="rating" />
-										<xsl:if test="programoptions/programoption">
+										<xsl:text> </xsl:text>(<xsl:value-of select="target" />, <xsl:value-of select="duration" />, <xsl:value-of select="fv" />)
+                    <xsl:if test="programoptions/programoption">
 											(<xsl:for-each select="programoptions/programoption">
 												<xsl:sort select="name" />
 												<xsl:value-of select="name" />
@@ -469,6 +469,31 @@
 										<xsl:if test="position() != last()">, </xsl:if>
 									</xsl:for-each></p>
 								</xsl:if>
+
+                <xsl:if test="aiprograms/aiprogram">
+                  <p>
+                    <strong>KI Programme und fortgeschrittene Programme: </strong>
+                    <xsl:for-each select="aiprograms/aiprogram">
+                      <xsl:sort select="name" />
+                      <xsl:value-of select="name" />
+                      <xsl:if test="extra != ''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
+                      <xsl:if test="programoptions/programoption">
+                        (<xsl:for-each select="programoptions/programoption">
+                          <xsl:sort select="name" />
+                          <xsl:value-of select="name" />
+                          <xsl:if test="rating &gt; 0">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="rating" />
+                          </xsl:if>
+                          <xsl:if test="position() != last()">, </xsl:if>
+                        </xsl:for-each>)
+                      </xsl:if>
+                      <xsl:if test="position() != last()">, </xsl:if>
+                    </xsl:for-each>
+                  </p>
+                </xsl:if>
 								
 								<xsl:if test="cyberwares/cyberware">
 									<p><strong>Cyberware/Bioware: </strong>

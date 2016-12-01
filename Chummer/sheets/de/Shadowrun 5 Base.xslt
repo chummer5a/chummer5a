@@ -1296,6 +1296,40 @@
 				</table>
 				</div>
 					</xsl:if>
+
+        <xsl:if test="aiprograms/aiprogram">
+          <div class="block" id="AIProgramBlock">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td>
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0"
+										class="tableborder">
+                    <tr>
+                      <td width="40%">
+                        <strong>Bezeichnung</strong>
+                      </td>
+                      <td width="40%">
+                        <strong>Braucht Programm</strong>
+                      </td>
+                      <td width="20%" style="text-align:center;"> </td>
+                    </tr>
+                    <xsl:call-template name="aiprograms"/>
+                    <tr>
+                      <td class="rowsummary" colspan="3">
+                        KI Programme und fortgeschrittene Programme
+                        <span class="rowsummarybutton" onClick="showhide(this,'ProgramBlock');" colspan="1">Zeigen: Ja</span>
+                        <span class="rowsummarybutton" onClick="zalomit(this,'ProgramBlock');" colspan="1">Seitenumbruch: Nein</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td class="hseparator"/>
+              </tr>
+            </table>
+          </div>
+        </xsl:if>
 					
 					<xsl:if test="martialarts/martialart">
 				<div class="block" id="MartialArtsBlock">
@@ -2895,6 +2929,58 @@
 								</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
+
+  <xsl:template name="aiprograms">
+    <xsl:for-each select="aiprograms/aiprogram">
+      <xsl:sort select="name"/>
+      <tr>
+        <xsl:if test="position() mod 2 != 1">
+          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+        </xsl:if>
+        <td width="40%">
+          <xsl:value-of select="name"/>
+          <xsl:if test="extra != ''">
+            (<xsl:value-of select="extra"/>)
+          </xsl:if>
+          <xsl:if test="programoptions/programoption">
+            (<xsl:for-each
+             select="programoptions/programoption">
+              <xsl:sort select="name"/>
+              <xsl:value-of select="name"/>
+              <xsl:if test="rating &gt; 0">
+                <xsl:text> </xsl:text>
+                <xsl:value-of
+									select="rating"/>
+              </xsl:if>
+              <xsl:if test="position() != last()">; </xsl:if>
+            </xsl:for-each>)
+          </xsl:if>
+        </td>
+        <td width="40%">
+          <xsl:if test="requiresprogram != ''">
+            <xsl:value-of select="requiresprogram"/>
+          </xsl:if>
+        </td>
+        <td width="20%" style="text-align:center;">
+          <xsl:value-of select="source"/>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="page"/>
+        </td>
+      </tr>
+      <xsl:if test="notes != ''">
+        <tr>
+          <xsl:if test="position() mod 2 != 1">
+            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+          </xsl:if>
+          <td colspan="4" class="notesrow">
+            <xsl:call-template name="PreserveLineBreaks">
+              <xsl:with-param name="text" select="notes"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
 	
 	<xsl:template name="martialarts">
 		<xsl:for-each select="martialarts/martialart">

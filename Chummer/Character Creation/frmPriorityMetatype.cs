@@ -61,7 +61,17 @@ namespace Chummer
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
 		}
 
-		private void objCharacter_InitiationTabEnabledChanged(object sender)
+        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender)
+        {
+            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
+        }
+
+        private void objCharacter_CyberwareTabDisabledChanged(object sender)
+        {
+            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
+        }
+
+        private void objCharacter_InitiationTabEnabledChanged(object sender)
 		{
 			// Do nothing. This is just an Event trap so an exception doesn't get thrown.
 		}
@@ -222,7 +232,9 @@ namespace Chummer
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
-			_objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
+            _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
+            _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
 		}
 
@@ -235,7 +247,9 @@ namespace Chummer
             _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
-			_objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
+            _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
+            _objCharacter.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
+            _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
 		}
 
@@ -257,18 +271,18 @@ namespace Chummer
             foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
             {
                 string strXPath = "";
-				strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
-							  "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
-				XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+                strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+                              "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
+                XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
 
-				if (objItems != null && objItems.Count == 0)
-				{
-					strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
-							   "\" and not (gameplayoption)]";
-					objItems = objXmlDocumentPriority.SelectNodes(strXPath);
-				}
+                if (objItems != null && objItems.Count == 0)
+                {
+                    strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+                               "\" and not (gameplayoption)]";
+                    objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+                }
 
-				if (objItems.Count > 0)
+                if (objItems.Count > 0)
                 {
                     List<ListItem> lstItems = new List<ListItem>();
                     // lstItems.Add(new ListItem());
@@ -284,38 +298,38 @@ namespace Chummer
                     switch (objXmlPriorityCategory.InnerText)
                     {
                         case "Heritage":
-			                cboHeritage.ValueMember = "Value";
-			                cboHeritage.DisplayMember = "Name";
-			                cboHeritage.DataSource = lstItems;
+                            cboHeritage.ValueMember = "Value";
+                            cboHeritage.DisplayMember = "Name";
+                            cboHeritage.DataSource = lstItems;
                             break;
                         case "Talent":
                             cboTalent.ValueMember = "Value";
-							cboTalent.DisplayMember = "Name";
+                            cboTalent.DisplayMember = "Name";
                             cboTalent.DataSource = lstItems;
                             break;
                         case "Attributes":
                             cboAttributes.ValueMember = "Value";
-							cboAttributes.DisplayMember = "Name";
+                            cboAttributes.DisplayMember = "Name";
                             cboAttributes.DataSource = lstItems;
                             break;
                         case "Skills":
                             cboSkills.ValueMember = "Value";
-							cboSkills.DisplayMember = "Name";
+                            cboSkills.DisplayMember = "Name";
                             cboSkills.DataSource = lstItems;
                             break;
                         case "Resources":
                             cboResources.ValueMember = "Value";
-							cboResources.DisplayMember = "Name";
+                            cboResources.DisplayMember = "Name";
                             cboResources.DataSource = lstItems;
                             break;
                         default:
                             break;
                     }
                 }
-			}
+            }
 
-			// Load Metatypes
-			LoadMetatypes();
+            // Load Metatypes
+            LoadMetatypes();
 			PopulateTalents();
 
 			// Set Priority defaults.
@@ -385,7 +399,8 @@ namespace Chummer
 		        lstMetatypes.SelectedValue = strMetatype;
 		        cboMetavariant.SelectedValue = strMetavariant;
 	        }
-	        PopulateTalents();
+            PopulateTalents();
+            
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.Instance.GetString("Tip_Metatype_PossessionTradition"));
@@ -531,6 +546,7 @@ namespace Chummer
 				cboMetavariant.DisplayMember = "Name";
 				cboMetavariant.DataSource = lstMetavariants;
 			}
+            PopulateTalents();
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
 				SumtoTen();
@@ -663,8 +679,6 @@ namespace Chummer
 			XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
             XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
 
-            
-
 			if (cboMetavariant.SelectedValue.ToString() != "None")
 			{
                 XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
@@ -769,7 +783,9 @@ namespace Chummer
 					}
 					strQualities += "\n";
 				}
-				lblMetavariantQualities.Text = strQualities;
+                if (strQualities == "")
+                    strQualities = LanguageManager.Instance.GetString("String_None");
+                lblMetavariantQualities.Text = strQualities;
 			}
 			else
 			{
@@ -789,12 +805,75 @@ namespace Chummer
                     lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["wilmin"].InnerText, objXmlMetatype["wilmax"].InnerText, objXmlMetatype["wilaug"].InnerText);
                     lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["inimin"].InnerText, objXmlMetatype["inimax"].InnerText, objXmlMetatype["iniaug"].InnerText);
                     lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
-                    lblMetavariantQualities.Text = "None";
+
+                    string strQualities = "";
+                    // Build a list of the Metavariant's Positive Qualities.
+                    foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                    {
+                        try
+                        {
+                            if (GlobalOptions.Instance.Language != "en-us")
+                            {
+                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                                if (objQuality["translate"] != null)
+                                    strQualities += objQuality["translate"].InnerText;
+                                else
+                                    strQualities += objXmlQuality.InnerText;
+
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+                            }
+                            else
+                            {
+                                strQualities += objXmlQuality.InnerText;
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        strQualities += "\n";
+                    }
+                    // Build a list of the Metavariant's Negative Qualities.
+                    foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                    {
+                        try
+                        {
+                            if (GlobalOptions.Instance.Language != "en-us")
+                            {
+                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                                if (objQuality["translate"] != null)
+                                    strQualities += objQuality["translate"].InnerText;
+                                else
+                                    strQualities += objXmlQuality.InnerText;
+
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+                            }
+                            else
+                            {
+                                strQualities += objXmlQuality.InnerText;
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        strQualities += "\n";
+                    }
+                    if (strQualities == "")
+                        strQualities = LanguageManager.Instance.GetString("String_None");
+
+                    lblMetavariantQualities.Text = strQualities;
+
 					lblMetavariantBP.Text = objXmlMetatypeList[0]["karma"].InnerText.ToString(); ;
 	                lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
                 }
 			}
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            PopulateTalents();
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
 				SumtoTen();
 			}
@@ -876,7 +955,7 @@ namespace Chummer
 			}
 			_blnInitializing = false;
 
-			string strMetatype = "";
+            string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
@@ -901,7 +980,7 @@ namespace Chummer
 			}
 			_blnInitializing = false;
 
-			string strMetatype = "";
+            string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
@@ -926,7 +1005,7 @@ namespace Chummer
 			}
 			_blnInitializing = false;
 
-			string strMetatype = "";
+            string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
@@ -972,6 +1051,8 @@ namespace Chummer
                 return;
             }
 
+            bool boolHalveAttributePriorityPoints = false;
+
             if (lstMetatypes.Text != "")
             {
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
@@ -1003,6 +1084,8 @@ namespace Chummer
                     _objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetavariant["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgaug"].InnerText, intForce, 0));
                     _objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetavariant["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essaug"].InnerText, intForce, 0));
                     _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetavariant["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depaug"].InnerText, intForce, 0));
+                    if (objXmlMetavariant["halveattributepoints"] != null)
+                        boolHalveAttributePriorityPoints = true;
                 }
                 else if (_strXmlFile != "critters.xml" || lstMetatypes.SelectedValue.ToString() == "Ally Spirit")
 				{
@@ -1020,6 +1103,8 @@ namespace Chummer
 					_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgaug"].InnerText, intForce, 0));
 					_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
                     _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
+                    if (objXmlMetatype["halveattributepoints"] != null)
+                        boolHalveAttributePriorityPoints = true;
                 }
 				else
 				{
@@ -1046,6 +1131,8 @@ namespace Chummer
 					_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMaxModifier));
 					_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
                     _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMaxModifier));
+                    if (objXmlMetatype["halveattributepoints"] != null)
+                        boolHalveAttributePriorityPoints = true;
                 }
 
 				// If we're working with a Critter, set the Attributes to their default values.
@@ -1065,18 +1152,6 @@ namespace Chummer
 					_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
                     _objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0));
                 }
-
-				// Sprites can never have Physical Attributes
-				if (_objCharacter.DEPEnabled || lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
-				{
-					_objCharacter.BOD.AssignLimits("0", "0", "0");
-					_objCharacter.AGI.AssignLimits("0", "0", "0");
-					_objCharacter.REA.AssignLimits("0", "0", "0");
-					_objCharacter.STR.AssignLimits("0", "0", "0");
-                    _objCharacter.MAG.AssignLimits("0", "0", "0");
-                    _objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
-					_objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
-				}
 				
 				// If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
 				if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
@@ -1463,8 +1538,25 @@ namespace Chummer
                     _objCharacter.ComplexForms.Add(objProgram);
                 }
 
-				// Add any Gear the Critter comes with (typically Programs for A.I.s)
-				XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                // Add any Advanced Programs the Critter comes with (typically Sprites)
+                XmlDocument objXmlAIProgramDocument = XmlManager.Instance.Load("programs.xml");
+                foreach (XmlNode objXmlAIProgram in objXmlCritter.SelectNodes("programs/program"))
+                {
+                    string strForceValue = "";
+                    if (objXmlAIProgram.Attributes["select"] != null)
+                        strForceValue = objXmlAIProgram.Attributes["select"].InnerText;
+                    XmlNode objXmlProgram = objXmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + objXmlAIProgram.InnerText + "\"]");
+                    if (objXmlProgram != null)
+                    {
+                        TreeNode objNode = new TreeNode();
+                        AIProgram objProgram = new AIProgram(_objCharacter);
+                        objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"]?.InnerText == "Advanced Programs", strForceValue);
+                        _objCharacter.AIPrograms.Add(objProgram);
+                    }
+                }
+
+                // Add any Gear the Critter comes with (typically Programs for A.I.s)
+                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
 				foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
 				{
 					int intRating = 0;
@@ -1573,7 +1665,8 @@ namespace Chummer
                 if (objXmlTalentList[0]["depth"] != null)
                 {
                     _objCharacter.DEP.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["depth"].InnerText);
-                    _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentList[0]["cfp"].InnerText);
+                    _objCharacter.AINormalProgramLimit = objXmlTalentList[0]["ainormalprogramlimit"] != null ? Convert.ToInt32(objXmlTalentList[0]["ainormalprogramlimit"].InnerText): 0;
+                    _objCharacter.AIAdvancedProgramLimit = objXmlTalentList[0]["aiadvancedprogramlimit"] != null ? Convert.ToInt32(objXmlTalentList[0]["aiadvancedprogramlimit"].InnerText) : 0;
                 }
 
                 if (objXmlTalentList[0]["maxdepth"] != null)
@@ -1606,6 +1699,11 @@ namespace Chummer
                 {
                     _objCharacter.Attributes = Convert.ToInt32(objXmlPriorityList[0]["attributes"].InnerText);
                     _objCharacter.TotalAttributes = _objCharacter.Attributes;
+                    if (boolHalveAttributePriorityPoints)
+                    {
+                        _objCharacter.Attributes /= 2;
+                        _objCharacter.TotalAttributes /= 2;
+                    }
                 }
 
                 // Set Skills and Skill Groups
@@ -1627,8 +1725,20 @@ namespace Chummer
                     }
                 }
 
+                // Sprites can never have Physical Attributes
+                if (_objCharacter.DEPEnabled || lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
+                {
+                    _objCharacter.BOD.AssignLimits("0", "0", "0");
+                    _objCharacter.AGI.AssignLimits("0", "0", "0");
+                    _objCharacter.REA.AssignLimits("0", "0", "0");
+                    _objCharacter.STR.AssignLimits("0", "0", "0");
+                    _objCharacter.MAG.AssignLimits("0", "0", "0");
+                    _objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
+                    _objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
+                }
+
                 // Load the Priority information.
-				XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
+                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
 				XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
 				string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
@@ -1779,7 +1889,97 @@ namespace Chummer
             XmlNodeList objXmlPriorityTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent");
             foreach (XmlNode objXmlPriorityTalent in objXmlPriorityTalentList)
             {
-				ListItem objItem = new ListItem();
+                if (objXmlPriorityTalent.InnerXml.Contains("forbidden"))
+                {
+                    bool blnRequirementForbidden = false;
+
+                    // Loop through the oneof requirements.
+                    XmlNodeList objXmlForbiddenList = objXmlPriorityTalent.SelectNodes("forbidden/oneof");
+                    foreach (XmlNode objXmlOneOf in objXmlForbiddenList)
+                    {
+                        XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
+
+                        foreach (XmlNode objXmlForbidden in objXmlOneOfList)
+                        {
+                            if (objXmlForbidden.Name == "metatype")
+                            {
+                                // Check the Metatype restriction.
+                                if (objXmlForbidden.InnerText == lstMetatypes.SelectedValue?.ToString())
+                                {
+                                    blnRequirementForbidden = true;
+                                    goto EndForbiddenLoop;
+                                }
+                            }
+                            else if (objXmlForbidden.Name == "metatypecategory")
+                            {
+                                // Check the Metatype Category restriction.
+                                if (objXmlForbidden.InnerText == cboCategory.SelectedValue?.ToString())
+                                {
+                                    blnRequirementForbidden = true;
+                                    goto EndForbiddenLoop;
+                                }
+                            }
+                            else if (objXmlForbidden.Name == "metavariant")
+                            {
+                                // Check the Metavariant restriction.
+                                if (objXmlForbidden.InnerText == cboMetavariant.SelectedValue?.ToString())
+                                {
+                                    blnRequirementForbidden = true;
+                                    goto EndForbiddenLoop;
+                                }
+                            }
+                        }
+                    }
+                EndForbiddenLoop:;
+                    if (blnRequirementForbidden)
+                        continue;
+                }
+                if (objXmlPriorityTalent.InnerXml.Contains("required"))
+                {
+                    bool blnRequirementMet = false;
+
+                    // Loop through the oneof requirements.
+                    XmlNodeList objXmlForbiddenList = objXmlPriorityTalent.SelectNodes("required/oneof");
+                    foreach (XmlNode objXmlOneOf in objXmlForbiddenList)
+                    {
+                        XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
+
+                        foreach (XmlNode objXmlRequired in objXmlOneOfList)
+                        {
+                            if (objXmlRequired.Name == "metatype")
+                            {
+                                // Check the Metatype restriction.
+                                if (objXmlRequired.InnerText == lstMetatypes.SelectedValue?.ToString())
+                                {
+                                    blnRequirementMet = true;
+                                    goto EndRequiredLoop;
+                                }
+                            }
+                            else if (objXmlRequired.Name == "metatypecategory")
+                            {
+                                // Check the Metatype Category restriction.
+                                if (objXmlRequired.InnerText == cboCategory.SelectedValue?.ToString())
+                                {
+                                    blnRequirementMet = true;
+                                    goto EndRequiredLoop;
+                                }
+                            }
+                            else if (objXmlRequired.Name == "metavariant")
+                            {
+                                // Check the Metavariant restriction.
+                                if (objXmlRequired.InnerText == cboMetavariant.SelectedValue?.ToString())
+                                {
+                                    blnRequirementMet = true;
+                                    goto EndRequiredLoop;
+                                }
+                            }
+                        }
+                    }
+                EndRequiredLoop:;
+                    if (!blnRequirementMet)
+                        continue;
+                }
+                ListItem objItem = new ListItem();
 				objItem.Value = objXmlPriorityTalent["value"].InnerText;
 				objItem.Name = objXmlPriorityTalent["translate"]?.InnerText ?? objXmlPriorityTalent["name"].InnerText;
 				lstTalent.Add(objItem);

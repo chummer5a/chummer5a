@@ -2912,7 +2912,7 @@
 			<sensor>3</sensor>
 			<modslots>0</modslots>
 			<gears>
-				<gear select="Targeting (Melee) Autosoft">Autosoft</gear>
+				<gear select="Melee Bite">[Weapon] Melee Autosoft</gear>
 				<gear rating="3" maxrating="3">Sensor Array</gear>
 			</gears>
 			<avail>12R</avail>
@@ -2956,7 +2956,7 @@
 			<seats>0</seats>
 			<sensor>3</sensor>
 			<gears>
-				<gear rating="2" select="Clearsight Autosoft">Autosoft</gear>
+				<gear rating="2">Clearsight Autosoft</gear>
 				<gear rating="3" maxrating="3">Sensor Array</gear>
 			</gears>
 			<avail>4</avail>
@@ -2977,7 +2977,7 @@
 			<seats>0</seats>
 			<sensor>3</sensor>
 			<gears>
-				<gear rating="4" select="Clearsight Autosoft">Autosoft</gear>
+				<gear rating="4">Clearsight Autosoft</gear>
 				<gear rating="3" maxrating="3">Sensor Array</gear>
 			</gears>
 			<avail>4</avail>
@@ -3019,7 +3019,7 @@
 			<sensor>2</sensor>
 			<modslots>0</modslots>
 			<gears>
-				<gear rating="2" select="Targeting Autosoft">Autosoft</gear>
+				<gear rating="2" select="Colt Cobra TZ-120">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3093,7 +3093,7 @@
 			<modslots>1</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
-				<gear rating="2" select="Automotive Mechanic">Autosoft</gear>
+				<gear rating="2" select="Automotive Mechanic">Skill Autosoft</gear>
 				<gear select="Automotive Mechanic">Tool Kit</gear>
 			</gears>
 			<mods>
@@ -3216,7 +3216,7 @@
 			<modslots>0</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
-				<gear rating="3" select="Targeting">Autosoft</gear>
+				<gear rating="3">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
 			</gears>
 			<mods>
@@ -3413,7 +3413,7 @@
 			<sensor>4</sensor>
 			<modslots>0</modslots>
 			<gears>
-				<gear rating="3" select="Electronic Warfare">Autosoft</gear>
+				<gear rating="3">Electronic Warfare Autosoft</gear>
 				<gear rating="4">Jammer, Directional</gear>
 				<gear rating="6">Jammer, Area</gear>
 				<gear rating="4" maxrating="4">Sensor Array</gear>
@@ -3551,7 +3551,7 @@
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
-				<gear rating="2" select="Knowledge">Autosoft</gear>
+				<gear rating="2" select="Knowledge">Skill Autosoft</gear>
 			</gears>
 			<mods>
 				<name>Immobile (Drone)</name>
@@ -3713,13 +3713,19 @@
 			<modslots>0</modslots>
 			<gears>
 				<gear rating="4" maxrating="4">Sensor Array</gear>
-				<gear rating="4" select="Targeting">Autosoft</gear>
-				<gear rating="4" select="Clearsight">Autosoft</gear>
-				<gear rating="4" select="Legal Codes">Autosoft</gear>
+				<gear rating="4" select="Yamaha Pulsar">[Weapon] Targeting Autosoft</gear>
+				<gear rating="4">Clearsight Autosoft</gear>
+				<gear rating="4" select="Legal Codes">Skill Autosoft</gear>
+				<gear costfor="4">Ammo: Taser Dart</gear>
 			</gears>
 			<mods>
 				<name>Mini Weapon Mount (Drone)</name>
 			</mods>
+			<weapons>
+				<weapon>
+					<name>Yamaha Pulsar</name>
+				</weapon>
+			</weapons>
 			<avail>12R</avail>
 			<cost>20000</cost>
 			<source>R5</source>
@@ -3760,11 +3766,19 @@
 			<sensor>4</sensor>
 			<gears>
 				<gear rating="4" maxrating="5">Sensor Array</gear>
-				<gear rating="3" select="Targeting">Autosoft</gear>
+				<gear rating="3">[Weapon] Targeting Autosoft</gear>
 			</gears>
 			<mods>
 				<name>Standard Weapon Mount (Drone)</name>
 			</mods>
+			<weapons>
+				<weapon>
+					<name>Riot Shield</name>
+				</weapon>
+				<weapon>
+					<name>Riot Shield</name>
+				</weapon>
+			</weapons>
 			<avail>2</avail>
 			<cost>4000</cost>
 			<source>R5</source>
@@ -3911,7 +3925,7 @@
 			<gears>
 				<gear rating="6">Jammer, Area</gear>
 				<gear rating="6">Jammer, Directional</gear>
-				<gear rating="4" select="Targeting">Autosoft</gear>
+				<gear rating="4">[Weapon] Targeting Autosoft</gear>
 				<gear rating="4" maxrating="5">Sensor Array</gear>
 			</gears>
 			<mods>
@@ -3936,7 +3950,7 @@
 			<sensor>3</sensor>
 			<modslots>0</modslots>
 			<gears>
-				<gear rating="5" select="Targeting">Autosoft</gear>
+				<gear rating="5">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
 				<gear rating="3" maxrating="6">Sensor Array</gear>
 			</gears>
@@ -3962,7 +3976,7 @@
 			<sensor>3</sensor>
 			<modslots>0</modslots>
 			<gears>
-				<gear rating="5" select="Targeting">Autosoft</gear>
+				<gear rating="5">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
 				<gear rating="3" maxrating="6">Sensor Array</gear>
 			</gears>
@@ -3988,11 +4002,11 @@
 			<sensor>3</sensor>
 			<modslots>0</modslots>
 			<gears>
-				<gear rating="5" select="Targeting">Autosoft</gear>
+				<gear rating="5">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
 				<gear rating="6">Jammer, Area</gear>
 				<gear rating="6">Jammer, Directional</gear>
-				<gear rating="5" select="Electronic Warfare">Autosoft</gear>
+				<gear rating="5">Electronic Warfare Autosoft</gear>
 				<gear rating="3" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
@@ -4017,7 +4031,7 @@
 			<sensor>2</sensor>
 			<modslots>2</modslots>
 			<gears>
-				<gear rating="2" select="Road Engineering">Autosoft</gear>
+				<gear rating="2" select="Road Engineering">Skill Autosoft</gear>
 				<gear rating="2" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
@@ -4092,7 +4106,7 @@
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="6">Sensor Array</gear>
-				<gear rating="2" select="Instruction">Autosoft</gear>
+				<gear rating="2" select="Instruction">Skill Autosoft</gear>
 			</gears>
 			<mods>
 				<name>Drone Arm</name>
@@ -4119,7 +4133,7 @@
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="6">Sensor Array</gear>
-				<gear rating="2" select="Industrial Mechanic">Autosoft</gear>
+				<gear rating="2" select="Industrial Mechanic">Skill Autosoft</gear>
 			</gears>
 			<mods>
 				<name>Drone Arm</name>
@@ -4200,7 +4214,7 @@
 			<sensor>3</sensor>
 			<gears>
 				<gear rating="3" maxrating="6">Sensor Array</gear>
-				<gear rating="3" select="Cooking">Autosoft</gear>
+				<gear rating="3" select="Cooking">Skill Autosoft</gear>
 			</gears>
 			<mods>
 				<name>Synthetic Drone Arm</name>
@@ -5546,7 +5560,7 @@
 			<sensor>3</sensor>
 			<gears>
 				<gear rating="3" maxrating="4">Sensor Array</gear>
-				<gear rating="3" select="Stoner-Ares M202 Targeting Autosoft">Autosoft</gear>
+				<gear rating="3" select="Stoner-Ares M202">[Weapon] Targeting Autosoft</gear>
 			</gears>
 			<mods>
 				<name>Heavy Weapon Mount</name>

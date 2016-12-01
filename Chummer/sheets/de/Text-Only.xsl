@@ -230,12 +230,18 @@
 					<xsl:call-template name="powers" />
 				</xsl:if>
 				
-				<xsl:if test="techprograms/techprogram">
+				<xsl:if test="complexforms/complexform">
 					<br />
 					<br />== Komplexe Formen ==
 					<br />(Tradition: <xsl:value-of select="stream" />, Schwundwiderstand gegen <xsl:value-of select="drain" />)
 					<xsl:call-template name="complexforms" />
 				</xsl:if>
+
+        <xsl:if test="aiprograms/aiprogram">
+          <br />
+          <br />== KI Programme und fortgeschrittene Programme ==
+          <xsl:call-template name="aiprograms" />
+        </xsl:if>
 				
 				<xsl:if test="critterpowers/critterpower">
 					<br />
@@ -519,7 +525,7 @@
 	</xsl:template>
 	
 	<xsl:template name="complexforms">
-		<xsl:for-each select="techprograms/techprogram">
+		<xsl:for-each select="complexforms/complexform">
 			<xsl:sort select="name" />
 			<br /><xsl:value-of select="name" />
 				<xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
@@ -531,9 +537,38 @@
 						<xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
 						<xsl:if test="position() != last()">, </xsl:if>
 					</xsl:for-each>)
-				</xsl:if>
+				</xsl:if> Ziel: <xsl:value-of select="target"/>,
+      Dauer: <xsl:value-of select="duration"/>,
+      Schwund: <xsl:value-of select="fv"/>
 		</xsl:for-each>
 	</xsl:template>
+
+  <xsl:template name="aiprograms">
+    <xsl:for-each select="aiprograms/aiprogram">
+      <xsl:sort select="name"/>
+      <br/>
+      <xsl:value-of select="name"/>
+      <xsl:if test="extra != ''">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="requiresprogram != ''">
+        Benötigt: <xsl:value-of select="requiresprogram"/>
+      </xsl:if>
+      <xsl:if test="programoptions/programoption">
+        (<xsl:for-each
+                  select="programoptions/programoption">
+          <xsl:sort select="name"/>
+          <xsl:value-of select="name"/>
+          <xsl:if test="rating &gt; 0">
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="rating"
+                        />
+          </xsl:if>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>)
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
 	
 	<xsl:template name="lifestyle">
 		<xsl:for-each select="lifestyles/lifestyle">

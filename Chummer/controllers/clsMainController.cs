@@ -26,8 +26,8 @@ using System.Xml;
 
 namespace Chummer
 {
-	public class MainController
-	{
+	public class MainController : CharacterShared
+    {
 		private Character _objCharacter;
 		private CommonFunctions _objFunctions;
 		private ImprovementManager _objImprovementManager;
@@ -696,10 +696,158 @@ namespace Chummer
             _objCharacter.ComplexForms.Clear();
 		}
 
-		/// <summary>
-		/// Clear all Critter tab elements from the character.
+        /// <summary>
+		/// Clear all Advanced Programs tab elements from the character.
 		/// </summary>
-		public void ClearCritterTab(TreeView treCritterPowers)
+		public void ClearAdvancedProgramsTab(TreeView treAIPrograms)
+        {
+            // Run through all of the Advanced Programs and remove their Improvements.
+            foreach (AIProgram objProgram in _objCharacter.AIPrograms)
+                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+
+            // Clear the list of Advanced Programs.
+            foreach (TreeNode objNode in treAIPrograms.Nodes)
+                objNode.Nodes.Clear();
+
+            _objCharacter.AIPrograms.Clear();
+        }
+
+        /// <summary>
+		/// Clear all Cyberware tab elements from the character.
+		/// </summary>
+		public void ClearCyberwareTab(TreeView treCyberware, TreeView treWeapons, TreeView treVehicles, TreeView treQualities)
+        {
+            XmlDocument objXmlDocument = new XmlDocument();
+            // Run through all of the Advanced Programs and remove their Improvements.
+            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+            {
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+                }
+                else
+                {
+                    objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+                }
+                // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
+                foreach (Cyberware objChildCyberware in objCyberware.Children)
+                {
+                    _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objChildCyberware.InternalId);
+                    if (objChildCyberware.WeaponID != Guid.Empty.ToString())
+                    {
+                        // Remove the Weapon from the TreeView.
+                        TreeNode objRemoveNode = new TreeNode();
+                        foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
+                        {
+                            if (objWeaponNode.Tag.ToString() == objChildCyberware.WeaponID)
+                                objRemoveNode = objWeaponNode;
+                        }
+                        treWeapons.Nodes.Remove(objRemoveNode);
+
+                        // Remove the Weapon from the Character.
+                        Weapon objRemoveWeapon = new Weapon(_objCharacter);
+                        foreach (Weapon objWeapon in _objCharacter.Weapons)
+                        {
+                            if (objWeapon.InternalId == objChildCyberware.WeaponID)
+                                objRemoveWeapon = objWeapon;
+                        }
+                        _objCharacter.Weapons.Remove(objRemoveWeapon);
+
+                        // Remove the Vehicle from the Character.
+                        Vehicle objRemoveCyberVehicle = new Vehicle(_objCharacter);
+                        foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                        {
+                            if (objVehicle.InternalId == objChildCyberware.VehicleID)
+                                objRemoveCyberVehicle = objVehicle;
+                        }
+                        _objCharacter.Vehicles.Remove(objRemoveCyberVehicle);
+                    }
+                }
+                // Remove the Children.
+                objCyberware.Children.Clear();
+
+                // Remove the Cyberweapon created by the Cyberware if applicable.
+                if (objCyberware.WeaponID != Guid.Empty.ToString())
+                {
+                    // Remove the Weapon from the TreeView.
+                    TreeNode objRemoveNode = new TreeNode();
+                    foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
+                    {
+                        if (objWeaponNode.Tag.ToString() == objCyberware.WeaponID)
+                            objRemoveNode = objWeaponNode;
+                    }
+                    treWeapons.Nodes.Remove(objRemoveNode);
+
+                    // Remove the Weapon from the Character.
+                    Weapon objRemoveWeapon = new Weapon(_objCharacter);
+                    foreach (Weapon objWeapon in _objCharacter.Weapons)
+                    {
+                        if (objWeapon.InternalId == objCyberware.WeaponID)
+                            objRemoveWeapon = objWeapon;
+                    }
+                    _objCharacter.Weapons.Remove(objRemoveWeapon);
+                }
+
+                // Remove the Cybervehicle created by the Cyberware if applicable.
+                if (objCyberware.VehicleID != Guid.Empty.ToString())
+                {
+                    // Remove the Vehicle from the TreeView.
+                    TreeNode objRemoveVehicleNode = new TreeNode();
+                    foreach (TreeNode objVehicleNode in treVehicles.Nodes[0].Nodes)
+                    {
+                        if (objVehicleNode.Tag.ToString() == objCyberware.VehicleID)
+                            objRemoveVehicleNode = objVehicleNode;
+                    }
+                    treVehicles.Nodes.Remove(objRemoveVehicleNode);
+
+                    // Remove the Vehicle from the Character.
+                    Vehicle objRemoveVehicle = new Vehicle(_objCharacter);
+                    foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                    {
+                        if (objVehicle.InternalId == objCyberware.VehicleID)
+                            objRemoveVehicle = objVehicle;
+                    }
+                    _objCharacter.Vehicles.Remove(objRemoveVehicle);
+                }
+
+                // Remove any Gear attached to the Cyberware.
+                foreach (Gear objGear in objCyberware.Gear)
+                { _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager); }
+
+
+                // Open the Cyberware XML file and locate the selected piece.
+                XmlNode objXmlCyberware;
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
+                }
+                else
+                {
+                    objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
+                }
+
+                // Fix for legacy characters with old addqualities improvements. 
+                if (objXmlCyberware["addqualities"] != null)
+                {
+                    RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
+                }
+                
+                // Remove any Improvements created by the piece of Cyberware.
+                _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
+            }
+            _objCharacter.Cyberware.Clear();
+
+            // Clear the list of Advanced Programs.
+            // Remove the item from the TreeView.
+            foreach (TreeNode objNode in treCyberware.Nodes)
+                objNode.Nodes.Clear();
+            treCyberware.Nodes.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Critter tab elements from the character.
+        /// </summary>
+        public void ClearCritterTab(TreeView treCritterPowers)
 		{
 			// Run through all of the Critter Powers and remove their Improvements.
 			foreach (CritterPower objPower in _objCharacter.CritterPowers)
