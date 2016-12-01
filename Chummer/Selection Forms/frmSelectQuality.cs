@@ -374,11 +374,10 @@ namespace Chummer
 			}
 			else
 			{
-				XmlDocument objXmlMetatypeDocument = new XmlDocument();
-				if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-					objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
+				XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
+                XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
 
-				string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
+                string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
 				if (chkMetagenetic.Checked)
 				{
 					strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
@@ -408,34 +407,31 @@ namespace Chummer
                     }
                 }
 
+                bool blnNeedQualityWhitelist = false;
+                XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                if (objXmlMetatype?.SelectNodes("qualityrestriction")?.Count > 0)
+                    blnNeedQualityWhitelist = true;
+                else
+                {
+                    objXmlMetatype = objXmlCrittersDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                    if (objXmlMetatype?.SelectNodes("qualityrestriction")?.Count > 0)
+                        blnNeedQualityWhitelist = true;
+                }
+                
+
                 foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
 				{
 					if (objXmlQuality["name"].InnerText.StartsWith("Infected"))
 					{
 						//There was something I was going to do with this, but I can't remember what it was.
 					}
-					if ((_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && chkLimitList.Checked)
-					{
-						XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-						if (objXmlMetatype.SelectSingleNode("qualityrestriction/" + cboCategory.SelectedValue.ToString().ToLower() + "/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
-						{
-                            if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                            {
-                                if (objXmlQuality["hide"] == null)
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objXmlQuality["name"].InnerText;
-                                    if (objXmlQuality["translate"] != null)
-                                        objItem.Name = objXmlQuality["translate"].InnerText;
-                                    else
-                                        objItem.Name = objXmlQuality["name"].InnerText;
-
-                                    lstQuality.Add(objItem);
-                                }
-                            }
-						}
-					}
-					else
+                    bool blnQualityAllowed = !blnNeedQualityWhitelist;
+                    if (blnNeedQualityWhitelist)
+                    {
+                        if (objXmlMetatype.SelectSingleNode("qualityrestriction/" + cboCategory.SelectedValue.ToString().ToLower() + "/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
+                            blnQualityAllowed = true;
+                    }
+					if (blnQualityAllowed)
 					{
                         if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                         {

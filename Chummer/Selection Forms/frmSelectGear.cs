@@ -157,15 +157,24 @@ namespace Chummer
 				bool blnAddItem = true;
 				foreach (string strCategory in lstRemoveCategory)
 				{
-					if (strCategory == objXmlCategory.InnerText)
-						blnAddItem = false;
+                    if (strCategory == objXmlCategory.InnerText)
+                    {
+                        blnAddItem = false;
+                        break;
+                    }
 				}
-				// Also make sure it is not already in the Category list.
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == objXmlCategory.InnerText)
-						blnAddItem = false;
-				}
+                if (blnAddItem)
+                {
+                    // Also make sure it is not already in the Category list.
+                    foreach (ListItem objItem in _lstCategory)
+                    {
+                        if (objItem.Value == objXmlCategory.InnerText)
+                        {
+                            blnAddItem = false;
+                            break;
+                        }
+                    }
+                }
 
 				if (blnAddItem)
 				{
@@ -778,7 +787,7 @@ namespace Chummer
 					strCategory = cboCategory.SelectedValue.ToString();
 				}
 
-				if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+				if (_objCharacter.DEPEnabled)
 				{
 					if ((strCategory == "Matrix Programs" || strCategory == "Skillsofts" || strCategory == "Autosofts" || strCategory == "Autosofts, Agent" || strCategory == "Autosofts, Drone") && _objCharacter.Options.BookEnabled("UN") && !lstGear.SelectedValue.ToString().StartsWith("Suite:"))
 						chkInherentProgram.Visible = true;

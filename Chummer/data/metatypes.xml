@@ -1640,6 +1640,7 @@
 			<name>A.I.</name>
 			<category>Metasapient</category>
 			<karma>180</karma>
+			<halveattributepoints />
 			<bodmin>0</bodmin>
 			<bodmax>0</bodmax>
 			<bodaug>0</bodaug>
@@ -1788,6 +1789,9 @@
 				</negative>
 			</qualityrestriction>
 			<bonus>
+				<enabletab>
+					<name>advanced programs</name>
+				</enabletab>
 				<enableattribute>
 					<name>DEP</name>
 				</enableattribute>
@@ -1800,6 +1804,7 @@
 					<name>E-Ghost</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -1952,6 +1957,9 @@
 						</negative>
 					</qualities>
 					<bonus>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
 						<enableattribute>
 							<name>DEP</name>
 						</enableattribute>
@@ -1963,6 +1971,7 @@
 					<name>Xenosapient</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -2115,6 +2124,9 @@
 						</negative>
 					</qualities>
 					<bonus>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
 						<enableattribute>
 							<name>DEP</name>
 						</enableattribute>
@@ -2126,6 +2138,7 @@
 					<name>Protosapient</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -2264,12 +2277,6 @@
 						</negative>
 					</qualityrestriction>
 					<movement>Special</movement>
-					<qualityrestriction>
-						<positive>
-						</positive>
-						<negative>
-						</negative>
-					</qualityrestriction>
 					<qualities>
 						<positive>
 							<quality>Home Ground</quality>
@@ -2288,6 +2295,9 @@
 						<enableattribute>
 							<name>DEP</name>
 						</enableattribute>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
 					</bonus>
 					<source>DT</source>
 					<page>88</page>

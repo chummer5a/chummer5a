@@ -148,9 +148,11 @@ namespace Chummer
 		private int _intKarmaSpecialization = 7;
 		private int _intKarmaSpell = 5;
 		private int _intKarmaSpirit = 1;
+        private int _intKarmaNewAIProgram = 5;
+        private int _intKarmaNewAIAdvancedProgram = 8;
 
-		// Karma Foci variables.
-		private int _intKarmaAlchemicalFocus = 3;
+        // Karma Foci variables.
+        private int _intKarmaAlchemicalFocus = 3;
 		private int _intKarmaBanishingFocus = 2;
 		private int _intKarmaBindingFocus = 2;
 		private int _intKarmaCenteringFocus = 3;
@@ -459,8 +461,12 @@ namespace Chummer
 			objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString());
 			// <karmaimprovecomplexform />
 			objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString());
-			// <karmanuyenper />
-			objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
+            // <karmanewaiprogram />
+            objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString());
+            // <karmanewaiadvancedprogram />
+            objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString());
+            // <karmanuyenper />
+            objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
 			// <karmacontact />
 			objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString());
 			// <karmaenemy />
@@ -785,7 +791,9 @@ namespace Chummer
 			objXmlNode.TryGetField("karmaspell", out _intKarmaSpell);
 			objXmlNode.TryGetField("karmanewcomplexform", out _intKarmaNewComplexForm);
 			objXmlNode.TryGetField("karmaimprovecomplexform", out _intKarmaImproveComplexForm);
-			objXmlNode.TryGetField("karmanuyenper", out _intKarmaNuyenPer);
+            objXmlNode.TryGetField("karmanewaiprogram", out _intKarmaNewAIProgram);
+            objXmlNode.TryGetField("karmanewaiadvancedprogram", out _intKarmaNewAIAdvancedProgram);
+            objXmlNode.TryGetField("karmanuyenper", out _intKarmaNuyenPer);
 			objXmlNode.TryGetField("karmacontact", out _intKarmaContact);
 			objXmlNode.TryGetField("karmaenemy", out _intKarmaEnemy);
 			objXmlNode.TryGetField("karmacarryover", out _intKarmaCarryover);
@@ -1052,7 +1060,9 @@ namespace Chummer
 				_intKarmaEnhancement = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenhancement").ToString());
 				_intKarmaNewComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewcomplexform").ToString());
 				_intKarmaImproveComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimprovecomplexform").ToString());
-				_intKarmaNuyenPer = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanuyenper").ToString());
+                _intKarmaNewAIProgram = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewaiprogram").ToString());
+                _intKarmaNewAIAdvancedProgram = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewaiadvancedprogram").ToString());
+                _intKarmaNuyenPer = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanuyenper").ToString());
 				_intKarmaContact = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacontact").ToString());
 				_intKarmaEnemy = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenemy").ToString());
 				_intKarmaCarryover = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacarryover").ToString());
@@ -2944,10 +2954,40 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Amount of Nueyn objtained per Karma point.
+        /// <summary>
+		/// Karma cost for a new AI Program
 		/// </summary>
-		public int KarmaNuyenPer
+		public int KarmaNewAIProgram
+        {
+            get
+            {
+                return _intKarmaNewAIProgram;
+            }
+            set
+            {
+                _intKarmaNewAIProgram = value;
+            }
+        }
+
+        /// <summary>
+		/// Karma cost for a new AI Advanced Program
+		/// </summary>
+		public int KarmaNewAIAdvancedProgram
+        {
+            get
+            {
+                return _intKarmaNewAIAdvancedProgram;
+            }
+            set
+            {
+                _intKarmaNewAIAdvancedProgram = value;
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nueyn objtained per Karma point.
+        /// </summary>
+        public int KarmaNuyenPer
 		{
 			get
 			{

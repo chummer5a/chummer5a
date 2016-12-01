@@ -583,12 +583,28 @@ namespace Chummer
 			return null;
 		}
 
-		/// <summary>
-		/// Locate a Spell within the character's Spells.
+        /// <summary>
+		/// Locate an AI Program within the character's AI Programs.
 		/// </summary>
-		/// <param name="strGuid">InternalId of the Spell to find.</param>
-		/// <param name="lstSpells">List of Spells to search.</param>
-		public Spell FindSpell(string strGuid, List<Spell> lstSpells)
+		/// <param name="strGuid">InternalId of the AI Program to find.</param>
+		/// <param name="lstPrograms">List of AI Programs to search.</param>
+        public AIProgram FindAIProgram(string strGuid, List<AIProgram> lstPrograms)
+        {
+            foreach (AIProgram objProgram in lstPrograms)
+            {
+                if (objProgram.InternalId == strGuid)
+                    return objProgram;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a Spell within the character's Spells.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Spell to find.</param>
+        /// <param name="lstSpells">List of Spells to search.</param>
+        public Spell FindSpell(string strGuid, List<Spell> lstSpells)
 		{
 			foreach (Spell objSpell in lstSpells)
 			{

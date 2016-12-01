@@ -10,11 +10,40 @@ Application Changes:
 - Added a metatype filter for selecting cyberware that will prevent Pixies from taking Customised Strength on their cyberlimbs, as it breaks everything awfully. 
 - Fixed an issue with Spell Defence Tooltips.
 - Fixed behaviour of the Change Priority Selection menu to properly preserve metavariant settings. 
+- Made minor performance improvements to the Select Gear screen.
+- Added a dedicated class, screen tab, character sheet boxes, option menu entries, a bunch of extra helper functions, and supplements to existing methods to handle AI programs and advanced programs.
+- Corrected the karma cost for increasing Depth rating to 10 + (new rating x 5) from (new rating x5).
+- Fixed an oversight where reducing essence would also lower Depth.
+- Added the ability for Talents priorities to forbid or require a specific talent entry by selected metatype, metatype category, and/or metavariant.
+- Added the ability to create AIs with priority generation.
+- Corrected a bug where critter Matrix entities would not have their physical attribute maximums forced to 0.
+- Matrix entities can now only add Essence Hole and Essence Antihole cyberware, and cannot add any other type of 'ware.
+- Added the ability for any metatype or critter to use the quality restrictions system that is used for AIs.
+- The Priority selection screen will now display the selected metatype qualities if no metavarient is selected.
+- The MainController class now inherits the CharacterShared class.
+- Added the ability for an improvement to remove the cyberware tab through the disabletab bonus (currently unused).
+- Added the ability for an improvement to add an AI program.
+- Added the ability for an improvement to add either a Common Program or a Hacking Program as an AI program.
+- Added the ability for a metatype to receive only half points from attribute priority.
+- Added the enableattribute, replaceattribute, enabletab, cyberseeker, blockskillgroupdefaulting, attributelevel, skilllevel, knowsoft and specificpower to the Custom Improvement Manager. 
+- Fixed an issue in which vehicles and weapons in creation mode wouldn't properly be marked as free. if selected to do so. 
+
 Data Changes: 
 
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
 - Fixed default specialisations for the Small Unit Tactics skills.
 - Fixed the ability for Pixies to receive the Assensing skill without requiring a quality like Magician.
+- Corrected the name of the Decryption and Crash hacking programs from Decrypt and Crash'.
+- Separated Autosofts into the different types detailed in the core rulebook and Rigger 5.0 instead of having them all covered under one entry.
+- Corrected the identification of complex forms for some character sheets.
+- Reconfigured programs.xml to be used for AI programs and advanced programs instead of SR4 complex forms.
+- Fixed Exceptional Entity; its "no limit on X attribute" is implemented by increasing the maximum value of that attribute by 100 (hacky, but it works).
+- Corrected Persnickety Renter to have a text field where the home device type for the quality can be specified.
+- Added AI quality restrictions to the protosapient critter entries.
+- Added entries for the AI programs and advanced programs that protosapient critters come with by default.
+- Removed the duplicate entry for the Chatty quality.
+- Updated Inherent Program quality so that it allows the player to choose a program from a list rather than type one in.
+- Updated Fragmentation quality so that it allows the player to specify the negative psychological quality that it exhibits.
 - Fixed an issue with the Santeria and Obeah traditions from Hard Targets. 
 - Altered the naming convention for traditions.xml to explicitly refer to the spirit type instead of using array enumeration to figure out what they're supposed to be. 
 

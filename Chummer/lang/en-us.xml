@@ -2715,6 +2715,10 @@
 			<text>Complex Form Option</text>
 		</string>
 		<string>
+			<key>String_ExpenseLearnProgram</key>
+			<text>Learned AI Program</text>
+		</string>
+		<string>
 			<key>String_ExpenseQuickenMetamagic</key>
 			<text>Quickened</text>
 		</string>
@@ -4606,6 +4610,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>M.A. Maneuvers</text>
 		</string>
 		<string>
+			<key>Label_SummaryAINormalPrograms</key>
+			<text>Normal Programs</text>
+		</string>
+		<string>
+			<key>Label_SummaryAIAdvancedPrograms</key>
+			<text>Advanced Programs</text>
+		</string>
+		<string>
 			<key>Tip_BuildSpecialAttributes</key>
 			<text>Special Attributes are EDG, MAG, and RES.</text>
 		</string>
@@ -6438,6 +6450,14 @@ Do you want to continue?</text>
 			<text>Weapon Focus</text>
 		</string>
 		<string>
+			<key>Label_Options_NewAIProgram</key>
+			<text>New Program (AI)</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIAdvancedProgram</key>
+			<text>New Advanced Program (AI)</text>
+		</string>
+		<string>
 			<key>Button_Options_RestoreDefaults</key>
 			<text>Restore Defaults</text>
 		</string>
@@ -7469,6 +7489,50 @@ Do you want to continue?</text>
 			<text>Select a Program Option</text>
 		</string>
 		<!-- End Region-->
+		<!-- Advanced Programs Tab -->
+		<string>
+			<key>Tab_AdvancedPrograms</key>
+			<text>Advanced Programs</text>
+		</string>
+		<string>
+			<key>Label_AIProgramsAdvancedPrograms</key>
+			<text>AI Programs and Advanced Programs</text>
+		</string>
+		<string>
+			<key>Button_AddProgram</key>
+			<text>Add Program</text>
+		</string>
+		<string>
+			<key>String_Requires</key>
+			<text>Requires:</text>
+		</string>
+		<string>
+			<key>Node_SelectedAIPrograms</key>
+			<text>Selected AI Programs and Advanced Programs</text>
+		</string>
+		<!-- End Region-->
+		<!-- Select AI Program Window -->
+		<string>
+			<key>Title_SelectAIProgram</key>
+			<text>Select AI Program or Advanced Program</text>
+		</string>
+		<string>
+			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Advanced Program Requirement</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectAIProgram_LimitList</key>
+			<text>Show only Advanced Programs I can take</text>
+		</string>
+		<string>
+			<key>Message_DeleteAIProgram</key>
+			<text>Are you sure you want to delete this AI Program?</text>
+		</string>
+		<!-- End Region -->
 		<!-- Region Select Quality Window -->
 		<string>
 			<key>Title_SelectQuality</key>

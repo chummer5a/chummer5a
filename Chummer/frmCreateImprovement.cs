@@ -114,8 +114,10 @@ namespace Chummer
 			nudAug.Visible = false;
 			chkApplyToRating.Visible = false;
 			chkApplyToRating.Checked = false;
+            chkFree.Visible = false;
+            chkFree.Checked = false;
 
-			lblSelect.Visible = false;
+            lblSelect.Visible = false;
 			txtSelect.Visible = false;
 			txtSelect.Text = "";
 			cmdChangeSelection.Visible = false;
@@ -123,44 +125,44 @@ namespace Chummer
 
 			foreach (XmlNode objNode in objFetchNode.SelectNodes("fields/field"))
 			{
-				if (objNode.InnerText == "val")
+				switch (objNode.InnerText)
 				{
-					lblVal.Visible = true;
-					nudVal.Visible = true;
-				}
-				if (objNode.InnerText == "min")
-				{
-					lblMin.Visible = true;
-					nudMin.Visible = true;
-				}
-				if (objNode.InnerText == "max")
-				{
-					lblMax.Visible = true;
-					nudMax.Visible = true;
-				}
-				if (objNode.InnerText == "aug")
-				{
-					lblAug.Visible = true;
-					nudAug.Visible = true;
-				}
-				if (objNode.InnerText == "applytorating")
-				{
-					chkApplyToRating.Visible = true;
-				}
-				if (objNode.InnerText.StartsWith("Select"))
-				{
-					lblSelect.Visible = true;
-					txtSelect.Visible = true;
-					cmdChangeSelection.Visible = true;
-					_strSelect = objNode.InnerText;
+				    case "val":
+				        lblVal.Visible = true;
+				        nudVal.Visible = true;
+				        break;
+				    case "min":
+				        lblMin.Visible = true;
+				        nudMin.Visible = true;
+				        break;
+				    case "max":
+				        lblMax.Visible = true;
+				        nudMax.Visible = true;
+				        break;
+				    case "aug":
+				        lblAug.Visible = true;
+				        nudAug.Visible = true;
+				        break;
+				    case "applytorating":
+				        chkApplyToRating.Visible = true;
+				        break;
+				    case "free":
+				        chkFree.Visible = true;
+				        break;
+				    default:
+				        if (objNode.InnerText.StartsWith("Select"))
+				        {
+				            lblSelect.Visible = true;
+				            txtSelect.Visible = true;
+				            cmdChangeSelection.Visible = true;
+				            _strSelect = objNode.InnerText;
+				        }
+				        break;
 				}
 			}
 
 			// Display the help information.
-			if (objFetchNode["altpage"] != null)
-				lblHelp.Text = objFetchNode["altpage"].InnerText;
-			else
-				lblHelp.Text = objFetchNode["page"].InnerText;
+			lblHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"].InnerText;
 		}
 
 		private void cmdChangeSelection_Click(object sender, EventArgs e)
@@ -180,7 +182,7 @@ namespace Chummer
 				if (frmPickAttribute.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickAttribute.SelectedAttribute;
 			}
-			if (_strSelect == "SelectPhysicalAttribute")
+			else if (_strSelect == "SelectPhysicalAttribute")
 			{
 				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 				frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
@@ -200,7 +202,7 @@ namespace Chummer
 				if (frmPickAttribute.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickAttribute.SelectedAttribute;
 			}
-			if (_strSelect == "SelectMentalAttribute")
+			else if (_strSelect == "SelectMentalAttribute")
 			{
 				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 				frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
@@ -220,7 +222,7 @@ namespace Chummer
 				if (frmPickAttribute.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickAttribute.SelectedAttribute;
 			}
-			if (_strSelect == "SelectSkill")
+			else if (_strSelect == "SelectSkill")
 			{
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
 				frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
@@ -229,7 +231,7 @@ namespace Chummer
 				if (frmPickSkill.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickSkill.SelectedSkill;
 			}
-			if (_strSelect == "SelectKnowSkill")
+            else if (_strSelect == "SelectKnowSkill")
 			{
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
 				frmPickSkill.ShowKnowledgeSkills = true;
@@ -239,7 +241,7 @@ namespace Chummer
 				if (frmPickSkill.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickSkill.SelectedSkill;
 			}
-			if (_strSelect == "SelectSkillCategory")
+            else if (_strSelect == "SelectSkillCategory")
 			{
 				frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory();
 				frmPickSkillCategory.Description = LanguageManager.Instance.GetString("Title_SelectSkillCategory");
@@ -248,7 +250,7 @@ namespace Chummer
 				if (frmPickSkillCategory.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickSkillCategory.SelectedCategory;
 			}
-			if (_strSelect == "SelectSkillGroup")
+            else if (_strSelect == "SelectSkillGroup")
 			{
 				frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
 				frmPickSkillGroup.Description = LanguageManager.Instance.GetString("Title_SelectSkillGroup");
@@ -257,7 +259,7 @@ namespace Chummer
 				if (frmPickSkillGroup.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickSkillGroup.SelectedSkillGroup;
 			}
-			if (_strSelect == "SelectWeaponCategory")
+            else if (_strSelect == "SelectWeaponCategory")
 			{
 				frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
 				frmPickWeaponCategory.Description = LanguageManager.Instance.GetString("Title_SelectWeaponCategory");
@@ -266,7 +268,7 @@ namespace Chummer
 				if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickWeaponCategory.SelectedCategory;
 			}
-			if (_strSelect == "SelectSpellCategory")
+            else if (_strSelect == "SelectSpellCategory")
 			{
 				frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory();
 				frmPickSpellCategory.Description = LanguageManager.Instance.GetString("Title_SelectSpellCategory");
@@ -274,8 +276,16 @@ namespace Chummer
 
 				if (frmPickSpellCategory.DialogResult == DialogResult.OK)
 					txtSelect.Text = frmPickSpellCategory.SelectedCategory;
-			}
-		}
+            }
+            else if (_strSelect == "SelectAdeptPower")
+            {
+                frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
+                frmPickPower.ShowDialog(this);
+
+                if (frmPickPower.DialogResult == DialogResult.OK)
+                    txtSelect.Text = frmPickPower.SelectedPower;
+            }
+        }
 		#endregion
 
 		#region Methods
@@ -320,7 +330,8 @@ namespace Chummer
 			strXml = strXml.Replace("{min}", nudMin.Value.ToString());
 			strXml = strXml.Replace("{max}", nudMax.Value.ToString());
 			strXml = strXml.Replace("{aug}", nudAug.Value.ToString());
-			strXml = strXml.Replace("{select}", txtSelect.Text);
+            strXml = strXml.Replace("{free}", chkFree.Checked.ToString().ToLower());
+            strXml = strXml.Replace("{select}", txtSelect.Text);
 			strXml = strXml.Replace("{applytorating}", strRating);
 			objWriter.WriteRaw(strXml);
 

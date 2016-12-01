@@ -9789,26 +9789,6 @@
 		<!-- Region Data Trails-->
 		<!--Region Data Trails Positive Qualities -->
 		<quality>
-			<id>5878014A-B7FB-45BC-859A-A22F907B0EA8</id>
-			<name>Chatty</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>1</value>
-					<condition>Limited to Communication via AR or VR</condition>
-				</limitmodifier>
-			</bonus>
-			<required>
-				<oneof>
-					<metatype>A.I.</metatype>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>146</page>
-		</quality>
-		<quality>
 			<id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
 			<name>Data Anomaly</name>
 			<karma>3</karma>
@@ -10113,9 +10093,42 @@
 			<id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
 			<name>Exceptional Entity</name>
 			<karma>25</karma>
-			<implemented>False</implemented>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>INT</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>WIL</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>DEP</name>
+					<max>99</max>
+				</specificattribute>
+				<selectattributes>
+					<selectattribute>
+						<excludeattribute>EDG</excludeattribute>
+						<excludeattribute>MAG</excludeattribute>
+						<excludeattribute>RES</excludeattribute>
+						<excludeattribute>DEP</excludeattribute>
+						<excludeattribute>BOD</excludeattribute>
+						<excludeattribute>AGI</excludeattribute>
+						<excludeattribute>STR</excludeattribute>
+						<excludeattribute>REA</excludeattribute>
+						<max>96</max>
+					</selectattribute>
+				</selectattributes>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>
@@ -10145,7 +10158,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<selecttext />
+				<selectinherentaiprogram />
 			</bonus>
 			<required>
 				<oneof>
@@ -10394,6 +10407,7 @@
 					<name>ESS</name>
 					<val>-1</val>
 				</specificattribute>
+				<selecttext />
 			</bonus>
 			<required>
 				<oneof>
@@ -10408,7 +10422,9 @@
 			<name>Persnickety Renter</name>
 			<karma>-6</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>

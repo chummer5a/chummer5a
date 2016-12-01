@@ -176,7 +176,8 @@ namespace Chummer
 			BlockSkillDefault,
 			Ambidextrous,
 	        UnarmedReach,
-			SkillSpecialization
+			SkillSpecialization,
+            AIProgram
 		}
 
         public enum ImprovementSource
@@ -212,7 +213,8 @@ namespace Chummer
             Enhancement,
 			Custom,
 	        Heritage,
-	        MartialArt
+	        MartialArt,
+            AIProgram
         }
 
 		private string _strImprovedName = "";
@@ -1377,6 +1379,25 @@ namespace Chummer
 							if (!blnFound)
 								_objCharacter.TechnomancerEnabled = false;
 							break;
+                        case "Advanced Programs":
+                            // See if the character has anything else that is granting them access to the Advanced Programs tab.
+                            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                            {
+                                // Skip items from the current Improvement source.
+                                if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                                {
+                                    if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
+                                        objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Advanced Programs")
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!blnFound)
+                                _objCharacter.AdvancedProgramsEnabled = false;
+                            break;
 						case "Critter":
 							// See if the character has anything else that is granting them access to the Critter tab.
 							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
@@ -1418,8 +1439,36 @@ namespace Chummer
 					}
 				}
 
-				// Turn of the Black Market flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
+                // Determine if access to any special tabs has been regained
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialTab && objImprovement.UniqueName == "disabletab")
+                {
+                    bool blnFound = false;
+                    switch (objImprovement.ImprovedName)
+                    {
+                        case "Cyberware":
+                            // See if the character has anything else that is prohibiting them access to the Cyberware tab.
+                            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                            {
+                                // Skip items from the current Improvement source.
+                                if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                                {
+                                    if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
+                                        objCharacterImprovement.UniqueName == "disabletab" && objCharacterImprovement.ImprovedName == "Cyberware")
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!blnFound)
+                                _objCharacter.CyberwareDisabled = false;
+                            break;
+                    }
+                }
+
+                // Turn of the Black Market flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
 				{
 					bool blnFound = false;
 					// See if the character has anything else that is granting them access to Black Market.
@@ -2026,7 +2075,17 @@ namespace Chummer
 						objSkill.Specializations.Remove(objSkillSpec);
 					}
 				}
-			}
+
+                // Remove AI programs that were granted by the Improvement.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.AIProgram)
+                {
+                    foreach (AIProgram objProgram in _objCharacter.AIPrograms.Where(objProgram => objImprovement.ImprovedName == objProgram.InternalId))
+                    {
+                        _objCharacter.AIPrograms.Remove(objProgram);
+                        break;
+                    }
+                }
+            }
 
 
 			_objCharacter.ImprovementHook(objImprovementList, this);

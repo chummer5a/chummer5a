@@ -175,7 +175,13 @@ namespace Chummer.Classes
 						CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
 							"enabletab", 0, 0);
 						break;
-					case "critter":
+                    case "advanced programs":
+                        _objCharacter.AdvancedProgramsEnabled = true;
+                        Log.Info("advanced programs");
+                        CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                            "enabletab", 0, 0);
+                        break;
+                    case "critter":
 						_objCharacter.CritterEnabled = true;
 						Log.Info("critter");
 						CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
@@ -191,8 +197,26 @@ namespace Chummer.Classes
 			}
 		}
 
-		// Select Restricted (select Restricted items for Fake Licenses).
-		public void selectrestricted(XmlNode bonusNode)
+        // Disable a  tab.
+        public void disabletab(XmlNode bonusNode)
+        {
+            Log.Info("disabletab");
+            foreach (XmlNode objXmlEnable in bonusNode.ChildNodes)
+            {
+                switch (objXmlEnable.InnerText)
+                {
+                    case "cyberware":
+                        _objCharacter.CyberwareDisabled = true;
+                        Log.Info("cyberware");
+                        CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                            "disabletab", 0, 0);
+                        break;
+                }
+            }
+        }
+
+        // Select Restricted (select Restricted items for Fake Licenses).
+        public void selectrestricted(XmlNode bonusNode)
 		{
 			Log.Info("selectrestricted");
 			frmSelectItem frmPickItem = new frmSelectItem();
@@ -862,8 +886,134 @@ namespace Chummer.Classes
 				_strUnique);
 		}
 
-		// Select a Contact
-		public void selectcontact(XmlNode bonusNode)
+        // Select an AI program.
+        public void selectaiprogram(XmlNode bonusNode)
+        {
+            Log.Info("selectaiprogram");
+            // Display the Select Spell window.
+            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
+
+            Log.Info("selectaiprogram = " + bonusNode.OuterXml.ToString());
+
+            Log.Info("_strForcedValue = " + ForcedValue);
+
+            if (ForcedValue != "")
+            {
+                frmPickProgram.SelectedProgram = ForcedValue;
+            }
+            else
+            {
+                frmPickProgram.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+            }
+
+            SelectedValue = frmPickProgram.SelectedProgram;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+
+            // Check for SelectText.
+            string strExtra = "";
+            if (objXmlProgram["bonus"] != null)
+            {
+                if (objXmlProgram["bonus"]["selecttext"] != null)
+                {
+                    frmSelectText frmPickText = new frmSelectText();
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.ShowDialog();
+                    strExtra = frmPickText.SelectedValue;
+                }
+            }
+
+            TreeNode objNode = new TreeNode();
+            AIProgram objProgram = new AIProgram(_objCharacter);
+            objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra, false);
+            if (objProgram.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.AIPrograms.Add(objProgram);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.AIProgram,
+                _strUnique);
+        }
+
+        // Select an AI program.
+        public void selectinherentaiprogram(XmlNode bonusNode)
+        {
+            Log.Info("selectaiprogram");
+            // Display the Select Spell window.
+            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, false, true);
+
+            Log.Info("selectaiprogram = " + bonusNode.OuterXml.ToString());
+
+            Log.Info("_strForcedValue = " + ForcedValue);
+
+            if (ForcedValue != "")
+            {
+                frmPickProgram.SelectedProgram = ForcedValue;
+            }
+            else
+            {
+                frmPickProgram.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+            }
+
+            SelectedValue = frmPickProgram.SelectedProgram;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+
+            // Check for SelectText.
+            string strExtra = "";
+            if (objXmlProgram["bonus"] != null)
+            {
+                if (objXmlProgram["bonus"]["selecttext"] != null)
+                {
+                    frmSelectText frmPickText = new frmSelectText();
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.ShowDialog();
+                    strExtra = frmPickText.SelectedValue;
+                }
+            }
+
+            TreeNode objNode = new TreeNode();
+            AIProgram objProgram = new AIProgram(_objCharacter);
+            objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra, false);
+            if (objProgram.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.AIPrograms.Add(objProgram);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.AIProgram,
+                _strUnique);
+        }
+
+        // Select a Contact
+        public void selectcontact(XmlNode bonusNode)
 		{
 			Log.Info("selectcontact");
 			XmlNode nodSelect = bonusNode;
