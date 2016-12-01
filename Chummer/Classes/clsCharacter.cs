@@ -2036,22 +2036,13 @@ namespace Chummer
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
 
-                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
+                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
 
-				// Get spirit type per spell category
-				XmlNodeList lstXmlSpiritTypes = objXmlTradition.SelectNodes("spirits/spirit");
-				
-				string strSpiritCombat = lstXmlSpiritTypes[0] != null ? lstXmlSpiritTypes[0].InnerText : _strSpiritCombat;
-				string strSpiritDetection = lstXmlSpiritTypes[1] != null ? lstXmlSpiritTypes[1].InnerText : _strSpiritDetection;
-				string strSpiritHealth = lstXmlSpiritTypes[2] != null ? lstXmlSpiritTypes[2].InnerText : _strSpiritHealth;
-				string strSpiritIllusion = lstXmlSpiritTypes[3] != null ? lstXmlSpiritTypes[3].InnerText : _strSpiritIllusion;
-				string strSpiritManipulation = lstXmlSpiritTypes[4] != null ? lstXmlSpiritTypes[4].InnerText : _strSpiritManipulation;
-
-				objWriter.WriteElementString("spiritcombat", strSpiritCombat);
-				objWriter.WriteElementString("spiritdetection", strSpiritDetection);
-				objWriter.WriteElementString("spirithealth", strSpiritHealth);
-				objWriter.WriteElementString("spiritillusion", strSpiritIllusion);
-				objWriter.WriteElementString("spiritmanipulation", strSpiritManipulation);
+				objWriter.WriteElementString("spiritcombat", objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
+				objWriter.WriteElementString("spiritdetection", objXmlTradition.SelectSingleNode("spirits/spiritdetection").InnerText);
+				objWriter.WriteElementString("spirithealth", objXmlTradition.SelectSingleNode("spirits/spirithealth").InnerText);
+				objWriter.WriteElementString("spiritillusion", objXmlTradition.SelectSingleNode("spirits/spiritillusion").InnerText);
+				objWriter.WriteElementString("spiritmanipulation", objXmlTradition.SelectSingleNode("spirits/spiritmanipulation").InnerText);
 
 				//Spirit form, default to materialization unless field with other data persists
 				string strSpiritForm;
