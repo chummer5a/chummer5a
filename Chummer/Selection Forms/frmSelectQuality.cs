@@ -409,12 +409,12 @@ namespace Chummer
 
                 bool blnNeedQualityWhitelist = false;
                 XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (objXmlMetatype?.SelectNodes("qualityrestriction") != null)
+                if (objXmlMetatype?.SelectNodes("qualityrestriction")?.Count > 0)
                     blnNeedQualityWhitelist = true;
                 else
                 {
                     objXmlMetatype = objXmlCrittersDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                    if (objXmlMetatype?.SelectNodes("qualityrestriction") != null)
+                    if (objXmlMetatype?.SelectNodes("qualityrestriction")?.Count > 0)
                         blnNeedQualityWhitelist = true;
                 }
                 

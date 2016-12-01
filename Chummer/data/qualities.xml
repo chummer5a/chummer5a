@@ -10407,6 +10407,7 @@
 					<name>ESS</name>
 					<val>-1</val>
 				</specificattribute>
+				<selecttext />
 			</bonus>
 			<required>
 				<oneof>

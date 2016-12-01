@@ -41,6 +41,7 @@ Data Changes:
 - Added entries for the AI programs and advanced programs that protosapient critters come with by default.
 - Removed the duplicate entry for the Chatty quality.
 - Updated Inherent Program quality so that it allows the player to choose a program from a list rather than type one in.
+- Updated Fragmentation quality so that it allows the player to specify the negative psychological quality that it exhibits.
 
 Build 188
 
