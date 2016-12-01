@@ -21,6 +21,16 @@
   <version>0</version>
   <improvements>
     <improvement>
+      <name>Enable Special Attribute</name>
+      <id>enableattribute</id>
+      <internal>enableattribute</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{val}</name>]]></xml>
+      <page>Unlocks the controls for an attribute, allowing the values to be increased. Expected values are MAG, RES or DEP for Magic, Resonance and Depth respectively.</page>
+    </improvement>
+    <improvement>
       <name>Attribute</name>
       <id>specificattribute</id>
       <internal>specificattribute</internal>
@@ -32,6 +42,70 @@
       </fields>
       <xml><![CDATA[<name>{select}</name><val>{val}</val><min>{min}</min><max>{max}</max><aug>0</aug>]]></xml>
       <page>Adjusts the values for one of the character's Attributes. Positive numbers increase an Attribute. Negative numbers decrease an Attribute. Select an Attribute to affect by clicking the Select Value button. Value adjusts the Attribute's current value. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum. Fields may be left at 0 if you do not want to affect that particular aspect of the Attribute.</page>
+    </improvement>
+    <improvement>
+      <name>Replace Attribute</name>
+      <id>replaceattribute</id>
+      <internal>replaceattribute</internal>
+      <fields>
+        <field>SelectAttribute</field>
+        <field>min</field>
+        <field>max</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><min>{min}</min><max>{max}</max>]]></xml>
+      <page>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Spells and Spirits Tab</name>
+      <id>enablemagiciantab</id>
+      <internal>enabletab</internal>
+      <xml><![CDATA[<name>magician</name>]]></xml>
+      <page>Enables the character's Spells and Spirits tab, allowing them to buy spells and bind spirits. The character is flagged as a Magician for the purposes of quality requirements, but does not receive access to the Initiation tab, unlock their Magic attribute or receive any of the Magical skills. Incompatible with improvements that enable the Complex Forms and Sprites tab.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Technomancer Tab</name>
+      <id>enabletechnomancertab</id>
+      <internal>enabletab</internal>
+      <xml><![CDATA[<name>technomancer</name>]]></xml>
+      <page>Enables the character's 'Complex Forms and Sprites' tab, allowing them to purchase Complex Forms and compile Sprites. The character is flagged as a Technomancer for the purposes of quality requirements, but does not receive access to the Submersion tab, unlock their Resonance attribute or receive any of the Resonance skills. Incompatible with improvements that enable the Spells and Spirits tab.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Initiation/Submersion Tab</name>
+      <id>enableinitiationtab</id>
+      <internal>enabletab</internal>
+      <xml><![CDATA[<name>initiation</name>]]></xml>
+      <page>Enables the character's Adept Powers tab, allowing them to buy spells and bind spirits. The character receives access to the Initiation tab, or the Submersion tab for Technomancers.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Spells and Spirits Tab</name>
+      <id>enablemagiciantab</id>
+      <internal>enabletab</internal>
+      <xml><![CDATA[<name>magician</name>]]></xml>
+      <page>Enables the character's Spells and Spirits tab, allowing them to buy spells and bind spirits. The character is flagged as a Magician, but does not receive access to the Initiation tab, unlock their Magic attribute or receive any of the Magical skills.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Critter Tab</name>
+      <id>enablecrittertab</id>
+      <internal>enabletab</internal>
+      <xml><![CDATA[<name>critter</name>]]></xml>
+      <page>Enables the character's Critter Powers tab, allowing them to buy critter powers. The character is flagged as a Critter.</page>
+    </improvement>
+    <improvement>
+      <name>Cyber-Singularity Seeker/Redliner (Attribute)</name>
+      <id>cyberseeker</id>
+      <internal>cyberseeker</internal>
+      <fields>
+        <field>SelectAttribute</field>
+      </fields>
+      <xml><![CDATA[{select}]]></xml>
+      <page>Grants bonuses to the specified attribute based on the number of cyberlimbs a character has. Special attributes are invalid</page>
+    </improvement>
+    <improvement>
+      <name>Cyber-Singularity Seeker/Redliner (Condition Monitor)</name>
+      <id>cyberseeker</id>
+      <internal>cyberseeker</internal>
+      <xml><![CDATA[BOX]]></xml>
+      <page>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</page>
     </improvement>
     <improvement>
       <name>Condition Monitor, Physical</name>
@@ -72,6 +146,61 @@
       </fields>
       <xml><![CDATA[<thresholdoffset>{val}</thresholdoffset>]]></xml>
       <page>Adjusts the number of boxes between the start of each Condition Monitor and the first Threshold. Positive numbers increase the starting position of the first Threshold. Negative numbers reduce the starting position of each Threshold.</page>
+    </improvement>
+    <improvement>
+      <name>Block Skillgroup Defaulting</name>
+      <id>blockskillgroupdefaulting</id>
+      <internal>blockskillgroupdefaulting</internal>
+      <fields>
+        <field>SelectSkillGroup</field>
+      </fields>
+      <xml><![CDATA[]]></xml>
+      <page>Prevents the character from seeing dicepool values for skills in the selected skillgroup.</page>
+    </improvement>
+    <improvement>
+      <name>Attribute Level</name>
+      <id>attributelevel</id>
+      <internal>attributelevel</internal>
+      <fields>
+        <field>SelectAttribute</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val>]]></xml>
+      <page>Adds to the selected attribute's base Value, increasing Karma costs for subsequent purchases.</page>
+    </improvement>
+    <improvement>
+      <name>Skill Level</name>
+      <id>skilllevel</id>
+      <internal>skilllevel</internal>
+      <fields>
+        <field>SelectSkill</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val>]]></xml>
+      <page>Adds to the selected attribute's base Value, increasing Karma costs for subsequent purchases.</page>
+    </improvement>
+    <improvement>
+      <name>KnowSoft</name>
+      <id>knowsoft</id>
+      <internal>knowsoft</internal>
+      <fields>
+        <field>SelectKnowSkill</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val><require>skilljack</require>]]></xml>
+      <page>Creates a Knowledge Skill that requires the skillsoftaccess improvement to be activated.</page>
+    </improvement>
+    <improvement>
+      <name>Adept Power</name>
+      <id>specificpower</id>
+      <internal>specificpower</internal>
+      <fields>
+        <field>SelectAdeptPower</field>
+        <field>val</field>
+        <field>free</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val><free>{free}</free>]]></xml>
+      <page>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</page>
     </improvement>
     <improvement>
       <name>Living Persona, Biofeedback Filter</name>

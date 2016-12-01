@@ -5544,6 +5544,11 @@ namespace Chummer
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+
+            if (frmPickWeapon.FreeCost)
+            {
+                objWeapon.Cost = 0;
+            }
             _objCharacter.Weapons.Add(objWeapon);
 
             objNode.ContextMenuStrip = cmsWeapon;
@@ -5882,7 +5887,10 @@ namespace Chummer
                 objVehicle.Cost = frmPickVehicle.UsedCost.ToString();
             }
 	        objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
-
+            if (frmPickVehicle.FreeCost)
+            {
+                objVehicle.Cost = "0";
+            }
             _objCharacter.Vehicles.Add(objVehicle);
 
             objNode.ContextMenuStrip = cmsVehicle;
