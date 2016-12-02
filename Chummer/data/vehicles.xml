@@ -7290,6 +7290,40 @@
 			<page>124</page>
 		</mod>
 		<mod>
+			<id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
+			<name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
+			<category>All</category>
+			<optionaldrone/>
+			<rating>0</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>50</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>124</page>
+		</mod>
+		<mod>
+			<id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
+			<name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
+			<category>All</category>
+			<optionaldrone/>
+			<rating>0</rating>
+			<slots>2</slots>
+			<avail>0</avail>
+			<cost>500</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>124</page>
+		</mod>
+		<mod>
 			<id>b5b9cd7e-dbb3-42e9-abcd-f805f6a4b10e</id>
 			<name>Realistic Features (Drone)</name>
 			<category>All</category>
