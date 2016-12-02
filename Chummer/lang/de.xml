@@ -7556,7 +7556,7 @@
 		<text>Manipulation - Körperlich</text>
 	</string>
 	<!-- Advanced Programs Region -->
-			<string>
+		<string>
 			<key>Label_SummaryAINormalPrograms</key>
 			<text>Normale Programme</text>
 		</string>
@@ -7601,11 +7601,11 @@
 		</string>
 		<string>
 			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgende Programme müssen gelernt werden: </text>
+			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgenden Programme müssen gelernt werden: </text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Anforderung des Fortgeschrittenen Programm</text>
+			<text>Anforderung des fortgeschrittenen Programm</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectAIProgram_LimitList</key>
@@ -7618,7 +7618,7 @@
 		<!-- End Region -->
 		<string>
 			<key>String_ExpenseLearnProgram</key>
-			<text>Erlernte KI Programm</text>
+			<text>Erlernte KI Programme</text>
 		</string>
 	<!-- End Region -->
   </strings>

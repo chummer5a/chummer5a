@@ -129,24 +129,8 @@ namespace Chummer
             if (lstAIPrograms.SelectedValue == null)
                 return;
 
-            // Retireve the information for the selected piece of Cyberware.
-            XmlNode objXmlProgram;
-
-            // Filtering is also done on the Category in case there are non-unique names across categories.
-            string strCategory = "";
-            if (lstAIPrograms.SelectedValue.ToString().Contains('^'))
-            {
-                // If the SelectedValue contains ^, then it also includes the English Category name which needs to be extracted.
-                int intIndexOf = lstAIPrograms.SelectedValue.ToString().IndexOf('^');
-                string strValue = lstAIPrograms.SelectedValue.ToString().Substring(0, intIndexOf);
-                strCategory = lstAIPrograms.SelectedValue.ToString().Substring(intIndexOf + 1, lstAIPrograms.SelectedValue.ToString().Length - intIndexOf - 1);
-                objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + strValue + "\" and category = \"" + strCategory + "\"]");
-            }
-            else
-            {
-                objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + lstAIPrograms.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
-            }
-
+            // Retrieve the information for the selected piece of Cyberware.
+            XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + lstAIPrograms.SelectedValue + "\"]");
             UpdateProgramInfo(objXmlProgram);
         }
 
@@ -340,11 +324,21 @@ namespace Chummer
                         continue;
                 }
                 ListItem objItem = new ListItem();
-                objItem.Value = objXmlProgram["name"].InnerText;
-                if (objXmlProgram["translate"] != null)
-                    objItem.Name = objXmlProgram["translate"].InnerText;
-                else
-                    objItem.Name = objXmlProgram["name"].InnerText;
+                objItem.Value = objXmlProgram["id"].InnerText;
+                objItem.Name = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
+                if (txtSearch.Text != "" && objXmlProgram["category"].InnerText != cboCategory.SelectedValue.ToString())
+                {
+                    try
+                    {
+                        objItem.Name += " [" +
+                                        _lstCategory.Find(
+                                                objFind => objFind.Value == objXmlProgram["category"].InnerText)
+                                            .Name + "]";
+                    }
+                    catch
+                    {
+                    }
+                }
                 lstPrograms.Add(objItem);
             }
 
@@ -371,10 +365,10 @@ namespace Chummer
                     int intIndexOf = lstAIPrograms.SelectedValue.ToString().IndexOf('^');
                     string strValue = lstAIPrograms.SelectedValue.ToString().Substring(0, intIndexOf);
                     string strCategory = lstAIPrograms.SelectedValue.ToString().Substring(intIndexOf + 1, lstAIPrograms.SelectedValue.ToString().Length - intIndexOf - 1);
-                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + strValue + "\" and category = \"" + strCategory + "\"]");
+                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + strValue + "\" and category = \"" + strCategory + "\"]");
                 }
                 else
-                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + lstAIPrograms.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
+                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + lstAIPrograms.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
 
                 _strSelectedAIProgram = objXmlProgram["name"].InnerText;
                 _strSelectedCategory = objXmlProgram["category"].InnerText;

@@ -100,8 +100,9 @@ namespace Chummer
             Value = Convert.ToInt32(objNode["value"].InnerText);
 			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
 
-            if (_intBase == 0)
-                _intBase = Value;
+			//TODO: This causes an issue if MAG/RES is burned down to 0 from Essence loss. Is this a legacy load item?
+            //if (_intBase == 0)
+            //    _intBase = Value;
 		}
 
 		/// <summary>

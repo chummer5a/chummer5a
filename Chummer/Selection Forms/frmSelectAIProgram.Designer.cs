@@ -1,4 +1,6 @@
-﻿namespace Chummer
+﻿using System;
+
+namespace Chummer
 {
     partial class frmSelectAIProgram
     {
@@ -188,6 +190,7 @@
             this.lstAIPrograms.Size = new System.Drawing.Size(255, 381);
             this.lstAIPrograms.TabIndex = 37;
             this.lstAIPrograms.SelectedIndexChanged += new System.EventHandler(this.lstAIPrograms_SelectedIndexChanged);
+            this.lstAIPrograms.DoubleClick += new EventHandler(this.trePrograms_DoubleClick);
             // 
             // frmSelectAIProgram
             // 
