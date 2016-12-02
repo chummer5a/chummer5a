@@ -47,6 +47,8 @@ Data Changes:
 - Updated Fragmentation quality so that it allows the player to specify the negative psychological quality that it exhibits.
 - Fixed an issue with the Santeria and Obeah traditions from Hard Targets. 
 - Altered the naming convention for traditions.xml to explicitly refer to the spirit type instead of using array enumeration to figure out what they're supposed to be. 
+- Added added MCT Roto-Drone with new stats from german Rigger 5.0 (Aspahltkrieger)
+- Added Expanded Ammunition Bay Weapon Mount addons
 
 Build 188
 
