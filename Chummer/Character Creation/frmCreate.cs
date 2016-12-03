@@ -19810,7 +19810,7 @@ namespace Chummer
                     if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
                     {
                         List<string> lstInstalledDowngrades = new List<string>();
-                        foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Name.EndsWith("Downgrade (Drone)")))
+                        foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Downgrade))
                         {
                             //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
                             if ((objMod.Category == "Handling" && Convert.ToInt32(objVehicle.TotalHandling) < 1) ||

@@ -1384,7 +1384,7 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				int intDroneModSlots = _intDroneModSlots;
-			    bool blnDowngrade = false;
+			    bool blnDowngraded = false;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Mods that are included with a Vehicle by default do not count toward the Slots used.
@@ -1392,11 +1392,12 @@ namespace Chummer.Backend.Equipment
 					{
 						if (objMod.CalculatedSlots < 0)
                             //You recieve only one additional Mod Point from Downgrades
-					        if (objMod.Name.EndsWith("Downgrade (Drone)"))
+					        if (objMod.Downgrade)
 					        {
-					            if (!blnDowngrade)
+					            if (!blnDowngraded)
 					            {
 					                intDroneModSlots -= objMod.CalculatedSlots;
+					                blnDowngraded = true;
 					            }
 					        }
 					        else

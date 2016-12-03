@@ -8107,6 +8107,7 @@
 			<name>Handling Downgrade (Drone)</name>
 			<category>Handling</category>
 			<optionaldrone/>
+			<downgrade/>
 			<rating>0</rating>
 			<slots>-1</slots>
 			<avail>0</avail>
@@ -8128,6 +8129,7 @@
 			<name>Speed Downgrade (Drone)</name>
 			<category>Speed</category>
 			<optionaldrone/>
+			<downgrade/>
 			<rating>0</rating>
 			<slots>-1</slots>
 			<avail>0</avail>
@@ -8149,6 +8151,7 @@
 			<name>Acceleration Downgrade (Drone)</name>
 			<category>Acceleration</category>
 			<optionaldrone/>
+			<downgrade/>
 			<rating>0</rating>
 			<slots>-1</slots>
 			<avail>0</avail>
@@ -8170,6 +8173,7 @@
 			<name>Body Downgrade (Drone)</name>
 			<category>Body</category>
 			<optionaldrone/>
+			<downgrade/>
 			<rating>0</rating>
 			<slots>-1</slots>
 			<avail>0</avail>
@@ -8190,6 +8194,7 @@
 			<name>Armor Downgrade (Drone)</name>
 			<category>Armor</category>
 			<optionaldrone/>
+			<downgrade/>
 			<rating>0</rating>
 			<slots>-1</slots>
 			<avail>0</avail>
@@ -8210,6 +8215,7 @@
 			<name>Sensor Downgrade (Drone)</name>
 			<category>Sensor</category>
 			<optionaldrone/>
+			<downgrade/>
 			<rating>0</rating>
 			<slots>-1</slots>
 			<avail>0</avail>
