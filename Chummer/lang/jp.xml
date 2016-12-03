@@ -2811,6 +2811,10 @@
       <key>Label_FreeKnowledgeSkills</key>
       <text>初期知識技能点の残り:</text>
     </string>
+	<string>
+		<key>Label_CustomKnowledgeSkillsReminder</key>
+		<text>Remember, you can always write in custom skills and specializations!</text>
+	</string>
     <string>
       <key>Button_AddSkill</key>
       <text>技能を追加 (&amp;A)</text>

@@ -2798,6 +2798,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Label_FreeKnowledgeSkills</key>
       <text>Points gratuits restants :</text>
     </string>
+	<string>
+		<key>Label_CustomKnowledgeSkillsReminder</key>
+		<text>Rappelez-vous que vous pouvez toujours ajouter compétences et spécialisations personalisés!</text>
+	</string>
     <string>
       <key>Button_AddSkill</key>
       <text>&amp;Ajout Comp.</text>

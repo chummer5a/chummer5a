@@ -1322,6 +1322,38 @@
 	</skills>
 	<knowledgeskills>
 		<skill>
+			<id>9f348c99-27e8-47ac-a098-a8a6a54c446a</id>
+			<name>Administration</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Corporate</spec>
+				<spec>Government</spec>
+				<spec>Religious</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>9f348c99-27e8-47ac-a098-a8a6a54c446a</id>
+			<name>Alchemy</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Combat</spec>
+				<spec>Command</spec>
+				<spec>Contact</spec>
+				<spec>Detection</spec>
+				<spec>Health</spec>
+				<spec>Illusion</spec>
+				<spec>Manipulation</spec>
+				<spec>Time</spec>
+				<spec>[Trigger]</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>40d28f1b-2171-4a3b-a640-6b097a4dea95</id>
 			<name>Alcohol</name>
 			<attribute>INT</attribute>
@@ -1373,6 +1405,20 @@
 				<spec>Asia - Minor</spec>
 				<spec>Middle East</spec>
 				<spec>Australia</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>f43b2a75-a556-4d3a-8f8b-f1615a78538c</id>
+			<name>Anishinaabe</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -1555,6 +1601,20 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>15f89f34-cdbd-4523-a1eb-4d8043252389</id>
+			<name>Athabaskan</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>bee29957-affb-4593-a4fe-002f6dd5be9c</id>
 			<name>Bars and Clubs</name>
 			<attribute>INT</attribute>
@@ -1628,6 +1688,44 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>6331a44a-ad26-4b08-8b7a-2dbe3c2d0584</id>
+			<name>Black Markets</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Atlanta</spec>
+				<spec>Cheyenne</spec>
+				<spec>Chicago</spec>
+				<spec>Denver</spec>
+				<spec>Hong-Kong</spec>
+				<spec>LA</spec>
+				<spec>Manhattan</spec>
+				<spec>FDC</spec>
+				<spec>Portland</spec>
+				<spec>Seattle</spec>
+				<spec>Saskatoon</spec>
+				<spec>Sacramento</spec>
+				<spec>Quebec City</spec>
+				<spec>Algonkian-Manitou Council</spec>
+				<spec>Athabaskan Council</spec>
+				<spec>Amazonia</spec>
+				<spec>Aztlan</spec>
+				<spec>Carribean League</spec>
+				<spec>California Free State</spec>
+				<spec>Pueblo Corporate Council</spec>
+				<spec>CAS</spec>
+				<spec>UCAS</spec>
+				<spec>Quebec</spec>
+				<spec>Salish-Shidhe Council</spec>
+				<spec>Sioux</spec>
+				<spec>Tir Tairngire</spec>
+				<spec>Tsimshian Protectorate</spec>
+				<spec>Yukutan</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>a621ba8f-92e9-4032-b506-c1b2408dfa4e</id>
 			<name>Bulgarian</name>
 			<attribute>INT</attribute>
@@ -1680,6 +1778,29 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>d5412408-46a4-4871-945e-7983ad43857e</id>
+			<name>Charity Shelters</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Atlanta</spec>
+				<spec>Cheyenne</spec>
+				<spec>Chicago</spec>
+				<spec>Denver</spec>
+				<spec>Hong-Kong</spec>
+				<spec>LA</spec>
+				<spec>Manhattan</spec>
+				<spec>FDC</spec>
+				<spec>Portland</spec>
+				<spec>Seattle</spec>
+				<spec>Saskatoon</spec>
+				<spec>Sacramento</spec>
+				<spec>Quebec City</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>aa6199a5-717e-42b8-984b-0dd2ccd5369f</id>
 			<name>Chemistry</name>
 			<attribute>LOG</attribute>
@@ -1715,6 +1836,42 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>47c41bfc-2cfa-47ca-b20e-ec3351979791</id>
+			<name>Critters</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Alligators</spec>
+				<spec>Barracudas</spec>
+				<spec>Bears</spec>
+				<spec>Boars</spec>
+				<spec>Chimpanzees</spec>
+				<spec>Cockroaches</spec>
+				<spec>Crows</spec>
+				<spec>Deer</spec>
+				<spec>Dogs</spec>
+				<spec>Dolphins</spec>
+				<spec>Domestic Cats</spec>
+				<spec>Eagles</spec>
+				<spec>Elephants</spec>
+				<spec>Ferrets</spec>
+				<spec>Giraffes</spec>
+				<spec>Great Cats</spec>
+				<spec>Horses</spec>
+				<spec>Killer Whales</spec>
+				<spec>Raccoons</spec>
+				<spec>Rats</spec>
+				<spec>Sea Lions</spec>
+				<spec>Sharks</spec>
+				<spec>Snakes</spec>
+				<spec>Spiders</spec>
+				<spec>Squids</spec>
+				<spec>Wolves</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>17c50e74-f009-4794-9dda-19062abb1d90</id>
 			<name>Croatian</name>
 			<attribute>INT</attribute>
@@ -1726,6 +1883,30 @@
 				<spec>Speak</spec>
 				<spec>Dialect</spec>
 				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>48bd3a3e-9ea8-425a-b2cd-c764479e9565</id>
+			<name>Crook Hangouts</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Atlanta</spec>
+				<spec>Cheyenne</spec>
+				<spec>Chicago</spec>
+				<spec>Denver</spec>
+				<spec>FDC</spec>
+				<spec>High-Class</spec>
+				<spec>Hong-Kong</spec>
+				<spec>LA</spec>
+				<spec>Low-Class</spec>
+				<spec>Manhattan</spec>
+				<spec>Portland</spec>
+				<spec>Quebec City</spec>
+				<spec>Sacramento</spec>
+				<spec>Seattle</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -1766,6 +1947,34 @@
 				<spec>Asia - Minor</spec>
 				<spec>Middle East</spec>
 				<spec>Australia</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>5227212f-507d-4aa7-8894-7d35a1eb98cf</id>
+			<name>DIY</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Electronics</spec>
+				<spec>Carpentry</spec>
+				<spec>Plumbing</spec>
+				<spec>Sewing</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>5227212f-507d-4aa7-8894-7d35a1eb98cf</id>
+			<name>Drones</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Wheeled</spec>
+				<spec>Walker</spec>
+				<spec>Hovercraft</spec>
+				<spec>Tracked</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -1853,6 +2062,20 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>f5a57bc4-8131-4a73-9c9a-03276d24a513</id>
+			<name>Eskimo-Aleut</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>b21c9f0f-9db0-4de1-b901-2a911d9abd62</id>
 			<name>Fashion</name>
 			<attribute>INT</attribute>
@@ -1867,10 +2090,60 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>b21c9f0f-9db0-4de1-b901-2a911d9abd62</id>
+			<name>Fashion Design</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Harajuku Scene</spec>
+				<spec>London Scene</spec>
+				<spec>New York Scene</spec>
+				<spec>Paris Scene</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>6d9880ee-c017-4e7f-a7ee-502eb542709b</id>
 			<name>Firearms</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Accessories</spec>
+				<spec>Ammunition</spec>
+				<spec>Automatics</spec>
+				<spec>Design</spec>
+				<spec>Heavy Weapons</spec>
+				<spec>History</spec>
+				<spec>Longarms</spec>
+				<spec>Modification</spec>
+				<spec>Pistols</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>7ace94b0-ab82-446a-93d0-e1fdb380d1d8</id>
+			<name>Blade Design</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Accessories</spec>
+				<spec>Axes</spec>
+				<spec>Knives</spec>
+				<spec>Swords</spec>
+				<spec>Throwing Weapons</spec>
+				<spec>History</spec>
+				<spec>Modification</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>a0ab7534-8f74-4690-be2b-040adc1413d7</id>
+			<name>Gun Trivia</name>
+			<attribute>INT</attribute>
+			<category>Interest</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -2115,6 +2388,20 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>c66aff30-b99b-47c3-94df-e5b4cc4e06d2</id>
+			<name>Iroquoian</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>87627536-a185-427a-bb14-54a4ff89901c</id>
 			<name>Italian</name>
 			<attribute>INT</attribute>
@@ -2230,7 +2517,7 @@
 		</skill>
 		<skill>
 			<id>0bbb3078-a940-4003-b4f3-fa23937cf227</id>
-			<name>Magical Theory</name>
+			<name>Magical Theory (Academic)</name>
 			<attribute>LOG</attribute>
 			<category>Academic</category>
 			<default>No</default>
@@ -2244,6 +2531,39 @@
 				<spec>Metaplanes</spec>
 				<spec>Initiation</spec>
 				<spec>Mentor Spirits</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>49f3497e-0111-42f3-8e36-6119a51995cd</id>
+			<name>Magical Theory (Street)</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Sorcery</spec>
+				<spec>Conjuring</spec>
+				<spec>Enchanting</spec>
+				<spec>Foci</spec>
+				<spec>Astral World</spec>
+				<spec>Metaplanes</spec>
+				<spec>Initiation</spec>
+				<spec>Mentor Spirits</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>a1adb39d-6bac-4c10-a01e-692a4edac293</id>
+			<name>Magical Security</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Government</spec>
+				<spec>Military</spec>
+				<spec>Private</spec>
+				<spec>Home</spec>
+				<spec>[Corporation]</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -2310,10 +2630,24 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>3b29366e-bbb9-43a7-9cbc-4c7c17a2bbb3</id>
+			<name>Mechanics</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Automotive</spec>
+				<spec>Aeronautic</spec>
+				<spec>Industrial</spec>
+				<spec>Nautical</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>58a3da0b-86da-48ec-953b-11ffcf6d283f</id>
 			<name>Military</name>
-			<attribute>INT</attribute>
-			<category>Interest</category>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -2322,6 +2656,89 @@
 				<spec>Coast Guard</spec>
 				<spec>Marines</spec>
 				<spec>Military Magic</spec>
+				<spec>Navy</spec>
+				<spec>Special Forces</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>05388bd3-e3c6-4d61-b902-72f8163a2134</id>
+			<name>Foreign Military</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Air Force</spec>
+				<spec>Army</spec>
+				<spec>Coast Guard</spec>
+				<spec>Marines</spec>
+				<spec>Military Magic</spec>
+				<spec>Navy</spec>
+				<spec>Special Forces</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>1862a5ed-7b7b-4fa8-bf25-5d10ec45223f</id>
+			<name>Military Vehicles</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Air Force</spec>
+				<spec>Army</spec>
+				<spec>Coast Guard</spec>
+				<spec>Marines</spec>
+				<spec>Navy</spec>
+				<spec>Special Forces</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>8feeb71f-8864-4ece-88b2-52f77eb1851f</id>
+			<name>NAN Military</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Air Force</spec>
+				<spec>Army</spec>
+				<spec>Coast Guard</spec>
+				<spec>Marines</spec>
+				<spec>Military Magic</spec>
+				<spec>Navy</spec>
+				<spec>Special Forces</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>9cc48c53-ebc4-49a4-87b9-be0ec5efac0a</id>
+			<name>Peacekeepers</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Air Force</spec>
+				<spec>Army</spec>
+				<spec>Coast Guard</spec>
+				<spec>Marines</spec>
+				<spec>Military Magic</spec>
+				<spec>Navy</spec>
+				<spec>Special Forces</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>1862a5ed-7b7b-4fa8-bf25-5d10ec45223f</id>
+			<name>Tir Military Vehicles</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Air Force</spec>
+				<spec>Army</spec>
+				<spec>Coast Guard</spec>
+				<spec>Marines</spec>
 				<spec>Navy</spec>
 				<spec>Special Forces</spec>
 			</specs>
@@ -2346,6 +2763,34 @@
 				<spec>Elven Rap</spec>
 				<spec>Neo-J Pop</spec>
 				<spec>Nova K Rock</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>516713c4-8022-46ea-b1d1-f843922731d4</id>
+			<name>National Threats</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Denver</spec>
+				<spec>Hong-Kong</spec>
+				<spec>Seattle</spec>
+				<spec>Algonkian-Manitou Council</spec>
+				<spec>Athabaskan Council</spec>
+				<spec>Amazonia</spec>
+				<spec>Aztlan</spec>
+				<spec>Carribean League</spec>
+				<spec>California Free State</spec>
+				<spec>Pueblo Corporate Council</spec>
+				<spec>CAS</spec>
+				<spec>UCAS</spec>
+				<spec>Quebec</spec>
+				<spec>Salish-Shidhe Council</spec>
+				<spec>Sioux</spec>
+				<spec>Tir Tairngire</spec>
+				<spec>Tsimshian Protectorate</spec>
+				<spec>Yukutan</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -2772,6 +3217,82 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>d0f7dabe-667a-45b1-ab51-a17f463b1bb1</id>
+			<name>Smuggler Routes</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Atlanta</spec>
+				<spec>Cheyenne</spec>
+				<spec>Chicago</spec>
+				<spec>Denver</spec>
+				<spec>Hong-Kong</spec>
+				<spec>LA</spec>
+				<spec>Manhattan</spec>
+				<spec>FDC</spec>
+				<spec>Portland</spec>
+				<spec>Seattle</spec>
+				<spec>Saskatoon</spec>
+				<spec>Sacramento</spec>
+				<spec>Quebec City</spec>
+				<spec>Algonkian-Manitou Council</spec>
+				<spec>Athabaskan Council</spec>
+				<spec>Amazonia</spec>
+				<spec>Aztlan</spec>
+				<spec>Carribean League</spec>
+				<spec>California Free State</spec>
+				<spec>Pueblo Corporate Council</spec>
+				<spec>CAS</spec>
+				<spec>UCAS</spec>
+				<spec>Quebec</spec>
+				<spec>Salish-Shidhe Council</spec>
+				<spec>Sioux</spec>
+				<spec>Tir Tairngire</spec>
+				<spec>Tsimshian Protectorate</spec>
+				<spec>Yukutan</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>4a046ac0-b5fe-40d8-9ec6-305ffbac189c</id>
+			<name>Smuggler Safe Houses</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Atlanta</spec>
+				<spec>Cheyenne</spec>
+				<spec>Chicago</spec>
+				<spec>Denver</spec>
+				<spec>Hong-Kong</spec>
+				<spec>LA</spec>
+				<spec>Manhattan</spec>
+				<spec>FDC</spec>
+				<spec>Portland</spec>
+				<spec>Seattle</spec>
+				<spec>Saskatoon</spec>
+				<spec>Sacramento</spec>
+				<spec>Quebec City</spec>
+				<spec>Algonkian-Manitou Council</spec>
+				<spec>Athabaskan Council</spec>
+				<spec>Amazonia</spec>
+				<spec>Aztlan</spec>
+				<spec>Carribean League</spec>
+				<spec>California Free State</spec>
+				<spec>Pueblo Corporate Council</spec>
+				<spec>CAS</spec>
+				<spec>UCAS</spec>
+				<spec>Quebec</spec>
+				<spec>Salish-Shidhe Council</spec>
+				<spec>Sioux</spec>
+				<spec>Tir Tairngire</spec>
+				<spec>Tsimshian Protectorate</spec>
+				<spec>Yukutan</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>51ea095a-2f1f-4090-afcb-d2cbb88c8f91</id>
 			<name>Street Drugs</name>
 			<attribute>INT</attribute>
@@ -2785,6 +3306,20 @@
 				<spec>Novacoke</spec>
 				<spec>Spike</spec>
 				<spec>Tempo</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>ac2d2cb7-e602-42cc-bc53-9bb45588244c</id>
+			<name>Strategy</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Logistics</spec>
+				<spec>Reconnaissance</spec>
+				<spec>Offensive</spec>
+				<spec>Defensive</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3078,6 +3613,20 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>40829746-9376-4a0a-a80c-25c3767582df</id>
+			<name>Codes</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Physical</spec>
+				<spec>Mathematical</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>678da16f-6446-4e0c-8bef-cc1d619e1d1a</id>
 			<name>Connoisseur</name>
 			<attribute>INT</attribute>
@@ -3100,8 +3649,8 @@
 		<skill>
 			<id>d9c2e7c4-b9c6-4904-b4a4-56ecca7c9530</id>
 			<name>Corporation: Ares Macrotechnology</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3118,8 +3667,8 @@
 		<skill>
 			<id>50a4cbd7-a0f7-474a-97ae-a781320d6780</id>
 			<name>Corporation: Aztechnology</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3133,8 +3682,8 @@
 		<skill>
 			<id>987d7063-73ec-4170-beb2-1851c0dd7cee</id>
 			<name>Corporation: Evo</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3150,8 +3699,8 @@
 		<skill>
 			<id>6a3bd597-09e5-45ba-8719-d4eda627e780</id>
 			<name>Corporation: Horizon Group</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3165,8 +3714,8 @@
 		<skill>
 			<id>dd4779db-4c54-4fa3-b56c-7caf0ba6926b</id>
 			<name>Corporation: Mitsuhama Computer Technologies</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3181,8 +3730,8 @@
 		<skill>
 			<id>ee28a346-d0a8-476e-93a9-6db56ae4b298</id>
 			<name>Corporation: NeoNET</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3196,8 +3745,8 @@
 		<skill>
 			<id>603f7245-62ef-477e-923e-f8a4681dec35</id>
 			<name>Corporation: Renraku Computer Systems</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3212,8 +3761,8 @@
 		<skill>
 			<id>8db5cc64-5dc4-4ae9-a56b-e0c54a6e2413</id>
 			<name>Corporation: Saeder-Krupp</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3229,8 +3778,8 @@
 		<skill>
 			<id>03707f22-bebe-469a-817b-f6dfd4d7d6a1</id>
 			<name>Corporation: Shiawase</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3244,8 +3793,8 @@
 		<skill>
 			<id>c9826bde-bb0b-4e45-9348-aa77546dfc7c</id>
 			<name>Corporation: Wuxing, Inc.</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3260,8 +3809,8 @@
 		<skill>
 			<id>44181f85-9472-4ab6-8da7-d4d2aeb38a96</id>
 			<name>Corporation: Brackhaven Investments</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3276,8 +3825,8 @@
 		<skill>
 			<id>7592dc37-0d4f-4790-a1a8-188601b0d137</id>
 			<name>Corporation: DocWagon</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3292,128 +3841,53 @@
 		<skill>
 			<id>0346bd5b-4a87-47b9-86de-9b322ef0a2c7</id>
 			<name>Corporation: Federated-Boeing</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				<spec>Seattle Operations</spec>
-
-
-
 				<spec>Corporate Finances</spec>
 				<spec>Corporate Politics</spec>
 				<spec>Corporate Rumors</spec>
-
 				<spec>Corporate Security</spec>
 			</specs>
 		</skill>
 		<skill>
 			<id>7d76f579-eec5-4521-a7bb-c4dedfd85af4</id>
 			<name>Corporation: Gaeatronics</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				<spec>Seattle Operations</spec>
-
-
-
 				<spec>Corporate Finances</spec>
 				<spec>Corporate Politics</spec>
 				<spec>Corporate Rumors</spec>
-
 				<spec>Corporate Security</spec>
 			</specs>
 		</skill>
 		<skill>
 			<id>dc767e9a-796a-494a-b200-d018efd4fa49</id>
 			<name>Corporation: Global Technologies</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				<spec>Seattle Operations</spec>
-
-
-
 				<spec>Corporate Finances</spec>
 				<spec>Corporate Politics</spec>
 				<spec>Corporate Rumors</spec>
-
 				<spec>Corporate Security</spec>
 			</specs>
 		</skill>
 		<skill>
 			<id>23efe0de-0830-40f4-ab54-ee5e324b31e9</id>
 			<name>Corporation: Knight Errant</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3428,8 +3902,8 @@
 		<skill>
 			<id>d62f9a9e-9614-4421-a70c-b20b0f60641e</id>
 			<name>Corporation: Kong-Walmart</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3443,8 +3917,8 @@
 		<skill>
 			<id>43378bcc-7ca9-4f26-9ee5-8bbc69953628</id>
 			<name>Corporation: Lone Star Security Services</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3458,8 +3932,8 @@
 		<skill>
 			<id>183d5e40-4c27-4068-a30d-e75176f4da67</id>
 			<name>Corporation: Regency MegaMedia</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3473,8 +3947,8 @@
 		<skill>
 			<id>a142e6ff-b97c-4cf6-9fbc-caebe1c3ba9f</id>
 			<name>Corporation: Stuffer Shack</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3488,8 +3962,8 @@
 		<skill>
 			<id>eb92764d-5dff-4454-88a0-f7c8233c9016</id>
 			<name>Corporation: Telestrian Industries Corporation</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3503,8 +3977,8 @@
 		<skill>
 			<id>0b1dfbba-c787-4455-95e0-0b87b885011b</id>
 			<name>Corporation: Universal Omnitech</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
@@ -3519,29 +3993,11 @@
 		<skill>
 			<id>cb35837e-09bd-4c53-96de-6fbd92b3d99f</id>
 			<name>Corporation: Zurich-Orbit Gemeinschaft Bank (ZOG)</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
 			<default>No</default>
 			<skillgroup />
 			<specs>
-				<spec>Corporate Finances</spec>
-				<spec>Corporate Politics</spec>
-				<spec>Corporate Rumors</spec>
-				<spec>Corporate Security</spec>
-			</specs>
-		</skill>
-		<skill>
-			<id>d9c2e7c4-b9c6-4904-b4a4-56ecca7c9530</id>
-			<name>Corporation: Ares Macrotechnology</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
-			<default>No</default>
-			<skillgroup />
-			<specs>
-				<spec>Damien Knight</spec>
-				<spec>Ares Arms</spec>
-				<spec>AresSpace</spec>
-				<spec>Seattle Operations</spec>
 				<spec>Corporate Finances</spec>
 				<spec>Corporate Politics</spec>
 				<spec>Corporate Rumors</spec>
@@ -3617,6 +4073,19 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>abeaf83e-edeb-4780-baff-4662e73ea8e6</id>
+			<name>Farming</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Organic</spec>
+				<spec>Factory</spec>
+				<spec>Awakened</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>487f0a4f-584d-484f-8778-942c5ecda065</id>
 			<name>Forensics</name>
 			<attribute>LOG</attribute>
@@ -3625,6 +4094,44 @@
 			<skillgroup />
 			<specs>
 				<spec>Thaumaturgic</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>47c41bfc-2cfa-47ca-b20e-ec3351979791</id>
+			<name>Foster System</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>UCAS</spec>
+				<spec>CAS</spec>
+				<spec>[Jurisdiction]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>fe04fd63-2d4f-4046-8356-0bad4d251e50</id>
+			<name>Journalism</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Investigative</spec>
+				<spec>Editorial</spec>
+				<spec>Print</spec>
+				<spec>Trid</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>e48a5194-57e7-420a-b176-5f51bdb235c4</id>
+			<name>Megacorp Law (Street)</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Contracts</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3651,6 +4158,31 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>cb491fb5-2fa9-422e-b572-9ff84fcd5616</id>
+			<name>Matrix Threats</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Protosapients</spec>
+				<spec>Xenosapients</spec>
+				<spec>Technocritters</spec>
+				<spec>Dissonant Technomancers</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>4dd0d947-b1e1-471b-bfc0-9ba8ecd827dc</id>
+			<name>Magical Law</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Contracts</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>e93e443e-7b21-41f7-9f8e-ba316b1e385a</id>
 			<name>Metahumans</name>
 			<attribute>LOG</attribute>
@@ -3673,8 +4205,58 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
+				<spec>Field Medicine</spec>
 				<spec>Medical Advances</spec>
 				<spec>Technology</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>85334671-01ec-42ef-9908-dae556376a2c</id>
+			<name>Psychology</name>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Mental Illnesses</spec>
+				<spec>Mental Reprogramming</spec>
+				<spec>Xenosapient</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>2d107401-7319-4b41-8800-e0cbdf7251f0</id>
+			<name>Sociology</name>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Cultural</spec>
+				<spec>Medical</spec>
+				<spec>Behavioral</spec>
+				<spec>Matrix</spec>
+				<spec>Political</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>a69c0dc0-891d-4d06-8fd4-0312b1288c0c</id>
+			<name>Philosophy</name>
+			<attribute>LOG</attribute>
+			<category>Academic</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Christian</spec>
+				<spec>Buddhist</spec>
+				<spec>Taoist</spec>
+				<spec>Confucianist</spec>
+				<spec>Kantian</spec>
+				<spec>Socialist</spec>
+				<spec>Fascist</spec>
+				<spec>Utalitarianist</spec>
+				<spec>Existentialist</spec>
+				<spec>Rationalist</spec>
+				<spec>Anti-Rationalist</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3711,7 +4293,7 @@
 		</skill>
 		<skill>
 			<id>8ba59909-186d-4629-97ee-62880189b5c3</id>
-			<name>Police Procedures</name>
+			<name>Police Procedures (Professional)</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
 			<default>No</default>
@@ -3726,6 +4308,107 @@
 				<spec>Private</spec>
 				<spec>Home</spec>
 				<spec>[Corporation]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>a9ba4d49-7a9c-4d3f-9e71-99ef8458ca5f</id>
+			<name>Police Procedures (Street)</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Government</spec>
+				<spec>Military Security Design</spec>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Military</spec>
+				<spec>Physical</spec>
+				<spec>Private</spec>
+				<spec>Home</spec>
+				<spec>[Corporation]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>8a82edaa-9ff0-447d-acb7-3a72a8bcfb9f</id>
+			<name>Security Procedures</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Government</spec>
+				<spec>Military Security Design</spec>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Military</spec>
+				<spec>Physical</spec>
+				<spec>Private</spec>
+				<spec>Home</spec>
+				<spec>[Corporation]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>af8ea3b6-5ffd-41b6-892a-7e77ee8e247a</id>
+			<name>Law Enforcement Procedures (Professional)</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Government</spec>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Military</spec>
+				<spec>Physical</spec>
+				<spec>Private</spec>
+				<spec>[Corporation]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>687a25c8-2f47-40fd-a9f8-a44bedb2c1f3</id>
+			<name>Law Enforcement Procedures (Street)</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Government</spec>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Military</spec>
+				<spec>Physical</spec>
+				<spec>Private</spec>
+				<spec>[Corporation]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>31357280-24e0-4146-b5ee-ad532decaa5e</id>
+			<name>Government Procedures</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Physical</spec>
+				<spec>Bureaucratic</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>af8ea3b6-5ffd-41b6-892a-7e77ee8e247a</id>
+			<name>Lone Star Procedures</name>
+			<attribute>INT</attribute>
+			<category>Street</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Government</spec>
+				<spec>Magical</spec>
+				<spec>Matrix</spec>
+				<spec>Physical</spec>
+				<spec>Home</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3806,6 +4489,20 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>79a0069c-4517-4698-91b5-3d24b928c5ee</id>
+			<name>Salish</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>fe3ccfd5-9e14-4e0a-962d-f9601fc24950</id>
 			<name>Shadow Community</name>
 			<attribute>INT</attribute>
@@ -3875,6 +4572,31 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>ea016ac9-8000-4cb3-ae84-102e9c989667</id>
+			<name>Telesma</name>
+			<attribute>LOG</attribute>
+			<category>Professional</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>[Focus Type]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>9d03c940-d018-40eb-8273-c33215de3948</id>
+			<name>Tlingit</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>ca63887a-1cee-4364-8fb9-126aa3526908</id>
 			<name>Triads: Hong Kong</name>
 			<attribute>INT</attribute>
@@ -3888,6 +4610,34 @@
 			</specs>
 		</skill>
 		<skill>
+			<id>7dd3d095-fdfb-4d95-b910-205f6e980434</id>
+			<name>Tsimshianic</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>3fcfdd55-03f6-4e08-aaa6-6c98f15b1cd3</id>
+			<name>Uto-Aztecan</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
 			<id>4e62ab4f-4877-4a7f-bcb9-3023fc443078</id>
 			<name>Vehicles</name>
 			<attribute>INT</attribute>
@@ -3895,15 +4645,43 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
+				<spec>Military</spec>
 				<spec>Aircraft</spec>
 				<spec>Bikes</spec>
 				<spec>Boats</spec>
 				<spec>Cars</spec>
-				<spec>Drones</spec>
 				<spec>Spacecraft</spec>
 				<spec>Trains</spec>
 				<spec>Trucks</spec>
 				<spec>Vintage Cars</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>53b99129-39d5-4bc4-9815-6bab79144c7c</id>
+			<name>Yiddish</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>037f8de4-9485-4efe-8e93-d7b929c62b29</id>
+			<name>Zuni</name>
+			<attribute>INT</attribute>
+			<category>Language</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Read/Write</spec>
+				<spec>Speak</spec>
+				<spec>Dialect</spec>
+				<spec>Lingo</spec>
 			</specs>
 		</skill>
 	</knowledgeskills>
