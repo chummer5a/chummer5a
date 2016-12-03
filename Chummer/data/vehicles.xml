@@ -5384,6 +5384,31 @@
 			<page>466</page>
 		</vehicle>
 		<vehicle>
+			<id>4fbe5cd2-b7b9-11e6-80f5-76304dec7eb7</id>
+			<name>MCT-Nissan Roto-drone (Medium) (German)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>1</accel>
+			<speed>2</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>6</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>7</modslots>
+			<weaponmodslots>3</weaponmodslots>
+			<gears>
+				<gear rating="3" maxrating="4">Sensor Array</gear>
+			</gears>
+			<mods>
+				<addslots>3</addslots>
+			</mods>
+			<avail>6</avail>
+			<cost>8000</cost>
+			<source>R5G</source>
+			<page>147</page>
+		</vehicle>
+		<vehicle>
 			<id>6c6893fd-a69f-4346-885b-c6ae85679d35</id>
 			<name>Cyberspace Designs Dalmatian (Large)</name>
 			<category>Drones: Large</category>
@@ -7281,6 +7306,40 @@
 			<slots>1</slots>
 			<avail>0</avail>
 			<cost>Rating * 100</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>124</page>
+		</mod>
+		<mod>
+			<id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
+			<name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
+			<category>All</category>
+			<optionaldrone/>
+			<rating>0</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>50</cost>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>124</page>
+		</mod>
+		<mod>
+			<id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
+			<name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
+			<category>All</category>
+			<optionaldrone/>
+			<rating>0</rating>
+			<slots>2</slots>
+			<avail>0</avail>
+			<cost>500</cost>
 			<required>
 				<vehicledetails>
 					<category operation="contains">Drones</category>
