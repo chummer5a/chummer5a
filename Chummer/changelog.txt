@@ -28,6 +28,7 @@ Application Changes:
 - Added the enableattribute, replaceattribute, enabletab, cyberseeker, blockskillgroupdefaulting, attributelevel, skilllevel, knowsoft and specificpower to the Custom Improvement Manager. 
 - Fixed an issue in which vehicles and weapons in creation mode wouldn't properly be marked as free. if selected to do so. 
 - Removed a segment of code from the attribute load method that caused MAG burnouts to load their base value from karma for some reason. 
+- Implemented Drone Attribute Downgrades.
 
 Data Changes: 
 
