@@ -1657,7 +1657,6 @@ namespace Chummer
 			_objCharacter.MAGEnabled = true;
 			_objCharacter.MAG.MetatypeMinimum = 1;
 			_objCharacter.MAG.MetatypeMaximum = 1;
-			_objCharacter.MAG.Value = 1;
 
 			// Add the Cyberzombie Lifestyle if it is not already taken.
 			bool blnHasLifestyle = false;
@@ -1755,7 +1754,7 @@ namespace Chummer
 			if (!frmPickAttribute.DoNotAffectMetatypeMaximum)
 				_objImprovementManager.CreateImprovement(frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, "CharacterAttribute Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, -1);
 			// Permanently reduce the CharacterAttribute's value.
-			_objCharacter.GetAttribute(frmPickAttribute.SelectedAttribute).Value -= 1;
+			_objCharacter.GetAttribute(frmPickAttribute.SelectedAttribute).Degrade(1);
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -2325,7 +2324,8 @@ namespace Chummer
 					objMerge.CritterPowers.Add(objCritterPower);
 				}
 
-				// Add the Vessel's Physical Attributes to the Spirit's Force.
+				//TOD: Implement Possession attribute bonuses.
+				/* Add the Vessel's Physical Attributes to the Spirit's Force.
 				objMerge.BOD.MetatypeMaximum = objVessel.BOD.Value + objMerge.MAG.TotalValue;
 				objMerge.BOD.Value = objVessel.BOD.Value + objMerge.MAG.TotalValue;
 				objMerge.AGI.MetatypeMaximum = objVessel.AGI.Value + objMerge.MAG.TotalValue;
@@ -2333,7 +2333,7 @@ namespace Chummer
 				objMerge.REA.MetatypeMaximum = objVessel.REA.Value + objMerge.MAG.TotalValue;
 				objMerge.REA.Value = objVessel.REA.Value + objMerge.MAG.TotalValue;
 				objMerge.STR.MetatypeMaximum = objVessel.STR.Value + objMerge.MAG.TotalValue;
-				objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
+				objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;*/
 
 				// Copy any Lifestyles the Vessel has.
 				foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
@@ -2465,7 +2465,8 @@ namespace Chummer
 			int intREA = Convert.ToInt32(objSelected["reamin"].InnerText);
 			int intSTR = Convert.ToInt32(objSelected["strmin"].InnerText);
 
-			// Add the CharacterAttribute modifiers, making sure that none of them go below 1.
+			//TODO: Update spirit attribute values.
+			/* Add the CharacterAttribute modifiers, making sure that none of them go below 1.
 			int intSetBOD = objMerge.MAG.TotalValue + intBOD;
 			int intSetAGI = objMerge.MAG.TotalValue + intAGI;
 			int intSetREA = objMerge.MAG.TotalValue + intREA;
@@ -2510,6 +2511,7 @@ namespace Chummer
 			objMerge.STR.Value = intSetSTR;
 			if (objMerge.STR.Value < 1)
 				objMerge.STR.Value = 1;
+			*/
 
 			// Update the Movement if the Vessel has one.
 			if (objSelected["movement"] != null)
@@ -3182,7 +3184,7 @@ namespace Chummer
 		{
 			// Handle the AttributeValueChanged Event for the AttributeControl object.
 			UpdateCharacterInfo();
-
+			
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
@@ -11623,7 +11625,7 @@ namespace Chummer
 			switch (objEntry.Undo.KarmaType)
 			{
 				case KarmaExpenseType.ImproveAttribute:
-					_objCharacter.GetAttribute(objEntry.Undo.ObjectId).Value -= 1;
+					_objCharacter.GetAttribute(objEntry.Undo.ObjectId).Degrade(1);
 					break;
                 case KarmaExpenseType.AddPowerPoint:
                     _objCharacter.MAGAdept -= 1;
@@ -20240,7 +20242,8 @@ namespace Chummer
 				// If the CharacterAttribute reaches 0, the character has burned out.
 				if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
 				{
-					_objCharacter.MAG.Value = 0;
+					_objCharacter.MAG.Base = 0;
+					_objCharacter.MAG.Karma = 0;
 					_objCharacter.MAG.MetatypeMinimum = 0;
 					_objCharacter.MAG.MetatypeMaximum = 0;
 					_objCharacter.MAG.MetatypeAugmentedMaximum = 0;
@@ -20292,7 +20295,8 @@ namespace Chummer
 				}
 				if (_objCharacter.RES.TotalMaximum < 1 && _objCharacter.RESEnabled)
 				{
-					_objCharacter.RES.Value = 0;
+					_objCharacter.RES.Base = 0;
+					_objCharacter.RES.Karma = 0;
 					_objCharacter.RES.MetatypeMinimum = 0;
 					_objCharacter.RES.MetatypeMinimum = 0;
 					_objCharacter.RES.MetatypeAugmentedMaximum = 0;

@@ -26,7 +26,6 @@ namespace Chummer.UI.Attributes
 			//Display
 			lblName.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.Value), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblAugmented.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.TotalValue), false, DataSourceUpdateMode.OnPropertyChanged);
             lblLimits.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
             
             if (attribute._objCharacter.Created)
@@ -66,15 +65,13 @@ namespace Chummer.UI.Attributes
                 int upgradeKarmaCost = attribute.UpgradeKarmaCost();
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring = "";
-                if (upgradeKarmaCost > attribute._objCharacter.Karma)
+				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+					attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
+				if (upgradeKarmaCost > attribute._objCharacter.Karma)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-
-                if (parent.ConfirmKarmaExpense(attribute.UpgradeKarmaCostString))
-                    return;
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;
@@ -84,67 +81,12 @@ namespace Chummer.UI.Attributes
         }
 
 		private void nudBase_ValueChanged(object sender, EventArgs e)
-		{// Verify that the CharacterAttribute can be improved within the rules.
-			if (!attribute.CanImproveAttribute() && (nudBase.Value + nudKarma.Value) >= nudBase.Maximum && !attribute._objCharacter.IgnoreRules)
-			{
-				try
-				{
-					attribute.Value = attribute.TotalMaximum - attribute.Value - 1;
-					ShowAttributeRule();
-				}
-				catch
-				{
-					nudKarma.Value = 0;
-				}
-			}
-			else if ((nudBase.Value + nudKarma.Value) > nudBase.Maximum)
-			{
-				try
-				{
-					nudKarma.Value = nudBase.Maximum - nudBase.Value;
-				}
-				catch
-				{
-					nudKarma.Value = 0;
-				}
-			}
-
-			attribute.Base = Convert.ToInt32(nudBase.Value);
-			attribute.Karma = Convert.ToInt32(nudKarma.Value);
-			attribute.Value = Convert.ToInt32(nudBase.Value) + Convert.ToInt32(nudKarma.Value);
+		{
 			ValueChanged?.Invoke(this);
 		}
 
 		private void nudKarma_ValueChanged(object sender, EventArgs e)
 		{
-			// Verify that the CharacterAttribute can be improved within the rules.
-			if (!attribute.CanImproveAttribute() && (nudBase.Value + nudKarma.Value) >= nudBase.Maximum && !attribute._objCharacter.IgnoreRules)
-			{
-				try
-				{
-					nudKarma.Value = nudBase.Maximum - nudBase.Value - 1;
-					ShowAttributeRule();
-				}
-				catch
-				{
-					nudKarma.Value = 0;
-				}
-			}
-			else if ((nudBase.Value + nudKarma.Value) > nudBase.Maximum)
-			{
-				try
-				{
-					nudKarma.Value = nudBase.Maximum - nudBase.Value;
-				}
-				catch
-				{
-					nudKarma.Value = 0;
-				}
-			}
-
-			attribute.Karma = Convert.ToInt32(nudKarma.Value);
-			attribute.Base = Convert.ToInt32(nudBase.Value);
-			attribute.Value = Convert.ToInt32(nudBase.Value) + Convert.ToInt32(nudKarma.Value);
 			ValueChanged?.Invoke(this);
 		}
 
@@ -174,7 +116,7 @@ namespace Chummer.UI.Attributes
 			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnEdge"), LanguageManager.Instance.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 				return;
 
-			attribute.Value -= 1;
+			attribute.Degrade(1);
 			ValueChanged?.Invoke(this);
 		}
 	}

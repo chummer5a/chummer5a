@@ -1017,7 +1017,7 @@ namespace Chummer
 				}
 
 				// If we're working with a Critter, set the Attributes to their default values.
-				if (_strXmlFile == "critters.xml")
+				/*if (_strXmlFile == "critters.xml")
 				{
 					_objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
 					_objCharacter.AGI.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 0));
@@ -1031,7 +1031,7 @@ namespace Chummer
 					_objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
 					_objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
 					_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
-				}
+				}*/
 
 				// Sprites can never have Physical Attributes or WIL.
 				if (lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
@@ -1165,7 +1165,7 @@ namespace Chummer
 				}
 
 				// Run through the character's Attributes one more time and make sure their value matches their minimum value.
-				if (_strXmlFile == "metatypes.xml")
+				/*if (_strXmlFile == "metatypes.xml")
 				{
 					_objCharacter.BOD.Value = _objCharacter.BOD.TotalMinimum;
 					_objCharacter.AGI.Value = _objCharacter.AGI.TotalMinimum;
@@ -1203,7 +1203,7 @@ namespace Chummer
                     _objCharacter.MAG.Karma = 0;
                     _objCharacter.RES.Karma = 0;
 					_objCharacter.DEP.Karma = 0;
-				}
+				}*/
 
 				// Add any Critter Powers the Metatype/Critter should have.
 				XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");

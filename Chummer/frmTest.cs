@@ -671,7 +671,7 @@ namespace Chummer
 						_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
 					}
 
-					// If we're working with a Critter, set the Attributes to their default values.
+					/* If we're working with a Critter, set the Attributes to their default values.
 					if (strFile == "critters.xml")
 					{
 						_objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
@@ -686,7 +686,7 @@ namespace Chummer
 						_objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
 						_objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
 						_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
-					}
+					}*/
 
 					// Sprites can never have Physical Attributes or WIL.
 					if (objXmlMetatype["name"].InnerText.EndsWith("Sprite"))
@@ -750,7 +750,7 @@ namespace Chummer
 						_objCharacter.Qualities.Add(objQuality);
 					}
 
-					// Run through the character's Attributes one more time and make sure their value matches their minimum value.
+					/* Run through the character's Attributes one more time and make sure their value matches their minimum value.
 					if (strFile == "metatypes.xml")
 					{
 						_objCharacter.BOD.Value = _objCharacter.BOD.TotalMinimum;
@@ -761,7 +761,7 @@ namespace Chummer
 						_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 						_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 						_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
-					}
+					}*/
 
 					// Add any Critter Powers the Metatype/Critter should have.
 					XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");

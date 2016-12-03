@@ -77,11 +77,7 @@ namespace Chummer.Backend.Attributes
             objNode.TryGetField("base", out _intBase);
             objNode.TryGetField("karma", out _intKarma);
 			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
-			Value = Convert.ToInt32(objNode["value"].InnerText);
             _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
-
-            if (_intBase == 0)
-                _intBase = Value;
         }
 
         /// <summary>
@@ -137,9 +133,6 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intMetatypeMin = value;
-                // If changing the Minimum would cause the current value to be outside of its bounds, bring it back within acceptable limits.
-                if (Value < value)
-                    Value = value;
             }
         }
 
@@ -160,9 +153,6 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intMetatypeMax = value;
-                // If changing the Maximum would cause the current value to be outside of its bounds, bring it back within acceptable limits.
-                if (Value > value)
-                    Value = value;
             }
         }
 
@@ -193,8 +183,8 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intBase = value;
-                OnPropertyChanged();
-            }
+				OnPropertyChanged(nameof(Value));
+			}
         }
 
         /// <summary>
@@ -209,7 +199,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intKarma = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Value));
             }
         }
 
@@ -222,14 +212,7 @@ namespace Chummer.Backend.Attributes
             {
                 //This amount of object allocation is uglier than the US national dept, but improvementmanager is due for a rewrite anyway
                 ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
-                return _intValue + MetatypeMinimum + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
-            }
-            set
-            {
-                ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
-
-                _intValue = value - (MetatypeMinimum + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum));
-                OnPropertyChanged();
+                return Base + Karma + MetatypeMinimum + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
             }
         }
 
@@ -1353,6 +1336,23 @@ namespace Chummer.Backend.Attributes
             Karma += 1;
             _objCharacter.Karma -= price;
         }
+
+	    public void Degrade(int intValue)
+	    {
+		    for (int i = intValue; i > 0; i--)
+		    {
+			    if (Karma > 0)
+			    {
+				    Karma -= 1;
+			    }
+			    else if (Base > 0)
+			    {
+				    Base -= 1;
+			    }
+			    else
+				    return;
+		    }
+	    }
         #endregion
     }
 }

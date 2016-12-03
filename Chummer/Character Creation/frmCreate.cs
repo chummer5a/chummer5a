@@ -1953,7 +1953,6 @@ namespace Chummer
             _objCharacter.MAGEnabled = true;
             _objCharacter.MAG.MetatypeMinimum = 1;
             _objCharacter.MAG.MetatypeMaximum = 1;
-            _objCharacter.MAG.Value = 1;
 
             // Add the Cyberzombie Lifestyle if it is not already taken.
             bool blnHasLifestyle = false;
@@ -16544,14 +16543,14 @@ namespace Chummer
             }
             //}
 
-            // If the character has an Essence Penalty, this needs to be added as a positive value to the character's MAG/RES so that it's correctly shown in Career Mode.
+            /* If the character has an Essence Penalty, this needs to be added as a positive value to the character's MAG/RES so that it's correctly shown in Career Mode.
             if (_objCharacter.EssencePenalty > 0 && (_objCharacter.MAGEnabled || _objCharacter.RESEnabled))
             {
                 if (_objCharacter.MAGEnabled)
                     _objCharacter.MAG.Value += _objCharacter.EssencePenalty;
                 if (_objCharacter.RESEnabled)
                     _objCharacter.RES.Value += _objCharacter.EssencePenalty;
-            }
+            }*/
 
 			// If the character is a shapeshifter, generate their meta
 			if (_objCharacter.MetatypeCategory == "Shapeshifter")

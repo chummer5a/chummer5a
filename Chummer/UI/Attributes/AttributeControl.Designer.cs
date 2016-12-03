@@ -30,7 +30,6 @@
         {
 			this.cmdImproveATT = new System.Windows.Forms.Button();
 			this.lblValue = new System.Windows.Forms.Label();
-			this.lblAugmented = new System.Windows.Forms.Label();
 			this.lblName = new System.Windows.Forms.Label();
 			this.lblLimits = new System.Windows.Forms.Label();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
@@ -61,15 +60,6 @@
 			this.lblValue.Size = new System.Drawing.Size(19, 13);
 			this.lblValue.TabIndex = 74;
 			this.lblValue.Text = "[0]";
-			// 
-			// lblAugmented
-			// 
-			this.lblAugmented.AutoSize = true;
-			this.lblAugmented.Location = new System.Drawing.Point(246, 5);
-			this.lblAugmented.Name = "lblAugmented";
-			this.lblAugmented.Size = new System.Drawing.Size(19, 13);
-			this.lblAugmented.TabIndex = 73;
-			this.lblAugmented.Text = "[0]";
 			// 
 			// lblName
 			// 
@@ -131,7 +121,6 @@
 			this.Controls.Add(this.nudBase);
 			this.Controls.Add(this.cmdImproveATT);
 			this.Controls.Add(this.lblValue);
-			this.Controls.Add(this.lblAugmented);
 			this.Controls.Add(this.lblName);
 			this.Controls.Add(this.lblLimits);
 			this.Name = "AttributeControl";
@@ -147,7 +136,6 @@
 
         private System.Windows.Forms.Button cmdImproveATT;
         internal System.Windows.Forms.Label lblValue;
-        internal System.Windows.Forms.Label lblAugmented;
         internal System.Windows.Forms.Label lblName;
         internal System.Windows.Forms.Label lblLimits;
         internal System.Windows.Forms.NumericUpDown nudKarma;
