@@ -3081,24 +3081,6 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>bd978c37-7bff-4610-9c3a-1bab45c6e93f</id>
-			<name>Shadow Community</name>
-			<attribute>INT</attribute>
-			<category>Street</category>
-			<default>No</default>
-			<skillgroup />
-			<specs>
-				<spec>Turf</spec>
-				<spec>Politics</spec>
-				<spec>History</spec>
-				<spec>Organizations</spec>
-				<spec>Safe Houses</spec>
-				<spec>News</spec>
-				<spec>Personalities</spec>
-				<spec>Rumours</spec>
-			</specs>
-		</skill>
-		<skill>
 			<id>083e28e0-885a-4123-a8db-847c3509d14a</id>
 			<name>Sioux</name>
 			<attribute>INT</attribute>
