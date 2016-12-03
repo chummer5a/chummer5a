@@ -2457,6 +2457,10 @@
       <key>Label_FreeKnowledgeSkills</key>
       <text>Verbleibende freie Punkte für Wissensfertigkeiten:</text>
     </string>
+	<string>
+		<key>Label_CustomKnowledgeSkillsReminder</key>
+		<text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
+	</string>
     <string>
       <key>Button_AddSkill</key>
       <text>Fertigkeit hinzufügen</text>

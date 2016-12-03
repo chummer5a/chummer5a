@@ -28,6 +28,7 @@ Application Changes:
 - Added the enableattribute, replaceattribute, enabletab, cyberseeker, blockskillgroupdefaulting, attributelevel, skilllevel, knowsoft and specificpower to the Custom Improvement Manager. 
 - Fixed an issue in which vehicles and weapons in creation mode wouldn't properly be marked as free. if selected to do so. 
 - Removed a segment of code from the attribute load method that caused MAG burnouts to load their base value from karma for some reason. 
+- Added a reminder to the knowledge skills section that custom skills and specializations can always be written in.
 - Implemented Drone Attribute Downgrades.
 
 Data Changes: 
@@ -48,8 +49,13 @@ Data Changes:
 - Updated Fragmentation quality so that it allows the player to specify the negative psychological quality that it exhibits.
 - Fixed an issue with the Santeria and Obeah traditions from Hard Targets. 
 - Altered the naming convention for traditions.xml to explicitly refer to the spirit type instead of using array enumeration to figure out what they're supposed to be. 
-- Added added MCT Roto-Drone with new stats from german Rigger 5.0 (Aspahltkrieger)
-- Added Expanded Ammunition Bay Weapon Mount addons
+- Added added MCT Roto-Drone with new stats from german Rigger 5.0 (Aspahltkrieger).
+- Added Expanded Ammunition Bay Weapon Mount addons.
+- Removed duplicate entries for the Corporation: Ares Macrotechnology and Shadow Community knowledge skills.
+- Added entries for the following languages based on Run Faster: Yiddish, Athabaskan, Anishinaabe, Iroquoian, Eskimo-Aleut, Uto-Aztecan, Zuni, Salish, Tlingit, and Tsimshianic.
+- Corrected all Corporate knowledge skills to Academic, as per Run Faster.
+- Corrected Military knowledge skill to Professional, as per core rulebook and Run Faster.
+- Added entries for the following knowledge skills from Run Faster: Farming, Foster System, Critters, Strategy, DIY, Mechanics, Fashion Design (the Professional version of Fashion), Crook Hangouts, Administration, Magical Law, Drones (removed the spec from Vehicles), Law Enforcement Procedures (separate from Security Procedures), Lone Star Procedures, Codes, Black Markets, National Threats, Government Procedures, Security Procedures, Smuggler Safehouses, Smuggler Routes, Blade Design, Gun Trivia, Magical Theory (Street), Magical Security, Megacorp Law (Street), Charity Shelters, Alchemy (Professional), Telesma, Foreign Military, NAN Military, Peacekeepers, Military Vehicles, Tir Military Vehicles, Matrix Threats, Psychology, Sociology, Philosophy, Journalism.
 
 Build 188
 
