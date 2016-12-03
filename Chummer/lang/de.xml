@@ -7621,5 +7621,9 @@
 			<text>Erlernte KI Programme</text>
 		</string>
 	<!-- End Region -->
+	<string>
+			<key>Message_DroneIllegalDowngrade</key>
+			<text>Die folgenden {0} Drohnen haben Downgrades durch die Attribute zu weit gesenkt werden:</text>
+		</string>
   </strings>
 </chummer>
