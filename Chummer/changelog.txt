@@ -29,6 +29,7 @@ Application Changes:
 - Fixed an issue in which vehicles and weapons in creation mode wouldn't properly be marked as free. if selected to do so. 
 - Removed a segment of code from the attribute load method that caused MAG burnouts to load their base value from karma for some reason. 
 - Added a reminder to the knowledge skills section that custom skills and specializations can always be written in.
+- Fixed an issue in which skill group points would not populate properly on load for life modules.
 
 Data Changes: 
 
