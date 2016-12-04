@@ -580,7 +580,7 @@
 		<!-- End Region -->
 	<!-- Region AI Advanced Programs -->
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1e040-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Abduction</name>
       <category>Advanced Programs</category>
 	  <require>Clearsight Autosoft</require>
@@ -590,7 +590,7 @@
       <page>158</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1e39c-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Authority</name>
       <category>Advanced Programs</category>
 	  <require>Exploit</require>
@@ -600,7 +600,7 @@
       <page>158</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1e5c2-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Cascade</name>
       <category>Advanced Programs</category>
 	  <require>Decryption</require>
@@ -610,7 +610,7 @@
       <page>158</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1e7e8-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Eguchi Smile</name>
       <category>Advanced Programs</category>
 	  <require>Wrapper</require>
@@ -620,7 +620,7 @@
       <page>158</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1e978-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Fnord</name>
       <category>Advanced Programs</category>
 	  <require>Sneak</require>
@@ -630,7 +630,7 @@
       <page>158</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1eb26-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Medic</name>
       <category>Advanced Programs</category>
 	  <require>Toolbox</require>
@@ -640,7 +640,7 @@
       <page>159</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1ed06-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Nyetworking</name>
       <category>Advanced Programs</category>
 	  <require>Cat's Paw</require>
@@ -650,7 +650,7 @@
       <page>159</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1ef36-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Poke</name>
       <category>Advanced Programs</category>
 	  <require>Exploit</require>
@@ -660,7 +660,7 @@
       <page>159</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1f184-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Psychotropic Biofeedback</name>
       <category>Advanced Programs</category>
 	  <require>Biofeedback</require>
@@ -670,7 +670,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1f38c-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Rootkit</name>
       <category>Advanced Programs</category>
 	  <require>Stealth</require>
@@ -680,7 +680,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1f5d0-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Rust</name>
       <category>Advanced Programs</category>
 	  <require>Guard</require>
@@ -690,7 +690,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1f7f6-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Shunt</name>
       <category>Advanced Programs</category>
 	  <require>Shell</require>
@@ -700,7 +700,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1f940-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Spotter</name>
       <category>Advanced Programs</category>
 	  <require>[Weapon] Targeting Autosoft</require>
@@ -713,7 +713,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1fbe8-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Teergrube</name>
       <category>Advanced Programs</category>
 	  <require>Lockdown</require>
@@ -723,7 +723,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd1fe90-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Uncertainty</name>
       <category>Advanced Programs</category>
 	  <require>Cat's Paw</require>
@@ -733,7 +733,7 @@
       <page>160</page>
     </program>
 	<program>
-      <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+      <id>dfd2783e-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>WTLM</name>
       <category>Advanced Programs</category>
 	  <require>[Model] Maneuvering Autosoft</require>
