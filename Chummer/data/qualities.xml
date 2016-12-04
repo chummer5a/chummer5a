@@ -10368,7 +10368,7 @@
 		<!-- Region Negative AI Qualities -->
 		<quality>
 			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
-			<name>Corruptor</name>
+			<name>Corrupter</name>
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />

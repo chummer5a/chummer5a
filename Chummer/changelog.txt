@@ -34,6 +34,9 @@ Application Changes:
 - Added display logic to show how many slots a given vehicle mod will consume.
 - Fixed a bug where Handling Downgrade would increase OffroadHandling instead of decrasing.
 - Fixed a Bug where Off-Road Suspension wouldn't increase OffroadHandling.
+- Added missing qualities allowed for A.I.s.
+- Restricted Quality search for A.I. characters to qualities allowed for A.I.s.
+- Added automatic typo correction for the Corrupter quality.
 
 Data Changes: 
 
