@@ -153,7 +153,7 @@ namespace Chummer.Skills
 					select improvement.Value).Sum();
 		}
 
-		private int _cachedFreeLevels;
+		private int _cachedFreeLevels = int.MinValue;
 		int FreeLevels()
 		{
 			if (_cachedFreeLevels != int.MinValue) return _cachedFreeLevels;

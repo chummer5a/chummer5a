@@ -38,6 +38,7 @@ namespace Chummer
 		private int _intMarkup = 0;
 		private static string _strSelectCategory = "";
 
+		string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
 		private string _strAllowedCategories = "";
 		private bool _blnAddAgain = false;
 
@@ -833,6 +834,20 @@ namespace Chummer
 				XPathExpression xprSlots = nav.Compile(strSlots);
 				lblSlots.Text = nav.Evaluate(xprSlots).ToString();
 
+				if (arrCategories.Contains(objXmlMod["category"].InnerText))
+				{
+					lblVehicleCapacityLabel.Visible = true;
+					lblVehicleCapacity.Visible = true;
+					lblVehicleCapacity.Text = GetRemainingModCapacity(objXmlMod["category"].InnerText, Convert.ToInt32(lblSlots.Text));
+					tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.Instance.GetString("Tip_RemainingVehicleModCapacity"));
+				}
+				else
+				{
+					lblVehicleCapacityLabel.Visible = false;
+					lblVehicleCapacity.Visible = false;
+				}
+				
+
 				try
 				{
 					if (objXmlMod["category"].InnerText == "Weapon Mod")
@@ -891,6 +906,27 @@ namespace Chummer
 				lblSource.Text = strBook + " " + strPage;
 
 				tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			}
+		}
+
+		private string GetRemainingModCapacity(string strCategory, int intModSlots)
+		{
+			switch (strCategory)
+			{
+				case "Powertrain":
+					return _objVehicle.PowertrainModSlotsUsed(intModSlots);
+				case "Protection":
+					return _objVehicle.ProtectionModSlotsUsed(intModSlots);
+				case "Weapons":
+					return _objVehicle.WeaponModSlotsUsed(intModSlots);
+				case "Body":
+					return _objVehicle.BodyModSlotsUsed(intModSlots);
+				case "Electromagnetic":
+					return _objVehicle.ElectromagneticModSlotsUsed(intModSlots);
+				case "Cosmetic":
+					return _objVehicle.CosmeticModSlotsUsed(intModSlots);
+				default:
+					return "";
 			}
 		}
 

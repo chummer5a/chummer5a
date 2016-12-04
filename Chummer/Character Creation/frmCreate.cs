@@ -18052,12 +18052,19 @@ namespace Chummer
 				}
 				else
 				{
-					lblVehiclePowertrain.Text = objVehicle.PowertrainModSlots.ToString();
-					lblVehicleCosmetic.Text = objVehicle.CosmeticModSlots.ToString();
-					lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlots.ToString();
-					lblVehicleBodymod.Text = objVehicle.BodyModSlots.ToString();
-					lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlots.ToString();
-					lblVehicleProtection.Text = objVehicle.ProtectionModSlots.ToString();
+					lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
+					lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
+					lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
+					lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
+					lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
+					lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
+					
+					tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+					tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+					tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+					tipTooltip.SetToolTip(lblVehicleBodymodLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+					tipTooltip.SetToolTip(lblVehicleWeaponsmodLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+					tipTooltip.SetToolTip(lblVehicleProtectionLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
 				}
 
 				nudVehicleGearQty.Visible = true;
@@ -19752,7 +19759,7 @@ namespace Chummer
 						}
 						else
 						{
-							if (objVehicle.OverR5Capacity)
+							if (objVehicle.OverR5Capacity())
 							{
 								blnOverCapacity = true;
 								lstOverCapacity.Add(objVehicle.Name);
@@ -19799,10 +19806,50 @@ namespace Chummer
 				}
 			}
 
+            //Check Drone mods for illegalities
+            if (_objOptions.BookEnabled("R5"))
+            {
+                List<string> lstDronesIllegalDowngrades = new List<string>();
+                bool blnIllegalDowngrades = false;
+                int intIllegalDowngrades = 0;
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                    {
+                        List<string> lstInstalledDowngrades = new List<string>();
+                        foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Downgrade))
+                        {
+                            //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
+                            if ((objMod.Category == "Handling" && Convert.ToInt32(objVehicle.TotalHandling) < 1) ||
+                                (objMod.Category == "Speed" && Convert.ToInt32(objVehicle.TotalSpeed) < 0) ||
+                                (objMod.Category == "Acceleration" && Convert.ToInt32(objVehicle.TotalAccel) < 1) ||
+                                (objMod.Category == "Body" && Convert.ToInt32(objVehicle.TotalBody) < 1) ||
+                                (objMod.Category == "Armor" && Convert.ToInt32(objVehicle.TotalArmor) < 1) ||
+                                (objMod.Category == "Sensor" && Convert.ToInt32(objVehicle.CalculatedSensor) < 1))
+                            {
+                                blnIllegalDowngrades = true;
+                                intIllegalDowngrades++;
+                                lstDronesIllegalDowngrades.Add(objVehicle.Name);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (blnIllegalDowngrades)
+                {
+                    blnValid = false;
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_DroneIllegalDowngrade").Replace("{0}", intIllegalDowngrades.ToString());
+                    foreach (string strItem in lstDronesIllegalDowngrades)
+                    {
+                        strMessage += "\n\t- " + strItem;
+                    }
+                }
+            }
 
 
-			// Check if the character has gone over on Primary Attributes
-			if (blnValid && _objCharacter.Attributes > 0)
+
+            // Check if the character has gone over on Primary Attributes
+            if (blnValid && _objCharacter.Attributes > 0)
 			{
 				if (MessageBox.Show(
 					LanguageManager.Instance.GetString("Message_ExtraPoints")
