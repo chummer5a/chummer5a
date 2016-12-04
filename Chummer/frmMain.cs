@@ -23,6 +23,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+ using System.Text.RegularExpressions;
  using System.Windows;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
@@ -685,7 +686,30 @@ namespace Chummer
 				bool blnLoaded = false;
 				Character objCharacter = new Character();
 				objCharacter.FileName = strFileName;
-				Timekeeper.Start("load_file");
+
+                //Check for typo in Corrupter quality and correct it
+                XmlDocument objXmlDocument = new XmlDocument();
+                objXmlDocument.Load(strFileName);
+                XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+                if (objXmlCharacter["appversion"].InnerText != string.Empty)
+                {
+                    Version verSavedVersion = new Version();
+                    Version verCorrectedVersion = new Version();
+                    var strVersion = objXmlCharacter["appversion"].InnerText;
+                    if (strVersion.StartsWith("0."))
+                    {
+                        strVersion = strVersion.Substring(2);
+                    }
+                    Version.TryParse(strVersion, out verSavedVersion);
+                    Version.TryParse("5.188.34", out verCorrectedVersion);               
+                    int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
+                    if (intResult == -1)
+                    {
+                        File.WriteAllText(strFileName, Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));
+                    }
+                }               
+
+                Timekeeper.Start("load_file");
 				blnLoaded = objCharacter.Load();
 				Timekeeper.Finish("load_file");
 				Timekeeper.Start("load_free");
