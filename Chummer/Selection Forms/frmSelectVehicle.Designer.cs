@@ -505,7 +505,7 @@
             this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
             this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
             this.lblVehicleSeatsLabel.TabIndex = 39;
-            this.lblVehicleSeatsLabel.Tag = "Label_Seat";
+            this.lblVehicleSeatsLabel.Tag = "Label_Seats";
             this.lblVehicleSeatsLabel.Text = "Seats:";
             // 
             // lblVehicleSeats

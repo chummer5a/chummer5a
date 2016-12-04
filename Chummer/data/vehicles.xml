@@ -8102,6 +8102,135 @@
 			<source>R5</source>
 			<page>123</page>
 		</mod>
+		<mod>
+			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<name>Handling Downgrade (Drone)</name>
+			<category>Handling</category>
+			<optionaldrone/>
+			<downgrade/>
+			<rating>0</rating>
+			<slots>-1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<bonus>
+				<handling>-1</handling>
+				<offroadhandling>-1</offroadhandling>
+			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>123</page>
+		</mod>
+		<mod>
+			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<name>Speed Downgrade (Drone)</name>
+			<category>Speed</category>
+			<optionaldrone/>
+			<downgrade/>
+			<rating>0</rating>
+			<slots>-1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<bonus>
+				<speed>-1</speed>
+				<offroadspeed>-1</offroadspeed>
+			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>123</page>
+		</mod>
+		<mod>
+			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<name>Acceleration Downgrade (Drone)</name>
+			<category>Acceleration</category>
+			<optionaldrone/>
+			<downgrade/>
+			<rating>0</rating>
+			<slots>-1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<bonus>
+				<accel>Rating</accel>
+				<offroadaccel>Rating</offroadaccel>
+			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>123</page>
+		</mod>
+		<mod>
+			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<name>Body Downgrade (Drone)</name>
+			<category>Body</category>
+			<optionaldrone/>
+			<downgrade/>
+			<rating>0</rating>
+			<slots>-1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<bonus>
+				<body>-1</body>
+			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>123</page>
+		</mod>
+		<mod>
+			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<name>Armor Downgrade (Drone)</name>
+			<category>Armor</category>
+			<optionaldrone/>
+			<downgrade/>
+			<rating>0</rating>
+			<slots>-1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<bonus>
+				<armor>-3</armor>
+			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>123</page>
+		</mod>
+		<mod>
+			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<name>Sensor Downgrade (Drone)</name>
+			<category>Sensor</category>
+			<optionaldrone/>
+			<downgrade/>
+			<rating>0</rating>
+			<slots>-1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<bonus>
+				<sensor>-1</sensor>
+			</bonus>
+			<required>
+				<vehicledetails>
+					<category operation="contains">Drones</category>
+				</vehicledetails>
+			</required>
+			<source>R5</source>
+			<page>123</page>
+		</mod>
 	<!-- End Region -->
 	</mods>
 </chummer>
