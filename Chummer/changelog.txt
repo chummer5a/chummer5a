@@ -75,6 +75,22 @@ Data Changes:
 New Strings:
 
 - Tip_RemainingModCapacity
+- Message_DroneIllegalDowngrade
+- String_ExpenseLearnProgram
+- Message_DeleteAIProgram
+- Checkbox_SelectAIProgram_LimitList
+- MessageTitle_SelectAIProgram_AdvancedProgramRequirement
+- Message_SelectAIProgram_AdvancedProgramRequirement
+- Title_SelectAIProgram
+- Node_SelectedAIPrograms
+- String_Requires
+- Button_AddProgram
+- Label_AIProgramsAdvancedPrograms
+- Tab_AdvancedPrograms
+- Label_Options_NewAIAdvancedProgram
+- Label_Options_NewAIProgram
+- Label_SummaryAIAdvancedPrograms
+- Label_SummaryAINormalPrograms
 
 Build 188
 

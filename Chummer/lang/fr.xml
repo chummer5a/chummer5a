@@ -7450,7 +7450,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Requires</key>
-			<text>Prérequis du Programme:</text>
+			<text>Prérequis:</text>
 		</string>
 		<string>
 			<key>Node_SelectedAIPrograms</key>
