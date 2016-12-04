@@ -1347,6 +1347,30 @@
 					<name>Chemistry</name>
 					<val>2</val>
 				</skilllevel>
+				<skilllevel>
+					<name>Software</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>[Any]</name>
+					<group>Academic</group>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Any]</name>
+					<group>Academic</group>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Language]</name>
+					<group>Language</group>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[City]</name>
+					<group>Street</group>
+					<val>1</val>
+				</knowledgeskilllevel>
 			</bonus>
 			<story>$real went to high school like a normal person.</story>
 			<source>RF</source>
@@ -3655,7 +3679,7 @@
 							<val>2</val>
 						</skilllevel>
 						<skilllevel>
-							<name>Pilot Anthroform</name>
+							<name>Pilot Walker</name>
 							<val>2</val>
 						</skilllevel>
 						<skilllevel>
@@ -4159,7 +4183,7 @@
 							<name>Pilot Aircraft</name>
 						</skilllevel>
 						<skilllevel>
-							<name>Pilot Anthroform</name>
+							<name>Pilot Walker</name>
 						</skilllevel>
 						<skilllevel>
 							<name>Pilot Ground Craft</name>
@@ -5331,7 +5355,7 @@
 							<name>Pilot Aircraft</name>
 						</skilllevel>
 						<skilllevel>
-							<name>Pilot Anthroform</name>
+							<name>Pilot Walker</name>
 						</skilllevel>
 						<skilllevel>
 							<name>Pilot Ground Craft</name>
@@ -5554,7 +5578,7 @@
 							<name>Pilot Aircraft</name>
 						</skilllevel>
 						<skilllevel>
-							<name>Pilot Anthroform</name>
+							<name>Pilot Walker</name>
 						</skilllevel>
 						<skilllevel>
 							<name>Pilot Ground Craft</name>
@@ -5896,7 +5920,7 @@
 							<name>Pilot Aircraft</name>
 						</skilllevel>
 						<skilllevel>
-							<name>Pilot Anthroform</name>
+							<name>Pilot Walker</name>
 						</skilllevel>
 						<skilllevel>
 							<name>Pilot Ground Craft</name>
@@ -6096,7 +6120,7 @@
 							<name>Pilot Aircraft</name>
 						</skilllevel>
 						<skilllevel>
-							<name>Pilot Anthroform</name>
+							<name>Pilot Walker</name>
 						</skilllevel>
 						<skilllevel>
 							<name>Pilot Ground Craft</name>
