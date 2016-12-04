@@ -31,6 +31,7 @@ Application Changes:
 - Added a reminder to the knowledge skills section that custom skills and specializations can always be written in.
 - Implemented Drone Attribute Downgrades.
 - Fixed an issue in which skill group points would not populate properly on load for life modules.
+- Added display logic to show how many slots a given vehicle mod will consume.
 - Fixed a bug where Handling Downgrade would increase OffroadHandling instead of decrasing.
 - Fixed a Bug where Off-Road Suspension wouldn't increase OffroadHandling.
 
@@ -61,6 +62,10 @@ Data Changes:
 - Added entries for the following knowledge skills from Run Faster: Farming, Foster System, Critters, Strategy, DIY, Mechanics, Fashion Design (the Professional version of Fashion), Crook Hangouts, Administration, Magical Law, Drones (removed the spec from Vehicles), Law Enforcement Procedures (separate from Security Procedures), Lone Star Procedures, Codes, Black Markets, National Threats, Government Procedures, Security Procedures, Smuggler Safehouses, Smuggler Routes, Blade Design, Gun Trivia, Magical Theory (Street), Magical Security, Megacorp Law (Street), Charity Shelters, Alchemy (Professional), Telesma, Foreign Military, NAN Military, Peacekeepers, Military Vehicles, Tir Military Vehicles, Matrix Threats, Psychology, Sociology, Philosophy, Journalism.
 - Fixed incorrect references to the Pilot Anthroform skill.
 - Fixed missing skill bonuses for the High School life module. 
+
+New Strings:
+
+- Tip_RemainingModCapacity
 
 Build 188
 

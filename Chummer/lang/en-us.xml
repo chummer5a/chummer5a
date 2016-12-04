@@ -5022,6 +5022,14 @@ Do you want to continue?</text>
 			<key>Tip_RecoilAccessories</key>
 			<text> + {0} ({1} (Deployable))</text>
 		</string>
+		<string>
+			<key>Tip_RemainingVehicleModCapacity</key>
+			<text>This shows the vehicle's capacity once the selected mod has been installed.</text>
+		</string>
+		<string>
+			<key>Tip_TotalVehicleModCapacity</key>
+			<text>This shows the vehicle's capacity as Installed/Total Capacity.</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region ASDF Attributes-->
 		<string>

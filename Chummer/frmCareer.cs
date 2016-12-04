@@ -24032,12 +24032,19 @@ namespace Chummer
 					}
 					else
 					{
-						lblVehiclePowertrain.Text = objVehicle.PowertrainModSlots.ToString();
-						lblVehicleCosmetic.Text = objVehicle.CosmeticModSlots.ToString();
-						lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlots.ToString();
-						lblVehicleBodymod.Text = objVehicle.BodyModSlots.ToString();
-						lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlots.ToString();
-						lblVehicleProtection.Text = objVehicle.ProtectionModSlots.ToString();
+						lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
+						lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
+						lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
+						lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
+						lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
+						lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
+
+						tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+						tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+						tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+						tipTooltip.SetToolTip(lblVehicleBodymodLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+						tipTooltip.SetToolTip(lblVehicleWeaponsmodLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+						tipTooltip.SetToolTip(lblVehicleProtectionLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
 
 						lblVehicleDroneModSlots.Visible = false;
 						lblVehicleDroneModSlotsLabel.Visible = false;
