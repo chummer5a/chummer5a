@@ -172,6 +172,8 @@ namespace Chummer
             _characterOptions.KarmaComplexFormSkillsoft = Convert.ToInt32(nudKarmaComplexFormSkillsoft.Value);
             _characterOptions.KarmaJoinGroup = Convert.ToInt32(nudKarmaJoinGroup.Value);
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
+		    _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
+		    _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
 
             // Build Priority options.
             _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;

@@ -368,7 +368,7 @@ namespace Chummer
                     objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + strValue + "\" and category = \"" + strCategory + "\"]");
                 }
                 else
-                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + lstAIPrograms.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
+                    objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + lstAIPrograms.SelectedValue + "\"]");
 
                 _strSelectedAIProgram = objXmlProgram["name"].InnerText;
                 _strSelectedCategory = objXmlProgram["category"].InnerText;
