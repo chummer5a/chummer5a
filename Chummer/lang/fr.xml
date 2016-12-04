@@ -7483,6 +7483,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>String_ExpenseLearnProgram</key>
 			<text>Apprentissage du programme d'IA</text>
 		</string>
+		<string>
+			<key>Message_DroneIllegalDowngrade</key>
+			<text>Les {0} drones suivants ont des rétrogradés qui trop réduisent leurs attributs:</text>
+		</string>
 	<!-- End Region -->
   </strings>
 </chummer>
