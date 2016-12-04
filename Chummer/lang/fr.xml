@@ -7450,7 +7450,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Requires</key>
-			<text>Prérequis du Programme:</text>
+			<text>Prérequis:</text>
 		</string>
 		<string>
 			<key>Node_SelectedAIPrograms</key>
@@ -7482,6 +7482,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>String_ExpenseLearnProgram</key>
 			<text>Apprentissage du programme d'IA</text>
+		</string>
+		<string>
+			<key>Message_DroneIllegalDowngrade</key>
+			<text>Les {0} drones suivants ont des rétrogradés qui trop réduisent leurs attributs:</text>
 		</string>
 	<!-- End Region -->
   </strings>
