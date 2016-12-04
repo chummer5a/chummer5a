@@ -327,7 +327,9 @@ namespace Chummer
 		private void BuildQualityList()
 		{
 			List<ListItem> lstQuality = new List<ListItem>();
-			if (txtSearch.Text.Trim() != "")
+            XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
+            XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
+            if (txtSearch.Text.Trim() != "")
 			{
 				// Treat everything as being uppercase so the search is case-insensitive.
 				string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
@@ -344,10 +346,32 @@ namespace Chummer
                 }
                 strSearch += "]";
 
-				XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
+                bool blnNeedQualityWhitelist = false;
+                XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                if (objXmlMetatype?.SelectNodes("qualityrestriction")?.Count > 0)
+                    blnNeedQualityWhitelist = true;
+                else
+                {
+                    objXmlMetatype = objXmlCrittersDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                    if (objXmlMetatype?.SelectNodes("qualityrestriction")?.Count > 0)
+                        blnNeedQualityWhitelist = true;
+                }
+
+                XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
 				foreach (XmlNode objXmlQuality in objXmlQualityList)
 				{
-                    if (objXmlQuality["hide"] == null)
+                    bool blnQualityAllowed = !blnNeedQualityWhitelist;
+                    if (blnNeedQualityWhitelist)
+                    {
+                        if (
+                            objXmlMetatype.SelectSingleNode("qualityrestriction/positive/quality[. = \"" +
+                                                            objXmlQuality["name"].InnerText + "\"]") != null ||
+                            objXmlMetatype.SelectSingleNode("qualityrestriction/negative/quality[. = \"" +
+                                                            objXmlQuality["name"].InnerText + "\"]") != null)
+                            blnQualityAllowed = true;
+                    }
+
+                    if (objXmlQuality["hide"] == null && blnQualityAllowed)
                     {
                         if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                         {
@@ -374,8 +398,6 @@ namespace Chummer
 			}
 			else
 			{
-				XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
-                XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
 
                 string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
 				if (chkMetagenetic.Checked)
