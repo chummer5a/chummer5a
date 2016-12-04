@@ -8222,5 +8222,9 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region -->
 		<!-- End Region -->
+		<string>
+			<key>Message_DroneIllegalDowngrade</key>
+			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
+		</string>
 	</strings>
 </chummer>

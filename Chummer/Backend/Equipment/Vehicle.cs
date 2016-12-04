@@ -1178,7 +1178,7 @@ namespace Chummer.Backend.Equipment
 					{
 						if (objMod.Bonus.InnerXml.Contains("<sensor>"))
 						{
-							if (objMod.Bonus["sensor"].InnerText.Contains("+"))
+							if (objMod.Bonus["sensor"].InnerText.Contains("+") || objMod.Bonus["sensor"].InnerText.Contains("-"))
 							{
 								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
 								intSensor += Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
@@ -1198,9 +1198,8 @@ namespace Chummer.Backend.Equipment
 				{
 					if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
 					{
-						if (intSensor != _intSensor)
-							objGear.Rating = intSensor;
-						else objGear.Rating = _intSensor;
+                        objGear.MaxRating = Math.Max(intSensor, 0);
+                        objGear.Rating = Math.Max(intSensor, 0);				    
 					}
 					break;
 				}
@@ -1384,13 +1383,26 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				int intDroneModSlots = _intDroneModSlots;
+			    bool blnDowngraded = false;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Mods that are included with a Vehicle by default do not count toward the Slots used.
 					if (!objMod.IncludedInVehicle && objMod.Installed)
 					{
 						if (objMod.CalculatedSlots < 0)
-							intDroneModSlots -= objMod.CalculatedSlots;
+                            //You recieve only one additional Mod Point from Downgrades
+					        if (objMod.Downgrade)
+					        {
+					            if (!blnDowngraded)
+					            {
+					                intDroneModSlots -= objMod.CalculatedSlots;
+					                blnDowngraded = true;
+					            }
+					        }
+					        else
+                            { 
+					            intDroneModSlots -= objMod.CalculatedSlots;
+					        }
 					}
 				}
 				return intDroneModSlots;
@@ -1811,17 +1823,24 @@ namespace Chummer.Backend.Equipment
 					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
 						// Add the Modification's Body to the Vehicle's base Body.
-						
-						if (objMod.Bonus.InnerXml.Contains("<body>") && objMod.Bonus["body"].InnerText.Contains("Rating"))
-						{
-							// If the cost is determined by the Rating, evaluate the expression.
-							XmlDocument objXmlDocument = new XmlDocument();
-							XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-							string strBody = objMod.Bonus["body"].InnerText.Replace("Rating", objMod.Rating.ToString());
-							XPathExpression xprBody = nav.Compile(strBody);
-							intBody += Convert.ToInt32(nav.Evaluate(xprBody).ToString());
-						}
+					    if (objMod.Bonus.InnerXml.Contains("<body>"))
+					    {
+					        if (objMod.Bonus["body"].InnerText.Contains("Rating"))
+					        {
+					            // If the cost is determined by the Rating, evaluate the expression.
+					            XmlDocument objXmlDocument = new XmlDocument();
+					            XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					            string strBody = objMod.Bonus["body"].InnerText.Replace("Rating", objMod.Rating.ToString());
+					            XPathExpression xprBody = nav.Compile(strBody);
+					            intBody += Convert.ToInt32(nav.Evaluate(xprBody).ToString());
+					        } else if (objMod.Bonus["body"].InnerText[0] == '-')
+					        {
+					            intBody += Convert.ToInt32(objMod.Bonus["body"].InnerText);
+
+					        }
+					    }
 					}
 				}
 
@@ -1960,6 +1979,9 @@ namespace Chummer.Backend.Equipment
 				{
 					// We're a drone, but we didn't have any mods, so keep the base value
 					intModArmor = _intArmor;
+				} else if (intModArmor < 0)
+				{
+				    intModArmor = _intArmor + intModArmor;
 				}
 				return intModArmor;
 			}

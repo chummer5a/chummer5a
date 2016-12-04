@@ -40,6 +40,7 @@ namespace Chummer.Backend.Equipment
 		private string _strExtra = "";
 		private string _strWeaponMountCategories = "";
 		private bool _blnDiscountCost = false;
+	    private bool _blnDowngrade = false;
 
 		// Variables used to calculate the Mod's cost from the Vehicle.
 		private int _intVehicleCost = 0;
@@ -71,6 +72,11 @@ namespace Chummer.Backend.Equipment
 			{
 				_intRating = Convert.ToInt32(intRating);
 			}
+		    if (objXmlMod["downgrade"] != null)
+		    {
+		        _blnDowngrade = true;
+		    }
+
 			if (objXmlMod["rating"] != null)
 				_strMaxRating = objXmlMod["rating"].InnerText;
 			else
@@ -781,13 +787,25 @@ namespace Chummer.Backend.Equipment
 				_blnDiscountCost = value;
 			}
 		}
-		#endregion
 
-		#region Complex Properties
-		/// <summary>
-		/// Total Availablility of the VehicleMod.
-		/// </summary>
-		public string TotalAvail
+        /// <summary>
+        /// Whether or not the Vehicle Mod is a downgrade for drone attributes
+        /// </summary>
+        public bool Downgrade
+        {
+            get
+            {
+                return _blnDowngrade;
+            }
+
+        }
+        #endregion
+
+        #region Complex Properties
+        /// <summary>
+        /// Total Availablility of the VehicleMod.
+        /// </summary>
+        public string TotalAvail
 		{
 			get
 			{
