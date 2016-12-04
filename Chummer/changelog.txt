@@ -68,6 +68,7 @@ Data Changes:
 - Added entries for the following knowledge skills from Run Faster: Farming, Foster System, Critters, Strategy, DIY, Mechanics, Fashion Design (the Professional version of Fashion), Crook Hangouts, Administration, Magical Law, Drones (removed the spec from Vehicles), Law Enforcement Procedures (separate from Security Procedures), Lone Star Procedures, Codes, Black Markets, National Threats, Government Procedures, Security Procedures, Smuggler Safehouses, Smuggler Routes, Blade Design, Gun Trivia, Magical Theory (Street), Magical Security, Megacorp Law (Street), Charity Shelters, Alchemy (Professional), Telesma, Foreign Military, NAN Military, Peacekeepers, Military Vehicles, Tir Military Vehicles, Matrix Threats, Psychology, Sociology, Philosophy, Journalism.
 - Fixed incorrect references to the Pilot Anthroform skill.
 - Fixed missing skill bonuses for the High School life module. 
+- Fixed an issue with the Sawed Off/Shortbarrel weapon modification not showing up for expected weapons. 
 
 New Strings:
 

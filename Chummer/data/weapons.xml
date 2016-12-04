@@ -9538,6 +9538,8 @@
 			<required>
 				<OR>
 					<category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
 					<useskill>Longarms</useskill>
 				</OR>
 			</required>
@@ -9565,10 +9567,15 @@
 			<required>
 				<OR>
 					<category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
 					<useskill>Longarms</useskill>
 					<useskill>Heavy Weapons</useskill>
 				</OR>
 			</required>
+      <addunderbarrels>
+        <weapon>Underbarrel Shotgun</weapon>
+      </addunderbarrels>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -9625,6 +9632,9 @@
 					<OR>
 						<category>Heavy Pistols</category>
 						<category>Assault Rifles</category>
+            <category>Shotguns</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
 						<useskill>Longarms</useskill>
 					</OR>
 				</weapondetails>
@@ -9674,7 +9684,10 @@
 					<OR>
 						<category>Heavy Pistols</category>
 						<category>Assault Rifles</category>
-						<useskill>Longarms</useskill>
+            <category>Shotguns</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
 					</OR>
 					<conceal operation="greaterthan">0</conceal>
 				</weapondetails>
