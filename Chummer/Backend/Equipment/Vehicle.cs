@@ -1920,7 +1920,7 @@ namespace Chummer.Backend.Equipment
                                 XmlDocument objXmlDocument = new XmlDocument();
                                 XPathNavigator nav = objXmlDocument.CreateNavigator();
                                 XPathExpression xprSeats = nav.Compile(objMod.Bonus["offroadhandling"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadHandling", intBaseOffroadHandling.ToString()));
-                                intTotalBonusOffroadHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.Instance.CultureInfo) * (chrFirstCharacter == '-' ? -1 : 1);
+                                intTotalBonusOffroadHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.Instance.CultureInfo);
                             }
                         }
                     }

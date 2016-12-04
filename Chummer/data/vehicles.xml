@@ -6091,7 +6091,7 @@
 			<cost>Vehicle Cost * 0.25</cost>
 			<bonus>
 				<handling>-1</handling>
-				<offroadhandling>1</offroadhandling>
+				<offroadhandling>+1</offroadhandling>
 			</bonus>
 			<source>R5</source>
 			<page>155</page>
