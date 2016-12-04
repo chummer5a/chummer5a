@@ -464,10 +464,10 @@
 										<strong>Aktionsfertigkeiten</strong>
 										<table width="100%" cellspacing="0" cellpadding="0" border="0">
 											<tr>
-												<td width="50%">
+												<td width="45%">
 													<strong>Fertigkeit</strong>
 												</td>
-												<td width="10%" style="text-align:center;">
+												<td width="15%" style="text-align:center;">
 													<strong>Pool</strong>
 												</td>
 												<td width="10%" style="text-align:center;">
@@ -487,10 +487,10 @@
 										<strong>Aktionsfertigkeiten</strong>
 										<table width="100%" cellspacing="0" cellpadding="0" border="0">
 											<tr>
-												<td width="50%">
+												<td width="45%">
 													<strong>Fertigkeit</strong>
 												</td>
-												<td width="10%" style="text-align:center;">
+												<td width="15%" style="text-align:center;">
 													<strong>Pool</strong>
 												</td>
 												<td width="10%" style="text-align:center;">
@@ -510,10 +510,10 @@
 										<strong>Wissensfertigkeiten</strong>
 										<table width="100%" cellspacing="0" cellpadding="0" border="0">
 											<tr>
-												<td width="50%">
+												<td width="45%">
 													<strong>Fertigkeit</strong>
 												</td>
-												<td width="10%" style="text-align:center;">
+												<td width="15%" style="text-align:center;">
 													<strong>Pool</strong>
 												</td>
 												<td width="10%" style="text-align:center;">
@@ -547,10 +547,10 @@
 				</div>
 				
 				<div class="block" id="LimitsBlock">
-					<table width="100%" cellspacing="0" cellpadding="0" class="tableborder">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0">
 						<tr>
 							<td width="100%">
-								<table width="100%" cellspacing="0" cellpadding="0" border="0">
+								<table width="100%" cellspacing="0" cellpadding="0" border="0" class="tableborder">
 									<tr>
 										<td width="25%" style="text-align:center;" valign="top">
 											<strong>Körperliches Limit: <xsl:value-of
@@ -1760,7 +1760,7 @@
 																<xsl:if test="position() mod 2 != 1">
 																	<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 																</xsl:if>
-																<td colspan="4" class="notesrow">
+																<td colspan="6" class="notesrow">
 																	<xsl:call-template name="PreserveLineBreaks">
 																		<xsl:with-param name="text" select="notes" />
 																	</xsl:call-template>
@@ -1974,7 +1974,7 @@
 										<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 									</xsl:if>
 									<td></td>
-									<td style="text-align:center;" valign="top">S: <xsl:value-of select="ranges/short" /></td>
+									<td style="text-align:center;" valign="top">K: <xsl:value-of select="ranges/short" /></td>
 									<td style="text-align:center;" valign="top">M: <xsl:value-of select="ranges/medium" /></td>
 									<td style="text-align:center;" valign="top">L: <xsl:value-of select="ranges/long" /></td>
 									<td style="text-align:center;" valign="top">E: <xsl:value-of select="ranges/extreme" /></td>
@@ -2042,7 +2042,7 @@
 										<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 									</xsl:if>
 									<td></td>
-									<td style="text-align:center;" valign="top">S: <xsl:value-of select="ranges/short" /></td>
+									<td style="text-align:center;" valign="top">K: <xsl:value-of select="ranges/short" /></td>
 									<td style="text-align:center;" valign="top">M: <xsl:value-of select="ranges/medium" /></td>
 									<td style="text-align:center;" valign="top">L: <xsl:value-of select="ranges/long" /></td>
 									<td style="text-align:center;" valign="top">E: <xsl:value-of select="ranges/extreme" /></td>
@@ -3079,7 +3079,7 @@
 										<strong>SM</strong>
 									</td>
 									<td width="7%" style="text-align:center;">
-										<strong>Seats</strong>
+										<strong>Sitze</strong>
 									</td>
 									<td width="6%" style="text-align:center;">
 										<strong>G-Stuf.</strong>
