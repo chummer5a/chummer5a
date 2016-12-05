@@ -241,6 +241,14 @@ namespace Chummer.Skills
 			return cost;
 		}
 
+		public static int CompareKnowledgeSkills(KnowledgeSkill rhs, KnowledgeSkill lhs)
+		{
+			if (rhs.Name != null && lhs.Name != null)
+			{
+				return rhs.WriteableName.CompareTo(lhs.WriteableName);
+			}
+			return 0;
+		}
 
 		/// <summary>
 		/// Karma price to upgrade. Returns negative if impossible

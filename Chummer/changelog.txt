@@ -43,6 +43,7 @@ Application Changes:
 - Added a new operation to XML node filtering, "exists", which simply checks whether a specific node exists.
 - Using Swap Quality in Career Mode now allows the use of the Don't Double Purchase/Refund optional rules for qualities. 
 - Basic lifestyle qualities are now filtered based on selected books.
+- Added filter and sort options for knowledge skills. 
 
 Data Changes: 
 
@@ -74,6 +75,7 @@ Data Changes:
 - Fixed weapon mods with useskill-reliant filtering not working for weapons without a useskill tag, but whose weapon category would be covered by the skill specified in useskill.
 - Fixed most Improvised Weapons using the Exotic Melee Weapon skill instead of the Clubs or Blades skills (Blades for weapons that can only be used by stabbing), and also fixed the Hammer/Sledgehammer and Pool Cue improvised weapons not being eligible for the Hammers and Staves specializations respectively within Clubs.
 - Implemented the Latent Dracomorphosis quality from Howling Shadows. This is achieved by using the Swap Quality function in Career Mode. 
+- Added an underbarrel grenade launcher to weapons.xml, and to the Matilda drone. 
 
 New Strings:
 
@@ -94,6 +96,10 @@ New Strings:
 - Label_Options_NewAIProgram
 - Label_SummaryAIAdvancedPrograms
 - Label_SummaryAINormalPrograms
+- String_KnowledgeSkillFilterAll
+- String_KnowledgeSkillFilterRatingAboveZero
+- String_KnowledgeSkillFilterTotalRatingAboveZero
+- String_KnowledgeSkillFilterRatingZero
 
 Build 188
 
