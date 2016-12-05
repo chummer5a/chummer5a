@@ -7476,6 +7476,10 @@
 			<key>String_ExpenseLearnProgram</key>
 			<text>Learned AI Program</text>
 		</string>
+		<string>
+			<key>Message_DroneIllegalDowngrade</key>
+			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
+		</string>
 	<!-- End Region -->
   </strings>
 </chummer>

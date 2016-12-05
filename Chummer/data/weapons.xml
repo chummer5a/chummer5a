@@ -3465,7 +3465,7 @@
 			<avail>0</avail>
 			<cost>0</cost>
 			<allowaccessory>false</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3484,7 +3484,7 @@
 			<ammo>0</ammo>
 			<avail>0</avail>
 			<cost>0</cost>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3524,7 +3524,7 @@
 			<avail>0</avail>
 			<cost>30</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3544,7 +3544,7 @@
 			<avail>0</avail>
 			<cost>0</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Blades</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3564,7 +3564,7 @@
 			<avail>0</avail>
 			<cost>20</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3584,7 +3584,8 @@
 			<avail>0</avail>
 			<cost>30</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
+			<spec>Hammers</spec>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3604,7 +3605,7 @@
 			<avail>As weapon</avail>
 			<cost>As weapon</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3624,7 +3625,8 @@
 			<avail>0</avail>
 			<cost>45</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
+			<spec>Staves</spec>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3644,7 +3646,7 @@
 			<avail>As weapon</avail>
 			<cost>As weapon</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -3664,7 +3666,8 @@
 			<avail>1</avail>
 			<cost>40</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Melee Weapon</useskill>
+			<useskill>Clubs</useskill>
+			<spec>Hammers</spec>
 			<source>RG</source>
 			<page>22</page>
 		</weapon>
@@ -8985,6 +8988,15 @@
 				<weapondetails>
 					<OR>
 						<useskill>Pistols</useskill>
+						<AND>
+							<useskill NOT="" operation="exists" />
+							<OR>
+								<category>Tasers</category>
+								<category>Holdouts</category>
+								<category>Light Pistols</category>
+								<category>Heavy Pistols</category>
+							</OR>
+						</AND>
 						<category>Machine Pistols</category>
 						<conceal operation="lessthanequals">0</conceal>
 					</OR>
@@ -9541,6 +9553,14 @@
           <category>Sniper Rifles</category>
           <category>Sporting Rifles</category>
 					<useskill>Longarms</useskill>
+					<AND>
+						<useskill NOT="" operation="exists" />
+						<OR>
+							<category>Shotguns</category>
+							<category>Sporting Rifles</category>
+							<category>Sniper Rifles</category>
+						</OR>
+					</AND>
 				</OR>
 			</required>
 			<source>HT</source>
@@ -9571,6 +9591,20 @@
           <category>Sporting Rifles</category>
 					<useskill>Longarms</useskill>
 					<useskill>Heavy Weapons</useskill>
+					<AND>
+						<useskill NOT="" operation="exists" />
+						<OR>
+							<category>Shotguns</category>
+							<category>Sporting Rifles</category>
+							<category>Sniper Rifles</category>
+							<category>Light Machine Guns</category>
+							<category>Medium Machine Guns</category>
+							<category>Heavy Machine Guns</category>
+							<category>Assault Cannons</category>
+							<category>Grenade Launchers</category>
+							<category>Missile Launchers</category>
+						</OR>
+					</AND>
 				</OR>
 			</required>
       <addunderbarrels>
@@ -9636,6 +9670,14 @@
             <category>Sniper Rifles</category>
             <category>Sporting Rifles</category>
 						<useskill>Longarms</useskill>
+						<AND>
+							<useskill NOT="" operation="exists" />
+							<OR>
+								<category>Shotguns</category>
+								<category>Sporting Rifles</category>
+								<category>Sniper Rifles</category>
+							</OR>
+						</AND>
 					</OR>
 				</weapondetails>
 			</required>
@@ -9684,10 +9726,15 @@
 					<OR>
 						<category>Heavy Pistols</category>
 						<category>Assault Rifles</category>
-            <category>Shotguns</category>
-            <category>Sniper Rifles</category>
-            <category>Sporting Rifles</category>
-            <useskill>Longarms</useskill>
+						<useskill>Longarms</useskill>
+						<AND>
+							<useskill NOT="" operation="exists" />
+							<OR>
+								<category>Shotguns</category>
+								<category>Sporting Rifles</category>
+								<category>Sniper Rifles</category>
+							</OR>
+						</AND>
 					</OR>
 					<conceal operation="greaterthan">0</conceal>
 				</weapondetails>
