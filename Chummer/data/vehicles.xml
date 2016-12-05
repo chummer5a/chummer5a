@@ -3772,6 +3772,9 @@
 				<name>Standard Weapon Mount (Drone)</name>
 			</mods>
 			<weapons>
+        <weapon>
+          <name>Underbarrel Grenade Launcher</name>
+        </weapon>
 				<weapon>
 					<name>Riot Shield</name>
 				</weapon>

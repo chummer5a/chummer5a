@@ -6791,6 +6791,37 @@
 			<source>SR5</source>
 			<page>428</page>
 		</weapon>
+    <weapon>
+      <id>5df8388e-9ca9-4455-9ac0-3d83ffd77d0d</id>
+      <name>Underbarrel Grenade Launcher</name>
+      <category>Underbarrel Weapons</category>
+      <hide>yes</hide>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>Grenade</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <ammocategory>Grenade Launchers</ammocategory>
+      <avail>0</avail>
+      <cost>0</cost>
+      <allowaccessory>true</allowaccessory>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <useskill>Heavy Weapons</useskill>
+      <range>Grenade Launchers</range>
+      <source>SR5</source>
+      <page>428</page>
+    </weapon>
 		<!-- End Region -->
 		<!-- Region Run and Gun -->
 		<weapon>
