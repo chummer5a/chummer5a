@@ -99,7 +99,7 @@ namespace Chummer
             
 
 			// Fill the Options list.
-			foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\"]"))
+			foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
 			{
 				TreeNode nodOption = new TreeNode();
 
