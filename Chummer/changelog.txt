@@ -41,6 +41,7 @@ Application Changes:
 - Fixed a bug, where Karma costs for Ai programs weren't saved.
 - Gave all advanced AI programs unique UUIDs instead of all sharing one with the browse common program.
 - Added a new operation to XML node filtering, "exists", which simply checks whether a specific node exists.
+- Basic lifestyle qualities are now filtered based on selected books.
 
 Data Changes: 
 
