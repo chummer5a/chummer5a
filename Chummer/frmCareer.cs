@@ -7838,11 +7838,14 @@ namespace Chummer
 
 			bool blnAddItem = true;
 			int intKarmaCost = (objNewQuality.BP - objQuality.BP) * _objOptions.KarmaQuality;
-
 			// Make sure the character has enough Karma to pay for the Quality.
 			if (objNewQuality.Type == QualityType.Positive)
-			{
-				if (intKarmaCost > _objCharacter.Karma)
+            {
+                if (!_objOptions.DontDoubleQualityPurchases)
+                {
+                    intKarmaCost *= 2;
+                }
+                if (intKarmaCost > _objCharacter.Karma)
 				{
 					MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 					blnAddItem = false;
@@ -7864,9 +7867,13 @@ namespace Chummer
 				}
 			}
 			else
-			{
-				// This should only happen when a character is trading up to a less-costly Quality.
-				if (intKarmaCost > 0)
+            {
+                if (!_objOptions.DontDoubleQualityRefunds)
+                {
+                    intKarmaCost *= 2;
+                }
+                // This should only happen when a character is trading up to a less-costly Quality.
+                if (intKarmaCost > 0)
 				{
 					if (intKarmaCost > _objCharacter.Karma)
 					{

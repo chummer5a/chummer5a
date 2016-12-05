@@ -41,6 +41,7 @@ Application Changes:
 - Fixed a bug, where Karma costs for Ai programs weren't saved.
 - Gave all advanced AI programs unique UUIDs instead of all sharing one with the browse common program.
 - Added a new operation to XML node filtering, "exists", which simply checks whether a specific node exists.
+- Using Swap Quality in Career Mode now allows the use of the Don't Double Purchase/Refund optional rules for qualities. 
 - Basic lifestyle qualities are now filtered based on selected books.
 
 Data Changes: 
@@ -72,6 +73,7 @@ Data Changes:
 - Fixed missing skill bonuses for the High School life module. 
 - Fixed weapon mods with useskill-reliant filtering not working for weapons without a useskill tag, but whose weapon category would be covered by the skill specified in useskill.
 - Fixed most Improvised Weapons using the Exotic Melee Weapon skill instead of the Clubs or Blades skills (Blades for weapons that can only be used by stabbing), and also fixed the Hammer/Sledgehammer and Pool Cue improvised weapons not being eligible for the Hammers and Staves specializations respectively within Clubs.
+- Implemented the Latent Dracomorphosis quality from Howling Shadows. This is achieved by using the Swap Quality function in Career Mode. 
 
 New Strings:
 
