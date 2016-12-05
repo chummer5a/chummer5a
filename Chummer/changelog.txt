@@ -43,6 +43,7 @@ Application Changes:
 - Added a new operation to XML node filtering, "exists", which simply checks whether a specific node exists.
 - Using Swap Quality in Career Mode now allows the use of the Don't Double Purchase/Refund optional rules for qualities. 
 - Basic lifestyle qualities are now filtered based on selected books.
+- Added filter and sort options for knowledge skills. 
 
 Data Changes: 
 
@@ -95,6 +96,10 @@ New Strings:
 - Label_Options_NewAIProgram
 - Label_SummaryAIAdvancedPrograms
 - Label_SummaryAINormalPrograms
+- String_KnowledgeSkillFilterAll
+- String_KnowledgeSkillFilterRatingAboveZero
+- String_KnowledgeSkillFilterTotalRatingAboveZero
+- String_KnowledgeSkillFilterRatingZero
 
 Build 188
 

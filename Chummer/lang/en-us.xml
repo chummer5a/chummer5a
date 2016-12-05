@@ -2651,6 +2651,22 @@
 			<text>Show Active Skills Rating = 0</text>
 		</string>
 		<string>
+			<key>String_KnowledgeSkillFilterAll</key>
+			<text>Show All Knowledge Skills</text>
+		</string>
+		<string>
+			<key>String_KnowledgeSkillFilterRatingAboveZero</key>
+			<text>Show Knowledge Skills Rating &gt; 0</text>
+		</string>
+		<string>
+			<key>String_KnowledgeSkillFilterTotalRatingAboveZero</key>
+			<text>Show Knowledge Skills Total Rating &gt; 0</text>
+		</string>
+		<string>
+			<key>String_KnowledgeSkillFilterRatingZero</key>
+			<text>Show Knowledge Skills Rating = 0</text>
+		</string>
+		<string>
 			<key>String_CyberzombieReduceAttribute</key>
 			<text>Select an Attribute to reduce (both Value and Metatype Maximum).</text>
 		</string>
