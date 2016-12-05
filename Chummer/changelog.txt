@@ -40,6 +40,7 @@ Application Changes:
 - Fixed a bug, where Chummer would crash when adding an AI program with a different category selected.
 - Fixed a bug, where Karma costs for Ai programs weren't saved.
 - Gave all advanced AI programs unique UUIDs instead of all sharing one with the browse common program.
+- Using Swap Quality in Career Mode now allows the use of the Don't Double Purchase/Refund optional rules for qualities. 
 
 Data Changes: 
 
@@ -69,6 +70,7 @@ Data Changes:
 - Fixed incorrect references to the Pilot Anthroform skill.
 - Fixed missing skill bonuses for the High School life module. 
 - Fixed an issue with the Sawed Off/Shortbarrel weapon modification not showing up for expected weapons. 
+- Implemented the Latent Dracomorphosis quality from Howling Shadows. This is achieved by using the Swap Quality function in Career Mode. 
 
 New Strings:
 
