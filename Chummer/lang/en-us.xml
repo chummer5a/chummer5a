@@ -1104,6 +1104,18 @@
 			<key>Tab_Roster_GameNotes</key>
 			<text>Game Notes</text>
 		</string>
+		<string>
+			<key>Treenode_Roster_RecentCharacters</key>
+			<text>Recent Characters</text>
+		</string>
+		<string>
+			<key>Treenode_Roster_WatchFolder</key>
+			<text>Watch Folder</text>
+		</string>
+		<string>
+			<key>Treenode_Roster_FavouriteCharacters</key>
+			<text>Favourite Characters</text>
+		</string>
     <!-- End Region -->
 		<!-- Region Create/Career Window -->
 		<string>
