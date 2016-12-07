@@ -46,6 +46,7 @@ Application Changes:
 - Added filter and sort options for knowledge skills. 
 - Added some logic to prevent crashes if the Character Roster watch folder is deleted. 
 - Added drag-drop functionality to the character roster to enable more easily marking a character as a favourite.
+- Fixed an issue with life modules not properly adding qualities. 
 
 Data Changes: 
 
