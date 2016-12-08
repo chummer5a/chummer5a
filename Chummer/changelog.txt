@@ -44,6 +44,9 @@ Application Changes:
 - Using Swap Quality in Career Mode now allows the use of the Don't Double Purchase/Refund optional rules for qualities. 
 - Basic lifestyle qualities are now filtered based on selected books.
 - Added filter and sort options for knowledge skills. 
+- Added some logic to prevent crashes if the Character Roster watch folder is deleted. 
+- Added drag-drop functionality to the character roster to enable more easily marking a character as a favourite.
+- Fixed an issue with life modules not properly adding qualities. 
 
 Data Changes: 
 
@@ -100,6 +103,9 @@ New Strings:
 - String_KnowledgeSkillFilterRatingAboveZero
 - String_KnowledgeSkillFilterTotalRatingAboveZero
 - String_KnowledgeSkillFilterRatingZero
+- Treenode_Roster_FavouriteCharacters
+- Treenode_Roster_RecentCharacters
+- Treenode_Roster_WatchFolder
 
 Build 188
 

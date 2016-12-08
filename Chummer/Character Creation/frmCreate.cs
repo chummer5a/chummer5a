@@ -7049,6 +7049,7 @@ namespace Chummer
             RefreshContacts();
             _blnIsDirty = true;
             UpdateWindowTitle();
+			RefreshQualities(treQualities,cmsQuality);
 			
             if(selectLifeModule.AddAgain)
                 cmdLifeModule_Click(sender, e);
