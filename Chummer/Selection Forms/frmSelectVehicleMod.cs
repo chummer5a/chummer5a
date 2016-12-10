@@ -735,24 +735,26 @@ namespace Chummer
 				else
 				{
 					string strCost = "";
-                    if (objXmlMod["cost"].InnerText.StartsWith("FixedValues"))
-					{
-						int intRating = Convert.ToInt32(nudRating.Value) - 1;
-						string[] strValues = objXmlMod["cost"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-						if (intRating < 0 || intRating > strValues.Length)
-						{
-							intRating = 0;
-						}
-						strCost = strValues[intRating];
-					}
-					else
-					{
-						strCost = objXmlMod["cost"].InnerText;
-					}
-					strCost = ReplaceStrings(strCost);
-
-					if (chkFreeItem.Checked)
-						strCost = "0";
+                    if (chkFreeItem.Checked)
+                        strCost = "0";
+                    else
+                    {
+                        if (objXmlMod["cost"].InnerText.StartsWith("FixedValues"))
+                        {
+                            int intRating = Convert.ToInt32(nudRating.Value) - 1;
+                            string[] strValues = objXmlMod["cost"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                            if (intRating < 0 || intRating > strValues.Length)
+                            {
+                                intRating = 0;
+                            }
+                            strCost = strValues[intRating];
+                        }
+                        else
+                        {
+                            strCost = objXmlMod["cost"].InnerText;
+                        }
+                        strCost = ReplaceStrings(strCost);
+                    }
 
 					XPathExpression xprCost = nav.Compile(strCost);
 					int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
