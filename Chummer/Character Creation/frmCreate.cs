@@ -8184,7 +8184,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             VehicleMod objMod = new VehicleMod(_objCharacter);
-            objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating);
+            objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating, frmPickVehicleMod.Markup);
 
             // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
             if (objMod.Name.StartsWith("Armor"))
@@ -8194,6 +8194,22 @@ namespace Chummer
                     objMod.Rating = objSelectedVehicle.MaxArmor;
                     objNode.Text = objMod.DisplayName;
                 }
+            }
+
+            // Check the item's Cost and make sure the character can afford it.
+            if (frmPickVehicleMod.FreeCost)
+                objMod.Cost = "0";
+            else
+            {
+                // Multiply the cost if applicable.
+                int intOldCost = objMod.TotalCost;
+                int intCost = intOldCost;
+                if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+                    intCost *= _objOptions.RestrictedCostMultiplier;
+                if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+                    intCost *= _objOptions.ForbiddenCostMultiplier;
+                intCost -= intOldCost;
+                objMod.Markup = intCost;
             }
 
             objSelectedVehicle.Mods.Add(objMod);
@@ -21108,9 +21124,12 @@ namespace Chummer
                             int intRating = 0;
                             if (objXmlMod["rating"] != null)
                                 intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
+                            int intMarkup = 0;
+                            if (objXmlMod["markup"] != null)
+                                intRating = Convert.ToInt32(objXmlMod["markup"].InnerText);
 
                             XmlNode objXmlModNode = objXmlVehicleDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
-                            objMod.Create(objXmlModNode, objModNode, intRating);
+                            objMod.Create(objXmlModNode, objModNode, intRating, intMarkup);
                             objVehicle.Mods.Add(objMod);
 
                             objNode.Nodes.Add(objModNode);

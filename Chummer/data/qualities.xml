@@ -844,7 +844,9 @@
 			<name>My Country, Right or Wrong</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>AP</source>
 			<page>17</page>
 		</quality>
@@ -1656,7 +1658,9 @@
 			<name>Scorched</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>SR5</source>
 			<page>83</page>
 		</quality>
@@ -1757,7 +1761,9 @@
 			<name>Social Stress</name>
 			<karma>-8</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>SR5</source>
 			<page>85</page>
@@ -2533,7 +2539,9 @@
 			<name>Disgraced</name>
 			<karma>2</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -2913,7 +2921,10 @@
 			<name>Sensei</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selectcontact />
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>149</page>
 		</quality>
@@ -3345,7 +3356,9 @@
 			<name>Big Regret</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>153</page>
@@ -3473,7 +3486,9 @@
 			<name>Day Job (10 hrs)</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<forbidden>
 				<oneof>
@@ -3489,7 +3504,9 @@
 			<name>Day Job (20 hrs)</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<forbidden>
 				<oneof>
@@ -3505,7 +3522,9 @@
 			<name>Day Job (40 hrs)</name>
 			<karma>-15</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<forbidden>
 				<oneof>
@@ -3587,7 +3606,9 @@
 			<name>Driven</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>154</page>
@@ -3597,7 +3618,9 @@
 			<name>Emotional Attachment</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>154</page>
 		</quality>
@@ -3621,7 +3644,9 @@
 			<name>Flashbacks I</name>
 			<karma>-7</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>155</page>
@@ -3631,7 +3656,9 @@
 			<name>Flashbacks II</name>
 			<karma>-15</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>155</page>
@@ -4762,7 +4789,9 @@
 			<name>Signature</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>159</page>
 		</quality>

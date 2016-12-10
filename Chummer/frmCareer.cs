@@ -9191,7 +9191,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			VehicleMod objMod = new VehicleMod(_objCharacter);
-			objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating);
+			objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating, frmPickVehicleMod.Markup);
 
 			// Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
 			if (objMod.Name.StartsWith("Armor"))
@@ -9205,7 +9205,10 @@ namespace Chummer
 
 			// Check the item's Cost and make sure the character can afford it.
 			int intOriginalCost = objSelectedVehicle.TotalCost;
-			objSelectedVehicle.Mods.Add(objMod);
+            if (frmPickVehicleMod.FreeCost)
+                objMod.Cost = "0";
+
+            objSelectedVehicle.Mods.Add(objMod);
 
 			// Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
 			if (_objOptions.EnforceCapacity)
@@ -9242,13 +9245,6 @@ namespace Chummer
 			}
 
 			int intCost = objSelectedVehicle.TotalCost - intOriginalCost;
-			// Apply a markup if applicable.
-			if (frmPickVehicleMod.Markup != 0)
-			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickVehicleMod.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
-				intCost = Convert.ToInt32(dblCost);
-			}
 
 			// Multiply the cost if applicable.
 			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
@@ -9256,29 +9252,26 @@ namespace Chummer
 			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
-			if (!frmPickVehicleMod.FreeCost)
+			if (intCost > _objCharacter.Nuyen)
 			{
-				if (intCost > _objCharacter.Nuyen)
-				{
-					objSelectedVehicle.Mods.Remove(objMod);
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					if (frmPickVehicleMod.AddAgain)
-						tsVehicleAddMod_Click(sender, e);
+				objSelectedVehicle.Mods.Remove(objMod);
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+				if (frmPickVehicleMod.AddAgain)
+					tsVehicleAddMod_Click(sender, e);
 
-					return;
-				}
-				else
-				{
-					// Create the Expense Log Entry.
-					ExpenseLogEntry objExpense = new ExpenseLogEntry();
-					objExpense.Create(intCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-					_objCharacter.ExpenseEntries.Add(objExpense);
-					_objCharacter.Nuyen -= intCost;
+				return;
+			}
+			else
+			{
+				// Create the Expense Log Entry.
+				ExpenseLogEntry objExpense = new ExpenseLogEntry();
+				objExpense.Create(intCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+				_objCharacter.ExpenseEntries.Add(objExpense);
+				_objCharacter.Nuyen -= intCost;
 
-					ExpenseUndo objUndo = new ExpenseUndo();
-					objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
-					objExpense.Undo = objUndo;
-				}
+				ExpenseUndo objUndo = new ExpenseUndo();
+				objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
+				objExpense.Undo = objUndo;
 			}
 
 			objNode.ContextMenuStrip = cmsVehicle;

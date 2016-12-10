@@ -47,6 +47,8 @@ Application Changes:
 - Added some logic to prevent crashes if the Character Roster watch folder is deleted. 
 - Added drag-drop functionality to the character roster to enable more easily marking a character as a favourite.
 - Fixed an issue with life modules not properly adding qualities.
+- Fixed vehicle mod cost modifiers not being taken into account in Create mode.
+- Slighlty increased performance and portability for code related to vehicle mod costs.
 
 Data Changes: 
 
@@ -83,6 +85,7 @@ Data Changes:
 - Added entries for Fab Sensor, Fab Sensor Upkeep, Infected: Sukuyan, Corps Cadavre ritual, Zombie ritual, Máquina Conversion vehicle mod, Dynamic Tension Bow, and Collapsible Traditional Bow accessory from Hard Targets.
 - Added a weapon entry for Stimtouch Hosiery similar to how Grapple Gun adds a weapon entry.
 - Added extra filtering conditions to all Advanced Safety System accessories, Shock Pad, Concealed Quick-Draw Holster, Trigger Removal, and Smartgun System (both Internal and External) so that they do show up in even fewer invalid cases.
+- Added selection text fields to the following qualities: My Country Right or Wrong, Scorched, Social Stress, Disgraced, Sensei, Big Regret, Day Job, Driven, Emotional Attachment, Flashbacks, and Signature. Also added a contact selection field for Sensei.
 
 New Strings:
 

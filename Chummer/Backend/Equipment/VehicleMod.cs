@@ -19,6 +19,7 @@ namespace Chummer.Backend.Equipment
 		private int _intRating = 0;
 		private string _strMaxRating = "0";
 		private string _strCost = "";
+        private int _intMarkup = 0;
 		private string _strAvail = "";
 		private XmlNode _nodBonus;
 		private string _strSource = "";
@@ -62,7 +63,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objXmlMod">XmlNode to create the object from.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="intRating">Selected Rating for the Gear.</param>
-		public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating)
+		public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, int intMarkup = 0)
 		{
 			_strName = objXmlMod["name"].InnerText;
 			_strCategory = objXmlMod["category"].InnerText;
@@ -132,8 +133,9 @@ namespace Chummer.Backend.Equipment
 				else
 					_strCost = objXmlMod["cost"].InnerText;
 			}
+            _intMarkup = intMarkup;
 
-			_strSource = objXmlMod["source"].InnerText;
+            _strSource = objXmlMod["source"].InnerText;
 			_strPage = objXmlMod["page"].InnerText;
 			if (objXmlMod["bonus"] != null)
 				_nodBonus = objXmlMod["bonus"];
@@ -183,6 +185,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("pilot", _intPilot.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("markup", _intMarkup.ToString());
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
@@ -231,7 +234,8 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetField("page", out _strPage);
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
-			_strSource = objNode["source"].InnerText;
+            _intMarkup = objNode["markup"] != null ? Convert.ToInt32(objNode["markup"].InnerText) : 0;
+            _strSource = objNode["source"].InnerText;
 			_blnIncludeInVehicle = Convert.ToBoolean(objNode["included"].InnerText);
 			objNode.TryGetField("installed", out _blnInstalled);
 			objNode.TryGetField("subsystems", out _strSubsystems);
@@ -571,10 +575,25 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Availability.
+        /// <summary>
+		/// Markup.
 		/// </summary>
-		public string Avail
+		public int Markup
+        {
+            get
+            {
+                return _intMarkup;
+            }
+            set
+            {
+                _intMarkup = value;
+            }
+        }
+
+        /// <summary>
+        /// Availability.
+        /// </summary>
+        public string Avail
 		{
 			get
 			{
@@ -881,37 +900,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intReturn = 0;
+				int intReturn = OwnCost;
 
-				// If the cost is determined by the Rating, evaluate the expression.
-				XmlDocument objXmlDocument = new XmlDocument();
-				XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-				string strCost = "";
-				strCost = _strCost;
-				if (_strCost.StartsWith("FixedValues"))
-				{
-					string[] strValues = strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					strCost = strValues[_intRating - 1];
-				}
-				strCost = strCost.Replace("Rating", _intRating.ToString());
-				strCost = strCost.Replace("Vehicle Cost", _intVehicleCost.ToString());
-				// If the Body is 0 (Microdrone), treat it as 2 for the purposes of determine Modification cost.
-				if (_intBody > 0)
-					strCost = strCost.Replace("Body", _intBody.ToString());
-				else
-					strCost = strCost.Replace("Body", "2");
-				
-				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Acceleration", _intAccel.ToString());
-				XPathExpression xprCost = nav.Compile(strCost);
-				intReturn = Convert.ToInt32(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
-
-				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
-
-				// Retrieve the price of VehicleWeapons.
-				foreach (Weapon objWeapon in _lstVehicleWeapons)
+                // Retrieve the price of VehicleWeapons.
+                foreach (Weapon objWeapon in _lstVehicleWeapons)
 				{
 					intReturn += objWeapon.TotalCost;
 				}
@@ -960,7 +952,15 @@ namespace Chummer.Backend.Equipment
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
 
-				return intReturn;
+                // Apply a markup if applicable.
+                if (_intMarkup != 0)
+                {
+                    double dblCost = Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo);
+                    dblCost *= 1 + (Convert.ToDouble(_intMarkup, GlobalOptions.Instance.CultureInfo) / 100.0);
+                    intReturn = Convert.ToInt32(dblCost);
+                }
+
+                return intReturn;
 			}
 		}
 
