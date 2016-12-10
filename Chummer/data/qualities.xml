@@ -9627,6 +9627,261 @@
 			<page>140</page>
 		</quality>
 		<quality>
+			<id>3c746778-bec5-4b9b-a1a4-62ac6eb98342</id>
+			<name>Infected: Sukuyan (Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>27</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Salt">Dietary Requirement</power>
+					<power select="Wood">Vulnerability</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HT</source>
+			<page>127</page>
+		</quality>
+		<quality>
+			<id>735aee59-2236-43e4-b618-9b9923513597</id>
+			<name>Infected: Sukuyan (Non-Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+			<critterpowers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power>Dual Natured</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Salt">Dietary Requirement</power>
+				<power select="Wood">Vulnerability</power>
+			</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<metatypecategory>Metasapient</metatypecategory>
+					<metatypecategory>Shapeshifter</metatypecategory>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HT</source>
+			<page>127</page>
+		</quality>
+		<quality>
 			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
 			<name>Infected: Wendigo</name>
 			<contributetolimit>no</contributetolimit>

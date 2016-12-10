@@ -3060,6 +3060,7 @@
 				<spec>Home</spec>
 				<spec>Public Event</spec>
 				<spec>Vehicle</spec>
+				<spec>VIP</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3078,6 +3079,7 @@
 				<spec>Rapid Response</spec>
 				<spec>Border Patrol</spec>
 				<spec>Customs</spec>
+				<spec>VIP</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3312,6 +3314,7 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
+				<spec>Personalities</spec>
 				<spec>Ghost Cartels</spec>
 				<spec>Mafia</spec>
 				<spec>Triad</spec>
@@ -3447,6 +3450,7 @@
 				<spec>Talislegger</spec>
 				<spec>Taminous groups</spec>
 				<spec>White Collar</spec>
+				<spec>Wetwork</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -4075,6 +4079,7 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
+				<spec>Cleaning</spec>
 				<spec>Thaumaturgic</spec>
 			</specs>
 		</skill>

@@ -1539,6 +1539,7 @@
 		<gear>
 			<id>5d2fc041-c0cf-4a90-8918-be487a781e13</id>
 			<name>Stimtouch Hosiery</name>
+			<addweapon>Stimtouch Hosiery</addweapon>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
 			<avail>6R</avail>
@@ -4394,6 +4395,18 @@
 		<!-- End Region -->
 		<!-- Region Sensors -->
 		<gear>
+			<id>fd1aac8c-3b55-4577-b2d6-20ec886eae0c</id>
+			<name>Fab Sensor</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>+8R</avail>
+			<cost>4000</cost>
+			<source>HT</source>
+			<page>195</page>
+		</gear>
+		<gear>
 			<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
 			<name>X-Ray</name>
 			<category>Sensor Functions</category>
@@ -5595,6 +5608,16 @@
 		</gear>
 		<!-- End Region -->
 		<!-- Region Contracts and Upkeep -->
+		<gear>
+			<id>20543d97-0eb6-4eda-b0d0-d18000a094ab</id>
+			<name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
+			<category>Sensor Functions</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>HT</source>
+			<page>195</page>
+		</gear>
 		<gear>
 			<id>2f40c4cd-7582-4358-8752-91c9f94f5b6e</id>
 			<name>Symbiotes Upkeep (1 Month Advance Payment)</name>
