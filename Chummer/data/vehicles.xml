@@ -7072,6 +7072,17 @@
 			<page>170</page>
 		</mod>
 		<mod>
+			<id>1186ac2e-0353-4e2d-b688-626d809d6f44</id>
+			<name>Máquina Conversion</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>Body * 2</cost>
+			<source>HT</source>
+			<page>139</page>
+		</mod>
+		<mod>
 			<id>a586e8b6-2737-4baa-a343-f366d33fe57a</id>
 			<name>Metahuman Adjustment</name>
 			<category>Cosmetic</category>

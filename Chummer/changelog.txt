@@ -46,7 +46,7 @@ Application Changes:
 - Added filter and sort options for knowledge skills. 
 - Added some logic to prevent crashes if the Character Roster watch folder is deleted. 
 - Added drag-drop functionality to the character roster to enable more easily marking a character as a favourite.
-- Fixed an issue with life modules not properly adding qualities. 
+- Fixed an issue with life modules not properly adding qualities.
 
 Data Changes: 
 
@@ -79,6 +79,10 @@ Data Changes:
 - Fixed most Improvised Weapons using the Exotic Melee Weapon skill instead of the Clubs or Blades skills (Blades for weapons that can only be used by stabbing), and also fixed the Hammer/Sledgehammer and Pool Cue improvised weapons not being eligible for the Hammers and Staves specializations respectively within Clubs.
 - Implemented the Latent Dracomorphosis quality from Howling Shadows. This is achieved by using the Swap Quality function in Career Mode. 
 - Added an underbarrel grenade launcher to weapons.xml, and to the Matilda drone. 
+- Added contact types, knowledge skill specializations, and critters from Hard Targets.
+- Added entries for Fab Sensor, Fab Sensor Upkeep, Infected: Sukuyan, Corps Cadavre ritual, Zombie ritual, Máquina Conversion vehicle mod, Dynamic Tension Bow, and Collapsible Traditional Bow accessory from Hard Targets.
+- Added a weapon entry for Stimtouch Hosiery similar to how Grapple Gun adds a weapon entry.
+- Added extra filtering conditions to all Advanced Safety System accessories, Shock Pad, Concealed Quick-Draw Holster, Trigger Removal, and Smartgun System (both Internal and External) so that they do show up in even fewer invalid cases.
 
 New Strings:
 

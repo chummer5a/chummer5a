@@ -524,7 +524,6 @@
 			</accessories>
 			<source>RG</source>
 			<page>37</page>
-		
 		</weapon>
 		<weapon>
 			<id>cc446f64-1dbd-42dd-8fc4-ca17dc6bcf42</id>
@@ -2066,6 +2065,26 @@
 			<allowaccessory>true</allowaccessory>
 			<source>SR5</source>
 			<page>423</page>
+		</weapon>
+		<weapon>
+			<id>4f1d1416-5af6-4853-a1b3-2bb44a132d8f</id>
+			<name>Stimtouch Hosiery</name>
+			<category>Exotic Melee Weapons</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>8S(e)</damage>
+			<ap>-5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6R</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>SS</source>
+			<page>178</page>s
 		</weapon>
 		<weapon>
 			<id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>
@@ -7876,6 +7895,27 @@
 			<page>183</page>
 		</weapon>
 		<weapon>
+			<id>c965dee9-de62-4569-b96a-4026105440b1</id>
+			<name>Dynamic Tension Bow</name>
+			<category>Bows</category>
+			<type>Ranged</type>
+			<conceal>8</conceal>
+			<spec>Bow</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>(Rating+2)P</damage>
+			<ap>-(Rating/4)</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>1</ammo>
+			<avail>12</avail>
+			<cost>1200</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Archery</useskill>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
 			<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
 			<name>Cavalier Arms Adder Silvergun</name>
 			<category>Light Pistols</category>
@@ -8612,6 +8652,29 @@
 			<rcgroup>2</rcgroup>
 			<avail>2</avail>
 			<cost>50</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<category operation="contains">Rifles</category>
+						<category>Shotguns</category>
+						<category>Light Machine Guns</category>
+						<category>Medium Machine Guns</category>
+						<category>Heavy Machine Guns</category>
+						<category>Underbarrel Weapons</category>
+						<category>Assault Cannons</category>
+						<category>Flamethrowers</category>
+						<category>Laser Weapons</category>
+						<category>Grenade Launchers</category>
+						<category>Missile Launchers</category>
+					</OR>
+				</weapondetails>
+			</required>
+			<forbidden>
+				<oneof>
+					<accessory>Stock Removal</accessory>
+					<accessory>Sawed Off/Shortbarrel and Stock Removal</accessory>
+				</oneof>
+			</forbidden>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -8680,7 +8743,11 @@
 			<forbidden>
 				<oneof>
 					<accessory>Ceramic/Plasteel Components</accessory>
+					<accessory>Collapsible Traditional Bow</accessory>
 				</oneof>
+				<weapondetails>
+					<type>Melee</type>
+				</weapondetails>
 			</forbidden>
 			<accuracy>2</accuracy>
 			<rating>0</rating>
@@ -8700,7 +8767,11 @@
 			<forbidden>
 				<oneof>
 					<accessory>Ceramic/Plasteel Components</accessory>
+					<accessory>Collapsible Traditional Bow</accessory>
 				</oneof>
+				<weapondetails>
+					<type>Melee</type>
+				</weapondetails>
 			</forbidden>
 			<accuracy>2</accuracy>
 			<rating>0</rating>
@@ -8767,6 +8838,12 @@
 			<id>06e128ee-00fd-4992-8bf5-4be35815fd11</id>
 			<name>Advanced Safety System, Basic</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+				</oneof>
+			</required>
 			<forbidden>
 				<oneof>
 					<accessory>Advanced Safety System, Immobilization</accessory>
@@ -8846,6 +8923,12 @@
 			<id>fad8757c-622f-41ce-8412-8bbb6fbf6445</id>
 			<name>Advanced Safety System, Immobilization</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+				</oneof>
+			</required>
 			<forbidden>
 				<oneof>
 					<accessory>Advanced Safety System, Basic</accessory>
@@ -8864,6 +8947,12 @@
 			<id>c9739e50-bbaf-47e7-a19b-c3d7fd2b95af</id>
 			<name>Advanced Safety System, Self Destruct</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+				</oneof>
+			</required>
 			<forbidden>
 				<oneof>
 					<accessory>Advanced Safety System, Immobilization</accessory>
@@ -8882,6 +8971,12 @@
 			<id>25b695f8-ed5a-4b75-baf0-164dcde74f2d</id>
 			<name>Advanced Safety System, Explosive Self Destruct</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+				</oneof>
+			</required>
 			<forbidden>
 				<oneof>
 					<accessory>Advanced Safety System, Immobilization</accessory>
@@ -8900,6 +8995,12 @@
 			<id>b64d5256-0c24-4842-b05d-25ee735c9b6a</id>
 			<name>Advanced Safety System, Electro Shocker</name>
 			<mount/>
+			<required>
+				<oneof>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+				</oneof>
+			</required>
 			<forbidden>
 				<oneof>
 					<accessory>Advanced Safety System, Immobilization</accessory>
@@ -8937,6 +9038,11 @@
 			<conceal>-1</conceal>
 			<avail>6</avail>
 			<cost>275</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="lessthanequals">0</conceal>
+				</weapondetails>
+			</required>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -9788,6 +9894,14 @@
 			<rating>0</rating>
 			<avail>2</avail>
 			<cost>50</cost>
+			<forbidden>
+				<weapondetails>
+					<OR>
+						<category>Bows</category>
+						<type>Melee</type>
+					</OR>
+				</weapondetails>
+			</forbidden>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -9801,6 +9915,30 @@
 			<cost>100</cost>
 			<source>HT</source>
 			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>f277db83-e5f0-47c8-a465-e0307105796f</id>
+			<name>Collapsible Traditional Bow</name>
+			<mount/>
+			<rating>10</rating>
+			<avail>0</avail>
+			<cost>Rating * 50</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<category>Bows</category>
+						<spec>Bow</spec>
+					</OR>
+				</weapondetails>
+			</required>
+			<forbidden>
+				<oneof>
+					<accessory>Smartgun System, Internal</accessory>
+					<accessory>Smartgun System, External</accessory>
+				</oneof>
+			</forbidden>
+			<source>HT</source>
+			<page>197</page>
 		</accessory>
 		<!-- End Region -->
 	</accessories>
