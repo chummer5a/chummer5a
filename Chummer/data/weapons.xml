@@ -1246,7 +1246,7 @@
 			<category>Blades</category>
 			<type>Melee</type>
 			<conceal>-2</conceal>
-			<spec>Swords</spec>
+			<spec>Knives</spec>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>(STR+1)P</damage>
@@ -8528,7 +8528,7 @@
 		<name>Nemesis Arms Praetorian</name>
 		<category>Heavy Pistols</category>
 		<type>Ranged</type>
-		<conceal>-2</conceal>
+		<conceal>0</conceal>
 		<spec>Semi-Automatics</spec>
 		<accuracy>4</accuracy>
 		<reach>0</reach>
@@ -8603,7 +8603,7 @@
 		<category>Exotic Ranged Weapons</category>
 		<type>Ranged</type>
 		<conceal>-4</conceal>
-		<spec>Injector Pen</spec>
+		<spec>Pepper Punch Pen</spec>
 		<accuracy>4</accuracy>
 		<reach>0</reach>
 		<damage>6P</damage>
@@ -8652,7 +8652,7 @@
 		<category>Clubs</category>
 		<type>Melee</type>
 		<conceal>-4</conceal>
-		<spec>Injector Pen</spec>
+		<spec>Saps</spec>
 		<accuracy>4</accuracy>
 		<reach>0</reach>
 		<damage>(STR+2)P</damage>
@@ -8674,7 +8674,7 @@
 		<category>Blades</category>
 		<type>Melee</type>
 		<conceal>-4</conceal>
-		<spec>Injector Pen</spec>
+		<spec>Knives</spec>
 		<accuracy>4</accuracy>
 		<reach>0</reach>
 		<damage>(STR+1)P</damage>

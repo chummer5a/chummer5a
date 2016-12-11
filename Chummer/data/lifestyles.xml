@@ -1401,5 +1401,43 @@
 			<page>20</page>
 		</quality>
 	<!-- End Region -->
+	<!-- Region Cutting Aces -->
+		<quality>
+			<id>b722458f-b0af-45c4-b5c7-b3c7e2ef48f6</id>
+			<name>AR Fashion Subscription, Casual</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>25</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>fc4d530e-a832-4437-b022-cdf35a22fc78</id>
+			<name>AR Fashion Subscription, Business</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>100</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>1607bf0d-1a75-4582-8496-ffd92289f2b3</id>
+			<name>AR Fashion Subscription, Formal</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>500</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>da100dfd-dcaa-4b1a-a76e-ad38539612a4</id>
+			<name>AR Fashion Subscription, Designer</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>1500</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+	<!-- End Region -->
 	</qualities>
 </chummer>
