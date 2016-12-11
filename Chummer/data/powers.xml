@@ -1223,6 +1223,38 @@
 			<page>160</page>
 			<id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
 		</power>
+		<!-- Region Cutting Aces -->
+		<power>
+			<id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
+			<name>Lie Detector</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>1</limit>
+			<source>CA</source>
+			<page>153</page>
+		</power>
+		<power>
+			<id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
+			<name>Osmosis</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>1</limit>
+			<source>CA</source>
+			<page>153</page>
+		</power>
+		<power>
+			<id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
+			<name>Ventriloquism</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<source>CA</source>
+			<page>153</page>
+		</power>
+		<!-- End Region -->
   </powers>
   <enhancements>
     <enhancement>

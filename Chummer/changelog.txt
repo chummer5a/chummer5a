@@ -86,6 +86,7 @@ Data Changes:
 - Added a weapon entry for Stimtouch Hosiery similar to how Grapple Gun adds a weapon entry.
 - Added extra filtering conditions to all Advanced Safety System accessories, Shock Pad, Concealed Quick-Draw Holster, Trigger Removal, and Smartgun System (both Internal and External) so that they do show up in even fewer invalid cases.
 - Added selection text fields to the following qualities: My Country Right or Wrong, Scorched, Social Stress, Disgraced, Sensei, Big Regret, Day Job, Driven, Emotional Attachment, Flashbacks, and Signature. Also added a contact selection field for Sensei.
+- Added content from Cutting Aces. 
 
 New Strings:
 

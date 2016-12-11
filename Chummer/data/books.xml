@@ -172,5 +172,10 @@
 			<name>Shadows In Focus: San Francisco Metroplex</name>
 			<code>SFM</code>
 		</book>
+		<book>
+			<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
+			<name>Cutting Aces</name>
+			<code>CA</code>
+		</book>
 	</books>
 </chummer>

@@ -8443,6 +8443,254 @@
 			<page>0</page>
 		</weapon>
 		<!-- End Region -->
+		<!-- Region Cutting Aces -->
+		<weapon>
+			<id>ad4a06e3-7f8e-4f05-a42e-5be2c875bb72</id>
+			<name>Mortimer of London ‘Belgrave’ Sword Cane</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<spec>Swords</spec>
+			<accuracy>5</accuracy>
+			<reach>1</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8</avail>
+			<cost>450</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>CA</source>
+			<page>132</page>
+		</weapon>
+		<weapon>
+			<id>e46fce7e-a1bf-416e-86ea-2608368b44fe</id>
+			<name>Hammerli 620S</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>6(c)</ammo>
+			<avail>8R</avail>
+			<cost>325</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>Gas-Vent 1 System</accessory>
+				<accessory>Smartlink</accessory>
+			</accessories>
+			<source>CA</source>
+			<page>133</page>
+	</weapon>
+	<weapon>
+		<id>e46fce7e-a1bf-416e-86ea-2608368b44fe</id>
+		<name>Yamaha Sakura Fubuki SX</name>
+		<category>Light Pistols</category>
+		<type>Ranged</type>
+		<conceal>-2</conceal>
+		<spec>Semi-Automatics</spec>
+		<accuracy>5</accuracy>
+		<reach>0</reach>
+		<damage>6P</damage>
+		<ap>-</ap>
+		<mode>SA/BF</mode>
+		<rc>0</rc>
+		<ammo>8(ML)x4</ammo>
+		<avail>10R</avail>
+		<cost>750</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts>
+			<mount>Barrel</mount>
+			<mount>Top</mount>
+			<mount>Stock</mount>
+			<mount>Side</mount>
+		</accessorymounts>
+		<accessories>
+			<accessory>Electronic Firing</accessory>
+		</accessories>
+		<source>CA</source>
+		<page>133</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Nemesis Arms Praetorian</name>
+		<category>Heavy Pistols</category>
+		<type>Ranged</type>
+		<conceal>-2</conceal>
+		<spec>Semi-Automatics</spec>
+		<accuracy>4</accuracy>
+		<reach>0</reach>
+		<damage>8P</damage>
+		<ap>-1</ap>
+		<mode>SA/BF</mode>
+		<rc>0</rc>
+		<ammo>12(c)</ammo>
+		<avail>9R</avail>
+		<cost>700</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts>
+			<mount>Barrel</mount>
+			<mount>Top</mount>
+			<mount>Stock</mount>
+			<mount>Side</mount>
+		</accessorymounts>
+		<accessories>
+			<accessory>Laser Sight</accessory>
+			<accessory>Bayonet</accessory>
+			<accessory>Custom Look</accessory>
+		</accessories>
+		<source>CA</source>
+		<page>134</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Stinger Pen Gun</name>
+		<category>Holdouts</category>
+		<type>Ranged</type>
+		<conceal>-4</conceal>
+		<accuracy>4</accuracy>
+		<reach>0</reach>
+		<damage>6P</damage>
+		<ap>0</ap>
+		<mode>SS</mode>
+		<rc>0</rc>
+		<ammo>1(b)</ammo>
+		<avail>9R</avail>
+		<cost>700</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts />
+		<accessories />
+		<source>CA</source>
+		<page>134</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Injector Pen</name>
+		<category>Exotic Melee Weapons</category>
+		<type>Melee</type>
+		<conceal>-4</conceal>
+		<spec>Injector Pen</spec>
+		<accuracy>4</accuracy>
+		<reach>0</reach>
+		<damage>6P</damage>
+		<ap>-2</ap>
+		<mode>-</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<avail>9R</avail>
+		<cost>220</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts />
+		<accessories />
+		<source>CA</source>
+		<page>134</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Pepper Punch Pen</name>
+		<category>Exotic Ranged Weapons</category>
+		<type>Ranged</type>
+		<conceal>-4</conceal>
+		<spec>Injector Pen</spec>
+		<accuracy>4</accuracy>
+		<reach>0</reach>
+		<damage>6P</damage>
+		<ap>-2</ap>
+		<mode>-</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<avail>9R</avail>
+		<cost>220</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts />
+		<accessories />
+		<source>CA</source>
+		<page>134</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Modified Spray Pen</name>
+		<category>Exotic Ranged Weapons</category>
+		<type>Ranged</type>
+		<conceal>-4</conceal>
+		<spec>Modified Spray Pen</spec>
+		<accuracy>3</accuracy>
+		<reach>0</reach>
+		<damage>0</damage>
+		<ap>-2</ap>
+		<mode>SS</mode>
+		<rc>0</rc>
+		<ammo>1(c)</ammo>
+		<avail>4F</avail>
+		<cost>220</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts>
+			<mount>Barrel</mount>
+			<mount>Top</mount>
+			<mount>Stock</mount>
+			<mount>Side</mount>
+		</accessorymounts>
+		<accessories />
+		<source>CA</source>
+		<page>134</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Sap Cap</name>
+		<category>Clubs</category>
+		<type>Melee</type>
+		<conceal>-4</conceal>
+		<spec>Injector Pen</spec>
+		<accuracy>4</accuracy>
+		<reach>0</reach>
+		<damage>(STR+2)P</damage>
+		<ap>0</ap>
+		<mode>-</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<avail>4</avail>
+		<cost>120</cost>
+		<allowaccessory>false</allowaccessory>
+		<accessorymounts />
+		<accessories />
+		<source>CA</source>
+		<page>135</page>
+	</weapon>
+	<weapon>
+		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<name>Lapel Dagger</name>
+		<category>Blades</category>
+		<type>Melee</type>
+		<conceal>-4</conceal>
+		<spec>Injector Pen</spec>
+		<accuracy>4</accuracy>
+		<reach>0</reach>
+		<damage>(STR+1)P</damage>
+		<ap>-1</ap>
+		<mode>-</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<avail>5</avail>
+		<cost>100</cost>
+		<allowaccessory>true</allowaccessory>
+		<accessorymounts />
+		<accessories />
+		<source>CA</source>
+		<page>135</page>
+	</weapon>
+		<!-- End Region -->
 	</weapons>
 	<accessories>
 		<!-- Region Shadowrun 5 -->
