@@ -902,7 +902,7 @@
 			<name>Extra Secure</name>
 			<lp>1</lp>
 			<category>Positive</category>
-			<multiplier>20</multiplier>
+			<multiplierbaseonly>20</multiplierbaseonly>
 			<source>SR5</source>
 			<page>370</page>
 		</quality>

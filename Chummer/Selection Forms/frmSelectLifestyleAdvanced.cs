@@ -474,8 +474,10 @@ namespace Chummer
 			int intBaseNuyen = 0;
             int intNuyen = 0;
             int intMultiplier = 0;
+            int intMultiplierBaseOnly = 0;
             int intExtraCostAssets = 0;
             int intExtraCostServicesOutings = 0;
+            int intExtraCostContracts = 0;
 
             // Calculate the limits of the 3 aspects.
             // Comforts. 
@@ -507,7 +509,8 @@ namespace Chummer
 						intMaxSec += Convert.ToInt32(objXmlNode["security"]?.InnerText);
 						intMinSec += Convert.ToInt32(objXmlNode["securityMinimum"]?.InnerText);
 						intMultiplier += Convert.ToInt32(objXmlNode["multiplier"]?.InnerText);
-						intNuyen += Convert.ToInt32(objXmlNode["cost"]?.InnerText);
+                        intMultiplierBaseOnly += Convert.ToInt32(objXmlNode["multiplierbaseonly"]?.InnerText);
+                        intBaseNuyen += Convert.ToInt32(objXmlNode["cost"]?.InnerText);
 					}
 				}
 				// Calculate the cost of Negative Qualities.
@@ -521,7 +524,8 @@ namespace Chummer
 						intMaxComfort += Convert.ToInt32(objXmlNode["comforts"]?.InnerText);
 					    intMaxSec += Convert.ToInt32(objXmlNode["security"]?.InnerText);
 						intMultiplier += Convert.ToInt32(objXmlNode["multiplier"]?.InnerText);
-                        intNuyen += Convert.ToInt32(objXmlNode["cost"]?.InnerText);
+                        intMultiplierBaseOnly += Convert.ToInt32(objXmlNode["multiplierbaseonly"]?.InnerText);
+                        intBaseNuyen += Convert.ToInt32(objXmlNode["cost"]?.InnerText);
 					}
 				}
                 // Calculate the cost of Entertainments.
@@ -563,8 +567,11 @@ namespace Chummer
 					{
 						if (objXmlNode["cost"] != null)
 						{
-						    if (objQuality.Type == QualityType.Contracts || 
-                                objXmlNode["category"].InnerText.Equals("Entertainment - Outing") ||
+                            if (objQuality.Type == QualityType.Contracts)
+                            {
+                                intExtraCostContracts += Convert.ToInt32(objXmlNode["cost"].InnerText);
+                            }
+						    else if (objXmlNode["category"].InnerText.Equals("Entertainment - Outing") ||
 						        objXmlNode["category"].InnerText.Equals("Entertainment - Service"))
 						    {
 						        intExtraCostServicesOutings += Convert.ToInt32(objXmlNode["cost"].InnerText);
@@ -604,9 +611,9 @@ namespace Chummer
                 intLP += _intTravelerRdmLP;
             }
 
-	        intMultiplier += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost).Sum(objImprovement => objImprovement.Value);
+            intMultiplier += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost).Sum(objImprovement => objImprovement.Value);
 
-	        if (cboBaseLifestyle.SelectedValue.ToString() == "Street")
+            if (cboBaseLifestyle.SelectedValue.ToString() == "Street")
             {
                 intNuyen += Convert.ToInt32(nudSecurity.Value - intMinSec) * 50;
                 intNuyen += Convert.ToInt32(nudArea.Value - intMinArea) * 50;
@@ -617,17 +624,17 @@ namespace Chummer
             intMultiplier += Convert.ToInt32(nudSecurity.Value - intMinSec) * 10;
             intMultiplier += Convert.ToInt32(nudArea.Value - intMinArea) * 10;
             intMultiplier += Convert.ToInt32(nudComforts.Value - intMinComfort) * 10;
-            intBaseNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
-			intNuyen += Convert.ToInt32(intBaseNuyen * (intMultiplier / 100.0));
-            intNuyen += intBaseNuyen;
-            intNuyen += intExtraCostAssets;
-			intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
-            intNuyen = Convert.ToInt32(intNuyen / (Convert.ToInt32(nudRoommates.Value) + 1));
-            intNuyen += intExtraCostServicesOutings;
-			if (chkTrustFund.Checked)
-			{
-				intNuyen -= intBaseNuyen;
+            if (!chkTrustFund.Checked)
+            {
+                intBaseNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+                intBaseNuyen += Convert.ToInt32(intBaseNuyen * ((intMultiplier + intMultiplierBaseOnly) / 100.0));
+                intNuyen += intBaseNuyen;
             }
+            intNuyen += intExtraCostAssets + Convert.ToInt32(intExtraCostAssets * (intMultiplier / 100.0));
+            intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
+            intNuyen = Convert.ToInt32(intNuyen / (Convert.ToInt32(nudRoommates.Value) + 1));
+            intNuyen += intExtraCostServicesOutings + Convert.ToInt32(intExtraCostServicesOutings * (intMultiplier / 100.0)); ;
+            intNuyen += intExtraCostContracts;
 			lblTotalLP.Text = intLP.ToString();
 			lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
 
