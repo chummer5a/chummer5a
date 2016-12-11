@@ -5778,6 +5778,60 @@
 			<source>TVG</source>
 			<page>19</page>
 		</vehicle>
+		<vehicle>
+			<id>d159489d-0210-45be-8629-f29e6f883e3e</id>
+			<name>Holo-Conference Drone (Small)</name>
+			<category>Drones: Small</category>
+			<handling>3</handling>
+			<speed>2</speed>
+			<accel>1</accel>
+			<body>2</body>
+			<armor>3</armor>
+			<pilot>3</pilot>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<avail>11</avail>
+			<cost>18000</cost>
+			<source>CA</source>
+			<page>147</page>
+		</vehicle>
+		<vehicle>
+			<id>a9077795-4ddf-498e-8ea2-a5cfadd69c37</id>
+			<name>Medusa Extensions (Mini)</name>
+			<category>Drones: Mini</category>
+			<handling>1</handling>
+			<speed>0</speed>
+			<accel>0</accel>
+			<body>1</body>
+			<armor>0</armor>
+			<pilot>1</pilot>
+			<seats>0</seats>
+			<sensor>1</sensor>
+			<modslots>0</modslots>
+			<avail>7</avail>
+			<cost>600</cost>
+			<source>CA</source>
+			<page>147</page>
+		</vehicle>
+		<vehicle>
+			<id>0a8a99f7-5cd1-43e5-b5b2-8fb1db3c77ea</id>
+			<name>Microweave Spider (Mini)</name>
+			<category>Drones: Mini</category>
+			<handling>4</handling>
+			<speed>1</speed>
+			<accel>1</accel>
+			<body>1</body>
+			<armor>0</armor>
+			<pilot>4</pilot>
+			<seats>0</seats>
+			<sensor>2</sensor>
+			<modslots>0</modslots>
+			<avail>11</avail>
+			<cost>18000</cost>
+			<source>CA</source>
+			<page>147</page>
+		</vehicle>
 	</vehicles>
 	<mods>
 		<!-- Region Vehicle Weapon Mount -->

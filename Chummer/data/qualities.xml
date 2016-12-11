@@ -11603,5 +11603,280 @@
 			<page>163</page>
 		</quality>
 		<!-- End Region -->
+		<!-- Region Cutting Aces -->
+		<!-- Region Positive Qualities -->
+		<quality>
+			<id>e1662684-d100-439b-9719-ba6a9e594e95</id>
+			<name>Alibi</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>8c3408e1-0161-40a8-88c7-a920437bdb5e</id>
+			<name>Closer</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>d11a5ccd-f48b-46ed-89cc-4580a62c63ad</id>
+			<name>Cynic</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>919cc565-a5b6-4eda-addb-afa2e293af24</id>
+			<name>Empathic Listener</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
+			<!-- TODO: Implement SwapSkillAttribute for specific skills -->
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>42664f89-f8f1-4ccb-bd95-06ef0e451d47</id>
+			<name>Good Looking and Knows It</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>96ab453c-6a4a-4f53-8553-1b9cf272af72</id>
+			<name>Groupthink</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>2c1aff52-95e2-43f5-98ea-c653c66b7ee7</id>
+			<name>Honest Face</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>bf5ea495-0b6d-4ce5-87a8-3de0c43b7be6</id>
+			<name>Innocuous</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>41416949-62eb-4638-9457-fd7e833cea58</id>
+			<name>Master Debater</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
+			<!-- TODO: Implement SwapSkillAttribute for specific skills -->
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>f138a414-f318-4404-a0a3-b7aaec022317</id>
+			<name>Memory Palace</name>
+			<karma></karma>
+			<category>Positive</category>
+			<bonus>
+				<memory>1</memory>
+			</bonus>
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>38bb885a-0cb4-43f2-a3a0-3d46a87455d0</id>
+			<name>Method Actor</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>1ef1c539-9873-4bcb-bbb0-cff114e02375</id>
+			<name>Mnemonic Vault</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<quality>Memory Palace</quality>
+				</oneof>
+			</required>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>8e0dd838-dbc4-4e5c-a0f1-e3ade21338a6</id>
+			<name>Watch the Suit</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<!-- End Region -->
+		<!-- Region Negative Qualities -->
+		<quality>
+			<id>74c43bb0-5eef-4100-80b4-f80bd901866a</id>
+			<name>Alpha Junkie</name>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>d9f0f912-fc95-4267-bed2-8d3fcc67846b</id>
+			<name>Designated Omega</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus>
+				<specificskill>
+					<name>Leadership</name>
+					<bonus>-2</bonus>
+				</specificskill>
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
+			<name>Dishevelled</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>93bdc421-a7c8-44e9-9f6a-9c316638c889</id>
+			<name>Favored (Common Target, Biased)</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>4de3693d-687e-4d49-a2f9-b9f6bd21aa91</id>
+			<name>Favored (Common Target, Outspoken)</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>3fdb7c0d-ddaa-4f70-ae04-1f5a8e4a50c5</id>
+			<name>Favored (Common Target, Fanatic)</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>7d8b0ea0-dead-41f9-b409-9e10b9d63728</id>
+			<name>Favored (Specific Target, Biased)</name>
+			<karma>-3</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>9920918e-dfd3-4a19-96b6-59ddebc8b286</id>
+			<name>Favored (Specific Target, Outspoken)</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>276403f7-ebb9-45dc-bfaf-868ddad16afa</id>
+			<name>Favored (Specific Target, Fanatic)</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>85aeb12b-e630-4ea8-87b8-283be9d14234</id>
+			<name>One Born Every Minute</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>7653cadb-0092-4a94-9a17-9329fb4f6041</id>
+			<name>Social Appearance Anxiety</name>
+			<karma>-3</karma>
+			<limit>3</limit>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>c41e83a2-1a36-4b97-b286-5fbc6510d3d7</id>
+			<name>The Goat</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>106cc6bf-ba42-457e-9451-92ea2da38fbd</id>
+			<name>Ugly And Doesn't Care</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+					<max>-1</max>
+				</specificattribute>
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<!-- End Region -->
+		<!-- End Region -->
 	</qualities>
 </chummer>
