@@ -39,7 +39,9 @@ namespace Chummer.Backend.Equipment
 					return QualityType.Negative;
 				case "Positive":
 					return QualityType.Positive;
-				default:
+                case "Contracts":
+                    return QualityType.Contracts;
+                default:
 					return QualityType.Entertainment;
 			}
 		}

@@ -49,6 +49,9 @@ Application Changes:
 - Fixed an issue with life modules not properly adding qualities.
 - Fixed vehicle mod cost modifiers not being taken into account in Create mode.
 - Slighlty increased performance and portability for code related to vehicle mod costs.
+- Added a new lifestyle quality enum for Contracts and added handling code of lifestyle qualities of this enum.
+- Fixed a bug where non-Contract lifestyle qualities with a flat cost (e.g. Special Work Area) would not have their costs affected by cost multipliers (note: Extra Secure is the only multiplier that does not affect asset costs, as it is explicitly stated so in Run Faster).
+- Fixed issues related to Trust Fund covering the incorrect amount of lifestyle costs in certain scenarios involving multipliers. 
 
 Data Changes: 
 

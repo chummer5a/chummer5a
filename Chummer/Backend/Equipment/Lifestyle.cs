@@ -809,37 +809,48 @@ namespace Chummer.Backend.Equipment
 				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				if (_objType == LifestyleType.Standard)
 					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
-				double dblRoommates = 1.0 + (0.1 * _intRoommates);
+                decimal decExtraMultiplierBaseOnly = 0;
+                double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
 				decimal decBaseCost = Cost;
-				decimal decCost = 0;
+                decimal decExtraAssetCost = 0;
+				decimal decConstractCost = 0;
 				foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
 				{
 					XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name.ToString() + "\"]");
 					//Add the flat cost from Qualities.
 					if (objXmlQuality["cost"] != null && objXmlQuality["cost"].InnerText != "")
 					{
-						decCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
-					}
+                        if (objXmlQuality["category"]?.InnerText == "Contracts")
+                            decConstractCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
+                        else
+                            decExtraAssetCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
+                    }
 					//Add the percentage point modifiers from Qualities.
 					if (objXmlQuality["multiplier"] != null && objXmlQuality["multiplier"].InnerText != "")
 					{
 						decMultiplier += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText);
 					}
-				}
+                    //Add the percentage point modifiers from Qualities.
+                    if (objXmlQuality["multiplierbaseonly"] != null && objXmlQuality["multiplierbaseonly"].InnerText != "")
+                    {
+                        decExtraMultiplierBaseOnly += Convert.ToDecimal(objXmlQuality["multiplierbaseonly"].InnerText);
+                    }
+                }
 
 				decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.Instance.CultureInfo);
-                
-				double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
+                decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.Instance.CultureInfo);
 
-				intReturn = Convert.ToInt32(decBaseCost * decMultiplier);
-				intReturn += Convert.ToInt32(decCost);
+                double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
+                int intBaseLifestyleCost = Convert.ToInt32(decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly));
+                if (!_blnTrustFund)
+                {
+                    intReturn += intBaseLifestyleCost;
+                }
+                intReturn += Convert.ToInt32(decExtraAssetCost * decMultiplier);
 				intReturn = Convert.ToInt32(intReturn * dblPercentage);
-				if (_blnTrustFund)
-				{
-					intReturn += Convert.ToInt32(Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo));
-				}
+                intReturn += Convert.ToInt32(decConstractCost);
 				return intReturn;
 			}
 		}
