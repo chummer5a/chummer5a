@@ -525,7 +525,7 @@ namespace Chummer
 					}
 				}
                 // Calculate the cost of Entertainments.
-				else if (objQuality.Type == QualityType.Entertainment)
+				else if (objQuality.Type == QualityType.Entertainment || objQuality.Type == QualityType.Contracts)
 				{
 					objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 					if (objXmlNode != null)
@@ -551,19 +551,20 @@ namespace Chummer
 						    }
 						    break;
 				    }
-					string strLifestyleEntertainments = "";
+                    bool blnIsFree = false;
                     if (objXmlNode["allowed"] != null)
                     {
-                        strLifestyleEntertainments = objXmlNode["allowed"].InnerText;
+                        string strLifestyleEntertainments = objXmlNode["allowed"].InnerText;
+                        if (strLifestyleEntertainments.Contains(cboBaseLifestyle.SelectedValue.ToString()) || strLifestyleEntertainments.Contains(strLifestyleEquivalent))
+                            blnIsFree = true;
                     }
-					bool blnEntertainmentFree = strLifestyleEntertainments.Contains(cboBaseLifestyle.SelectedValue.ToString());
-				    bool blnEntertainmentFreeEqui = strLifestyleEntertainments.Contains(strLifestyleEquivalent); 
 
-					if (!(blnEntertainmentFreeEqui || blnEntertainmentFree))
+					if (!blnIsFree)
 					{
 						if (objXmlNode["cost"] != null)
 						{
-						    if (objXmlNode["category"].InnerText.Equals("Entertainment - Outing") ||
+						    if (objQuality.Type == QualityType.Contracts || 
+                                objXmlNode["category"].InnerText.Equals("Entertainment - Outing") ||
 						        objXmlNode["category"].InnerText.Equals("Entertainment - Service"))
 						    {
 						        intExtraCostServicesOutings += Convert.ToInt32(objXmlNode["cost"].InnerText);
@@ -575,7 +576,7 @@ namespace Chummer
 						}
 					}
 				}
-			}
+            }
             _blnSkipRefresh = true;
 
             nudComforts.Minimum = intMinComfort;

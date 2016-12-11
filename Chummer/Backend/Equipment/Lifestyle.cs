@@ -819,8 +819,11 @@ namespace Chummer.Backend.Equipment
 					//Add the flat cost from Qualities.
 					if (objXmlQuality["cost"] != null && objXmlQuality["cost"].InnerText != "")
 					{
-						decCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
-					}
+                        if (objXmlQuality["category"]?.InnerText == "Contracts")
+                            decCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
+                        else
+                            decBaseCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
+                    }
 					//Add the percentage point modifiers from Qualities.
 					if (objXmlQuality["multiplier"] != null && objXmlQuality["multiplier"].InnerText != "")
 					{
