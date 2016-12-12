@@ -52,6 +52,7 @@ Application Changes:
 - Added a new lifestyle quality enum for Contracts and added handling code of lifestyle qualities of this enum.
 - Fixed a bug where non-Contract lifestyle qualities with a flat cost (e.g. Special Work Area) would not have their costs affected by cost multipliers (note: Extra Secure is the only multiplier that does not affect asset costs, as it is explicitly stated so in Run Faster).
 - Fixed issues related to Trust Fund covering the incorrect amount of lifestyle costs in certain scenarios involving multipliers. 
+- Fixed an issue that prevented the last knowledgskill in the Skills tab from being rendered. 
 
 Data Changes: 
 
