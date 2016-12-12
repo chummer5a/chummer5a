@@ -139,7 +139,7 @@ namespace Chummer.UI.Shared
 
 		private int VisibleElements()
 		{
-			return _contentList.Count == 0 ? 0 :  Math.Min(Height / _contentList[0].Control.Height + 1, _contentList.Count);
+			return _contentList.Count == 0 ? 0 :  Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
 		}
 
 		private void ClearAllCache()
@@ -175,7 +175,7 @@ namespace Chummer.UI.Shared
 			}
 
 			int end = _rendered.FirstMatching(true, firstUnrendered);
-			if (end == -1) end = _displayIndex.Count - 1;
+			if (end == -1) end = _displayIndex.Count;
 
 			end = Math.Min(end, firstUnrendered + _offScreenChunkSize);
 			Stopwatch sw = Stopwatch.StartNew();
