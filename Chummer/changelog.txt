@@ -53,6 +53,7 @@ Application Changes:
 - Fixed a bug where non-Contract lifestyle qualities with a flat cost (e.g. Special Work Area) would not have their costs affected by cost multipliers (note: Extra Secure is the only multiplier that does not affect asset costs, as it is explicitly stated so in Run Faster).
 - Fixed issues related to Trust Fund covering the incorrect amount of lifestyle costs in certain scenarios involving multipliers. 
 - Fixed an issue that prevented the last knowledgskill in the Skills tab from being rendered. 
+- Added an optional rule to allow martial arts to automatically grant a free specialisation.
 
 Data Changes: 
 
@@ -91,6 +92,7 @@ Data Changes:
 - Added extra filtering conditions to all Advanced Safety System accessories, Shock Pad, Concealed Quick-Draw Holster, Trigger Removal, and Smartgun System (both Internal and External) so that they do show up in even fewer invalid cases.
 - Added selection text fields to the following qualities: My Country Right or Wrong, Scorched, Social Stress, Disgraced, Sensei, Big Regret, Day Job, Driven, Emotional Attachment, Flashbacks, and Signature. Also added a contact selection field for Sensei.
 - Added content from Cutting Aces. 
+- Altered the behaviour of martial arts to only grant a free specialization if an optional rule is enabled. 
 
 New Strings:
 
@@ -118,6 +120,7 @@ New Strings:
 - Treenode_Roster_FavouriteCharacters
 - Treenode_Roster_RecentCharacters
 - Treenode_Roster_WatchFolder
+- Checkbox_Option_FreeMartialArtSpecialization
 
 Build 188
 
