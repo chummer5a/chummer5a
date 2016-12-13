@@ -8445,7 +8445,7 @@
 		<!-- End Region -->
 		<!-- Region Cutting Aces -->
 		<weapon>
-			<id>ad4a06e3-7f8e-4f05-a42e-5be2c875bb72</id>
+			<id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
 			<name>Mortimer of London ‘Belgrave’ Sword Cane</name>
 			<category>Blades</category>
 			<type>Melee</type>
@@ -8465,7 +8465,7 @@
 			<page>132</page>
 		</weapon>
 		<weapon>
-			<id>e46fce7e-a1bf-416e-86ea-2608368b44fe</id>
+			<id>79cbec3d-d832-4b57-83e0-e2ffecbcdb0a</id>
 			<name>Hammerli 620S</name>
 			<category>Light Pistols</category>
 			<type>Ranged</type>
@@ -8524,7 +8524,7 @@
 		<page>133</page>
 	</weapon>
 	<weapon>
-		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<id>daa06575-86d4-449a-ba6f-85ad736c622e</id>
 		<name>Nemesis Arms Praetorian</name>
 		<category>Heavy Pistols</category>
 		<type>Ranged</type>
@@ -8555,7 +8555,7 @@
 		<page>134</page>
 	</weapon>
 	<weapon>
-		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<id>44802a19-05ea-4293-b234-a9d24155ce01</id>
 		<name>Stinger Pen Gun</name>
 		<category>Holdouts</category>
 		<type>Ranged</type>
@@ -8576,7 +8576,7 @@
 		<page>134</page>
 	</weapon>
 	<weapon>
-		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<id>a5bedab8-5421-4e70-9b9c-180ad91d0c0c</id>
 		<name>Injector Pen</name>
 		<category>Exotic Melee Weapons</category>
 		<type>Melee</type>
@@ -8598,7 +8598,7 @@
 		<page>134</page>
 	</weapon>
 	<weapon>
-		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<id>97037590-5324-4ab1-acdb-b2d204cb937a</id>
 		<name>Pepper Punch Pen</name>
 		<category>Exotic Ranged Weapons</category>
 		<type>Ranged</type>
@@ -8620,7 +8620,7 @@
 		<page>134</page>
 	</weapon>
 	<weapon>
-		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<id>06cc6008-2aa1-4d39-8a5c-884136d82fee</id>
 		<name>Modified Spray Pen</name>
 		<category>Exotic Ranged Weapons</category>
 		<type>Ranged</type>
@@ -8647,7 +8647,7 @@
 		<page>134</page>
 	</weapon>
 	<weapon>
-		<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+		<id>bd9515ad-9d40-486e-974a-00babc4c24f9</id>
 		<name>Sap Cap</name>
 		<category>Clubs</category>
 		<type>Melee</type>
