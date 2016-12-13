@@ -200,6 +200,7 @@
 			<specs>
 				<spec>Aura Reading</spec>
 				<spec>Astral Signatures</spec>
+				<spec>Psychometry</spec>
 				<spec>[Aura Type]</spec>
 			</specs>
 			<source>SR5</source>
@@ -341,9 +342,11 @@
 			<specs>
 				<spec>Analytical</spec>
 				<spec>Biochemistry</spec>
+				<spec>Drugs</spec>
 				<spec>Inorganic</spec>
 				<spec>Organic</spec>
 				<spec>Physical</spec>
+				<spec>Toxins</spec>
 			</specs>
 			<source>SR5</source>
 			<page>144</page>
@@ -389,7 +392,7 @@
 				<spec>Edit File</spec>
 				<spec>Matrix Perception</spec>
 				<spec>Matrix Search</spec>
-				<spec>[Action]</spec>
+				<spec>[Computer Matrix Action]</spec>
 			</specs>
 			<source>SR5</source>
 			<page>144</page>
@@ -454,6 +457,7 @@
 				<spec>Bodyware</spec>
 				<spec>Cyberlimbs</spec>
 				<spec>Headware</spec>
+				<spec>Nanoware</spec>
 				<spec>Repair</spec>
 			</specs>
 			<source>SR5</source>
@@ -552,6 +556,7 @@
 				<spec>Encryption</spec>
 				<spec>Jamming</spec>
 				<spec>Sensor Operations</spec>
+				<spec>[Electronic Warfare Matrix Action]</spec>
 			</specs>
 			<source>SR5</source>
 			<page>144</page>
@@ -581,12 +586,15 @@
 			<default>Yes</default>
 			<skillgroup>Influence</skillgroup>
 			<specs>
+				<spec>Catholic Church</spec>
 				<spec>Corporate</spec>
 				<spec>High Society</spec>
+				<spec>Mafia</spec>
 				<spec>Media</spec>
 				<spec>Mercenary</spec>
 				<spec>Street</spec>
 				<spec>Yakuza</spec>
+				<spec>[Culture or Subculture]</spec>
 			</specs>
 			<source>SR5</source>
 			<page>138</page>
@@ -735,6 +743,7 @@
 				<spec>Balance</spec>
 				<spec>Climbing</spec>
 				<spec>Dance</spec>
+				<spec>Dodging</spec>
 				<spec>Leaping</spec>
 				<spec>Parkour</spec>
 				<spec>Rolling</spec>
@@ -768,8 +777,10 @@
 			<specs>
 				<spec>Commlinks</spec>
 				<spec>Cyberdecks</spec>
+				<spec>Jack Out</spec>
 				<spec>Smartguns</spec>
 				<spec>[Hardware Type]</spec>
+				<spec>[Hardware Matrix Action]</spec>
 			</specs>
 			<source>SR5</source>
 			<page>145</page>
@@ -901,6 +912,7 @@
 				<spec>Long-Range Shots</spec>
 				<spec>Shotguns</spec>
 				<spec>Sniper Rifles</spec>
+				<spec>Sporting Rifles</spec>
 			</specs>
 			<source>SR5</source>
 			<page>132</page>
@@ -1177,6 +1189,7 @@
 				<spec>Desert</spec>
 				<spec>Jungle</spec>
 				<spec>Urban</spec>
+				<spec>Vehicle</spec>
 				<spec>Wilderness</spec>
 				<spec>[Terrain]</spec>
 			</specs>
@@ -1193,6 +1206,8 @@
 			<specs>
 				<spec>Data Bombs</spec>
 				<spec>[Complex Form]</spec>
+				<spec>[Program Type]</spec>
+				<spec>[Software Matrix Action]</spec>
 			</specs>
 			<source>SR5</source>
 			<page>145</page>
@@ -1723,6 +1738,30 @@
 				<spec>Tir Tairngire</spec>
 				<spec>Tsimshian Protectorate</spec>
 				<spec>Yukutan</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>c52d63de-ddc0-477f-bf46-33002f8f4aaa</id>
+			<name>BTLs</name>
+			<attribute>INT</attribute>
+			<category>Interest</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Bunraku</spec>
+				<spec>Calhots</spec>
+				<spec>Crime Fantasy</spec>
+				<spec>Drug Emulation</spec>
+				<spec>Historical Fantasy</spec>
+				<spec>Hot-Sim Pornography</spec>
+				<spec>Mind Control Chips</spec>
+				<spec>Power Fantasy</spec>
+				<spec>Reality Enhancer</spec>
+				<spec>Revenge Fantasy</spec>
+				<spec>Snuff</spec>
+				<spec>Soma Chips</spec>
+				<spec>Synesthesia</spec>
+				<spec>Ultraviolence</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -2622,11 +2661,21 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
+				<spec>Astral Dreams: Legend of Tenku</spec>
+				<spec>Awakening: 1949</spec>
+				<spec>Beat the Market</spec>
 				<spec>Dawn of Atlantis III</spec>
 				<spec>Dragon Storm</spec>
+				<spec>Fermat's Last Hermetic Equation</spec>
+				<spec>Galaxy Ten</spec>
 				<spec>Grand Larceny</spec>
 				<spec>Killing Floor</spec>
+				<spec>Life's a Bitch</spec>
+				<spec>Miracle Shooter</spec>
+				<spec>Noir Confidential</spec>
+				<spec>Run, Run Runner</spec>
 				<spec>Shadowrun Online</spec>
+				<spec>The Seelie Court</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3284,6 +3333,8 @@
 			<default>No</default>
 			<skillgroup />
 			<specs>
+				<spec>Betel</spec>
+				<spec>Binaural Beats</spec>
 				<spec>BTLs</spec>
 				<spec>Cram</spec>
 				<spec>Deepweed</spec>
@@ -3389,11 +3440,37 @@
 			<skillgroup />
 			<specs>
 				<spec>Action</spec>
+				<spec>Comedy</spec>
 				<spec>Cop</spec>
 				<spec>Documentary</spec>
+				<spec>Drama</spec>
 				<spec>Fantasy</spec>
+				<spec>Horror</spec>
 				<spec>Rom-Com</spec>
 				<spec>Sci-fi</spec>
+				<spec>Thriller</spec>
+			</specs>
+		</skill>
+		<skill>
+			<id>2ffc7361-466a-4f9e-a09c-f6c56046f2ef</id>
+			<name>Trideo Shows</name>
+			<attribute>INT</attribute>
+			<category>Interest</category>
+			<default>No</default>
+			<skillgroup />
+			<specs>
+				<spec>Action</spec>
+				<spec>Comedy</spec>
+				<spec>Cop</spec>
+				<spec>Documentary</spec>
+				<spec>Drama</spec>
+				<spec>Fantasy</spec>
+				<spec>Game Shows</spec>
+				<spec>Horror</spec>
+				<spec>Reality Shows</spec>
+				<spec>Rom-Com</spec>
+				<spec>Sci-fi</spec>
+				<spec>Thriller</spec>
 			</specs>
 		</skill>
 		<skill>
@@ -3423,7 +3500,7 @@
 				<spec>Black Market Pipeline</spec>
 				<spec>Blackmail</spec>
 				<spec>BTL</spec>
-				<spec>Counterfitting</spec>
+				<spec>Counterfeiting</spec>
 				<spec>Drugs</spec>
 				<spec>Drug Dealers</spec>
 				<spec>Fencing</spec>
