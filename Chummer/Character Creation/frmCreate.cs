@@ -19124,156 +19124,137 @@ namespace Chummer
 			string strExConItems = "";
 			string strCyberwareGrade = "";
 
-			// Check limits specific to the Priority build method.
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
-				_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			// Check if the character has more than 1 Martial Art, not counting One Trick Pony. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule. 
+			int intMartialArts = _objCharacter.MartialArts.Count(objArt => objArt.Name != "One Trick Pony");
+			if (intMartialArts > 1)
+				strMessage += "\n\t" +
+							  LanguageManager.Instance.GetString("Message_InvalidPointExcess")
+								  .Replace("{0}",
+									  ((1 - intMartialArts) * -1).ToString() + " " +
+									  LanguageManager.Instance.GetString("String_MartialArtsCount"));
+
+			// Check if the character has more than 5 Techniques in a Martial Art
+			if (_objCharacter.MartialArts.Count > 0)
 			{
-				// Check if the character has more than 1 Martial Art
-				int intMartialArts = _objCharacter.MartialArts.Count;
-				if (intMartialArts > 1)
+				int intTechniques = _objCharacter.MartialArts[0].Advantages.Count;
+				if (intTechniques > 5)
 					strMessage += "\n\t" +
 								  LanguageManager.Instance.GetString("Message_InvalidPointExcess")
 									  .Replace("{0}",
-										  ((1 - intMartialArts) * -1).ToString() + " " +
-										  LanguageManager.Instance.GetString("String_MartialArtsCount"));
+										  ((5 - intTechniques) * -1).ToString() + " " +
+										  LanguageManager.Instance.GetString("String_TechniquesCount"));
+			}
 
-				// Check if the character has more than 5 Techniques in a Martial Art
-				if (_objCharacter.MartialArts.Count > 0)
+			// Check if the character has gone over limits from optional rules
+			int intContactPointsUsed = 0;
+			int intGroupContacts = 0;
+			int intHighPlaces = 0;
+			foreach (ContactControl objContactControl in panContacts.Controls)
+			{
+				if (!objContactControl.Free)
 				{
-					int intTechniques = _objCharacter.MartialArts[0].Advantages.Count;
-					if (intTechniques > 5)
-						strMessage += "\n\t" +
-									  LanguageManager.Instance.GetString("Message_InvalidPointExcess")
-										  .Replace("{0}",
-											  ((5 - intTechniques) * -1).ToString() + " " +
-											  LanguageManager.Instance.GetString("String_TechniquesCount"));
-				}
-
-				// Check if the character has gone over limits from optional rules
-				int intContactPointsUsed = 0;
-				int intGroupContacts = 0;
-				int intHighPlaces = 0;
-				foreach (ContactControl objContactControl in panContacts.Controls)
-				{
-					if (!objContactControl.Free)
+					if (objContactControl.IsGroup)
 					{
-						if (objContactControl.IsGroup)
-						{
-							intGroupContacts += objContactControl.ContactObject.ContactPoints;
-						}
-						else if (objContactControl.ConnectionRating >= 8 && _objCharacter.FriendsInHighPlaces)
-						{
-							intHighPlaces += (objContactControl.ConnectionRating +
-											  objContactControl.LoyaltyRating);
-						}
-						else
-						{
-							// The Contact's BP cost = their Connection + Loyalty Rating.
-							intContactPointsUsed += (objContactControl.ConnectionRating +
-													 objContactControl.LoyaltyRating) * _objOptions.BPContact;
-						}
-
+						intGroupContacts += objContactControl.ContactObject.ContactPoints;
 					}
-				}
-
-				// If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-				int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
-
-
-
-				if (intContactPointsUsed >= intFreePoints)
-				{
-					intContactPointsUsed -= intFreePoints;
-				}
-				else
-				{
-					intContactPointsUsed = 0;
-				}
-
-				intContactPointsUsed += Math.Max(0, intHighPlaces - (_objCharacter.CHA.TotalValue * 4));
-
-				//if (intContactPointsUsed > _objCharacter.ContactPoints)
-				//    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
-
-				// Calculate the BP used by Enemies. These are added to the BP since they are technically
-				// a Negative Quality.
-				int intPointsUsed = 0;
-				int intNegativePoints = 0;
-				foreach (ContactControl objContactControl in panEnemies.Controls)
-				{
-					if (!objContactControl.Free)
+					else if (objContactControl.ConnectionRating >= 8 && _objCharacter.FriendsInHighPlaces)
 					{
-						// The Enemy's BP cost = their Connection + Loyalty Rating.
-						//intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating)*
-						//                 _objOptions.KarmaContact;
-						intNegativePoints -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaEnemy;
-					}
-				}
-
-				// Calculate the BP used by Positive Qualities.
-				intPointsUsed = 0;
-				foreach (Quality objQuality in _objCharacter.Qualities)
-				{
-					if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
-					{
-						intPointsUsed += objQuality.BP;
-					}
-				}
-				// Group contacts are counted as positive qualities
-				intPointsUsed += intGroupContacts;
-
-				// Deduct the amount for free Qualities.
-				intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
-				int intPositivePointsUsed = intPointsUsed;
-
-				// Calculate the BP used for Negative Qualities.
-				intPointsUsed = 0;
-				foreach (Quality objQuality in _objCharacter.Qualities)
-				{
-					if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit)
-					{
-						intPointsUsed += objQuality.BP;
-						intNegativePoints += objQuality.BP;
-					}
-				}
-
-				// Deduct the amount for free Qualities.
-				intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
-				intNegativePoints -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
-
-				// If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-				if (_objOptions.ExceedNegativeQualitiesLimit)
-				{
-					if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
-					 _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
-					intNegativePoints < -1 * _objCharacter.MaxKarma)
-					{
-						intNegativePoints = -1 * _objCharacter.MaxKarma;
+						intHighPlaces += (objContactControl.ConnectionRating +
+										  objContactControl.LoyaltyRating);
 					}
 					else
 					{
-						intNegativePoints = -1 * _objCharacter.GameplayOptionQualityLimit;
+						// The Contact's BP cost = their Connection + Loyalty Rating.
+						intContactPointsUsed += (objContactControl.ConnectionRating +
+												 objContactControl.LoyaltyRating) * _objOptions.BPContact;
 					}
-				}
 
-				// if positive points > 25
-				if (intPositivePointsUsed > _objCharacter.MaxKarma && !_objOptions.ExceedPositiveQualities)
+				}
+			}
+
+			// If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
+			int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
+
+
+
+			if (intContactPointsUsed >= intFreePoints)
+			{
+				intContactPointsUsed -= intFreePoints;
+			}
+			else
+			{
+				intContactPointsUsed = 0;
+			}
+
+			intContactPointsUsed += Math.Max(0, intHighPlaces - (_objCharacter.CHA.TotalValue * 4));
+
+			//if (intContactPointsUsed > _objCharacter.ContactPoints)
+			//    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
+
+			// Calculate the BP used by Enemies. These are added to the BP since they are technically
+			// a Negative Quality.
+			int intPointsUsed = 0;
+			int intNegativePoints = 0;
+			foreach (ContactControl objContactControl in panEnemies.Controls)
+			{
+				if (!objContactControl.Free)
 				{
-					strMessage += "\n\t" +
-								  LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
-									  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
-					blnValid = false;
+					intNegativePoints -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaEnemy;
 				}
+			}
 
-				// if negative points > 25
-				if (intNegativePoints < (_objCharacter.MaxKarma * -1) && !_objOptions.ExceedNegativeQualities)
+			// Calculate the BP used by Positive Qualities.
+			intPointsUsed = _objCharacter.Qualities.Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+			// Group contacts are counted as positive qualities
+			intPointsUsed += intGroupContacts;
+
+			// Deduct the amount for free Qualities.
+			intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
+			int intPositivePointsUsed = intPointsUsed;
+
+			// Calculate the BP used for Negative Qualities.
+			intPointsUsed = 0;
+			foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit))
+			{
+				intPointsUsed += objQuality.BP;
+				intNegativePoints += objQuality.BP;
+			}
+
+			// Deduct the amount for free Qualities.
+			intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
+			intNegativePoints -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
+
+			// If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+			if (_objOptions.ExceedNegativeQualitiesLimit)
+			{
+				if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+				 _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
+				intNegativePoints < -1 * _objCharacter.MaxKarma)
 				{
-					strMessage += "\n\t" +
-								  LanguageManager.Instance.GetString("Message_NegativeQualityLimit")
-									  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
-					blnValid = false;
+					intNegativePoints = -1 * _objCharacter.MaxKarma;
 				}
+				else
+				{
+					intNegativePoints = -1 * _objCharacter.GameplayOptionQualityLimit;
+				}
+			}
 
+			// if positive points > 25
+			if (intPositivePointsUsed > _objCharacter.MaxKarma && !_objOptions.ExceedPositiveQualities)
+			{
+				strMessage += "\n\t" +
+							  LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
+								  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+				blnValid = false;
+			}
+
+			// if negative points > 25
+			if (intNegativePoints < (_objCharacter.MaxKarma * -1) && !_objOptions.ExceedNegativeQualities)
+			{
+				strMessage += "\n\t" +
+							  LanguageManager.Instance.GetString("Message_NegativeQualityLimit")
+								  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+				blnValid = false;
 			}
 
 			if (_objCharacter.Contacts.Any(x => x.Connection <= 7 && (x.Connection + x.Loyalty) > 7 && !x.Free))
@@ -19295,18 +19276,15 @@ namespace Chummer
 			{
 				int metageneticPositiveQualities = 0;
 				int metageneticNegativeQualities = 0;
-				foreach (Quality objQuality in _objCharacter.Qualities)
+				foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString()))
 				{
-					if (objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString())
+					if (objQuality.Type == QualityType.Positive)
 					{
-						if (objQuality.Type == QualityType.Positive)
-						{
-							metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
-						}
-						else if (objQuality.Type == QualityType.Negative)
-						{
-							metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
-						}
+						metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
+					}
+					else if (objQuality.Type == QualityType.Negative)
+					{
+						metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
 					}
 				}
 				if (metageneticNegativeQualities > _objCharacter.MetageneticLimit)
@@ -19521,30 +19499,27 @@ namespace Chummer
 					strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
 				}
 
-				foreach (ArmorMod objMod in objArmor.ArmorMods)
+				foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => !objMod.TotalAvail.StartsWith("+")))
 				{
-					if (!objMod.TotalAvail.StartsWith("+"))
+					if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 					{
-						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						if ((GetAvailInt(objMod.TotalAvail) <= 24) && ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)))
 						{
-							if ((GetAvailInt(objMod.TotalAvail) <= 24) && ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)))
-							{
-								blnRestrictedGearUsed = true;
-							}
-							else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
-							{
-								intRestrictedCount++;
-								strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
-							}
+							blnRestrictedGearUsed = true;
 						}
-
 						else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
 						{
 							intRestrictedCount++;
 							strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
 						}
 					}
-                }
+
+					else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
+					{
+						intRestrictedCount++;
+						strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
+					}
+				}
 
                 foreach (Gear objGear in objArmor.Gear)
                 {
@@ -19708,14 +19683,11 @@ namespace Chummer
 				bool blnOverCapacity = false;
 				int intCapacityOver = 0;
 				// Armor Capacity.
-				foreach (Armor objArmor in _objCharacter.Armor)
+				foreach (Armor objArmor in _objCharacter.Armor.Where(objArmor => objArmor.CapacityRemaining < 0))
 				{
-					if (objArmor.CapacityRemaining < 0)
-					{
-						blnOverCapacity = true;
-						lstOverCapacity.Add(objArmor.Name);
-						intCapacityOver++;
-					}
+					blnOverCapacity = true;
+					lstOverCapacity.Add(objArmor.Name);
+					intCapacityOver++;
 				}
 
 				// Gear Capacity.
@@ -19728,14 +19700,11 @@ namespace Chummer
 						intCapacityOver++;
 					}
 					// Child Gear.
-					foreach (Gear objChild in objGear.Children)
+					foreach (Gear objChild in objGear.Children.Where(objChild => objChild.CapacityRemaining < 0))
 					{
-						if (objChild.CapacityRemaining < 0)
-						{
-							blnOverCapacity = true;
-							lstOverCapacity.Add(objChild.Name);
-							intCapacityOver++;
-						}
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objChild.Name);
+						intCapacityOver++;
 					}
 				}
 
@@ -19749,14 +19718,11 @@ namespace Chummer
 						intCapacityOver++;
 					}
 					// Check plugins.
-					foreach (Cyberware objChild in objCyberware.Children)
+					foreach (Cyberware objChild in objCyberware.Children.Where(objChild => objChild.CapacityRemaining < 0))
 					{
-						if (objChild.CapacityRemaining < 0)
-						{
-							blnOverCapacity = true;
-							lstOverCapacity.Add(objChild.Name);
-							intCapacityOver++;
-						}
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objChild.Name);
+						intCapacityOver++;
 					}
 				}
 
@@ -19800,14 +19766,11 @@ namespace Chummer
 							intCapacityOver++;
 						}
 						// Check Child Gear.
-						foreach (Gear objChild in objGear.Children)
+						foreach (Gear objChild in objGear.Children.Where(objChild => objChild.CapacityRemaining < 0))
 						{
-							if (objChild.CapacityRemaining < 0)
-							{
-								blnOverCapacity = true;
-								lstOverCapacity.Add(objChild.Name);
-								intCapacityOver++;
-							}
+							blnOverCapacity = true;
+							lstOverCapacity.Add(objChild.Name);
+							intCapacityOver++;
 						}
 					}
 				}

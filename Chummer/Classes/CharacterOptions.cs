@@ -177,8 +177,9 @@ namespace Chummer
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
+		private bool _blnFreeMartialArtSpecialization;
 
-	    #region Initialization, Save, and Load Methods
+		#region Initialization, Save, and Load Methods
 		public CharacterOptions(Character character)
 		{
 			_character = character;
@@ -398,6 +399,8 @@ namespace Chummer
 			objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
 			// <autobackstory />
 			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
+			// <freemartialartspecialization />
+			objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
 			// <usecalculatedpublicawareness />
 			objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
 			// <bpcost>
@@ -689,6 +692,8 @@ namespace Chummer
 
 		    objXmlNode.TryGetField("mysaddppcareer", out _mysaddPpCareer);
 
+			// Grant a free specialization when taking a martial art.
+			objXmlNode.TryGetField("freemartialartspecialization", out _blnFreeMartialArtSpecialization);
 			// Allow more than 35 BP in Negative Qualities.
 			objXmlNode.TryGetField("exceednegativequalities", out _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
@@ -1139,13 +1144,8 @@ namespace Chummer
 		{
 			string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				strReturn = objXmlBook["name"].InnerText;
-			}
-			catch
-			{
-			}
+			strReturn = objXmlBook?["name"]?.InnerText;
+
 			return strReturn;
 		}
 
@@ -1160,16 +1160,7 @@ namespace Chummer
 
 			string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				if (objXmlBook["altcode"] != null)
-					strReturn = objXmlBook["altcode"].InnerText;
-				else
-					strReturn = strCode;
-			}
-			catch
-			{
-			}
+			strReturn = objXmlBook["altcode"]?.InnerText ?? strCode;
 			return strReturn;
 		}
 
@@ -1200,16 +1191,8 @@ namespace Chummer
 
 			string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				if (objXmlBook["translate"] != null)
-					strReturn = objXmlBook["translate"].InnerText;
-				else
-					strReturn = objXmlBook["name"].InnerText;
-			}
-			catch
-			{
-			}
+			strReturn = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText;
+
 			return strReturn;
 		}
 
@@ -3476,6 +3459,21 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether Martial Arts grant a free specialisation in a skill. 
+		/// </summary>
+		public bool FreeMartialArtSpecialization
+		{
+			get
+			{
+				return _blnFreeMartialArtSpecialization;
+			}
+			set
+			{
+				_blnFreeMartialArtSpecialization = value;
+			}
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		public string RecentImageFolder
@@ -3489,6 +3487,7 @@ namespace Chummer
 				_strImageFolder = value;
 			}
 		}
+
 		#endregion
 
 	}

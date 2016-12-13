@@ -141,7 +141,7 @@ namespace Chummer
             _characterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
 	        _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
             _characterOptions.MysaddPPCareer = chkMysAdPp.Checked;
-
+	        _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
 			_characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
 			_characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
 
@@ -612,6 +612,7 @@ namespace Chummer
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
             chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
+	        chkFreeMartialArtSpecialization.Checked = _characterOptions.FreeMartialArtSpecialization;
 			chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
 			chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
 			chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;

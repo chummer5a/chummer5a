@@ -6694,6 +6694,10 @@ Do you want to continue?</text>
       <text>Allow Mystic Adepts to buy power points during career</text>
     </string>
 		<string>
+			<key>Checkbox_Option_FreeMartialArtSpecialization</key>
+			<text>Allow Martial Arts to grant a free specialisation in a skill</text>
+		</string>
+		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
 			<text>Enforce Capacity limits</text>
 		</string>
