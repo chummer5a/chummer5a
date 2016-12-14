@@ -712,6 +712,7 @@ namespace Chummer
 		    GlobalOptions.Instance.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
 			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
+	        GlobalOptions.Instance.DronemodsMaximumPilot = chkDronemodsMaximumPilot.Checked;
 		    GlobalOptions.Instance.CharacterRosterPath = txtCharacterRosterPath.Text;
 	    }
 
@@ -737,8 +738,9 @@ namespace Chummer
 			objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked.ToString());
 			objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
-			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
-			objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
+            objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
+            objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked.ToString());
+            objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
 
 			// Save the SourcebookInfo.
 			Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
@@ -1027,6 +1029,7 @@ namespace Chummer
             chkDatesIncludeTime.Checked = GlobalOptions.Instance.DatesIncludeTime;
             chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
 			chkDronemods.Checked = GlobalOptions.Instance.Dronemods;
+            chkDronemodsMaximumPilot.Checked = GlobalOptions.Instance.DronemodsMaximumPilot;
             chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
 	        txtCharacterRosterPath.Text = GlobalOptions.Instance.CharacterRosterPath;

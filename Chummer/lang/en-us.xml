@@ -4674,6 +4674,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Use Drone Modification rules (R5 122)</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_Dronemods_Pilot</key>
+			<text>Use Maximum Attribute for Pilot Attribute</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
 			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
 		</string>

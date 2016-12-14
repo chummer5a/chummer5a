@@ -8488,8 +8488,12 @@
 				<mount>Side</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Gas-Vent 1 System</accessory>
-				<accessory>Smartlink</accessory>
+				<accessory>
+					<name>Gas-Vent 1 System</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>CA</source>
 			<page>133</page>
@@ -8518,7 +8522,9 @@
 			<mount>Side</mount>
 		</accessorymounts>
 		<accessories>
-			<accessory>Electronic Firing</accessory>
+			<accessory>
+				<name>Electronic Firing</name>
+			</accessory>
 		</accessories>
 		<source>CA</source>
 		<page>133</page>
@@ -8547,9 +8553,15 @@
 			<mount>Side</mount>
 		</accessorymounts>
 		<accessories>
-			<accessory>Laser Sight</accessory>
-			<accessory>Bayonet</accessory>
-			<accessory>Custom Look</accessory>
+			<accessory>
+				<name>Laser Sight</name>
+			</accessory>
+			<accessory>
+				<name>Bayonet</name>
+			</accessory>
+			<accessory>
+				<name>Custom Look</name>
+			</accessory>
 		</accessories>
 		<source>CA</source>
 		<page>134</page>

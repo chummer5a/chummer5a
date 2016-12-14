@@ -1960,10 +1960,95 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Check if the vehicle is over capacity in any category
+        /// <summary>
+		/// Maximum Speed attribute allowed for the Vehicle
 		/// </summary>
-		public bool OverR5Capacity(string strCheckCapacity = "")
+		public int MaxSpeed
+        {
+            get
+            {
+                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //When you need to use a 0 for the math, use 0.5 instead
+                if (IsDrone && !_objCharacter.IgnoreRules)
+                {
+                    return Math.Max(_intSpeed * 2, 1);
+                }
+                return 99;
+            }
+        }
+
+        /// <summary>
+		/// Maximum Handling attribute allowed for the Vehicle
+		/// </summary>
+		public int MaxHandling
+        {
+            get
+            {
+                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //When you need to use a 0 for the math, use 0.5 instead
+                if (IsDrone && !_objCharacter.IgnoreRules)
+                {
+                    return Math.Max(_intHandling * 2, 1);
+                }
+                return 99;
+            }
+        }
+
+        /// <summary>
+		/// Maximum Acceleration attribute allowed for the Vehicle
+		/// </summary>
+		public int MaxAcceleration
+        {
+            get
+            {
+                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //When you need to use a 0 for the math, use 0.5 instead
+                if (IsDrone && !_objCharacter.IgnoreRules)
+                {
+                    return Math.Max(_intAccel * 2, 1);
+                }
+                return 99;
+            }
+        }
+
+        /// <summary>
+		/// Maximum Sensor attribute allowed for the Vehicle
+		/// </summary>
+		public int MaxSensor
+        {
+            get
+            {
+                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //When you need to use a 0 for the math, use 0.5 instead
+                if (IsDrone && !_objCharacter.IgnoreRules)
+                {
+                    return Math.Max(_intSensor * 2, 1);
+                }
+                return 99;
+            }
+        }
+
+        /// <summary>
+		/// Maximum Sensor attribute allowed for the Vehicle
+		/// </summary>
+		public int MaxPilot
+        {
+            get
+            {
+                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //When you need to use a 0 for the math, use 0.5 instead
+                if (IsDrone && !_objCharacter.IgnoreRules && GlobalOptions.Instance.DronemodsMaximumPilot)
+                {
+                    return Math.Max(_intPilot * 2, 1);
+                }
+                return 99;
+            }
+        }
+
+        /// <summary>
+        /// Check if the vehicle is over capacity in any category
+        /// </summary>
+        public bool OverR5Capacity(string strCheckCapacity = "")
 		{
 			string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
 			return strCheckCapacity != "" && arrCategories.Contains(strCheckCapacity)
