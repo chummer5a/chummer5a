@@ -374,12 +374,30 @@ namespace Chummer
 			strCost = strCost.Replace("Weapon Cost", _intWeaponCost.ToString()).Replace("Rating", nudRating.Value.ToString());
 			if (chkFreeItem.Checked)
 				strCost = "0";
-
-			if (strCost.Contains("Variable"))
+			else if (strCost.StartsWith("Variable"))
 			{
-				lblCost.Text = strCost;
-				lblTest.Text = "";
-			}
+                int intMin = 0;
+                int intMax = 0;
+                strCost = strCost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                if (strCost.Contains("-"))
+                {
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
+                }
+                else
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                if (intMax == 0)
+                {
+                    intMax = 1000000;
+                    lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                }
+                else
+                    lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+
+                lblTest.Text = _objCharacter.AvailTest(intMin, lblAvail.Text);
+            }
 			else
 			{
 				XPathExpression xprCost = nav.Compile(strCost);

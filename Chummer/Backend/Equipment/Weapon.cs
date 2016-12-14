@@ -124,7 +124,36 @@ namespace Chummer.Backend.Equipment
 			}
 			_strAvail = objXmlWeapon["avail"].InnerText;
 			_intCost = Convert.ToInt32(objXmlWeapon["cost"]?.InnerText);
-			if (objXmlWeapon["cyberware"]?.InnerText == "yes")
+            // Check for a Variable Cost.
+            if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
+            {
+                int intMin = 0;
+                int intMax = 0;
+                string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                if (strCost.Contains("-"))
+                {
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
+                }
+                else
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                if (intMin != 0 || intMax != 0)
+                {
+                    frmSelectNumber frmPickNumber = new frmSelectNumber();
+                    if (intMax == 0)
+                        intMax = 1000000;
+                    frmPickNumber.Minimum = intMin;
+                    frmPickNumber.Maximum = intMax;
+                    frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                    frmPickNumber.AllowCancel = false;
+                    frmPickNumber.ShowDialog();
+                    _intCost = frmPickNumber.SelectedValue;
+                }
+            }
+
+            if (objXmlWeapon["cyberware"]?.InnerText == "yes")
 				_blnCyberware = true;
 			_strSource = objXmlWeapon["source"].InnerText;
 			_strPage = objXmlWeapon["page"].InnerText;

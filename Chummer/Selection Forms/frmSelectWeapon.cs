@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -178,30 +178,58 @@ namespace Chummer
 
 			int intItemCost = 0;
             double dblCost = 0;
-            try
+            if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
             {
-                dblCost = Convert.ToDouble(objXmlWeapon["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-            }
-            catch { }
-			dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-            if (chkBlackMarketDiscount.Checked)
-            {
-                dblCost = dblCost*0.90;
-            }
-			lblWeaponCost.Text = $"{dblCost:###,###,##0¥}";
-			try
-			{
-				intItemCost = Convert.ToInt32(dblCost);
-			}
-			catch
-			{
-			}
+                int intMin = 0;
+                int intMax = 0;
+                string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                if (strCost.Contains("-"))
+                {
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
+                }
+                else
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-			if (chkFreeItem.Checked)
-			{
-				lblWeaponCost.Text = $"{0:###,###,##0¥}";
-				intItemCost = 0;
-			}
+                if (intMax == 0)
+                {
+                    intMax = 1000000;
+                    lblWeaponCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                }
+                else
+                    lblWeaponCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+
+                intItemCost = intMin;
+            }
+            else
+            {
+                try
+                {
+                    dblCost = Convert.ToDouble(objXmlWeapon["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
+                }
+                catch { }
+                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                if (chkBlackMarketDiscount.Checked)
+                {
+                    dblCost = dblCost * 0.90;
+                }
+                lblWeaponCost.Text = $"{dblCost:###,###,##0¥}";
+                try
+                {
+                    intItemCost = Convert.ToInt32(dblCost);
+                }
+                catch
+                {
+                }
+
+                if (chkFreeItem.Checked)
+                {
+                    lblWeaponCost.Text = $"{0:###,###,##0¥}";
+                    intItemCost = 0;
+                }
+            }
+            
 
 			lblTest.Text = _objCharacter.AvailTest(intItemCost, lblWeaponAvail.Text);
 

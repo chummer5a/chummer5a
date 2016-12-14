@@ -75,7 +75,41 @@ namespace Chummer.Backend.Equipment
             _intRating = intRating;
 			_strAvail = objXmlAccessory["avail"].InnerText;
 			_strCost = objXmlAccessory["cost"].InnerText;
-			_strSource = objXmlAccessory["source"].InnerText;
+            // Check for a Variable Cost.
+            if (objXmlAccessory["cost"].InnerText.StartsWith("Variable"))
+            {
+                if (blnSkipCost)
+                    _strCost = "0";
+                else
+                {
+                    int intMin = 0;
+                    int intMax = 0;
+                    string strCost = objXmlAccessory["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString();
+                    }
+                }
+            }
+
+            _strSource = objXmlAccessory["source"].InnerText;
 			_strPage = objXmlAccessory["page"].InnerText;
 			_nodAllowGear = objXmlAccessory["allowgear"];
 			objXmlAccessory.TryGetField("rc", out _strRC, "");

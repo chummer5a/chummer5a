@@ -56,6 +56,7 @@ Application Changes:
 - Added an optional rule to allow martial arts to automatically grant a free specialisation.
 - Implemented maximum Attributes for drones.
 - Added optional rule for using the maximum drone attribute rule for Pilot.
+- Variable costs are now properly supported on Armor Mods, Weapons, and Weapon Accessories.
 
 Data Changes: 
 
