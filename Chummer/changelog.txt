@@ -58,6 +58,7 @@ Application Changes:
 - Added optional rule for using the maximum drone attribute rule for Pilot.
 - Variable costs are now properly supported on Armor Mods, Weapons, and Weapon Accessories.
 - Added the ability for a lifestyle quality to only modify the base cost of the lifestyle, i.e. the cost without extra entertainment assets, instead of the extra asset costs factored in.
+- Fixed a bug, where Chummer would crash when trying to add a Lifestyle quality to an advanced lifestyle on an A.I. character.
 
 Data Changes: 
 

@@ -376,45 +376,18 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (objXmlQuality["name"].InnerText.StartsWith("Infected"))
+                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
-                    }
-                    if ((_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && chkLimitList.Checked)
-                    {
-                        XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                        if (objXmlMetatype.SelectSingleNode("qualityrestriction/" + cboCategory.SelectedValue.ToString().ToLower() + "/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
+                        if (objXmlQuality["hide"] == null)
                         {
-                            if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                            {
-                                if (objXmlQuality["hide"] == null)
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objXmlQuality["name"].InnerText;
-                                    if (objXmlQuality["translate"] != null)
-                                        objItem.Name = objXmlQuality["translate"].InnerText;
-                                    else
-                                        objItem.Name = objXmlQuality["name"].InnerText;
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objXmlQuality["name"].InnerText;
+                            if (objXmlQuality["translate"] != null)
+                                objItem.Name = objXmlQuality["translate"].InnerText;
+                            else
+                                objItem.Name = objXmlQuality["name"].InnerText;
 
-                                    lstLifestyleQuality.Add(objItem);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                        {
-                            if (objXmlQuality["hide"] == null)
-                            {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objXmlQuality["name"].InnerText;
-                                if (objXmlQuality["translate"] != null)
-                                    objItem.Name = objXmlQuality["translate"].InnerText;
-                                else
-                                    objItem.Name = objXmlQuality["name"].InnerText;
-
-                                lstLifestyleQuality.Add(objItem);
-                            }
+                            lstLifestyleQuality.Add(objItem);
                         }
                     }
                 }
