@@ -54,6 +54,8 @@ Application Changes:
 - Fixed issues related to Trust Fund covering the incorrect amount of lifestyle costs in certain scenarios involving multipliers. 
 - Fixed an issue that prevented the last knowledgskill in the Skills tab from being rendered. 
 - Added an optional rule to allow martial arts to automatically grant a free specialisation.
+- Implemented maximum Attributes for drones.
+- Added optional rule for using the maximum drone attribute rule for Pilot.
 
 Data Changes: 
 
@@ -123,6 +125,7 @@ New Strings:
 - Treenode_Roster_RecentCharacters
 - Treenode_Roster_WatchFolder
 - Checkbox_Option_FreeMartialArtSpecialization
+- Checkbox_Options_Dronemods_Pilot
 
 Build 188
 

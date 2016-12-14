@@ -112,6 +112,7 @@ namespace Chummer
 		private static bool _lifeModuleEnabled;
 		private static bool _blnMissionsOnly = false;
 		private static bool _blnDronemods = false;
+	    private static bool _blnDronemodsMaximumPilot = false;
 		private static bool _blnPreferNightlyUpdates = false;
 
 		// Omae Information.
@@ -208,9 +209,15 @@ namespace Chummer
 			}
 			catch { }
 
+            try
+            {
+                _blnDronemodsMaximumPilot = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("dronemodsPilot").ToString());
+            }
+            catch { }
 
-			// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
-			try
+
+            // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
+            try
 			{
 				_blnPrintToFileFirst = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printtofilefirst").ToString());
 			}
@@ -448,6 +455,15 @@ namespace Chummer
 				_blnDronemods = value;
 			}
 		}
+
+	    public bool DronemodsMaximumPilot
+	    {
+	        get
+	        {
+	            return _blnDronemodsMaximumPilot;
+	        }
+	        set { _blnDronemodsMaximumPilot = value; }
+	    }
 
 
 		/// <summary>

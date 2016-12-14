@@ -9202,9 +9202,41 @@ namespace Chummer
 					objNode.Text = objMod.DisplayName;
 				}
 			}
+            else if (objMod.Category == "Handling")
+            {
+                if (objMod.Rating > objSelectedVehicle.MaxHandling)
+                {
+                    objMod.Rating = objSelectedVehicle.MaxHandling;
+                    objNode.Text = objMod.DisplayName;
+                }
+            }
+            else if (objMod.Category == "Speed")
+            {
+                if (objMod.Rating > objSelectedVehicle.MaxSpeed)
+                {
+                    objMod.Rating = objSelectedVehicle.MaxSpeed;
+                    objNode.Text = objMod.DisplayName;
+                }
+            }
+            else if (objMod.Category == "Acceleration")
+            {
+                if (objMod.Rating > objSelectedVehicle.MaxAcceleration)
+                {
+                    objMod.Rating = objSelectedVehicle.MaxAcceleration;
+                    objNode.Text = objMod.DisplayName;
+                }
+            }
+            else if (objMod.Category == "Sensor")
+            {
+                if (objMod.Rating > objSelectedVehicle.MaxSensor)
+                {
+                    objMod.Rating = objSelectedVehicle.MaxSensor;
+                    objNode.Text = objMod.DisplayName;
+                }
+            }
 
-			// Check the item's Cost and make sure the character can afford it.
-			int intOriginalCost = objSelectedVehicle.TotalCost;
+            // Check the item's Cost and make sure the character can afford it.
+            int intOriginalCost = objSelectedVehicle.TotalCost;
             if (frmPickVehicleMod.FreeCost)
                 objMod.Cost = "0";
 

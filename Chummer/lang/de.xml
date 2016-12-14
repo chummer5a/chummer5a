@@ -4391,6 +4391,14 @@
       <key>Checkbox_Options_MetatypesCostKarma</key>
       <text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
     </string>
+	<string>
+		<key>Checkbox_Options_Dronemods</key>
+		<text>Drohnenmodifikationsregeln benutzen (R5 128)</text>
+	</string>
+	<string>
+		<key>Checkbox_Options_Dronemods_Pilot</key>
+		<text>Beschränke maximales Pilot Attribut</text>
+	</string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
       <text>Kostenlose Connectionpunkte: CHA x </text>
