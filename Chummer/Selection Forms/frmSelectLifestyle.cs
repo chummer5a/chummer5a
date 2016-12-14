@@ -104,7 +104,7 @@ namespace Chummer
 				TreeNode nodOption = new TreeNode();
 
 				XmlNode nodMultiplier = objXmlOption["multiplier"];
-				if (nodMultiplier != null)
+                if (nodMultiplier != null)
 				{
 					int intCost = Convert.ToInt32(nodMultiplier.InnerText);
 					if (intCost > 0)
@@ -128,13 +128,40 @@ namespace Chummer
 				}
 				else
 				{
-					string strCost = objXmlOption["cost"].InnerText;
-					nodOption.Tag = objXmlOption["name"].InnerText + " [" + strCost + "¥]";
-					if (objXmlOption["translate"] != null)
-						nodOption.Text = objXmlOption["translate"].InnerText + " [" + strCost + "¥]";
-					else
-						nodOption.Text = objXmlOption["name"].InnerText + " [" + strCost + "¥]";
-					treQualities.Nodes.Add(nodOption);
+                    nodMultiplier = objXmlOption["multiplierbaseonly"];
+
+                    if (nodMultiplier != null)
+                    {
+                        int intCost = Convert.ToInt32(nodMultiplier.InnerText);
+                        if (intCost > 0)
+                        {
+                            nodOption.Tag = objXmlOption["name"].InnerText + " [+" + intCost.ToString() + "% "+ LanguageManager.Instance.GetString("Label_Base") +"]";
+                            if (objXmlOption["translate"] != null)
+                                nodOption.Text = objXmlOption["translate"].InnerText + " [+" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
+                            else
+                                nodOption.Text = objXmlOption["name"].InnerText + " [+" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
+                            treQualities.Nodes.Add(nodOption);
+                        }
+                        else
+                        {
+                            nodOption.Tag = objXmlOption["name"].InnerText + " [" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
+                            if (objXmlOption["translate"] != null)
+                                nodOption.Text = objXmlOption["translate"].InnerText + " [" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
+                            else
+                                nodOption.Text = objXmlOption["name"].InnerText + " [" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
+                            treQualities.Nodes.Add(nodOption);
+                        }
+                    }
+                    else
+                    {
+                        string strCost = objXmlOption["cost"].InnerText;
+                        nodOption.Tag = objXmlOption["name"].InnerText + " [" + strCost + "¥]";
+                        if (objXmlOption["translate"] != null)
+                            nodOption.Text = objXmlOption["translate"].InnerText + " [" + strCost + "¥]";
+                        else
+                            nodOption.Text = objXmlOption["name"].InnerText + " [" + strCost + "¥]";
+                        treQualities.Nodes.Add(nodOption);
+                    }
 				}
 			}
 
