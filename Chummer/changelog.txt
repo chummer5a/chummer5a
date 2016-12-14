@@ -97,6 +97,7 @@ Data Changes:
 - Altered the behaviour of martial arts to only grant a free specialization if an optional rule is enabled. 
 - Added missing Active Skill specializations based on SR4a20th and rules for specializing for specific actions.
 - Added knowledge skills and knowledge skill specializations based on Market Panic and Chrome Flesh.
+- Fixed Accessories for the new Cutting Aces Weapons.
 
 New Strings:
 
