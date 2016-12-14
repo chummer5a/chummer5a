@@ -8227,6 +8227,14 @@ namespace Chummer
                     objNode.Text = objMod.DisplayName;
                 }
             }
+            else if (objMod.Name.StartsWith("Pilot Program"))
+            {
+                if (objMod.Rating > objSelectedVehicle.MaxPilot)
+                {
+                    objMod.Rating = objSelectedVehicle.MaxPilot;
+                    objNode.Text = objMod.DisplayName;
+                }
+            }
 
             // Check the item's Cost and make sure the character can afford it.
             if (frmPickVehicleMod.FreeCost)
