@@ -322,19 +322,44 @@ namespace Chummer
 			}
 			lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
-			// Cost.
-			string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString());
-			strCost = strCost.Replace("Armor Cost", _intArmorCost.ToString());
-			XPathExpression xprCost = nav.Compile(strCost);
+            // Cost.
+            if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+            {
+                int intMin = 0;
+                int intMax = 0;
+                string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                if (strCost.Contains("-"))
+                {
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
+                }
+                else
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-			// Apply any markup.
-			double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
-			dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                if (intMax == 0)
+                {
+                    intMax = 1000000;
+                    lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                }
+                else
+                    lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+            }
+            else
+            {
+                string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString());
+                strCost = strCost.Replace("Armor Cost", _intArmorCost.ToString());
+                XPathExpression xprCost = nav.Compile(strCost);
 
-			lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
+                // Apply any markup.
+                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
+                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
 
-			int intCost = Convert.ToInt32(dblCost);
-			lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+                lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
+
+                int intCost = Convert.ToInt32(dblCost);
+                lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+            }
 
 			// Capacity.
 			// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.

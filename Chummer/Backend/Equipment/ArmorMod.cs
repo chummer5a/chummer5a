@@ -80,7 +80,6 @@ namespace Chummer.Backend.Equipment
 			_intRating = intRating;
 			_intMaxRating = Convert.ToInt32(objXmlArmorNode["maxrating"].InnerText);
 			_strAvail = objXmlArmorNode["avail"].InnerText;
-			_strCost = objXmlArmorNode["cost"].InnerText;
 			_strSource = objXmlArmorNode["source"].InnerText;
 			_strPage = objXmlArmorNode["page"].InnerText;
 			_nodBonus = objXmlArmorNode["bonus"];
@@ -105,7 +104,45 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			if (objXmlArmorNode["bonus"] != null && !blnSkipCost)
+            // Check for a Variable Cost.
+            if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable"))
+            {
+                if (blnSkipCost)
+                    _strCost = "0";
+                else
+                {
+                    int intMin = 0;
+                    int intMax = 0;
+                    string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString();
+                    }
+                }
+            }
+            else
+            {
+                _strCost = objXmlArmorNode["cost"].InnerText;
+            }
+
+            if (objXmlArmorNode["bonus"] != null && !blnSkipCost)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort))
