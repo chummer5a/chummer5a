@@ -5790,6 +5790,9 @@
 			<pilot>3</pilot>
 			<seats>0</seats>
 			<sensor>3</sensor>
+			<gears>
+				<gear rating="3" maxrating="6">Sensor Array</gear>
+			</gears>
 			<avail>11</avail>
 			<cost>18000</cost>
 			<source>CA</source>
@@ -5807,6 +5810,9 @@
 			<pilot>1</pilot>
 			<seats>0</seats>
 			<sensor>1</sensor>
+			<gears>
+				<gear rating="1" maxrating="2">Sensor Array</gear>
+			</gears>
 			<avail>7</avail>
 			<cost>600</cost>
 			<source>CA</source>
@@ -5824,6 +5830,11 @@
 			<pilot>4</pilot>
 			<seats>0</seats>
 			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="4">Sensor Array</gear>
+				<gear rating="4" select="Armorer">Skill Autosoft</gear>
+				<gear select="Armorer">Tool Kit</gear>
+			</gears>
 			<avail>11</avail>
 			<cost>18000</cost>
 			<source>CA</source>
