@@ -1633,8 +1633,8 @@
 			<id>b4b3a872-1532-4477-9bf3-76db34dc7bbf</id>
 			<name>Stun Dongle</name>
 			<category>Clubs</category>
-			<type>Melee</type>
 			<hide>yes</hide>
+			<type>Melee</type>
 			<conceal>-4</conceal>
 			<accuracy>4</accuracy>
 			<reach>0</reach>
@@ -2084,7 +2084,7 @@
 			<cost>0</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>SS</source>
-			<page>178</page>s
+			<page>178</page>
 		</weapon>
 		<weapon>
 			<id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>
@@ -6610,6 +6610,7 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>10</ammo>
+			<cost>0</cost>
 			<requireammo>false</requireammo>
 			<source>SR5</source>
 			<page>424</page>
