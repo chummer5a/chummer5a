@@ -619,7 +619,7 @@ namespace Chummer.Backend.Equipment
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
 			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
-			objNode.TryGetField("capacity", out _strCapacity);
+			objNode.TryGetField("capacity", out _strCapacity, "");
 			objNode.TryGetField("armorcapacity", out _strArmorCapacity);
 			objNode.TryGetField("minrating", out _intMinRating);
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
