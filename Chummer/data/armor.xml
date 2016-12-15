@@ -3230,7 +3230,7 @@
 		<!-- Region Cutting Aces -->
 		<mod>
 			<id>151d8957-aeb1-4fda-af19-35f4c9c602e1</id>
-			<name>Voidblack Cothing</name>
+			<name>Voidblack Coating</name>
 			<category>General</category>
 			<armor>0</armor>
 			<maxrating>1</maxrating>
@@ -3246,23 +3246,11 @@
 			<category>General</category>
 			<armor>0</armor>
 			<maxrating>1</maxrating>
-			<armorcapacity>[6]</armorcapacity>
-			<avail>14F</avail>
-			<cost>3000</cost>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
 			<source>CA</source>
 			<page>138</page>
-		</mod>
-		<mod>
-			<id>3e58b2bc-695f-43ca-a020-71e62e9a87c4</id>
-			<name>Distributed Deck</name>
-			<category>General</category>
-			<armor>0</armor>
-			<maxrating>1</maxrating>
-			<armorcapacity>[6]</armorcapacity>
-			<avail>+2</avail>
-			<cost>Variable(0-100000)</cost>
-			<source>CA</source>
-			<page>139</page>
 		</mod>
 		<!-- End Region -->
 	</mods>

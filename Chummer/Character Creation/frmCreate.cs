@@ -17657,19 +17657,16 @@ namespace Chummer
                     objNewGear = objCommlink;
                     break;
                 default:
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", false, false, true, true, frmPickGear.Aerodynamic);
-                    objGear.Quantity = frmPickGear.SelectedQty;
+                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", false, false, true, true, frmPickGear.Aerodynamic);
+                    objNewGear.Quantity = frmPickGear.SelectedQty;
                     try
                     {
-                        nudGearQty.Increment = objGear.CostFor;
+                        nudGearQty.Increment = objNewGear.CostFor;
                         //nudGearQty.Minimum = nudGearQty.Increment;
                     }
                     catch
                     {
                     }
-
-                    objNewGear = objGear;
                     break;
             }
 
