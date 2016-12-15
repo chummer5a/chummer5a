@@ -58,6 +58,7 @@ Application Changes:
 - Added optional rule for using the maximum drone attribute rule for Pilot.
 - Variable costs are now properly supported on Armor Mods, Weapons, and Weapon Accessories.
 - Added the ability for a lifestyle quality to only modify the base cost of the lifestyle, i.e. the cost without extra entertainment assets, instead of the extra asset costs factored in.
+- Fixed a bug, where Chummer would crash when trying to add a Lifestyle quality to an advanced lifestyle on an A.I. character.
 - Added the ability to add contacts via improvements that are not read-only at character generation.
 - Gear can now have a cost based on the total cost of its children.
 - Modified the Commlink class so that it always executes the methods of its parent Gear class in its overriden methods wherever applicable (greatly improves code portability, as any changes to Gear's methods will be used by Commlink's methods).
