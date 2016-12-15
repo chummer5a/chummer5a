@@ -1098,13 +1098,14 @@ namespace Chummer.Classes
 			bonusNode.TryGetField("connection", out connection, 1);
 			bool group = bonusNode["group"] != null;
 			bool free = bonusNode["free"] != null;
+            bool canwrite = bonusNode["canwrite"] != null;
 
 			Contact contact = new Contact(_objCharacter);
 			contact.Free = free;
 			contact.IsGroup = group;
 			contact.Loyalty = loyalty;
 			contact.Connection = connection;
-			contact.ReadOnly = true;
+			contact.ReadOnly = !canwrite;
 			_objCharacter.Contacts.Add(contact);
 
 			CreateImprovement(contact.GUID, Improvement.ImprovementSource.Quality, SourceName,
