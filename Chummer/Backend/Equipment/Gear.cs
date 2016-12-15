@@ -510,76 +510,103 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Save the object's XML to the XmlWriter.
+        /// <summary>
+		/// Begin to save the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
+		public void SaveBegin(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("gear");
+        }
+
+        /// <summary>
+		/// Core code to Save the object's XML to the XmlWriter.
+		/// </summary>
+		/// <param name="objWriter">XmlTextWriter to write with.</param>
+		public void SaveInner(XmlTextWriter objWriter)
+        {
+            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("category", _strCategory);
+            objWriter.WriteElementString("capacity", _strCapacity);
+            objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
+            objWriter.WriteElementString("minrating", _intMinRating.ToString());
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
+            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("qty", _intQty.ToString());
+            objWriter.WriteElementString("avail", _strAvail);
+            objWriter.WriteElementString("avail3", _strAvail3);
+            objWriter.WriteElementString("avail6", _strAvail6);
+            objWriter.WriteElementString("avail10", _strAvail10);
+            if (_intCostFor > 1)
+                objWriter.WriteElementString("costfor", _intCostFor.ToString());
+            objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("cost3", _strCost3);
+            objWriter.WriteElementString("cost6", _strCost6);
+            objWriter.WriteElementString("cost10", _strCost10);
+            objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("bonded", _blnBonded.ToString());
+            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
+            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+            if (_guiWeaponID != Guid.Empty)
+                objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
+            if (_nodBonus != null)
+                objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+            else
+                objWriter.WriteElementString("bonus", "");
+            if (_nodWeaponBonus != null)
+                objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
+            objWriter.WriteElementString("gearname", _strGearName);
+            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
+            objWriter.WriteElementString("conditionmonitor", ConditionMonitor.ToString());
+            objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
+            if (_intChildCostMultiplier != 1)
+                objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString());
+            if (_intChildAvailModifier != 0)
+                objWriter.WriteElementString("childavailmodifier", _intChildAvailModifier.ToString());
+            objWriter.WriteStartElement("children");
+            foreach (Gear objGear in _objChildren)
+            {
+                // Use the Gear's SubClass if applicable.
+                if (objGear.GetType() == typeof(Commlink))
+                {
+                    Commlink objCommlink = new Commlink(_objCharacter);
+                    objCommlink = (Commlink)objGear;
+                    objCommlink.Save(objWriter);
+                }
+                else
+                {
+                    objGear.Save(objWriter);
+                }
+            }
+            objWriter.WriteEndElement();
+            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+        }
+
+        /// <summary>
+		/// End saving the object's XML to the XmlWriter.
+		/// </summary>
+		/// <param name="objWriter">XmlTextWriter to write with.</param>
+		public void SaveEnd(XmlTextWriter objWriter)
+        {
+            objWriter.WriteEndElement();
+            _objCharacter.SourceProcess(_strSource);
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlTextWriter objWriter)
 		{
-			objWriter.WriteStartElement("gear");
-			objWriter.WriteElementString("guid", _guiID.ToString());
-			objWriter.WriteElementString("name", _strName);
-			objWriter.WriteElementString("category", _strCategory);
-			objWriter.WriteElementString("capacity", _strCapacity);
-			objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
-			objWriter.WriteElementString("minrating", _intMinRating.ToString());
-			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("qty", _intQty.ToString());
-			objWriter.WriteElementString("avail", _strAvail);
-			objWriter.WriteElementString("avail3", _strAvail3);
-			objWriter.WriteElementString("avail6", _strAvail6);
-			objWriter.WriteElementString("avail10", _strAvail10);
-			if (_intCostFor > 1)
-				objWriter.WriteElementString("costfor", _intCostFor.ToString());
-			objWriter.WriteElementString("cost", _strCost);
-			objWriter.WriteElementString("cost3", _strCost3);
-			objWriter.WriteElementString("cost6", _strCost6);
-			objWriter.WriteElementString("cost10", _strCost10);
-			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("bonded", _blnBonded.ToString());
-			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
-			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
-			if (_guiWeaponID != Guid.Empty)
-				objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
-			if (_nodBonus != null)
-				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
-			else
-				objWriter.WriteElementString("bonus", "");
-			if (_nodWeaponBonus != null)
-				objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
-			objWriter.WriteElementString("source", _strSource);
-			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
-			objWriter.WriteElementString("gearname", _strGearName);
-			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
-			objWriter.WriteElementString("conditionmonitor", ConditionMonitor.ToString());
-			objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
-			if (_intChildCostMultiplier != 1)
-				objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString());
-			if (_intChildAvailModifier != 0)
-				objWriter.WriteElementString("childavailmodifier", _intChildAvailModifier.ToString());
-			objWriter.WriteStartElement("children");
-			foreach (Gear objGear in _objChildren)
-			{
-				// Use the Gear's SubClass if applicable.
-				if (objGear.GetType() == typeof(Commlink))
-				{
-					Commlink objCommlink = new Commlink(_objCharacter);
-					objCommlink = (Commlink)objGear;
-					objCommlink.Save(objWriter);
-				}
-				else
-				{
-					objGear.Save(objWriter);
-				}
-			}
-			objWriter.WriteEndElement();
-			objWriter.WriteElementString("location", _strLocation);
-			objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
-			objWriter.WriteEndElement();
-			_objCharacter.SourceProcess(_strSource);
+            SaveBegin(objWriter);
+            SaveInner(objWriter);
+            SaveEnd(objWriter);
 		}
 
 		/// <summary>
@@ -815,73 +842,102 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Print the object's XML to the XmlWriter.
+        /// <summary>
+		/// Begin Print the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter)
+		public void PrintBegin(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("gear");
+        }
+
+        /// <summary>
+		/// Core code to Print the object's XML to the XmlWriter.
+		/// </summary>
+		/// <param name="objWriter">XmlTextWriter to write with.</param>
+		public void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = false, bool blnIsPersona = false)
+        {
+            if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
+            {
+                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("Label_BondedFoci") + ")");
+            }
+            else
+                objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", _strName);
+            objWriter.WriteElementString("category", DisplayCategory);
+            objWriter.WriteElementString("category_english", _strCategory);
+            objWriter.WriteElementString("iscommlink", blnIsCommlink.ToString());
+            objWriter.WriteElementString("ispersona", blnIsPersona.ToString());
+            //objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
+            objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
+            objWriter.WriteElementString("isprogram", IsProgram.ToString());
+            objWriter.WriteElementString("isos", false.ToString());
+            if (_strName == "Fake SIN")
+                objWriter.WriteElementString("issin", true.ToString());
+            else
+                objWriter.WriteElementString("issin", false.ToString());
+            objWriter.WriteElementString("capacity", _strCapacity);
+            objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
+            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("conditionmonitor", ConditionMonitor.ToString());
+            objWriter.WriteElementString("qty", _intQty.ToString());
+            objWriter.WriteElementString("avail", TotalAvail(true));
+            objWriter.WriteElementString("avail_english", TotalAvail(true, true));
+            objWriter.WriteElementString("cost", TotalCost.ToString());
+            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("bonded", _blnBonded.ToString());
+            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
+            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("gearname", _strGearName);
+            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+            objWriter.WriteElementString("page", Page);
+            objWriter.WriteStartElement("children");
+            foreach (Gear objGear in _objChildren)
+            {
+                // Use the Gear's SubClass if applicable.
+                if (objGear.GetType() == typeof(Commlink))
+                {
+                    Commlink objCommlink = new Commlink(_objCharacter);
+                    objCommlink = (Commlink)objGear;
+                    objCommlink.Print(objWriter);
+                }
+                else
+                {
+                    objGear.Print(objWriter);
+                }
+            }
+            objWriter.WriteEndElement();
+            if (_nodWeaponBonus != null)
+            {
+                objWriter.WriteElementString("weaponbonusdamage", WeaponBonusDamage());
+                objWriter.WriteElementString("weaponbonusdamage_english", WeaponBonusDamage(true));
+                objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
+            }
+            if (_objCharacter.Options.PrintNotes)
+                objWriter.WriteElementString("notes", _strNotes);
+        }
+
+        /// <summary>
+		/// End Print the object's XML to the XmlWriter.
+		/// </summary>
+		/// <param name="objWriter">XmlTextWriter to write with.</param>
+		public void PrintEnd(XmlTextWriter objWriter)
+        {
+            objWriter.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Print(XmlTextWriter objWriter)
 		{
-			objWriter.WriteStartElement("gear");
-			if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
-			{
-				objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("Label_BondedFoci") + ")");
-			}
-			else
-				objWriter.WriteElementString("name", DisplayNameShort);
-			objWriter.WriteElementString("name_english", _strName);
-			objWriter.WriteElementString("category", DisplayCategory);
-			objWriter.WriteElementString("category_english", _strCategory);
-			objWriter.WriteElementString("iscommlink", false.ToString());
-			objWriter.WriteElementString("ispersona", false.ToString());
-			//objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
-			objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
-			objWriter.WriteElementString("isprogram", IsProgram.ToString());
-			objWriter.WriteElementString("isos", false.ToString());
-			if (_strName == "Fake SIN")
-				objWriter.WriteElementString("issin", true.ToString());
-			else
-				objWriter.WriteElementString("issin", false.ToString());
-			objWriter.WriteElementString("capacity", _strCapacity);
-			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("qty", _intQty.ToString());
-			objWriter.WriteElementString("avail", TotalAvail(true));
-			objWriter.WriteElementString("avail_english", TotalAvail(true, true));
-			objWriter.WriteElementString("cost", TotalCost.ToString());
-			objWriter.WriteElementString("owncost", OwnCost.ToString());
-			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-			objWriter.WriteElementString("bonded", _blnBonded.ToString());
-			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
-			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
-			objWriter.WriteElementString("location", _strLocation);
-			objWriter.WriteElementString("gearname", _strGearName);
-			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-			objWriter.WriteElementString("page", Page);
-			objWriter.WriteStartElement("children");
-			foreach (Gear objGear in _objChildren)
-			{
-				// Use the Gear's SubClass if applicable.
-				if (objGear.GetType() == typeof(Commlink))
-				{
-					Commlink objCommlink = new Commlink(_objCharacter);
-					objCommlink = (Commlink)objGear;
-					objCommlink.Print(objWriter);
-				}
-				else
-				{
-					objGear.Print(objWriter);
-				}
-			}
-			objWriter.WriteEndElement();
-			if (_nodWeaponBonus != null)
-			{
-				objWriter.WriteElementString("weaponbonusdamage", WeaponBonusDamage());
-				objWriter.WriteElementString("weaponbonusdamage_english", WeaponBonusDamage(true));
-				objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
-			}
-			if (_objCharacter.Options.PrintNotes)
-				objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
+            PrintBegin(objWriter);
+            PrintInner(objWriter);
+            PrintEnd(objWriter);
 		}
 		#endregion
 
@@ -1856,7 +1912,41 @@ namespace Chummer.Backend.Equipment
 					else
 						intReturn = 0;
 				}
-				else if (_strCost.Contains("Rating") || _strCost3.Contains("Rating") || _strCost6.Contains("Rating") || _strCost10.Contains("Rating"))
+                else if (_strCost.Contains("Children Cost") || _strCost3.Contains("Children Cost") || _strCost6.Contains("Children Cost") || _strCost10.Contains("Children Cost"))
+                {
+                    if (_objChildren.Capacity > 0)
+                    {
+                        string strCostExpression = "";
+
+                        if (_strCost != "")
+                            strCostExpression = _strCost;
+                        else
+                        {
+                            if (_intRating <= 3)
+                                strCostExpression = _strCost3;
+                            else if (_intRating <= 6)
+                                strCostExpression = _strCost6;
+                            else
+                                strCostExpression = _strCost10;
+                        }
+
+                        int intTotalChildrenCost = 0;
+                        foreach(Gear LoopGear in _objChildren)
+                        {
+                            intTotalChildrenCost += LoopGear.CalculatedCost;
+                        }
+
+                        XmlDocument objXmlDocument = new XmlDocument();
+                        XPathNavigator nav = objXmlDocument.CreateNavigator();
+                        string strCost = "";
+                        strCost = strCostExpression.Replace("Children Cost", intTotalChildrenCost.ToString());
+                        XPathExpression xprCost = nav.Compile(strCost);
+                        intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                    }
+                    else
+                        intReturn = 0;
+                }
+                else if (_strCost.Contains("Rating") || _strCost3.Contains("Rating") || _strCost6.Contains("Rating") || _strCost10.Contains("Rating"))
 				{
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -1932,7 +2022,41 @@ namespace Chummer.Backend.Equipment
 					else
 						intReturn = 0;
 				}
-				else if (_strCost.StartsWith("Parent Cost"))
+                else if (_strCost.Contains("Children Cost") || _strCost3.Contains("Children Cost") || _strCost6.Contains("Children Cost") || _strCost10.Contains("Children Cost"))
+                {
+                    if (_objChildren.Capacity > 0)
+                    {
+                        string strCostExpression = "";
+
+                        if (_strCost != "")
+                            strCostExpression = _strCost;
+                        else
+                        {
+                            if (_intRating <= 3)
+                                strCostExpression = _strCost3;
+                            else if (_intRating <= 6)
+                                strCostExpression = _strCost6;
+                            else
+                                strCostExpression = _strCost10;
+                        }
+
+                        int intTotalChildrenCost = 0;
+                        foreach (Gear LoopGear in _objChildren)
+                        {
+                            intTotalChildrenCost += LoopGear.CalculatedCost;
+                        }
+
+                        XmlDocument objXmlDocument = new XmlDocument();
+                        XPathNavigator nav = objXmlDocument.CreateNavigator();
+                        string strCost = "";
+                        strCost = strCostExpression.Replace("Children Cost", intTotalChildrenCost.ToString());
+                        XPathExpression xprCost = nav.Compile(strCost);
+                        intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                    }
+                    else
+                        intReturn = 0;
+                }
+                else if (_strCost.StartsWith("Parent Cost"))
 				{
 
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -2051,7 +2175,41 @@ namespace Chummer.Backend.Equipment
 					else
 						intReturn = 0;
 				}
-				else if (_strCost.Contains("Rating") || _strCost3.Contains("Rating") || _strCost6.Contains("Rating") || _strCost10.Contains("Rating") || _strCost.Contains("*") || _strCost3.Contains("*") || _strCost6.Contains("*") || _strCost10.Contains("*"))
+                else if (_strCost.Contains("Children Cost") || _strCost3.Contains("Children Cost") || _strCost6.Contains("Children Cost") || _strCost10.Contains("Children Cost"))
+                {
+                    if (_objChildren.Capacity > 0)
+                    {
+                        string strCostExpression = "";
+
+                        if (_strCost != "")
+                            strCostExpression = _strCost;
+                        else
+                        {
+                            if (_intRating <= 3)
+                                strCostExpression = _strCost3;
+                            else if (_intRating <= 6)
+                                strCostExpression = _strCost6;
+                            else
+                                strCostExpression = _strCost10;
+                        }
+
+                        int intTotalChildrenCost = 0;
+                        foreach (Gear LoopGear in _objChildren)
+                        {
+                            intTotalChildrenCost += LoopGear.CalculatedCost;
+                        }
+
+                        XmlDocument objXmlDocument = new XmlDocument();
+                        XPathNavigator nav = objXmlDocument.CreateNavigator();
+                        string strCost = "";
+                        strCost = strCostExpression.Replace("Children Cost", intTotalChildrenCost.ToString());
+                        XPathExpression xprCost = nav.Compile(strCost);
+                        intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                    }
+                    else
+                        intReturn = 0;
+                }
+                else if (_strCost.Contains("Rating") || _strCost3.Contains("Rating") || _strCost6.Contains("Rating") || _strCost10.Contains("Rating") || _strCost.Contains("*") || _strCost3.Contains("*") || _strCost6.Contains("*") || _strCost10.Contains("*"))
 				{
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
