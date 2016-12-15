@@ -8258,6 +8258,18 @@
 			<source>SR5</source>
 			<page>449</page>
 		</gear>
+		<gear>
+			<id>01c28047-0446-4f3d-817d-4805317167ce</id>
+			<name>Distributed Deck</name>
+			<category>Armor Enhancements</category>
+			<rating>0</rating>
+			<armorcapacity>[6]</armorcapacity>
+			<addoncategory>Cyberdecks</addoncategory>
+			<avail>+2</avail>
+			<cost>Children Cost * 0.1</cost>
+			<source>CA</source>
+			<page>139</page>
+		</gear>
 		<!-- End Region -->
 		<!-- Region Commlink Accessories -->
 		<gear>

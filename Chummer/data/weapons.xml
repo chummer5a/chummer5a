@@ -8474,7 +8474,7 @@
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>6P</damage>
-			<ap>-</ap>
+			<ap>0</ap>
 			<mode>SA</mode>
 			<rc>0</rc>
 			<ammo>6(c)</ammo>
@@ -8495,6 +8495,7 @@
 					<name>Smartgun System, Internal</name>
 				</accessory>
 			</accessories>
+			<range>Heavy Pistols</range>
 			<source>CA</source>
 			<page>133</page>
 	</weapon>
@@ -8505,10 +8506,10 @@
 		<type>Ranged</type>
 		<conceal>-2</conceal>
 		<spec>Semi-Automatics</spec>
-		<accuracy>5</accuracy>
+		<accuracy>6</accuracy>
 		<reach>0</reach>
 		<damage>6P</damage>
-		<ap>-</ap>
+		<ap>0</ap>
 		<mode>SA/BF</mode>
 		<rc>0</rc>
 		<ammo>8(ML)x4</ammo>
@@ -8540,7 +8541,7 @@
 		<reach>0</reach>
 		<damage>8P</damage>
 		<ap>-1</ap>
-		<mode>SA/BF</mode>
+		<mode>SA</mode>
 		<rc>0</rc>
 		<ammo>12(c)</ammo>
 		<avail>9R</avail>
@@ -8579,8 +8580,8 @@
 		<mode>SS</mode>
 		<rc>0</rc>
 		<ammo>1(b)</ammo>
-		<avail>9R</avail>
-		<cost>700</cost>
+		<avail>6R</avail>
+		<cost>325</cost>
 		<allowaccessory>true</allowaccessory>
 		<accessorymounts />
 		<accessories />
@@ -8596,12 +8597,12 @@
 		<spec>Injector Pen</spec>
 		<accuracy>4</accuracy>
 		<reach>0</reach>
-		<damage>6P</damage>
+		<damage>As drug/toxin</damage>
 		<ap>-2</ap>
 		<mode>-</mode>
 		<rc>0</rc>
 		<ammo>0</ammo>
-		<avail>9R</avail>
+		<avail>9F</avail>
 		<cost>220</cost>
 		<allowaccessory>true</allowaccessory>
 		<accessorymounts />
@@ -8616,15 +8617,15 @@
 		<type>Ranged</type>
 		<conceal>-4</conceal>
 		<spec>Pepper Punch Pen</spec>
-		<accuracy>4</accuracy>
+		<accuracy>3</accuracy>
 		<reach>0</reach>
-		<damage>6P</damage>
-		<ap>-2</ap>
-		<mode>-</mode>
+		<damage>As Pepper Punch</damage>
+		<ap>0</ap>
+		<mode>SS</mode>
 		<rc>0</rc>
-		<ammo>0</ammo>
-		<avail>9R</avail>
-		<cost>220</cost>
+		<ammo>1(c)</ammo>
+		<avail>3</avail>
+		<cost>45</cost>
 		<allowaccessory>true</allowaccessory>
 		<accessorymounts />
 		<accessories />
@@ -8640,20 +8641,15 @@
 		<spec>Modified Spray Pen</spec>
 		<accuracy>3</accuracy>
 		<reach>0</reach>
-		<damage>0</damage>
-		<ap>-2</ap>
+		<damage>As drug/toxin</damage>
+		<ap>0</ap>
 		<mode>SS</mode>
 		<rc>0</rc>
 		<ammo>1(c)</ammo>
 		<avail>4F</avail>
-		<cost>220</cost>
+		<cost>60</cost>
 		<allowaccessory>true</allowaccessory>
-		<accessorymounts>
-			<mount>Barrel</mount>
-			<mount>Top</mount>
-			<mount>Stock</mount>
-			<mount>Side</mount>
-		</accessorymounts>
+		<accessorymounts />
 		<accessories />
 		<source>CA</source>
 		<page>134</page>
@@ -8663,7 +8659,7 @@
 		<name>Sap Cap</name>
 		<category>Clubs</category>
 		<type>Melee</type>
-		<conceal>-4</conceal>
+		<conceal>0</conceal>
 		<spec>Saps</spec>
 		<accuracy>4</accuracy>
 		<reach>0</reach>
@@ -8702,6 +8698,27 @@
 		<source>CA</source>
 		<page>135</page>
 	</weapon>
+		<weapon>
+			<id>b84e7ffe-acae-461c-a7ce-67056976a96e</id>
+			<name>Ares Briefcase Shield</name>
+			<category>Exotic Melee Weapons</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>8</conceal>
+			<spec>Shields</spec>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>14R</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>CA</source>
+			<page>137</page>
+		</weapon>
 		<!-- End Region -->
 	</weapons>
 	<accessories>

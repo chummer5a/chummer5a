@@ -1231,6 +1231,9 @@
 			<adeptway>0</adeptway>
 			<levels>yes</levels>
 			<limit>1</limit>
+			<bonus>
+				<judgeintentions>Rating</judgeintentions>
+			</bonus>
 			<source>CA</source>
 			<page>153</page>
 		</power>
@@ -1241,6 +1244,11 @@
 			<adeptway>0</adeptway>
 			<levels>yes</levels>
 			<limit>1</limit>
+			<required>
+        		<oneof>
+          			<power>Mimic</power>
+        		</oneof>
+      		</required>
 			<source>CA</source>
 			<page>153</page>
 		</power>
