@@ -1142,7 +1142,9 @@ namespace Chummer
 		/// <param name="strCode">Book code to convert.</param>
 		public string BookFromCode(string strCode)
 		{
-			string strReturn = "";
+            if (string.IsNullOrWhiteSpace(strCode))
+                return "";
+            string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
 			strReturn = objXmlBook?["name"]?.InnerText;
 
@@ -1153,9 +1155,9 @@ namespace Chummer
 		/// Book code (using the translated version if applicable).
 		/// </summary>
 		/// <param name="strCode">Book code to search for.</param>
-		public string LanguageBookShort(string strCode)
+		public string LanguageBookShort(string strCode = "")
 		{
-			if (strCode == "")
+			if (string.IsNullOrWhiteSpace(strCode))
 				return "";
 
 			string strReturn = "";
