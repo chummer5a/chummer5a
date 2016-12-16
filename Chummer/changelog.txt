@@ -62,6 +62,7 @@ Application Changes:
 - Added the ability to add contacts via improvements that are not read-only at character generation.
 - Gear can now have a cost based on the total cost of its children.
 - Modified the Commlink class so that it always executes the methods of its parent Gear class in its overriden methods wherever applicable (greatly improves code portability, as any changes to Gear's methods will be used by Commlink's methods).
+- Fixed a crash caused by searching for a weapon to attach to a vehicle weapon mount. 
 
 Data Changes: 
 

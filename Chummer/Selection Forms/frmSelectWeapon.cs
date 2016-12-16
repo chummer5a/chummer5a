@@ -33,7 +33,7 @@ namespace Chummer
 
 		private bool _blnAddAgain = false;
 	    private bool _blnBlackMarketDiscount = false;
-		private string _strLimitToCategories = "";
+		private string[] _strLimitToCategories = new string[0];
         private static string _strSelectCategory = "";
 		private readonly Character _objCharacter;
 	    private XmlNodeList objXmlCategoryList;
@@ -64,15 +64,14 @@ namespace Chummer
 			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
 			// Populate the Weapon Category list.
-			if (!string.IsNullOrEmpty(_strLimitToCategories))
+			if (_strLimitToCategories.Length > 0)
 			{
-				string[] strValues = _strLimitToCategories.Split(',');
 				// Populate the Category list.
 				XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 				if (objXmlNodeList != null)
 					foreach (XmlNode objXmlCategory in objXmlNodeList)
 					{
-						foreach (ListItem objItem in from strCategory in strValues where strCategory == objXmlCategory.InnerText select new ListItem())
+						foreach (ListItem objItem in from strCategory in _strLimitToCategories where strCategory == objXmlCategory.InnerText select new ListItem())
 						{
 							objItem.Value = objXmlCategory.InnerText;
 							if (objXmlCategory.Attributes != null)
@@ -437,7 +436,7 @@ namespace Chummer
 		{
 			set
 			{
-				_strLimitToCategories = value;
+				_strLimitToCategories = value.Split(',');
 			}
 		}
 		#endregion
@@ -667,9 +666,21 @@ namespace Chummer
                 cboCategory_SelectedIndexChanged(sender, e);
                 return;
             }
-
+            string strCategoryLimit = "";
+            if (_strLimitToCategories.Length > 0)
+            {
+                strCategoryLimit += "category = \"" + _strLimitToCategories[0] + "\"";
+                for (int i = 1; i < _strLimitToCategories.Length; i++)
+                {
+                    strCategoryLimit += " or category = \"" + _strLimitToCategories[i] + "\"";
+                }
+            }
+            else
+            {
+                strCategoryLimit = "category != \"Cyberware\" and category != \"Gear\"";
+            }
             // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and category != \"Cyberware\" and category != \"Gear\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
+            string strSearch = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and (" + strCategoryLimit + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
 
             XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes(strSearch);
 
@@ -696,57 +707,66 @@ namespace Chummer
                 // Populate the Weapon list.
                 foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                 {
-                    TreeNode objNode = new TreeNode();
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
-
-                    string strWeaponName = objWeapon.Name;
-                    string strDice = objWeapon.DicePool;
-                    int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
-                    string strDamage = objWeapon.CalculatedDamage();
-                    string strAP = objWeapon.TotalAP;
-                    if (strAP == "-")
-                        strAP = "0";
-                    int intRC = Convert.ToInt32(objWeapon.TotalRC);
-                    string strAmmo = objWeapon.Ammo;
-                    string strMode = objWeapon.Mode;
-                    string strReach = objWeapon.TotalReach.ToString();
-                    string strAccessories = "";
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                    bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes";
+                    blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
+                    if (!blnHide)
                     {
-                        if (strAccessories.Length > 0)
-                            strAccessories += "\n";
-                        strAccessories += objAccessory.Name;
-                    }
-                    string strAvail = objWeapon.Avail.ToString();
-                    string strSource = objWeapon.Source + " " + objWeapon.Page;
-                    int intCost = objWeapon.Cost;
+                        TreeNode objNode = new TreeNode();
+                        Weapon objWeapon = new Weapon(_objCharacter);
+                        objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
 
-                    if (objWeapon.DisplayCategory == "Blades" || objWeapon.DisplayCategory == "Clubs" || objWeapon.DisplayCategory == "Improvised Weapons" || objWeapon.DisplayCategory == "Exotic Melee Weapons" || objWeapon.DisplayCategory == "Unarmed")
-                    {
-                        strAmmo = "";
-                        strMode = "";
-                    }
-                    else
-                    {
-                        strReach = "";
+                        string strWeaponName = objWeapon.Name;
+                        string strDice = objWeapon.DicePool;
+                        int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
+                        string strDamage = objWeapon.CalculatedDamage();
+                        string strAP = objWeapon.TotalAP;
+                        if (strAP == "-")
+                            strAP = "0";
+                        int intRC = Convert.ToInt32(objWeapon.TotalRC);
+                        string strAmmo = objWeapon.Ammo;
+                        string strMode = objWeapon.Mode;
+                        string strReach = objWeapon.TotalReach.ToString();
+                        string strAccessories = "";
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        {
+                            if (strAccessories.Length > 0)
+                                strAccessories += "\n";
+                            strAccessories += objAccessory.Name;
+                        }
+                        string strAvail = objWeapon.Avail.ToString();
+                        string strSource = objWeapon.Source + " " + objWeapon.Page;
+                        int intCost = objWeapon.Cost;
+
+                        if (objWeapon.DisplayCategory == "Blades" || objWeapon.DisplayCategory == "Clubs" ||
+                            objWeapon.DisplayCategory == "Improvised Weapons" ||
+                            objWeapon.DisplayCategory == "Exotic Melee Weapons" ||
+                            objWeapon.DisplayCategory == "Unarmed")
+                        {
+                            strAmmo = "";
+                            strMode = "";
+                        }
+                        else
+                        {
+                            strReach = "";
+                        }
+
+                        tabWeapons.Rows.Add(strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo,
+                            strMode, strReach, strAccessories, strAvail, strSource, intCost);
                     }
 
-                    tabWeapons.Rows.Add(strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, intCost);
+                    DataSet set = new DataSet("weapons");
+                    set.Tables.Add(tabWeapons);
+
+                    dgvWeapons.Columns[5].Visible = true;
+                    dgvWeapons.Columns[6].Visible = true;
+                    dgvWeapons.Columns[7].Visible = true;
+                    dgvWeapons.Columns[8].Visible = true;
+                    dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
+
+                    dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                    dgvWeapons.DataSource = set;
+                    dgvWeapons.DataMember = "weapons";
                 }
-
-                DataSet set = new DataSet("weapons");
-                set.Tables.Add(tabWeapons);
-
-                dgvWeapons.Columns[5].Visible = true;
-                dgvWeapons.Columns[6].Visible = true;
-                dgvWeapons.Columns[7].Visible = true;
-                dgvWeapons.Columns[8].Visible = true;
-                dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
-
-                dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                dgvWeapons.DataSource = set;
-                dgvWeapons.DataMember = "weapons";
             }
             else
             {
