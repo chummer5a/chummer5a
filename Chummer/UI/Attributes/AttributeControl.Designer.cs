@@ -32,9 +32,9 @@
 			this.lblValue = new System.Windows.Forms.Label();
 			this.lblName = new System.Windows.Forms.Label();
 			this.lblLimits = new System.Windows.Forms.Label();
-			this.nudKarma = new System.Windows.Forms.NumericUpDown();
-			this.nudBase = new System.Windows.Forms.NumericUpDown();
 			this.cmdBurnEdge = new System.Windows.Forms.Button();
+			this.nudKarma = new Chummer.helpers.NumericUpDownEx();
+			this.nudBase = new Chummer.helpers.NumericUpDownEx();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudBase)).BeginInit();
 			this.SuspendLayout();
@@ -79,27 +79,6 @@
 			this.lblLimits.TabIndex = 72;
 			this.lblLimits.Text = "1 / 6 (9)";
 			// 
-			// nudKarma
-			// 
-			this.nudKarma.Location = new System.Drawing.Point(165, 1);
-			this.nudKarma.Name = "nudKarma";
-			this.nudKarma.Size = new System.Drawing.Size(40, 20);
-			this.nudKarma.TabIndex = 77;
-			this.nudKarma.ValueChanged += new System.EventHandler(this.nudKarma_ValueChanged);
-			// 
-			// nudBase
-			// 
-			this.nudBase.Location = new System.Drawing.Point(119, 1);
-			this.nudBase.Name = "nudBase";
-			this.nudBase.Size = new System.Drawing.Size(40, 20);
-			this.nudBase.TabIndex = 76;
-			this.nudBase.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.nudBase.ValueChanged += new System.EventHandler(this.nudBase_ValueChanged);
-			// 
 			// cmdBurnEdge
 			// 
 			this.cmdBurnEdge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -111,6 +90,31 @@
 			this.cmdBurnEdge.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.cmdBurnEdge.UseVisualStyleBackColor = true;
 			this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
+			// 
+			// nudKarma
+			// 
+			this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+			this.nudKarma.Location = new System.Drawing.Point(165, 1);
+			this.nudKarma.Name = "nudKarma";
+			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.WhenFocusOrMouseOver;
+			this.nudKarma.Size = new System.Drawing.Size(40, 20);
+			this.nudKarma.TabIndex = 77;
+			this.nudKarma.ValueChanged += new System.EventHandler(this.nudKarma_ValueChanged);
+			// 
+			// nudBase
+			// 
+			this.nudBase.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+			this.nudBase.Location = new System.Drawing.Point(119, 1);
+			this.nudBase.Name = "nudBase";
+			this.nudBase.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.WhenFocusOrMouseOver;
+			this.nudBase.Size = new System.Drawing.Size(40, 20);
+			this.nudBase.TabIndex = 76;
+			this.nudBase.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.nudBase.ValueChanged += new System.EventHandler(this.nudBase_ValueChanged);
 			// 
 			// AttributeControl
 			// 
@@ -138,8 +142,8 @@
         internal System.Windows.Forms.Label lblValue;
         internal System.Windows.Forms.Label lblName;
         internal System.Windows.Forms.Label lblLimits;
-        internal System.Windows.Forms.NumericUpDown nudKarma;
-        internal System.Windows.Forms.NumericUpDown nudBase;
+        internal Chummer.helpers.NumericUpDownEx nudKarma;
+        internal Chummer.helpers.NumericUpDownEx nudBase;
 		private System.Windows.Forms.Button cmdBurnEdge;
 	}
 }

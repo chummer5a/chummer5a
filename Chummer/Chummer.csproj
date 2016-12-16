@@ -179,6 +179,9 @@
     <Compile Include="frmCharacterRoster.Designer.cs">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\NumericUpDownEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
