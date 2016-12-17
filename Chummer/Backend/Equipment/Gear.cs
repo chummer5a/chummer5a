@@ -523,7 +523,7 @@ namespace Chummer.Backend.Equipment
 		/// Core code to Save the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void SaveInner(XmlTextWriter objWriter)
+		public virtual void SaveInner(XmlTextWriter objWriter)
         {
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("name", _strName);
@@ -613,7 +613,7 @@ namespace Chummer.Backend.Equipment
 		/// Load the Gear from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode, bool blnCopy = false)
+		public virtual void Load(XmlNode objNode, bool blnCopy = false)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
@@ -855,7 +855,7 @@ namespace Chummer.Backend.Equipment
 		/// Core code to Print the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = false, bool blnIsPersona = false)
+		public virtual void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = false, bool blnIsPersona = false)
         {
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
             {
