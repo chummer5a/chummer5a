@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
 		/// Core code to Save the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public new void SaveInner(XmlTextWriter objWriter)
+		public override void SaveInner(XmlTextWriter objWriter)
 		{
             base.SaveInner(objWriter);
 			objWriter.WriteElementString("overclocked", _blnHomeNode.ToString());
@@ -83,7 +83,7 @@ namespace Chummer.Backend.Equipment
 		/// Load the Gear from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
-		public new void Load(XmlNode objNode, bool blnCopy = false)
+		public override void Load(XmlNode objNode, bool blnCopy = false)
 		{
             base.Load(objNode, blnCopy);
 			objNode.TryGetField("overclocked", out _strOverclocked);
@@ -100,7 +100,7 @@ namespace Chummer.Backend.Equipment
 		/// Core code to Save the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public new void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = true, bool blnIsPersona = false)
+		public override void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = true, bool blnIsPersona = false)
 		{
             base.PrintInner(objWriter, true, IsLivingPersona);
 
