@@ -263,7 +263,7 @@ namespace Chummer
 	        }
 
 			// Retrieve the list of Cyberware for the selected Category.
-            if (_objCharacter.DEPEnabled)
+            if (_objCharacter.DEPEnabled && _objVehicle == null)
                 objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" + _objCharacter.Options.BookXPath() + ")]");
             else if (_blnShowOnlySubsystems)
 				objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ") and contains(capacity, \"[\")]");
