@@ -40,9 +40,12 @@ namespace Chummer.Backend
 
             double[] rgb = XYZToRGB(xyz);
 
-            unchecked
+            int final = (int)(newalpha * 255);
+            return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
+
+                unchecked
             {
-                int final = (int)(newalpha * 255);
+
                 for (int i = 0; i < 3; i++)
                 {
                     final <<= 8;
@@ -213,6 +216,10 @@ namespace Chummer.Backend
                 color >>= 8;
             }
             //Now we  have
+            double temp = result[0];
+            result[0] = result[2];
+            result[2] = temp;
+
             return result;
         }
 
