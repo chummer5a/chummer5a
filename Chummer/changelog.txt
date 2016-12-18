@@ -1,4 +1,10 @@
-﻿Build 189
+﻿Build 190
+
+Application Changes:
+
+- Fixed an issue with the Spirit Control that prevented all spirits from being available.
+
+Build 189
 
 Application Changes:
 
