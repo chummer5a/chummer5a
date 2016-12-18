@@ -467,7 +467,7 @@ namespace Chummer
             }
             else
             {
-                foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits/spirit"))
+                foreach (XmlNode objXmlSpirit in objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits").ChildNodes)
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlSpirit.InnerText;
