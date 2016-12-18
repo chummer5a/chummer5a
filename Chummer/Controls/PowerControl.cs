@@ -63,27 +63,27 @@ namespace Chummer
 		{
 			this.Width = cmdDelete.Left + cmdDelete.Width;
         }
-        
+
 		private void nudRating_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the PowerRatingChanged Event when the NumericUpDown's Value changes.
-            // The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
+		{
+			// Raise the PowerRatingChanged Event when the NumericUpDown's Value changes.
+			// The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
 
-            _objPower.Rating = nudRating.Value;
-            try
-            {
-                PowerRatingChanged(this);
-            }
-            catch { }
+			_objPower.Rating = nudRating.Value;
+			try
+			{
+				PowerRatingChanged(this);
+			}
+			catch { }
 			UpdatePointsPerLevel();
-        }
+		}
 
-        private void cmdDelete_Click(object sender, EventArgs e)
-        {
-            // Raise the DeletePower Event when the user has confirmed their desire to delete the Power.
-            // The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
+		private void cmdDelete_Click(object sender, EventArgs e)
+		{
+			// Raise the DeletePower Event when the user has confirmed their desire to delete the Power.
+			// The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
 			DeletePower(this);
-        }
+		}
 
 		private void chkDiscounted_CheckedChanged(object sender, EventArgs e)
 		{
@@ -350,6 +350,10 @@ namespace Chummer
                 strPoints = strPoints.Substring(0, strPoints.Length - 1);
 
             lblPowerPoints.Text = String.Format("{0} / {1} = {2}", strCalculated, LanguageManager.Instance.GetString("Label_Power_Level"), strPoints);
+			if (_objPower.FreeLevels > 0)
+			{
+				lblPowerPoints.Text += string.Format(" ({0})", _objPower.PowerPoints + _objPower.FreeLevels);
+			}
         }
 
 		/// <summary>
