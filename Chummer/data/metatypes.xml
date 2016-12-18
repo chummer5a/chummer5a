@@ -1386,9 +1386,9 @@
 			<run>4/0/0</run>
 			<sprint>4/1/0</sprint>
 			<bonus>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -1463,9 +1463,9 @@
 			<sprint>1/1/0</sprint>
 			<bonus>
 				<armor>8</armor>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -1546,7 +1546,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-        <unlockskills name="Assensing">Name</unlockskills>
+				<unlockskills name="Assensing">Name</unlockskills>
 			</bonus>
 			<qualities>
 				<positive> 
@@ -1697,16 +1697,21 @@
 				<positive>
 					<quality>Animal Empathy</quality>
 					<quality>Aptitude</quality>
-					<quality>Brand Loyalty</quality>
+					<quality>Brand Loyalty (Manufacturer)</quality>
+					<quality>Brand Loyalty (Product)</quality>
 					<quality>Bilingual</quality>
 					<quality>Chatty</quality>
 					<quality>Codeslinger</quality>
-					<quality>College Educatation</quality>
+					<quality>College Education</quality>
+					<quality>College Education.RF</quality>
 					<quality>Data Anomaly</quality>
 					<quality>Designer</quality>
 					<quality>Exceptional Entity</quality>
 					<quality>Fade to Black</quality>
-					<quality>Fame</quality>
+					<quality>Fame: Local</quality>
+					<quality>Fame: National</quality>
+					<quality>Fame: Megacorporate</quality>
+					<quality>Fame: Global</quality>
 					<quality>First Impression</quality>
 					<quality>Friends in High Places</quality>
 					<quality>Gearhead</quality>
@@ -1715,14 +1720,19 @@
 					<quality>Golden Screwdriver</quality>
 					<quality>Guts</quality>
 					<quality>Hello World!</quality>
-					<quality>High Pain Tolerance</quality>
+					<quality>High Pain Tolerance (Rating 1)</quality>
+					<quality>High Pain Tolerance (Rating 2)</quality>
+					<quality>High Pain Tolerance (Rating 3)</quality>
 					<quality>Home Ground</quality>
 					<quality>I C U</quality>
-					<quality>Indomitable</quality>
+					<quality>Indomitable (Mental)</quality>
+					<quality>Indomitable (Physical)</quality>
+					<quality>Indomitable (Social)</quality>
 					<quality>Inherent Program</quality>
 					<quality>Improved Restoration</quality>
 					<quality>Inspired</quality>
 					<quality>Juryrigger</quality>
+					<quality>Legendary Rep</quality>
 					<quality>Linguist</quality>
 					<quality>Low Profile</quality>
 					<quality>Lucky</quality>
@@ -1730,27 +1740,27 @@
 					<quality>Munge</quality>
 					<quality>Ninja Vanish</quality>
 					<quality>Overclocker</quality>
-					<quality>Perceptive</quality>
+					<quality>Perceptive I</quality>
+					<quality>Perceptive II</quality>
 					<quality>Photographic Memory</quality>
 					<quality>Pilot Origins (Rating 1)</quality>
 					<quality>Pilot Origins (Rating 2)</quality>
 					<quality>Pilot Origins (Rating 3)</quality>
-					<quality>Prime Data-Haven Membership</quality>
+					<quality>Prime Datahaven Membership</quality>
 					<quality>Quick Healer</quality>
 					<quality>Redundancy</quality>
 					<quality>Restricted Gear</quality>
 					<quality>Sapper</quality>
-					<quality>Sensor Upgrade</quality>
+					<quality>Sensor Upgrade</quality>					
+					<quality>Sense of Direction</quality>
+					<quality>Sensei</quality>
+					<quality>Sharpshooter</quality>
 					<quality>Snooper</quality>
+					<quality>Solid Rep</quality>
 					<quality>Speed Reading</quality>
 					<quality>Strive For Perfection</quality>
-					<quality>Steely-Eyed Wheelman</quality>
-					<quality>Sense of Direction</quality>
-					<quality>Sharpshooter</quality>
-					<quality>Sensei</quality>
+					<quality>Steely Eyed Wheelman</quality>
 					<quality>Virtual Stability</quality>
-					<quality>Solid Rep</quality>
-					<quality>Legendary Rep</quality>
 					<quality>Trustworthy</quality>
 					<quality>Vehicle Empathy</quality>
 					<quality>Technical School Education</quality>
@@ -1759,6 +1769,8 @@
 					<quality>Bad Luck</quality>
 					<quality>Bad Rep</quality>
 					<quality>Code of Honor</quality>
+					<quality>Code of Honor: Like a Boss</quality>
+					<quality>Code of Honor: Avenging Angel</quality>
 					<quality>Codeblock</quality>
 					<quality>Combat Paralysis</quality>
 					<quality>Corrupter</quality>
@@ -1863,17 +1875,21 @@
 						<positive>
 							<quality>Animal Empathy</quality>
 							<quality>Aptitude</quality>
-							<quality>Brand Loyalty</quality>
+							<quality>Brand Loyalty (Manufacturer)</quality>
+							<quality>Brand Loyalty (Product)</quality>
 							<quality>Bilingual</quality>
 							<quality>Chatty</quality>
 							<quality>Codeslinger</quality>
-							<quality>College Educatation</quality>
+							<quality>College Education</quality>
+							<quality>College Education.RF</quality>
 							<quality>Data Anomaly</quality>
 							<quality>Designer</quality>
 							<quality>Exceptional Entity</quality>
 							<quality>Fade to Black</quality>
-							<quality>Fame</quality>
-							<quality>Membership</quality>
+							<quality>Fame: Local</quality>
+							<quality>Fame: National</quality>
+							<quality>Fame: Megacorporate</quality>
+							<quality>Fame: Global</quality>
 							<quality>First Impression</quality>
 							<quality>Friends in High Places</quality>
 							<quality>Gearhead</quality>
@@ -1882,14 +1898,19 @@
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
 							<quality>Hello World!</quality>
-							<quality>High Pain Tolerance</quality>
+							<quality>High Pain Tolerance (Rating 1)</quality>
+							<quality>High Pain Tolerance (Rating 2)</quality>
+							<quality>High Pain Tolerance (Rating 3)</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
-							<quality>Indomitable</quality>
+							<quality>Indomitable (Mental)</quality>
+							<quality>Indomitable (Physical)</quality>
+							<quality>Indomitable (Social)</quality>
 							<quality>Inherent Program</quality>
 							<quality>Improved Restoration</quality>
 							<quality>Inspired</quality>
 							<quality>Juryrigger</quality>
+							<quality>Legendary Rep</quality>
 							<quality>Linguist</quality>
 							<quality>Low Profile</quality>
 							<quality>Lucky</quality>
@@ -1897,60 +1918,74 @@
 							<quality>Munge</quality>
 							<quality>Ninja Vanish</quality>
 							<quality>Overclocker</quality>
-							<quality>Perceptive</quality>
+							<quality>Perceptive I</quality>
+							<quality>Perceptive II</quality>
 							<quality>Photographic Memory</quality>
 							<quality>Pilot Origins (Rating 1)</quality>
 							<quality>Pilot Origins (Rating 2)</quality>
 							<quality>Pilot Origins (Rating 3)</quality>
-							<quality>Prime Data-Haven</quality>
+							<quality>Prime Datahaven Membership</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
-							<quality>Sensor Upgrade</quality>
+							<quality>Sensor Upgrade</quality>					
+							<quality>Sense of Direction</quality>
+							<quality>Sensei</quality>
+							<quality>Sharpshooter</quality>
 							<quality>Snooper</quality>
+							<quality>Solid Rep</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
-							<quality>Steely-Eyed Wheelman</quality>
-							<quality>Sense of Direction</quality>
-							<quality>Sharpshooter</quality>
-							<quality>Sensei</quality>
+							<quality>Steely Eyed Wheelman</quality>
 							<quality>Virtual Stability</quality>
-							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
 							<quality>Vehicle Empathy</quality>
 							<quality>Technical School Education</quality>
 						</positive>
 						<negative>
 							<quality>Bad Luck</quality>
-							<quality>Low Pain Tolerance</quality>
 							<quality>Bad Rep</quality>
-							<quality>Loss of Confidence</quality>
 							<quality>Code of Honor</quality>
-							<quality>Pacifist</quality>
+							<quality>Code of Honor: Like a Boss</quality>
+							<quality>Code of Honor: Avenging Angel</quality>
 							<quality>Codeblock</quality>
-							<quality>Persnickety Renter</quality>
 							<quality>Combat Paralysis</quality>
-							<quality>Prank Warrior</quality>
 							<quality>Corrupter</quality>
-							<quality>Prejudiced</quality>
 							<quality>Curiosity Killed the Cat</quality>
-							<quality>Real World Naiveté</quality>
 							<quality>Data Liberator</quality>
-							<quality>Records On File</quality>
-							<quality>Day Job</quality>
-							<quality>Signature</quality>
+							<quality>Day Job (10 hrs)</quality>
+							<quality>Day Job (20 hrs)</quality>
+							<quality>Day Job (40 hrs)</quality>
 							<quality>Did You Just Call Me Dumb?</quality>
-							<quality>SINner</quality>
 							<quality>Distinctive Style</quality>
-							<quality>Uneducated</quality>
 							<quality>Driven</quality>
-							<quality>Uncouth</quality>
 							<quality>Easily Exploitable</quality>
-							<quality>Vendetta</quality>
 							<quality>Fragmentation</quality>
-							<quality>Wanted</quality>
 							<quality>Incompetent</quality>
+							<quality>Loss of Confidence</quality>
+							<quality>Low Pain Tolerance</quality>
+							<quality>Pacifist I</quality>
+							<quality>Pacifist II</quality>
+							<quality>Persnickety Renter</quality>
+							<quality>Prank Warrior</quality>
+							<quality>Prejudiced (Common, Biased)</quality>
+							<quality>Prejudiced (Common, Outspoken)</quality>
+							<quality>Prejudiced (Common, Radical)</quality>
+							<quality>Prejudiced (Specific, Biased)</quality>
+							<quality>Prejudiced (Specific, Outspoken)</quality>
+							<quality>Prejudiced (Specific, Radical)</quality>
+							<quality>Real World Naiveté</quality>
+							<quality>Records on File</quality>
+							<quality>Signature</quality>
+							<quality>SINner (Corporate Limited)</quality>
+							<quality>SINner (Corporate)</quality>
+							<quality>SINner (Criminal)</quality>
+							<quality>SINner (National)</quality>
+							<quality>Uncouth</quality>
+							<quality>Uneducated</quality>
+							<quality>Vendetta</quality>
+							<quality>Wanted</quality>
 							<quality>Wanted by GOD</quality>
 						</negative>
 					</qualityrestriction>
@@ -2030,17 +2065,21 @@
 						<positive>
 							<quality>Animal Empathy</quality>
 							<quality>Aptitude</quality>
-							<quality>Brand Loyalty</quality>
+							<quality>Brand Loyalty (Manufacturer)</quality>
+							<quality>Brand Loyalty (Product)</quality>
 							<quality>Bilingual</quality>
 							<quality>Chatty</quality>
 							<quality>Codeslinger</quality>
-							<quality>College Educatation</quality>
+							<quality>College Education</quality>
+							<quality>College Education.RF</quality>
 							<quality>Data Anomaly</quality>
 							<quality>Designer</quality>
 							<quality>Exceptional Entity</quality>
 							<quality>Fade to Black</quality>
-							<quality>Fame</quality>
-							<quality>Membership</quality>
+							<quality>Fame: Local</quality>
+							<quality>Fame: National</quality>
+							<quality>Fame: Megacorporate</quality>
+							<quality>Fame: Global</quality>
 							<quality>First Impression</quality>
 							<quality>Friends in High Places</quality>
 							<quality>Gearhead</quality>
@@ -2049,14 +2088,19 @@
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
 							<quality>Hello World!</quality>
-							<quality>High Pain Tolerance</quality>
+							<quality>High Pain Tolerance (Rating 1)</quality>
+							<quality>High Pain Tolerance (Rating 2)</quality>
+							<quality>High Pain Tolerance (Rating 3)</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
-							<quality>Indomitable</quality>
+							<quality>Indomitable (Mental)</quality>
+							<quality>Indomitable (Physical)</quality>
+							<quality>Indomitable (Social)</quality>
 							<quality>Inherent Program</quality>
 							<quality>Improved Restoration</quality>
 							<quality>Inspired</quality>
 							<quality>Juryrigger</quality>
+							<quality>Legendary Rep</quality>
 							<quality>Linguist</quality>
 							<quality>Low Profile</quality>
 							<quality>Lucky</quality>
@@ -2064,60 +2108,74 @@
 							<quality>Munge</quality>
 							<quality>Ninja Vanish</quality>
 							<quality>Overclocker</quality>
-							<quality>Perceptive</quality>
+							<quality>Perceptive I</quality>
+							<quality>Perceptive II</quality>
 							<quality>Photographic Memory</quality>
 							<quality>Pilot Origins (Rating 1)</quality>
 							<quality>Pilot Origins (Rating 2)</quality>
 							<quality>Pilot Origins (Rating 3)</quality>
-							<quality>Prime Data-Haven</quality>
+							<quality>Prime Datahaven Membership</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
-							<quality>Sensor Upgrade</quality>
+							<quality>Sensor Upgrade</quality>					
+							<quality>Sense of Direction</quality>
+							<quality>Sensei</quality>
+							<quality>Sharpshooter</quality>
+							<quality>Snooper</quality>
+							<quality>Solid Rep</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
-							<quality>Steely-Eyed Wheelman</quality>
-							<quality>Sense of Direction</quality>
-							<quality>Sharpshooter</quality>
-							<quality>Sensei</quality>
-							<quality>Snooper</quality>
+							<quality>Steely Eyed Wheelman</quality>
 							<quality>Virtual Stability</quality>
-							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
 							<quality>Vehicle Empathy</quality>
 							<quality>Technical School Education</quality>
 						</positive>
 						<negative>
 							<quality>Bad Luck</quality>
-							<quality>Low Pain Tolerance</quality>
 							<quality>Bad Rep</quality>
-							<quality>Loss of Confidence</quality>
 							<quality>Code of Honor</quality>
-							<quality>Pacifist</quality>
+							<quality>Code of Honor: Like a Boss</quality>
+							<quality>Code of Honor: Avenging Angel</quality>
 							<quality>Codeblock</quality>
-							<quality>Persnickety Renter</quality>
 							<quality>Combat Paralysis</quality>
-							<quality>Prank Warrior</quality>
 							<quality>Corrupter</quality>
-							<quality>Prejudiced</quality>
 							<quality>Curiosity Killed the Cat</quality>
-							<quality>Real World Naiveté</quality>
 							<quality>Data Liberator</quality>
-							<quality>Records On File</quality>
-							<quality>Day Job</quality>
-							<quality>Signature</quality>
+							<quality>Day Job (10 hrs)</quality>
+							<quality>Day Job (20 hrs)</quality>
+							<quality>Day Job (40 hrs)</quality>
 							<quality>Did You Just Call Me Dumb?</quality>
-							<quality>SINner</quality>
 							<quality>Distinctive Style</quality>
-							<quality>Uneducated</quality>
 							<quality>Driven</quality>
-							<quality>Uncouth</quality>
 							<quality>Easily Exploitable</quality>
-							<quality>Vendetta</quality>
 							<quality>Fragmentation</quality>
-							<quality>Wanted</quality>
 							<quality>Incompetent</quality>
+							<quality>Loss of Confidence</quality>
+							<quality>Low Pain Tolerance</quality>
+							<quality>Pacifist I</quality>
+							<quality>Pacifist II</quality>
+							<quality>Persnickety Renter</quality>
+							<quality>Prank Warrior</quality>
+							<quality>Prejudiced (Common, Biased)</quality>
+							<quality>Prejudiced (Common, Outspoken)</quality>
+							<quality>Prejudiced (Common, Radical)</quality>
+							<quality>Prejudiced (Specific, Biased)</quality>
+							<quality>Prejudiced (Specific, Outspoken)</quality>
+							<quality>Prejudiced (Specific, Radical)</quality>
+							<quality>Real World Naiveté</quality>
+							<quality>Records on File</quality>
+							<quality>Signature</quality>
+							<quality>SINner (Corporate Limited)</quality>
+							<quality>SINner (Corporate)</quality>
+							<quality>SINner (Criminal)</quality>
+							<quality>SINner (National)</quality>
+							<quality>Uncouth</quality>
+							<quality>Uneducated</quality>
+							<quality>Vendetta</quality>
+							<quality>Wanted</quality>
 							<quality>Wanted by GOD</quality>
 						</negative>
 					</qualityrestriction>
@@ -2196,17 +2254,21 @@
 						<positive>
 							<quality>Animal Empathy</quality>
 							<quality>Aptitude</quality>
-							<quality>Brand Loyalty</quality>
+							<quality>Brand Loyalty (Manufacturer)</quality>
+							<quality>Brand Loyalty (Product)</quality>
 							<quality>Bilingual</quality>
 							<quality>Chatty</quality>
 							<quality>Codeslinger</quality>
-							<quality>College Educatation</quality>
+							<quality>College Education</quality>
+							<quality>College Education.RF</quality>
 							<quality>Data Anomaly</quality>
 							<quality>Designer</quality>
 							<quality>Exceptional Entity</quality>
 							<quality>Fade to Black</quality>
-							<quality>Fame</quality>
-							<quality>Membership</quality>
+							<quality>Fame: Local</quality>
+							<quality>Fame: National</quality>
+							<quality>Fame: Megacorporate</quality>
+							<quality>Fame: Global</quality>
 							<quality>First Impression</quality>
 							<quality>Friends in High Places</quality>
 							<quality>Gearhead</quality>
@@ -2215,14 +2277,19 @@
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
 							<quality>Hello World!</quality>
-							<quality>High Pain Tolerance</quality>
+							<quality>High Pain Tolerance (Rating 1)</quality>
+							<quality>High Pain Tolerance (Rating 2)</quality>
+							<quality>High Pain Tolerance (Rating 3)</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
-							<quality>Indomitable</quality>
+							<quality>Indomitable (Mental)</quality>
+							<quality>Indomitable (Physical)</quality>
+							<quality>Indomitable (Social)</quality>
 							<quality>Inherent Program</quality>
 							<quality>Improved Restoration</quality>
 							<quality>Inspired</quality>
 							<quality>Juryrigger</quality>
+							<quality>Legendary Rep</quality>
 							<quality>Linguist</quality>
 							<quality>Low Profile</quality>
 							<quality>Lucky</quality>
@@ -2230,60 +2297,74 @@
 							<quality>Munge</quality>
 							<quality>Ninja Vanish</quality>
 							<quality>Overclocker</quality>
-							<quality>Perceptive</quality>
+							<quality>Perceptive I</quality>
+							<quality>Perceptive II</quality>
 							<quality>Photographic Memory</quality>
 							<quality>Pilot Origins (Rating 1)</quality>
 							<quality>Pilot Origins (Rating 2)</quality>
 							<quality>Pilot Origins (Rating 3)</quality>
-							<quality>Prime Data-Haven</quality>
+							<quality>Prime Datahaven Membership</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
-							<quality>Sensor Upgrade</quality>
+							<quality>Sensor Upgrade</quality>					
+							<quality>Sense of Direction</quality>
+							<quality>Sensei</quality>
+							<quality>Sharpshooter</quality>
 							<quality>Snooper</quality>
+							<quality>Solid Rep</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
-							<quality>Steely-Eyed Wheelman</quality>
-							<quality>Sense of Direction</quality>
-							<quality>Sharpshooter</quality>
-							<quality>Sensei</quality>
+							<quality>Steely Eyed Wheelman</quality>
 							<quality>Virtual Stability</quality>
-							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
 							<quality>Vehicle Empathy</quality>
 							<quality>Technical School Education</quality>
 						</positive>
 						<negative>
 							<quality>Bad Luck</quality>
-							<quality>Low Pain Tolerance</quality>
 							<quality>Bad Rep</quality>
-							<quality>Loss of Confidence</quality>
 							<quality>Code of Honor</quality>
-							<quality>Pacifist</quality>
+							<quality>Code of Honor: Like a Boss</quality>
+							<quality>Code of Honor: Avenging Angel</quality>
 							<quality>Codeblock</quality>
-							<quality>Persnickety Renter</quality>
 							<quality>Combat Paralysis</quality>
-							<quality>Prank Warrior</quality>
 							<quality>Corrupter</quality>
-							<quality>Prejudiced</quality>
 							<quality>Curiosity Killed the Cat</quality>
-							<quality>Real World Naiveté</quality>
 							<quality>Data Liberator</quality>
-							<quality>Records On File</quality>
-							<quality>Day Job</quality>
-							<quality>Signature</quality>
+							<quality>Day Job (10 hrs)</quality>
+							<quality>Day Job (20 hrs)</quality>
+							<quality>Day Job (40 hrs)</quality>
 							<quality>Did You Just Call Me Dumb?</quality>
-							<quality>SINner</quality>
 							<quality>Distinctive Style</quality>
-							<quality>Uneducated</quality>
 							<quality>Driven</quality>
-							<quality>Uncouth</quality>
 							<quality>Easily Exploitable</quality>
-							<quality>Vendetta</quality>
 							<quality>Fragmentation</quality>
-							<quality>Wanted</quality>
 							<quality>Incompetent</quality>
+							<quality>Loss of Confidence</quality>
+							<quality>Low Pain Tolerance</quality>
+							<quality>Pacifist I</quality>
+							<quality>Pacifist II</quality>
+							<quality>Persnickety Renter</quality>
+							<quality>Prank Warrior</quality>
+							<quality>Prejudiced (Common, Biased)</quality>
+							<quality>Prejudiced (Common, Outspoken)</quality>
+							<quality>Prejudiced (Common, Radical)</quality>
+							<quality>Prejudiced (Specific, Biased)</quality>
+							<quality>Prejudiced (Specific, Outspoken)</quality>
+							<quality>Prejudiced (Specific, Radical)</quality>
+							<quality>Real World Naiveté</quality>
+							<quality>Records on File</quality>
+							<quality>Signature</quality>
+							<quality>SINner (Corporate Limited)</quality>
+							<quality>SINner (Corporate)</quality>
+							<quality>SINner (Criminal)</quality>
+							<quality>SINner (National)</quality>
+							<quality>Uncouth</quality>
+							<quality>Uneducated</quality>
+							<quality>Vendetta</quality>
+							<quality>Wanted</quality>
 							<quality>Wanted by GOD</quality>
 						</negative>
 					</qualityrestriction>
