@@ -16,11 +16,12 @@ namespace Chummer.Backend
         /// <exception cref="NotImplementedException"></exception>
         public static int ARGBIntLABInterpolate(int color1, int color2, float scale)
         {
+
             double[] argb1 = ToColorFractions(color1);
             double[] argb2 = ToColorFractions(color2);
 
-            double[] xyz1 = RBGToXYZ(argb1);
-            double[] xyz2 = RBGToXYZ(argb2);
+            double[] xyz1 = RGBToXYZ(argb1);
+            double[] xyz2 = RGBToXYZ(argb2);
 
             double[] lab1 = XYZToLAB(xyz1);
             double[] lab2 = XYZToLAB(xyz2);
@@ -39,13 +40,18 @@ namespace Chummer.Backend
 
             double[] rgb = XYZToRGB(xyz);
 
-            int final = (int)(newalpha * 255);
-            for (int i = 0; i < 3; i++)
+            unchecked
             {
-                final <<= 8;
-                final |= (int)(rgb[2-i] * 255);
+                int final = (int)(newalpha * 255);
+                for (int i = 0; i < 3; i++)
+                {
+                    final <<= 8;
+                    final |= (int)(rgb[2-i] * 255);
+                }
+                return final;
             }
-            return final;
+
+
         }
 
         private static double CalculateRealScale(double alpha1, double alpha2, float scale)
@@ -59,9 +65,9 @@ namespace Chummer.Backend
 
         private const double epsilon = 216.0 / 24389.0;
         private const double kappa = 24389.0 / 27.0;
-        private static readonly double[] XYZreference = RBGToXYZ(new[] {1.0, 1.0, 1.0});
+        private static readonly double[] XYZreference = RGBToXYZ(new[] {1.0, 1.0, 1.0});
 
-        private static double[] XYZToLAB(double[] XYZ)
+        internal static double[] XYZToLAB(double[] XYZ)
         {
 
             double[] xyz = new double[3];
@@ -92,7 +98,7 @@ namespace Chummer.Backend
             return Lab;
         }
 
-        private static double[] LABToXYZ(double[] Lab)
+        internal static double[] LABToXYZ(double[] Lab)
         {
             double[] f = new double[3];
             double[] xyz = new double[3];
@@ -137,16 +143,39 @@ namespace Chummer.Backend
             return XYZ;
         }
 
-        private static double[] XYZToRGB(double[] input)
+        internal static double[] XYZToRGB(double[] input)
         {
             /*
-3.2404548360214087	-1.537138850102575	-0.4985315468684809
+1     3.2404548360214087	-1.537138850102575	-0.4985315468684809
 2	-0.9692663898756537	1.876010928842491	0.04155608234667351
 3	0.055643419604213644	-0.20402585426769815	1.0572251624579287
 */
+            double[] v = new double[3];
+
+            v[0] = 3.2404548360214087 * input[0] + -1.537138850102575 * input[1] + -0.4985315468684809 * input[2];
+            v[1] = -0.9692663898756537 * input[0] + 1.876010928842491 * input[1] + 0.04155608234667351 * input[2];
+            v[2] = 0.055643419604213644 * input[0] + -0.20402585426769815 * input[1] + 1.0572251624579287 * input[2];
+
+            double[] V = new double[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (v[i] <= 0.00313080)
+                {
+                    V[i] = 12.92 * v[i];
+                }
+                else
+                {
+                    V[i] = 1.055 * Math.Pow(v[i], 1 / 2.4) - 0.055;
+                }
+
+
+            }
+
+            return V;
         }
 
-        private static double[] RBGToXYZ(double[] input)
+        internal static double[] RGBToXYZ(double[] input)
         {
             double[] result = new double[3];
             double[] v = new double[3];
@@ -168,14 +197,14 @@ namespace Chummer.Backend
 
             //Do the matrix multiplication. As we don't have any matrix math package included, here it is raw
 
-            result[2] = v[2] * 0.4124564 + v[1] * 0.3575761 + v[0] * 0.1804375;
-            result[1] = v[2] * 0.2126729 + v[1] * 0.7151522 + v[0] * 0.0721750;
-            result[0] = v[2] * 0.0193339 + v[1] * 0.1191920 + v[0] * 0.9503041;
+            result[0] = v[0] * 0.4124564 + v[1] * 0.3575761 + v[2] * 0.1804375;
+            result[1] = v[0] * 0.2126729 + v[1] * 0.7151522 + v[2] * 0.0721750;
+            result[2] = v[0] * 0.0193339 + v[1] * 0.1191920 + v[2] * 0.9503041;
 
             return result;
         }
 
-        private static double[] ToColorFractions(int color)
+        internal static double[] ToColorFractions(int color)
         {
             double[] result = new double[4];
             for (int i = 0; i < 4; i++)
@@ -183,7 +212,7 @@ namespace Chummer.Backend
                 result[i] = (color & 0xff) / 255.0;
                 color >>= 8;
             }
-
+            //Now we  have
             return result;
         }
 

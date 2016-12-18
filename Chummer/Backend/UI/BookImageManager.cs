@@ -99,7 +99,7 @@ namespace Chummer.Backend.UI
             for (int y = 0; y < GlowBorder; y++)
             {
 
-                int col = aura? ColorUtilities.ARGBIntLABInterpolate(backcolor, auracolor, GlowBorder / (float) y) : backcolor;
+                int col = aura? ColorUtilities.ARGBIntLABInterpolate(auracolor,backcolor, y / (float) GlowBorder) : backcolor;
                 for (int x = 0; x < source.Width; x++)
                 {
                     destinationArray[(y * realWidth) + GlowBorder + x] = col;
