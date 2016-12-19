@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Chummer.UI.Options;
@@ -28,6 +29,10 @@ namespace Chummer.Backend.UI
         Dictionary<int, Image> _cache = new Dictionary<int, Image>();
         private int _glowBorder = 20;
 
+        public Func<float, float> Scale = d => d;
+                    //d => 1 - ((1 - d) * (1 - d));
+                    // d => d * d;
+
         public Image GetImage(string bookCode, bool selected, bool aura)
         {
             int hash = Hash(bookCode , selected , aura );
@@ -49,7 +54,6 @@ namespace Chummer.Backend.UI
             Bitmap source = GetBaseImage(bookCode);
 
             //Comming soon: Bitmap checkbox (un)checked
-
 
             BitmapData sourceData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -92,30 +96,81 @@ namespace Chummer.Backend.UI
                     destinationArray[(y + GlowBorder) * realWidth + GlowBorder + x] = color;
                 }
             }
-
             //Copy checkbox
 
             //create aura
-            for (int y = 0; y < GlowBorder; y++)
-            {
-
-                int col = aura? ColorUtilities.ARGBIntLABInterpolate(auracolor,backcolor, y / (float) GlowBorder) : backcolor;
-                for (int x = 0; x < source.Width; x++)
-                {
-                    destinationArray[(y * realWidth) + GlowBorder + x] = col;
-                }
-            }
+            if(aura)
+                CreateAura(auracolor, backcolor, destinationArray, source.Width, source.Height, GlowBorder);
 
 
             Bitmap final = new Bitmap(source.Width + GlowBorder * 2, source.Height + GlowBorder * 2);
             BitmapData destinationData = final.LockBits(new Rectangle(0, 0, final.Width, final.Height),
                 ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             Marshal.Copy(destinationArray, 0, destinationData.Scan0, destinationArray.Length);
+
+
             final.UnlockBits(destinationData);
+            sw.TaskEnd($"Generation of image {bookCode}{(enabled ? "E" : "e")} {(aura ? "A" : "a")}");
 
-
-            Console.WriteLine($"Image generated in {sw.Elapsed.TotalMilliseconds}ms");
             return final;
+        }
+
+        private void CreateAura(int auracolor, int backcolor, int[] destinationArray, int sourceWidth, int sourceHeight, int glowSize)
+        {
+            int[] cachedColor = new int[glowSize];
+            for (int i = 0; i < glowSize; i++)
+            {
+                cachedColor[i] = ColorUtilities.ARGBIntXYZInterpolate(auracolor, backcolor, Scale(i / (float) glowSize));
+            }
+
+            int realWidth = sourceWidth + glowSize * 2;
+            int realHeight = sourceHeight + glowSize * 2;
+            for (int y = 0; y < glowSize; y++)
+            {
+                int col = cachedColor[y];
+
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    destinationArray[(y * realWidth) + glowSize + x] = col;
+                }
+            }
+
+            for (int y = glowSize - 1; y >= 0; y--)
+            {
+                int col = cachedColor[y];
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    destinationArray[((glowSize * 2 + sourceHeight - y - 1) * realWidth) + glowSize + x] = col;
+                }
+            }
+
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < glowSize; x++)
+                {
+                    int col = cachedColor[x];
+                    destinationArray[((y + glowSize) * realWidth) + x] = col;
+                }
+
+                for (int x = 0; x < glowSize; x++)
+                {
+                    int col = cachedColor[glowSize - x - 1];
+                    destinationArray[((y + glowSize) * realWidth) + sourceWidth + glowSize + x] = col;
+                }
+            }
+
+            for(int y = 0; y < glowSize; y++)
+                for (int x = 0; x < glowSize; x++)
+                {
+                    int x2 = (glowSize - x);
+                    int y2 = (glowSize - y);
+                    float distance = (float)Math.Sqrt(x2 * x2 + y2 * y2 );
+                    int col = ColorUtilities.ARGBIntXYZInterpolate(auracolor, backcolor, Scale(Math.Max(0,1 -(distance / glowSize))));
+                    destinationArray[(y * realWidth) + x] = col;
+                    destinationArray[(y * realWidth) + realWidth - x - 1] = col;
+                    destinationArray[((realHeight - y - 1) * realWidth) + x] = col;
+                    destinationArray[((realHeight - y - 1) * realWidth) + realWidth - x - 1] = col;
+                }
         }
 
         private int IntColorInterpolate(int color1, int color2, float scale)
@@ -144,7 +199,10 @@ namespace Chummer.Backend.UI
             return (i1 * q + i2 + p) / 100;
         }
 
-        private int Pass(int arg) => arg;
+        private int Pass(int arg)
+        {
+            return arg;
+        }
 
         private int ColorIntToGreyscale(int color)
         {

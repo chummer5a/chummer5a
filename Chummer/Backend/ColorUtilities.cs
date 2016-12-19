@@ -16,7 +16,7 @@ namespace Chummer.Backend
         /// <exception cref="NotImplementedException"></exception>
         public static int ARGBIntLABInterpolate(int color1, int color2, float scale)
         {
-
+            ScaleSanityCheck(scale);
             double[] argb1 = ToColorFractions(color1);
             double[] argb2 = ToColorFractions(color2);
 
@@ -40,6 +40,11 @@ namespace Chummer.Backend
 
             double[] rgb = XYZToRGB(xyz);
 
+            for (int i = 0; i < 3; i++)
+            {
+                rgb[i] = Math.Max(0, Math.Min(1, rgb[i]));
+            }
+
             int final = (int)(newalpha * 255);
             return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
 
@@ -53,8 +58,43 @@ namespace Chummer.Backend
                 }
                 return final;
             }
+        }
 
+        private static void ScaleSanityCheck(float scale)
+        {
+            if(scale > 1) throw new ArgumentOutOfRangeException(nameof(scale));
+            if(scale < 0) throw new ArgumentOutOfRangeException(nameof(scale));
+        }
 
+        public static int ARGBIntXYZInterpolate(int color1, int color2, float scale)
+        {
+            ScaleSanityCheck(scale);
+
+            double[] argb1 = ToColorFractions(color1);
+            double[] argb2 = ToColorFractions(color2);
+
+            double[] xyz1 = RGBToXYZ(argb1);
+            double[] xyz2 = RGBToXYZ(argb2);
+
+            double newalpha = Math.Max(argb1[3],argb2[3]);
+
+            double realscale = CalculateRealScale(argb1[3], argb2[3], scale);
+
+            double[] xyz = new double[3];
+            for (int i = 0; i < 3; i++)
+            {
+                xyz[i] = xyz1[i] * (1 - realscale) + xyz2[i] * realscale;
+            }
+
+            double[] rgb = XYZToRGB(xyz);
+
+            for (int i = 0; i < 3; i++)
+            {
+                rgb[i] = Math.Max(0, Math.Min(1, rgb[i]));
+            }
+
+            int final = (int)(newalpha * 255);
+            return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
         }
 
         private static double CalculateRealScale(double alpha1, double alpha2, float scale)
