@@ -3,6 +3,11 @@
 Application Changes:
 
 - Fixed an issue with the Spirit Control that prevented all spirits from being available.
+- Fixed an issue with Vehicle Mod pricing for drones with 0 BOD being charged as though their body was 2, rather than 0.5.
+
+Data Changes: 
+
+- Added missing SpellCategory improvements for the various Spellcasting foci. 
 
 Build 189
 

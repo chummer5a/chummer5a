@@ -939,11 +939,11 @@ namespace Chummer.Backend.Equipment
 				}
 				strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 				strCost = strCost.Replace("Vehicle Cost", _intVehicleCost.ToString());
-				// If the Body is 0 (Microdrone), treat it as 2 for the purposes of determine Modification cost.
+				// If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
 				if (_intBody > 0)
 					strCost = strCost.Replace("Body", _intBody.ToString());
 				else
-					strCost = strCost.Replace("Body", "2");
+					strCost = strCost.Replace("Body", "0.5");
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
 				strCost = strCost.Replace("Acceleration", _intAccel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
