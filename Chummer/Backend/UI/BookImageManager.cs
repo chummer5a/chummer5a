@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Xml;
 using Chummer.UI.Options;
 
 namespace Chummer.Backend.UI
@@ -231,7 +232,30 @@ namespace Chummer.Backend.UI
 
         private Bitmap GetBaseImage(string bookCode)
         {
-            return new Bitmap(Path.Combine(Application.StartupPath, "..", "..", "icons", "missing_book_temp.png"));
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
+			XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + bookCode + "\"]");
+
+	        if (objXmlBook["bookimage"]?.InnerText != null)
+	        {
+		        string strTemp = objXmlBook["bookimage"]?.InnerText;
+
+				byte[] bytes = Convert.FromBase64String(strTemp);
+
+				Bitmap bmp2 = null;
+				using (MemoryStream m = new MemoryStream(bytes))
+				{
+					//this construct is needed if we want to Close and Dispose the MemoryStream
+					Bitmap bmpTmp = new Bitmap(m);
+					bmp2 = new Bitmap(bmpTmp);
+					bmpTmp.Dispose();
+					m.Close();
+				}
+				return bmp2;
+	        }
+	        else
+	        {
+		        return new Bitmap(Path.Combine(Application.StartupPath, "..", "..", "icons", "missing_book_temp.png"));
+	        }
         }
 
         private int ColorToInt(Color color)
