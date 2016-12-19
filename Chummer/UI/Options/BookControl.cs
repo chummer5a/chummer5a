@@ -88,6 +88,7 @@ namespace Chummer.UI.Options
 
             string bookCode = box.Tag as string;
 
+            _bookPanel.Controls.SetChildIndex(box, 0);
             box.Image = Program.BookImageManager.GetImage(bookCode, _enabledBooks.Contains(bookCode), true);
         }
 
