@@ -1485,6 +1485,9 @@
     <None Include="icons\server_lightning.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="icons\missing_image_temp.png" />
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
@@ -1838,11 +1841,17 @@
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"; cp -r $(ProjectDir){data,lang,sheets} "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+
+       Other similar extension points exist, see Microsoft.Common.targets.
+
+  <Target Name="BeforeBuild">
+
+  </Target>
+
+  <Target Name="AfterBuild">
+
+  </Target>
+
   -->
 </Project>

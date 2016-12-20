@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -16,6 +17,14 @@ namespace Chummer.Backend.UI
     {
         public Color BackColor = SystemColors.Control;
         public Color GlowColor = Color.Blue;
+
+        public BookImageManager()
+        {
+            if (Utils.IsLinux)
+            {
+                BackColor = Color.FromArgb(232, 232, 231);
+            }
+        }
 
         public int GlowBorder
         {
@@ -250,11 +259,13 @@ namespace Chummer.Backend.UI
 					bmpTmp.Dispose();
 					m.Close();
 				}
+
+	            Console.WriteLine($"w{bmp2.Width} h{bmp2.Height}");
 				return bmp2;
 	        }
 	        else
 	        {
-		        return new Bitmap(Path.Combine(Application.StartupPath, "..", "..", "icons", "missing_book_temp.png"));
+	            return (Bitmap) Properties.Resources.ResourceManager.GetObject("book/missing");
 	        }
         }
 

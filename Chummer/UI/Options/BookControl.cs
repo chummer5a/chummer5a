@@ -11,9 +11,9 @@ namespace Chummer.UI.Options
     public class BookControl : UserControl
     {
         private readonly HashSet<string> _enabledBooks;
-        private const int IMAGE_HEIGHT = 351;
+        private const int IMAGE_HEIGHT = 360;
         private const int IMAGE_BORDER = 20;  //THIS IS ALSO USED IN BookImageManager.cs as a seperate value. Would need change both places or strange stuff might happen
-        private const int IMAGE_WIDTH = 248;
+        private const int IMAGE_WIDTH = 278;
 
 
         public BookControl(HashSet<string> enabledBooks)
@@ -38,7 +38,7 @@ namespace Chummer.UI.Options
                 _bookPanel.Controls.Add(bookBox);
                 bookBox.SizeMode = PictureBoxSizeMode.AutoSize;
                 bookBox.Size = new Size(IMAGE_WIDTH + IMAGE_BORDER*2, IMAGE_HEIGHT + IMAGE_BORDER * 2);
-                bookBox.Location = new Point(((_bookPanel.Controls.Count -1)* (IMAGE_BORDER *2 + IMAGE_WIDTH)), 0);
+                bookBox.Location = new Point(((_bookPanel.Controls.Count -1)* (IMAGE_BORDER + IMAGE_WIDTH)), 0);
                 bookBox.Image = Program.BookImageManager.GetImage(book.Code, _enabledBooks.Contains(book.Code), false);
 
                 bookBox.MouseEnter += Picture_MouseEnter;
