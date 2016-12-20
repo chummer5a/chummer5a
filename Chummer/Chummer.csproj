@@ -319,7 +319,9 @@
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Options\BookControl.cs" />
+    <Compile Include="UI\Options\BookControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\Options\OptionItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1381,6 +1383,18 @@
     <None Include="chummer.ico" />
   </ItemGroup>
   <ItemGroup>
+	<None Include="icons\Collapse.png" />
+  </ItemGroup>
+   <ItemGroup>
+    <None Include="icons\Expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\checkbox_check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\checkbox_checked.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="icons\disk.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1740,8 +1754,6 @@
     <Content Include="lang\jp_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\Collapse.png" />
-    <None Include="Resources\Expand.png" />
     <Content Include="sheets\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
