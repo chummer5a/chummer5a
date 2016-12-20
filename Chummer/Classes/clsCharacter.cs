@@ -2104,11 +2104,27 @@ namespace Chummer
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
 
-				objWriter.WriteElementString("spiritcombat", objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
-				objWriter.WriteElementString("spiritdetection", objXmlTradition.SelectSingleNode("spirits/spiritdetection").InnerText);
-				objWriter.WriteElementString("spirithealth", objXmlTradition.SelectSingleNode("spirits/spirithealth").InnerText);
-				objWriter.WriteElementString("spiritillusion", objXmlTradition.SelectSingleNode("spirits/spiritillusion").InnerText);
-				objWriter.WriteElementString("spiritmanipulation", objXmlTradition.SelectSingleNode("spirits/spiritmanipulation").InnerText);
+	            if (_strMagicTradition != "Custom")
+	            {
+		            objWriter.WriteElementString("spiritcombat",
+			            objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
+		            objWriter.WriteElementString("spiritdetection",
+			            objXmlTradition.SelectSingleNode("spirits/spiritdetection").InnerText);
+		            objWriter.WriteElementString("spirithealth",
+			            objXmlTradition.SelectSingleNode("spirits/spirithealth").InnerText);
+		            objWriter.WriteElementString("spiritillusion",
+			            objXmlTradition.SelectSingleNode("spirits/spiritillusion").InnerText);
+		            objWriter.WriteElementString("spiritmanipulation",
+			            objXmlTradition.SelectSingleNode("spirits/spiritmanipulation").InnerText);
+	            }
+	            else
+	            {
+					objWriter.WriteElementString("spiritcombat", _strSpiritCombat);
+					objWriter.WriteElementString("spiritdetection", _strSpiritDetection);
+		            objWriter.WriteElementString("spirithealth", _strSpiritHealth);
+		            objWriter.WriteElementString("spiritillusion", _strSpiritIllusion);
+		            objWriter.WriteElementString("spiritmanipulation", _strSpiritManipulation);
+	            }
 
 				//Spirit form, default to materialization unless field with other data persists
 				string strSpiritForm;
