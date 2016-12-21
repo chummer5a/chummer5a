@@ -1383,9 +1383,9 @@
     <None Include="chummer.ico" />
   </ItemGroup>
   <ItemGroup>
-	<None Include="icons\Collapse.png" />
+    <None Include="icons\Collapse.png" />
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <None Include="icons\Expand.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1611,7 +1611,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Contributors.cs</LastGenOutput>
     </Content>
-    <Content Include="Admin\manifestlang.xml" />
     <Content Include="data\armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

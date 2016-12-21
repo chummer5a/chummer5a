@@ -58,6 +58,9 @@ namespace Chummer.Backend.UI
 
         }
 
+        private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_check"));
+        private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
+
         private Image GenerateImage(string bookCode, bool enabled, bool aura)
         {
             Stopwatch sw = Stopwatch.StartNew();
@@ -108,6 +111,17 @@ namespace Chummer.Backend.UI
             }
             //Copy checkbox
 
+            if (enabled)
+            {
+                Bitmap overlay = CheckboxChecked.Value;
+                DrawOver(destinationArray, overlay, GlowBorder, source.Height - overlay.Height + GlowBorder, realWidth);
+            }
+            else
+            {
+                Bitmap overlay = CheckboxUnchecked.Value;
+                DrawOver(destinationArray, overlay, GlowBorder, source.Height - overlay.Height + GlowBorder, realWidth);
+            }
+
             //create aura
             if(aura)
                 CreateAura(auracolor, backcolor, destinationArray, source.Width, source.Height, GlowBorder);
@@ -123,6 +137,35 @@ namespace Chummer.Backend.UI
             sw.TaskEnd($"Generation of image {bookCode}{(enabled ? "E" : "e")} {(aura ? "A" : "a")}");
 
             return final;
+        }
+
+        private void DrawOver(int[] destinationArray, Bitmap overlay, int x, int y, int width)
+        {
+            BitmapData sourceData = overlay.LockBits(new Rectangle(0, 0, overlay.Width, overlay.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            //This might create some _weird_ errors if somebody tries to run it on another endianess. ARM?
+            int[] sourceArray = new int[sourceData.Width* sourceData.Height];
+            Marshal.Copy(sourceData.Scan0, sourceArray, 0, Math.Abs(sourceData.Stride) * sourceData.Height / sizeof(int));
+            overlay.UnlockBits(sourceData);
+
+            int sourceWidth = overlay.Width;
+            int sourceHeight = overlay.Height;
+
+            int transpcolor = sourceArray[0];
+
+            for (int yw = 0; yw < sourceHeight; yw++)
+            {
+                for (int xw = 0; xw < sourceWidth; xw++)
+                {
+                    int pixel = sourceArray[sourceWidth * yw + xw];
+                    if (pixel != transpcolor)
+                    {
+                        destinationArray[width * (yw + y) + x + xw] = pixel;
+                    }
+                }
+            }
+
         }
 
         private void CreateAura(int auracolor, int backcolor, int[] destinationArray, int sourceWidth, int sourceHeight, int glowSize)
