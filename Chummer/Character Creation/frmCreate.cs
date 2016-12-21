@@ -15116,13 +15116,24 @@ namespace Chummer
 			//Update Skill Labels
 			//Active skills
 			lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillPoints, _objCharacter.SkillsSection.SkillPointsMaximum);
+		    if (_objCharacter.SkillsSection.Skills.TotalCostKarma() > 0)
+		    {
+		        lblPBuildActiveSkills.Text += string.Format(": {0} {1}", _objCharacter.SkillsSection.Skills.TotalCostKarma(), LanguageManager.Instance.GetString("String_Karma"));
+		    }
 
 			//Knowledge skills
 			lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.KnowledgeSkillPointsRemain, _objCharacter.SkillsSection.KnowledgeSkillPoints);
-
-			//Groups
-			lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillGroupPoints, _objCharacter.SkillsSection.SkillGroupPointsMaximum);
-		}
+            if (_objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma() > 0)
+            {
+                lblPBuildKnowledgeSkills.Text += string.Format(": {0} {1}", _objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma(), LanguageManager.Instance.GetString("String_Karma"));
+            }
+            //Groups
+            lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillGroupPoints, _objCharacter.SkillsSection.SkillGroupPointsMaximum);
+            if (_objCharacter.SkillsSection.SkillGroups.TotalCostKarma() > 0)
+            {
+                lblPBuildSkillGroups.Text += string.Format(": {0} {1}", _objCharacter.SkillsSection.SkillGroups.TotalCostKarma(), LanguageManager.Instance.GetString("String_Karma"));
+            }
+        }
 
         /// <summary>
         /// Update the Character information.

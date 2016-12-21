@@ -37,10 +37,10 @@
 			<category>Mundane</category>
 			<type>M</type>
 			<action>Simple</action>
-			<range>MAG x 10</range>
+			<range>MAG x 50</range>
 			<duration>Always</duration>
-			<source>SM</source>
-			<page>54</page>
+			<source>SG</source>
+			<page>198</page>
 		</power>
 		<power>
 			<id>99af5d63-9f6a-4a32-9bf6-9b8500a3c64c</id>

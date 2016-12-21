@@ -424,6 +424,10 @@ namespace Chummer
 		public void RebuildSpiritList(string strTradition)
 		{
 			string strCurrentValue = "";
+			if (strTradition.Length == 0)
+			{
+				return;
+			}
 			if (cboSpiritName.SelectedValue != null)
 				strCurrentValue = cboSpiritName.SelectedValue.ToString();
 			else
