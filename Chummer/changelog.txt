@@ -6,10 +6,13 @@ Application Changes:
 - Fixed an issue with Vehicle Mod pricing for drones with 0 BOD being charged as though their body was 2, rather than 0.5.
 - Fixed missing Karma summaries for skills in Create Mode. 
 - Fixed an issue with Custom magical traditions. 
+- Fixed an issue with creating an Ally Spirit. Fixes #1308.
+- Added logic to suppress some warnings about missing books for objects that don't have a Source entry. 
 
 Data Changes: 
 
 - Added missing SpellCategory improvements for the various Spellcasting foci. 
+- Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
 
 Build 189
 
