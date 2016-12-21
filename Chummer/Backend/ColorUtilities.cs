@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer.Backend
@@ -263,6 +264,10 @@ namespace Chummer.Backend
             return result;
         }
 
-
+        private static Random random = new Random();
+        public static Color RandomColor()
+        {
+            return System.Drawing.Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+        }
     }
 }

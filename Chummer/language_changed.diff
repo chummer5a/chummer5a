@@ -1,0 +1,99 @@
+diff --git a/Chummer/lang/en-us.xml b/Chummer/lang/en-us.xml
+index 409f895..87d7717 100644
+--- a/Chummer/lang/en-us.xml
++++ b/Chummer/lang/en-us.xml
+@@ -6157,27 +6157,27 @@ Do you want to continue?</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaMartialArtManeuver</key>
+-			<text>Martial Art Maneuver</text>
++			<text>Martial Art Maneuver\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaSkillGroup</key>
+-			<text>Skill Group Rating</text>
++			<text>Skill Group Rating\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaActiveSkill</key>
+-			<text>Active Skill Rating</text>
++			<text>Active Skill Rating\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaSkillSpecialization</key>
+-			<text>Active Skill Specialization</text>
++			<text>Active Skill Specialization\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaKnowledgeSkill</key>
+-			<text>Knowledge Skill Rating</text>
++			<text>Knowledge Skill Rating\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaSpell</key>
+-			<text>Spell</text>
++			<text>Spell\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaFocus</key>
+@@ -6185,7 +6185,7 @@ Do you want to continue?</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaSpirit</key>
+-			<text>Spirit/Sprite Service</text>
++			<text>Spirit/Sprite Service\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_KarmaComplexForm</key>
+@@ -6249,23 +6249,23 @@ Do you want to continue?</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_ImproveKnowledgeSkill</key>
+-			<text>Improve Knowledge Skill by 1</text>
++			<text>Improve Knowledge Skill by 1\t\t{} x New Rating</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_ImproveActiveSkill</key>
+-			<text>Improve Active Skill by 1</text>
++			<text>Improve Active Skill by 1\t\t{} x New Rating</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_ImproveSkillGroup</key>
+-			<text>Improve Skill Group by 1</text>
++			<text>Improve Skill Group by 1\t\t{} x New Rating</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_ImproveAttribute</key>
+-			<text>Improve Attribute by 1</text>
++			<text>Improve Attribute by 1\t\t{} x New Rating</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_Qualities</key>
+-			<text>Positive/Negative Quality</text>
++			<text>Positive/Negative Quality\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_NewSpell</key>
+@@ -6297,11 +6297,11 @@ Do you want to continue?</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_Nuyen</key>
+-			<text>Nuyen</text>
++			<text>Nuyen\t\t{}</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_Contacts</key>
+-			<text>Contacts</text>
++			<text>Contacts\t\t{}</text>
+ 		</string>
+     <string>
+       <key>Label_Options_Enemies</key>
+@@ -6313,7 +6313,7 @@ Do you want to continue?</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_Initiation</key>
+-			<text>Initiation/Submersion</text>
++			<text>Initiation/Submersion\t(\t{} x New Rating) + 10</text>
+ 		</string>
+ 		<string>
+ 			<key>Label_Options_Metamagics</key>

@@ -813,7 +813,7 @@ namespace Chummer
 		/// Karma cost for a Initiation = 10 + (New Rating x this value).
 		/// </summary>
 		[SavePropertyAs("karmainitiation")]
-		[DisplayConfiguration("Tab_Initiation")]
+		[DisplayConfiguration("Label_Options_Initiation")]
 		public int KarmaInitiation { get; set; } = 3;
 
 	    /// <summary>

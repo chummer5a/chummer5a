@@ -5,7 +5,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using Chummer.Backend.Options;
 using Chummer.UI.Options;
+using Chummer.UI.Options.ControlGenerators;
 
 namespace Chummer.Classes
 {
@@ -13,7 +15,7 @@ namespace Chummer.Classes
     {
         public abstract bool Created { get; }
         public string Name { get; }
-        public List<AbstractOptionTree> Children = new List<AbstractOptionTree>();
+        public List<AbstractOptionTree> Children { get; }= new List<AbstractOptionTree>();
 
         protected AbstractOptionTree(string name)
         {
@@ -21,43 +23,36 @@ namespace Chummer.Classes
         }
 
         public abstract Control ControlLazy();
-        public abstract void Save();
+
     }
 
     class SimpleOptionTree : AbstractOptionTree
     {
-        private readonly object _target;
-        private readonly List<PropertyInfo> _properies;
-        private OptionItem item = null;
+        private readonly List<OptionRenderItem> _items;
+        private readonly List<IOptionWinFromControlFactory> _factories;
+        private Lazy<Control> _lazyItem;
 
-        public SimpleOptionTree(string name, object target, List<PropertyInfo> properies) : base(name)
+        public SimpleOptionTree(string name, List<OptionRenderItem> items, List<IOptionWinFromControlFactory> factories) : base(name)
         {
+            _items = items;
+            _factories = factories;
             if(string.IsNullOrWhiteSpace(name)) throw new ArgumentException(nameof(name) +" needs to be a visible string");
 
-            if(target == null) throw new ArgumentNullException(nameof(target));
-            if(properies == null || properies.Count == 0) throw new ArgumentException(nameof(properies));
+            if(items == null) throw new ArgumentNullException(nameof(items));
 
-            _target = target;
-            _properies = properies.ToList();
+            _lazyItem = new Lazy<Control>(GenerateItem);
         }
 
-        public override bool Created => item != null;
+        public override bool Created => _lazyItem.IsValueCreated;
 
-        public override Control ControlLazy()
-        {
-            return item ?? (item = GenerateItem());
-        }
+        public override Control ControlLazy() => _lazyItem.Value;
 
-        private OptionItem GenerateItem()
+        private OptionRender GenerateItem()
         {
-            OptionItem item = new OptionItem();
-            item.SetManyToSingleOptions(_properies,_target);
+            OptionRender item = new OptionRender();
+            item.Factories = _factories;
+            item.SetContents(_items);
             return item;
-        }
-
-        public override void Save()
-        {
-            item?.WriteBack();
         }
     }
 
@@ -76,14 +71,16 @@ namespace Chummer.Classes
             return p ?? (p = new FlowLayoutPanel());
         }
 
-        public override void Save()
-        {
-            
-        }
+
     }
 
     class BookNode : AbstractOptionTree
     {
+        //TODO: Recheck here
+        /*
+        * I think this needs a rewrite someday once i have a better idea on how this is supposed to work, but this saving methods probably won't end here.
+        *
+        */
         private readonly HashSet<string> _enabledBooks;
         private readonly Lazy<BookControl> _bookControl;
         public BookNode(HashSet<string> enabledBooks) : base(LanguageManager.Instance.GetString("String_Books"))
@@ -94,10 +91,5 @@ namespace Chummer.Classes
 
         public override bool Created => _bookControl.IsValueCreated;
         public override Control ControlLazy() => _bookControl.Value;
-
-        public override void Save()
-        {
-            _bookControl.Value.Save();
-        }
     }
 }
