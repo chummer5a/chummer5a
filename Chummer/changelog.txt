@@ -14,6 +14,11 @@ Data Changes:
 - Added missing SpellCategory improvements for the various Spellcasting foci. 
 - Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
 
+New Strings: 
+
+- String_SkillFilterNoSkillGroup
+- String_SkillFilterBrokenSkillGroup
+
 Build 189
 
 Application Changes:

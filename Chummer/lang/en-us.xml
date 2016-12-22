@@ -2662,7 +2662,16 @@
 			<key>String_SkillFilterRatingZero</key>
 			<text>Show Active Skills Rating = 0</text>
 		</string>
-		<string>
+    <string>
+      <key>String_SkillFilterNoSkillGroup</key>
+      <text>Show ungrouped Active Skills</text>
+    </string>
+    <string>
+      <key>String_SkillFilterBrokenSkillGroup</key>
+      <text>Show Active Skills in broken Skill Groups</text>
+    </string>
+    
+    <string>
 			<key>String_KnowledgeSkillFilterAll</key>
 			<text>Show All Knowledge Skills</text>
 		</string>
