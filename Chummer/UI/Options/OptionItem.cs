@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using Chummer.Backend.Attributes.OptionDisplayAttributes;
+using Chummer.Backend.Attributes.OptionAttributes;
 
 
 namespace Chummer.UI.Options

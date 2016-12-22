@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Attributes.OptionDisplayAttributes;
+using Chummer.Backend;
+using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
+using Chummer.Backend.Options;
 using Microsoft.Win32;
 
 namespace Chummer
@@ -478,15 +481,18 @@ namespace Chummer
 		[DisplayConfiguration("Checkbox_Options_CyberlegMovement")]
 		public bool CyberlegMovement { get; set; }
 
+
+	    private OptionConstaint<CharacterOptions> DroneArmorConstaint { get; } =
+	        new OptionConstaint<CharacterOptions>(option => option.DroneArmorMultiplierEnabled);
 	    /// <summary>
-		/// The Drone Body multiplier for maximal Armor //TODO: Link the enabled state to DroneArmorMultiplierEnabled.
+		/// The Drone Body multiplier for maximal Armor
 		/// </summary>
 		[SavePropertyAs("dronearmorflatnumber")]
 		[DisplayConfiguration("Checkbox_Options_DroneArmorMultiplier")]
-		public int DroneArmorMultiplier { get; set; } = 2;
+	    public int DroneArmorMultiplier { get; set; } = 2;
 
 	    /// <summary>
-		/// Whether or not the DroneArmorMultiplier house rule is enabled. //TODO: Link DroneArmorMultiplier to the enabled state. Redundant?
+		/// Whether or not the DroneArmorMultiplier house rule is enabled.
 		/// </summary>
 		[SavePropertyAs("dronearmormultiplierenabled")]
 		[DisplayConfiguration("Checkbox_Options_DroneArmorMultiplier")]
@@ -603,7 +609,9 @@ namespace Chummer
 		/// <summary>
 		/// The CHA multiplier to be used with the Free Contacts Option.
 		/// </summary>
-		/// //TODO: Link the enabled state to FreeContactsMultiplierEnabled.
+
+		private OptionConstaint<CharacterOptions> ContactsConstaint =
+		    new OptionConstaint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
 		[OptionAttributes("House Rules/Character Creation")]
 		[SavePropertyAs("freekarmacontactsmultiplier")]
 		[DisplayConfiguration("Checkbox_Options_ContactMultiplier")]
@@ -612,7 +620,7 @@ namespace Chummer
 	    /// <summary>
 		/// Whether or not characters get a flat number of BP for free Contacts.
 		/// </summary>
-		/// //TODO: Link FreeContactsMultiplier to the enabled state. Redundant?
+
 		[SavePropertyAs("freecontactsmultiplierenabled")]
 		[DisplayConfiguration("Checkbox_Options_ContactMultiplier")]
 		public bool FreeContactsMultiplierEnabled { get; set; }

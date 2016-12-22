@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chummer.Backend.Attributes.OptionDisplayAttributes
+namespace Chummer.Backend.Attributes.OptionAttributes
 {
     internal sealed class DisplayConfigurationAttribute : System.Attribute
     {

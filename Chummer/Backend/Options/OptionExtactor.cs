@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Chummer.Datastructures;
-using Chummer.Backend.Attributes.OptionDisplayAttributes;
+using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Classes;
+using Mono.CodeGeneration;
 
 namespace Chummer.Backend.Options
 {
@@ -24,29 +26,49 @@ namespace Chummer.Backend.Options
         {
             SimpleTree<OptionEntryProxy> root = new SimpleTree<OptionEntryProxy> {Tag = "root"};
 
-            DictionaryList<string, PropertyInfo> properties = new DictionaryList<string, PropertyInfo>();
+            DictionaryList<string, PropertyInfo> propertiesDisplayPath = new DictionaryList<string, PropertyInfo>();
+            Dictionary<string, OptionEntryProxy> proxies = new Dictionary<string, OptionEntryProxy>();
+            Dictionary<PropertyInfo, OptionConstaint> constaints =
+                new Dictionary<PropertyInfo, OptionConstaint>();
 
             string currentName = "";
             SimpleTree<OptionEntryProxy> parentTree;
             string[] npath;
 
+            OptionConstaint currentConstaint = null;
+
             //BAD JOHANNES: what did we say about logic in forms?
             //to be fair, rest of code is winform specific too
 
             //Collect all properties in groups based on their option path
-            foreach (PropertyInfo info in target.GetType().GetProperties())
+            foreach (PropertyInfo info in target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
+                if (typeof(OptionConstaint).IsAssignableFrom(info.PropertyType))
+                {
+                    if(currentConstaint != null) throw new ArgumentException("Multiple constaints on one property detected.");
+                    currentConstaint = (OptionConstaint) info.GetValue(target);
+                }
+
+                if(!info.GetMethod.IsPublic) continue;
+
+
                 if (info.GetCustomAttribute<DisplayIgnoreAttribute>() != null) continue;
                 if (info.GetCustomAttribute<OptionAttributes>() != null)
                 {
                     currentName = info.GetCustomAttribute<OptionAttributes>().Path;
                 }
 
-                properties.Add(currentName, info);
+                propertiesDisplayPath.Add(currentName, info);
+
+                if (currentConstaint != null)
+                {
+                    constaints.Add(info, currentConstaint);
+                    currentConstaint = null;
+                }
             }
 
 
-            var temp = properties
+            var temp = propertiesDisplayPath
                 .Where(x => !string.IsNullOrWhiteSpace(x.Key))
                 .OrderBy(x => x.Key);
 
@@ -63,16 +85,37 @@ namespace Chummer.Backend.Options
                 }
 
                 SimpleTree<OptionEntryProxy> newChild = new SimpleTree<OptionEntryProxy> {Tag = path.Last()};
-                newChild.Leafs.AddRange(
-                    group.Value
-                        .Where(p => _supported.Any(x => x(p)))
-                        .Select(p => CreateOptionEntry(target, p))
-                        .Where(x => x != null));
-                parrent.Children.Add(newChild);
 
+
+                foreach (OptionEntryProxy entryProxy in group.Value
+                    .Where(p => _supported.Any(x => x(p)))
+                    .Select(p => CreateOptionEntry(target, p))
+                    .Where(x => x != null))
+                {
+                    newChild.Leafs.Add(entryProxy);
+                    proxies.Add(entryProxy.TargetProperty.Name, entryProxy);
+                }
+                parrent.Children.Add(newChild);
             }
 
+            SetupConstraints(constaints, proxies);
+
             return root;
+        }
+
+        private void SetupConstraints(Dictionary<PropertyInfo, OptionConstaint> constaints, Dictionary<string, OptionEntryProxy> proxies)
+        {
+            foreach (KeyValuePair<PropertyInfo, OptionConstaint> constaint in constaints)
+            {
+                LambdaExpression ex = constaint.Value.Ex;
+                PropertyExtractorExpressionVisitor visitor = new PropertyExtractorExpressionVisitor(constaint.Key.DeclaringType);
+                LambdaExpression fix = visitor.Process(ex);
+                OptionEntryProxy target = proxies[constaint.Key.Name];
+                target.SetConstaint(
+                    (Func<List<OptionEntryProxy>, bool>) fix.Compile(),
+                    visitor.FoundProperties.Select(x => proxies[x]).ToList());
+
+            }
         }
 
         private OptionEntryProxy CreateOptionEntry(object target, PropertyInfo arg)
@@ -116,6 +159,59 @@ namespace Chummer.Backend.Options
                 if (Debugger.IsAttached)
                     throw;
                 else return null;
+            }
+        }
+
+        private class PropertyExtractorExpressionVisitor : ExpressionVisitor
+        {
+            //This would give bugs if trying to access parameters from another class of same type.
+
+            private readonly Type _delclaringType;
+
+            public PropertyExtractorExpressionVisitor(Type delclaringType)
+            {
+                _delclaringType = delclaringType;
+            }
+
+            public List<string> FoundProperties { get; } = new List<string>();
+            private ParameterExpression param;
+
+            public LambdaExpression Process(LambdaExpression expression)
+            {
+                param = Expression.Parameter(typeof(List<OptionEntryProxy>), expression.Parameters[0].Name);
+
+                var bod = Visit(expression.Body);
+
+                return Expression.Lambda<Func<List<OptionEntryProxy>, bool>>(bod, param);
+            }
+
+            public override Expression Visit(Expression node)
+            {
+                if (node.NodeType == ExpressionType.MemberAccess)
+                {
+                    MemberExpression ex = (MemberExpression) node;
+                    PropertyInfo info = ex.Member as PropertyInfo;
+                    if (info != null)
+                    {
+                        if (info.DeclaringType == _delclaringType)
+                        {
+                            FoundProperties.Add(info.Name);
+                            return Expression.Convert(
+                                Expression.Property(
+                                    Expression.Property(
+                                        param, "Item",
+                                        Expression.Constant(FoundProperties.Count - 1)),
+                                    "Value"
+                                ),
+                                info.PropertyType
+                            );
+
+                        }
+
+                    }
+
+                }
+                return base.Visit(node);
             }
         }
     }

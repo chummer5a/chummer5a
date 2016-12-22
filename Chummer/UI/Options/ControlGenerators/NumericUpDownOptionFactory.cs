@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using Chummer.Backend.Options;
@@ -20,12 +22,12 @@ namespace Chummer.UI.Options.ControlGenerators
                 false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
-            nud.DataBindings.Add(
-                nameof(NumericUpDown.Enabled),
-                backingEntry,
-                nameof(OptionEntryProxy.Enabled),
-                false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            //nud.DataBindings.Add(
+            //    nameof(NumericUpDown.Enabled),
+            //    backingEntry,
+            //    nameof(OptionEntryProxy.Enabled),
+            //    false,
+            //    DataSourceUpdateMode.OnPropertyChanged);
 
             if (Utils.IsLinux)
             {
@@ -33,7 +35,19 @@ namespace Chummer.UI.Options.ControlGenerators
                 nud.BackColor = Color.WhiteSmoke;
             }
 
+            backingEntry.PropertyChanged += (back, args) =>
+            {
+                OptionEntryProxy backing = (OptionEntryProxy) back;
+                nud.Enabled = backing.Enabled;
+            };
+
+            nud.Enabled = backingEntry.Enabled;
+
+
+
             return nud;
         }
+
+
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend;
-using Chummer.Backend.Attributes.OptionDisplayAttributes;
+using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Options;
 using Chummer.Classes;
 using Chummer.Datastructures;
@@ -19,40 +19,49 @@ namespace Chummer
 	public partial class frmNewOptions : Form
 	{
 	    private Control _currentVisibleControl;
-	    private readonly AbstractOptionTree _winformTree;
-	    private readonly SimpleTree<OptionEntryProxy> _rawTree;
-	    private readonly List<IOptionWinFromControlFactory> _controlFactories;
+	    private AbstractOptionTree _winformTree;
+	    private SimpleTree<OptionEntryProxy> _rawTree;
+	    private List<IOptionWinFromControlFactory> _controlFactories;
 	    public frmNewOptions()
 		{
 			InitializeComponent();
 
-		    _controlFactories = new List<IOptionWinFromControlFactory>()
-		    {
-		        new CheckBoxOptionFactory(),
-		        new NumericUpDownOptionFactory()
-		    };
-
-		    //TODO: dropdown that allows you to select/add multiple
-            CharacterOptions o = Program.OptionsManager.Default;
-
-		    OptionExtactor extactor = new OptionExtactor(
-		        new List<Predicate<PropertyInfo>>(
-		            _controlFactories.Select
-		                <IOptionWinFromControlFactory, Predicate<PropertyInfo>>
-		                (x => x.IsSupported)));
 
 
-		    _rawTree = extactor.Extract(o);
-		    _winformTree = GenerateWinFormTree(_rawTree);
-            _winformTree.Children.Add(new BookNode(new HashSet<string>(){"SR5"}));
+		    this.Load += OnLoad;
 
 
-            PopulateTree(treeView1.Nodes, _winformTree);
-
-            if (treeView1.SelectedNode == null) {treeView1.SelectedNode = treeView1.Nodes[0];}
-
-		    MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
 		}
+
+	    private void OnLoad(object sender, EventArgs eventArgs)
+	    {
+	        _controlFactories = new List<IOptionWinFromControlFactory>()
+	        {
+	            new CheckBoxOptionFactory(),
+	            new NumericUpDownOptionFactory()
+	        };
+
+	        //TODO: dropdown that allows you to select/add multiple
+	        CharacterOptions o = Program.OptionsManager.Default;
+
+	        OptionExtactor extactor = new OptionExtactor(
+	            new List<Predicate<PropertyInfo>>(
+	                _controlFactories.Select
+	                    <IOptionWinFromControlFactory, Predicate<PropertyInfo>>
+	                    (x => x.IsSupported)));
+
+
+	        _rawTree = extactor.Extract(o);
+	        _winformTree = GenerateWinFormTree(_rawTree);
+	        _winformTree.Children.Add(new BookNode(new HashSet<string>(){"SR5"}));
+
+
+	        PopulateTree(treeView1.Nodes, _winformTree);
+
+	        if (treeView1.SelectedNode == null) {treeView1.SelectedNode = treeView1.Nodes[0];}
+
+	        MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
+	    }
 
 	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionEntryProxy> tree)
 	    {

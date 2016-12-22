@@ -1,4 +1,4 @@
-﻿namespace Chummer.Backend.Attributes.OptionDisplayAttributes
+﻿namespace Chummer.Backend.Attributes.OptionAttributes
 {
     public sealed class DisplayIgnoreAttribute : System.Attribute
     {

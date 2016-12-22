@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -119,9 +119,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\Attributes\OptionDisplayAttributes\DisplayConfigurationAttribute.cs" />
-    <Compile Include="Backend\Attributes\OptionDisplayAttributes\DisplayIgnoreAttribute.cs" />
-    <Compile Include="Backend\Attributes\OptionDisplayAttributes\OptionDisplayAttribute.cs" />
+    <Compile Include="Backend\Attributes\OptionAttributes\DisplayConfigurationAttribute.cs" />
+    <Compile Include="Backend\Attributes\OptionAttributes\DisplayIgnoreAttribute.cs" />
+    <Compile Include="Backend\Attributes\OptionAttributes\OptionDisplayAttribute.cs" />
     <Compile Include="Backend\Attributes\SaveAttributes\SaveIgnorePropertyAttribute.cs" />
     <Compile Include="Backend\Attributes\SaveAttributes\SavePropertyAsAttribute.cs" />
     <Compile Include="Backend\ClassSaver.cs" />
@@ -154,6 +154,7 @@
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\OptionsManager.cs" />
     <Compile Include="Backend\Options\IGroupLayoutProvider.cs" />
+    <Compile Include="Backend\Options\OptionConstaint.cs" />
     <Compile Include="Backend\Options\OptionRenderItem.cs" />
     <Compile Include="Backend\Options\TabAlignmentGroupLayoutProvider.cs" />
     <Compile Include="Backend\Options\OptionEntryProxy.cs" />
