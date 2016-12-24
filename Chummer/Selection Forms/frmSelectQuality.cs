@@ -327,6 +327,7 @@ namespace Chummer
 		private void BuildQualityList()
 		{
 			List<ListItem> lstQuality = new List<ListItem>();
+            lstQualities.DataSource = null;
             XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
             if (txtSearch.Text.Trim() != "")
@@ -342,7 +343,7 @@ namespace Chummer
                 }
                 if (nudMinimumBP.Value != 0)
                 {
-                    strSearch += "and karma => " + nudMinimumBP.Value.ToString();
+                    strSearch += "and karma => " + nudMinimumBP.Value;
                 }
                 strSearch += "]";
 
@@ -357,8 +358,17 @@ namespace Chummer
                         blnNeedQualityWhitelist = true;
                 }
 
-                XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
-				foreach (XmlNode objXmlQuality in objXmlQualityList)
+                XmlNodeList objXmlQualityList;
+                try
+			    {
+			        objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
+			    }
+			    catch
+			    {
+			        return;
+			    }
+
+                foreach (XmlNode objXmlQuality in objXmlQualityList)
 				{
                     bool blnQualityAllowed = !blnNeedQualityWhitelist;
                     if (blnNeedQualityWhitelist)
@@ -414,18 +424,18 @@ namespace Chummer
                 }
                 if (nudValueBP.Value != 0)
                 {
-                    strXPath += "and karma = " + nudValueBP.Value.ToString();
+                    strXPath += "and karma = " + nudValueBP.Value;
                 }
                 else
                 {
                     if (nudMinimumBP.Value != 0)
                     {
-                        strXPath += "and karma >= " + nudMinimumBP.Value.ToString();
+                        strXPath += "and karma >= " + nudMinimumBP.Value;
                     }
 
                     if (nudMaximumBP.Value != 0)
                     {
-                        strXPath += "and karma <= " + nudMaximumBP.Value.ToString();
+                        strXPath += "and karma <= " + nudMaximumBP.Value;
                     }
                 }
 

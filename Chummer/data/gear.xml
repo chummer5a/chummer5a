@@ -11005,6 +11005,7 @@
 			<rating>0</rating>
 			<avail>2</avail>
 			<cost>200</cost>
+      <capacity>4</capacity>
 			<gears>
 				<usegear>
 					<name>Camera</name>
