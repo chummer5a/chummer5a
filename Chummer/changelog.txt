@@ -11,6 +11,7 @@ Application Changes:
 - Suppressed an error when rendering the skills display.
 - Fixed the configuration of the discountcost quality node to properly work for negative qualities and allow selecting Adept Powers for discounts.
 - Fixed an issue with searching for qualities using both the text and numerical filters. 
+- Fixed a calculation issue with Armour Encumbrance that prevented Custom Fit (Stack) items from counting properly. 
 
 Data Changes: 
 
