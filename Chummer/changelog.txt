@@ -8,7 +8,8 @@ Application Changes:
 - Fixed an issue with Custom magical traditions. 
 - Fixed an issue with creating an Ally Spirit. Fixes #1308.
 - Added logic to suppress some warnings about missing books for objects that don't have a Source entry. 
-
+- Suppressed an error when rendering the skills display.
+- Fixed the configuration of the discountcost quality node to properly work for negative qualities and allow selecting Adept Powers for discounts.
 Data Changes: 
 
 - Added missing SpellCategory improvements for the various Spellcasting foci. 

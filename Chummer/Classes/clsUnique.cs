@@ -1889,13 +1889,25 @@ namespace Chummer
 					{
 						blnFound = true;
 						break;
-					}
-				}
+                    }
+                    if (objNode["oneof"].Cast<XmlNode>().Where(objRequiredNode => objRequiredNode.Name == "power").Any(objRequiredNode => _objCharacter.Powers.Any(objPower => objPower.Name == objRequiredNode.InnerText)))
+                    {
+                        blnFound = true;
+                        break;
+                    }
+                }
 			}
 			if (blnFound)
 			{
-				intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
-			}
+			    if (Type == QualityType.Positive)
+			    {
+			        intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
+			    }
+                else if (Type == QualityType.Negative)
+                {
+                    intReturn -= Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
+                }
+            }
 			return intReturn;
 		}
 		#endregion
