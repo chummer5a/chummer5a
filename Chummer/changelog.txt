@@ -14,6 +14,7 @@ Data Changes:
 
 - Added missing SpellCategory improvements for the various Spellcasting foci. 
 - Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
+- Added missing Depth minimums for all critters. 
 
 New Strings: 
 
