@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -152,16 +151,7 @@ namespace Chummer
 		/// <param name="strCode">Book code to search for.</param>
 		public bool BookEnabled(string strCode)
 		{
-			bool blnReturn = false;
-			foreach (string strBook in Books)
-			{
-				if (strBook == strCode)
-				{
-					blnReturn = true;
-					break;
-				}
-			}
-			return blnReturn;
+		    return Books[strCode];
 		}
 
 		/// <summary>
@@ -174,7 +164,7 @@ namespace Chummer
 
 			string strPath = "(";
 
-			foreach (string strBook in Books)
+			foreach (string strBook in EnabledBooks())
 			{
 				if (strBook != "")
 					strPath += "source = \"" + strBook + "\" or ";
@@ -197,7 +187,7 @@ namespace Chummer
 
 		public List<string> BookLinq()
 		{
-			return Books.ToList();
+			return EnabledBooks().ToList();
 		}
 		#endregion
 
@@ -993,10 +983,19 @@ namespace Chummer
 		#endregion
 		#endregion
 
-		/// <summary>
-		/// Sourcebooks.
-		/// </summary>
-		public HashSet<string> Books { get; } = new HashSet<string>();
+	    /// <summary>
+	    /// Sourcebooks.
+	    /// </summary>
+	    public Dictionary<string, bool> Books { get; } = GlobalOptions.Instance.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
+
+	    public IEnumerable<string> EnabledBooks()
+	    {
+	        foreach (KeyValuePair<string,bool> book in Books)
+	        {
+	            if (book.Value)
+	                yield return book.Key;
+	        }
+	    }
 
 	    /// <summary>
 		/// Setting name.

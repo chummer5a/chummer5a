@@ -77,7 +77,7 @@ namespace Chummer
 				{
 					blnAdd = false;
 				}
-                if (!_objCharacter.Options.Books.Contains(objXmlLifestyle["source"].InnerText))
+                if (!_objCharacter.Options.Books[objXmlLifestyle["source"].InnerText])
                 {
                     blnAdd = false;
                 }

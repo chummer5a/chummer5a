@@ -7,9 +7,13 @@ namespace Chummer.UI.Options.ControlGenerators
 {
     public class CheckBoxOptionFactory : IOptionWinFromControlFactory
     {
-        public bool IsSupported(PropertyInfo property) => property.PropertyType == (typeof(bool));
+        public bool IsSupported(OptionItem backingEntry)
+        {
+            OptionEntryProxy proxy = backingEntry as OptionEntryProxy;
+            return proxy != null && proxy.TargetProperty.PropertyType == (typeof(bool));
+        }
 
-        public Control Construct(OptionEntryProxy backingEntry)
+        public Control Construct(OptionItem backingEntry)
         {
             CheckBox box = new CheckBox(){Location = new Point(0, -4)};
             box.DataBindings.Add(

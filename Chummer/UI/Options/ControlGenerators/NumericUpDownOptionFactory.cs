@@ -9,25 +9,24 @@ namespace Chummer.UI.Options.ControlGenerators
 {
     public class NumericUpDownOptionFactory : IOptionWinFromControlFactory
     {
-        public bool IsSupported(PropertyInfo property) => property.PropertyType == (typeof(int));
-
-
-        public Control Construct(OptionEntryProxy backingEntry)
+        public bool IsSupported(OptionItem backingEntry)
         {
+            OptionEntryProxy proxy = backingEntry as OptionEntryProxy;
+            return proxy != null && proxy.TargetProperty.PropertyType == (typeof(int));
+        }
+
+
+        public Control Construct(OptionItem backingEntry)
+        {
+            OptionEntryProxy proxy = (OptionEntryProxy) backingEntry;
+
             NumericUpDown nud = new NumericUpDown(){Maximum = 10000, Location = new Point(0, -2)};
             nud.DataBindings.Add(
                 nameof(NumericUpDown.Value),
-                backingEntry,
+                proxy,
                 nameof(OptionEntryProxy.Value),
                 false,
                 DataSourceUpdateMode.OnPropertyChanged);
-
-            //nud.DataBindings.Add(
-            //    nameof(NumericUpDown.Enabled),
-            //    backingEntry,
-            //    nameof(OptionEntryProxy.Enabled),
-            //    false,
-            //    DataSourceUpdateMode.OnPropertyChanged);
 
             if (Utils.IsLinux)
             {
@@ -35,15 +34,13 @@ namespace Chummer.UI.Options.ControlGenerators
                 nud.BackColor = Color.WhiteSmoke;
             }
 
-            backingEntry.PropertyChanged += (back, args) =>
+            proxy.PropertyChanged += (back, args) =>
             {
                 OptionEntryProxy backing = (OptionEntryProxy) back;
                 nud.Enabled = backing.Enabled;
             };
 
-            nud.Enabled = backingEntry.Enabled;
-
-
+            nud.Enabled = proxy.Enabled;
 
             return nud;
         }

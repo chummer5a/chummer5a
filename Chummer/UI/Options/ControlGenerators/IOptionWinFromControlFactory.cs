@@ -7,8 +7,8 @@ namespace Chummer.UI.Options.ControlGenerators
 {
     public interface IOptionWinFromControlFactory
     {
-        bool IsSupported(PropertyInfo property);
+        bool IsSupported(OptionItem backingEntry);
 
-        Control Construct(OptionEntryProxy backingEntry);
+        Control Construct(OptionItem backingEntry);
     }
 }

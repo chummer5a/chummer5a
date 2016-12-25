@@ -1000,7 +1000,7 @@ namespace Chummer
 					bool blnMissingBooks = false;
 					string strMissingBooks = "";
 					//Does the list of enabled books contain the current item?
-					foreach (XmlNode objXmlNode in objXmlCharacter["sources"].Cast<XmlNode>().Where(objXmlNode => !_objOptions.Books.Contains(objXmlNode.InnerText)))
+					foreach (XmlNode objXmlNode in objXmlCharacter["sources"].Cast<XmlNode>().Where(objXmlNode => !_objOptions.Books[objXmlNode.InnerText]))
 					{
 						strMissingBooks += (objXmlNode.InnerText + ";");
 						blnMissingBooks = true;

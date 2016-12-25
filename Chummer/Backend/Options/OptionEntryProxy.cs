@@ -8,10 +8,10 @@ using Octokit;
 
 namespace Chummer.Backend.Options
 {
-    public class OptionEntryProxy : OptionRenderItem, INotifyPropertyChanged
+    public class OptionEntryProxy : OptionItem, INotifyPropertyChanged
     {
         public PropertyInfo TargetProperty { get; }
-        public string DisplayString { get; }
+
         public string ToolTip { get; }
 
         private readonly object _targetObject;
@@ -20,13 +20,12 @@ namespace Chummer.Backend.Options
         private List<OptionEntryProxy> _dependantProperties;
 
         public OptionEntryProxy([NotNull] object targetObject, [NotNull] PropertyInfo targetProperty, string displayString = null,
-            string toolTip = null)
+            string toolTip = null) : base(displayString)
         {
             if (targetObject == null) throw new ArgumentNullException(nameof(targetObject));
             if (targetProperty == null) throw new ArgumentNullException(nameof(targetProperty));
 
             TargetProperty = targetProperty;
-            DisplayString = displayString;
             ToolTip = toolTip;
             _targetObject = targetObject;
 

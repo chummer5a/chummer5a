@@ -541,7 +541,7 @@ namespace Chummer
 
 			// Make sure that Running Wild is one of the allowed source books since most of the Critter Powers come from this book.
 			bool blnRunningWild = false;
-			blnRunningWild = (objCharacter.Options.Books.Contains("RW"));
+			blnRunningWild = (objCharacter.Options.Books["RW"]);
 
 			if (!blnRunningWild)
 			{

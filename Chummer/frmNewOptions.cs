@@ -20,7 +20,7 @@ namespace Chummer
 	{
 	    private Control _currentVisibleControl;
 	    private AbstractOptionTree _winformTree;
-	    private SimpleTree<OptionEntryProxy> _rawTree;
+	    private SimpleTree<OptionItem> _rawTree;
 	    private List<IOptionWinFromControlFactory> _controlFactories;
 	    public frmNewOptions()
 		{
@@ -45,9 +45,9 @@ namespace Chummer
 	        CharacterOptions o = Program.OptionsManager.Default;
 
 	        OptionExtactor extactor = new OptionExtactor(
-	            new List<Predicate<PropertyInfo>>(
+	            new List<Predicate<OptionItem>>(
 	                _controlFactories.Select
-	                    <IOptionWinFromControlFactory, Predicate<PropertyInfo>>
+	                    <IOptionWinFromControlFactory, Predicate<OptionItem>>
 	                    (x => x.IsSupported)));
 
 
@@ -63,7 +63,7 @@ namespace Chummer
 	        MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
 	    }
 
-	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionEntryProxy> tree)
+	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionItem> tree)
 	    {
 	        SimpleOptionTree so = new SimpleOptionTree(tree.Tag.ToString(), new List<OptionRenderItem>(tree.Leafs), _controlFactories);
 	        so.Children.AddRange(tree.Children.Select(GenerateWinFormTree));

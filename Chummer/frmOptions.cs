@@ -238,7 +238,7 @@ namespace Chummer
 
             // If the SR5 book was somehow missed, add it back.
             if (!blnSR5Included)
-                _characterOptions.Books.Add("SR5");
+                _characterOptions.Books["SR5"] = true;
 
             XmlManager.Instance.Verify(cboLanguage.SelectedValue.ToString(), lstBooks);
 
@@ -547,7 +547,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlBook in objXmlBookList)
             {
-                bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
+                bool blnChecked = _characterOptions.Books[(objXmlBook["code"].InnerText)];
                 TreeNode objNode = new TreeNode();
 
                 if (objXmlBook["translate"] != null)
@@ -739,7 +739,7 @@ namespace Chummer
                 if (!objNode.Checked)
                     continue;
 
-                _characterOptions.Books.Add(objNode.Tag.ToString());
+                _characterOptions.Books.Add(objNode.Tag.ToString(), true);
 
                 if (objNode.Tag.ToString() == "SR5")
                     blnSR5Included = true;
@@ -747,7 +747,7 @@ namespace Chummer
 
             // If the SR5 book was somehow missed, add it back.
             if (!blnSR5Included)
-                _characterOptions.Books.Add("SR5");
+                _characterOptions.Books.Add("SR5", true);
         }
 
         private void RestartApplication()

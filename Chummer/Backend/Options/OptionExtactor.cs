@@ -14,17 +14,17 @@ namespace Chummer.Backend.Options
 {
     public class OptionExtactor
     {
-        private readonly List<Predicate<PropertyInfo>> _supported;
+        private readonly List<Predicate<OptionItem>> _supported;
 
-        public OptionExtactor(List<Predicate<PropertyInfo>> supported)
+        public OptionExtactor(List<Predicate<OptionItem>> supported)
         {
             //Make copy. I don't event want to think about what happens if somebody changes it while running.
-            _supported = new List<Predicate<PropertyInfo>>(supported);
+            _supported = new List<Predicate<OptionItem>>(supported);
         }
 
-        public SimpleTree<OptionEntryProxy> Extract(object target)
+        public SimpleTree<OptionItem> Extract(object target)
         {
-            SimpleTree<OptionEntryProxy> root = new SimpleTree<OptionEntryProxy> {Tag = "root"};
+            SimpleTree<OptionItem> root = new SimpleTree<OptionItem> {Tag = "root"};
 
             DictionaryList<string, PropertyInfo> propertiesDisplayPath = new DictionaryList<string, PropertyInfo>();
             Dictionary<string, OptionEntryProxy> proxies = new Dictionary<string, OptionEntryProxy>();
@@ -75,7 +75,7 @@ namespace Chummer.Backend.Options
             foreach (KeyValuePair<string, List<PropertyInfo>> group in temp)
             {
                 string[] path = group.Key.Split('/');
-                SimpleTree<OptionEntryProxy> parrent = root;
+                SimpleTree<OptionItem> parrent = root;
 
                 //find path in option tree, skip last as thats new
                 //Breaks if trying to "jump" a path element
@@ -84,12 +84,12 @@ namespace Chummer.Backend.Options
                     parrent = parrent.Children.First(x => (string) x.Tag == path[i]);
                 }
 
-                SimpleTree<OptionEntryProxy> newChild = new SimpleTree<OptionEntryProxy> {Tag = path.Last()};
+                SimpleTree<OptionItem> newChild = new SimpleTree<OptionItem> {Tag = path.Last()};
 
 
                 foreach (OptionEntryProxy entryProxy in group.Value
-                    .Where(p => _supported.Any(x => x(p)))
                     .Select(p => CreateOptionEntry(target, p))
+                    .Where(p => _supported.Any(x => x(p)))
                     .Where(x => x != null))
                 {
                     newChild.Leafs.Add(entryProxy);

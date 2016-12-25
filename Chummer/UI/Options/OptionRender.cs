@@ -36,7 +36,7 @@ namespace Chummer.UI.Options
         {
             //TODO: Better support for any RenderItems that isnt EntryProxy
 
-            List<OptionEntryProxy> entries = contents.OfType<OptionEntryProxy>().ToList();
+            List<OptionItem> entries = contents.OfType<OptionItem>().ToList();
             ControlGroup layouted = PerformGroupLayout(entries, _defaultGroupLayoutProvider);
 
             for (int i = 0; i < layouted.Controlls.Count; i++)
@@ -49,10 +49,10 @@ namespace Chummer.UI.Options
 
         }
 
-        private ControlGroup PerformGroupLayout(List<OptionEntryProxy> items, IGroupLayoutProvider layoutProvider)
+        private ControlGroup PerformGroupLayout(List<OptionItem> items, IGroupLayoutProvider layoutProvider)
         {
             ControlGroup ret = new ControlGroup();
-            List<Control> controls = items.Select(item => Factories.First(fac => fac.IsSupported(item.TargetProperty)).Construct(item)).ToList();
+            List<Control> controls = items.Select(item => Factories.First(fac => fac.IsSupported(item)).Construct(item)).ToList();
 
             List<LayoutLineInfo> info = items
                 .Select((entry, index) => new LayoutLineInfo

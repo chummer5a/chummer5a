@@ -155,6 +155,8 @@
     <Compile Include="Backend\OptionsManager.cs" />
     <Compile Include="Backend\Options\IGroupLayoutProvider.cs" />
     <Compile Include="Backend\Options\OptionConstaint.cs" />
+    <Compile Include="Backend\Options\OptionItem.cs" />
+    <Compile Include="Backend\Options\OptionProxyCollection.cs" />
     <Compile Include="Backend\Options\OptionRenderItem.cs" />
     <Compile Include="Backend\Options\TabAlignmentGroupLayoutProvider.cs" />
     <Compile Include="Backend\Options\OptionEntryProxy.cs" />
@@ -332,12 +334,6 @@
     <Compile Include="UI\Options\ControlGenerators\CheckBoxOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\IOptionWinFromControlFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\NumericUpDownOptionFactory.cs" />
-    <Compile Include="UI\Options\OptionItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Options\OptionItem.Designer.cs">
-      <DependentUpon>OptionItem.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Options\OptionRender.cs" />
     <Compile Include="UI\Options\OptionsNumberControl.cs">
       <SubType>UserControl</SubType>
@@ -899,9 +895,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Options\OptionItem.resx">
-      <DependentUpon>OptionItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Options\OptionsNumberControl.resx">
       <DependentUpon>OptionsNumberControl.cs</DependentUpon>
