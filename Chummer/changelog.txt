@@ -13,6 +13,8 @@ Application Changes:
 - Fixed an issue with searching for qualities using both the text and numerical filters. 
 - Fixed a calculation issue with Armour Encumbrance that prevented Custom Fit (Stack) items from counting properly. 
 - Added support for critter powers to cost karma.
+- Renaming an item will now prepopulate the current name. 
+- Added proper quantity listings for child items attached to gear, such as ammo in a duffel bag. 
 
 Data Changes: 
 
@@ -22,6 +24,10 @@ Data Changes:
 - Corrected missing Capacity for the Sensor Collar from Howling Shadows. 
 - Corrected machine pistols and submachineguns to not have Under mounts. 
 - Added a missing detonator cap gear item.
+
+ Sheet Changes: 
+
+- Added proper quantity listings for child items attached to gear in the basic Shadowrun character sheets. 
 
 New Strings: 
 

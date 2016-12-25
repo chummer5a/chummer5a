@@ -11776,7 +11776,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_WeaponName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objWeapon.WeaponName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -11811,7 +11812,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_GearName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objGear.GearName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -14377,7 +14379,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_VehicleName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objVehicle.VehicleName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -14545,7 +14548,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_ArmorName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objArmor.ArmorName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -14601,7 +14605,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_LifestyleName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objLifestyle.LifestyleName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;

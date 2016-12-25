@@ -3600,9 +3600,10 @@
 												<xsl:value-of select="name"/>
 												<xsl:if test="extra != ''"> (<xsl:value-of
 												select="extra"/>)</xsl:if>
-												<xsl:if test="rating > 0"> Rating <xsl:value-of
-												select="rating"/>
-												</xsl:if>
+												<xsl:if test="rating > 0"> Rating <xsl:value-of select="rating"/></xsl:if>
+                        <xsl:if test="qty > 1">
+                          x<xsl:value-of select="qty"/>
+                        </xsl:if>
 												<xsl:if test="children/gear"> [<xsl:for-each
 												select="children/gear">
 												<xsl:sort select="name"/>
@@ -3612,7 +3613,9 @@
 												select="rating"/></xsl:if>
 												<xsl:if test="extra != ''"> (<xsl:value-of
 												select="extra"/>)</xsl:if>
-												<xsl:if test="position() != last()">; </xsl:if>
+                        <xsl:if test="qty > 1">x<xsl:value-of 
+                        select="qty"/></xsl:if>
+                      <xsl:if test="position() != last()">; </xsl:if>
 												</xsl:for-each>] </xsl:if>
 												<xsl:if test="position() != last()">; </xsl:if>
 												</xsl:for-each>) </xsl:if>
@@ -3729,7 +3732,12 @@
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="rating"/>
 			</xsl:if>
-			<xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+      <xsl:if test="extra != ''">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="qty > 1">
+        x<xsl:value-of select="qty"/>
+      </xsl:if>
 			<xsl:if test="children/gear"> [<xsl:call-template name="gearplugin">
 					<xsl:with-param name="gear" select="."/>
 				</xsl:call-template>] </xsl:if>
