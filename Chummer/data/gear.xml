@@ -1347,7 +1347,7 @@
 		</gear>
 		<gear>
 			<id>2c98be77-22d7-4116-90fc-e8489944578d</id>
-			<name>Detonator, Blasting Cap</name>
+			<name>Detonator Cap</name>
 			<category>Explosives</category>
 			<rating>0</rating>
 			<avail>8R</avail>
@@ -1355,6 +1355,16 @@
 			<source>SR5</source>
 			<page>436</page>
 		</gear>
+    <gear>
+      <id>2c98be77-22d7-4116-90fc-e8489944578d</id>
+      <name>Detonator, Blasting Cap</name>
+      <category>Explosives</category>
+      <rating>0</rating>
+      <avail>8R</avail>
+      <cost>20</cost>
+      <source>RG</source>
+      <page>195</page>
+    </gear>
 		<gear>
 			<id>15a39069-3ee5-4ad8-9906-93f6c325c326</id>
 			<name>Detonator, Electrical</name>

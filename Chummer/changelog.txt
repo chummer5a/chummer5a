@@ -12,6 +12,7 @@ Application Changes:
 - Fixed the configuration of the discountcost quality node to properly work for negative qualities and allow selecting Adept Powers for discounts.
 - Fixed an issue with searching for qualities using both the text and numerical filters. 
 - Fixed a calculation issue with Armour Encumbrance that prevented Custom Fit (Stack) items from counting properly. 
+- Added support for critter powers to cost karma.
 
 Data Changes: 
 
@@ -19,11 +20,14 @@ Data Changes:
 - Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
 - Added missing Depth minimums for all critters. 
 - Corrected missing Capacity for the Sensor Collar from Howling Shadows. 
+- Corrected machine pistols and submachineguns to not have Under mounts. 
+- Added a missing detonator cap gear item.
 
 New Strings: 
 
 - String_SkillFilterNoSkillGroup
 - String_SkillFilterBrokenSkillGroup
+- String_ExpensePurchaseCritterPower
 
 Build 189
 

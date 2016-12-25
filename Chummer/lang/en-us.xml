@@ -2883,6 +2883,10 @@
 			<key>String_ExpenseSoldVehicleCyberware</key>
 			<text>Sold Vehicle Cyberware Plugin</text>
 		</string>
+    <string>
+      <key>String_ExpensePurchaseCritterPower</key>
+      <text>Purchased Critter Power</text>
+    </string>
 		<string>
 			<key>String_ExpenseVehicleRetrofit</key>
 			<text>Retrofitted {0}</text>

@@ -6835,7 +6835,7 @@ namespace Chummer
                 return;
 
             objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickCritterPower.SelectedPower + "\"]");
+            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickCritterPower.SelectedPower + "\"]");
             TreeNode objNode = new TreeNode();
             CritterPower objPower = new CritterPower(_objCharacter);
             objPower.Create(objXmlPower, _objCharacter, objNode, frmPickCritterPower.SelectedRating);
@@ -15058,6 +15058,12 @@ namespace Chummer
             intKarmaPointsRemain -= intInitiationPoints;
             lblInitiationBP.Text = string.Format("{0} " + strPoints, intInitiationPoints.ToString());
             intFreestyleBP += intInitiationPoints;
+            
+            // Add the Karma cost of any Critter Powers.
+            foreach (CritterPower objPower in _objCharacter.CritterPowers)
+            {
+                intKarmaPointsRemain -= objPower.Karma;
+            }
 
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.

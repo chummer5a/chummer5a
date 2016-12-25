@@ -55,8 +55,9 @@ namespace Chummer
         AddPowerPoint = 23,
         AddSpecialization = 24,
         AddAIProgram = 25,
-        AddAIAdvancedProgram = 26
-	}
+        AddAIAdvancedProgram = 26,
+        AddCritterPower = 27
+    }
 
 	public enum NuyenExpenseType
 	{
