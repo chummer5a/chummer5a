@@ -20,17 +20,15 @@ namespace Chummer
 	{
 	    private Control _currentVisibleControl;
 	    private AbstractOptionTree _winformTree;
-	    private SimpleTree<OptionItem> _rawTree;
+	    private List<OptionItem> _searchList;
 	    private List<IOptionWinFromControlFactory> _controlFactories;
+	    private Lazy<OptionRender> _searchControl;
+
 	    public frmNewOptions()
 		{
 			InitializeComponent();
 
-
-
-		    this.Load += OnLoad;
-
-
+            Load += OnLoad;
 		}
 
 	    private void OnLoad(object sender, EventArgs eventArgs)
@@ -51,7 +49,7 @@ namespace Chummer
 	                    (x => x.IsSupported)));
 
 
-	        _rawTree = extactor.Extract(o);
+	        SimpleTree<OptionItem> _rawTree = extactor.Extract(o);
 	        _winformTree = GenerateWinFormTree(_rawTree);
 	        _winformTree.Children.Add(new BookNode(new HashSet<string>(){"SR5"}));
 
@@ -61,6 +59,61 @@ namespace Chummer
 	        if (treeView1.SelectedNode == null) {treeView1.SelectedNode = treeView1.Nodes[0];}
 
 	        MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
+
+
+	        _searchList = _rawTree.DepthFirstEnumerator().ToList();
+	        textBox1.KeyPress += SearchBoxChanged;
+
+	        _searchControl = new Lazy<OptionRender>(() =>
+	        {
+	            OptionRender c = new OptionRender();
+	            c.Factories = _controlFactories;
+	            Controls.Add(c);
+	            c.Location = new Point(treeView1.Right+8, 8);
+	            c.Height = treeView1.Height;
+	            c.Width = treeView1.Parent.Width - treeView1.Width - 36;
+	            c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+	            return c;
+	        });
+	    }
+
+	    private void SearchBoxChanged(object sender, KeyPressEventArgs keyPressEventArgs)
+	    {
+	        if (_currentVisibleControl != null) _currentVisibleControl.Visible = false;
+
+	        string searchfor;
+	        if (keyPressEventArgs.KeyChar != '\b')
+	        {
+	            searchfor = textBox1.Text + keyPressEventArgs.KeyChar;
+	        }
+	        else if (textBox1.TextLength == 0)
+	        {
+	            MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
+	            return;
+	        }
+	        else
+	        {
+	            searchfor = textBox1.Text.Substring(0, textBox1.TextLength - 1);
+	        }
+
+
+	        List<OptionRenderItem> hits = _searchList
+	            .Where(x => x.SearchStrings().Any(y => y.Contains(searchfor)))
+	            .Select<OptionItem, OptionRenderItem>(x => x)
+	            .ToList();
+
+	        if (hits.Count > 0)
+	        {
+	            _searchControl.Value.SetContents(hits);
+
+
+	            _currentVisibleControl = _searchControl.Value;
+	            _currentVisibleControl.Visible = true;
+	        }
+	        else
+	        {
+	            _currentVisibleControl = _searchControl.Value;
+	        }
 	    }
 
 	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionItem> tree)

@@ -6,12 +6,12 @@ namespace Chummer.Backend.Options
     {
         public IReadOnlyCollection<OptionItem> Children { get; }
 
-        OptionProxyCollection(params OptionItem[] children) : this("", children)
+        OptionProxyCollection(params OptionItem[] children) : this("", "", children)
         {
 
         }
 
-        OptionProxyCollection(string displayName, params OptionItem[] children) : base(displayName)
+        OptionProxyCollection(string displayName, string category, params OptionItem[] children) : base(displayName, category)
         {
             Children = children;
         }

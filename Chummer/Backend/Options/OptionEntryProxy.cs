@@ -20,7 +20,7 @@ namespace Chummer.Backend.Options
         private List<OptionEntryProxy> _dependantProperties;
 
         public OptionEntryProxy([NotNull] object targetObject, [NotNull] PropertyInfo targetProperty, string displayString = null,
-            string toolTip = null) : base(displayString)
+            string category = null, string toolTip = null) : base(displayString, category)
         {
             if (targetObject == null) throw new ArgumentNullException(nameof(targetObject));
             if (targetProperty == null) throw new ArgumentNullException(nameof(targetProperty));
@@ -80,6 +80,15 @@ namespace Chummer.Backend.Options
                 _enabledCached = newEnabledValue;
                 OnPropertyChanged(nameof(Enabled));
             }
+        }
+
+        public override IEnumerable<string> SearchStrings()
+        {
+            foreach (string s in base.SearchStrings())
+            {
+                yield return s;
+            }
+            if(ToolTip != null) yield return ToolTip;
         }
     }
 }

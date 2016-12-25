@@ -34,6 +34,7 @@ namespace Chummer.UI.Options
 
         public void SetContents(List<OptionRenderItem> contents)
         {
+            Controls.Clear();
             //TODO: Better support for any RenderItems that isnt EntryProxy
 
             List<OptionItem> entries = contents.OfType<OptionItem>().ToList();
