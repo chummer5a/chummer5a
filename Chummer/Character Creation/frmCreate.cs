@@ -19300,20 +19300,20 @@ namespace Chummer
 			}
 
 			// if positive points > 25
-			if (intPositivePointsUsed > _objCharacter.MaxKarma && !_objOptions.ExceedPositiveQualities)
+			if (intPositivePointsUsed > _objCharacter.GameplayOptionQualityLimit && !_objOptions.ExceedPositiveQualities)
 			{
 				strMessage += "\n\t" +
 							  LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
-								  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+								  .Replace("{0}", (_objCharacter.GameplayOptionQualityLimit).ToString());
 				blnValid = false;
 			}
 
 			// if negative points > 25
-			if (intNegativePoints < (_objCharacter.MaxKarma * -1) && !_objOptions.ExceedNegativeQualities)
+			if (intNegativePoints < (_objCharacter.GameplayOptionQualityLimit * -1) && !_objOptions.ExceedNegativeQualities)
 			{
 				strMessage += "\n\t" +
 							  LanguageManager.Instance.GetString("Message_NegativeQualityLimit")
-								  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+								  .Replace("{0}", (_objCharacter.GameplayOptionQualityLimit).ToString());
 				blnValid = false;
 			}
 
