@@ -15,6 +15,7 @@ Application Changes:
 - Added support for critter powers to cost karma.
 - Renaming an item will now prepopulate the current name. 
 - Added proper quantity listings for child items attached to gear, such as ammo in a duffel bag. 
+- Fixed an issue with checking character quality limits in Karmagen. 
 
 Data Changes: 
 
