@@ -4291,7 +4291,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Smartgun System, Internal</name></accessory>
@@ -4325,11 +4324,13 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
 				<accessory><name>Laser Sight</name></accessory>
+        <accessory>
+          <name>Electronic Firing</name>
+        </accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>8</page>
@@ -4357,7 +4358,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -4415,7 +4415,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4448,7 +4447,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -4479,7 +4477,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4514,7 +4511,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4547,7 +4543,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Laser Sight</name></accessory>
@@ -4578,7 +4573,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -6209,6 +6203,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -6239,7 +6234,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -6275,7 +6269,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -6305,6 +6298,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -6359,6 +6353,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Stock</name></accessory>
@@ -6388,6 +6383,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -6418,6 +6414,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Smartgun System, Internal</name></accessory>
@@ -6447,6 +6444,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Smartgun System, Internal</name></accessory>
@@ -6478,7 +6476,6 @@
 				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
-				<mount>Under</mount>
 			</accessorymounts>
 			<source>GH3</source>
 			<page>10</page>
@@ -6504,6 +6501,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -6533,6 +6531,7 @@
 				<mount>Top</mount>
 				<mount>Stock</mount>
 				<mount>Side</mount>
+        <mount>Internal</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>

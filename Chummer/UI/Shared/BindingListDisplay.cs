@@ -201,7 +201,10 @@ namespace Chummer.UI.Shared
 			_visibleFilter = predicate;
 
 			ClearAllCache();
-			pnlDisplay.Height = _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
+		    if (_contentList.Count > 0)
+		    {
+		        pnlDisplay.Height = _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
+		    }
 			LoadScreenContent();
 		}
 

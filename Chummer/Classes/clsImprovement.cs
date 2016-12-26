@@ -177,8 +177,9 @@ namespace Chummer
 			Ambidextrous,
 	        UnarmedReach,
 			SkillSpecialization,
-            AIProgram
-		}
+            AIProgram,
+            CritterPowerLevel
+        }
 
         public enum ImprovementSource
         {

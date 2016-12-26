@@ -1889,13 +1889,25 @@ namespace Chummer
 					{
 						blnFound = true;
 						break;
-					}
-				}
+                    }
+                    if (objNode["oneof"].Cast<XmlNode>().Where(objRequiredNode => objRequiredNode.Name == "power").Any(objRequiredNode => _objCharacter.Powers.Any(objPower => objPower.Name == objRequiredNode.InnerText)))
+                    {
+                        blnFound = true;
+                        break;
+                    }
+                }
 			}
 			if (blnFound)
 			{
-				intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
-			}
+			    if (Type == QualityType.Positive)
+			    {
+			        intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
+			    }
+                else if (Type == QualityType.Negative)
+                {
+                    intReturn -= Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
+                }
+            }
 			return intReturn;
 		}
 		#endregion
@@ -7617,13 +7629,15 @@ namespace Chummer
 		private string _strExtra = "";
 		private string _strSource = "";
 		private string _strPage = "";
+	    private int _intKarma = 0;
 		private double _dblPowerPoints = 0.0;
 		private XmlNode _nodBonus;
 		private string _strNotes = "";
 		private readonly Character _objCharacter;
 		private bool _blnCountTowardsLimit = true;
+	    private int _intRating;
 
-		#region Constructor, Create, Save, Load, and Print Methods
+	    #region Constructor, Create, Save, Load, and Print Methods
 		public CritterPower(Character objCharacter)
 		{
 			// Create the GUID for the new Power.
@@ -7647,6 +7661,8 @@ namespace Chummer
 			_strDuration = objXmlPowerNode["duration"].InnerText;
 			_strSource = objXmlPowerNode["source"].InnerText;
 			_strPage = objXmlPowerNode["page"].InnerText;
+		    _intRating = intRating;
+		    objXmlPowerNode.TryGetField("karma", out _intKarma);
 			_nodBonus = objXmlPowerNode["bonus"];
 
 			// Create the TreeNode for the new item.
@@ -7684,14 +7700,16 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("category", _strCategory);
+            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("type", _strType);
 			objWriter.WriteElementString("action", _strAction);
 			objWriter.WriteElementString("range", _strRange);
 			objWriter.WriteElementString("duration", _strDuration);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.Instance.CultureInfo));
+            objWriter.WriteElementString("karma", _intKarma.ToString());
+            objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.Instance.CultureInfo));
 			objWriter.WriteElementString("counttowardslimit", _blnCountTowardsLimit.ToString());
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
@@ -7718,28 +7736,10 @@ namespace Chummer
 			_strDuration = objNode["duration"].InnerText;
 			_strSource = objNode["source"].InnerText;
 			_strPage = objNode["page"].InnerText;
-			try
-			{
-				_dblPowerPoints = Convert.ToDouble(objNode["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnCountTowardsLimit = Convert.ToBoolean(objNode["counttowardslimit"].InnerText);
-			}
-			catch
-			{
-			}
+		    objNode.TryGetField("points", out _dblPowerPoints);
+		    objNode.TryGetField("counttowardslimit", out _blnCountTowardsLimit);
 			_nodBonus = objNode["bonus"];
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetField("notes", out _strNotes);
 		}
 
 		/// <summary>
@@ -7775,6 +7775,33 @@ namespace Chummer
 				return _guiID.ToString();
 			}
 		}
+
+        /// <summary>
+        /// Paid levels of the power. 
+        /// </summary>
+	    public int Rating
+	    {
+	        get { return _intRating; }
+	        set
+	        {
+	            if (Extra == Rating.ToString())
+	            {
+	                Extra = value.ToString();
+	            }
+	            _intRating = value;
+	        }
+	    }
+
+        /// <summary>
+        /// Total rating of the power, including any bonus levels from Improvements.
+        /// </summary>
+	    public int TotalRating
+	    {
+	        get
+	        {
+	            return _intRating + _objCharacter.Improvements.Where(objImprovement => objImprovement.ImprovedName == Name && objImprovement.ImproveType == Improvement.ImprovementType.CritterPowerLevel && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
+	        }
+	    }
 
 		/// <summary>
 		/// Power's name.
@@ -8170,6 +8197,15 @@ namespace Chummer
 				_blnCountTowardsLimit = value;
 			}
 		}
+
+        /// <summary>
+        /// Karma that the Critter must pay to take the power.
+        /// </summary>
+	    public int Karma
+	    {
+	        get { return _intKarma; }
+	        set { _intKarma = value; }
+	    }
 		#endregion
 	}
 

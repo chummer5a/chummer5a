@@ -3580,6 +3580,15 @@
 			<rating>3</rating>
 			<ess>3.2 + Rating</ess>
 			<capacity>0</capacity>
+      <bonus>
+        <initiative precedence="0">FixedValues(3,6,9)</initiative>
+        <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
+        <skillwire>Rating * 2</skillwire>
+        <specificattribute>
+          <name precedence="0">REA</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
 			<avail>FixedValues(15R,21R,28R)</avail>
 			<cost>FixedValues(45000,135000,220000)</cost>
 			<source>HS</source>

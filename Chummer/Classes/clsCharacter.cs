@@ -5786,6 +5786,7 @@ namespace Chummer
 					if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
 					{
 						blnCustomFit = (objArmor.Category == "High-Fashion Armor Clothing");
+					    intHighest = objArmor.TotalArmor;
 						strHighest = objArmor.Name;
 					}
 				}

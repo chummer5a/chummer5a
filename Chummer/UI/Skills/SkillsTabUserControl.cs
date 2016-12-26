@@ -215,8 +215,12 @@ namespace Chummer.UI.Skills
 				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
 					skill => skill.Pool > 0),
 				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
-					skill => skill.Rating == 0)
-			};
+					skill => skill.Rating == 0),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterNoSkillGroup"),
+                    skill => skill.SkillGroup.Length == 0),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterBrokenSkillGroup"),
+                    skill => skill.Pool > 0 && (skill.SkillGroup.Length == 0 || skill.SkillGroupObject != null && skill.Rating > skill.SkillGroupObject.Rating))
+            };
 			//TODO: TRANSLATIONS
 
 

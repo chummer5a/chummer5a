@@ -165,15 +165,48 @@ namespace Chummer
 				}
 			}
 
-			SortListItem objSort = new SortListItem();
-			_lstCategory.Sort(objSort.Compare);
-			cboCategory.DataSource = null;
-			cboCategory.ValueMember = "Value";
-			cboCategory.DisplayMember = "Name";
-			cboCategory.DataSource = _lstCategory;
+		    bool blnIsDrake = false;
+		    foreach (Quality objQuality in _objCharacter.Qualities)
+		    {
+		        if (objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
+		            objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)")
+		        {
+		            blnIsDrake = true;
+		        }
+		    }
 
-			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+		    if (!blnIsDrake)
+		    {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value != "Drake")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
+		    SortListItem objSort = new SortListItem();
+		    _lstCategory.Sort(objSort.Compare);
+		    cboCategory.DataSource = null;
+		    cboCategory.ValueMember = "Value";
+		    cboCategory.DisplayMember = "Name";
+		    cboCategory.DataSource = _lstCategory;
+
+            if (blnIsDrake)
+            {
+                foreach (ListItem objItem in cboCategory.Items)
+                {
+                    if (objItem.Value == "Drake")
+                    {
+                        cboCategory.SelectedItem = objItem;
+                        cboCategory.Enabled = false;
+                        break;
+                    }
+                }
+            }
+            // Select the first Category in the list.
+            if (_strSelectCategory == "")
 				cboCategory.SelectedIndex = 0;
 			else
 			{
@@ -208,7 +241,7 @@ namespace Chummer
 			{
 				if (trePowers.SelectedNode.Tag.ToString() != "")
 				{
-					XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + trePowers.SelectedNode.Tag + "\"]");
+					XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + trePowers.SelectedNode.Tag + "\"]");
 					lblCritterPowerCategory.Text = objXmlPower["category"].InnerText;
 
 					switch (objXmlPower["type"].InnerText)
@@ -280,10 +313,9 @@ namespace Chummer
 
 					tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 
-					if (objXmlPower["rating"] != null)
-						nudCritterPowerRating.Enabled = true;
-					else
-						nudCritterPowerRating.Enabled = false;
+					nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
+                    
+				    lblKarma.Text = objXmlPower["karma"] != null ? objXmlPower["karma"]?.InnerText : "0";
 
 					// If the character is a Free Spirit, populate the Power Points Cost as well.
 					if (_objCharacter.Metatype == "Free Spirit")
@@ -313,11 +345,8 @@ namespace Chummer
 				foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[toxic = \"yes\"]"))
 				{
 					TreeNode objNode = new TreeNode();
-					objNode.Tag = objXmlPower["name"].InnerText;
-					if (objXmlPower["translate"] != null)
-						objNode.Text = objXmlPower["translate"].InnerText;
-					else
-						objNode.Text = objXmlPower["name"].InnerText;
+					objNode.Tag = objXmlPower["id"].InnerText;
+					objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 					trePowers.Nodes.Add(objNode);
 				}
 			}
@@ -327,11 +356,8 @@ namespace Chummer
 				foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"Weakness\"]"))
 				{
 					TreeNode objNode = new TreeNode();
-					objNode.Tag = objXmlPower["name"].InnerText;
-					if (objXmlPower["translate"] != null)
-						objNode.Text = objXmlPower["translate"].InnerText;
-					else
-						objNode.Text = objXmlPower["name"].InnerText;
+					objNode.Tag = objXmlPower["id"].InnerText;
+					objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 					trePowers.Nodes.Add(objNode);
 				}
 			}
@@ -344,11 +370,8 @@ namespace Chummer
 					{
 						XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\"]");
 						TreeNode objNode = new TreeNode();
-						objNode.Tag = objXmlPower["name"].InnerText;
-						if (objXmlPower["translate"] != null)
-							objNode.Text = objXmlPower["translate"].InnerText;
-						else
-							objNode.Text = objXmlPower["name"].InnerText;
+						objNode.Tag = objXmlPower["id"].InnerText;
+						objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 						trePowers.Nodes.Add(objNode);
 					}
 
@@ -386,11 +409,8 @@ namespace Chummer
 						{
 							XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\"]");
 							TreeNode objNode = new TreeNode();
-							objNode.Tag = objXmlPower["name"].InnerText;
-							if (objXmlPower["translate"] != null)
-								objNode.Text = objXmlPower["translate"].InnerText;
-							else
-								objNode.Text = objXmlPower["name"].InnerText;
+							objNode.Tag = objXmlPower["id"].InnerText;
+							objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 							trePowers.Nodes.Add(objNode);
 
 							// If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
@@ -411,31 +431,18 @@ namespace Chummer
 										XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\"]");
 										TreeNode objPossessionNode = new TreeNode();
 										objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
-										if (objXmlPower["translate"] != null)
-											objPossessionNode.Text = objXmlPossessionPower["translate"].InnerText;
-										else
-											objPossessionNode.Text = objXmlPossessionPower["name"].InnerText;
+										objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
 										trePowers.Nodes.Add(objPossessionNode);
 									}
 
-									blnFound = false;
-									foreach (TreeNode objCheckNode in trePowers.Nodes)
-									{
-										if (objCheckNode.Tag.ToString() == "Inhabitation")
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
+								    blnFound = trePowers.Nodes.Cast<TreeNode>().Any(objCheckNode => objCheckNode.Tag.ToString() == "Inhabitation");
+
+								    if (!blnFound)
 									{
 										XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
 										TreeNode objPossessionNode = new TreeNode();
 										objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
-										if (objXmlPower["translate"] != null)
-											objPossessionNode.Text = objXmlPossessionPower["translate"].InnerText;
-										else
-											objPossessionNode.Text = objXmlPossessionPower["name"].InnerText;
+										objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
 										trePowers.Nodes.Add(objPossessionNode);
 									}
 								}
@@ -448,11 +455,8 @@ namespace Chummer
 					foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"" + cboCategory.SelectedValue + "\"]"))
 					{
 						TreeNode objNode = new TreeNode();
-						objNode.Tag = objXmlPower["name"].InnerText;
-						if (objXmlPower["translate"] != null)
-							objNode.Text = objXmlPower["translate"].InnerText;
-						else
-							objNode.Text = objXmlPower["name"].InnerText;
+						objNode.Tag = objXmlPower["id"].InnerText;
+						objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 						trePowers.Nodes.Add(objNode);
 					}
 				}

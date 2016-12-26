@@ -6835,7 +6835,7 @@ namespace Chummer
                 return;
 
             objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickCritterPower.SelectedPower + "\"]");
+            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickCritterPower.SelectedPower + "\"]");
             TreeNode objNode = new TreeNode();
             CritterPower objPower = new CritterPower(_objCharacter);
             objPower.Create(objXmlPower, _objCharacter, objNode, frmPickCritterPower.SelectedRating);
@@ -8917,6 +8917,7 @@ namespace Chummer
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_WeaponName");
+            frmPickText.DefaultString = objWeapon.WeaponName;
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -8952,6 +8953,7 @@ namespace Chummer
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_GearName");
+            frmPickText.DefaultString = objGear.GearName;
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -10056,6 +10058,8 @@ namespace Chummer
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_VehicleName");
+            frmPickText.DefaultString = objVehicle.VehicleName;
+
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -10180,6 +10184,7 @@ namespace Chummer
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_ArmorName");
+            frmPickText.DefaultString = objArmor.ArmorName;
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -10233,6 +10238,7 @@ namespace Chummer
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_LifestyleName");
+            frmPickText.DefaultString = objLifestyle.LifestyleName;
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -14599,7 +14605,7 @@ namespace Chummer
                 //Don't care about free contacts
                 if (objContactControl.ContactObject.Free) continue;
 
-	            if (objContactControl.ContactObject.Connection >= 8 && _objCharacter.FriendsInHighPlaces)
+                if (objContactControl.ContactObject.Connection >= 8 && _objCharacter.FriendsInHighPlaces)
 	            {
 		            intHighPlacesFriends += (objContactControl.ContactObject.Connection +
 		                                    objContactControl.ContactObject.Loyalty);
@@ -15058,6 +15064,12 @@ namespace Chummer
             intKarmaPointsRemain -= intInitiationPoints;
             lblInitiationBP.Text = string.Format("{0} " + strPoints, intInitiationPoints.ToString());
             intFreestyleBP += intInitiationPoints;
+            
+            // Add the Karma cost of any Critter Powers.
+            foreach (CritterPower objPower in _objCharacter.CritterPowers)
+            {
+                intKarmaPointsRemain -= objPower.Karma;
+            }
 
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.

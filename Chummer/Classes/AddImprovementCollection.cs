@@ -3938,9 +3938,23 @@ namespace Chummer.Classes
 				objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
 				_objCharacter.CritterPowers.Add(objPower);
 			}
-		}
+        }
 
-		public void publicawareness(XmlNode bonusNode)
+        // Check for Adept Power Points.
+        public void critterpowerlevels(XmlNode bonusNode)
+        {
+            foreach (XmlNode objXmlPower in bonusNode.SelectNodes("power"))
+            {
+                Log.Info("critterpowerlevels");
+                Log.Info("critterpowerlevels = " + bonusNode.OuterXml.ToString());
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(objXmlPower["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPowerLevel,
+                    "",
+                    ValueToInt(objXmlPower["val"].InnerText, _intRating));
+            }
+        }
+
+        public void publicawareness(XmlNode bonusNode)
 		{
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
 				ValueToInt(bonusNode.InnerText, 1));

@@ -6721,7 +6721,7 @@ namespace Chummer
 				return;
 
 			objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickCritterPower.SelectedPower + "\"]");
+			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickCritterPower.SelectedPower + "\"]");
 			TreeNode objNode = new TreeNode();
 			CritterPower objPower = new CritterPower(_objCharacter);
 			objPower.Create(objXmlPower, _objCharacter, objNode, frmPickCritterPower.SelectedRating);
@@ -6742,7 +6742,16 @@ namespace Chummer
 				treCritterPowers.Nodes[1].Nodes.Add(objNode);
 				treCritterPowers.Nodes[1].Expand();
 			}
+		    if (objPower.Karma > 0)
+		    {
+                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                objExpense.Create(objPower.Karma * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseCritterPower") + " " + objPower.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                _objCharacter.ExpenseEntries.Add(objExpense);
 
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
+                objExpense.Undo = objUndo;
+            }
 			// Determine if the Critter should have access to the Possession menu item.
 			bool blnAllowPossession = false;
 			foreach (CritterPower objCritterPower in _objCharacter.CritterPowers)
@@ -11767,7 +11776,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_WeaponName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objWeapon.WeaponName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -11802,7 +11812,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_GearName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objGear.GearName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -12566,6 +12577,13 @@ namespace Chummer
 				case KarmaExpenseType.ManualSubtract:
 				case KarmaExpenseType.QuickeningMetamagic:
 					break;
+                case KarmaExpenseType.AddCritterPower:
+                    foreach (CritterPower objPower in _objCharacter.CritterPowers.Where(objPower => objPower.InternalId == objEntry.Undo.ObjectId))
+                    {
+                        _objCharacter.CritterPowers.Remove(objPower);
+                    }
+			        break;
+
 			}
 			// Refund the Karma amount and remove the Expense Entry.
 			_objCharacter.Karma -= objEntry.Amount;
@@ -14361,7 +14379,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_VehicleName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objVehicle.VehicleName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -14529,7 +14548,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_ArmorName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objArmor.ArmorName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;
@@ -14585,7 +14605,8 @@ namespace Chummer
 
 			frmSelectText frmPickText = new frmSelectText();
 			frmPickText.Description = LanguageManager.Instance.GetString("String_LifestyleName");
-			frmPickText.ShowDialog(this);
+            frmPickText.DefaultString = objLifestyle.LifestyleName;
+            frmPickText.ShowDialog(this);
 
 			if (frmPickText.DialogResult == DialogResult.Cancel)
 				return;

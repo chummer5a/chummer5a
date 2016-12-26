@@ -53,9 +53,7 @@ namespace Chummer
 
 		private void frmSelectText_Shown(object sender, EventArgs e)
 		{
-			// If the field is pre-populated, immediately click OK.
-			if (txtValue.Text != "")
-				cmdOK_Click(sender, e);
+		    txtValue.Text = DefaultString;
 		}		
 		#endregion
 
@@ -87,6 +85,7 @@ namespace Chummer
         }
 
 		public bool PreventXPathErrors { get; internal set; }
-		#endregion
-	}
+        public string DefaultString { get; internal set; }
+        #endregion
+    }
 }
