@@ -6936,6 +6936,7 @@
 				<oneof>
 					<quality>Feathers</quality>
 					<quality>Scales</quality>
+					<quality>Unusual Hair</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -7079,6 +7080,11 @@
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
+			<forbidden>
+				<oneof>
+					<quality>Mood Hair</quality>
+				</oneof>
+			</forbidden>
 			<source>RF</source>
 			<page>122</page>
 			<metagenetic>yes</metagenetic>
