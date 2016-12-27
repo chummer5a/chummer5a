@@ -40,8 +40,16 @@ namespace Chummer
 
 	public class SourcebookInfo
 	{
+	    public SourcebookInfo(string code,string name)
+	    {
+	        Name = name;  //TODO: Localize
+	        Code = code;
+	    }
+
 	    #region Properties
-		public string Code { get; set; } = "";
+	    public string Name { get; }
+
+		public string Code { get; }
 
 	    public string Path { get; set; } = "";
 

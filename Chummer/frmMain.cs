@@ -568,7 +568,7 @@ namespace Chummer
 			{
 				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 				{
-					frmOptions frmOptions = new frmOptions();
+					frmNewOptions frmOptions = new frmNewOptions();
 					frmOptions.ShowDialog();
 				}
 			}

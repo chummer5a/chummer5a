@@ -26,20 +26,19 @@ namespace Chummer.Backend.Options
         {
             SimpleTree<OptionItem> root = new SimpleTree<OptionItem> {Tag = "root"};
 
-            DictionaryList<string, PropertyInfo> propertiesDisplayPath = new DictionaryList<string, PropertyInfo>();
-            Dictionary<string, OptionEntryProxy> proxies = new Dictionary<string, OptionEntryProxy>();
-            Dictionary<PropertyInfo, OptionConstaint> constaints =
-                new Dictionary<PropertyInfo, OptionConstaint>();
 
-            string currentName = "";
+            Dictionary<string, OptionEntryProxy> proxies = new Dictionary<string, OptionEntryProxy>();
+
+
+
             SimpleTree<OptionEntryProxy> parentTree;
             string[] npath;
 
+            DictionaryList<string, PropertyInfo> propertiesDisplayPath = new DictionaryList<string, PropertyInfo>();
+            Dictionary<PropertyInfo, OptionConstaint> constaints =
+                new Dictionary<PropertyInfo, OptionConstaint>();
             OptionConstaint currentConstaint = null;
-
-            //BAD JOHANNES: what did we say about logic in forms?
-            //to be fair, rest of code is winform specific too
-
+            string currentName = "";
             //Collect all properties in groups based on their option path
             foreach (PropertyInfo info in target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
@@ -101,6 +100,31 @@ namespace Chummer.Backend.Options
             SetupConstraints(constaints, proxies);
 
             return root;
+        }
+
+        public List<OptionItem> BookOptions(CharacterOptions characterOptions, GlobalOptions globalOptions)
+        {
+            List<OptionDictionaryEntryProxy<string, bool>> options = characterOptions
+                .Books.Keys
+                .Select(bookKey => new OptionDictionaryEntryProxy<string, bool>("Books", characterOptions.Books, bookKey))
+                .ToList();
+
+            List<OptionItem> opt = new List<OptionItem>();
+
+            foreach (OptionDictionaryEntryProxy<string,bool> bookProxy in options)
+            {
+                SourcebookInfo info = globalOptions.SourcebookInfo.First(x => x.Code == bookProxy.Key);
+                List<OptionItem> children = new List<OptionItem>
+                {
+                    bookProxy
+                };
+
+
+                children.AddRange(typeof(SourcebookInfo).GetProperties().Select(x => new OptionEntryProxy(info, x)));
+                opt.Add(new OptionGroup("", "Books", "BOOKALLSETTINGS", children));
+            }
+
+            return opt;
         }
 
         private void SetupConstraints(Dictionary<PropertyInfo, OptionConstaint> constaints, Dictionary<string, OptionEntryProxy> proxies)

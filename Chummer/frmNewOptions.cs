@@ -62,6 +62,7 @@ namespace Chummer
 
 
 	        _searchList = _rawTree.DepthFirstEnumerator().ToList();
+	        _searchList.AddRange(extactor.BookOptions(o, GlobalOptions.Instance));
 	        textBox1.KeyPress += SearchBoxChanged;
 
 	        _searchControl = new Lazy<OptionRender>(() =>

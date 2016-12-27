@@ -255,10 +255,11 @@ namespace Chummer
             {
                 try
                 {
-                    SourcebookInfo objSource = new SourcebookInfo();
+                    //TODO: paths in less insane way (aka maybe nested stuff instead of lists from different sources staying in sync?
                     string strTemp = "|0"; //Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook").GetValue(objXmlBook["code"].InnerText).ToString();
                     string[] strParts = strTemp.Split('|');
-                    objSource.Code = objXmlBook["code"].InnerText;
+                    SourcebookInfo objSource = new SourcebookInfo(objXmlBook["code"].InnerText, objXmlBook["name"].InnerText); //TODO: Localize
+
                     objSource.Path = strParts[0];
                     objSource.Offset = Convert.ToInt32(strParts[1]);
 
