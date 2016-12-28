@@ -9637,6 +9637,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+          <metatype>Human</metatype>
 					<metatypecategory>Metasapient</metatypecategory>
 					<metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -9892,6 +9893,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+          <metatype>Human</metatype>
 					<metatypecategory>Metasapient</metatypecategory>
 					<metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Magic Resistance (Rating 1)</quality>
