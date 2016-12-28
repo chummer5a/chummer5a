@@ -17,8 +17,9 @@ Application Changes:
 - Added proper quantity listings for child items attached to gear, such as ammo in a duffel bag. 
 - Fixed an issue with checking character quality limits in Karmagen. 
 - Altered the LanguageManager GetString method to return the key string in case of failure. Should assist with troubleshooting language faults without causing hard crashes.
+- Added the ability for characters to have multiple mugshots.
 
-Data Changes: 
+Data Changes:
 
 - Added missing SpellCategory improvements for the various Spellcasting foci. 
 - Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
@@ -28,15 +29,17 @@ Data Changes:
 - Added a missing detonator cap gear item.
 - Added missing restrictions for the Vampire and Sukuyan infected qualities. 
 
- Sheet Changes: 
+Sheet Changes:
 
 - Added proper quantity listings for child items attached to gear in the basic Shadowrun character sheets. 
+- Added a section to the basic Shadowrun and Fancy Blocks character sheets for additional mugshots.
 
 New Strings: 
 
 - String_SkillFilterNoSkillGroup
 - String_SkillFilterBrokenSkillGroup
 - String_ExpensePurchaseCritterPower
+- Label_MugshotDimensions
 
 Build 189
 

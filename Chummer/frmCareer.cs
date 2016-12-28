@@ -203,17 +203,22 @@ namespace Chummer
 			}
 
 			// If the character has a mugshot, decode it and put it in the PictureBox.
-			if (_objCharacter.Mugshot != "")
+			if (_objCharacter.Mugshots.Count > 0)
 			{
-				byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshot);
-				MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length);
-				objStream.Write(bytImage, 0, bytImage.Length);
-				Image imgMugshot = Image.FromStream(objStream, true);
-				picMugshot.Image = imgMugshot;
-			}
+                nudMugshotIndex.Minimum = 1;
+                nudMugshotIndex.Maximum = _objCharacter.Mugshots.Count;
+                nudMugshotIndex.Value = _objCharacter.MainMugshotIndex + 1;
+            }
+            else
+            {
+                nudMugshotIndex.Minimum = 0;
+                nudMugshotIndex.Maximum = 0;
+                nudMugshotIndex.Value = 0;
+            }
+            lblNumMugshots.Text = "/ " + _objCharacter.Mugshots.Count.ToString();
 
-			// Populate character information fields.
-			XmlDocument objMetatypeDoc = new XmlDocument();
+            // Populate character information fields.
+            XmlDocument objMetatypeDoc = new XmlDocument();
 			XmlNode objMetatypeNode;
 			string strMetatype = "";
 			string strBook = "";
@@ -2480,7 +2485,7 @@ namespace Chummer
 				objMerge.BurntStreetCred = objVessel.BurntStreetCred;
 				objMerge.Notoriety = objVessel.Notoriety;
 				objMerge.PublicAwareness = objVessel.PublicAwareness;
-				objMerge.Mugshot = objVessel.Mugshot;
+				objMerge.Mugshots = objVessel.Mugshots;
 
 				// Now that everything is done, save the merged character and open them.
 				SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -6273,19 +6278,102 @@ namespace Chummer
 
 		private void cmdAddMugshot_Click(object sender, EventArgs e)
 		{
-			_blnIsDirty = AddMugshot(picMugshot);
-			UpdateWindowTitle();
-		}
+            _blnIsDirty = AddMugshot(picMugshot);
+            if (_blnIsDirty)
+            {
+                lblNumMugshots.Text = "/ " + _objCharacter.Mugshots.Count.ToString();
+                nudMugshotIndex.Maximum += 1;
+                nudMugshotIndex.Value = _objCharacter.Mugshots.Count;
+            }
+            UpdateWindowTitle();
+        }
 
 		private void cmdDeleteMugshot_Click(object sender, EventArgs e)
 		{
-			_objCharacter.Mugshot = "";
-			picMugshot.Image = null;
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
+            if (_objCharacter.Mugshots.Count > 0)
+            {
+                RemoveMugshot(Convert.ToInt32(nudMugshotIndex.Value) - 1);
 
-		private void cmdAddMetamagic_Click(object sender, EventArgs e)
+                lblNumMugshots.Text = "/ " + _objCharacter.Mugshots.Count.ToString();
+                nudMugshotIndex.Maximum -= 1;
+                if (nudMugshotIndex.Value > nudMugshotIndex.Maximum)
+                    nudMugshotIndex.Value = nudMugshotIndex.Maximum;
+                else
+                {
+                    if (Convert.ToInt32(nudMugshotIndex.Value) - 1 == _objCharacter.MainMugshotIndex)
+                        chkIsMainMugshot.Checked = true;
+                    else if (chkIsMainMugshot.Checked == true)
+                        chkIsMainMugshot.Checked = false;
+
+                    UpdateMugshot(picMugshot, Convert.ToInt32(nudMugshotIndex.Value) - 1);
+                }
+
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
+        }
+
+
+        private void nudMugshotIndex_ValueChanged(object sender, EventArgs e)
+        {
+            if (_objCharacter.Mugshots.Count == 0)
+            {
+                nudMugshotIndex.Minimum = 0;
+                nudMugshotIndex.Maximum = 0;
+                nudMugshotIndex.Value = 0;
+            }
+            else
+            {
+                nudMugshotIndex.Minimum = 1;
+                if (nudMugshotIndex.Value < nudMugshotIndex.Minimum)
+                    nudMugshotIndex.Value = nudMugshotIndex.Maximum;
+                else if (nudMugshotIndex.Value > nudMugshotIndex.Maximum)
+                    nudMugshotIndex.Value = nudMugshotIndex.Minimum;
+            }
+
+            if (Convert.ToInt32(nudMugshotIndex.Value) - 1 == _objCharacter.MainMugshotIndex)
+                chkIsMainMugshot.Checked = true;
+            else if (chkIsMainMugshot.Checked == true)
+                chkIsMainMugshot.Checked = false;
+
+            UpdateMugshot(picMugshot, Convert.ToInt32(nudMugshotIndex.Value) - 1);
+        }
+
+        private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
+        {
+            bool blnStatusChanged = false;
+            if (chkIsMainMugshot.Checked == true && _objCharacter.MainMugshotIndex != Convert.ToInt32(nudMugshotIndex.Value) - 1)
+            {
+                _objCharacter.MainMugshotIndex = Convert.ToInt32(nudMugshotIndex.Value) - 1;
+                blnStatusChanged = true;
+            }
+            else if (chkIsMainMugshot.Checked == true && Convert.ToInt32(nudMugshotIndex.Value) - 1 == _objCharacter.MainMugshotIndex)
+            {
+                if (_objCharacter.MainMugshotIndex == 0)
+                {
+                    if (_objCharacter.Mugshots.Count > 1)
+                    {
+                        _objCharacter.MainMugshotIndex = 1;
+                        blnStatusChanged = true;
+                    }
+                    else
+                        chkIsMainMugshot.Checked = true;
+                }
+                else
+                {
+                    _objCharacter.MainMugshotIndex = 0;
+                    blnStatusChanged = true;
+                }
+            }
+
+            if (blnStatusChanged)
+            {
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
+        }
+
+        private void cmdAddMetamagic_Click(object sender, EventArgs e)
 		{
             if (_objCharacter.MAGEnabled)
             {

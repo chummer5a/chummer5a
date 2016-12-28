@@ -509,21 +509,19 @@ namespace Chummer
 
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				MemoryStream objStream = new MemoryStream();
 				// Convert the image to a string usinb Base64.
 				try
 				{
-					Image imgMugshot = new Bitmap(openFileDialog.FileName);
-					imgMugshot.Save(objStream, imgMugshot.RawFormat);
+                    _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
+
+                    Image imgMugshot = new Bitmap(openFileDialog.FileName, true);
+                    MemoryStream objStream = new MemoryStream();
+                    imgMugshot.Save(objStream, imgMugshot.RawFormat);
 					string strResult = Convert.ToBase64String(objStream.ToArray());
+                    objStream.Close();
 
-					_objCharacter.Mugshot = strResult;
-					picMugshot.Image = imgMugshot;
-
-					objStream.Close();
-
-					_objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				}
+                    _objCharacter.Mugshots.Add(strResult);
+                }
 				catch
 				{
 					blnSuccess = false;
@@ -531,5 +529,63 @@ namespace Chummer
 			}
 			return blnSuccess;
 		}
-	}
+
+        /// <summary>
+		/// Update the mugshot info of a character.
+		/// </summary>
+		/// <param name="picMugshot"></param>
+		protected bool UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
+        {
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count)
+            {
+                picMugshot.Image = null;
+                return false;
+            }
+
+            try
+            {
+                byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots.ElementAt(intCurrentMugshotIndexInList));
+                MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+                objImageStream.Write(bytImage, 0, bytImage.Length);
+                Image imgMugshot = Image.FromStream(objImageStream, true);
+                objImageStream.Close();
+
+                picMugshot.Image = imgMugshot;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+		/// Remove a mugshot of a character.
+		/// </summary>
+		/// <param name="picMugshot"></param>
+		protected void RemoveMugshot(int intCurrentMugshotIndexInList)
+        {
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count)
+            {
+                return;
+            }
+
+            try
+            {
+                _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
+                if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
+                {
+                    _objCharacter.MainMugshotIndex = 0;
+                }
+                else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
+                {
+                    _objCharacter.MainMugshotIndex -= 1;
+                }
+            }
+            catch
+            {
+            }
+        }
+    }
 }

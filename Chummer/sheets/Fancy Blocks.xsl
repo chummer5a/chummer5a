@@ -459,9 +459,9 @@
 	<xsl:template name="print_mugshot_and_priorities">
 		<table class="stats general">
 			<tr><td colspan="2"><div class="bigheader">[Mugshot]</div></td></tr>
-			<tr><td colspan="2">
-				<xsl:if test="mugshot != ''">
-					<img src="data:image/png;base64,{mugshotbase64}" />
+			<tr><td colspan="2" style="text-align:center;">
+				<xsl:if test="mainmugshotbase64 != ''">
+					<img src="data:image/png;base64,{mainmugshotbase64}" />
 				</xsl:if>
 			</td></tr>
 			<xsl:if test="prioritymetatype != ''">
@@ -1860,6 +1860,79 @@
 			</table>
 			<br />
 		</xsl:if>
+    <xsl:if test="hasothermugshots = 'yes'">
+      <table class="stats description">
+        <tr>
+          <td>
+            <div class="bigheader">[Other Mugshots]</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+              <tr>
+                <td width="33%" style="text-align:center;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
+                      <tr>
+                        <td width="100%" style="text-align:center;">
+                          <img>
+                            <xsl:attribute name="src">
+                              data:image/png;base64,<xsl:value-of select='stringbase64' />
+                            </xsl:attribute>
+                          </img>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </table>
+                </td>
+                <td width="33%" style="text-align:center;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <xsl:if test="count(othermugshots/mugshot[position() mod 3 = 2]) = 0">
+                      <tr>
+                        <td></td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
+                      <tr>
+                        <td width="100%" style="text-align:center;">
+                          <img>
+                            <xsl:attribute name="src">
+                              data:image/png;base64,<xsl:value-of select='stringbase64' />
+                            </xsl:attribute>
+                          </img>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </table>
+                </td>
+                <td width="33%" style="text-align:center;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <xsl:if test="count(othermugshots/mugshot[position() mod 3 = 0]) = 0">
+                      <tr>
+                        <td></td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
+                      <tr>
+                        <td width="100%" style="text-align:center;">
+                          <img>
+                            <xsl:attribute name="src">
+                              data:image/png;base64,<xsl:value-of select='stringbase64' />
+                            </xsl:attribute>
+                          </img>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <br />
+    </xsl:if>
 		
 		<xsl:if test="notes!='' or gamenotes!=''">
 			<table class="stats description">

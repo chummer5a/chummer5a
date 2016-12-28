@@ -3049,7 +3049,11 @@
     </string>
     <string>
       <key>Label_Mugshot</key>
-      <text>Portrait: (210px x 310px)</text>
+      <text>Portrait:</text>
+    </string>
+	<string>
+      <key>Label_MugshotDimensions</key>
+      <text>210px x 310px</text>
     </string>
     <string>
       <key>Checkbox_Created</key>
