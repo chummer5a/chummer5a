@@ -53,7 +53,10 @@ namespace Chummer
 
 		private void frmSelectText_Shown(object sender, EventArgs e)
 		{
-		    txtValue.Text = DefaultString;
+		    if (DefaultString != null)
+		    {
+		        txtValue.Text = DefaultString;
+		    }
 		}		
 		#endregion
 

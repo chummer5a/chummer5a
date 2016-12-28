@@ -961,32 +961,33 @@ namespace Chummer
 					Log.Info("_strForcedValue = " + SelectedValue);
 					Log.Info("_strLimitSelection = " + LimitSelection);
 
-					// Display the Select Text window and record the value that was entered.
-					frmSelectText frmPickText = new frmSelectText();
-					frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-						.Replace("{0}", strFriendlyName);
+				    if (LimitSelection != "")
+				    {
+                        _strSelectedValue = LimitSelection;
+				    }
+				    else
+                {
 
-					if (LimitSelection != "")
-					{
-						frmPickText.SelectedValue = LimitSelection;
-						frmPickText.Opacity = 0;
-					}
+                    // Display the Select Text window and record the value that was entered.
+                    frmSelectText frmPickText = new frmSelectText();
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+                        .Replace("{0}", strFriendlyName);
+                    frmPickText.ShowDialog();
 
-					frmPickText.ShowDialog();
+				        // Make sure the dialogue window was not canceled.
+				        if (frmPickText.DialogResult == DialogResult.Cancel)
+				        {
 
-					// Make sure the dialogue window was not canceled.
-					if (frmPickText.DialogResult == DialogResult.Cancel)
-					{
+				            Rollback();
+				            ForcedValue = "";
+				            LimitSelection = "";
+				            Log.Exit("CreateImprovements");
+				            return false;
+				        }
 
-						Rollback();
-						ForcedValue = "";
-						LimitSelection = "";
-						Log.Exit("CreateImprovements");
-						return false;
-					}
-
-					_strSelectedValue = frmPickText.SelectedValue;
-					if (blnConcatSelectedValue)
+				        _strSelectedValue = frmPickText.SelectedValue;
+				    }
+				    if (blnConcatSelectedValue)
 						strSourceName += " (" + SelectedValue + ")";
 					Log.Info("_strSelectedValue = " + SelectedValue);
 					Log.Info("strSourceName = " + strSourceName);
@@ -994,7 +995,7 @@ namespace Chummer
 					// Create the Improvement.
 					Log.Info("Calling CreateImprovement");
 
-					CreateImprovement(frmPickText.SelectedValue, objImprovementSource, strSourceName,
+					CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName,
 						Improvement.ImprovementType.Text,
 						strUnique);
 				}

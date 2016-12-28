@@ -16,6 +16,7 @@ Application Changes:
 - Renaming an item will now prepopulate the current name. 
 - Added proper quantity listings for child items attached to gear, such as ammo in a duffel bag. 
 - Fixed an issue with checking character quality limits in Karmagen. 
+- Altered the LanguageManager GetString method to return the key string in case of failure. Should assist with troubleshooting language faults without causing hard crashes.
 
 Data Changes: 
 
@@ -25,6 +26,7 @@ Data Changes:
 - Corrected missing Capacity for the Sensor Collar from Howling Shadows. 
 - Corrected machine pistols and submachineguns to not have Under mounts. 
 - Added a missing detonator cap gear item.
+- Added missing restrictions for the Vampire and Sukuyan infected qualities. 
 
  Sheet Changes: 
 

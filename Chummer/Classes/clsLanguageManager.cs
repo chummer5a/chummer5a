@@ -245,74 +245,66 @@ namespace Chummer
 
 			foreach (Label lblLabel in objParent.Controls.OfType<Label>())
 			{
-				if (lblLabel.Tag != null)
-				{
-					try
-					{
-						lblLabel.Text = GetString(lblLabel.Tag.ToString());
-					}
-					catch
-					{
-						if (_blnDebug)
-							throw;
-						else
-							lblLabel.Text = lblLabel.Tag.ToString();
-					}
-				}
+			    if (lblLabel.Tag == null || lblLabel.Tag.ToString() == "") continue;
+			    try
+			    {
+			        lblLabel.Text = GetString(lblLabel.Tag.ToString());
+			    }
+			    catch
+			    {
+			        if (_blnDebug)
+			            throw;
+			        else
+			            lblLabel.Text = lblLabel.Tag.ToString();
+			    }
 			}
 			foreach (Button cmdButton in objParent.Controls.OfType<Button>())
 			{
-				if (cmdButton.Tag != null)
-				{
-					try
-					{
-						cmdButton.Text = GetString(cmdButton.Tag.ToString());
-					}
-					catch
-					{
-						if (_blnDebug)
-							throw;
-						else
-							cmdButton.Text = cmdButton.Tag.ToString();
-					}
-				}
+			    if (cmdButton.Tag == null || cmdButton.Tag.ToString() == "") continue;
+			    try
+			    {
+			        cmdButton.Text = GetString(cmdButton.Tag.ToString());
+			    }
+			    catch
+			    {
+			        if (_blnDebug)
+			            throw;
+			        else
+			            cmdButton.Text = cmdButton.Tag.ToString();
+			    }
 			}
 			foreach (CheckBox chkCheckbox in objParent.Controls.OfType<CheckBox>())
 			{
-				if (chkCheckbox.Tag != null)
+                if (chkCheckbox.Tag == null || chkCheckbox.Tag.ToString() == "") continue;
+				try
 				{
-					try
-					{
-						if (chkCheckbox.Tag.ToString().Contains("_"))
-							chkCheckbox.Text = GetString(chkCheckbox.Tag.ToString());
-					}
-					catch
-					{
-						if (_blnDebug)
-							throw;
-						else
-							chkCheckbox.Text = chkCheckbox.Tag.ToString();
-					}
+					if (chkCheckbox.Tag.ToString().Contains("_"))
+						chkCheckbox.Text = GetString(chkCheckbox.Tag.ToString());
+				}
+				catch
+				{
+					if (_blnDebug)
+						throw;
+					else
+						chkCheckbox.Text = chkCheckbox.Tag.ToString();
 				}
 			}
 			foreach (ListView lstList in objParent.Controls.OfType<ListView>())
 			{
 				foreach (ColumnHeader objHeader in lstList.Columns)
 				{
-					if (objHeader.Tag != null)
-					{
-						try
-						{
-							objHeader.Text = GetString(objHeader.Tag.ToString());
-						}
-						catch
-						{
-							if (_blnDebug)
-								throw;
-							else
-								objHeader.Text = objHeader.Tag.ToString();
-						}
-					}
+				    if (objHeader.Tag == null || objHeader.Tag.ToString() == "") continue;
+				    try
+				    {
+				        objHeader.Text = GetString(objHeader.Tag.ToString());
+				    }
+				    catch
+				    {
+				        if (_blnDebug)
+				            throw;
+				        else
+				            objHeader.Text = objHeader.Tag.ToString();
+				    }
 				}
 			}
 
@@ -327,7 +319,7 @@ namespace Chummer
 			{
 				foreach (TabPage tabPage in objTabControl.TabPages)
 				{
-					if (tabPage.Tag != null)
+					if (tabPage.Tag != null && tabPage.Tag.ToString() != "")
 					{
 						try
 						{
@@ -512,8 +504,10 @@ namespace Chummer
                 return strReturn;
             }
             catch
-            {		//TODO THIS IS RETARDED. Doctor it hurts if i do this. Thats why i try again to see if it stops hurting
-                string strReturn = "Error in string return - " + _objDictionary[strKey].ToString();
+            {
+                if (Debugger.IsAttached)
+                    Debugger.Break();
+                string strReturn = "Error finding string for key - " + strKey;
                 return strReturn;
             }
 		}
