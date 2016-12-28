@@ -5995,6 +5995,10 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Options Window -->
+    <string>
+      <key>Label_Enabled</key>
+      <text>Enabled</text>
+    </string>
 		<string>
 			<key>Title_Options</key>
 			<text>Options</text>

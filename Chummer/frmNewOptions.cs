@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -36,7 +37,8 @@ namespace Chummer
 	        _controlFactories = new List<IOptionWinFromControlFactory>()
 	        {
 	            new CheckBoxOptionFactory(),
-	            new NumericUpDownOptionFactory()
+	            new NumericUpDownOptionFactory(),
+                new BookOptionFactory()
 	        };
 
 	        //TODO: dropdown that allows you to select/add multiple
@@ -99,8 +101,9 @@ namespace Chummer
 
 
 	        List<OptionRenderItem> hits = _searchList
-	            .Where(x => x.SearchStrings().Any(y => y.Contains(searchfor)))
-	            .Select<OptionItem, OptionRenderItem>(x => x)
+	            .Where(x => x.SearchStrings().Any(y => CultureInfo.InvariantCulture.CompareInfo.IndexOf(y, searchfor, CompareOptions.IgnoreCase) >= 0))
+	            .Take(20)
+                .Select<OptionItem, OptionRenderItem>(x => x)
 	            .ToList();
 
 	        if (hits.Count > 0)

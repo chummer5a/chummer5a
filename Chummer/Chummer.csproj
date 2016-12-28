@@ -333,10 +333,19 @@
     <Compile Include="UI\Options\BookControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\Options\BookSettingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Options\BookSettingControl.Designer.cs">
+      <DependentUpon>BookSettingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Options\ControlGenerators\BookOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\CheckBoxOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\IOptionWinFromControlFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\NumericUpDownOptionFactory.cs" />
-    <Compile Include="UI\Options\OptionRender.cs" />
+    <Compile Include="UI\Options\OptionRender.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\Options\OptionsNumberControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -891,6 +900,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Options\BookSettingControl.resx">
+      <DependentUpon>BookSettingControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Options\OptionsNumberControl.resx">
       <DependentUpon>OptionsNumberControl.cs</DependentUpon>

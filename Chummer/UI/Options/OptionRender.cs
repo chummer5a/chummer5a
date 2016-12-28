@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using Chummer.Backend;
 using Chummer.UI.Options.ControlGenerators;
+using FontStyle = System.Drawing.FontStyle;
 
 namespace Chummer.UI.Options
 {
@@ -34,6 +35,8 @@ namespace Chummer.UI.Options
 
         public void SetContents(List<OptionRenderItem> contents)
         {
+            bool oldVis = Visible;
+            Visible = false;
             Controls.Clear();
             //TODO: Better support for any RenderItems that isnt EntryProxy
 
@@ -48,6 +51,8 @@ namespace Chummer.UI.Options
                 layouted.Controlls[i].Control.Location = p;
             }
 
+
+            Visible = oldVis;
         }
 
         private ControlGroup PerformGroupLayout(List<OptionItem> items, IGroupLayoutProvider layoutProvider)

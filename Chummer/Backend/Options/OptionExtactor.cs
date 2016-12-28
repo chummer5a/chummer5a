@@ -8,7 +8,7 @@ using System.Text;
 using Chummer.Datastructures;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Classes;
-using Mono.CodeGeneration;
+//using Mono.CodeGeneration;
 
 namespace Chummer.Backend.Options
 {
@@ -121,7 +121,9 @@ namespace Chummer.Backend.Options
 
 
                 children.AddRange(typeof(SourcebookInfo).GetProperties().Select(x => new OptionEntryProxy(info, x)));
-                opt.Add(new OptionGroup("", "Books", "BOOKALLSETTINGS", children));
+                opt.Add(
+                    new OptionGroup("", "Books", "BOOKALLSETTINGS", children)
+                        {Tags = {info.Code, info.Name}});
             }
 
             return opt;
