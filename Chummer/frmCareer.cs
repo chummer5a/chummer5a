@@ -300,6 +300,25 @@ namespace Chummer
 
 			RefreshQualities(treQualities,cmsQuality);
 
+			//Create the dropdown for the character's primary arm.
+			List<ListItem> lstHandedness = new List<ListItem>();
+			ListItem objLeftHand = new ListItem();
+			objLeftHand.Value = "Left";
+			objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+			lstHandedness.Add(objLeftHand);
+			ListItem objRightHand = new ListItem();
+			objRightHand.Value = "Right";
+			objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+			lstHandedness.Add(objRightHand);
+
+			SortListItem objSortHand = new SortListItem();
+			lstHandedness.Sort(objSortHand.Compare);
+			cboHandedness.ValueMember = "Value";
+			cboHandedness.DisplayMember = "Name";
+			cboHandedness.DataSource = lstHandedness;
+
+			cboHandedness.SelectedValue = _objCharacter.PrimaryArm;
+
 			// Populate the Magician Traditions list.
 			objXmlDocument = XmlManager.Instance.Load("traditions.xml");
 			List<ListItem> lstTraditions = new List<ListItem>();
@@ -28048,5 +28067,11 @@ namespace Chummer
             {
             }
         }
-    }
+
+		private void cboHandedness_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (_blnLoading) return;
+			_objCharacter.PrimaryArm = cboHandedness.SelectedValue.ToString();
+		}
+	}
 }

@@ -356,8 +356,27 @@ namespace Chummer
             txtAlias.Text = _objCharacter.Alias;
             txtPlayerName.Text = _objCharacter.PlayerName;
 
-            // Check for Special Attributes.
-            lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
+			//Create the dropdown for the character's primary arm.
+			List<ListItem> lstHandedness = new List<ListItem>();
+			ListItem objLeftHand = new ListItem();
+			objLeftHand.Value = "Left";
+			objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+			lstHandedness.Add(objLeftHand);
+			ListItem objRightHand = new ListItem();
+			objRightHand.Value = "Right";
+			objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+			lstHandedness.Add(objRightHand);
+
+			SortListItem objSortHand = new SortListItem();
+			lstHandedness.Sort(objSortHand.Compare);
+			cboHandedness.ValueMember = "Value";
+			cboHandedness.DisplayMember = "Name";
+			cboHandedness.DataSource = lstHandedness;
+
+	        cboHandedness.SelectedValue = _objCharacter.PrimaryArm;
+
+			// Check for Special Attributes.
+			lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
             lblMAGAug.Enabled = _objCharacter.MAGEnabled;
             if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
             {
@@ -24219,6 +24238,12 @@ namespace Chummer
                 return LanguageManager.Instance.GetString("String_UnnamedCharacter");
             }
         }
-        #endregion
-    }
+		#endregion
+
+		private void cboHandedness_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (_blnLoading ) return;
+			_objCharacter.PrimaryArm = cboHandedness.SelectedValue.ToString();
+		}
+	}
 }

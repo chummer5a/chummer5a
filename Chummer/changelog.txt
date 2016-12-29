@@ -17,6 +17,7 @@ Application Changes:
 - Added proper quantity listings for child items attached to gear, such as ammo in a duffel bag. 
 - Fixed an issue with checking character quality limits in Karmagen. 
 - Altered the LanguageManager GetString method to return the key string in case of failure. Should assist with troubleshooting language faults without causing hard crashes.
+- Added a dropdown on the Character Info tab to set your character's left/right-handedness.
 
 Data Changes: 
 
@@ -44,6 +45,7 @@ New Strings:
 - String_SkillFilterNoSkillGroup
 - String_SkillFilterBrokenSkillGroup
 - String_ExpensePurchaseCritterPower
+- Label_Handedness
 
 Build 189
 
