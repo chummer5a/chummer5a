@@ -811,6 +811,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -838,6 +839,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -864,6 +866,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -890,6 +893,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -916,6 +920,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -942,6 +947,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -968,6 +974,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -990,10 +997,11 @@
 				</conditionmonitor>
 			</bonus>
 			<subsystems>
-				<subsystem>Headware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Earware</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1021,6 +1029,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1048,6 +1057,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1074,6 +1084,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1100,6 +1111,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1126,6 +1138,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1152,6 +1165,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1178,6 +1192,7 @@
 				<subsystem>Cyberlimb Enhancement</subsystem>
 				<subsystem>Cyberlimb Accessory</subsystem>
 				<subsystem>Cyber Implant Weapon</subsystem>
+				<subsystem>Headware</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>456</page>

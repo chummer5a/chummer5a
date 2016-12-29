@@ -27,6 +27,13 @@ Data Changes:
 - Corrected machine pistols and submachineguns to not have Under mounts. 
 - Added a missing detonator cap gear item.
 - Added missing restrictions for the Vampire and Sukuyan infected qualities. 
+- Re-added the Headware category to all cyberlimbs, per RAW.
+- Removed the Radar Sensor gear item, as there's no RAW that Radar is a valid Sensor Function in 5th Edition. 
+
+Custom Content Additions:
+
+- Added the Radar Sensor gear item into an optional file called custom_radarsensorfunction_gear.xml, as there's no RAW that Radar is a valid Sensor Function in 5th Edition. Copy into the Data folder to use this.
+- Added an override file for preventing cyberlimbs from having Headware, called override_cyberlimbheadware_cyberware.xml. Copy into the Data folder to use this.
 
  Sheet Changes: 
 
