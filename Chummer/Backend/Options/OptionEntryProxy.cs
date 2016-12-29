@@ -39,6 +39,10 @@ namespace Chummer.Backend.Options
             get { return _value; }
             set
             {
+                if (value.GetType() != TargetProperty.PropertyType)
+                {
+                    value = Convert.ChangeType(value, TargetProperty.PropertyType);
+                }
                 _value = value;
                 OnPropertyChanged();
                 ValueChanged?.Invoke();
@@ -89,6 +93,21 @@ namespace Chummer.Backend.Options
                 yield return s;
             }
             if(ToolTip != null) yield return ToolTip;
+        }
+
+        public override void Save()
+        {
+            //Maybe, just maybe this will prevent fucking up if complex properties is used/sat
+            object old = TargetProperty.GetValue(_targetObject);
+            if(!old.Equals(_value))
+                TargetProperty.SetValue(_targetObject, _value);
+        }
+
+        public override void Reload()
+        {
+            Value = TargetProperty.GetValue(_targetObject);
+            OnPropertyChanged(nameof(Value));
+            ValueChanged?.Invoke();
         }
     }
 }

@@ -84,7 +84,14 @@ namespace Chummer.UI.Options
             {
                 //TODO: Remove BackColor assignment
                 //Set for debugging purposes to make it easy to see where the labels are.
-                Label label = new Label {Text = textInfo.Text, Width = textInfo.Size.Width, Height = textInfo.Size.Height, BackColor = ColorUtilities.RandomColor()};
+                Label label = new Label
+                {
+                    Text = textInfo.Text,
+                    Width = textInfo.Size.Width,
+                    Height = textInfo.Size.Height,
+                    //BackColor = ColorUtilities.RandomColor(),
+                    //Padding = new Padding(0,3,0,3)
+                };
                 if (textInfo.Style != FontStyle.Regular)
                 {
                     label.Font = GetCachedFont(textInfo.Style);

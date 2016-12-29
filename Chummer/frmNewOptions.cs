@@ -41,6 +41,7 @@ namespace Chummer
 	        };
 
 	        //TODO: dropdown that allows you to select/add multiple
+            //TODO: When doing so, remember to include selection login in btnReset_Click
 	        CharacterOptions o = Program.OptionsManager.Default;
 
 	        OptionExtactor extactor = new OptionExtactor(
@@ -69,11 +70,9 @@ namespace Chummer
 	            OptionRender c = new OptionRender();
 	            c.Factories = controlFactories;
 	            Controls.Add(c);
-	            c.Location = new Point(treeView1.Right+8, 8);
-	            c.Height = treeView1.Height;
-	            c.Width = treeView1.Parent.Width - treeView1.Width - 36;
-	            c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-	            return c;
+	            SetupControl(c);
+
+                return c;
 	        });
 	    }
 
@@ -139,16 +138,21 @@ namespace Chummer
 	        {
 	            Control c = tree.ControlLazy();
 	            Controls.Add(c);
-                c.Location = new Point(treeView1.Right+8, 8);
-		        c.Height = treeView1.Height;
-		        c.Width = treeView1.Parent.Width - treeView1.Width;
-	            c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                SetupControl(c);
 	        }
 
 	      
            _currentVisibleControl = tree.ControlLazy();
            _currentVisibleControl.Visible = true;
         }
+
+	    private void SetupControl(Control c)
+	    {
+	        c.Location = new Point(treeView1.Right,0);
+	        c.Height = treeView1.Bottom;
+	        c.Width = treeView1.Parent.Width - treeView1.Right;
+	        c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+	    }
 
 	    private void PopulateTree(TreeNodeCollection collection, AbstractOptionTree tree)
 	    {
@@ -163,6 +167,46 @@ namespace Chummer
 	    private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             MaybeSpawnAndMakeVisible(e.Node);
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            foreach (OptionItem item in _options.SearchList)
+            {
+                item.Save();
+            }
+            Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            foreach (OptionItem item in _options.SearchList)
+            {
+                item.Reload();
+            }
+        }
+
+        private void btnDefault_Click(object sender, EventArgs e)
+        {
+            //TODO: Do for more stuff (GlobalOptions won't handle this)
+            CharacterOptions def = new CharacterOptions(Program.OptionsManager.Default.FileName);
+
+            foreach (FieldInfo field in typeof(CharacterOptions).GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+            {
+                field.SetValue(Program.OptionsManager.Default, field.GetValue(def));
+            }
+
+            foreach (OptionItem item in _options.SearchList)
+            {
+                item.Reload();
+            }
+
+            MessageBox.Show("There is a very good chance, that that didn't work!");
         }
     }
 }

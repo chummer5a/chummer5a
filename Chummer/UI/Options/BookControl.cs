@@ -43,7 +43,6 @@ namespace Chummer.UI.Options
                     _pictures[thing.Key].Image = Program.BookImageManager.GetImage(thing.Key, _options.BookEnabled[thing.Key].Value, false);
                 };
             }
-            BackColor = ColorUtilities.RandomColor();
         }
 
         private void InitializeComponents()

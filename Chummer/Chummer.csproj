@@ -160,7 +160,6 @@
     <Compile Include="Backend\Options\OptionDictionaryEntryProxy.cs" />
     <Compile Include="Backend\Options\OptionGroup.cs" />
     <Compile Include="Backend\Options\OptionItem.cs" />
-    <Compile Include="Backend\Options\OptionProxyCollection.cs" />
     <Compile Include="Backend\Options\OptionRenderItem.cs" />
     <Compile Include="Backend\Options\TabAlignmentGroupLayoutProvider.cs" />
     <Compile Include="Backend\Options\OptionEntryProxy.cs" />

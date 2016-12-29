@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.splitter1 = new System.Windows.Forms.Splitter();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
             this.chkAutomaticUpdate = new System.Windows.Forms.CheckBox();
@@ -47,6 +46,10 @@
             this.cboLanguage = new System.Windows.Forms.ComboBox();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.btnDefault = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,21 +61,13 @@
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "Search";
             // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(0, 0);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 529);
-            this.splitter1.TabIndex = 4;
-            this.splitter1.TabStop = false;
-            // 
             // treeView1
             // 
             this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.Location = new System.Drawing.Point(8, 32);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(160, 450);
+            this.treeView1.Size = new System.Drawing.Size(160, 501);
             this.treeView1.TabIndex = 7;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -270,19 +265,62 @@
             this.flowLayoutPanel1.MinimumSize = new System.Drawing.Size(300, 300);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(967, 473);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(967, 524);
             this.flowLayoutPanel1.TabIndex = 5;
             this.flowLayoutPanel1.Tag = "Default";
             this.flowLayoutPanel1.Visible = false;
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(1064, 545);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.TabIndex = 8;
+            this.btnOK.Text = "[OK]";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(983, 545);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 9;
+            this.btnCancel.Text = "[Cancel]";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(902, 545);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.TabIndex = 10;
+            this.btnReset.Text = "[Reset]";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
+            // btnDefault
+            // 
+            this.btnDefault.Location = new System.Drawing.Point(12, 545);
+            this.btnDefault.Name = "btnDefault";
+            this.btnDefault.Size = new System.Drawing.Size(75, 23);
+            this.btnDefault.TabIndex = 11;
+            this.btnDefault.Text = "[Default]";
+            this.btnDefault.UseVisualStyleBackColor = true;
+            this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
             // 
             // frmNewOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1151, 529);
+            this.ClientSize = new System.Drawing.Size(1151, 580);
+            this.Controls.Add(this.btnDefault);
+            this.Controls.Add(this.btnReset);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.splitter1);
             this.Controls.Add(this.textBox1);
             this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "frmNewOptions";
@@ -296,7 +334,6 @@
 
 		#endregion
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Splitter splitter1;
 		private UI.Options.OptionsNumberControl optionsNumberControl1;
 		private UI.Options.OptionsNumberControl optionsNumberControl2;
 		private UI.Options.OptionsNumberControl optionsNumberControl3;
@@ -317,5 +354,9 @@
 		private System.Windows.Forms.CheckBox chkDatesIncludeTime;
 		private System.Windows.Forms.CheckBox chkSingleDiceRoller;
 		private System.Windows.Forms.CheckBox chkAutomaticUpdate;
-	}
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Button btnDefault;
+    }
 }

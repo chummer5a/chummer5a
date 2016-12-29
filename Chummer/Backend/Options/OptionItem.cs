@@ -3,9 +3,9 @@ using System.Text;
 
 namespace Chummer.Backend.Options
 {
-    public class OptionItem : OptionRenderItem
+    public abstract class OptionItem : OptionRenderItem
     {
-        public OptionItem(string displayString, string category)
+        protected OptionItem(string displayString, string category)
         {
             DisplayString = displayString ?? "";
             Category = category ?? "";
@@ -41,5 +41,8 @@ namespace Chummer.Backend.Options
                 yield return tag;
             }
         }
+
+        public abstract void Save();
+        public abstract void Reload();
     }
 }

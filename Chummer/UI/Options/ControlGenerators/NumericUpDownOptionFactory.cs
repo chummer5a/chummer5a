@@ -28,9 +28,9 @@ namespace Chummer.UI.Options.ControlGenerators
                 false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
+            nud.Width = 40;
             if (Utils.IsLinux)
             {
-                nud.Width = 60;
                 nud.BackColor = Color.WhiteSmoke;
             }
 

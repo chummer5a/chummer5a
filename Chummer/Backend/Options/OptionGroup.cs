@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Chummer.Backend.Options
@@ -12,6 +13,22 @@ namespace Chummer.Backend.Options
         {
             TypeTag = typeTag;
             Children = children.ToList().AsReadOnly();
+        }
+
+        public override void Save()
+        {
+            foreach (OptionItem child in Children)
+            {
+                child.Save();
+            }
+        }
+
+        public override void Reload()
+        {
+            foreach (OptionItem child in Children)
+            {
+                child.Reload();
+            }
         }
     }
 }
