@@ -81,9 +81,9 @@ namespace Chummer.Classes
         * I think this needs a rewrite someday once i have a better idea on how this is supposed to work, but this saving methods probably won't end here.
         *
         */
-        private readonly HashSet<string> _enabledBooks;
+        private readonly List<OptionItem> _enabledBooks;
         private readonly Lazy<BookControl> _bookControl;
-        public BookNode(HashSet<string> enabledBooks) : base(LanguageManager.Instance.GetString("String_Books"))
+        public BookNode(List<OptionItem> enabledBooks) : base(LanguageManager.Instance.GetString("String_Books"))
         {
             _enabledBooks = enabledBooks;
             _bookControl = new Lazy<BookControl>(() => new BookControl(_enabledBooks));

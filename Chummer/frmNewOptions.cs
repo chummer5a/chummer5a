@@ -50,10 +50,10 @@ namespace Chummer
 	                    <IOptionWinFromControlFactory, Predicate<OptionItem>>
 	                    (x => x.IsSupported)));
 
-
+            var temp = extactor.BookOptions(o, GlobalOptions.Instance);
 	        SimpleTree<OptionItem> _rawTree = extactor.Extract(o);
 	        _winformTree = GenerateWinFormTree(_rawTree);
-	        _winformTree.Children.Add(new BookNode(new HashSet<string>(){"SR5"}));
+	        _winformTree.Children.Add(new BookNode(temp));
 
 
 	        PopulateTree(treeView1.Nodes, _winformTree);
@@ -64,8 +64,9 @@ namespace Chummer
 
 
 	        _searchList = _rawTree.DepthFirstEnumerator().ToList();
-	        _searchList.AddRange(extactor.BookOptions(o, GlobalOptions.Instance));
-	        textBox1.KeyPress += SearchBoxChanged;
+
+	        _searchList.AddRange(temp);
+	        textBox1.TextChanged += SearchBoxChanged;
 
 	        _searchControl = new Lazy<OptionRender>(() =>
 	        {
@@ -80,12 +81,12 @@ namespace Chummer
 	        });
 	    }
 
-	    private void SearchBoxChanged(object sender, KeyPressEventArgs keyPressEventArgs)
+	    private void SearchBoxChanged(object sender, EventArgs args)
 	    {
 	        if (_currentVisibleControl != null) _currentVisibleControl.Visible = false;
 
-	        string searchfor;
-	        if (keyPressEventArgs.KeyChar != '\b')
+	        string searchfor = textBox1.Text;
+	        /*if (keyPressEventArgs.KeyChar != '\b')
 	        {
 	            searchfor = textBox1.Text + keyPressEventArgs.KeyChar;
 	        }
@@ -97,8 +98,14 @@ namespace Chummer
 	        else
 	        {
 	            searchfor = textBox1.Text.Substring(0, textBox1.TextLength - 1);
-	        }
+	        }*/
 
+
+	        if (string.IsNullOrWhiteSpace(searchfor))
+	        {
+	            MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
+	            return;
+	        }
 
 	        List<OptionRenderItem> hits = _searchList
 	            .Where(x => x.SearchStrings().Any(y => CultureInfo.InvariantCulture.CompareInfo.IndexOf(y, searchfor, CompareOptions.IgnoreCase) >= 0))
