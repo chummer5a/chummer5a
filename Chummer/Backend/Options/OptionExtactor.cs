@@ -176,7 +176,15 @@ namespace Chummer.Backend.Options
                     displayString = sb.ToString();
                 }
 
-                return new OptionEntryProxy(target, arg, displayString, toolTip);
+                OptionEntryProxy option = new OptionEntryProxy(target, arg, displayString, toolTip);
+
+                OptionTagAttribute taga = arg.GetCustomAttribute<OptionTagAttribute>();
+                if (taga != null)
+                {
+                    if(taga.Tags != null) option.Tags.AddRange(taga.Tags);
+                    if(taga.TranslatedTags != null) option.Tags.AddRange(taga.TranslatedTags.Select(LanguageManager.Instance.GetString));
+                }
+                return option;
             }
             catch (Exception ex)
             {

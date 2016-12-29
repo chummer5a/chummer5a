@@ -258,6 +258,7 @@ namespace Chummer
 		/// Whether Life Modules should automatically generate a character background.
 		/// </summary>
 		[SavePropertyAs("autobackstory")]
+	    [OptionTag(Tags = new []{"OPTIONALRULE+SR5"})] //TODO: REMOVE THIS LINE BEFORE RELEASE!
 		public bool AutomaticBackstory { get; internal set; } = true;
 
 	    #region Printing

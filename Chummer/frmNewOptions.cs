@@ -21,8 +21,7 @@ namespace Chummer
 	{
 	    private Control _currentVisibleControl;
 	    private AbstractOptionTree _winformTree;
-	    private List<OptionItem> _searchList;
-	    private List<IOptionWinFromControlFactory> _controlFactories;
+	    private OptionCollectionCache _options;
 	    private Lazy<OptionRender> _searchControl;
 
 	    public frmNewOptions()
@@ -34,7 +33,7 @@ namespace Chummer
 
 	    private void OnLoad(object sender, EventArgs eventArgs)
 	    {
-	        _controlFactories = new List<IOptionWinFromControlFactory>()
+	        List<IOptionWinFromControlFactory> controlFactories = new List<IOptionWinFromControlFactory>()
 	        {
 	            new CheckBoxOptionFactory(),
 	            new NumericUpDownOptionFactory(),
@@ -46,14 +45,15 @@ namespace Chummer
 
 	        OptionExtactor extactor = new OptionExtactor(
 	            new List<Predicate<OptionItem>>(
-	                _controlFactories.Select
+	                controlFactories.Select
 	                    <IOptionWinFromControlFactory, Predicate<OptionItem>>
 	                    (x => x.IsSupported)));
 
             var temp = extactor.BookOptions(o, GlobalOptions.Instance);
-	        SimpleTree<OptionItem> _rawTree = extactor.Extract(o);
-	        _winformTree = GenerateWinFormTree(_rawTree);
-	        _winformTree.Children.Add(new BookNode(temp));
+	        SimpleTree<OptionItem> rawTree = extactor.Extract(o);
+	        _options = new OptionCollectionCache(rawTree, temp, controlFactories);
+	        _winformTree = GenerateWinFormTree(rawTree);
+	        _winformTree.Children.Add(new BookNode(_options));
 
 
 	        PopulateTree(treeView1.Nodes, _winformTree);
@@ -62,16 +62,12 @@ namespace Chummer
 
 	        MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
 
-
-	        _searchList = _rawTree.DepthFirstEnumerator().ToList();
-
-	        _searchList.AddRange(temp);
 	        textBox1.TextChanged += SearchBoxChanged;
 
 	        _searchControl = new Lazy<OptionRender>(() =>
 	        {
 	            OptionRender c = new OptionRender();
-	            c.Factories = _controlFactories;
+	            c.Factories = controlFactories;
 	            Controls.Add(c);
 	            c.Location = new Point(treeView1.Right+8, 8);
 	            c.Height = treeView1.Height;
@@ -107,7 +103,7 @@ namespace Chummer
 	            return;
 	        }
 
-	        List<OptionRenderItem> hits = _searchList
+	        List<OptionRenderItem> hits = _options.SearchList
 	            .Where(x => x.SearchStrings().Any(y => CultureInfo.InvariantCulture.CompareInfo.IndexOf(y, searchfor, CompareOptions.IgnoreCase) >= 0))
 	            .Take(20)
                 .Select<OptionItem, OptionRenderItem>(x => x)
@@ -129,7 +125,7 @@ namespace Chummer
 
 	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionItem> tree)
 	    {
-	        SimpleOptionTree so = new SimpleOptionTree(tree.Tag.ToString(), new List<OptionRenderItem>(tree.Leafs), _controlFactories);
+	        SimpleOptionTree so = new SimpleOptionTree(tree.Tag.ToString(), new List<OptionRenderItem>(tree.Leafs), _options.ControlFactories);
 	        so.Children.AddRange(tree.Children.Select(GenerateWinFormTree));
 	        return so;
 	    }
@@ -145,7 +141,7 @@ namespace Chummer
 	            Controls.Add(c);
                 c.Location = new Point(treeView1.Right+8, 8);
 		        c.Height = treeView1.Height;
-		        c.Width = treeView1.Parent.Width - treeView1.Width - 36;
+		        c.Width = treeView1.Parent.Width - treeView1.Width;
 	            c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 	        }
 

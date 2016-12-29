@@ -12,9 +12,13 @@ namespace Chummer.UI.Options
 {
     public class BookControl : UserControl
     {
-        private List<OptionItem> _books;
-        private Dictionary<string, OptionDictionaryEntryProxy<string, bool>> _enabled;
+        private readonly OptionCollectionCache _options;
+        //private Dictionary<string, OptionGroup> _books;
+        //private Dictionary<string, OptionDictionaryEntryProxy<string, bool>> _enabled;
         private Dictionary<string, PictureBox> _pictures = new Dictionary<string, PictureBox>();
+        private Dictionary<string, BookSettingControl> _bookControls = new Dictionary<string, BookSettingControl>();
+        private BookSettingControl _activeBookControl = null;
+        private OptionRender _optionRender;
         private const int IMAGE_HEIGHT = 360;
         private const int IMAGE_BORDER = 20;  //THIS IS ALSO USED IN BookImageManager.cs as a seperate value. Would need change both places or strange stuff might happen
         private const int IMAGE_WIDTH = 278;
@@ -23,25 +27,23 @@ namespace Chummer.UI.Options
         private int CheckboxWidth;
 
 
-        public BookControl(List<OptionItem> books)
+        public BookControl(OptionCollectionCache options)
         {
+            _options = options;
             Image checkbox = Properties.Resources.checkbox_checked;
             CheckboxHeight = checkbox.Height;
             CheckboxWidth = checkbox.Width;
 
-            _books = books;
-            _enabled = books.OfType<OptionGroup>()
-                .Select(x => x.Children.OfType<OptionDictionaryEntryProxy<string, bool>>().First())
-                .ToDictionary(x => x.Key);
             InitializeComponents();
 
-            foreach (OptionDictionaryEntryProxy<string,bool> thing in _enabled.Values)
+            foreach (OptionDictionaryEntryProxy<string,bool> thing in _options.BookEnabled.Values)
             {
                 thing.ValueChanged += () =>
                 {
-                    _pictures[thing.Key].Image = Program.BookImageManager.GetImage(thing.Key, _enabled[thing.Key].Value, false);
+                    _pictures[thing.Key].Image = Program.BookImageManager.GetImage(thing.Key, _options.BookEnabled[thing.Key].Value, false);
                 };
             }
+            BackColor = ColorUtilities.RandomColor();
         }
 
         private void InitializeComponents()
@@ -61,7 +63,7 @@ namespace Chummer.UI.Options
                 bookBox.SizeMode = PictureBoxSizeMode.AutoSize;
                 bookBox.Size = new Size(IMAGE_WIDTH + IMAGE_BORDER*2, IMAGE_HEIGHT + IMAGE_BORDER * 2);
                 bookBox.Location = new Point(((_bookPanel.Controls.Count -1)* (IMAGE_BORDER + IMAGE_WIDTH)), 0);
-                bookBox.Image = Program.BookImageManager.GetImage(book.Code, _enabled[book.Code].Value, false);
+                bookBox.Image = Program.BookImageManager.GetImage(book.Code, _options.BookEnabled[book.Code].Value, false);
 
                 bookBox.MouseEnter += Picture_MouseEnter;
                 bookBox.MouseLeave += Picture_MouseLeave;
@@ -74,7 +76,29 @@ namespace Chummer.UI.Options
             this.Resize += OnResize;
             _bookPanel.MouseWheel += BookPanel_OnMouseWheel;
             _bookPanel.MouseEnter += BookPanel_OnMouseEnter;
+            _activeBookControl = new BookSettingControl()
+            {
+                Location = new Point(0,IMAGE_HEIGHT + IMAGE_BORDER * 2+ SystemInformation.HorizontalScrollBarHeight), Book = _options.Books["SR5"]
+            };
+            Controls.Add(_activeBookControl);
 
+            _optionRender = new OptionRender()
+            {
+                Location = new Point(
+                    _activeBookControl.Width,
+                    IMAGE_HEIGHT + IMAGE_BORDER * 2 + SystemInformation.HorizontalScrollBarHeight
+                ),
+                Factories = _options.ControlFactories
+            };
+            ;
+            Controls.Add(_optionRender);
+
+            _optionRender.SetContents(
+                _options.NotBookOptions
+                .Where(x => x.Tags.Any(y => y == "OPTIONALRULE+SR5"))
+                .Select<OptionItem, OptionRenderItem>(x => x)
+                .ToList()
+            );
         }
 
         private void Picture_Click(object sender, EventArgs e)
@@ -93,13 +117,47 @@ namespace Chummer.UI.Options
             }
             else
             {
-                SelectBook(box);
+                SelectBook(box.Tag as string);
             }
         }
 
-        private void SelectBook(PictureBox box)
+        private void Picture_DoubleClick(object sender, EventArgs e)
         {
+            PictureBox box = sender as PictureBox;
+            if (box == null)
+            {
+                Utils.BreakIfDebug();
+                return;
+            }
 
+            ToggleBook(box);
+        }
+
+        private void SelectBook(string code)
+        {
+            _activeBookControl.Visible = false;
+            BookSettingControl control;
+            if (_bookControls.TryGetValue(code, out control))
+            {
+                _activeBookControl = control;
+                _activeBookControl.Visible = true;
+            }
+            else
+            {
+                _activeBookControl = new BookSettingControl()
+                {
+                    Location = new Point(0,IMAGE_HEIGHT + IMAGE_BORDER * 2+ SystemInformation.HorizontalScrollBarHeight), Book = _options.Books[code]
+                };
+                _bookControls[code] = _activeBookControl;
+                Controls.Add(_activeBookControl);
+            }
+
+            _optionRender.SetContents(
+                _options.NotBookOptions
+                    .Where(x => x.Tags.Any(y => y == "OPTIONALRULE+" + code))
+                    .Select<OptionItem, OptionRenderItem>(x => x)
+                    .ToList()
+            );
         }
 
         private bool IsInCheckboxArear(MouseEventArgs me, PictureBox pictuture)
@@ -113,15 +171,12 @@ namespace Chummer.UI.Options
         {
 
             string bookCode = box.Tag as string;
-            _enabled[bookCode].Value = !_enabled[bookCode].Value;
+            _options.BookEnabled[bookCode].Value = !_options.BookEnabled[bookCode].Value;
 
-            box.Image = Program.BookImageManager.GetImage(bookCode, _enabled[bookCode].Value, true);
+            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, true);
         }
 
-        private void Picture_DoubleClick(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+
 
         private void Picture_MouseLeave(object sender, EventArgs e)
         {
@@ -130,7 +185,7 @@ namespace Chummer.UI.Options
 
             string bookCode = box.Tag as string;
 
-            box.Image = Program.BookImageManager.GetImage(bookCode, _enabled[bookCode].Value, false);
+            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, false);
         }
 
         private void Picture_MouseEnter(object sender, EventArgs e)
@@ -141,7 +196,7 @@ namespace Chummer.UI.Options
             string bookCode = box.Tag as string;
 
             _bookPanel.Controls.SetChildIndex(box, 0);
-            box.Image = Program.BookImageManager.GetImage(bookCode, _enabled[bookCode].Value, true);
+            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, true);
         }
 
         private void BookPanel_OnMouseEnter(object sender, EventArgs eventArgs)
@@ -158,6 +213,8 @@ namespace Chummer.UI.Options
         private void OnResize(object sender, EventArgs eventArgs)
         {
             _bookPanel.Size = new Size(this.Width, IMAGE_HEIGHT + IMAGE_BORDER * 2 + SystemInformation.HorizontalScrollBarHeight);
+            _optionRender.Size = new Size(this.Width - _activeBookControl.Width,
+                this.Height - (IMAGE_HEIGHT + IMAGE_BORDER * 2 + SystemInformation.HorizontalScrollBarHeight));
         }
 
         public void Save()

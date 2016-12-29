@@ -35,6 +35,11 @@ namespace Chummer.UI.Options
 
         public void SetContents(List<OptionRenderItem> contents)
         {
+            if (contents.Count == 0)
+            {
+                Controls.Clear();
+                return;
+            }
             bool oldVis = Visible;
             Visible = false;
             Controls.Clear();
