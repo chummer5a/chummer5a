@@ -948,6 +948,8 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.lblHandedness = new System.Windows.Forms.Label();
+			this.cboHandedness = new Chummer.helpers.ComboBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -9459,6 +9461,8 @@ namespace Chummer
             // tabCharacterInfo
             // 
             this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCharacterInfo.Controls.Add(this.cboHandedness);
+			this.tabCharacterInfo.Controls.Add(this.lblHandedness);
             this.tabCharacterInfo.Controls.Add(this.chkIsMainMugshot);
             this.tabCharacterInfo.Controls.Add(this.lblNumMugshots);
             this.tabCharacterInfo.Controls.Add(this.nudMugshotIndex);
@@ -10946,6 +10950,26 @@ namespace Chummer
             this.tsAIProgramNotes.Tag = "Menu_Notes";
             this.tsAIProgramNotes.Text = "&Notes";
             this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
+			// 
+			// lblHandedness
+			// 
+			this.lblHandedness.AutoSize = true;
+			this.lblHandedness.Location = new System.Drawing.Point(654, 64);
+			this.lblHandedness.Name = "lblHandedness";
+			this.lblHandedness.Size = new System.Drawing.Size(70, 13);
+			this.lblHandedness.TabIndex = 92;
+			this.lblHandedness.Tag = "Label_Handedness";
+			this.lblHandedness.Text = "Handedness:";
+			// 
+			// cboHandedness
+			// 
+			this.cboHandedness.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboHandedness.FormattingEnabled = true;
+			this.cboHandedness.Location = new System.Drawing.Point(730, 61);
+			this.cboHandedness.Name = "cboHandedness";
+			this.cboHandedness.Size = new System.Drawing.Size(100, 21);
+			this.cboHandedness.TabIndex = 93;
+			this.cboHandedness.SelectedIndexChanged += new System.EventHandler(this.cboHandedness_SelectedIndexChanged);
             // 
             // frmCreate
             // 

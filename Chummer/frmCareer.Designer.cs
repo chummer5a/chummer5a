@@ -1197,6 +1197,8 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.cboHandedness = new Chummer.helpers.ComboBox();
+			this.lblHandedness = new System.Windows.Forms.Label();
             this.lblMugshotDimensions = new System.Windows.Forms.Label();
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.nudMugshotIndex = new System.Windows.Forms.NumericUpDown();
@@ -13053,6 +13055,8 @@ namespace Chummer
             // tabCharacterInfo
             // 
             this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCharacterInfo.Controls.Add(this.cboHandedness);
+			this.tabCharacterInfo.Controls.Add(this.lblHandedness);
             this.tabCharacterInfo.Controls.Add(this.chkIsMainMugshot);
             this.tabCharacterInfo.Controls.Add(this.lblNumMugshots);
             this.tabCharacterInfo.Controls.Add(this.nudMugshotIndex);
@@ -14329,6 +14333,26 @@ namespace Chummer
             this.chkIsMainMugshot.UseVisualStyleBackColor = true;
             this.chkIsMainMugshot.CheckedChanged += new System.EventHandler(this.chkIsMainMugshot_CheckedChanged);
             // 
+			// cboHandedness
+			// 
+			this.cboHandedness.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboHandedness.FormattingEnabled = true;
+			this.cboHandedness.Location = new System.Drawing.Point(731, 36);
+			this.cboHandedness.Name = "cboHandedness";
+			this.cboHandedness.Size = new System.Drawing.Size(100, 21);
+			this.cboHandedness.TabIndex = 95;
+			this.cboHandedness.SelectedIndexChanged += new System.EventHandler(this.cboHandedness_SelectedIndexChanged);
+			// 
+			// lblHandedness
+			// 
+			this.lblHandedness.AutoSize = true;
+			this.lblHandedness.Location = new System.Drawing.Point(649, 38);
+			this.lblHandedness.Name = "lblHandedness";
+			this.lblHandedness.Size = new System.Drawing.Size(70, 13);
+			this.lblHandedness.TabIndex = 94;
+			this.lblHandedness.Tag = "Label_Handedness";
+			this.lblHandedness.Text = "Handedness:";
+			// 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
