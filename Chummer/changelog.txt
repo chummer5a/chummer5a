@@ -21,6 +21,8 @@ Application Changes:
 - Added the ability for characters to have multiple mugshots.
 - Fixed an issue where integrated cyberware/bioware subsystems and the field to determine what subsystems can be added used the same set of XML tags. This also re-allows cyberware and bioware to come with integrated subsystems.
 - Added the ability for cyberware/bioware to derive attributes from its children.
+- Added the ability for cyberlimbs to count as more than one slot (e.g. liminal body counts as two slots for Legs).
+- Corrected handling of Redliner for Liminal Body, especially Liminal Body Centaur.
 - Fixed an issue where the cost of cyberware/bioware grandchildren subsystems had their costs ignored.
 
 Data Changes:
