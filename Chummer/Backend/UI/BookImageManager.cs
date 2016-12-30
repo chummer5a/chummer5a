@@ -43,13 +43,13 @@ namespace Chummer.Backend.UI
                     //d => 1 - ((1 - d) * (1 - d));
                     // d => d * d;
 
-        public Image GetImage(string bookCode, bool selected, bool aura)
+        public Image GetImage(string bookCode, bool selected, bool aura, int scale)
         {
-            int hash = Hash(bookCode , selected , aura );
+            int hash = Hash(bookCode , selected , aura, scale);
             Image image;
             if (!_cache.TryGetValue(hash, out image))
             {
-                image = GenerateImage(bookCode, selected, aura);
+                image = GenerateImage(bookCode, selected, aura, scale);
                 _cache.Add(hash, image);
             }
 
@@ -61,7 +61,7 @@ namespace Chummer.Backend.UI
         private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_check"));
         private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
 
-        private Image GenerateImage(string bookCode, bool enabled, bool aura)
+        private Image GenerateImage(string bookCode, bool enabled, bool aura, int scale)
         {
             Stopwatch sw = Stopwatch.StartNew();
             Bitmap source = GetBaseImage(bookCode);
@@ -74,8 +74,8 @@ namespace Chummer.Backend.UI
             //This might create some _weird_ errors if somebody tries to run it on another endianess. ARM?
             int[] sourceArray = new int[sourceData.Width* sourceData.Height];
 
-            int realWidth = (source.Width + GlowBorder * 2);
-            int[] destinationArray = new int[realWidth * (source.Height + GlowBorder * 2)];
+            int realWidth = (source.Width + GlowBorder * 2) / scale;
+            int[] destinationArray = new int[realWidth * ((source.Height + GlowBorder * 2) / scale)];
 
             Marshal.Copy(sourceData.Scan0, sourceArray, 0, Math.Abs(sourceData.Stride) * sourceData.Height / sizeof(int));
             source.UnlockBits(sourceData);
@@ -100,34 +100,35 @@ namespace Chummer.Backend.UI
             }
 
             //Copy main image
-            for (int y = 0; y < source.Height; y++)
+            for (int y = 0; y < source.Height / scale; y++)
             {
-                for (int x = 0; x < source.Width; x++)
+                for (int x = 0; x < source.Width / scale; x++)
                 {
-                    int color = convert(sourceArray[y * source.Width + x]);
+                    int color = convert(sourceArray[(y * scale * source.Width ) + ( x * scale)]);
                     //Color preprocessing here
-                    destinationArray[(y + GlowBorder) * realWidth + GlowBorder + x] = color;
+                    destinationArray[(y + (GlowBorder/ scale)) * realWidth + (GlowBorder/ scale) + x] = color;
                 }
             }
             //Copy checkbox
 
+
             if (enabled)
             {
                 Bitmap overlay = CheckboxChecked.Value;
-                DrawOver(destinationArray, overlay, GlowBorder, source.Height - overlay.Height + GlowBorder, realWidth);
+                DrawOver(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
             else
             {
                 Bitmap overlay = CheckboxUnchecked.Value;
-                DrawOver(destinationArray, overlay, GlowBorder, source.Height - overlay.Height + GlowBorder, realWidth);
+                DrawOver(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
 
             //create aura
             if(aura)
-                CreateAura(auracolor, backcolor, destinationArray, source.Width, source.Height, GlowBorder);
+                CreateAura(auracolor, backcolor, destinationArray, source.Width /scale, source.Height /scale, GlowBorder/scale);
 
 
-            Bitmap final = new Bitmap(source.Width + GlowBorder * 2, source.Height + GlowBorder * 2);
+            Bitmap final = new Bitmap((source.Width + GlowBorder * 2) / scale, (source.Height + GlowBorder * 2) / scale);
             BitmapData destinationData = final.LockBits(new Rectangle(0, 0, final.Width, final.Height),
                 ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             Marshal.Copy(destinationArray, 0, destinationData.Scan0, destinationArray.Length);
@@ -139,7 +140,7 @@ namespace Chummer.Backend.UI
             return final;
         }
 
-        private void DrawOver(int[] destinationArray, Bitmap overlay, int x, int y, int width)
+        private void DrawOver(int[] destinationArray, Bitmap overlay, int x, int y, int width, int scale)
         {
             BitmapData sourceData = overlay.LockBits(new Rectangle(0, 0, overlay.Width, overlay.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -154,11 +155,11 @@ namespace Chummer.Backend.UI
 
             int transpcolor = sourceArray[0];
 
-            for (int yw = 0; yw < sourceHeight; yw++)
+            for (int yw = 0; yw < sourceHeight / scale; yw++)
             {
-                for (int xw = 0; xw < sourceWidth; xw++)
+                for (int xw = 0; xw < sourceWidth / scale; xw++)
                 {
-                    int pixel = sourceArray[sourceWidth * yw + xw];
+                    int pixel = sourceArray[(sourceWidth * yw * scale) + (xw * scale)];
                     if (pixel != transpcolor)
                     {
                         destinationArray[width * (yw + y) + x + xw] = pixel;
@@ -270,7 +271,7 @@ namespace Chummer.Backend.UI
 
         }
 
-        private int Hash(string bookCode, bool selected, bool aura)
+        private int Hash(string bookCode, bool selected, bool aura, int scale)
         {
             //Don't feel like using a tuple or something for the image, so i'm just using int keys for the dictionary
             //This should do a decent job of hashing it.
@@ -279,6 +280,8 @@ namespace Chummer.Backend.UI
             if (selected) hash = unchecked (hash * 3);
             if (aura) hash = unchecked (hash * 17);
 
+
+            hash = unchecked (hash ^ scale * 19);
             return hash;
         }
 

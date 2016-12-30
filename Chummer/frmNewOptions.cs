@@ -59,7 +59,7 @@ namespace Chummer
 
 	        PopulateTree(treeView1.Nodes, _winformTree);
 
-	        if (treeView1.SelectedNode == null) {treeView1.SelectedNode = treeView1.Nodes[0];}
+	        if (treeView1.SelectedNode == null) {treeView1.SelectedNode = treeView1.Nodes[treeView1.Nodes.Count-1];}
 
 	        MaybeSpawnAndMakeVisible(treeView1.SelectedNode);
 
