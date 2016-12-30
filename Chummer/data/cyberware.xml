@@ -811,6 +811,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -838,6 +839,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -864,6 +866,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -890,6 +893,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -916,6 +920,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -942,6 +947,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -968,6 +974,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -994,6 +1001,8 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+				<category>Earware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1021,6 +1030,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1048,6 +1058,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1074,6 +1085,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1100,6 +1112,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1126,6 +1139,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1152,6 +1166,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1178,6 +1193,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -1204,6 +1220,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Earware</category>
 			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
@@ -2837,6 +2854,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
 			</allowsubsystems>
 			<source>CF</source>
 			<page>87</page>

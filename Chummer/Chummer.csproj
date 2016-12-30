@@ -1467,6 +1467,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
+    <Content Include="Custom Content\custom_radarsensorfunction_gear.xml" />
+    <Content Include="Custom Content\override_cyberlimbheadware_cyberware.xml" />
     <Content Include="data\options.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -4445,6 +4445,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Public Aware:</text>
 		</string>
 		<string>
+			<key>Label_Handedness</key>
+			<text>Handedness:</text>
+		</string>
+		<string>
 			<key>Label_Mugshot</key>
 			<text>Mugshot:</text>
 		</string>

@@ -1676,8 +1676,9 @@ namespace Chummer
 					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{  //TODO Getstring dictionary check instead of clusterfuck used
-						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
-							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
+						string strTest = LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short");
+						if (strTest != "" && !strTest.Contains("Error finding string for key - "))
+							strReturn += " (" + strTest + ")";
 						else
 							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 					}
@@ -7321,9 +7322,12 @@ namespace Chummer
             if (IsGroup == false)
 				objWriter.WriteElementString("connection", _intConnection.ToString());
 			else
-                objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
+                objWriter.WriteElementString("connection", "Group(" + _intConnection + ")");
 			objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
-			objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType.ToString()));
+			objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType));
+			objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
+			objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
+			objWriter.WriteElementString("family", _blnFamily.ToString());
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
