@@ -5109,7 +5109,9 @@ namespace Chummer
 					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
-						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
+						//TODO Getstring dictionary check
+						string strTestAttribute = LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short");
+						if (strTestAttribute != "" && !strTestAttribute.Contains("Error finding string for key - "))
 							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
 						else
 							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
