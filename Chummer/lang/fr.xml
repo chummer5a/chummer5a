@@ -3457,7 +3457,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_Mugshot</key>
-      <text>Photo du suspect (210 X 310 pixels)</text>
+      <text>Photo du suspect</text>
+    </string>
+	<string>
+      <key>Label_MugshotDimensions</key>
+      <text>210 X 310 pixels</text>
     </string>
     <string>
       <key>Checkbox_Created</key>
@@ -3465,7 +3469,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Button_AddMugshot</key>
-      <text>Ajout / Modif</text>
+      <text>Ajout</text>
     </string>
     <string>
       <key>Tip_CharacterCreated</key>

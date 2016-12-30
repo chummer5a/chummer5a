@@ -18,8 +18,14 @@ Application Changes:
 - Fixed an issue with checking character quality limits in Karmagen. 
 - Altered the LanguageManager GetString method to return the key string in case of failure. Should assist with troubleshooting language faults without causing hard crashes.
 - Added a dropdown on the Character Info tab to set your character's left/right-handedness.
+- Added the ability for characters to have multiple mugshots.
+- Fixed an issue where integrated cyberware/bioware subsystems and the field to determine what subsystems can be added used the same set of XML tags. This also re-allows cyberware and bioware to come with integrated subsystems.
+- Added the ability for cyberware/bioware to derive attributes from its children.
+- Added the ability for cyberlimbs to count as more than one slot (e.g. liminal body counts as two slots for Legs).
+- Corrected handling of Redliner for Liminal Body, especially Liminal Body Centaur.
+- Fixed an issue where the cost of cyberware/bioware grandchildren subsystems had their costs ignored.
 
-Data Changes: 
+Data Changes:
 
 - Added missing SpellCategory improvements for the various Spellcasting foci. 
 - Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
@@ -29,16 +35,21 @@ Data Changes:
 - Added a missing detonator cap gear item.
 - Added missing restrictions for the Vampire and Sukuyan infected qualities. 
 - Re-added the Headware category to all cyberlimbs, per RAW.
-- Removed the Radar Sensor gear item, as there's no RAW that Radar is a valid Sensor Function in 5th Edition. 
+- Removed the Radar Sensor gear item, as there's no RAW that Radar is a valid Sensor Function in 5th Edition.
+- Corrected issues with the sourcebooks of the Keratin Control and Living Focus powers.
+- Allowed Partial Cyberskull to receive the same cyberware subsystems as a full cyberskull.
+- Liminal Body Centaur now comes with four full cyberlegs.
+
 
 Custom Content Additions:
 
 - Added the Radar Sensor gear item into an optional file called custom_radarsensorfunction_gear.xml, as there's no RAW that Radar is a valid Sensor Function in 5th Edition. Copy into the Data folder to use this.
 - Added an override file for preventing cyberlimbs from having Headware, called override_cyberlimbheadware_cyberware.xml. Copy into the Data folder to use this.
 
- Sheet Changes: 
+Sheet Changes:
 
 - Added proper quantity listings for child items attached to gear in the basic Shadowrun character sheets. 
+- Added a section to the basic Shadowrun and Fancy Blocks character sheets for additional mugshots.
 
 New Strings: 
 
@@ -46,6 +57,7 @@ New Strings:
 - String_SkillFilterBrokenSkillGroup
 - String_ExpensePurchaseCritterPower
 - Label_Handedness
+- Label_MugshotDimensions
 
 Build 189
 

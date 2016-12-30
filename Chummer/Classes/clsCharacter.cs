@@ -134,7 +134,8 @@ namespace Chummer
 
         // General character info.
         private string _strName = "";
-        private string _strMugshot = "";
+        private List<string> _lstMugshots = new List<string>();
+        private int _intMainMugshotIndex = 0;
         private string _strSex = "";
         private string _strAge = "";
         private string _strEyes = "";
@@ -436,8 +437,16 @@ namespace Chummer
 
             // <name />
             objWriter.WriteElementString("name", _strName);
-            // <mugshot />
-            objWriter.WriteElementString("mugshot", _strMugshot);
+            // <mugshot>
+            objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString());
+            objWriter.WriteStartElement("mugshots");
+            foreach (string strMugshot in _lstMugshots)
+            {
+                objWriter.WriteElementString("mugshot", strMugshot);
+            }
+            // </mugshot>
+            objWriter.WriteEndElement();
+
             // <sex />
             objWriter.WriteElementString("sex", _strSex);
             // <age />
@@ -1096,8 +1105,22 @@ namespace Chummer
 
             // General character information.
             _strName = objXmlCharacter["name"].InnerText;
-		    objXmlCharacter.TryGetField("mugshot", out _strMugshot);
-		    objXmlCharacter.TryGetField("sex", out _strSex);
+            // Mugshots
+            objXmlCharacter.TryGetField("mainmugshotindex", out _intMainMugshotIndex);
+            XmlNodeList objXmlMugshotsList = objXmlDocument.SelectNodes("/character/mugshots/mugshot");
+            foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
+            {
+                Mugshots.Add(objXmlMugshot.InnerText);
+            }
+            if (Mugshots.Count == 0)
+            {
+                XmlNode objOldMugshotNode = objXmlDocument.SelectSingleNode("/character/mugshot");
+                if (objOldMugshotNode != null)
+                {
+                    Mugshots.Add(objOldMugshotNode.InnerText);
+                }
+            }
+            objXmlCharacter.TryGetField("sex", out _strSex);
 		    objXmlCharacter.TryGetField("age", out _strAge);
 		    objXmlCharacter.TryGetField("eyes", out _strEyes);
 		    objXmlCharacter.TryGetField("height", out _strHeight);
@@ -1937,24 +1960,41 @@ namespace Chummer
             // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
             // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
             // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
-            string strMugshotPath = "";
-            if (_strMugshot != "")
+            string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+            if (!Directory.Exists(mugshotsDirectoryPath))
+                Directory.CreateDirectory(mugshotsDirectoryPath);
+            // <mainmugshotpath />
+            byte[] bytImage = Convert.FromBase64String(MainMugshot);
+            MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+            objImageStream.Write(bytImage, 0, bytImage.Length);
+            Image imgMugshot = Image.FromStream(objImageStream, true);
+            string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
+            imgMugshot.Save(imgMugshotPath);
+            objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+            // <mainmugshotbase64 />
+            objWriter.WriteElementString("mainmugshotbase64", MainMugshot);
+            // <othermugshots>
+            objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
+            objWriter.WriteStartElement("othermugshots");
+            foreach (string strMugshot in Mugshots)
             {
-				string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
-                if (!Directory.Exists(mugshotsDirectoryPath))
-                    Directory.CreateDirectory(mugshotsDirectoryPath);
-                byte[] bytImage = Convert.FromBase64String(_strMugshot);
-                MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+                if (strMugshot == MainMugshot)
+                    continue;
+                objWriter.WriteStartElement("mugshot");
+                objWriter.WriteElementString("stringbase64", strMugshot);
+
+                bytImage = Convert.FromBase64String(strMugshot);
+                objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
                 objImageStream.Write(bytImage, 0, bytImage.Length);
-                Image imgMugshot = Image.FromStream(objImageStream, true);
-	            string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
+                imgMugshot = Image.FromStream(objImageStream, true);
+                imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
                 imgMugshot.Save(imgMugshotPath);
-                strMugshotPath = "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/');
+                objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/')); 
+
+                objWriter.WriteEndElement();
             }
-            // <mugshot />
-            objWriter.WriteElementString("mugshot", strMugshotPath);
-            // <mugshotbase64 />
-            objWriter.WriteElementString("mugshotbase64", _strMugshot);
+            // </mugshots>
+            objWriter.WriteEndElement();
             // <sex />
             objWriter.WriteElementString("sex", _strSex);
             // <age />
@@ -3132,17 +3172,55 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's portrait encoded using Base64.
+        /// Character's portraits encoded using Base64.
         /// </summary>
-        public string Mugshot
+        public List<string> Mugshots
         {
             get
             {
-                return _strMugshot;
+                return _lstMugshots;
             }
             set
             {
-                _strMugshot = value;
+                _lstMugshots = value;
+            }
+        }
+
+        /// <summary>
+        /// Character's main portrait encoded using Base64.
+        /// </summary>
+        public string MainMugshot
+        {
+            get
+            {
+                if (_intMainMugshotIndex >= _lstMugshots.Count || _intMainMugshotIndex < 0)
+                    return "";
+                else
+                    return _lstMugshots.ElementAt(_intMainMugshotIndex);
+            }
+        }
+
+        /// <summary>
+        /// Index of Character's main portrait.
+        /// </summary>
+        public int MainMugshotIndex
+        {
+            get
+            {
+                return _intMainMugshotIndex;
+            }
+            set
+            {
+                _intMainMugshotIndex = value;
+                if (_intMainMugshotIndex >= _lstMugshots.Count)
+                    _intMainMugshotIndex = 0;
+                else if (_intMainMugshotIndex < 0)
+                {
+                    if (_lstMugshots.Count > 0)
+                        _intMainMugshotIndex = _lstMugshots.Count - 1;
+                    else
+                        _intMainMugshotIndex = 0;
+                }    
             }
         }
 
@@ -6423,7 +6501,7 @@ namespace Chummer
 					int intAGI = 0;
 					foreach (Cyberware objCyber in _lstCyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
 					{
-						intLegs++;
+						intLegs += objCyber.LimbSlotCount;
 						intAGI = intAGI > 0 ? Math.Min(intAGI, objCyber.TotalAgility) : objCyber.TotalAgility;
 					}
 					if (intLegs == 2)

@@ -18,6 +18,8 @@ namespace Chummer.Backend.Equipment
 		private string _strName = "";
 		private string _strCategory = "";
 		private string _strLimbSlot = "";
+        private int _intLimbSlotCount = 1;
+        private bool _blnInheritAttributes = false;
 		private string _strESS = "";
 		private string _strCapacity = "";
 		private string _strAvail = "";
@@ -28,7 +30,7 @@ namespace Chummer.Backend.Equipment
 		private int _intRating = 0;
 		private int _intMinRating = 0;
 		private int _intMaxRating = 0;
-		private string _strSubsystems = "";
+		private string _strAllowSubsystems = "";
 		private bool _blnSuite = false;
 		private string _strLocation = "";
 		private Guid _guiWeaponID = new Guid();
@@ -107,7 +109,11 @@ namespace Chummer.Backend.Equipment
 			_strCategory = objXmlCyberware["category"].InnerText;
 			if (objXmlCyberware["limbslot"] != null)
 				_strLimbSlot = objXmlCyberware["limbslot"].InnerText;
-			_objGrade = objGrade;
+            if (objXmlCyberware["limbslotcount"] != null)
+                _intLimbSlotCount = Convert.ToInt32(objXmlCyberware["limbslotcount"].InnerText);
+            if (objXmlCyberware["inheritattributes"] != null)
+                _blnInheritAttributes = true;
+            _objGrade = objGrade;
 			_intRating = intRating;
 			_strESS = objXmlCyberware["ess"].InnerText;
 			_strCapacity = objXmlCyberware["capacity"].InnerText;
@@ -201,10 +207,10 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// Add Subsytem information if applicable.
-			if (objXmlCyberware.InnerXml.Contains("subsystems"))
+			if (objXmlCyberware.InnerXml.Contains("allowsubsystems"))
 			{
 				string strSubsystem = "";
-				XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("subsystems/subsystem");
+				XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
 				for (int i = 0; i < lstSubSystems.Count; i++)
 				{
 					strSubsystem += lstSubSystems[i].InnerText;
@@ -213,7 +219,7 @@ namespace Chummer.Backend.Equipment
 						strSubsystem += ",";
 					}
 				}
-				_strSubsystems = strSubsystem;
+                _strAllowSubsystems = strSubsystem;
 			}
 
 			// Check for a Variable Cost.
@@ -316,53 +322,28 @@ namespace Chummer.Backend.Equipment
 				else
 					objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
 
-				XmlNodeList objXmlSubsystemList;
-				if (objSource == Improvement.ImprovementSource.Bioware)
-					objXmlSubsystemList = objXmlDocument.SelectNodes("/chummer/biowares/bioware[capacity = \"[*]\" and contains(\"" + _strSubsystems + "\", category)]");
-				else
-					objXmlSubsystemList = objXmlDocument.SelectNodes("/chummer/cyberwares/cyberware[capacity = \"[*]\" and contains(\"" + _strSubsystems + "\", category)]");
-				foreach (XmlNode objXmlSubsystem in objXmlSubsystemList)
+                XmlNodeList objXmlSubSystemNameList = objXmlCyberware.SelectNodes("subsystems/subsystem");
+                XmlNode objXmlSubsystem;
+                
+				foreach (XmlNode objXmlSubsystemName in objXmlSubSystemNameList)
 				{
-					Cyberware objSubsystem = new Cyberware(objCharacter);
-					objSubsystem.Name = objXmlSubsystem["name"].InnerText;
-					objSubsystem.Category = objXmlSubsystem["category"].InnerText;
-					objSubsystem.Grade = objGrade;
-					objSubsystem.Rating = 0;
-					objSubsystem.ESS = objXmlSubsystem["ess"].InnerText;
-					objSubsystem.Capacity = objXmlSubsystem["capacity"].InnerText;
-					objSubsystem.Avail = objXmlSubsystem["avail"].InnerText;
-					objSubsystem.Cost = objXmlSubsystem["cost"].InnerText;
-					objSubsystem.Source = objXmlSubsystem["source"].InnerText;
-					objSubsystem.Page = objXmlSubsystem["page"].InnerText;
-					objSubsystem.Bonus = objXmlSubsystem["bonus"];
-					try
-					{
-						objSubsystem.MaxRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
-					}
-					catch
-					{
-						objSubsystem.MaxRating = 0;
-					}
+                    if (objSource == Improvement.ImprovementSource.Bioware)
+                        objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlSubsystemName.InnerText + "\"]");
+                    else
+                        objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemName.InnerText + "\"]");
 
-					// If there are any bonuses, create the Improvements for them.
-					if (objXmlSubsystem["bonus"] != null)
-					{
-						ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-						if (!objImprovementManager.CreateImprovements(objSource, objSubsystem.InternalId, objXmlSubsystem.SelectSingleNode("bonus"), false, 1, objSubsystem.DisplayNameShort))
-						{
-							objSubsystem._guiID = Guid.Empty;
-							return;
-						}
-					}
+                    Cyberware objSubsystem = new Cyberware(objCharacter);
+                    TreeNode objSubsystemNode = new TreeNode();
+                    objSubsystemNode.Text = objSubsystem.DisplayName;
+                    objSubsystemNode.Tag = objSubsystem.InternalId;
+                    objSubsystemNode.ForeColor = SystemColors.GrayText;
+                    objSubsystemNode.ContextMenuStrip = objNode.ContextMenuStrip;
+                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, objSource, intRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, blnCreateChildren, objXmlSubsystemName["forced"] != null ? objXmlSubsystemName["forced"].InnerText : "");
 
 					objSubsystem.Parent = this;
 
 					_objChildren.Add(objSubsystem);
-
-					TreeNode objSubsystemNode = new TreeNode();
-					objSubsystemNode.Text = objSubsystem.DisplayName;
-					objSubsystemNode.Tag = objSubsystem.InternalId;
-					objSubsystemNode.ForeColor = SystemColors.GrayText;
+					
 					objNode.Nodes.Add(objSubsystemNode);
 					objNode.Expand();
 				}
@@ -381,7 +362,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limbslot", _strLimbSlot);
-			objWriter.WriteElementString("ess", _strESS);
+            objWriter.WriteElementString("limbslotcount", _intLimbSlotCount.ToString());
+            objWriter.WriteElementString("inheritattributes", _blnInheritAttributes.ToString());
+            objWriter.WriteElementString("ess", _strESS);
 			objWriter.WriteElementString("capacity", _strCapacity);
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
@@ -390,7 +373,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("minrating", _intMinRating.ToString());
 			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-			objWriter.WriteElementString("subsystems", _strSubsystems);
+			objWriter.WriteElementString("subsystems", _strAllowSubsystems);
 			objWriter.WriteElementString("grade", _objGrade.Name);
 			objWriter.WriteElementString("location", _strLocation);
 			objWriter.WriteElementString("suite", _blnSuite.ToString());
@@ -454,7 +437,9 @@ namespace Chummer.Backend.Equipment
 			_strCategory = objNode["category"].InnerText;
 			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
             objNode.TryGetField("limbslot", out _strLimbSlot);
-			_strESS = objNode["ess"].InnerText;
+            objNode.TryGetField("limbslotcount", out _intLimbSlotCount, 1);
+            objNode.TryGetField("inheritattributes", out _blnInheritAttributes, false);
+            _strESS = objNode["ess"].InnerText;
 			_strCapacity = objNode["capacity"].InnerText;
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
@@ -464,7 +449,7 @@ namespace Chummer.Backend.Equipment
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
             objNode.TryGetField("minrating", out _intMinRating);
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
-			_strSubsystems = objNode["subsystems"].InnerText;
+            objNode.TryGetField("subsystems", out _strAllowSubsystems);
 			_objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource);
             objNode.TryGetField("location", out _strLocation);
             objNode.TryGetField("suite", out _blnSuite);
@@ -617,7 +602,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("minrating", _intMinRating.ToString());
 			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-			objWriter.WriteElementString("subsystems", _strSubsystems);
+			objWriter.WriteElementString("allowsubsystems", _strAllowSubsystems);
 			objWriter.WriteElementString("grade", _objGrade.DisplayName);
 			objWriter.WriteElementString("location", _strLocation);
 			objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -842,7 +827,7 @@ namespace Chummer.Backend.Equipment
 		}
 
 		/// <summary>
-		/// The body "slot" a Cyberlimb occupies.
+		/// The type of body "slot" a Cyberlimb occupies.
 		/// </summary>
 		public string LimbSlot
 		{
@@ -856,10 +841,48 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// The location of a Cyberlimb.
+        /// <summary>
+		/// The amount of body "slots" a Cyberlimb occupies.
 		/// </summary>
-		public string Location
+		public int LimbSlotCount
+        {
+            get
+            {
+                return _intLimbSlotCount;
+            }
+            set
+            {
+                _intLimbSlotCount = value;
+            }
+        }
+
+        /// <summary>
+        /// How many cyberlimbs does this cyberware have?
+        /// </summary>
+        public int CyberlimbCount
+        {
+            get
+            {
+                int intCount = 0;
+
+                if (LimbSlot != "" && Name.Contains("Full"))
+                {
+                    intCount += LimbSlotCount;
+                }
+
+                foreach (Cyberware objCyberwareChild in Children)
+                {
+                    intCount += objCyberwareChild.CyberlimbCount;
+                }
+
+                return intCount;
+            }
+        }
+
+        /// <summary>
+        /// The location of a Cyberlimb.
+        /// </summary>
+        public string Location
 		{
 			get
 			{
@@ -1028,15 +1051,15 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// The Categories of allowable Subsystems.
 		/// </summary>
-		public string Subsytems
+		public string AllowedSubsystems
 		{
 			get
 			{
-				return _strSubsystems;
+				return _strAllowSubsystems;
 			}
 			set
 			{
-				_strSubsystems = value;
+                _strAllowSubsystems = value;
 			}
 		}
 
@@ -1806,7 +1829,40 @@ namespace Chummer.Backend.Equipment
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
 
-				const double dblMultiplier = 1;
+                // Add in the cost of all child components.
+                foreach (Cyberware objChild in _objChildren)
+                {
+                    if (objChild.Capacity != "[*]")
+                    {
+                        // If the child cost starts with "*", multiply the item's base cost.
+                        if (objChild.Cost.StartsWith("*"))
+                        {
+                            int intPluginCost = 0;
+                            string strMultiplier = objChild.Cost;
+                            strMultiplier = strMultiplier.Replace("*", string.Empty);
+                            intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.Instance.CultureInfo) - 1));
+
+                            if (objChild.DiscountCost)
+                                intPluginCost = Convert.ToInt32(Convert.ToDouble(intPluginCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+
+                            intReturn += intPluginCost;
+                        }
+                        else
+                            intReturn += objChild.TotalCostWithoutModifiers;
+                    }
+
+                    // Add in the cost of any Plugin Gear plugins.
+                    foreach (Gear objGear in objChild.Gear)
+                        intReturn += objGear.TotalCost;
+                }
+
+                // Add in the cost of all Gear plugins.
+                foreach (Gear objGear in _lstGear)
+                {
+                    intReturn += objGear.TotalCost;
+                }
+
+                const double dblMultiplier = 1;
 				const double decSuiteMultiplier = 1.0;
 
 				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.Instance.CultureInfo) * decSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
@@ -1998,11 +2054,33 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strCategory != "Cyberlimb")
-					return 0;
+                if (_blnInheritAttributes)
+                {
+                    int intAverageAttribute = 0;
+                    int intLoopStat = 0;
+                    int intCyberlimbChildrenNumber = 0;
+                    foreach (Cyberware objChild in _objChildren)
+                    {
+                        intLoopStat = objChild.TotalStrength;
+                        if (intLoopStat > 0)
+                        {
+                            intCyberlimbChildrenNumber += 1;
+                            intAverageAttribute += intLoopStat;
+                        }
+                    }
+                    if (intCyberlimbChildrenNumber == 0)
+                        intCyberlimbChildrenNumber = 1;
 
-				// Base Strength for any limb is 3.
-				int intAttribute = 3;
+                    return intAverageAttribute / intCyberlimbChildrenNumber;
+                }
+
+                if (_strCategory != "Cyberlimb")
+                {
+                    return 0;
+                }
+
+                // Base Strength for any limb is 3.
+                int intAttribute = 3;
 				int intBonus = 0;
 
 				foreach (Cyberware objChild in _objChildren)
@@ -2034,11 +2112,33 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strCategory != "Cyberlimb")
-					return 0;
+                if (_blnInheritAttributes)
+                {
+                    int intAverageAttribute = 0;
+                    int intLoopStat = 0;
+                    int intCyberlimbChildrenNumber = 0;
+                    foreach (Cyberware objChild in _objChildren)
+                    {
+                        intLoopStat = objChild.TotalBody;
+                        if (intLoopStat > 0)
+                        {
+                            intCyberlimbChildrenNumber += 1;
+                            intAverageAttribute += intLoopStat;
+                        }
+                    }
+                    if (intCyberlimbChildrenNumber == 0)
+                        intCyberlimbChildrenNumber = 1;
 
-				// Base Strength for any limb is 3.
-				int intAttribute = 3;
+                    return intAverageAttribute / intCyberlimbChildrenNumber;
+                }
+
+                if (_strCategory != "Cyberlimb")
+                {
+                    return 0;
+                }
+
+                // Base Strength for any limb is 3.
+                int intAttribute = 3;
 				int intBonus = 0;
 
 				foreach (Cyberware objChild in _objChildren)
@@ -2062,14 +2162,36 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strCategory != "Cyberlimb")
-					return 0;
+                if (_blnInheritAttributes)
+                {
+                    int intAverageAttribute = 0;
+                    int intLoopStat = 0;
+                    int intCyberlimbChildrenNumber = 0;
+                    foreach (Cyberware objChild in _objChildren)
+                    {
+                        intLoopStat = objChild.TotalAgility;
+                        if (intLoopStat > 0)
+                        {
+                            intCyberlimbChildrenNumber += 1;
+                            intAverageAttribute += intLoopStat;
+                        }
+                    }
+                    if (intCyberlimbChildrenNumber == 0)
+                        intCyberlimbChildrenNumber = 1;
 
-				// Base Strength for any limb is 3.
-				int intAttribute = 3;
+                    return intAverageAttribute / intCyberlimbChildrenNumber;
+                }
+
+                if (_strCategory != "Cyberlimb")
+                {
+                    return 0;
+                }
+
+                // Base Strength for any limb is 3.
+                int intAttribute = 3;
 				int intBonus = 0;
 
-				foreach (Cyberware objChild in _objChildren)
+                foreach (Cyberware objChild in _objChildren)
 				{
 					// If the limb has Customized Agility, this is its new base value.
 					if (objChild.Name == "Customized Agility")
@@ -2102,7 +2224,7 @@ namespace Chummer.Backend.Equipment
 				bool blnReturn = false;
 				foreach (Cyberware objChild in _objChildren)
 				{
-					if (objChild.Subsytems.Contains("Modular Plug-In"))
+					if (objChild.AllowedSubsystems.Contains("Modular Plug-In"))
 					{
 						blnReturn = true;
 						break;

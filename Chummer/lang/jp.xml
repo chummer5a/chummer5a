@@ -3474,7 +3474,11 @@
     </string>
     <string>
       <key>Label_Mugshot</key>
-      <text>顔写真: (210 × 310 ピクセル)</text>
+      <text>顔写真:</text>
+    </string>
+	<string>
+      <key>Label_MugshotDimensions</key>
+      <text>210 × 310 ピクセル</text>
     </string>
     <string>
       <key>Checkbox_Created</key>
@@ -3482,7 +3486,7 @@
     </string>
     <string>
       <key>Button_AddMugshot</key>
-      <text>追加/変更</text>
+      <text>追加</text>
     </string>
     <string>
       <key>Tip_CharacterCreated</key>
