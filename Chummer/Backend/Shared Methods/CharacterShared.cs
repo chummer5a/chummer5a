@@ -91,8 +91,13 @@ namespace Chummer
 				return;
 			}
 
-			//Calculate bonus from cyberlimbs
-			int count = Math.Min(_objCharacter.Cyberware.Count(c => c.LimbSlot != "" && c.Name.Contains("Full"))/2, 2);
+            //Calculate bonus from cyberlimbs
+            int count = 0;
+            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+            {
+                count += objCyberware.CyberlimbCount;
+            }
+			count = Math.Min(count/2, 2);
 			if (impr.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
 			{
 				_objCharacter.RedlinerBonus = count;

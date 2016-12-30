@@ -271,6 +271,8 @@ namespace Chummer
 				objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
 			{
+                if (objXmlCyberware["hide"] != null)
+                    continue;
 				ListItem objItem = new ListItem
 				{
 					Value = objXmlCyberware["name"].InnerText,

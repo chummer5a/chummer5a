@@ -6501,7 +6501,7 @@ namespace Chummer
 					int intAGI = 0;
 					foreach (Cyberware objCyber in _lstCyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
 					{
-						intLegs++;
+						intLegs += objCyber.LimbSlotCount;
 						intAGI = intAGI > 0 ? Math.Min(intAGI, objCyber.TotalAgility) : objCyber.TotalAgility;
 					}
 					if (intLegs == 2)

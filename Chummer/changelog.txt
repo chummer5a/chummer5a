@@ -18,6 +18,9 @@ Application Changes:
 - Fixed an issue with checking character quality limits in Karmagen. 
 - Altered the LanguageManager GetString method to return the key string in case of failure. Should assist with troubleshooting language faults without causing hard crashes.
 - Added the ability for characters to have multiple mugshots.
+- Fixed an issue where integrated cyberware/bioware subsystems and the field to determine what subsystems can be added used the same set of XML tags. This also re-allows cyberware and bioware to come with integrated subsystems.
+- Added the ability for cyberware/bioware to derive attributes from its children.
+- Fixed an issue where the cost of cyberware/bioware grandchildren subsystems had their costs ignored.
 
 Data Changes:
 
@@ -28,6 +31,9 @@ Data Changes:
 - Corrected machine pistols and submachineguns to not have Under mounts. 
 - Added a missing detonator cap gear item.
 - Added missing restrictions for the Vampire and Sukuyan infected qualities. 
+- Corrected issues with the sourcebooks of the Keratin Control and Living Focus powers.
+- Allowed Partial Cyberskull to receive the same cyberware subsystems as a full cyberskull.
+- Liminal Body Centaur now comes with four full cyberlegs.
 
 Sheet Changes:
 

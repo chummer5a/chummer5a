@@ -610,14 +610,14 @@ namespace Chummer
 						.Where(objCyberware => objCyberware.Category == "Cyberlimb")
 						.Where(objCyberware => !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                     {
-	                    intLimbCount++;
+	                    intLimbCount += objCyberware.LimbSlotCount;
 	                    switch (_strAbbrev)
 	                    {
 		                    case "STR":
-			                    intLimbTotal += objCyberware.TotalStrength;
+			                    intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
 			                    break;
 		                    default:
-			                    intLimbTotal += objCyberware.TotalAgility;
+			                    intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
 			                    break;
 	                    }
                     }

@@ -1033,7 +1033,7 @@ namespace Chummer.Backend.Equipment
 				bool blnReturn = false;
 				foreach (Cyberware objChild in _lstCyberware)
 				{
-					if (objChild.Subsytems.Contains("Modular Plug-In"))
+					if (objChild.AllowedSubsystems.Contains("Modular Plug-In"))
 					{
 						blnReturn = true;
 						break;

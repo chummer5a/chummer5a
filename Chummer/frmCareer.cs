@@ -23044,7 +23044,7 @@ namespace Chummer
 					if (!objSelectedCyberware.Capacity.Contains('['))
 					{
 						frmPickCyberware.ShowOnlySubsystems = true;
-						frmPickCyberware.Subsystems = objSelectedCyberware.Subsytems;
+						frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
 						frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
 
 						// Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
@@ -23065,7 +23065,7 @@ namespace Chummer
 
 			frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
 
-			frmPickCyberware.Subsystems = objSelectedCyberware.Subsytems;
+			frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
 
 			frmPickCyberware.ShowDialog(this);
 
@@ -23090,7 +23090,8 @@ namespace Chummer
 			Cyberware objCyberware = new Cyberware(_objCharacter);
 			List<Weapon> objWeapons = new List<Weapon>();
 			TreeNode objNode = new TreeNode();
-			List<TreeNode> objWeaponNodes = new List<TreeNode>();
+            objNode.ContextMenuStrip = cmsCyberware;
+            List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
             objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes);
@@ -23170,9 +23171,6 @@ namespace Chummer
 				treCyberware.Nodes[intNode].Expand();
 				_objCharacter.Cyberware.Add(objCyberware);
 			}
-
-			// Select the node that was just added.
-			objNode.ContextMenuStrip = cmsCyberware;
 
 			foreach (Weapon objWeapon in objWeapons)
 				_objCharacter.Weapons.Add(objWeapon);

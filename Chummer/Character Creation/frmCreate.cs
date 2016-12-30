@@ -10194,6 +10194,7 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(_objCharacter);
             List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
+            objNode.ContextMenuStrip = cmsCyberware;
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
@@ -15896,7 +15897,7 @@ namespace Chummer
                 if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
 
-                if (objCyberware.Category.Equals("Cyberlimb"))
+                if (objCyberware.Category.Equals("Cyberlimb") || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                 {
                     lblCyberlimbAGI.Visible = true;
                     lblCyberlimbAGILabel.Visible = true;
@@ -17318,7 +17319,7 @@ namespace Chummer
                     if (!objSelectedCyberware.Capacity.Contains('['))
                     {
                         frmPickCyberware.ShowOnlySubsystems = true;
-                        frmPickCyberware.Subsystems = objSelectedCyberware.Subsytems;
+                        frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
                         frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
                     }
                     if (objSelectedCyberware.Name.StartsWith("Modular Connector"))
@@ -17336,7 +17337,7 @@ namespace Chummer
                 frmPickCyberware.WindowMode = frmSelectCyberware.Mode.Bioware;
 
             frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
-	        frmPickCyberware.Subsystems = objSelectedCyberware.Subsytems;
+	        frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
             frmPickCyberware.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
@@ -17363,6 +17364,7 @@ namespace Chummer
 
 			List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
+            objNode.ContextMenuStrip = cmsCyberware;
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
@@ -17404,9 +17406,6 @@ namespace Chummer
                 _objCharacter.Cyberware.Add(objCyberware);
             }
 
-            // Select the node that was just added.
-            _blnSkipRefresh = true;
-            objNode.ContextMenuStrip = cmsCyberware;
             _blnSkipRefresh = true;
 
             foreach (Weapon objWeapon in objWeapons)
@@ -21033,6 +21032,7 @@ namespace Chummer
                     List<Vehicle> objVehicles = new List<Vehicle>();
                     List<TreeNode> objVehicleNodes = new List<TreeNode>();
                     TreeNode objNode = new TreeNode();
+                    objNode.ContextMenuStrip = cmsCyberware;
                     Cyberware objCyberware = new Cyberware(_objCharacter);
                     Grade objGrade = objCyberware.ConvertToCyberwareGrade(objXmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware);
 
@@ -21050,6 +21050,7 @@ namespace Chummer
                         foreach (XmlNode objXmlChild in objXmlCyberware.SelectNodes("cyberwares/cyberware"))
                         {
                             TreeNode objChildNode = new TreeNode();
+                            objChildNode.ContextMenuStrip = cmsCyberware;
                             Cyberware objChildCyberware = new Cyberware(_objCharacter);
 
                             int intChildRating = 0;
@@ -21059,7 +21060,6 @@ namespace Chummer
                             XmlNode objXmlChildNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlChild["name"].InnerText + "\"]");
                             objChildCyberware.Create(objXmlChildNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intChildRating, objChildNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                             objCyberware.Children.Add(objChildCyberware);
-                            objChildNode.ContextMenuStrip = cmsCyberware;
 
                             foreach (XmlNode objXmlGear in objXmlChild.SelectNodes("gears/gear"))
                                 AddPACKSGear(objXmlGearDocument, objXmlGear, objChildNode, objChildCyberware, cmsCyberwareGear, blnCreateChildren);
@@ -21072,7 +21072,6 @@ namespace Chummer
                     foreach (XmlNode objXmlGear in objXmlCyberware.SelectNodes("gears/gear"))
                         AddPACKSGear(objXmlGearDocument, objXmlGear, objNode, objCyberware, cmsCyberwareGear, blnCreateChildren);
 
-                    objNode.ContextMenuStrip = cmsCyberware;
                     treCyberware.Nodes[0].Nodes.Add(objNode);
                     treCyberware.Nodes[0].Expand();
 
@@ -21124,6 +21123,7 @@ namespace Chummer
                     List<Vehicle> objVehicles = new List<Vehicle>();
                     List<TreeNode> objVehicleNodes = new List<TreeNode>();
                     TreeNode objNode = new TreeNode();
+                    objNode.ContextMenuStrip = cmsCyberware;
                     Cyberware objCyberware = new Cyberware(_objCharacter);
                     Grade objGrade = objCyberware.ConvertToCyberwareGrade(objXmlBioware["grade"].InnerText, Improvement.ImprovementSource.Bioware);
 
@@ -21135,7 +21135,6 @@ namespace Chummer
                     objCyberware.Create(objXmlBiowareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                     _objCharacter.Cyberware.Add(objCyberware);
 
-                    objNode.ContextMenuStrip = cmsCyberware;
                     treCyberware.Nodes[1].Nodes.Add(objNode);
                     treCyberware.Nodes[1].Expand();
 

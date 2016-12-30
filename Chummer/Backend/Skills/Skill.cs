@@ -657,7 +657,7 @@ namespace Chummer.Skills
 
 						int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
 
-						if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous)
+						if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous || cyberware.LimbSlotCount == 2)
 						{
 							s.Append(pool);
 						}
