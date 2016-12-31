@@ -1674,18 +1674,7 @@ namespace Chummer
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
-					try
-					{  //TODO Getstring dictionary check instead of clusterfuck used
-						string strTest = LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short");
-						if (strTest != "" && !strTest.Contains("Error finding string for key - "))
-							strReturn += " (" + strTest + ")";
-						else
-							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
-					catch
-					{
-						strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
+					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				}
 				return strReturn;
 			}
@@ -3388,17 +3377,7 @@ namespace Chummer
                 if (_strExtra != "")
 				{
 					// Attempt to retrieve the CharacterAttribute name.
-					try
-					{
-						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
-							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
-						else
-							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
-					catch
-					{
-						strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
+					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				}
 				return strReturn;
 			}
@@ -5107,19 +5086,7 @@ namespace Chummer
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
-					try
-					{
-						//TODO Getstring dictionary check
-						string strTestAttribute = LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short");
-						if (strTestAttribute != "" && !strTestAttribute.Contains("Error finding string for key - "))
-							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
-						else
-							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
-					catch
-					{
-						strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
+					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				}
 
 				return strReturn;
@@ -7860,17 +7827,7 @@ namespace Chummer
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
-					try
-					{
-						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
-							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
-						else
-							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
-					catch
-					{
-						strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
+					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				}
 
 				return strReturn;
