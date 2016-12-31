@@ -421,17 +421,7 @@ namespace Chummer.Backend.Equipment
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
-					try
-					{
-						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
-							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
-						else
-							strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
-					catch
-					{
-						strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-					}
+					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				}
 				return strReturn;
 			}

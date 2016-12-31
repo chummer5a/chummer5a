@@ -732,7 +732,7 @@ namespace Chummer
 			}
 
 			// If no translation could be found, just use whatever we were passed.
-			if (strReturn == "")
+			if (strReturn == "" || strReturn.Contains("Error finding string for key - "))
 				strReturn = strExtra;
 
 			return strReturn;
