@@ -95,12 +95,16 @@ namespace Chummer.Backend.Options
             if(ToolTip != null) yield return ToolTip;
         }
 
-        public override void Save()
+        public override bool Save()
         {
             //Maybe, just maybe this will prevent fucking up if complex properties is used/sat
             object old = TargetProperty.GetValue(_targetObject);
-            if(!old.Equals(_value))
+            if (!old.Equals(_value))
+            {
                 TargetProperty.SetValue(_targetObject, _value);
+                return true;
+            }
+            return false;
         }
 
         public override void Reload()

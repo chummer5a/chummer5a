@@ -40,9 +40,14 @@ namespace Chummer.Backend.Options
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public override void Save()
+        public override bool Save()
         {
-            _backingDictionary[Key] = Value;
+            if (!_backingDictionary[Key].Equals(Value))
+            {
+                _backingDictionary[Key] = Value;
+                return true;
+            }
+            return false;
         }
 
         public override void Reload()

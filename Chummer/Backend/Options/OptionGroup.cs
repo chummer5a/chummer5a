@@ -15,12 +15,15 @@ namespace Chummer.Backend.Options
             Children = children.ToList().AsReadOnly();
         }
 
-        public override void Save()
+        public override bool Save()
         {
+            bool childchanged = false;
             foreach (OptionItem child in Children)
             {
-                child.Save();
+                childchanged |= child.Save();
             }
+
+            return childchanged;
         }
 
         public override void Reload()

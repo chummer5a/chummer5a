@@ -42,7 +42,7 @@ namespace Chummer.Backend.Options
             }
         }
 
-        public abstract void Save();
+        public abstract bool Save();
         public abstract void Reload();
     }
 }

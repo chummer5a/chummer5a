@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Annotations;
+using Chummer.Backend;
+using Chummer.Backend.Attributes.SaveAttributes;
 using Chummer.Backend.Equipment;
 using Microsoft.Win32;
 
@@ -14,48 +18,18 @@ namespace Chummer
     /// </summary>
     public sealed class GlobalOptions
     {
-        static readonly GlobalOptions _objInstance = new GlobalOptions();
-        static readonly CultureInfo _objCultureInfo = CultureInfo.InvariantCulture;
-
         public event MRUChangedHandler MRUChanged;
 
-        private frmMain _frmMainForm;
-
-        private static bool _blnAutomaticUpdate = false;
-        private static bool _blnLocalisedUpdatesOnly = false;
-        private static bool _blnStartupFullscreen = false;
-        private static bool _blnSingleDiceRoller = true;
-        private static string _strLanguage = "en-us";
-        private static string _strDefaultCharacterSheet = "Shadowrun 5";
-        private static bool _blnDatesIncludeTime = true;
-        private static bool _blnPrintToFileFirst = false;
-        private static bool _lifeModuleEnabled;
-        private static bool _blnMissionsOnly = false;
-        private static bool _blnDronemods = false;
-        private static bool _blnPreferNightlyUpdates = false;
-
         // Omae Information.
-        private static bool _omaeEnabled = false;
-        private static string _strOmaeUserName = "";
-        private static string _strOmaePassword = "";
-        private static bool _blnOmaeAutoLogin = false;
-
-        private XmlDocument _objXmlClipboard = new XmlDocument();
-        private ClipboardContentType _objClipboardContentType = new ClipboardContentType();
 
         public static GradeList CyberwareGrades = new GradeList();
         public static GradeList BiowareGrades = new GradeList();
+        private static readonly GlobalOptions _instance;
 
         // PDF information.
-        public static string _strPDFAppPath = "";
-        public static string _strURLAppPath = "";
-        public static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
-        public static bool _blnOpenPDFsAsURLs = false;
-        public static bool _blnOpenPDFsAsUnix = false;
-        public static bool _blnUseLogging = false;
-        private static string _strCharacterRosterPath;
 
         #region Constructor and Instance
+
         static GlobalOptions()
         {
             if (Utils.IsRunningInVisualStudio()) return;
@@ -64,188 +38,32 @@ namespace Chummer
             if (!Directory.Exists(settingsDirectoryPath))
                 Directory.CreateDirectory(settingsDirectoryPath);
 
-            // Automatic Update.
+            bool fuckload = false;
+            _instance = new GlobalOptions();
+            ClassSaver loader = new ClassSaver();
+            XmlDocument doc = new XmlDocument();
             try
             {
-                _blnAutomaticUpdate = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("autoupdate").ToString());
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                _lifeModuleEnabled =
-                    Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("lifemodule").ToString());
-            }
-            catch 
-            {
-            }
-
-            try
-            {
-                _omaeEnabled =
-                    Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeenabled").ToString());
-            }
-            catch 
-            {
-            }
-
-            // Whether or not the app should only download localised files in the user's selected language.
-            try
-            {
-                _blnLocalisedUpdatesOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("localisedupdatesonly").ToString());
-            }
-            catch
-            {
-            }
-
-            // Whether or not the app should use logging.
-            try
-            {
-                _blnUseLogging = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("uselogging").ToString());
-            }
-            catch
-            {
-            }
-
-            // Whether or not dates should include the time.
-            try
-            {
-                _blnDatesIncludeTime = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("datesincludetime").ToString());
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                _blnMissionsOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("missionsonly").ToString());
-            }
-            catch { }
-
-            try
-            {
-                _blnDronemods = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("dronemods").ToString());
-            }
-            catch { }
-
-
-            // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
-            try
-            {
-                _blnPrintToFileFirst = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printtofilefirst").ToString());
-            }
-            catch
-            {
-            }
-
-            // Default character sheet.
-            try
-            {
-                _strDefaultCharacterSheet = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("defaultsheet").ToString();
-            }
-            catch
-            {
-            }
-
-            // Omae Settings.
-            // Username.
-            try
-            {
-                _strOmaeUserName = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeusername").ToString();
-            }
-            catch
-            {
-            }
-            // Password.
-            try
-            {
-                _strOmaePassword = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaepassword").ToString();
-            }
-            catch
-            {
-            }
-            // AutoLogin.
-            try
-            {
-                _blnOmaeAutoLogin = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeautologin").ToString());
-            }
-            catch
-            {
-            }
-            // Language.
-            try
-            {
-                _strLanguage = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("language").ToString();
-                if (_strLanguage == "en-us2")
+                if (Utils.IsLinux)
                 {
-                    _strLanguage = "en-us";
+
+                    doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                        ".config", "Chummer5a", "globaloptions.xml"));
+
+                    loader.Load(ref _instance, doc.ParentNode);
+
+                }
+                else
+                {
+                    RegistryKey rootKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+                    loader.Load(ref _instance, rootKey);
+
+
                 }
             }
             catch
             {
-            }
-            // Startup in Fullscreen mode.
-            try
-            {
-                _blnStartupFullscreen = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("startupfullscreen").ToString());
-            }
-            catch
-            {
-            }
-            // Single instace of the Dice Roller window.
-            try
-            {
-                _blnSingleDiceRoller = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("singlediceroller").ToString());
-            }
-            catch
-            {
-            }
-
-            // Open PDFs as URLs. For use with Chrome, Firefox, etc.
-            try
-            {
-                _blnOpenPDFsAsURLs = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("openpdfsasurls").ToString());
-            }
-            catch
-            {
-            }
-
-            // Open PDFs as URLs. For use with Chrome, Firefox, etc.
-            try
-            {
-                _blnOpenPDFsAsUnix = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("openpdfsasunix").ToString());
-            }
-            catch
-            {
-            }
-
-            // PDF application path.
-            try
-            {
-                _strPDFAppPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("pdfapppath").ToString();
-            }
-            catch
-            {
-            }
-
-            // Folder path to check for characters.
-            try
-            {
-                _strCharacterRosterPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("characterrosterpath").ToString();
-            }
-            catch
-            {
-            }
-
-            // Prefer Nightly Updates.
-            try
-            {
-                _blnPreferNightlyUpdates = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("prefernightlybuilds").ToString());
-            }
-            catch
-            {
+                fuckload = true;
             }
 
             // Retrieve the SourcebookInfo objects.
@@ -253,414 +71,201 @@ namespace Chummer
             XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book");
             foreach (XmlNode objXmlBook in objXmlBookList)
             {
+                SourcebookInfo objSource = new SourcebookInfo(objXmlBook["code"].InnerText, objXmlBook["name"].InnerText); //TODO: Localize
+                _instance.SourcebookInfo.Add(objSource);
+
+            }
+
+            if (!fuckload)
+            {
                 try
                 {
-                    //TODO: paths in less insane way (aka maybe nested stuff instead of lists from different sources staying in sync?
-                    string strTemp = "|0"; //Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook").GetValue(objXmlBook["code"].InnerText).ToString();
-                    string[] strParts = strTemp.Split('|');
-                    SourcebookInfo objSource = new SourcebookInfo(objXmlBook["code"].InnerText, objXmlBook["name"].InnerText); //TODO: Localize
-
-                    objSource.Path = strParts[0];
-                    objSource.Offset = Convert.ToInt32(strParts[1]);
-
-                    _lstSourcebookInfo.Add(objSource);
-                }
-                catch(Exception ex)
-                {
-                }
+                    if (Utils.IsLinux)
+                    {
+                        foreach (XmlNode book in doc["settings"]["books"].ChildNodes)
+                        {
+                            string bookCode = book["book"].InnerText;
+                            SourcebookInfo info = _instance.SourcebookInfo.First(x => x.Code == bookCode);
+                            if (info != null)
+                                loader.Load(ref info, book);
+                        }
+                    }
+                    else
+                    {
+                        RegistryKey bookKey = Registry.CurrentConfig.CreateSubKey("Software\\Chummer5\\Books");
+                        foreach (RegistryKey specificBook in bookKey.GetSubKeyNames()
+                            .Select(x => bookKey.OpenSubKey(x)))
+                        {
+                            string bookCode = specificBook.GetValue("code").ToString();
+                            SourcebookInfo info = _instance.SourcebookInfo.FirstOrDefault(x => x.Code == bookCode);
+                            if (info != null)
+                                loader.Load(ref info, specificBook);
+                        }
+                    }
+                } catch {}
             }
 
             CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);
             BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
         }
 
-		
+        private GlobalOptions()
+        {
+
+
+
+        }
 
         /// <summary>
         /// Global instance of the GlobalOptions.
         /// </summary>
         public static GlobalOptions Instance
         {
-            get
-            {
-                return _objInstance;
-            }
+            get { return _instance; }
         }
+
         #endregion
 
         #region Properties
         /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>
-        public bool AutomaticUpdate
-        {
-            get
-            {
-                return _blnAutomaticUpdate;
-            }
-            set
-            {
-                _blnAutomaticUpdate = value;
-            }
-        }
+        [SavePropertyAs("autoupdate")]
+        public bool AutomaticUpdate { get; set; }
 
-        public bool LifeModuleEnabled
-        {
-            get { return _lifeModuleEnabled; }
-            set { _lifeModuleEnabled = value; }
-        }
+        [SavePropertyAs("lifemodule")]
+        public bool LifeModuleEnabled { get; set; }
 
         /// <summary>
         /// Whether or not the app should only download localised files in the user's selected language.
         /// </summary>
-        public bool LocalisedUpdatesOnly
-        {
-            get
-            {
-                return _blnLocalisedUpdatesOnly;
-            }
-            set
-            {
-                _blnLocalisedUpdatesOnly = value;
-            }
-        }
+        [SavePropertyAs("localisedupdatesonly")]
+        public bool LocalisedUpdatesOnly { get; set; } = false;
 
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
-        public bool UseLogging
-        {
-            get
-            {
-                return _blnUseLogging;
-            }
-            set
-            {
-                _blnUseLogging = value;
-            }
-        }
+        [SavePropertyAs("uselogging")]
+        public bool UseLogging { get; set; } = false;
 
         /// <summary>
         /// Whether or not dates should include the time.
         /// </summary>
-        public bool DatesIncludeTime
-        {
-            get
-            {
-                return _blnDatesIncludeTime;
-            }
-            set
-            {
-                _blnDatesIncludeTime = value;
-            }
-        }
+        [SavePropertyAs("datesincludetime")]
+        public bool DatesIncludeTime { get; set; } = true;
 
-        public bool MissionsOnly
-        {
-            get
-            {
-                return _blnMissionsOnly;
+        [SavePropertyAs("missionsonly")]
+        public bool MissionsOnly { get; set; } = false;
 
-            }
-            set
-            {
-                _blnMissionsOnly = value;
-            }
-        }
 
-        public bool Dronemods
-        {
-            get
-            {
-                return _blnDronemods;
-
-            }
-            set
-            {
-                _blnDronemods = value;
-            }
-        }
+        [SavePropertyAs("dronemods")]
+        public bool Dronemods { get; set; } = false;
 
 
         /// <summary>
         /// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
         /// </summary>
-        public bool PrintToFileFirst
-        {
-            get
-            {
-                return _blnPrintToFileFirst;
-            }
-            set
-            {
-                _blnPrintToFileFirst = value;
-            }
-        }
+        [SavePropertyAs("printtofilefirst")]
+        public bool PrintToFileFirst { get; set; } = false;
 
         /// <summary>
         /// Omae user name.
         /// </summary>
-        public string OmaeUserName
-        {
-            get
-            {
-                return _strOmaeUserName;
-            }
-            set
-            {
-                _strOmaeUserName = value;
-            }
-        }
+        [SavePropertyAs("omaeusername")]
+        public string OmaeUserName { get; set; } = "";
 
         /// <summary>
         /// Omae password (Base64 encoded).
         /// </summary>
-        public string OmaePassword
-        {
-            get
-            {
-                return _strOmaePassword;
-            }
-            set
-            {
-                _strOmaePassword = value;
-            }
-        }
+        [SavePropertyAs("omaepassword")]
+        public string OmaePassword { get; set; } = "";
 
         /// <summary>
         /// Omae AutoLogin.
         /// </summary>
-        public bool OmaeAutoLogin
-        {
-            get
-            {
-                return _blnOmaeAutoLogin;
-            }
-            set
-            {
-                _blnOmaeAutoLogin = value;
-            }
-        }
+        [SavePropertyAs("omaeautologin")]
+        public bool OmaeAutoLogin { get; set; } = false;
 
         /// <summary>
         /// Main application form.
         /// </summary>
-        public frmMain MainForm
-        {
-            get
-            {
-                return _frmMainForm;
-            }
-            set
-            {
-                _frmMainForm = value;
-            }
-        }
+        public frmMain MainForm { get; set; }
 
         /// <summary>
         /// Language.
         /// </summary>
-        public string Language
-        {
-            get
-            {
-                return _strLanguage;
-            }
-            set
-            {
-                _strLanguage = value;
-            }
-        }
+        [SavePropertyAs("language")]
+        public string Language { get; set; } = "en-us";
 
         /// <summary>
         /// Whether or not the application should start in fullscreen mode.
         /// </summary>
-        public bool StartupFullscreen
-        {
-            get
-            {
-                return _blnStartupFullscreen;
-            }
-            set
-            {
-                _blnStartupFullscreen = value;
-            }
-        }
+        [SavePropertyAs("startupfullscreen")]
+        public bool StartupFullscreen { get; set; } = false;
 
         /// <summary>
         /// Whether or not only a single instance of the Dice Roller should be allowed.
         /// </summary>
-        public bool SingleDiceRoller
-        {
-            get
-            {
-                return _blnSingleDiceRoller;
-            }
-            set
-            {
-                _blnSingleDiceRoller = value;
-            }
-        }
+        [SavePropertyAs("singlediceroller")]
+        public bool SingleDiceRoller { get; set; } = true;
 
         /// <summary>
         /// CultureInfor for number localization.
         /// </summary>
-        public CultureInfo CultureInfo
-        {
-            get
-            {
-                return _objCultureInfo;
-            }
-        }
+        public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
 
         /// <summary>
         /// Clipboard.
         /// </summary>
-        public XmlDocument Clipboard
-        {
-            get
-            {
-                return _objXmlClipboard;
-            }
-            set
-            {
-                _objXmlClipboard = value;
-            }
-        }
+        public XmlDocument Clipboard { get; set; } = new XmlDocument();
 
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
-        public ClipboardContentType ClipboardContentType
-        {
-            get
-            {
-                return _objClipboardContentType;
-            }
-            set
-            {
-                _objClipboardContentType = value;
-            }
-        }
+        public ClipboardContentType ClipboardContentType { get; set; } = new ClipboardContentType();
 
         /// <summary>
         /// Default character sheet to use when printing.
         /// </summary>
-        public string DefaultCharacterSheet
-        {
-            get
-            {
-                return _strDefaultCharacterSheet;
-            }
-            set
-            {
-                _strDefaultCharacterSheet = value;
-            }
-        }
+        public string DefaultCharacterSheet { get; set; } = "Shadowrun 5";
 
         /// <summary>
         /// Path to the user's PDF application.
         /// </summary>
-        public string PDFAppPath
-        {
-            get
-            {
-                return _strPDFAppPath;
-            }
-            set
-            {
-                _strPDFAppPath = value;
-            }
-        }
+        [SavePropertyAs("pdfapppath")]
+        public string PDFAppPath { get; set; } = "";
 
         /// <summary>
         /// Path to the user's PDF application.
         /// </summary>
-        public string URLAppPath
-        {
-            get
-            {
-                return _strURLAppPath;
-            }
-            set
-            {
-                _strURLAppPath = value;
-            }
-        }
+        public string URLAppPath { get; set; } = "";
+
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public List<SourcebookInfo> SourcebookInfo
-        {
-            get
-            {
-                return _lstSourcebookInfo;
-            }
-            set
-            {
-                _lstSourcebookInfo = value;
-            }
-        }        /// <summary>
+        public List<SourcebookInfo> SourcebookInfo { get; set; } = new List<SourcebookInfo>();
+
+        /// <summary>
         /// Which method of opening PDFs to use. True = file://path.pdf#page=x
         /// </summary>
-        public bool OpenPDFsAsURLs
-        {
-            get
-            {
-                return GlobalOptions._blnOpenPDFsAsURLs;
-            }
-            set
-            {
-                GlobalOptions._blnOpenPDFsAsURLs = value;
-            }
-        }
+        [SavePropertyAs("openpdfsasurls")]
+        public bool OpenPDFsAsURLs { get; set; } = false;
 
         /// <summary>
         /// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
         /// </summary>
-        public bool OpenPDFsAsAsUnix
-        {
-            get
-            {
-                return GlobalOptions._blnOpenPDFsAsUnix;
-            }
-            set
-            {
-                GlobalOptions._blnOpenPDFsAsUnix = value;
-            }
-        }
+        [SavePropertyAs("openpdfsasunix")]
+        public bool OpenPDFsAsAsUnix { get; set; } = false;
 
-        public bool OmaeEnabled
-        {
-            get { return _omaeEnabled; }
-            set { _omaeEnabled = value; }
-        }
+        [SavePropertyAs("omaeenabled")]
+        public bool OmaeEnabled { get; set; } = false;
 
-        public bool PreferNightlyBuilds
-        {
-            get
-            {
-                return _blnPreferNightlyUpdates;
-            }
-            set
-            {
-                _blnPreferNightlyUpdates = value;
-            }
-        }
+        [SavePropertyAs("prefernightlybuilds")]
+        public bool PreferNightlyBuilds { get; set; } = false;
 
-        public string CharacterRosterPath
-        {
-            get
-            {
-                return _strCharacterRosterPath;
-				
-            }
-            set
-            {
-                _strCharacterRosterPath = value;
-				
-            }
-        }
+        [SavePropertyAs("characterrosterpath")]
+        public string CharacterRosterPath { get; set; }
+
         #endregion
 
         #region MRU Methods

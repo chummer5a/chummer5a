@@ -1,23 +1,18 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
 using Chummer.Backend.Options;
-using Microsoft.Win32;
 
 namespace Chummer
 {
 	public class CharacterOptions
 	{
-		#region Default Values
+	    #region Default Values
 		public readonly string FileName = "default.xml";
+
+
 
 	    // Settings.
 		private bool _blnAllow2ndMaxAttribute;

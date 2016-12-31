@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,6 +15,7 @@ using Chummer.Classes;
 using Chummer.Datastructures;
 using Chummer.UI.Options;
 using Chummer.UI.Options.ControlGenerators;
+using Microsoft.Win32;
 
 namespace Chummer
 {
@@ -174,6 +176,70 @@ namespace Chummer
             foreach (OptionItem item in _options.SearchList)
             {
                 item.Save();
+            }
+            string optionPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "settings",
+                Program.OptionsManager.Default.FileName);
+
+            ClassSaver saver = new ClassSaver();
+
+            Directory.CreateDirectory(Path.GetDirectoryName(optionPath));
+            using (FileStream fs = new FileStream(optionPath, FileMode.Create))
+            {
+                XmlTextWriter writer = new XmlTextWriter(fs, Encoding.UTF8);
+                writer.WriteStartElement("settings");
+                writer.WriteAttributeString("fileversion", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                saver.Save(Program.OptionsManager.Default, writer);
+                writer.WriteStartElement("books");
+                foreach (var book in Program.OptionsManager.Default.Books.Where(x => x.Value).Select(x => x.Key))
+                {
+                    writer.WriteStartElement("book");
+                    writer.WriteElementString("book", book);
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.Flush();
+                fs.Flush();
+            }
+
+            if (Utils.IsLinux)
+            {
+                string globalOptionPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    ".config", "Chummer5a", "globaloptions.xml");
+
+                Directory.CreateDirectory(Path.GetDirectoryName(globalOptionPath));
+                using (FileStream fs = new FileStream(globalOptionPath, FileMode.Create))
+                {
+                    XmlTextWriter writer = new XmlTextWriter(fs, Encoding.UTF8);
+                    writer.WriteStartElement("settings");
+
+                    saver.Save(GlobalOptions.Instance, writer);
+
+                    writer.WriteStartElement("books");
+                    foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
+                    {
+                        writer.WriteStartElement("book");
+                        saver.Save(book, writer);
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                    writer.Flush();
+                    fs.Flush();
+                }
+            }
+            else
+            {
+                RegistryKey rootKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+                saver.Save(GlobalOptions.Instance, rootKey);
+                int count = 0;
+                RegistryKey bookKey = Registry.CurrentConfig.CreateSubKey("Software\\Chummer5\\Books");
+                foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
+                {
+                    RegistryKey k2 = bookKey.OpenSubKey(count.ToString("D2"), true);
+                    saver.Save(book, k2);
+                }
             }
             Close();
         }

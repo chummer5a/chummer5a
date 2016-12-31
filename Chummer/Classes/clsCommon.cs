@@ -1404,7 +1404,7 @@ namespace Chummer
                 // Open the PDF.
                 // acrord32 /A "page=123" "D:\foo\bar.pdf"
                 //string strFilePath = "C:\\Gaming\\Shadowrun\\Books\\Shadowrun 4th ed Anniverary.pdf";
-                if (GlobalOptions._blnOpenPDFsAsURLs)
+                if (GlobalOptions.Instance.OpenPDFsAsURLs)
                 {
                     var uri = new System.Uri(strPath, UriKind.Absolute);
                     string strParams = "\"" + uri + "#page=" + intPage.ToString() + "\"";
@@ -1413,7 +1413,7 @@ namespace Chummer
                 else
                 {
                     string strParams;
-                    if (GlobalOptions._blnOpenPDFsAsUnix)
+                    if (GlobalOptions.Instance.OpenPDFsAsAsUnix)
                     {
                         strParams = "-p " + intPage + " \"" + strPath + "\"";
                     }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Xml;
 using Chummer.Backend.Attributes.SaveAttributes;
+using Microsoft.Win32;
 using Octokit;
 
 namespace Chummer.Backend
@@ -29,6 +30,14 @@ namespace Chummer.Backend
             SaveInner(toSave, destination.WriteElementString);
         }
 
+        public void Save(object toSave, RegistryKey destination)
+        {
+            if (toSave == null) throw new NullReferenceException(nameof(toSave));
+            if (destination == null) throw new NullReferenceException(nameof(destination));
+
+            SaveInner(toSave, destination.SetValue);
+        }
+
         //Not 99% sure ref is needed, but makes it explicit what happens and might prevent if anybody uses this on a
         //struct in the future
         public void Load<T>(ref T target, XmlNode source)
@@ -38,6 +47,10 @@ namespace Chummer.Backend
 
             LoadInner(ref target, field => source[field]?.InnerText);
 
+        }
+
+        public void Load<T>(ref T target, RegistryKey source)
+        {
 
         }
 
