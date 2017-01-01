@@ -1964,38 +1964,42 @@ namespace Chummer
             if (!Directory.Exists(mugshotsDirectoryPath))
                 Directory.CreateDirectory(mugshotsDirectoryPath);
             // <mainmugshotpath />
-            byte[] bytImage = Convert.FromBase64String(MainMugshot);
-            MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-            objImageStream.Write(bytImage, 0, bytImage.Length);
-            Image imgMugshot = Image.FromStream(objImageStream, true);
-            string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
-            imgMugshot.Save(imgMugshotPath);
-            objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
-            // <mainmugshotbase64 />
-            objWriter.WriteElementString("mainmugshotbase64", MainMugshot);
-            // <othermugshots>
-            objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
-            objWriter.WriteStartElement("othermugshots");
-            foreach (string strMugshot in Mugshots)
-            {
-                if (strMugshot == MainMugshot)
-                    continue;
-                objWriter.WriteStartElement("mugshot");
-                objWriter.WriteElementString("stringbase64", strMugshot);
+	        if (MainMugshot.Length > 0)
+	        {
+		        byte[] bytImage = Convert.FromBase64String(MainMugshot);
+		        MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+		        objImageStream.Write(bytImage, 0, bytImage.Length);
+		        Image imgMugshot = Image.FromStream(objImageStream, true);
+		        string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
+		        imgMugshot.Save(imgMugshotPath);
+		        objWriter.WriteElementString("mainmugshotpath",
+			        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+		        // <mainmugshotbase64 />
+		        objWriter.WriteElementString("mainmugshotbase64", MainMugshot);
+		        // <othermugshots>
+		        objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
+		        objWriter.WriteStartElement("othermugshots");
+		        foreach (string strMugshot in Mugshots)
+		        {
+			        if (strMugshot == MainMugshot)
+				        continue;
+			        objWriter.WriteStartElement("mugshot");
+			        objWriter.WriteElementString("stringbase64", strMugshot);
 
-                bytImage = Convert.FromBase64String(strMugshot);
-                objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                objImageStream.Write(bytImage, 0, bytImage.Length);
-                imgMugshot = Image.FromStream(objImageStream, true);
-                imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
-                imgMugshot.Save(imgMugshotPath);
-                objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/')); 
+			        bytImage = Convert.FromBase64String(strMugshot);
+			        objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+			        objImageStream.Write(bytImage, 0, bytImage.Length);
+			        imgMugshot = Image.FromStream(objImageStream, true);
+			        imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
+			        imgMugshot.Save(imgMugshotPath);
+			        objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
-                objWriter.WriteEndElement();
-            }
-            // </mugshots>
-            objWriter.WriteEndElement();
-            // <sex />
+			        objWriter.WriteEndElement();
+		        }
+		        // </mugshots>
+		        objWriter.WriteEndElement();
+	        }
+	        // <sex />
             objWriter.WriteElementString("sex", _strSex);
             // <age />
             objWriter.WriteElementString("age", _strAge);
