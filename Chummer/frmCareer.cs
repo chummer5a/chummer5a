@@ -18243,6 +18243,7 @@ namespace Chummer
 								if (objGear.Extra != "")
 									_objImprovementManager.ForcedValue = objGear.Extra;
 								_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+								RefreshPowers();
 							}
 						}
 					}
@@ -18269,74 +18270,6 @@ namespace Chummer
                     objGear.Bonded = false;
                     _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                     _objCharacter.Foci.Remove(objFocus);
-                    foreach (Power objPower in _objCharacter.Powers)
-                    {
-                        // Known issues: 
-                        // 1) If freelevels > MAG, AND multiple sources give free levels, the calculation for the left-over free levels
-                        // will not be correct
-                        // Foci give their rating / 4 in power points - use power points per level to calculate the amount of levels this
-                        // focus is worth. May be troublesome in foci of non-integer power levels, but as foci should not be created
-                        // with such, this will be better handled in the focus rating itself.
-                        if (objPower.BonusSource == objGear.InternalId)
-                        {
-
-                            // If we do not remove the bonus source, foci completely break when binding-unbinding-rebinding, because their 
-                            // bonus is calculated twice in the improvement manager.
-                            // TODO - Clean up the improvement manager power management.
-                            objPower.BonusSource = "";
-
-                            foreach (Improvement objImprovement in _objCharacter.Improvements.ToList())
-                            {
-                                if (objImprovement.SourceName == objPower.InternalId) 
-                                {
-                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId); 
-                                }
-                            }
-                            if (objPower.Free)
-                                _objCharacter.Powers.Remove(objPower);
-                            else if (objPower.FreeLevels > 0)
-                            {
-                                int freeLevelsByThisFocus = (int)(Math.Min(objFocus.Rating * .25M, objPower.FreeLevels * objPower.PointsPerLevel) / objPower.PointsPerLevel);
-                                if (objPower.Rating > freeLevelsByThisFocus)
-                                {
-                                    objPower.Rating -= freeLevelsByThisFocus;
-                                    objPower.FreeLevels -= freeLevelsByThisFocus;
-                                }
-                                else
-                                {
-                                    _objCharacter.Powers.Remove(objPower);
-                                }
-                            }
-                            else if (objPower.FreePoints > 0)
-                            {
-                                // For complete robustness, a way should be implemented to allow to switch
-                                // between Improved Reflexes I/II/III, with Foci, according to the force
-                                // of the focus.
-
-                                //In the meantime, calculate if the free points of the focus are equal
-                                //to the point cost of the power, and remove it if it is
-                                decimal freePointsByThisFocus = Math.Min(objFocus.Rating * .25M, objPower.FreePoints);
-
-                                //This should be the case, always as implemented currently.
-                                if (objPower.PointsPerLevel * objPower.Rating == freePointsByThisFocus)
-                                {
-                                    _objCharacter.Powers.Remove(objPower);
-                                }
-                                else
-                                {
-                                    //Should never happen currently.
-                                    objPower.FreePoints -= freePointsByThisFocus;
-                                    objPower.Rating -= freePointsByThisFocus * objPower.PointsPerLevel;
-                                }
-                            }
-                            else
-                                _objCharacter.Powers.Remove(objPower);
-
-                            objGear.Extra = "";
-                            _objController.PopulateFocusList(treFoci);
-                            break;
-                        }
-                    }
                     RefreshPowers();
                 }
 				else
@@ -21509,9 +21442,11 @@ namespace Chummer
 
         public void RefreshPowers()
         {
+			//TODO: Refactor this to be managed through databinding.
             _blnLoading = true;
 
-            foreach (PowerControl pc in panPowers.Controls)
+			if (panPowers.Controls.Count == _objCharacter.Powers.Count) return;
+			foreach (PowerControl pc in panPowers.Controls)
             {
                 pc.PowerRatingChanged += objPower_PowerRatingChanged;
                 pc.DeletePower += objPower_DeletePower;

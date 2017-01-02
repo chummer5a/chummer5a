@@ -53,7 +53,7 @@ namespace Chummer
 					DataSourceUpdateMode.OnPropertyChanged);
 				
 			}
-			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayNameShort), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.FullName), false, DataSourceUpdateMode.OnPropertyChanged);
 			chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false, DataSourceUpdateMode.OnPropertyChanged);
 			chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, DataSourceUpdateMode.OnPropertyChanged);
 			MoveControls();
@@ -352,7 +352,7 @@ namespace Chummer
             lblPowerPoints.Text = String.Format("{0} / {1} = {2}", strCalculated, LanguageManager.Instance.GetString("Label_Power_Level"), strPoints);
 			if (_objPower.FreeLevels > 0)
 			{
-				lblPowerPoints.Text += string.Format(" ({0})", _objPower.PowerPoints + _objPower.FreeLevels);
+				lblPowerPoints.Text += string.Format(" ({0})", _objPower.PowerPoints);
 			}
         }
 
@@ -367,25 +367,6 @@ namespace Chummer
 
 			nudRating.Maximum = intMAG;
 		}
-
-        /// <summary>
-        /// Refresh the minimum level for the Power.
-        /// </summary>
-        /// <param name="objPower">The power.</param>
-        public void RefreshMinimum(Power objPower)
-        {
-            if (_objPower.FreeLevels > 0)
-                nudRating.Minimum = _objPower.FreeLevels;
-            else
-                nudRating.Minimum = 0;
-
-            // raise or lower value    
-
-            _objPower.FreeLevels = objPower.FreeLevels;
-
-
-            return;
-        }
 
         /// <summary>
 		/// Refresh the tooltip for the control.

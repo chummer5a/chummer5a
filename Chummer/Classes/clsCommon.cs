@@ -923,7 +923,7 @@ namespace Chummer
 					{
 						if (objPower.BonusSource == objFocus.GearId)
 						{
-							objPower.FreeLevels -= (objFocus.Rating / 4);
+							//objPower.FreeLevels -= (objFocus.Rating / 4);
 						}
 					}
 					_objCharacter.Foci.Remove(objFocus);

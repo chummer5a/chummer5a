@@ -5192,26 +5192,18 @@ namespace Chummer
         {
             get
             {
-                return _intFreeLevels;
-            }
-            set
-            {
-                _intFreeLevels = value;
-            }
-        }
-
-        /// <summary>
-        /// Is the power free.
-        /// </summary>
-        public bool Free
-        {
-            get
-            {
-                return _blnFree;
-            }
-            set
-            {
-                _blnFree = value;
+	            int intReturn = 0;
+	            foreach (Improvement objImprovement in _objCharacter.Improvements)
+	            {
+		            if (objImprovement.ImprovedName == _strName)
+		            {
+			            if (objImprovement.UniqueName == _strExtra)
+			            {
+				            intReturn += objImprovement.Rating;
+			            }
+		            }
+	            }
+	            return intReturn;
             }
         }
 
@@ -5226,10 +5218,10 @@ namespace Chummer
                     return 0;
                 else
                 {
-                    decimal decReturn = (_intRating - _intFreeLevels) * PointsPerLevel;
+                    decimal decReturn = (Rating - FreeLevels) * PointsPerLevel;
                     decReturn -= Discount;
 
-                    return decReturn;
+                    return Math.Max(decReturn, 0);
                 }
 			}
 		}

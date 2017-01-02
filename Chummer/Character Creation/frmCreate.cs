@@ -6858,7 +6858,7 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateCharacterInfo();
             RefreshMartialArts();
-            
+            RefreshPowers();
             RefreshContacts();
 			RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
             _blnIsDirty = true;
@@ -12664,60 +12664,8 @@ namespace Chummer
                     objGear.Bonded = false;
                     _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                     _objCharacter.Foci.Remove(objFocus);
-                    foreach (Power objPower in _objCharacter.Powers)
-                    {
-                        if (objPower.BonusSource == objGear.InternalId)
-                        {
-                            //Remove the Bonus Source since this object will not be giving a bonus
-                            objPower.BonusSource = "";
-
-                            if (objPower.Free)
-                                _objCharacter.Powers.Remove(objPower);
-                            else if (objPower.FreeLevels > 0)
-                            {
-                                int freeLevelsByThisFocus = (int)(Math.Min(objFocus.Rating * .25M, objPower.FreeLevels * objPower.PointsPerLevel) / objPower.PointsPerLevel);
-                                if (objPower.Rating > freeLevelsByThisFocus)
-                                {
-                                    objPower.Rating -= freeLevelsByThisFocus;
-                                    objPower.FreeLevels -= freeLevelsByThisFocus;
-                                }
-                                else
-                                {
-                                    _objCharacter.Powers.Remove(objPower);
-                                }
-                            }
-                            else if (objPower.FreePoints > 0)
-                            {
-                                // For complete robustness, a way should be implemented to allow to switch
-                                // between Improved Reflexes I/II/III, with Foci, according to the force
-                                // of the focus.
-
-                                //In the meantime, calculate if the free points of the focus are equal
-                                //to the point cost of the power, and remove it if it is
-                                decimal freePointsByThisFocus = Math.Min(objFocus.Rating * .25M, objPower.FreePoints);
-
-                                //This should be the case, always as implemented currently.
-                                if (objPower.PointsPerLevel * objPower.Rating == freePointsByThisFocus)
-                                {
-                                    _objCharacter.Powers.Remove(objPower);
-                                }
-                                else
-                                {
-                                    //Should never happen currently.
-                                    objPower.FreePoints -= freePointsByThisFocus;
-                                    objPower.Rating -= freePointsByThisFocus * objPower.PointsPerLevel;
-                                }
-                            }
-                            else
-                                _objCharacter.Powers.Remove(objPower);
-
-                            objGear.Extra = "";
-                            _objController.PopulateFocusList(treFoci);
-                            break;
-                        }
-                    }
-                    
-                }
+					RefreshPowers();
+				}
                 else
                 {
                     // This is a Stacked Focus.
@@ -13055,10 +13003,42 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle(false);
         }
-        #endregion
 
-        #region Additional Sprites and Complex Forms Tab Control Events
-        private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
+
+		public void RefreshPowers()
+		{
+			//TODO: Refactor this to be managed through databinding.
+			_blnLoading = true;
+			if (panPowers.Controls.Count == _objCharacter.Powers.Count) return;
+			foreach (PowerControl pc in panPowers.Controls)
+			{
+				pc.PowerRatingChanged += objPower_PowerRatingChanged;
+				pc.DeletePower += objPower_DeletePower;
+			}
+
+			// Remove Adept Powers.
+			panPowers.Controls.Clear();
+
+			// Populate Adept Powers.
+			int i = -1;
+			foreach (Power objPower in _objCharacter.Powers)
+			{
+				i++;
+				PowerControl objPowerControl = new PowerControl(objPower);
+
+				// Attach an EventHandler for the PowerRatingChanged Event.
+				objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
+				objPowerControl.DeletePower += objPower_DeletePower;
+
+				objPowerControl.Top = i * objPowerControl.Height;
+				panPowers.Controls.Add(objPowerControl);
+			}
+			_blnLoading = false;
+		}
+		#endregion
+
+		#region Additional Sprites and Complex Forms Tab Control Events
+		private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
             try
             {
