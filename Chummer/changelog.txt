@@ -45,7 +45,10 @@ Data Changes:
 - Liminal Body Centaur now comes with four full cyberlegs.
 - Fixed the Dual-Natured critter power to provide access to Assensing. 
 - Fixed incorrect cost discount for the Astral Hazing quality.
-
+- Vintage quality now properly doubles accessory cost and is mutually exclusive with electronic accessories.
+- Peak-Discharge Battery Packs no longer appear in the list of available accessories for weapons that cannot use them.
+- Added an item for an Optical Imaging Scope, just like how there is one for Optical Binoculars in the gear section.
+- Improved Range Finder now properly requires a Smartgun accessory.
 
 Custom Content Additions:
 

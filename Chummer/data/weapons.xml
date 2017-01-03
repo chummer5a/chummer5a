@@ -8760,6 +8760,11 @@
 			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>600</cost>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<required>
 				<weapondetails>
 					<OR>
@@ -8880,6 +8885,19 @@
 			<allowgear>
 				<gearcategory>Vision Enhancements</gearcategory>
 			</allowgear>
+			<source>SR5</source>
+			<page>432</page>
+		</accessory>
+		<accessory>
+			<id>036742ce-95d8-4510-b25f-5c380ef1076e</id>
+			<name>Imaging Scope (Optical)</name>
+			<mount>Top</mount>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>300</cost>
+			<gears>
+				<usegear>Vision Magnification</usegear>
+			</gears>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -9007,6 +9025,11 @@
 			<id>7e25eb59-3ce1-44d8-8367-527fd8c8bc1d</id>
 			<name>Smart Firing Platform</name>
 			<mount>Under</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>12F</avail>
 			<cost>2000</cost>
@@ -9021,6 +9044,7 @@
 				<oneof>
 					<accessory>Ceramic/Plasteel Components</accessory>
 					<accessory>Collapsible Traditional Bow</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 				<weapondetails>
 					<type>Melee</type>
@@ -9045,6 +9069,7 @@
 				<oneof>
 					<accessory>Ceramic/Plasteel Components</accessory>
 					<accessory>Collapsible Traditional Bow</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 				<weapondetails>
 					<type>Melee</type>
@@ -9127,6 +9152,7 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9212,6 +9238,7 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9236,6 +9263,7 @@
 					<accessory>Advanced Safety System, Basic</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9260,6 +9288,7 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Basic</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9284,6 +9313,7 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Basic</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9457,6 +9487,11 @@
 			<id>9a27efa9-f3f4-4e47-9165-76e8adbad4ba</id>
 			<name>Guncam</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>350</cost>
@@ -9479,6 +9514,17 @@
 			<id>21bc8b85-3fd7-4bde-ac8d-35e1fa099f21</id>
 			<name>Improved Range Finder</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
+			<required>
+				<oneof>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>2000</cost>
@@ -9491,6 +9537,14 @@
 			<ammoslots>1</ammoslots>
 			<ammoreplace>10</ammoreplace>
 			<mount/>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">Internal source</ammo>
+						<ammo operation="contains">energy</ammo>
+					</OR>
+				</weapondetails>
+			</required>
 			<rating>0</rating>
 			<avail>14F</avail>
 			<cost>400</cost>
@@ -9503,6 +9557,14 @@
 			<ammoslots>1</ammoslots>
 			<ammoreplace>20</ammoreplace>
 			<mount/>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">Internal source</ammo>
+						<ammo operation="contains">energy</ammo>
+					</OR>
+				</weapondetails>
+			</required>
 			<rating>0</rating>
 			<avail>16F</avail>
 			<cost>900</cost>
@@ -9515,6 +9577,14 @@
 			<ammoslots>1</ammoslots>
 			<ammoreplace>30</ammoreplace>
 			<mount/>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">Internal source</ammo>
+						<ammo operation="contains">energy</ammo>
+					</OR>
+				</weapondetails>
+			</required>
 			<rating>0</rating>
 			<avail>20F</avail>
 			<cost>2500</cost>
@@ -9525,6 +9595,11 @@
 			<id>51740a3d-4464-4a38-8e2e-8858b3c1481e</id>
 			<name>Safe Target System, Base</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>750</cost>
@@ -9697,6 +9772,11 @@
 			<id>6c703f4e-fade-4045-9d88-ea636e1266f6</id>
 			<name>Weapon Commlink</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>200</cost>
@@ -9710,6 +9790,11 @@
 			<id>e09095d7-72b5-44ef-b52a-aa2de172da2f</id>
 			<name>Weapon Personality</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>8</avail>
 			<cost>250</cost>
@@ -9722,6 +9807,31 @@
 			<id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>
 			<name>Vintage</name>
 			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Advanced Safety System, Basic</accessory>
+					<accessory>Advanced Safety System, Immobilization</accessory>
+					<accessory>Advanced Safety System, Self Destruct</accessory>
+					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
+					<accessory>Advanced Safety System, Electro Shocker</accessory>
+					<accessory>Weapon Personality</accessory>
+					<accessory>Weapon Commlink</accessory>
+					<accessory>Safe Target System, Base</accessory>
+					<accessory>Improved Range Finder</accessory>
+					<accessory>Smartgun System, External</accessory>
+					<accessory>Smartgun System, Internal</accessory>
+					<accessory>Smart Firing Platform</accessory>
+					<accessory>Airburst Link</accessory>
+					<accessory>Ammo Skip</accessory>
+					<accessory>Chameleon Coating (Pistol)</accessory>
+					<accessory>Chameleon Coating (Rifle)</accessory>
+					<accessory>Easy Breakdown (Powered)</accessory>
+					<accessory>Electronic Firing</accessory>
+					<accessory>Retractable Bayonet</accessory>
+					<accessory>Guncam</accessory>
+				</oneof>
+			</forbidden>
+			<accessorycostmultiplier>2</accessorycostmultiplier>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>0</cost>
@@ -9749,6 +9859,11 @@
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>250</cost>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<required>
 				<weapondetails>
 					<OR>
@@ -9854,6 +9969,7 @@
 			<forbidden>
 				<oneof>
 					<accessory>Ceramic/Plasteel Components</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<required>
@@ -9875,6 +9991,7 @@
 			<forbidden>
 				<oneof>
 					<accessory>Ceramic/Plasteel Components</accessory>
+					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<required>
@@ -9936,6 +10053,11 @@
 			<id>f27402fa-2845-4314-a97d-2747b3263e0d</id>
 			<name>Easy Breakdown (Powered)</name>
 			<mount>Side</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rating>0</rating>
 			<avail>10R</avail>
 			<cost>1250</cost>
@@ -9946,6 +10068,11 @@
 			<id>2da4f104-cf0c-4e0c-a001-4a6da4c2b46b</id>
 			<name>Electronic Firing</name>
 			<mount>Barrel</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
+			</forbidden>
 			<rc>1</rc>
 			<rating>0</rating>
 			<avail>10R</avail>
