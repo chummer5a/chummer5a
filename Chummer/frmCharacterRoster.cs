@@ -130,12 +130,8 @@ namespace Chummer
                     int intMainMugshotIndex = 0;
                     objXmlSourceNode.TryGetField("mainmugshotindex", out intMainMugshotIndex, 0);
                     XmlNodeList objXmlMugshotsList = objXmlSourceNode.SelectNodes("mugshots/mugshot");
-                    List<string> lstMugshots = new List<string>();
-                    foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
-                    {
-                        lstMugshots.Add(objXmlMugshot.InnerText);
-                    }
-                    if (lstMugshots.Count > 0)
+                    List<string> lstMugshots = (from XmlNode objXmlMugshot in objXmlMugshotsList where !string.IsNullOrWhiteSpace(objXmlMugshot.InnerText) select objXmlMugshot.InnerText).ToList();
+					if (lstMugshots.Count > 0)
                     {
                         byte[] bytImage = Convert.FromBase64String(lstMugshots.ElementAt(intMainMugshotIndex));
                         MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length);
