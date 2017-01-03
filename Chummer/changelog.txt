@@ -40,6 +40,8 @@ Data Changes:
 - Corrected issues with the sourcebooks of the Keratin Control and Living Focus powers.
 - Allowed Partial Cyberskull to receive the same cyberware subsystems as a full cyberskull.
 - Liminal Body Centaur now comes with four full cyberlegs.
+- Fixed the Dual-Natured critter power to provide access to Assensing. 
+- Fixed incorrect cost discount for the Astral Hazing quality.
 
 
 Custom Content Additions:

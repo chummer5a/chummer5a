@@ -144,6 +144,9 @@
 			<type>P</type>
 			<action>Auto</action>
 			<range>Self</range>
+			<bonus>
+				<unlockskills name="Assensing">Name</unlockskills>
+			</bonus>
 			<duration>Always</duration>
 			<source>SR5</source>
 			<page>395</page>
