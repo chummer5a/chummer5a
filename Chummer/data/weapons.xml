@@ -9152,7 +9152,6 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
-					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9238,7 +9237,6 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
-					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9263,7 +9261,6 @@
 					<accessory>Advanced Safety System, Basic</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
-					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9288,7 +9285,6 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Basic</accessory>
 					<accessory>Advanced Safety System, Electro Shocker</accessory>
-					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9313,7 +9309,6 @@
 					<accessory>Advanced Safety System, Self Destruct</accessory>
 					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
 					<accessory>Advanced Safety System, Basic</accessory>
-					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
 			<rating>0</rating>
@@ -9487,11 +9482,6 @@
 			<id>9a27efa9-f3f4-4e47-9165-76e8adbad4ba</id>
 			<name>Guncam</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
-			<forbidden>
-				<oneof>
-					<accessory>Vintage</accessory>
-				</oneof>
-			</forbidden>
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>350</cost>
@@ -9520,11 +9510,6 @@
 					<accessory>Smartgun System, Internal</accessory>
 				</oneof>
 			</required>
-			<forbidden>
-				<oneof>
-					<accessory>Vintage</accessory>
-				</oneof>
-			</forbidden>
 			<rating>0</rating>
 			<avail>6</avail>
 			<cost>2000</cost>
@@ -9809,15 +9794,9 @@
 			<mount/>
 			<forbidden>
 				<oneof>
-					<accessory>Advanced Safety System, Basic</accessory>
-					<accessory>Advanced Safety System, Immobilization</accessory>
-					<accessory>Advanced Safety System, Self Destruct</accessory>
-					<accessory>Advanced Safety System, Explosive Self Destruct</accessory>
-					<accessory>Advanced Safety System, Electro Shocker</accessory>
 					<accessory>Weapon Personality</accessory>
 					<accessory>Weapon Commlink</accessory>
 					<accessory>Safe Target System, Base</accessory>
-					<accessory>Improved Range Finder</accessory>
 					<accessory>Smartgun System, External</accessory>
 					<accessory>Smartgun System, Internal</accessory>
 					<accessory>Smart Firing Platform</accessory>
@@ -9827,8 +9806,7 @@
 					<accessory>Chameleon Coating (Rifle)</accessory>
 					<accessory>Easy Breakdown (Powered)</accessory>
 					<accessory>Electronic Firing</accessory>
-					<accessory>Retractable Bayonet</accessory>
-					<accessory>Guncam</accessory>
+					<accessory>Trigger Removal</accessory>
 				</oneof>
 			</forbidden>
 			<accessorycostmultiplier>2</accessorycostmultiplier>
@@ -10299,6 +10277,9 @@
 			<avail>2</avail>
 			<cost>50</cost>
 			<forbidden>
+				<oneof>
+					<accessory>Vintage</accessory>
+				</oneof>
 				<weapondetails>
 					<OR>
 						<category>Bows</category>
