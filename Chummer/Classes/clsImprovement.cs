@@ -816,7 +816,7 @@ namespace Chummer
             
 			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
 			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
-			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("MAG") || strValue.Contains("RES"))
+			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("DEP") || strValue.Contains("MAG") || strValue.Contains("RES"))
 			{
 				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
 				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
@@ -828,7 +828,8 @@ namespace Chummer
 				strValue = strValue.Replace("LOG", _objCharacter.LOG.TotalValue.ToString());
 				strValue = strValue.Replace("WIL", _objCharacter.WIL.TotalValue.ToString());
 				strValue = strValue.Replace("EDG", _objCharacter.EDG.TotalValue.ToString());
-				strValue = strValue.Replace("MAG", _objCharacter.MAG.TotalValue.ToString());
+                strValue = strValue.Replace("DEP", _objCharacter.DEP.TotalValue.ToString());
+                strValue = strValue.Replace("MAG", _objCharacter.MAG.TotalValue.ToString());
 				strValue = strValue.Replace("RES", _objCharacter.RES.TotalValue.ToString());
 
 				XmlDocument objXmlDocument = new XmlDocument();

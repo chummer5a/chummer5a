@@ -27,6 +27,7 @@ Application Changes:
 - Added code to prevent a crash if the PDF application/web browser has not been specified. 
 - Fixed an issue with Depth not updating properly when changing to and/or from a Depth-enabled metatype.
 - Fixed the metatype cost label in the sidebar not updating properly when loading characters with non-karma build methods and creating characters in life module build methods.
+- Fixed an issue with some Depth-linked improvements not being handled properly.
 
 Data Changes:
 
