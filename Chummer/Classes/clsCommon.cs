@@ -1470,6 +1470,10 @@ namespace Chummer
 			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters))
 				return;
 
+			// The user must have specified the arguments of their PDF application in order to use this functionality.
+			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFAppPath))
+				return;
+
 			string[] strTemp = strSource.Split(' ');
 			string strBook = "";
 			Uri uriPath = null;
