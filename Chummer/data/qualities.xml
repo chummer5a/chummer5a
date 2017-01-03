@@ -6774,7 +6774,7 @@
 						<quality>Infected: Wendigo</quality>
 					</oneof>
 				</required>
-				<value>-10</value>
+				<value>10</value>
 			</costdiscount>
 			<source>RF</source>
 			<page>119</page>
