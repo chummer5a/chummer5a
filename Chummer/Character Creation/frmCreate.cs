@@ -4868,45 +4868,44 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
-        private void cmdAddPower_Click(object sender, EventArgs e)
-        {
-            frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-            frmPickPower.ShowDialog(this);
+		private void cmdAddPower_Click(object sender, EventArgs e)
+		{
+			frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
+			frmPickPower.ShowDialog(this);
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickPower.DialogResult == DialogResult.Cancel)
-                return;
+			// Make sure the dialogue window was not canceled.
+			if (frmPickPower.DialogResult == DialogResult.Cancel)
+				return;
 
-            int i = panPowers.Controls.Count;
+			int i = panPowers.Controls.Count;
 
-            Power objPower = new Power(_objCharacter);
-            _objCharacter.Powers.Add(objPower);
+			Power objPower = new Power(_objCharacter);
+			_objCharacter.Powers.Add(objPower);
 
-            PowerControl objPowerControl = new PowerControl(objPower);
+			PowerControl objPowerControl = new PowerControl(objPower);
 
-            // Attach an EventHandler for the PowerRatingChanged Event.
-            objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-            objPowerControl.DeletePower += objPower_DeletePower;
+			// Attach an EventHandler for the PowerRatingChanged Event.
+			objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
+			objPowerControl.DeletePower += objPower_DeletePower;
 
-            // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+			// Open the Cyberware XML file and locate the selected piece.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-	        objPower.Create(objXmlPower, _objImprovementManager);
-            objPowerControl.Top = i * objPowerControl.Height;
-            objPowerControl.RefreshTooltip();
-            panPowers.Controls.Add(objPowerControl);
-			objPowerControl.ResetBindings();
-            UpdateCharacterInfo();
+			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+			objPower.Create(objXmlPower, _objImprovementManager);
+			objPowerControl.Top = i * objPowerControl.Height;
+			objPowerControl.RefreshTooltip();
+			panPowers.Controls.Add(objPowerControl);
+			UpdateCharacterInfo();
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+			_blnIsDirty = true;
+			UpdateWindowTitle();
 
-            if (frmPickPower.AddAgain)
-                cmdAddPower_Click(sender, e);
-        }
+			if (frmPickPower.AddAgain)
+				cmdAddPower_Click(sender, e);
+		}
 
-        private void cmdAddCyberware_Click(object sender, EventArgs e)
+		private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
             // Select the root Cyberware node then open the Select Cyberware window.
             treCyberware.SelectedNode = treCyberware.Nodes[0];

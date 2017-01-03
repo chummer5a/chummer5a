@@ -4571,27 +4571,10 @@ namespace Chummer
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
 			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-
-			objPower.Source = objXmlPower["source"].InnerText;
-			objPower.Page = objXmlPower["page"].InnerText;
-			if (objXmlPower["doublecost"] != null)
-				objPower.DoubleCost = false;
-
-			if (objXmlPower.InnerXml.Contains("bonus"))
-			{
-				objPower.Bonus = objXmlPower["bonus"];
-				if (!_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-				{
-					_objCharacter.Powers.Remove(objPower);
-					return;
-				}
-				objPowerControl.Extra = _objImprovementManager.SelectedValue;
-			}
-
+			objPower.Create(objXmlPower, _objImprovementManager);
 			objPowerControl.Top = i * objPowerControl.Height;
 			objPowerControl.RefreshTooltip();
 			panPowers.Controls.Add(objPowerControl);
-
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;

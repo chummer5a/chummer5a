@@ -4902,9 +4902,9 @@ namespace Chummer
 			    {
 				    _objCharacter.Powers.Remove(this);
 				    return;
-			    }
-		    }
-		    Extra = _objImprovementManager.SelectedValue;
+				}
+				Extra = _objImprovementManager.SelectedValue;
+			}
 		}
 
 		/// <summary>
