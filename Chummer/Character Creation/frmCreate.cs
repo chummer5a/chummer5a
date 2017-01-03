@@ -14302,23 +14302,26 @@ namespace Chummer
                 nudDEP.Value = _objCharacter.DEP.Base;
             }
 
-			// Metatypes cost Karma.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            // Metatypes cost Karma.
+            if (_objOptions.MetatypeCostsKarma)
             {
-                lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " +
-                                          LanguageManager.Instance.GetString("String_Karma");              
+                lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier).ToString() + " " +
+                                          LanguageManager.Instance.GetString("String_Karma");
             }
             else
+            {
                 lblKarmaMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
+            }
+            lblMetatypeBP.Text = lblKarmaMetatypeBP.Text;
 
             string strToolTip = _objCharacter.Metatype;
             if (_objCharacter.Metavariant != "")
             {
                 strToolTip += " (" + _objCharacter.Metavariant + ")";
-                strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
-                tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
-                lblMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
             }
+            strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
+            tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
+            
             _blnSkipUpdate = false;
 
             UpdateCharacterInfo();
@@ -21637,7 +21640,8 @@ namespace Chummer
             int intLOG = _objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum;
             int intWIL = _objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum;
             int intEDG = _objCharacter.EDG.Base - _objCharacter.EDG.MetatypeMinimum;
-	        int intMAG = Math.Max(_objCharacter.MAG.Base - _objCharacter.MAG.MetatypeMinimum, 0);
+            int intDEP = _objCharacter.DEP.Base - _objCharacter.DEP.MetatypeMinimum;
+            int intMAG = Math.Max(_objCharacter.MAG.Base - _objCharacter.MAG.MetatypeMinimum, 0);
 	        int intRES = Math.Max(_objCharacter.RES.Base - _objCharacter.RES.MetatypeMinimum, 0);
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
@@ -21702,6 +21706,7 @@ namespace Chummer
             nudLOG.Maximum = _objCharacter.LOG.TotalMaximum;
             nudWIL.Maximum = _objCharacter.WIL.TotalMaximum;
             nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
+            nudDEP.Maximum = _objCharacter.DEP.TotalMaximum;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
                 nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
@@ -21719,6 +21724,7 @@ namespace Chummer
             nudLOG.Minimum = _objCharacter.LOG.MetatypeMinimum;
             nudWIL.Minimum = _objCharacter.WIL.MetatypeMinimum;
             nudEDG.Minimum = _objCharacter.EDG.MetatypeMinimum;
+            nudDEP.Minimum = _objCharacter.DEP.MetatypeMinimum;
             nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
             nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
 
@@ -21731,6 +21737,7 @@ namespace Chummer
             _objCharacter.LOG.Value = _objCharacter.LOG.MetatypeMinimum + intLOG;
             _objCharacter.WIL.Value = _objCharacter.WIL.MetatypeMinimum + intWIL;
             _objCharacter.EDG.Value = _objCharacter.EDG.MetatypeMinimum + intEDG;
+            _objCharacter.DEP.Value = _objCharacter.DEP.MetatypeMinimum + intDEP;
             _objCharacter.MAG.Value = _objCharacter.MAG.MetatypeMinimum + intMAG;
             _objCharacter.RES.Value = _objCharacter.RES.MetatypeMinimum + intRES;
 
@@ -21743,6 +21750,7 @@ namespace Chummer
             nudLOG.Value = _objCharacter.LOG.Value;
             nudWIL.Value = _objCharacter.WIL.Value;
             nudEDG.Value = _objCharacter.EDG.Value;
+            nudDEP.Value = _objCharacter.DEP.Value;
             if (_objCharacter.MAG.Value < 1)
             {
                 if (nudMAG.Maximum < 1)
@@ -21810,11 +21818,16 @@ namespace Chummer
             tipTooltip.SetToolTip(lblMetatypeSource, _objOptions.LanguageBookLong(objMetatypeNode["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 
             // If we're working with Karma, the Metatype doesn't cost anything.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.MetatypeCostsKarma)
-                lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+            if (_objOptions.MetatypeCostsKarma)
+            {
+                lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier).ToString() + " " +
+                                          LanguageManager.Instance.GetString("String_Karma");
+            }
             else
+            {
                 lblKarmaMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
-            lblMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
+            }
+            lblMetatypeBP.Text = lblKarmaMetatypeBP.Text;
 
             string strToolTip = _objCharacter.Metatype;
             if (_objCharacter.Metavariant != "")
