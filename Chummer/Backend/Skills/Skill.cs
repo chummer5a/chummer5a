@@ -628,7 +628,7 @@ namespace Chummer.Skills
 
 				}
 
-				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating))
+				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute && x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
 				{
 					s.Append(" + ");
 					s.Append(GetName(source));
@@ -667,6 +667,97 @@ namespace Chummer.Skills
 						}
 					}
 				}
+
+                foreach(Improvement objSwapSkillAttribute in RelevantImprovements().Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
+                {
+                    s.Append("\n");
+                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                        s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
+                    s.AppendFormat("{0} ", GetName(objSwapSkillAttribute));
+
+                    int intLoopAttribute = 0;
+                    switch (objSwapSkillAttribute.ImprovedName)
+                    {
+                        case "AGI":
+                            intLoopAttribute = CharacterObject.AGI.Value;
+                            break;
+                        case "STR":
+                            intLoopAttribute = CharacterObject.STR.Value;
+                            break;
+                        case "REA":
+                            intLoopAttribute = CharacterObject.REA.Value;
+                            break;
+                        case "CHA":
+                            intLoopAttribute = CharacterObject.CHA.Value;
+                            break;
+                        case "INT":
+                            intLoopAttribute = CharacterObject.INT.Value;
+                            break;
+                        case "LOG":
+                            intLoopAttribute = CharacterObject.LOG.Value;
+                            break;
+                        case "WIL":
+                            intLoopAttribute = CharacterObject.WIL.Value;
+                            break;
+                        case "EDG":
+                            intLoopAttribute = CharacterObject.EDG.Value;
+                            break;
+                        case "MAG":
+                            intLoopAttribute = CharacterObject.MAG.Value;
+                            break;
+                        case "RES":
+                            intLoopAttribute = CharacterObject.RES.Value;
+                            break;
+                        case "DEP":
+                            intLoopAttribute = CharacterObject.DEP.Value;
+                            break;
+                        case "BOD":
+                        default:
+                            intLoopAttribute = CharacterObject.BOD.Value;
+                            break;
+                    }
+                    int intBasePool = PoolOtherAttribute(intLoopAttribute);
+                    bool blnHaveSpec = false;
+
+                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute && 
+                        Specializations.Where(y => y.Name == objSwapSkillAttribute.Exclude).Any())
+                    {
+                        intBasePool += 2;
+                        blnHaveSpec = true;
+                    }
+                    s.Append(intBasePool);
+
+                    if (objSwapSkillAttribute.ImprovedName == "STR" || objSwapSkillAttribute.ImprovedName == "AGI")
+                    {
+                        foreach (Cyberware cyberware in _character.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
+                        {
+                            s.Append("\n");
+                            if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                                s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
+                            s.AppendFormat("{0} ", GetName(objSwapSkillAttribute));
+                            s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
+                            if (cyberware.Grade != GlobalOptions.CyberwareGrades.GetGrade("Standard"))
+                            {
+                                s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
+                            }
+
+                            int intLoopPool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
+                            if (blnHaveSpec)
+                            {
+                                intLoopPool += 2;
+                            }
+
+                            if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous || cyberware.LimbSlotCount == 2)
+                            {
+                                s.Append(intLoopPool);
+                            }
+                            else
+                            {
+                                s.AppendFormat("{0} (-2 Off Hand)", intLoopPool - 2);
+                            }
+                        }
+                    }
+                }
 
 				return s.ToString();
 			}

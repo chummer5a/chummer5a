@@ -28,6 +28,10 @@ Application Changes:
 - Fixed an issue with Depth not updating properly when changing to and/or from a Depth-enabled metatype.
 - Fixed the metatype cost label in the sidebar not updating properly when loading characters with non-karma build methods and creating characters in life module build methods.
 - Fixed an issue with some Depth-linked improvements not being handled properly.
+- Improvements now have a "target" member string.
+- Optimized the improvement removal code for size, readability, and portability.
+- Fixed the improvement for swapping the attributes of a skill. The results of such an improvement show up in the skill's dice tooltip.
+- Added an improvement for the swapping of attributes of a skill for a particular specialization. The results of such an improvement show up in the skill's dice tooltip.
 
 Data Changes:
 
@@ -53,6 +57,7 @@ Data Changes:
 - Added a vehicle mod for the illegal Reloading Drone autosoft for reloading forbidden weapons that costs 250.
 - Added an entry for a Smart Wig with an integrated Trode Net that costs 100 extra.
 - Added an improvement for the Intimidation limit bonus for Voice Warper.
+- Master Debater and Empathic Listener now have their effects represented in skill dice pool tooltips.
 
 Custom Content Additions:
 
