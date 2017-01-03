@@ -49,6 +49,10 @@ Data Changes:
 - Peak-Discharge Battery Packs no longer appear in the list of available accessories for weapons that cannot use them.
 - Added an item for an Optical Imaging Scope, just like how there is one for Optical Binoculars in the gear section.
 - Improved Range Finder now properly requires a Smartgun accessory.
+- Corrected Ammo Drone to come standard with a rating 2 Maneuvering Autosoft.
+- Added a vehicle mod for the illegal Reloading Drone autosoft for reloading forbidden weapons that costs 250.
+- Added an entry for a Smart Wig with an integrated Trode Net that costs 100 extra.
+- Added an improvement for the Intimidation limit bonus for Voice Warper.
 
 Custom Content Additions:
 
