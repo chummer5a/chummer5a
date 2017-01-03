@@ -24,6 +24,7 @@ Application Changes:
 - Added the ability for cyberlimbs to count as more than one slot (e.g. liminal body counts as two slots for Legs).
 - Corrected handling of Redliner for Liminal Body, especially Liminal Body Centaur.
 - Fixed an issue where the cost of cyberware/bioware grandchildren subsystems had their costs ignored.
+- Added code to prevent a crash if the PDF application/web browser has not been specified. 
 
 Data Changes:
 
