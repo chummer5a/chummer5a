@@ -41,10 +41,11 @@ namespace Chummer
 				//TODO: Add listner to UseLogging to be able to start it mid run
 				string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
 				logWriter = new StreamWriter(strFile);
-				stringBuilder = new StringBuilder();
+
 				logEnabled = true;
 			}
-			sw.TaskEnd("log open");
+		    stringBuilder = new StringBuilder();
+		    sw.TaskEnd("log open");
 		}
 
 		/// <summary>
@@ -298,7 +299,7 @@ namespace Chummer
 
 		private static void writeLog(object[] info, string file, string method, int line, string pre)
 		{
-			if (!logEnabled)
+			if (!logEnabled && !Debugger.IsAttached)
 				return;
 
 			Stopwatch sw = Stopwatch.StartNew();
@@ -325,12 +326,17 @@ namespace Chummer
 				stringBuilder.Length -= 2;
 			}
 
-			sw.TaskEnd("makeentry");
-
-			logWriter.WriteLine(stringBuilder.ToString());
-			sw.TaskEnd("filewrite");
-			Trace.WriteLine(stringBuilder.ToString());
-			sw.TaskEnd("screenwrite");
+			if (Debugger.IsAttached)
+		    {
+                Console.WriteLine(stringBuilder.ToString());
+		    }
+		    else
+		    {
+		        logWriter.WriteLine(stringBuilder.ToString());
+		        sw.TaskEnd("filewrite");
+		        Trace.WriteLine(stringBuilder.ToString());
+		        sw.TaskEnd("screenwrite");
+		    }
 		}
 
 		public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)

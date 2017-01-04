@@ -267,12 +267,7 @@ namespace Chummer
                 field.SetValue(Program.OptionsManager.Default, field.GetValue(def));
             }
 
-            foreach (OptionItem item in _options.SearchList)
-            {
-                item.Reload();
-            }
-
-            MessageBox.Show("There is a very good chance, that that didn't work!");
+            Close();
         }
     }
 }

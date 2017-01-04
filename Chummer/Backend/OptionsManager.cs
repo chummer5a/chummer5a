@@ -71,6 +71,8 @@ namespace Chummer.Backend
         private static void MoveToRoot(XmlDocument document, string child)
         {
             XmlNode n = document.DocumentElement[child];
+            if(n == null) return;
+
             document.DocumentElement.RemoveChild(n);
             while (n.HasChildNodes)
             {

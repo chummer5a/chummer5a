@@ -36,7 +36,14 @@ namespace Chummer.Backend.Options
 
         public object Value
         {
-            get { return _value; }
+            get
+            {
+                if (TargetProperty.PropertyType == typeof(int))
+                {
+                    return Convert.ToDecimal(_value);
+                }
+                return _value;
+            }
             set
             {
                 if (value.GetType() != TargetProperty.PropertyType)
