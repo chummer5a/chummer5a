@@ -18,7 +18,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 
-<!-- This XML file removes the Headware subsystem from all cyberlimbs. -->
+<!-- This XML file removes the Headware subcategory from all cyberlimbs. -->
 <chummer>
 	<cyberwares>
 		<cyberware>
@@ -39,12 +39,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -66,12 +66,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -92,12 +92,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -118,12 +118,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -144,12 +144,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -170,12 +170,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -196,12 +196,12 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -223,12 +223,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -250,12 +250,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -276,12 +276,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -302,12 +302,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -328,12 +328,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -354,12 +354,12 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<subcategory>Bodyware</subcategory>
+				<subcategory>Cyberlimb Enhancement</subcategory>
+				<subcategory>Cyberlimb Accessory</subcategory>
+				<subcategory>Cyber Implant Weapon</subcategory>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -380,12 +380,12 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
