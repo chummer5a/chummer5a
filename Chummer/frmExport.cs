@@ -18,9 +18,12 @@
  */
 ﻿using System;
 using System.IO;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+ using Newtonsoft.Json;
+ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Chummer
 {
@@ -50,6 +53,8 @@ namespace Chummer
 				}
 			}
 
+			cboXSLT.Items.Add("Export JSON");
+
 			if (cboXSLT.Items.Count > 0)
 				cboXSLT.SelectedIndex = 0;
 		}
@@ -64,7 +69,36 @@ namespace Chummer
 			if (cboXSLT.Text == string.Empty)
 				return;
 
-			// Look for the file extension information.
+			if (cboXSLT.Text == "Export JSON")
+			{
+				ExportJSON();
+			}
+			else
+			{
+				ExportNormal();
+
+			}
+		}
+
+		private void ExportJSON()
+		{
+			string json = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
+			SaveFileDialog1.AddExtension = true;
+			SaveFileDialog1.DefaultExt = "json";
+			SaveFileDialog1.Title = "Save JSON as";
+			SaveFileDialog1.ShowDialog();
+
+			if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
+				return;
+
+			File.WriteAllText(SaveFileDialog1.FileName, json, Encoding.UTF8);
+
+			this.DialogResult = DialogResult.OK;
+		}
+
+		private void ExportNormal()
+		{
+// Look for the file extension information.
 			string strLine = "";
 			string strExtension = "xml";
 			string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
@@ -104,6 +138,7 @@ namespace Chummer
 
 			this.DialogResult = DialogResult.OK;
 		}
+
 		#endregion
 
 		#region Methods
