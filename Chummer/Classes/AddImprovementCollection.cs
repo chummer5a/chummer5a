@@ -3050,8 +3050,7 @@ namespace Chummer.Classes
 						else
 						{
 							// we have to adjust the number of free levels.
-							decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-							decLevels = Math.Floor(decLevels / objExistingPower.PointsPerLevel);
+							decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objExistingPower.PointsPerLevel);
 							objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
 							if (objExistingPower.Rating < _intRating)
 								objExistingPower.Rating = objExistingPower.FreeLevels;
@@ -3385,9 +3384,8 @@ namespace Chummer.Classes
 						}
 						else
 						{
-							decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-							decLevels = Math.Floor(decLevels / objPower.PointsPerLevel);
-							objPower.FreeLevels += Convert.ToInt32(decLevels);
+                            decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objPower.PointsPerLevel);
+                            objPower.FreeLevels += Convert.ToInt32(decLevels);
 							objPower.Rating += Convert.ToInt32(decLevels);
 						}
 						objPower.BonusSource = SourceName;
@@ -3452,9 +3450,8 @@ namespace Chummer.Classes
 						}
 						else
 						{
-							decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-							decLevels = Math.Floor(decLevels / objPower.PointsPerLevel);
-							objPower.FreeLevels += Convert.ToInt32(decLevels);
+                            decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objPower.PointsPerLevel);
+                            objPower.FreeLevels += Convert.ToInt32(decLevels);
 							if (objPower.Rating < _intRating)
 								objPower.Rating = objPower.FreeLevels;
 						}

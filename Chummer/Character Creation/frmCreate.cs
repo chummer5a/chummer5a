@@ -1974,18 +1974,18 @@ namespace Chummer
             mnuSpecialToxicCritter.Visible = true;
 
             // Update the Critter's CharacterAttribute maximums to 1.5X their current value (or 1, whichever is higher).
-            _objCharacter.BOD.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.BOD.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.AGI.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.AGI.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.REA.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.REA.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.STR.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.STR.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.CHA.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.CHA.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.INT.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.INT.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.LOG.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.LOG.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.WIL.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.WIL.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.EDG.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.EDG.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
-            _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.MAG.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
-            _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.RES.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
-            _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.DEP.Value, GlobalOptions.Instance.CultureInfo) * 1.5));
+            _objCharacter.BOD.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.BOD.Value + 1) / 2);
+            _objCharacter.AGI.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.AGI.Value + 1) / 2);
+            _objCharacter.REA.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.REA.Value + 1) / 2);
+            _objCharacter.STR.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.STR.Value + 1) / 2);
+            _objCharacter.CHA.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.CHA.Value + 1) / 2);
+            _objCharacter.INT.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.INT.Value + 1) / 2);
+            _objCharacter.LOG.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.LOG.Value + 1) / 2);
+            _objCharacter.WIL.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.WIL.Value + 1) / 2);
+            _objCharacter.EDG.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.EDG.Value + 1) / 2);
+            _objCharacter.MAG.MetatypeMaximum = (3 * _objCharacter.MAG.Value + 1) / 2;
+            _objCharacter.RES.MetatypeMaximum = (3 * _objCharacter.RES.Value + 1) / 2;
+            _objCharacter.DEP.MetatypeMaximum = (3 * _objCharacter.DEP.Value + 1) / 2;
 
             _objCharacter.BOD.MetatypeMinimum = _objCharacter.BOD.Value;
             _objCharacter.AGI.MetatypeMinimum = _objCharacter.AGI.Value;
@@ -4604,10 +4604,9 @@ namespace Chummer
             {
 					if (objPowerControl.PowerObject.Name == "Improved Ability (skill)" && (objPowerControl.PowerObject.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPowerControl.PowerObject.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
                     {
-                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-						objPowerControl.PowerObject.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        int intImprovedAbilityMaximum = (3 * objSkill.Rating + 1) / 2;
+						objPowerControl.PowerObject.MaxLevels = intImprovedAbilityMaximum;
+                        objPowerControl.nudRating.Maximum = intImprovedAbilityMaximum;
                     }
             }
 			}
@@ -15495,11 +15494,6 @@ namespace Chummer
                     if (_objCharacter.DEPEnabled)
                         intMainAttribute = _objCharacter.DEP.TotalValue;
                     string strPersonaTip = "";
-                    int intFirewall = _objCharacter.WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaFirewall);
-                    int intResponse = _objCharacter.INT.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaResponse);
-                    int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(intMainAttribute, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
-                    int intSystem = _objCharacter.LOG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSystem);
-                    int intBiofeedback = _objCharacter.CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaBiofeedback);
 
                     lblLivingPersonaDeviceRating.Text = intMainAttribute.ToString();
                     strPersonaTip = "RES (" + intMainAttribute.ToString() + ")";
@@ -15677,7 +15671,7 @@ namespace Chummer
 					intAttributeDiff += (_objCharacter.DEP.Value - _objCharacter.DEP.MetatypeMinimum);
 
 					// -1 Essence for every 2 points spent on Attributes.
-					intEssencePenalty += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intAttributeDiff, GlobalOptions.Instance.CultureInfo) / 2));
+					intEssencePenalty += (intAttributeDiff + 1) / 2;
 
                     // Run through the Qualities the Critter has and add up their Mutant Points.
                     foreach (Quality objQuality in _objCharacter.Qualities)
@@ -15701,7 +15695,7 @@ namespace Chummer
                         intSkillPoints = 0;
 
                     // Every 2 points causes another point of Essence loss.
-                    intEssencePenalty += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intSkillPoints, GlobalOptions.Instance.CultureInfo) / 2));
+                    intEssencePenalty += (intSkillPoints + 1) / 2;
 
                     intEssencePenalty += intQualityPoints;
 
@@ -15709,7 +15703,7 @@ namespace Chummer
                     if (intEssencePenalty > _objCharacter.ESS.MetatypeMaximum - 1)
                         intEssencePenalty = _objCharacter.ESS.MetatypeMaximum - 1;
                     // INT is reduced for every 2 points of ESS lost to a minimum of 1.
-                    intIntuitionPenalty = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intEssencePenalty, GlobalOptions.Instance.CultureInfo) / 2));
+                    intIntuitionPenalty = (intEssencePenalty + 1) / 2;
                     if (_objCharacter.INT.TotalValue - intIntuitionPenalty < 1)
                         intIntuitionPenalty = _objCharacter.INT.TotalValue - 1;
 
@@ -21520,8 +21514,9 @@ namespace Chummer
 		{
 			double dblMultiplier = 1.0;
 			int intAmount = 0;
+            string strInitTip = "";
 
-			if (_objCharacter.MAGEnabled)
+            if (_objCharacter.MAGEnabled)
 			{
 				if (chkInitiationGroup.Checked)
 					dblMultiplier -= 0.1;
@@ -21530,8 +21525,10 @@ namespace Chummer
 				if (chkInitiationSchooling.Checked)
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
-				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-			}
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+
+                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+            }
 			else
 			{
 				if (chkInitiationGroup.Checked)
@@ -21541,14 +21538,10 @@ namespace Chummer
 				if (chkInitiationSchooling.Checked)
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
-				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-			}
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
 
-			string strInitTip = "";
-			if (_objCharacter.MAGEnabled)
-				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-			else
-				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+            }
 
 			tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
 		}

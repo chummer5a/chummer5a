@@ -114,7 +114,6 @@ namespace Chummer.Backend.Equipment
             if (objXmlCyberware["inheritattributes"] != null)
                 _blnInheritAttributes = true;
             _objGrade = objGrade;
-			_intRating = intRating;
 			_strESS = objXmlCyberware["ess"].InnerText;
 			_strCapacity = objXmlCyberware["capacity"].InnerText;
 			_strAvail = objXmlCyberware["avail"].InnerText;
@@ -169,7 +168,10 @@ namespace Chummer.Backend.Equipment
 				else
 					_intMinRating = 0;
 			}
-			try
+
+            _intRating = Math.Min(Math.Max(intRating, _intMinRating), _intMaxRating);
+
+            try
 			{
 				_strForceGrade = objXmlCyberware["forcegrade"].InnerText;
 			}
@@ -338,9 +340,11 @@ namespace Chummer.Backend.Equipment
                     objSubsystemNode.Tag = objSubsystem.InternalId;
                     objSubsystemNode.ForeColor = SystemColors.GrayText;
                     objSubsystemNode.ContextMenuStrip = objNode.ContextMenuStrip;
-                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, objSource, intRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, blnCreateChildren, objXmlSubsystemName["forced"] != null ? objXmlSubsystemName["forced"].InnerText : "");
+                    int intSubSystemRating = Convert.ToInt32(objXmlSubsystemName.Attributes?["rating"]?.InnerText);
+                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, objSource, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, blnCreateChildren, objXmlSubsystemName["forced"] != null ? objXmlSubsystemName["forced"].InnerText : "");
 
 					objSubsystem.Parent = this;
+                    objSubsystem.Cost = "0";
 
 					_objChildren.Add(objSubsystem);
 					
@@ -581,7 +585,7 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteElementString("name", DisplayNameShort);
 			else
 			{
-				int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(TotalStrength) * 2) + Convert.ToDecimal(_objCharacter.BOD.TotalValue) + Convert.ToDecimal(_objCharacter.REA.TotalValue)) / 3));
+				int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) / 3;
 				objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + " " + TotalAgility.ToString() + ", " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + " " + TotalStrength.ToString() + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
 			}
 			objWriter.WriteElementString("category", DisplayCategory);
@@ -1107,13 +1111,10 @@ namespace Chummer.Backend.Equipment
 				switch (_objGrade.Name)
 				{
 					case "Standard":
-						intGrade = 2;
-						break;
-					case "Standard (Burnout's Way)":
-						intGrade = 2;
-						break;
-					case "Used":
-						intGrade = 2;
+                    case "Standard (Burnout's Way)":
+                    case "Used":
+                    case "Omegaware":
+                        intGrade = 2;
 						break;
 					case "Alphaware":
 						intGrade = 3;
@@ -1127,11 +1128,8 @@ namespace Chummer.Backend.Equipment
 					case "Gammaware":
 						intGrade = 6;
 						break;
-					case "Omegaware":
-						intGrade = 2;
-						break;
 				}
-				return BaseMatrixBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intGrade, GlobalOptions.Instance.CultureInfo) / 2.0));
+                return BaseMatrixBoxes + (intGrade + 1) / 2;
 			}
 		}
 
@@ -2211,17 +2209,15 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				bool blnReturn = false;
 				foreach (Cyberware objChild in _objChildren)
 				{
 					if (objChild.AllowedSubsystems.Contains("Modular Plug-In"))
 					{
-						blnReturn = true;
-						break;
+						return true;
 					}
 				}
 
-				return blnReturn;
+				return false;
 			}
 		}
 		#endregion

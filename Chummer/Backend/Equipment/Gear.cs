@@ -561,7 +561,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
             objWriter.WriteElementString("gearname", _strGearName);
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
-            objWriter.WriteElementString("conditionmonitor", ConditionMonitor.ToString());
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString());
             objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
             if (_intChildCostMultiplier != 1)
                 objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString());
@@ -880,7 +880,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
             objWriter.WriteElementString("rating", _intRating.ToString());
-            objWriter.WriteElementString("conditionmonitor", ConditionMonitor.ToString());
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString());
             objWriter.WriteElementString("qty", _intQty.ToString());
             objWriter.WriteElementString("avail", TotalAvail(true));
             objWriter.WriteElementString("avail_english", TotalAvail(true, true));
@@ -2372,11 +2372,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
-
-				return strReturn;
+				return (_strAltName == string.Empty ? _strName : _strAltName);
 			}
 		}
 
@@ -2414,7 +2410,7 @@ namespace Chummer.Backend.Equipment
 				return "";
 			else
 			{
-				string strReturn = "";
+				string strReturn = "0";
 				// Use the damagereplace value if applicable.
 				if (_nodWeaponBonus["damagereplace"] != null)
 					strReturn = _nodWeaponBonus["damagereplace"].InnerText;
@@ -2423,8 +2419,6 @@ namespace Chummer.Backend.Equipment
 					// Use the damage bonus if available, otherwise use 0.
 					if (_nodWeaponBonus["damage"] != null)
 						strReturn = _nodWeaponBonus["damage"].InnerText;
-					else
-						strReturn = "0";
 
 					// Attach the type if applicable.
 					if (_nodWeaponBonus["damagetype"] != null)
@@ -2457,21 +2451,18 @@ namespace Chummer.Backend.Equipment
 					return "";
 				else
 				{
-					string strReturn = "";
+					string strReturn = "0";
 					// Use the apreplace value if applicable.
 					if (_nodWeaponBonus["apreplace"] != null)
 						strReturn = _nodWeaponBonus["apreplace"].InnerText;
-					else
-					{
-						// Use the ap bonus if available, otherwise use 0.
-						if (_nodWeaponBonus["ap"] != null)
-							strReturn = _nodWeaponBonus["ap"].InnerText;
-						else
-							strReturn = "0";
+                    // Use the ap bonus if available, otherwise use 0.
+                    else if (_nodWeaponBonus["ap"] != null)
+                    {
+                        strReturn = _nodWeaponBonus["ap"].InnerText;
 
-						// If this does not start with "-", add a "+" to the string.
-						if (!strReturn.StartsWith("-"))
-							strReturn = "+" + strReturn;
+                        // If this does not start with "-", add a "+" to the string.
+                        if (!strReturn.StartsWith("-"))
+                            strReturn = "+" + strReturn;	
 					}
 
 					return strReturn;
@@ -2486,17 +2477,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_nodWeaponBonus == null)
-					return 0;
-				else
-				{
-					int intReturn = 0;
-
-					if (_nodWeaponBonus["rangebonus"] != null)
-						intReturn = Convert.ToInt32(_nodWeaponBonus["rangebonus"].InnerText);
-
-					return intReturn;
-				}
+                if (_nodWeaponBonus?["rangebonus"] != null)
+                    return Convert.ToInt32(_nodWeaponBonus["rangebonus"].InnerText);
+                else
+                    return 0;
 			}
 		}
 
@@ -2508,19 +2492,18 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int baseMatrixBoxes = 8;
-				return baseMatrixBoxes;
+				return 8;
 			}
 		}
 
 		/// <summary>
-		/// Physical Condition Monitor boxes.
+		/// Matrix Condition Monitor boxes.
 		/// </summary>
 		public int MatrixCM
 		{
 			get
 			{
-				return BaseMatrixBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intDeviceRating, GlobalOptions.Instance.CultureInfo) / 2.0));
+				return BaseMatrixBoxes + (_intDeviceRating + 1) / 2;
 			}
 		}
 
@@ -2536,19 +2519,6 @@ namespace Chummer.Backend.Equipment
 			set
 			{
 				_intMatrixCMFilled = value;
-			}
-		}
-
-		/// <summary>
-		/// Matrix Condition Monitor for the Commlink.
-		/// </summary>
-		public int ConditionMonitor
-		{
-			get
-			{
-				double dblSystem = Math.Ceiling(Convert.ToDouble(DeviceRating, GlobalOptions.Instance.CultureInfo) / 2);
-				int intSystem = Convert.ToInt32(dblSystem, GlobalOptions.Instance.CultureInfo);
-				return 8 + intSystem;
 			}
 		}
 		#endregion

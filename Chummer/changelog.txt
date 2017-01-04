@@ -32,6 +32,12 @@ Application Changes:
 - Optimized the improvement removal code for size, readability, and portability.
 - Fixed the improvement for swapping the attributes of a skill. The results of such an improvement show up in the skill's dice tooltip.
 - Added an improvement for the swapping of attributes of a skill for a particular specialization. The results of such an improvement show up in the skill's dice tooltip.
+- Corrected the Condition Monitors of vehicles to use modified values for Body and Device Rating instead of only base values.
+- Corrected the Speed and Handling of vehicles to use modified values for Body instead of only base values.
+- Corrected the Device Rating of vehicles to be generated from Pilot rating instead of a base value of 3.
+- Optimized away some leftovers from SR4a that were taking up CPU time and lines.
+- Performed minor speed optimizations related to rounding of integer division results.
+- Fixed a crash when creating a piece of cyberware at a rating above its maximum or below its minimum.
 
 Data Changes:
 
@@ -58,6 +64,7 @@ Data Changes:
 - Added an entry for a Smart Wig with an integrated Trode Net that costs 100 extra.
 - Added an improvement for the Intimidation limit bonus for Voice Warper.
 - Master Debater and Empathic Listener now have their effects represented in skill dice pool tooltips.
+- Cybereyes and cyberears now come standard with Image Link and Sound Link respectively.
 
 Custom Content Additions:
 
