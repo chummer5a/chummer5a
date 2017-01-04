@@ -11645,8 +11645,12 @@
 			<name>Empathic Listener</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
-			<!-- TODO: Implement SwapSkillAttribute for specific skills -->
+			<bonus>
+				<swapskillattribute>
+					<attribute>INT</attribute>
+					<limittoskill>Etiquette</limittoskill>
+				</swapskillattribute>
+			</bonus>
 			<source>CA</source>
 			<page>150</page>
 		</quality>
@@ -11693,8 +11697,13 @@
 			<name>Master Debater</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
-			<!-- TODO: Implement SwapSkillAttribute for specific skills -->
+			<bonus>
+				<swapskillspecattribute>
+					<attribute>LOG</attribute>
+					<limittoskill>Negotiation</limittoskill>
+					<spec>Diplomacy</spec>
+				</swapskillspecattribute>
+			</bonus>
 			<source>CA</source>
 			<page>151</page>
 		</quality>

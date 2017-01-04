@@ -40,7 +40,6 @@ namespace Chummer.Backend.Equipment
 		private int _intAddBodyModSlots = 0;
 		private int _intAddElectromagneticModSlots = 0;
 		private int _intAddCosmeticModSlots = 0;
-		private int _intDeviceRating = 3;
 		private bool _blnHomeNode = false;
 		private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
 		private List<Gear> _lstGear = new List<Gear>();
@@ -114,7 +113,6 @@ namespace Chummer.Backend.Equipment
 			_intBody = Convert.ToInt32(objXmlVehicle["body"].InnerText);
 			_intArmor = Convert.ToInt32(objXmlVehicle["armor"].InnerText);
 			_intSensor = Convert.ToInt32(objXmlVehicle["sensor"].InnerText);
-			objXmlVehicle.TryGetField("devicerating", out _intDeviceRating);
 			objXmlVehicle.TryGetField("seats", out _intSeats);
 			objXmlVehicle.TryGetField("modslots", out _intDroneModSlots,_intBody);
 			objXmlVehicle.TryGetField("powertrainmodslots", out _intAddPowertrainModSlots);
@@ -381,7 +379,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("seats", _intSeats.ToString());
 			objWriter.WriteElementString("armor", _intArmor.ToString());
 			objWriter.WriteElementString("sensor", _intSensor.ToString());
-			objWriter.WriteElementString("devicerating", TotalDeviceRating.ToString());
+			objWriter.WriteElementString("devicerating", Pilot.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("addslots", _intAddSlots.ToString());
@@ -493,7 +491,6 @@ namespace Chummer.Backend.Equipment
 			_intBody = Convert.ToInt32(objNode["body"].InnerText);
 			_intArmor = Convert.ToInt32(objNode["armor"].InnerText);
 			_intSensor = Convert.ToInt32(objNode["sensor"].InnerText);
-			objNode.TryGetField("devicerating", out _intDeviceRating);
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			objNode.TryGetField("addslots", out _intAddSlots);
@@ -625,10 +622,10 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("physicalcm", PhysicalCM.ToString());
-			objWriter.WriteElementString("matrixcm", ConditionMonitor.ToString());
+			objWriter.WriteElementString("matrixcm", MatrixCM.ToString());
 			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
 			objWriter.WriteElementString("vehiclename", _strVehicleName);
-			objWriter.WriteElementString("devicerating", TotalDeviceRating.ToString());
+			objWriter.WriteElementString("devicerating", Pilot.ToString());
 			objWriter.WriteElementString("maneuver", Maneuver.ToString());
 			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
 			objWriter.WriteStartElement("mods");
@@ -670,19 +667,6 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				return _guiID.ToString();
-			}
-		}
-
-		/// <summary>
-		/// Matrix Condition Monitor for the Vehicle.
-		/// </summary>
-		public int ConditionMonitor
-		{
-			get
-			{
-				double dblSystem = Math.Ceiling(Convert.ToDouble(DeviceRating, GlobalOptions.Instance.CultureInfo) / 2);
-				int intSystem = Convert.ToInt32(dblSystem, GlobalOptions.Instance.CultureInfo);
-				return 8 + intSystem;
 			}
 		}
 
@@ -930,7 +914,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intDeviceRating = _intDeviceRating;
+				int intDeviceRating = Pilot;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -948,32 +932,27 @@ namespace Chummer.Backend.Equipment
 
 				return intDeviceRating;
 			}
-			set
-			{
-				_intDeviceRating = value;
-			}
 		}
 
 		/// <summary>
-		/// Base Physical Boxes. 12 for vehicles, 6 for Drones.
+		/// Base Matrix Boxes.
 		/// </summary>
 		public int BaseMatrixBoxes
 		{
 			get
 			{
-				int baseMatrixBoxes = 8;
-				return baseMatrixBoxes;
+				return 8;
 			}
 		}
 
 		/// <summary>
-		/// Physical Condition Monitor boxes.
+		/// Matrix Condition Monitor boxes.
 		/// </summary>
 		public int MatrixCM
 		{
 			get
 			{
-				return BaseMatrixBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intDeviceRating, GlobalOptions.Instance.CultureInfo) / 2.0));
+				return BaseMatrixBoxes + (DeviceRating + 1) / 2;
 			}
 		}
 
@@ -999,13 +978,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int basePhysicalBoxes = 12;
-
 				if (this.IsDrone)
-				{
-					basePhysicalBoxes = 6;
-				}
-				return basePhysicalBoxes;
+                    return 6;
+				else
+				    return 12;
 			}
 		}
 
@@ -1016,7 +992,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return BasePhysicalBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intBody, GlobalOptions.Instance.CultureInfo) / 2.0));
+				return BasePhysicalBoxes + (TotalBody + 1) / 2;
 			}
 		}
 
@@ -1443,9 +1419,7 @@ namespace Chummer.Backend.Equipment
 							}
 							break;
 						case "Armor":
-							int intArmorDiff = objMod.Rating - _intArmor;
-							double dblDivThree = intArmorDiff/3;
-							int intThird = (int) Math.Ceiling(dblDivThree);
+							int intThird = (objMod.Rating - _intArmor + 2) / 3;
 
 							if (!blnArmor)
 							{
@@ -1588,7 +1562,6 @@ namespace Chummer.Backend.Equipment
                 int intTotalSpeed = Speed;
                 int intBaseOffroadSpeed = OffroadSpeed;
                 int intTotalArmor = 0;
-				int intPenalty = 0;
 
                 // First check for mods that overwrite the speed value or add to armor
                 foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null))
@@ -1649,13 +1622,8 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-                if (intTotalArmor > _intBody * 3)
-				{
-					// Reduce speed of the drone if there is too much armor
-					int intExcess = intTotalArmor - (_intBody * 3);
-					double dblResult = intExcess / 3;
-					intPenalty = (int) Math.Floor(dblResult);
-				}
+                // Reduce speed of the drone if there is too much armor
+                int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 3, 0);
 
                 if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed != intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
                 {
@@ -1679,7 +1647,6 @@ namespace Chummer.Backend.Equipment
                 int intTotalAccel = Accel;
                 int intBaseOffroadAccel = OffroadAccel;
                 int intTotalArmor = 0;
-                int intPenalty = 0;
 
                 // First check for mods that overwrite the accel value or add to armor
                 foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null))
@@ -1740,13 +1707,8 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				if (intTotalArmor > _intBody * 3)
-				{
-					// Reduce speed of the drone if there is too much armor
-					int intExcess = intTotalArmor - (_intBody * 3);
-					double dblResult = intExcess / 6;
-					intPenalty = (int)Math.Floor(dblResult);
-				}
+                // Reduce acceleration of the drone if there is too much armor
+                int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 6, 0);
 
                 if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel != intBaseOffroadAccel + intTotalBonusOffroadAccel)
                 {
@@ -1808,7 +1770,6 @@ namespace Chummer.Backend.Equipment
                 char chrFirstCharacter = (char)0;
                 int intBaseHandling = Handling;
                 int intBaseOffroadHandling = OffroadHandling;
-                int intPenalty = 0;
                 int intTotalArmor = 0;
 
                 // First check for mods that overwrite the handling value or add to armor
@@ -1870,13 +1831,8 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-                if (intTotalArmor > _intBody * 3)
-                {
-                    // Reduce speed of the drone if there is too much armor
-                    int intExcess = intTotalArmor - (_intBody * 3);
-                    double dblResult = intExcess / 6;
-                    intPenalty = (int)Math.Floor(dblResult);
-                }
+                // Reduce handling of the drone if there is too much armor
+                int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 3, 0);
 
                 if (Handling != OffroadHandling || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
                 {
@@ -2238,34 +2194,13 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				int intReturn = 0;
-				Gear objGear = FindGearByName("Maneuver", _lstGear);
+				Gear objGear = FindGearByName("[Model] Maneuvering Autosoft", _lstGear, Name);
 				if (objGear != null)
 				{
 					intReturn = objGear.Rating;
 				}
 
 				return intReturn;
-			}
-		}
-
-		/// <summary>
-		/// Total Device Rating.
-		/// </summary>
-		public int TotalDeviceRating
-		{
-			get
-			{
-				int intDeviceRating = _intDeviceRating;
-
-				// Adjust the stat to include the A.I.'s Home Node bonus.
-				if (_blnHomeNode)
-				{
-					decimal decBonus = Math.Ceiling(_objCharacter.CHA.TotalValue / 2m);
-					int intBonus = Convert.ToInt32(decBonus, GlobalOptions.Instance.CultureInfo);
-					intDeviceRating += intBonus;
-				}
-
-				return intDeviceRating;
 			}
 		}
 		#endregion
@@ -2316,17 +2251,17 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		/// <param name="strName">Name of the Gear to find.</param>
 		/// <param name="lstGear">List of Gear to search.</param>
-		private Gear FindGearByName(string strName, List<Gear> lstGear)
+		private Gear FindGearByName(string strName, List<Gear> lstGear, string strExtra = "")
 		{
 			Gear objReturn = new Gear(_objCharacter);
 			foreach (Gear objGear in lstGear)
 			{
-				if (objGear.Name == strName)
+				if (objGear.Name == strName && (strExtra == "" || strExtra == objGear.Extra))
 					objReturn = objGear;
 				else
 				{
 					if (objGear.Children.Count > 0)
-						objReturn = FindGearByName(strName, objGear.Children);
+						objReturn = FindGearByName(strName, objGear.Children, strExtra);
 				}
 
 				if (objReturn.InternalId != Guid.Empty.ToString() && objReturn.Name != "")

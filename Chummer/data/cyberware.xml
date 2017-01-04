@@ -366,6 +366,9 @@
 			<allowsubsystems>
 				<category>Eyeware</category>
 			</allowsubsystems>
+			<subsystems>
+				<subsystem>Image Link</subsystem>
+			</subsystems>
 			<source>SR5</source>
 			<page>453</page>
 		</cyberware>
@@ -493,6 +496,9 @@
 			<allowsubsystems>
 				<category>Earware</category>
 			</allowsubsystems>
+			<subsystems>
+				<subsystem>Sound Link</subsystem>
+			</subsystems>
 			<source>SR5</source>
 			<page>453</page>
 		</cyberware>

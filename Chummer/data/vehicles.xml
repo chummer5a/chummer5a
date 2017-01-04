@@ -5677,6 +5677,7 @@
 			<sensor>2</sensor>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
+				<gear rating="2" select="Ammo Drone">[Model] Maneuvering Autosoft</gear>
 			</gears>
 			<avail>5</avail>
 			<cost>3000</cost>
@@ -6023,6 +6024,22 @@
 			</required>
 			<source>BB</source>
 			<page>23</page>
+		</mod>
+		<mod>
+			<id>75d9f461-f30a-4d50-8700-6e9fa87da8bb</id>
+			<name>Reloading Drone Forbidden Weapon Reloading Autosoft</name>
+			<category>Model-Specific</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0F</avail>
+			<cost>250</cost>
+			<required>
+				<vehicledetails>
+					<name operation="contains">Reloading Drone</name>
+				</vehicledetails>
+			</required>
+			<source>HT</source>
+			<page>189</page>
 		</mod>
 		<!-- End Region -->
 		<!-- Region Powertrain-->

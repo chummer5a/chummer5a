@@ -39,8 +39,9 @@ namespace Chummer.Classes
 		public string ForcedValue;
 		public string LimitSelection;
 		public string SelectedValue;
+        public string SelectedTarget = "";
 
-		private readonly Improvement.ImprovementSource _objImprovementSource;
+        private readonly Improvement.ImprovementSource _objImprovementSource;
 		private readonly string _strUnique;
 		private readonly bool _blnConcatSelectedValue;
 		private readonly string _strFriendlyName;
@@ -55,12 +56,12 @@ namespace Chummer.Classes
 		private void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
 			string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
 			int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
-			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false)
+			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "")
 		{
 			_manager.CreateImprovement(strImprovedName, objImprovementSource,
 				strSourceName, objImprovementType, strUnique,
 				intValue, intRating, intMinimum, intMaximum, intAugmented,
-				intAugmentedMaximum, strExclude, blnAddToRating);
+				intAugmentedMaximum, strExclude, blnAddToRating, strTarget);
 		}
 		private bool CreateImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName,
 			XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "")
@@ -780,69 +781,212 @@ namespace Chummer.Classes
 		public void swapskillattribute(XmlNode bonusNode)
 		{
 			Log.Info("swapskillattribute");
-			// Display the Select Attribute window and record which Skill was selected.
-			frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-			if (_strFriendlyName != "")
-				frmPickAttribute.Description =
-					LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
-			else
-				frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-			List<string> strValue = new List<string>();
-			strValue.Add("LOG");
-			strValue.Add("WIL");
-			strValue.Add("INT");
-			strValue.Add("CHA");
-			strValue.Add("EDG");
-			strValue.Add("MAG");
-			strValue.Add("RES");
-			frmPickAttribute.RemoveFromList(strValue);
+            List<string> strLimitValue = new List<string>();
+            if (bonusNode.InnerXml.Contains("<attribute>"))
+            {
+                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
+                    strLimitValue.Add(objXmlAttribute.InnerText);
+            }
+            if (strLimitValue.Count == 1)
+                LimitSelection = strLimitValue.First();
 
 			Log.Info("swapskillattribute = " + bonusNode.OuterXml.ToString());
 
-			if (bonusNode.InnerXml.Contains("<attribute>"))
-			{
-				List<string> strLimitValue = new List<string>();
-				foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-					strLimitValue.Add(objXmlAttribute.InnerText);
-				frmPickAttribute.LimitToList(strLimitValue);
-			}
-
-			// Check to see if there is only one possible selection because of _strLimitSelection.
-			if (ForcedValue != "")
+            // Check to see if there is only one possible selection because of _strLimitSelection.
+            if (ForcedValue != "")
 				LimitSelection = ForcedValue;
 
 			Log.Info("_strForcedValue = " + ForcedValue);
 			Log.Info("_strLimitSelection = " + LimitSelection);
 
 			if (LimitSelection != "")
+            {
+                SelectedValue = LimitSelection;
+            }
+            else
 			{
-				frmPickAttribute.SingleAttribute(LimitSelection);
-				frmPickAttribute.Opacity = 0;
-			}
+                // Display the Select Attribute window and record which Skill was selected.
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                if (_strFriendlyName != "")
+                    frmPickAttribute.Description =
+                        LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
+                else
+                    frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
 
-			frmPickAttribute.ShowDialog();
+                if (strLimitValue.Count > 0)
+                    frmPickAttribute.LimitToList(strLimitValue);
 
-			// Make sure the dialogue window was not canceled.
-			if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-			{
-				throw new AbortedException();
-			}
+                frmPickAttribute.ShowDialog();
 
-			SelectedValue = frmPickAttribute.SelectedAttribute;
-			if (_blnConcatSelectedValue)
-				SourceName += " (" + SelectedValue + ")";
+                // Make sure the dialogue window was not canceled.
+                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickAttribute.SelectedAttribute;
+
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedValue + ")";
+            }
+
+            strLimitValue.Clear();
+            if (bonusNode.InnerXml.Contains("<limittoskill>"))
+            {
+                SelectedTarget = bonusNode.SelectSingleNode("limittoskill").InnerText;
+            }
+            else
+            {
+                // Display the Select Attribute window and record which Skill was selected.
+                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                if (_strFriendlyName != "")
+                    frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
+                        .Replace("{0}", _strFriendlyName);
+                else
+                    frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
+
+                if (bonusNode.OuterXml.Contains("<skillgroup>"))
+                    frmPickSkill.OnlySkillGroup = bonusNode.SelectSingleNode("skillgroup").InnerText;
+                else if (bonusNode.OuterXml.Contains("<skillcategory>"))
+                    frmPickSkill.OnlyCategory = bonusNode.SelectSingleNode("skillcategory").InnerText;
+                else if (bonusNode.OuterXml.Contains("<excludecategory>"))
+                    frmPickSkill.ExcludeCategory = bonusNode.SelectSingleNode("excludecategory").InnerText;
+                else if (bonusNode.OuterXml.Contains("<limittoattribute>"))
+                    frmPickSkill.LinkedAttribute = bonusNode.SelectSingleNode("limittoattribute").InnerText;
+
+                frmPickSkill.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedTarget = frmPickSkill.SelectedSkill;
+
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedTarget + ")";
+            }
 
 			Log.Info("_strSelectedValue = " + SelectedValue);
 			Log.Info("SourceName = " + SourceName);
 
 			Log.Info("Calling CreateImprovement");
-			CreateImprovement(frmPickAttribute.SelectedAttribute, _objImprovementSource, SourceName,
-				Improvement.ImprovementType.SwapSkillAttribute, _strUnique);
+			CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SwapSkillAttribute, _strUnique,
+                0, 1, 0, 0, 0, 0, "", false, SelectedTarget);
 		}
 
-		// Select a Spell.
-		public void selectspell(XmlNode bonusNode)
+        // Select an CharacterAttribute to use instead of the default on a skill.
+        public void swapskillspecattribute(XmlNode bonusNode)
+        {
+            Log.Info("swapskillspecattribute");
+            List<string> strLimitValue = new List<string>();
+            if (bonusNode.InnerXml.Contains("<attribute>"))
+            {
+                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
+                    strLimitValue.Add(objXmlAttribute.InnerText);
+            }
+            if (strLimitValue.Count == 1)
+                LimitSelection = strLimitValue.First();
+
+            Log.Info("swapskillspecattribute = " + bonusNode.OuterXml.ToString());
+
+            // Check to see if there is only one possible selection because of _strLimitSelection.
+            if (ForcedValue != "")
+                LimitSelection = ForcedValue;
+
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+
+            if (LimitSelection != "")
+            {
+                SelectedValue = LimitSelection;
+            }
+            else
+            {
+                // Display the Select Attribute window and record which Skill was selected.
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                if (_strFriendlyName != "")
+                    frmPickAttribute.Description =
+                        LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
+                else
+                    frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
+
+                if (strLimitValue.Count > 0)
+                    frmPickAttribute.LimitToList(strLimitValue);
+
+                frmPickAttribute.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickAttribute.SelectedAttribute;
+
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedValue + ")";
+            }
+
+            strLimitValue.Clear();
+            if (bonusNode.InnerXml.Contains("<limittoskill>"))
+            {
+                SelectedTarget = bonusNode.SelectSingleNode("limittoskill").InnerText;
+            }
+            else
+            {
+                // Display the Select Attribute window and record which Skill was selected.
+                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                if (_strFriendlyName != "")
+                    frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
+                        .Replace("{0}", _strFriendlyName);
+                else
+                    frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
+
+                if (bonusNode.OuterXml.Contains("<skillgroup>"))
+                    frmPickSkill.OnlySkillGroup = bonusNode.SelectSingleNode("skillgroup").InnerText;
+                else if (bonusNode.OuterXml.Contains("<skillcategory>"))
+                    frmPickSkill.OnlyCategory = bonusNode.SelectSingleNode("skillcategory").InnerText;
+                else if (bonusNode.OuterXml.Contains("<excludecategory>"))
+                    frmPickSkill.ExcludeCategory = bonusNode.SelectSingleNode("excludecategory").InnerText;
+                else if (bonusNode.OuterXml.Contains("<limittoattribute>"))
+                    frmPickSkill.LinkedAttribute = bonusNode.SelectSingleNode("limittoattribute").InnerText;
+
+                frmPickSkill.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedTarget = frmPickSkill.SelectedSkill;
+
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedTarget + ")";
+            }
+
+            // TODO: Allow selection of specializations through frmSelectSkillSpec
+            string strSpec = "";
+            try
+            {
+                strSpec = bonusNode["spec"].InnerText;
+            }
+            catch
+            {
+            }
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SwapSkillSpecAttribute, _strUnique,
+                0, 1, 0, 0, 0, 0, strSpec, false, SelectedTarget);
+        }
+
+        // Select a Spell.
+        public void selectspell(XmlNode bonusNode)
 		{
 			Log.Info("selectspell");
 			// Display the Select Spell window.
@@ -2906,8 +3050,7 @@ namespace Chummer.Classes
 						else
 						{
 							// we have to adjust the number of free levels.
-							decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-							decLevels = Math.Floor(decLevels / objExistingPower.PointsPerLevel);
+							decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objExistingPower.PointsPerLevel);
 							objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
 							if (objExistingPower.Rating < _intRating)
 								objExistingPower.Rating = objExistingPower.FreeLevels;
@@ -3241,9 +3384,8 @@ namespace Chummer.Classes
 						}
 						else
 						{
-							decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-							decLevels = Math.Floor(decLevels / objPower.PointsPerLevel);
-							objPower.FreeLevels += Convert.ToInt32(decLevels);
+                            decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objPower.PointsPerLevel);
+                            objPower.FreeLevels += Convert.ToInt32(decLevels);
 							objPower.Rating += Convert.ToInt32(decLevels);
 						}
 						objPower.BonusSource = SourceName;
@@ -3308,9 +3450,8 @@ namespace Chummer.Classes
 						}
 						else
 						{
-							decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-							decLevels = Math.Floor(decLevels / objPower.PointsPerLevel);
-							objPower.FreeLevels += Convert.ToInt32(decLevels);
+                            decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objPower.PointsPerLevel);
+                            objPower.FreeLevels += Convert.ToInt32(decLevels);
 							if (objPower.Rating < _intRating)
 								objPower.Rating = objPower.FreeLevels;
 						}

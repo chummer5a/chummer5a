@@ -164,20 +164,20 @@ namespace Chummer
 			ImprovementManager _objImprovementManager)
 		{
 			// Condition Monitor.
-			double dblBOD = _objCharacter.BOD.TotalValue;
-			double dblWIL = _objCharacter.WIL.TotalValue;
+			int intBOD = _objCharacter.BOD.TotalValue;
+			int intWIL = _objCharacter.WIL.TotalValue;
 			int intCMPhysical = _objCharacter.PhysicalCM;
 			int intCMStun = _objCharacter.StunCM;
 
 			// Update the Condition Monitor labels.
 			lblPhysical.Text = intCMPhysical.ToString();
 			lblStun.Text = intCMStun.ToString();
-			string strCM = "8 + (BOD/2)(" + ((int) Math.Ceiling(dblBOD/2)).ToString() + ")";
+			string strCM = "8 + (BOD/2)(" + ((intBOD + 1)/2).ToString() + ")";
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 				         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM).ToString() + ")";
 			tipTooltip.SetToolTip(lblPhysical, strCM);
-			strCM = "8 + (WIL/2)(" + ((int) Math.Ceiling(dblWIL/2)).ToString() + ")";
+			strCM = "8 + (WIL/2)(" + ((intWIL + 1) / 2).ToString() + ")";
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 				         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
