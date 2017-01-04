@@ -206,32 +206,6 @@
 			<page>456</page>
 		</cyberware>
 		<cyberware>
-			<id>ea676290-1859-4a56-86f8-a3fb90decc32</id>
-			<name>Obvious Skull</name>
-			<category>Cyberlimb</category>
-			<limbslot>skull</limbslot>
-			<ess>0.75</ess>
-			<capacity>4</capacity>
-			<avail>16</avail>
-			<cost>10000</cost>
-			<allowgear>
-				<gearcategory>Sensors</gearcategory>
-			</allowgear>
-			<bonus>
-				<conditionmonitor>
-					<physical>1</physical>
-				</conditionmonitor>
-			</bonus>
-			<subsystems>
-				<subsystem>Headware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
-			<source>SR5</source>
-			<page>456</page>
-		</cyberware>
-		<cyberware>
 			<id>f4a48c40-29df-4435-8d09-b1f3153d61ee</id>
 			<name>Synthetic Full Arm</name>
 			<category>Cyberlimb</category>
@@ -416,14 +390,15 @@
 			<page>456</page>
 		</cyberware>
 		<cyberware>
-			<id>992fbf6b-8f9a-4c27-a527-8705ecc3341f</id>
-			<name>Synthetic Skull</name>
+			<id>8af5027d-a504-484e-8089-c542a95d4831</id>
+			<name>Centaur Full Leg</name>
+			<hide />
 			<category>Cyberlimb</category>
-			<limbslot>skull</limbslot>
-			<ess>0.75</ess>
-			<capacity>2</capacity>
-			<avail>16</avail>
-			<cost>15000</cost>
+			<limbslot>leg</limbslot>
+			<ess>3</ess>
+			<capacity>20</capacity>
+			<avail>12</avail>
+			<cost>0</cost>
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>
@@ -432,14 +407,14 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Headware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
-			<source>SR5</source>
-			<page>456</page>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+			</allowsubsystems>
+			<source>CF</source>
+			<page>87</page>
 		</cyberware>
 	</cyberwares>
 </chummer>
