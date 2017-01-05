@@ -1887,28 +1887,40 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
-		// Check for Initiative Pass modifiers. Only the highest one ever applies.
+		// Check for Initiative Pass modifiers. Only the highest one ever applies. Legacy method for old characters.
 		public void initiativepass(XmlNode bonusNode)
 		{
-			Log.Info("initiativepass");
-			Log.Info("initiativepass = " + bonusNode.OuterXml.ToString());
+			initiativedice(bonusNode);
+		}
+
+		// Check for Initiative Pass modifiers. Only the highest one ever applies.
+		public void initiativedice(XmlNode bonusNode)
+		{
+			Log.Info("initiativedice");
+			Log.Info("initiativedice = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
 
 			string strUseUnique = bonusNode.Name;
 			if (bonusNode.Attributes["precedence"] != null)
 				strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
 
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativePass,
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDice,
 				strUseUnique, ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
-		// Check for Initiative Pass modifiers. Only the highest one ever applies.
+		// Check for Initiative Dice modifiers. Only the highest one ever applies. Legacy method for old characters.
 		public void initiativepassadd(XmlNode bonusNode)
 		{
-			Log.Info("initiativepassadd");
-			Log.Info("initiativepassadd = " + bonusNode.OuterXml.ToString());
+			initiativediceadd(bonusNode);
+		}
+
+		// Check for Initiative Dice modifiers. Only the highest one ever applies.
+		public void initiativediceadd(XmlNode bonusNode)
+		{
+			Log.Info("initiativediceadd");
+			Log.Info("initiativediceadd = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativePassAdd, _strUnique,
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDiceAdd, _strUnique,
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
@@ -1922,23 +1934,35 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
-		// Check for Matrix Initiative Pass modifiers.
+		// Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
 		public void matrixinitiativepass(XmlNode bonusNode)
 		{
-			Log.Info("matrixinitiativepass");
-			Log.Info("matrixinitiativepass = " + bonusNode.OuterXml.ToString());
-			Log.Info("Calling CreateImprovement");
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativePass,
-				"matrixinitiativepass", ValueToInt(bonusNode.InnerText, _intRating));
+			matrixinitiativedice(bonusNode);
 		}
 
 		// Check for Matrix Initiative Pass modifiers.
+		public void matrixinitiativedice(XmlNode bonusNode)
+		{
+			Log.Info("matrixinitiativedice");
+			Log.Info("matrixinitiativedice = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
+				"matrixinitiativepass", ValueToInt(bonusNode.InnerText, _intRating));
+		}
+
+		// Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
 		public void matrixinitiativepassadd(XmlNode bonusNode)
 		{
-			Log.Info("matrixinitiativepassadd");
-			Log.Info("matrixinitiativepassadd = " + bonusNode.OuterXml.ToString());
+			matrixinitiativediceadd(bonusNode);
+		}
+
+		// Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
+		public void matrixinitiativediceadd(XmlNode bonusNode)
+		{
+			Log.Info("matrixinitiativediceadd");
+			Log.Info("matrixinitiativediceadd = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativePass,
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
 				_strUnique,
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}

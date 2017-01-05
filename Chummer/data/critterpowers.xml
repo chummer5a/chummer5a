@@ -1639,7 +1639,7 @@
 				<livingpersona>
 					<response>1</response>
 				</livingpersona>
-				<matrixinitiativepassadd>1</matrixinitiativepassadd>
+				<matrixinitiativediceadd>1</matrixinitiativediceadd>
 			</bonus>
 			<source>SR4</source>
 			<page>244</page>
@@ -1898,7 +1898,7 @@
 				<livingpersona>
 					<response>1</response>
 				</livingpersona>
-				<matrixinitiativepassadd>1</matrixinitiativepassadd>
+				<matrixinitiativediceadd>1</matrixinitiativediceadd>
 			</bonus>
 			<source>UN</source>
 			<page>147</page>

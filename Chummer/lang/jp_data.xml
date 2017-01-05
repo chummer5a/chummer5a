@@ -9201,8 +9201,8 @@
         <page>イニシアティブを調整します.  正の値を入力するとイニシアティブは増加します. 負の値の場合は減少します.</page>
       </improvement>
       <improvement>
-        <id>initiativepassadd</id>
-        <name>Initiative Passes</name>
+        <id>initiativediceadd</id>
+        <name>Initiative Dice</name>
         <translate>イニシアティブ・パス</translate>
         <page>イニシアティブ・パスを調整します.  正の値を入力するとイニシアティブ・パスは増加します. 負の値の場合は減少します.</page>
       </improvement>
@@ -9213,8 +9213,8 @@
         <page>マトリックス・イニシアティブを調整します.  正の値を入力するとマトリックス・イニシアティブは増加します. 負の値の場合は減少します.</page>
       </improvement>
       <improvement>
-        <id>matrixinitiativepassadd</id>
-        <name>Matrix Initiative Passes</name>
+        <id>matrixinitiativediceadd</id>
+        <name>Matrix Initiative Dice</name>
         <translate>マトリックス・イニシアティブ・パス</translate>
         <page>マトリックス・イニシアティブ・パスを調整します.  正の値を入力するとマトリックス・イニシアティブ・パスは増加します. 負の値の場合は減少します.</page>
       </improvement>

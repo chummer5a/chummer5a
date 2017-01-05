@@ -52,8 +52,10 @@ namespace Chummer
 			PhysicalCM,
 			StunCM,
 			UnarmedDV,
+			InitiativeDice,
 			InitiativePass,
 			MatrixInitiative,
+			MatrixInitiativeDice,
 			MatrixInitiativePass,
 			LifestyleCost,
 			CMThreshold,
@@ -105,6 +107,8 @@ namespace Chummer
 			SwapSkillAttribute,
 			DrainResistance,
 			FadingResistance,
+			MatrixInitiativeDiceAdd,
+			InitiativeDiceAdd,
 			MatrixInitiativePassAdd,
 			InitiativePassAdd,
 			Composure,
@@ -660,11 +664,8 @@ namespace Chummer
 			int intValue = 0;
 			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom))
 			{
-					bool blnAllowed = true;
-					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
-					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-					    objImprovementType == Improvement.ImprovementType.MatrixInitiativePass)
-						blnAllowed = false;
+					bool blnAllowed = !(_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+					    objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice);
 					// Ignore items that apply to a Skill's Rating.
 					if (objImprovement.AddToRating != blnAddToRating)
 						blnAllowed = false;
@@ -703,53 +704,22 @@ namespace Chummer
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.
-			foreach (string strName in lstUniqueName)
-			{
-				int intHighest = -999;
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == strName)
-					{
-						if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-							intHighest = Convert.ToInt32(strValues[0, 1]);
-					}
-				}
-				intValue += intHighest;
-			}
+			intValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues[0, 0] == strName select Convert.ToInt32(strValues[0, 1])).Concat(new[] {-999}).Max());
 
 			if (lstUniqueName.Contains("precedence1"))
 			{
-				intValue = 0;
+				intValue = lstUniquePair.Where(strValues => strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1").Sum(strValues => Convert.ToInt32(strValues[0, 1]));
 				// Retrieve all of the items that are precedence1 and nothing else.
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
-						intValue += Convert.ToInt32(strValues[0, 1]);
-				}
 			}
 
 			if (lstUniqueName.Contains("precedence0"))
 			{
 				// Retrieve only the highest precedence0 value.
 				// Run through the list of UniqueNames and pick out the highest value for each one.
-				int intHighest = -999;
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == "precedence0")
-					{
-						if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-							intHighest = Convert.ToInt32(strValues[0, 1]);
-					}
-				}
+				int intHighest = (from strValues in lstUniquePair where strValues[0, 0] == "precedence0" select Convert.ToInt32(strValues[0, 1])).Concat(new[] {-999}).Max();
 				if (lstUniqueName.Contains("precedence-1"))
 				{
-					foreach (string[,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0] == "precedence-1")
-						{
-							intHighest += Convert.ToInt32(strValues[0, 1]);
-						}
-					}
+					intHighest += lstUniquePair.Where(strValues => strValues[0, 0] == "precedence-1").Sum(strValues => Convert.ToInt32(strValues[0, 1]));
 				}
 				intValue = intHighest;
 			}
@@ -760,11 +730,8 @@ namespace Chummer
 			int intCustomValue = 0;
 			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.Custom))
 			{
-					bool blnAllowed = true;
-					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
-					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-					    objImprovementType == Improvement.ImprovementType.MatrixInitiativePass)
-						blnAllowed = false;
+					bool blnAllowed = !(_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+					    objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice);
 					// Ignore items that apply to a Skill's Rating.
 					if (objImprovement.AddToRating != blnAddToRating)
 						blnAllowed = false;
@@ -803,21 +770,9 @@ namespace Chummer
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.
-			foreach (string strName in lstUniqueName)
-			{
-				int intHighest = -999;
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == strName)
-					{
-						if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-							intHighest = Convert.ToInt32(strValues[0, 1]);
-					}
-				}
-				intCustomValue += intHighest;
-			}
+			intCustomValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues[0, 0] == strName select Convert.ToInt32(strValues[0, 1])).Concat(new[] {-999}).Max());
 
-            //Log.Exit("ValueOf");
+			//Log.Exit("ValueOf");
 
 			return intValue + intCustomValue;
 		}

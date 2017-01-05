@@ -115,8 +115,8 @@
 			<text>Open</text>
 		</string>
 		<string>
-			<key>Label_InitiativePasses</key>
-			<text>Initiative Passes</text>
+			<key>Label_InitiativeDice</key>
+			<text>Initiative Dice</text>
 		</string>
 		<string>
 			<key>Label_AutoRollInit</key>
@@ -4759,7 +4759,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Label_OtherIP</key>
-			<text>Initiative Passes:</text>
+			<text>Initiative Dice:</text>
 		</string>
 		<string>
 			<key>Label_OtherMatrixInit</key>
@@ -4779,7 +4779,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Label_OtherMatrixIP</key>
-			<text>Matrix Initiative Passes:</text>
+			<text>Matrix Initiative Dice:</text>
 		</string>
 		<string>
 			<key>Label_OtherAstralInit</key>
@@ -4787,7 +4787,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Label_OtherAstralIP</key>
-			<text>Astral Initiative Passes:</text>
+			<text>Astral Initiative Dice:</text>
 		</string>
 		<string>
 			<key>Label_OtherArmor</key>

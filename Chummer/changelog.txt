@@ -83,6 +83,12 @@ New Strings:
 - String_ExpensePurchaseCritterPower
 - Label_Handedness
 - Label_MugshotDimensions
+- Label_InitiativeDice
+
+Changed Strings: 
+
+- Label_OtherIP
+
 
 Build 189
 

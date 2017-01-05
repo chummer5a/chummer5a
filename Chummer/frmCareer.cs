@@ -21483,7 +21483,7 @@ namespace Chummer
                 string strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
                 if (_objCharacter.INI.AttributeModifiers > 0 || _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
                     strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INI.AttributeModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
-                strInit += " + (" + _objCharacter.InitiativePasses.ToString() + "d6)";
+                strInit += " + (" + _objCharacter.InitiativeDice + "d6)";
                 tipTooltip.SetToolTip(lblINI, strInit);
 
 				// Astral Initiative.
@@ -21523,7 +21523,7 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblMatrixINIHot, strInit);
 
                 // Rigger Initiative.
-                lblRiggingINI.Text = _objCharacter.RiggerInitiative;
+                lblRiggingINI.Text = _objCharacter.Initiative;
                 strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
                 if (_objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
                     strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.REA.AttributeModifiers + _objCharacter.INT.AttributeModifiers).ToString() + ")";

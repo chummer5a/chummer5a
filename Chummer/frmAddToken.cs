@@ -74,7 +74,7 @@ namespace Chummer
                     return; // we obviously cannot init
                 }
 
-                this.nudInit.Value = Int32.Parse(objCharacter.InitiativePasses);
+                this.nudInit.Value = objCharacter.InitiativeDice;
                 this.txtName.Text = objCharacter.Name;
                 this.nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
                 this._character = objCharacter;
