@@ -1878,19 +1878,13 @@ namespace Chummer
                     objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 
-                if (objMetatypeNode["translate"] != null)
-                    strMetatype = objMetatypeNode["translate"].InnerText;
-                else
-                    strMetatype = _strMetatype;
+                strMetatype = objMetatypeNode["translate"]?.InnerText ?? _strMetatype;
 
                 if (_strMetavariant != "")
                 {
-                    objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
+	                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
 
-                    if (objMetatypeNode["translate"] != null)
-                        strMetavariant = objMetatypeNode["translate"].InnerText;
-                    else
-                        strMetavariant = _strMetavariant;
+	                strMetavariant = objMetatypeNode["translate"]?.InnerText ?? _strMetavariant;
                 }
             }
 
@@ -2110,7 +2104,6 @@ namespace Chummer
             if (_strMagicTradition != "")
             {
                 string strDrainAtt = "";
-                objXmlDocument = new XmlDocument();
                 objXmlDocument = XmlManager.Instance.Load("traditions.xml");
 
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strMagicTradition + "\"]");
@@ -2190,7 +2183,6 @@ namespace Chummer
             if (_strTechnomancerStream != "")
             {
                 string strDrainAtt = "";
-                objXmlDocument = new XmlDocument();
                 objXmlDocument = XmlManager.Instance.Load("streams.xml");
 
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strTechnomancerStream + "\"]");
@@ -2262,31 +2254,35 @@ namespace Chummer
 
             // Calculate Initiatives.
             // Initiative.
-            string strInit = this.Initiative;
-            objWriter.WriteElementString("init", strInit);
+            objWriter.WriteElementString("init", this.Initiative);
+			objWriter.WriteElementString("initdice", this.InitiativeDice.ToString());
+			objWriter.WriteElementString("initvalue", this.InitiativeValue.ToString());
 
-            // Astral Initiative.
-            if (this.MAGEnabled)
+			// Astral Initiative.
+			if (this.MAGEnabled)
             {
-                string strAstralInit = this.AstralInitiative;
-                objWriter.WriteElementString("astralinit", strAstralInit);
-            }
+                objWriter.WriteElementString("astralinit", this.AstralInitiative);
+				objWriter.WriteElementString("astralinitdice", this.AstralInitiativeDice.ToString());
+				objWriter.WriteElementString("astralinitvalue", this.AstralInitiativeValue.ToString());
+			}
 
             // Matrix Initiative (AR).
-            string strMatrixInitAR = this.MatrixInitiative;
-            objWriter.WriteElementString("matrixarinit", strMatrixInitAR);
+            objWriter.WriteElementString("matrixinit", this.MatrixInitiative);
+			objWriter.WriteElementString("matrixinitdice", this.MatrixInitiativeDice.ToString());
+			objWriter.WriteElementString("matrixinitvalue", this.MatrixInitiativeValue.ToString());
 
-            // Matrix Initiative (Cold).
-            string strMatrixInitCold = this.MatrixInitiativeCold;
-            objWriter.WriteElementString("matrixcoldinit", strMatrixInitCold);
+			// Matrix Initiative (Cold).
+            objWriter.WriteElementString("matrixcoldinit", this.MatrixInitiativeCold);
+			objWriter.WriteElementString("matrixcoldinitdice", this.MatrixInitiativeDice.ToString());
+			objWriter.WriteElementString("matrixcoldinitvalue", this.MatrixInitiativeValue.ToString());
 
-            // Matrix Initiative (Hot).
-            string strMatrixInitHot = this.MatrixInitiativeHot;
-            objWriter.WriteElementString("matrixhotinit", strMatrixInitHot);
+			// Matrix Initiative (Hot).
+			objWriter.WriteElementString("matrixhotinit", this.MatrixInitiativeHot);
+			objWriter.WriteElementString("matrixhotinitdice", this.MatrixInitiativeDice.ToString());
+			objWriter.WriteElementString("matrixhotinitvalue", this.MatrixInitiativeValue.ToString());
 
-            // Rigger Initiative.
-            string strRiggerInit = this.RiggerInitiative;
-            objWriter.WriteElementString("riggerinit", strRiggerInit);
+			// Rigger Initiative.
+			objWriter.WriteElementString("riggerinit", this.Initiative);
 
             // <magenabled />
             objWriter.WriteElementString("magenabled", _blnMAGEnabled.ToString());
@@ -2334,108 +2330,87 @@ namespace Chummer
 
             // <limitmodifiersphys>
             objWriter.WriteStartElement("limitmodifiersphys");
-            foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
+            foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Physical"))
             {
-                if (objLimitModifier.Limit == "Physical")
-                    objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter);
             }
             // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in _lstImprovements)
-            {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
-                {
-                    if (objImprovement.ImprovedName == "Physical")
-                    {
-                        string strName = objImprovement.UniqueName;
-                        if (objImprovement.Value > 0)
-                            strName += " [+" + objImprovement.Value.ToString() + "]";
-                        else
-                            strName += " [" + objImprovement.Value.ToString() + "]";
+            foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
+	        {
+		        string strName = objImprovement.UniqueName;
+		        if (objImprovement.Value > 0)
+			        strName += " [+" + objImprovement.Value + "]";
+		        else
+			        strName += " [" + objImprovement.Value + "]";
 
-                        if (objImprovement.Exclude != "")
-                            strName += " (" + objImprovement.Exclude + ")";
+		        if (objImprovement.Exclude != "")
+			        strName += " (" + objImprovement.Exclude + ")";
 
-                        objWriter.WriteStartElement("limitmodifier");
-                        objWriter.WriteElementString("name", strName);
-                        if (this.Options.PrintNotes)
-                            objWriter.WriteElementString("notes", objImprovement.Notes);
-                        objWriter.WriteEndElement();
-                    }
-                }
-            }
-            // </limitmodifiersphys>
+		        objWriter.WriteStartElement("limitmodifier");
+		        objWriter.WriteElementString("name", strName);
+		        if (this.Options.PrintNotes)
+			        objWriter.WriteElementString("notes", objImprovement.Notes);
+		        objWriter.WriteEndElement();
+	        }
+	        // </limitmodifiersphys>
             objWriter.WriteEndElement();
 
-            // <limitmodifiersment>
-            objWriter.WriteStartElement("limitmodifiersment");
-            foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
-            {
-                if (objLimitModifier.Limit == "Mental")
-                    objLimitModifier.Print(objWriter);
-            }
-            // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in _lstImprovements)
-            {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
-                {
-                    if (objImprovement.ImprovedName == "Mental")
-                    {
-                        string strName = objImprovement.UniqueName;
-                        if (objImprovement.Value > 0)
-                            strName += " [+" + objImprovement.Value.ToString() + "]";
-                        else
-                            strName += " [" + objImprovement.Value.ToString() + "]";
+			// <limitmodifiersment>
+			objWriter.WriteStartElement("limitmodifiersment");
+			foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Mental"))
+			{
+				objLimitModifier.Print(objWriter);
+			}
+			// Populate Limit Modifiers from Improvements
+			foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
+			{
+				string strName = objImprovement.UniqueName;
+				if (objImprovement.Value > 0)
+					strName += " [+" + objImprovement.Value + "]";
+				else
+					strName += " [" + objImprovement.Value + "]";
 
-                        if (objImprovement.Exclude != "")
-                            strName += " (" + objImprovement.Exclude + ")";
+				if (objImprovement.Exclude != "")
+					strName += " (" + objImprovement.Exclude + ")";
 
-                        objWriter.WriteStartElement("limitmodifier");
-                        objWriter.WriteElementString("name", strName);
-                        if (this.Options.PrintNotes)
-                            objWriter.WriteElementString("notes", objImprovement.Notes);
-                        objWriter.WriteEndElement();
-                    }
-                }
-            }
-            // </limitmodifiersment>
-            objWriter.WriteEndElement();
+				objWriter.WriteStartElement("limitmodifier");
+				objWriter.WriteElementString("name", strName);
+				if (this.Options.PrintNotes)
+					objWriter.WriteElementString("notes", objImprovement.Notes);
+				objWriter.WriteEndElement();
+			}
+			// </limitmodifiersment>
+			objWriter.WriteEndElement();
 
-            // <limitmodifierssoc>
-            objWriter.WriteStartElement("limitmodifierssoc");
-            foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
-            {
-                if (objLimitModifier.Limit == "Social")
-                    objLimitModifier.Print(objWriter);
-            }
-            // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in _lstImprovements)
-            {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
-                {
-                    if (objImprovement.ImprovedName == "Social")
-                    {
-                        string strName = objImprovement.UniqueName;
-                        if (objImprovement.Value > 0)
-                            strName += " [+" + objImprovement.Value.ToString() + "]";
-                        else
-                            strName += " [" + objImprovement.Value.ToString() + "]";
+			// <limitmodifierssoc>
+			objWriter.WriteStartElement("limitmodifierssoc");
+			foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Social"))
+			{
+				objLimitModifier.Print(objWriter);
+			}
+			// Populate Limit Modifiers from Improvements
+			foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
+			{
+				string strName = objImprovement.UniqueName;
+				if (objImprovement.Value > 0)
+					strName += " [+" + objImprovement.Value + "]";
+				else
+					strName += " [" + objImprovement.Value + "]";
 
-                        if (objImprovement.Exclude != "")
-                            strName += " (" + objImprovement.Exclude + ")";
+				if (objImprovement.Exclude != "")
+					strName += " (" + objImprovement.Exclude + ")";
 
-                        objWriter.WriteStartElement("limitmodifier");
-                        objWriter.WriteElementString("name", strName);
-                        if (this.Options.PrintNotes)
-                            objWriter.WriteElementString("notes", objImprovement.Notes);
-                        objWriter.WriteEndElement();
-                    }
-                }
-            }
-            // </limitmodifierssoc>
-            objWriter.WriteEndElement();
+				objWriter.WriteStartElement("limitmodifier");
+				objWriter.WriteElementString("name", strName);
+				if (this.Options.PrintNotes)
+					objWriter.WriteElementString("notes", objImprovement.Notes);
+				objWriter.WriteEndElement();
+			}
+			// </limitmodifierssoc>
+			objWriter.WriteEndElement();
 
-            // <spells>
-            objWriter.WriteStartElement("spells");
+			// <spells>
+			objWriter.WriteStartElement("spells");
             foreach (Spell objSpell in _lstSpells)
             {
                 objSpell.Print(objWriter);
@@ -2525,7 +2500,7 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             // Load the Qualities file so we can figure out whether or not each Quality should be printed.
-            objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlManager.Instance.Load("qualities.xml");
 
             // <qualities>
             objWriter.WriteStartElement("qualities");
@@ -2569,12 +2544,6 @@ namespace Chummer
                 int intResponse = _attINT.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaResponse);
                 int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attRES.TotalValue, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
                 int intSystem = _attLOG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSystem);
-
-                // Make sure none of the Attributes exceed the Technomancer's RES.
-                intFirewall = Math.Min(intFirewall, _attRES.TotalValue);
-                intResponse = Math.Min(intResponse, _attRES.TotalValue);
-                intSignal = Math.Min(intSignal, _attRES.TotalValue);
-                intSystem = Math.Min(intSystem, _attRES.TotalValue);
 
                 Commlink objLivingPersona = new Commlink(this);
                 objLivingPersona.Name = LanguageManager.Instance.GetString("String_LivingPersona");
@@ -4785,257 +4754,94 @@ namespace Chummer
             }
         }
 
+		#region Initiative
+		#region Physical
         /// <summary>
-        /// Initiative.
+        /// Physical Initiative.
         /// </summary>
         public string Initiative
         {
-            get
-            {
-                string strReturn = "";
-
-                // Start by adding INT and REA together.
-                int intINI = _attINT.TotalValue + _attREA.TotalValue;
-                // Add modifiers.
-                intINI += _attINI.AttributeModifiers;
-                // Add in any Initiative Improvements.
-                intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + WoundModifiers;
-
-                // If INI exceeds the Metatype maximum set it back to the maximum.
-                //if (intINI > _attINI.MetatypeAugmentedMaximum)
-                //    intINI = _attINI.MetatypeAugmentedMaximum;
-                if (intINI < 0)
-                    intINI = 0;
-                if (_attINT.Value + _attREA.Value != intINI)
-                    strReturn = (_attINT.Value + _attREA.Value).ToString() + " (" + intINI.ToString() + ")";
-                else
-                strReturn = (intINI).ToString();
-
-                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
-                strReturn += " + " + intExtraIP.ToString() + "d6";
-
-                return strReturn;
-            }
-        }
+			get { return $"{InitiativeValue} +{InitiativeDice}d6"; }
+		}
 
         /// <summary>
-        /// Initiative Passes.
+        /// Initiative Dice.
         /// </summary>
-        public string InitiativePasses
+        public int InitiativeDice
         {
             get
             {
-                string strReturn = "";
-
-                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
-                //if (intIP != intExtraIP)
-                //    strReturn = "1 (" + intExtraIP.ToString() + ")";
-                //else
-                strReturn = Math.Min(intExtraIP,5).ToString();
-
-                return strReturn;
+                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDiceAdd));
+                
+                return Math.Min(intExtraIP, 5);
             }
         }
 
+	    public int InitiativeValue
+	    {
+		    get
+			{
+				int intINI = (_attINT.TotalValue + _attREA.TotalValue) + WoundModifiers;
+				intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative);
+				if (intINI < 0)
+					intINI = 0;
+				return intINI;
+
+			}
+	    }
+		#endregion
+		#region Astral
         /// <summary>
         /// Astral Initiative.
         /// </summary>
         public string AstralInitiative
         {
-            get
-            {
-                string strReturn = "";
+            get { return $"{AstralInitiativeValue} +{AstralInitiativeDice}d6"; }
+		}
 
-                int intINI = (_attINT.TotalValue * 2) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
-                strReturn = (_attINT.TotalValue * 2).ToString();
-                //if (intINI != _attINT.TotalValue * 2)
-                //    strReturn += " (" + intINI.ToString() + ")";
+		/// <summary>
+		/// Astral Initiative Value.
+		/// </summary>
+		public int AstralInitiativeValue
+		{
+			get
+			{
+				return (_attINT.TotalValue * 2) + WoundModifiers;
+			}
+		}
 
-                int intExtraIP = 2;
-                strReturn += " + " + intExtraIP.ToString() + "d6";
-
-                return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Astral Initiative Passes.
-        /// </summary>
-        public string AstralInitiativePasses
+		/// <summary>
+		/// Astral Initiative Dice.
+		/// </summary>
+		public int AstralInitiativeDice
         {
             get
             {
-                return "3";
+				//TODO: Global option assignation
+	            return 3;
             }
         }
-
+		#endregion
+		#region Matrix
+		#region AR
         /// <summary>
-        /// Matrix Initiative.
+        /// Formatted AR Matrix Initiative.
         /// </summary>
         public string MatrixInitiative
         {
-            get
-            {
-                string strReturn = "";
-                //int intMatrixInit = 0;
+			get { return $"{MatrixInitiativeValue} +{MatrixInitiativeDice}d6"; }
+		}
 
-                //// This is always calculated since characters can have a Matrix Initiative without actually being a Technomancer.
-                //if (!TechnomancerEnabled)
-                //{
-                //    intMatrixInit = _attINT.TotalValue;
-                //    int intCommlinkResponse = 0;
-
-                //    // Retrieve the Response for the character's active Commlink.
-                //    foreach (Commlink objCommlink in _lstGear.OfType<Commlink>())
-                //    {
-                //        if (objCommlink.IsActive)
-                //            intCommlinkResponse = objCommlink.TotalResponse;
-                //    }
-                //    intMatrixInit += intCommlinkResponse;
-
-                //    // Add in any Matrix Initiative Improvements.
-                //    intMatrixInit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative);
-                //}
-                //else
-                //{
-                //    // Technomancer Matrix Initiative = INT * 2 + 1 + any Living Persona bonuses.
-                //    intMatrixInit = (_attINT.TotalValue * 2) + 1 + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaResponse);
-                //}
-
-                //// Sprites have a forced value, so use that instead.
-                //if (_strMetatype.EndsWith("Sprite"))
-                //    intMatrixInit = _attINI.MetatypeMinimum;
-                //// A.I.s caculate their totals differently. (INT + Response)
-                //if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-                //    intMatrixInit = (_attINT.TotalValue + Response);
-
-                //int intINI = intMatrixInit + WoundModifiers;
-                //if (intINI < 0)
-                //    intINI = 0;
-
-                //strReturn = intMatrixInit.ToString();
-                //if (intINI != intMatrixInit)
-                //    strReturn += " (" + intINI.ToString() + ")";
-
-                int intINI = (_attINT.TotalValue + _attREA.TotalValue) + WoundModifiers;
-                intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
-                strReturn = (intINI).ToString();
-
-                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
-
-
-				// A.I.s always have 4 Matrix Initiative Passes.
+		/// <summary>
+		/// AR Matrix Initiative Value.
+		/// </summary>
+	    public int MatrixInitiativeValue
+	    {
+			get
+			{
 				if (_strMetatype == "A.I.")
 				{
-					intExtraIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
-				}
-
-				strReturn += " + " + intExtraIP.ToString() + "d6";
-
-                return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Matrix Initiative Passes.
-        /// </summary>
-        public string MatrixInitiativePasses
-        {
-            get
-            {
-                string strReturn = "";
-                int intIP = 0;
-
-                if (!TechnomancerEnabled)
-                {
-                    // Standard characters get 1 IP + any Matrix Initiative Pass bonuses.
-                    intIP = 1 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
-                }
-                else
-                {
-                    // Techomancers get 3 IPs + any Matrix Initiative Pass bonuses.
-                    intIP = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
-                }
-
-                // A.I.s always have 4 Matrix Initiative Passes.
-                if (_strMetatype == "A.I.")
-                    intIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
-
-                // Add in any additional Matrix Initiative Pass bonuses.
-                intIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePassAdd);
-
-                strReturn = intIP.ToString();
-
-                return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Matrix Initiative via VR with Cold Sim.
-        /// </summary>
-        public string MatrixInitiativeCold
-        {
-            get
-            {
-                string strReturn = "";
-
-                int intINI = (_attINT.TotalValue) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
-
-                int intExtraIP = 3;
-				intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
-
-				if (_strMetatype == "A.I.")
-				{
-					intExtraIP = 4;
-					intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
-                    if (_blnHasHomeNode)
-					{
-						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
-						{
-							intINI += _intHomeNodeDataProcessing;
-						}
-						else
-						{
-							intINI += _intHomeNodePilot;
-						}
-					}
-					strReturn = intINI.ToString();
-					strReturn += " + " + intExtraIP.ToString() + "d6";
-				}
-				else
-				{
-					strReturn = intINI.ToString();
-					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
-				}
-
-				return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Matrix Initiative via VR with Hot Sim.
-        /// </summary>
-        public string MatrixInitiativeHot
-        {
-            get
-            {
-				string strReturn = "";
-
-				int intINI = (_attINT.TotalValue) + WoundModifiers;
-				if (intINI < 0)
-					intINI = 0;
-
-				int intExtraIP = 4;
-				intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
-
-				if (_strMetatype == "A.I.")
-				{
+					int intINI = (_attINT.TotalValue) + WoundModifiers;
 					if (_blnHasHomeNode)
 					{
 						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
@@ -5047,45 +4853,131 @@ namespace Chummer
 							intINI += _intHomeNodePilot;
 						}
 					}
-					strReturn = intINI.ToString();
-					strReturn += " + " + intExtraIP.ToString() + "d6";
+					return intINI;
 				}
-				else
-				{
-					strReturn = intINI.ToString();
-					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
-				}
-
-				return strReturn;
+				return InitiativeValue;
 			}
-        }
+		}
 
         /// <summary>
-        /// Rigger Initiative
+        /// AR Matrix Initiative Dice.
         /// </summary>
-        public string RiggerInitiative
+        public int MatrixInitiativeDice
         {
             get
             {
-                string strReturn = "";
+                int intReturn;
+                // A.I.s always have 4 Matrix Initiative Dice.
+	            if (_strMetatype == "A.I.")
+					intReturn = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice);
+	            else
+					intReturn = InitiativeDice;
 
-                int intINI = (_attINT.TotalValue + _attREA.TotalValue) + WoundModifiers;
-                intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
-                strReturn = (intINI).ToString();
+				// Add in any additional Matrix Initiative Pass bonuses.
+				intReturn += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDiceAdd);
 
-                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
-                strReturn += " + " + intExtraIP.ToString() + "d6";
-
-                return strReturn;
+                return Math.Min(intReturn, 5);
+            }
+        }
+		#endregion 
+		#region Cold Sim
+        /// <summary>
+        /// Matrix Initiative via VR with Cold Sim.
+        /// </summary>
+        public string MatrixInitiativeCold
+        {
+            get
+            {
+                if (_strMetatype == "A.I.")
+				{
+					return MatrixInitiative;
+				}
+				return $"{MatrixInitiativeColdValue} + DP +{MatrixInitiativeColdDice}d6";
             }
         }
 
-        /// <summary>
-        /// An A.I.'s Rating.
-        /// </summary>
-        public int Rating
+		/// <summary>
+		/// Cold Sim Matrix Initiative Value.
+		/// </summary>
+		public int MatrixInitiativeColdValue
+	    {
+		    get
+			{
+				if (_strMetatype == "A.I.")
+				{
+					return MatrixInitiativeValue;
+				}
+				return _attINT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+			}
+	    }
+
+		/// <summary>
+		/// Cold Sim Matrix Initiative Dice.
+		/// </summary>
+		public int MatrixInitiativeColdDice
+	    {
+		    get
+			{
+				if (_strMetatype == "A.I.")
+				{
+					return MatrixInitiativeDice;
+				}
+				return Math.Min(3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice),5); 
+		    }
+	    }
+		#endregion
+		#region Hot Sim
+		/// <summary>
+		/// Matrix Initiative via VR with Hot Sim.
+		/// </summary>
+		public string MatrixInitiativeHot
+		{
+			get
+			{
+				if (_strMetatype == "A.I.")
+				{
+					return MatrixInitiative;
+				}
+				return $"{MatrixInitiativeHotValue} + DP +{MatrixInitiativeHotDice}d6";
+			}
+		}
+
+		/// <summary>
+		/// Hot Sim Matrix Initiative Value.
+		/// </summary>
+		public int MatrixInitiativeHotValue
+		{
+			get
+			{
+				if (_strMetatype == "A.I.")
+				{
+					return MatrixInitiativeValue;
+				}
+				return _attINT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+			}
+		}
+
+		/// <summary>
+		/// Hot Sim Matrix Initiative Dice.
+		/// </summary>
+		public int MatrixInitiativeHotDice
+		{
+			get
+			{
+				if (_strMetatype == "A.I.")
+				{
+					return MatrixInitiativeDice;
+				}
+				return Math.Min(4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice), 5);
+			}
+		}
+		#endregion
+		#endregion
+		#endregion
+		/// <summary>
+		/// An A.I.'s Rating.
+		/// </summary>
+		public int Rating
         {
             get
             {
@@ -7521,7 +7413,7 @@ namespace Chummer
             get
             {
                 if (_initPasses == Int32.MinValue)
-                    _initPasses = Convert.ToInt32(this.InitiativePasses);
+                    _initPasses = Convert.ToInt32(this.InitiativeDice);
                 return _initPasses;
             }
             set { this._initPasses = value; }

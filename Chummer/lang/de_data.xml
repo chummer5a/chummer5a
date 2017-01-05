@@ -20937,8 +20937,8 @@
 				<translate>Matrix Initiative</translate>
 			</improvement>
 			<improvement>
-				<id>matrixinitiativepassadd</id>
-				<name>Matrix Initiative Passes</name>
+				<id>matrixinitiativediceadd</id>
+				<name>Matrix Initiative Dice</name>
 				<translate>Matrix Initiativedurchgänge</translate>
 			</improvement>
 			<improvement>

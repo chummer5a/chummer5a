@@ -389,8 +389,8 @@
     </improvement>
     <improvement>
       <name>Matrix Initiative Passes</name>
-      <id>matrixinitiativepassadd</id>
-      <internal>matrixinitiativepassadd</internal>
+      <id>matrixinitiativediceadd</id>
+      <internal>matrixinitiativediceadd</internal>
       <fields>
         <field>val</field>
       </fields>

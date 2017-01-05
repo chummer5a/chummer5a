@@ -9267,8 +9267,8 @@
 					l'initiative.</page>
       </improvement>
       <improvement>
-        <id>matrixinitiativepassadd</id>
-        <name>Matrix Initiative Passes</name>
+        <id>matrixinitiativediceadd</id>
+        <name>Matrix Initiative Dice</name>
         <translate>Passes d'initiative matricielle</translate>
         <page>Ajuste le nombre de passes d'initiative matricielle du personnage par la
 					valeur entrée. Les nombres positifs augmentent le nombre de PI. Les nombres
