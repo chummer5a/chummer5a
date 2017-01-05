@@ -3649,6 +3649,13 @@
 			<armorcapacity>[1]</armorcapacity>
 			<avail>8R</avail>
 			<cost>Rating * 250</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Only for intimidation</condition>
+				</limitmodifier>
+			</bonus>
 			<source>HT</source>
 			<page>187</page>
 		</gear>
@@ -4785,6 +4792,16 @@
 			<rating>0</rating>
 			<avail>8</avail>
 			<cost>1200</cost>
+			<source>HT</source>
+			<page>188</page>
+		</gear>
+		<gear>
+			<id>176c8189-e839-4860-82e9-adafaddc5577</id>
+			<name>Smart Wig w/ Trode Net</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>1300</cost>
 			<source>HT</source>
 			<page>188</page>
 		</gear>

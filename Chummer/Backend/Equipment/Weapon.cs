@@ -1660,13 +1660,9 @@ namespace Chummer.Backend.Equipment
 						else
 							intAmmo = Convert.ToInt32(strThisAmmo);
 
-						if (intAmmoBonus != 0)
-						{
-							double dblBonus = Convert.ToDouble(intAmmoBonus, GlobalOptions.Instance.CultureInfo) / 100.0;
-							intAmmo += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intAmmo, GlobalOptions.Instance.CultureInfo) * dblBonus));
-						}
+                        intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
 
-						if (extendedMax > 0 && strAmmo.Contains("(c)"))
+                        if (extendedMax > 0 && strAmmo.Contains("(c)"))
 						{
 							//Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
 							intAmmo = (intAmmo*(2 + extendedMax))/2; 
@@ -2634,11 +2630,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Weapon's total Range bonus from Accessories.
 		/// </summary>
-		public double RangeBonus
+		public int RangeBonus
 		{
 			get
 			{
-				int intRangeBonus = 100;
+				int intRangeBonus = 0;
 
 				// Weapon Mods.
 				foreach (WeaponAccessory objAccessory in _lstAccessories)
@@ -2665,10 +2661,7 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				double dblRangeBonus = Convert.ToDouble(intRangeBonus, GlobalOptions.Instance.CultureInfo);
-				dblRangeBonus /= 100;
-
-				return dblRangeBonus;
+				return intRangeBonus;
 			}
 		}
 
@@ -2679,14 +2672,9 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intMin = Range("min");
-				int intMax = Range("short");
-				double dblRangeBonus = RangeBonus;
-
-				double dblMin = Convert.ToDouble(intMin, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				double dblMax = Convert.ToDouble(intMax, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				intMin = Convert.ToInt32(Math.Ceiling(dblMin));
-				intMax = Convert.ToInt32(Math.Ceiling(dblMax));
+                int intRangeBonus = RangeBonus;
+                int intMin = (Range("min") * (100 + intRangeBonus) + 99) / 100;
+				int intMax = (Range("short") * (100 + intRangeBonus) + 99) / 100;
 
 				if (intMin == -1 && intMax == -1)
 					return "";
@@ -2702,14 +2690,9 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intMin = Range("short");
-				int intMax = Range("medium");
-				double dblRangeBonus = RangeBonus;
-
-				double dblMin = Convert.ToDouble(intMin, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				double dblMax = Convert.ToDouble(intMax, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				intMin = Convert.ToInt32(Math.Ceiling(dblMin));
-				intMax = Convert.ToInt32(Math.Ceiling(dblMax));
+                int intRangeBonus = RangeBonus;
+                int intMin = (Range("short") * (100 + intRangeBonus) + 99) / 100;
+                int intMax = (Range("medium") * (100 + intRangeBonus) + 99) / 100;
 
 				if (intMin == -1 && intMax == -1)
 					return "";
@@ -2725,15 +2708,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intMin = Range("medium");
-				int intMax = Range("long");
-				double dblRangeBonus = RangeBonus;
-
-				double dblMin = Convert.ToDouble(intMin, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				double dblMax = Convert.ToDouble(intMax, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				intMin = Convert.ToInt32(Math.Ceiling(dblMin));
-				intMax = Convert.ToInt32(Math.Ceiling(dblMax));
-
+                int intRangeBonus = RangeBonus;
+                int intMin = (Range("medium") * (100 + intRangeBonus) + 99) / 100;
+                int intMax = (Range("long") * (100 + intRangeBonus) + 99) / 100;
+                
 				if (intMin == -1 && intMax == -1)
 					return "";
 				else
@@ -2748,14 +2726,9 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intMin = Range("long");
-				int intMax = Range("extreme");
-				double dblRangeBonus = RangeBonus;
-
-				double dblMin = Convert.ToDouble(intMin, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				double dblMax = Convert.ToDouble(intMax, GlobalOptions.Instance.CultureInfo) * dblRangeBonus;
-				intMin = Convert.ToInt32(Math.Ceiling(dblMin));
-				intMax = Convert.ToInt32(Math.Ceiling(dblMax));
+                int intRangeBonus = RangeBonus;
+                int intMin = (Range("long") * (100 + intRangeBonus) + 99) / 100;
+                int intMax = (Range("extreme") * (100 + intRangeBonus) + 99) / 100;
 
 				if (intMin == -1 && intMax == -1)
 					return "";

@@ -234,9 +234,7 @@ namespace Chummer.Backend.Equipment
 				// Adjust the stat to include the A.I.'s Home Node bonus.
 				if (_blnHomeNode)
 				{
-					decimal decBonus = Math.Ceiling(_objCharacter.CHA.TotalValue / 2m);
-					int intBonus = Convert.ToInt32(decBonus, GlobalOptions.Instance.CultureInfo);
-					intDeviceRating += intBonus;
+					intDeviceRating += (_objCharacter.CHA.TotalValue + 1) / 2;
 				}
 
 				return intDeviceRating;

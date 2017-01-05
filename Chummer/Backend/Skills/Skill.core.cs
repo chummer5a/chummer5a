@@ -306,6 +306,11 @@ namespace Chummer.Skills
 						if (objImprovement.ImprovedName == SkillGroup)
 							yield return objImprovement;
 						break;
+                    case Improvement.ImprovementType.SwapSkillAttribute:
+                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        if (objImprovement.Target == Name)
+                            yield return objImprovement;
+                        break;
 					case Improvement.ImprovementType.EnhancedArticulation:
 						if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
 							yield return objImprovement;

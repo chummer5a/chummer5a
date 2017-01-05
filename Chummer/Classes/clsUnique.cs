@@ -632,7 +632,7 @@ namespace Chummer
                                 intLimbTotal += intMeat;
                             intLimbCount = _objCharacter.Options.LimbCount;
                         }
-                        int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.Instance.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.Instance.CultureInfo)));
+                        int intTotal = intLimbTotal / intLimbCount;
                         intReturn += intTotal;
                     }
                 }
@@ -748,7 +748,7 @@ namespace Chummer
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
 				else
 					intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
-                    // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.Instance.CultureInfo) / 2))) + AugmentedMaximumModifiers;
+                    // intReturn = TotalMaximum + (TotalMaximum / 2) + AugmentedMaximumModifiers;
 
 				if (intReturn < 0)
 					intReturn = 0;
@@ -3083,9 +3083,7 @@ namespace Chummer
 					{
 						// Calculate the Spell's Drain for the current Force.
 						xprDV = nav.Compile(_strDV.Replace("F", i.ToString()).Replace("/", " div "));
-						decimal decDV = Convert.ToDecimal(nav.Evaluate(xprDV).ToString());
-						decDV = Math.Floor(decDV);
-						int intDV = Convert.ToInt32(decDV);
+						int intDV = Convert.ToInt32(Math.Floor(Convert.ToDecimal(nav.Evaluate(xprDV).ToString())));
 						// Drain cannot be lower than 2.
 						if (intDV < 2)
 							intDV = 2;
@@ -8345,7 +8343,6 @@ namespace Chummer
 		{
 			get
 			{
-				int intCost = 0;
 				double dblCost = 10.0 + (_intGrade * _objOptions.KarmaInitiation);
 				double dblMultiplier = 1.0;
 				
@@ -8361,9 +8358,7 @@ namespace Chummer
                 if (_blnSchooling)
                     dblMultiplier -= 0.1;
 
-                intCost = Convert.ToInt32(Math.Ceiling(dblCost * dblMultiplier));
-
-				return intCost;
+                return Convert.ToInt32(Math.Ceiling(dblCost * dblMultiplier));
 			}
 		}
 

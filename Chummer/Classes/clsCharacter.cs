@@ -2540,11 +2540,6 @@ namespace Chummer
             // If the character is a Technomancer, write out the Living Persona "Commlink".
             if (_blnTechnomancerEnabled)
             {
-                int intFirewall = _attWIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaFirewall);
-                int intResponse = _attINT.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaResponse);
-                int intSignal = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attRES.TotalValue, GlobalOptions.Instance.CultureInfo) / 2))) + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSignal);
-                int intSystem = _attLOG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LivingPersonaSystem);
-
                 Commlink objLivingPersona = new Commlink(this);
                 objLivingPersona.Name = LanguageManager.Instance.GetString("String_LivingPersona");
                 objLivingPersona.Category = LanguageManager.Instance.GetString("String_Commlink");
@@ -4746,11 +4741,8 @@ namespace Chummer
         {
             get
             {
-                int intReturn = 0;
                 // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to MAG and RES.
-                intReturn = Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + _objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax) - Essence));
-
-                return intReturn;
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + _objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax) - Essence));
             }
         }
 
@@ -5100,8 +5092,7 @@ namespace Chummer
             get
             {
 				// Street Cred = Career Karma / 10, rounded down
-				double dblReturn = Math.Floor(Convert.ToDouble(CareerKarma / 10));
-                int intReturn = Convert.ToInt32(dblReturn);
+                int intReturn = CareerKarma / 10;
 
 				// Deduct burnt Street Cred.
 				intReturn -= _intBurntStreetCred;
@@ -5217,9 +5208,7 @@ namespace Chummer
 				if (_objOptions.UseCalculatedPublicAwareness)
 				{
 					// Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
-					double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
-					dblAwareness = Math.Floor(dblAwareness / 3);
-					intReturn += Convert.ToInt32(dblAwareness);
+					intReturn = (TotalStreetCred + TotalNotoriety) / 3;
 				}
 
 				ImprovementManager manager = new ImprovementManager(this);
@@ -5799,17 +5788,15 @@ namespace Chummer
         {
             get
             {
-				int intCMPhysical = 0;
+				int intCMPhysical = 8;
 				if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
 				{
 					// A.I.s add 1/2 their System to Physical CM since they do not have BOD.
-					double dblDEP = _attDEP.TotalValue;
-					intCMPhysical = (int)Math.Ceiling(dblDEP / 2) + 8;
+					intCMPhysical += (_attDEP.TotalValue + 1) / 2;
 				}
 				else
 				{
-					double dblBOD = _attBOD.TotalValue;
-					intCMPhysical = (int)Math.Ceiling(dblBOD / 2) + 8;
+					intCMPhysical += (_attBOD.TotalValue + 1) / 2;
 				}
                 // Include Improvements in the Condition Monitor values.
                 intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
@@ -5824,14 +5811,13 @@ namespace Chummer
         {
             get
             {
-                double dblWIL = _attWIL.TotalValue;
-                int intCMStun = (int)Math.Ceiling(dblWIL / 2) + 8;
-                // Include Improvements in the Condition Monitor values.
-                intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
-                if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
-                {
-                    // A.I. do not have a Stun Condition Monitor.
-                    intCMStun = 0;
+                int intCMStun = 0;
+                // A.I. do not have a Stun Condition Monitor.
+                if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
+                { 
+                    intCMStun = 8 + (_attWIL.TotalValue + 1) / 2;
+                    // Include Improvements in the Condition Monitor values.
+                    intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
                 }
                 return intCMStun;
             }
@@ -5844,8 +5830,7 @@ namespace Chummer
         {
             get
             {
-                int intCMThreshold = 0;
-                intCMThreshold = 3 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.CMThreshold));
+                int intCMThreshold = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThreshold);
                 return intCMThreshold;
             }
         }
@@ -5869,13 +5854,12 @@ namespace Chummer
         {
             get
             {
-                // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
-                double dblBOD = _attBOD.TotalValue;
-                int intCMOverflow = Convert.ToInt32(dblBOD) + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
-                if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
+                int intCMOverflow = 0;
+                // A.I. do not have an Overflow Condition Monitor.
+                if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
                 {
-                    // A.I. do not have an Overflow Condition Monitor.
-                    intCMOverflow = 0;
+                    // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
+                    intCMOverflow = _attBOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
                 }
                 return intCMOverflow;
             }
@@ -6074,17 +6058,16 @@ namespace Chummer
 					if (_blnHasHomeNode && _strHomeNodeCategory == "Vehicle")
 					{
 						strReturn = _strHomeNodeHandling;
-						return strReturn;
 					}
 					else
 					{
 						strReturn = "0";
-						return strReturn;
 					}
-				}
+                    return strReturn;
+                }
 				else
 				{
-					intLimit = (Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attSTR.TotalValue) * 2) + Convert.ToDecimal(_attBOD.TotalValue) + Convert.ToDecimal(_attREA.TotalValue)) / 3)));
+					intLimit = (_attSTR.TotalValue * 2 + _attBOD.TotalValue + _attREA.TotalValue + 2) / 3;
 				}
 				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
 				strReturn = Convert.ToString(intLimit);
@@ -6099,12 +6082,11 @@ namespace Chummer
         {
             get
             {
-				int intLimit = 0;
+				int intLimit = (_attLOG.TotalValue * 2 + _attINT.TotalValue + _attWIL.TotalValue + 2) / 3;
                 if (_strMetatype == "A.I." && _blnHasHomeNode)
 				{
 					if (_strHomeNodeCategory == "Vehicle")
 					{
-						intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
 						if (_intHomeNodeSensor > intLimit)
 						{
 							intLimit = _intHomeNodeSensor;
@@ -6116,16 +6098,11 @@ namespace Chummer
 					}
 					else if (_strHomeNodeCategory == "Gear")
 					{
-						intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
-						if (_intHomeNodeDataProcessing > intLimit)
+                        if (_intHomeNodeDataProcessing > intLimit)
 						{
 							intLimit = _intHomeNodeDataProcessing;
 						}
 					}
-				}
-				else
-				{
-					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
 				}
 				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
 				return intLimit;
@@ -6144,16 +6121,16 @@ namespace Chummer
 				{
 					if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
 					{
-						intLimit = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attCHA.TotalValue) + Convert.ToDecimal(_intHomeNodeDataProcessing) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+						intLimit = (_attCHA.TotalValue + _intHomeNodeDataProcessing + _attWIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
 					}
 					else
 					{
-						intLimit = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attCHA.TotalValue) + Convert.ToDecimal(_intHomeNodePilot) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
-					}
+						intLimit = (_attCHA.TotalValue + _intHomeNodePilot + _attWIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+                    }
 				}
 				else
 				{
-					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attCHA.TotalValue) * 2) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+					intLimit = (_attCHA.TotalValue * 2 + _attWIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
 				}
                 intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.SocialLimit);
                 return intLimit;
@@ -6241,11 +6218,11 @@ namespace Chummer
 	            objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 	            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 	                
-                objXmlNode.TryGetField("movement", out _strMovement);
+                objXmlNode.TryGetField("movement", out strReturn);
 				objXmlNode.TryGetField("run", out _strRun);
 				objXmlNode.TryGetField("walk", out _strWalk);
 				objXmlNode.TryGetField("sprint", out _strSprint);
-				if (_strMovement == "Special")
+				if (strReturn == "Special")
 						{
 							return "Special";
 						}
@@ -6458,13 +6435,13 @@ namespace Chummer
 					return "Special";
 				}
 
-				string strReturn = "";
-				XmlDocument objXmlDocument = new XmlDocument();
+                string strReturn = "";
+                XmlDocument objXmlDocument = new XmlDocument();
 				objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 				XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 
-				objXmlNode.TryGetField("movement", out _strMovement);
-				if (_strMovement == "Special")
+				objXmlNode.TryGetField("movement", out strReturn);
+				if (strReturn == "Special")
 				{
 					return "Special";
 				}
@@ -6490,8 +6467,8 @@ namespace Chummer
 				objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 				XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 
-				objXmlNode.TryGetField("movement", out _strMovement);
-				if (_strMovement == "Special")
+				objXmlNode.TryGetField("movement", out strReturn);
+				if (strReturn == "Special")
 				{
 					return "Special";
 				}

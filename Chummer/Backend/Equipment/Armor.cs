@@ -1211,10 +1211,8 @@ namespace Chummer.Backend.Equipment
 					// This is only calculated if the Maximum Armor Modification rule is enabled.
 					if (_objCharacter.Options.MaximumArmorModifications)
 					{
-						double dblA = Math.Ceiling(Convert.ToDouble(_strA, GlobalOptions.Instance.CultureInfo) * 1.5);
-						double dblHighest = dblA;
-						double dblReturn = Math.Max(dblHighest, 6.0);
-						strReturn = dblReturn.ToString();
+						int intA = (3 * Convert.ToInt32(_strA, GlobalOptions.Instance.CultureInfo) + 1) / 2;
+						strReturn = Math.Max(intA, 6).ToString();
 					}
 					else
 						strReturn = "0";

@@ -25,6 +25,19 @@ Application Changes:
 - Corrected handling of Redliner for Liminal Body, especially Liminal Body Centaur.
 - Fixed an issue where the cost of cyberware/bioware grandchildren subsystems had their costs ignored.
 - Added code to prevent a crash if the PDF application/web browser has not been specified. 
+- Fixed an issue with Depth not updating properly when changing to and/or from a Depth-enabled metatype.
+- Fixed the metatype cost label in the sidebar not updating properly when loading characters with non-karma build methods and creating characters in life module build methods.
+- Fixed an issue with some Depth-linked improvements not being handled properly.
+- Improvements now have a "target" member string.
+- Optimized the improvement removal code for size, readability, and portability.
+- Fixed the improvement for swapping the attributes of a skill. The results of such an improvement show up in the skill's dice tooltip.
+- Added an improvement for the swapping of attributes of a skill for a particular specialization. The results of such an improvement show up in the skill's dice tooltip.
+- Corrected the Condition Monitors of vehicles to use modified values for Body and Device Rating instead of only base values.
+- Corrected the Speed and Handling of vehicles to use modified values for Body instead of only base values.
+- Corrected the Device Rating of vehicles to be generated from Pilot rating instead of a base value of 3.
+- Optimized away some leftovers from SR4a that were taking up CPU time and lines.
+- Performed minor speed optimizations related to rounding of integer division results.
+- Fixed a crash when creating a piece of cyberware at a rating above its maximum or below its minimum.
 
 Data Changes:
 
@@ -42,7 +55,16 @@ Data Changes:
 - Liminal Body Centaur now comes with four full cyberlegs.
 - Fixed the Dual-Natured critter power to provide access to Assensing. 
 - Fixed incorrect cost discount for the Astral Hazing quality.
-
+- Vintage quality now properly doubles accessory cost and is mutually exclusive with electronic accessories.
+- Peak-Discharge Battery Packs no longer appear in the list of available accessories for weapons that cannot use them.
+- Added an item for an Optical Imaging Scope, just like how there is one for Optical Binoculars in the gear section.
+- Improved Range Finder now properly requires a Smartgun accessory.
+- Corrected Ammo Drone to come standard with a rating 2 Maneuvering Autosoft.
+- Added a vehicle mod for the illegal Reloading Drone autosoft for reloading forbidden weapons that costs 250.
+- Added an entry for a Smart Wig with an integrated Trode Net that costs 100 extra.
+- Added an improvement for the Intimidation limit bonus for Voice Warper.
+- Master Debater and Empathic Listener now have their effects represented in skill dice pool tooltips.
+- Cybereyes and cyberears now come standard with Image Link and Sound Link respectively.
 
 Custom Content Additions:
 

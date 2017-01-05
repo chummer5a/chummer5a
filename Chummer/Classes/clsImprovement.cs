@@ -182,7 +182,8 @@ namespace Chummer
 	        UnarmedReach,
 			SkillSpecialization,
             AIProgram,
-            CritterPowerLevel
+            CritterPowerLevel,
+            SwapSkillSpecAttribute
         }
 
         public enum ImprovementSource
@@ -232,6 +233,7 @@ namespace Chummer
         private int _intRating = 1;
 		private string _strExclude = "";
 		private string _strUniqueName = "";
+        private string _strTarget = "";
         private ImprovementType _objImprovementType;
         private ImprovementSource _objImprovementSource;
 		private bool _blnCustom = false;
@@ -280,7 +282,8 @@ namespace Chummer
 			objWriter.WriteStartElement("improvement");
 			if (_strUniqueName != "")
 				objWriter.WriteElementString("unique", _strUniqueName);
-			objWriter.WriteElementString("improvedname", _strImprovedName);
+            objWriter.WriteElementString("target", _strTarget);
+            objWriter.WriteElementString("improvedname", _strImprovedName);
 			objWriter.WriteElementString("sourcename", _strSourceName);
 			objWriter.WriteElementString("min", _intMin.ToString());
 			objWriter.WriteElementString("max", _intMax.ToString());
@@ -319,7 +322,14 @@ namespace Chummer
 			catch
 			{
 			}
-			_strImprovedName = objNode["improvedname"].InnerText;
+            try
+            {
+                _strTarget = objNode["target"].InnerText;
+            }
+            catch
+            {
+            }
+            _strImprovedName = objNode["improvedname"].InnerText;
 			_strSourceName = objNode["sourcename"].InnerText;
 			try
 			{
@@ -550,10 +560,19 @@ namespace Chummer
 			set { _blnAddToRating = value; }
 			}
 
-		/// <summary>
-		/// Whether or not the Improvement is enabled and provided its bonus.
+        /// <summary>
+		/// The target of an improvement, e.g. the skill whose attributes should be swapped
 		/// </summary>
-		public bool Enabled
+		public string Target
+        {
+            get { return _strTarget; }
+            set { _strTarget = value; }
+        }
+
+        /// <summary>
+        /// Whether or not the Improvement is enabled and provided its bonus.
+        /// </summary>
+        public bool Enabled
 		{
 			get { return _blnEnabled; }
 			set { _blnEnabled = value; }
@@ -771,7 +790,7 @@ namespace Chummer
             
 			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
 			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
-			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("MAG") || strValue.Contains("RES"))
+			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("DEP") || strValue.Contains("MAG") || strValue.Contains("RES"))
 			{
 				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
 				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
@@ -783,7 +802,8 @@ namespace Chummer
 				strValue = strValue.Replace("LOG", _objCharacter.LOG.TotalValue.ToString());
 				strValue = strValue.Replace("WIL", _objCharacter.WIL.TotalValue.ToString());
 				strValue = strValue.Replace("EDG", _objCharacter.EDG.TotalValue.ToString());
-				strValue = strValue.Replace("MAG", _objCharacter.MAG.TotalValue.ToString());
+                strValue = strValue.Replace("DEP", _objCharacter.DEP.TotalValue.ToString());
+                strValue = strValue.Replace("MAG", _objCharacter.MAG.TotalValue.ToString());
 				strValue = strValue.Replace("RES", _objCharacter.RES.TotalValue.ToString());
 
 				XmlDocument objXmlDocument = new XmlDocument();
@@ -1077,970 +1097,382 @@ namespace Chummer
 				// Remove the Improvement.
 				_objCharacter.Improvements.Remove(objImprovement);
 
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
-				{
-					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-					//for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-					//{
-					//	//wrote as foreach first, modify collection, not want rename
-					//	Skill skill = _objCharacter.SkillsSection.Skills[i];
-					//	for (int j = skill.Fold.Count - 1; j >= 0; j--)
-					//	{
-					//		Skill fold = skill.Fold[i];
-					//		if (fold.Id.ToString() == objImprovement.ImprovedName)
-					//		{
-					//			skill.Free(fold);
-					//			_objCharacter.SkillsSection.Skills.Remove(fold);
-					//		}
-					//	}
+                // See if the character has anything else that is granting them the same bonus as this improvement
+                bool blnHasDuplicate = _objCharacter.Improvements.Where(x => x.SourceName != objImprovement.SourceName && 
+                                                                        x.ImproveType == objImprovement.ImproveType && 
+                                                                        x.UniqueName == objImprovement.UniqueName && 
+                                                                        x.ImprovedName == objImprovement.ImprovedName).Any();
 
-					//	if (skill.Id.ToString() == objImprovement.ImprovedName)
-					//	{
-					//		while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-					//		//empty list, can't call clear as exposed list is RO
-
-					//		_objCharacter.SkillsSection.Skills.Remove(skill);
-					//	}
-					//}
-				}
-
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess)
-			    {
-					_objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(_objCharacter.SkillsSection.KnowsoftSkills.Contains);
-			    }
-
-                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillKnowledgeForced)
+                switch (objImprovement.ImproveType)
                 {
-	                Guid guid = Guid.Parse(objImprovement.ImprovedName);
-	                _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
-                }
+                    case Improvement.ImprovementType.SkillLevel:
+                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                        //{
+                        //	//wrote as foreach first, modify collection, not want rename
+                        //	Skill skill = _objCharacter.SkillsSection.Skills[i];
+                        //	for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                        //	{
+                        //		Skill fold = skill.Fold[i];
+                        //		if (fold.Id.ToString() == objImprovement.ImprovedName)
+                        //		{
+                        //			skill.Free(fold);
+                        //			_objCharacter.SkillsSection.Skills.Remove(fold);
+                        //		}
+                        //	}
 
-                // Remove "free" adept powers if any.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
-                {
-					// Load the power from XML.
-					// objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
-					// TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
-	                try
-	                {
-		                XmlDocument objXmlMentorDocument = new XmlDocument();
-		                objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-		                XmlNode objXmlMentorBonus =
-			                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
-			                                                      objImprovement.Notes +
-			                                                      "\"]");
-		                XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
-		                foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
-		                {
-			                // Get the Power information
-			                XmlDocument objXmlDocument = new XmlDocument();
-			                objXmlDocument = XmlManager.Instance.Load("powers.xml");
+                        //	if (skill.Id.ToString() == objImprovement.ImprovedName)
+                        //	{
+                        //		while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                        //		//empty list, can't call clear as exposed list is RO
 
-			                string strPowerName = objXmlSpecificPower["name"].InnerText;
-
-			                // Find the power (if it still exists)
-			                foreach (Power objPower in _objCharacter.Powers)
-			                {
-				                if (objPower.Name == strPowerName)
-				                {
-					                // Disable the free property and remove any free levels.
-					                objPower.Free = false;
-					                objPower.FreeLevels = 0;
-				                }
-			                }
-		                }
-	                }
-	                catch
-	                {
-
-	                }
-                }
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute)
-                {
-                    CharacterAttrib objChangedAttribute = null;
-                    switch (objImprovement.ImprovedName)
-                    {
-                        case "AGI":
-                            objChangedAttribute = _objCharacter.AGI;
-                            break;
-                        case "REA":
-                            objChangedAttribute = _objCharacter.REA;
-                            break;
-                        case "STR":
-                            objChangedAttribute = _objCharacter.STR;
-                            break;
-                        case "CHA":
-                            objChangedAttribute = _objCharacter.CHA;
-                            break;
-                        case "INT":
-                            objChangedAttribute = _objCharacter.INT;
-                            break;
-                        case "LOG":
-                            objChangedAttribute = _objCharacter.LOG;
-                            break;
-                        case "WIL":
-                            objChangedAttribute = _objCharacter.WIL;
-                            break;
-                        case "EDG":
-                            objChangedAttribute = _objCharacter.EDG;
-                            break;
-                        case "MAG":
-                            objChangedAttribute = _objCharacter.MAG;
-                            break;
-                        case "RES":
-                            objChangedAttribute = _objCharacter.RES;
-                            break;
-                        case "DEP":
-                            objChangedAttribute = _objCharacter.DEP;
-                            break;
-                        case "BOD":
-                        default:
-                            objChangedAttribute = _objCharacter.BOD;
-                            break;
-                    }
-                    if (objImprovement.Minimum > 0)
-                    {
-                        objChangedAttribute.Value -= objImprovement.Minimum;
-                    }
-                }
-                // Determine if access to any Special Attributes have been lost.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-				    objImprovement.UniqueName == "enableattribute")
-				{
-					if (objImprovement.ImprovedName == "MAG")
-					{
-						// See if the character has anything else that is granting them access to MAG.
-						bool blnFound = false;
-						foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-						{
-							// Skip items from the current Improvement source.
-							if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-							{
-								if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-								    objCharacterImprovement.UniqueName == "enableattribute" && objCharacterImprovement.ImprovedName == "MAG")
-								{
-									blnFound = true;
-									break;
-								}
-							}
-						}
-
-						if (!blnFound)
-							_objCharacter.MAGEnabled = false;
-					}
-					else if (objImprovement.ImprovedName == "RES")
-					{
-						// See if the character has anything else that is granting them access to RES.
-						bool blnFound = false;
-						foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-						{
-							// Skip items from the current Improvement source.
-							if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-							{
-								if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-								    objCharacterImprovement.UniqueName == "enableattribute" && objCharacterImprovement.ImprovedName == "RES")
-								{
-									blnFound = true;
-									break;
-								}
-							}
-						}
-
-						if (!blnFound)
-							_objCharacter.RESEnabled = false;
-					}
-                    else if (objImprovement.ImprovedName == "DEP")
-                    {
-                        // See if the character has anything else that is granting them access to RES.
-                        bool blnFound = false;
-                        foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                        {
-                            // Skip items from the current Improvement source.
-                            if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                            {
-                                if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                                    objCharacterImprovement.UniqueName == "enableattribute" && objCharacterImprovement.ImprovedName == "DEP")
-                                {
-                                    blnFound = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (!blnFound)
-                            _objCharacter.DEPEnabled = false;
-                    }
-                }
-
-				// Determine if access to any special tabs have been lost.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialTab && objImprovement.UniqueName == "enabletab")
-				{
-					bool blnFound = false;
-					switch (objImprovement.ImprovedName)
-					{
-						case "Magician":
-							// See if the character has anything else that is granting them access to the Magician tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Magician")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-							
-							if (!blnFound)
-								_objCharacter.MagicianEnabled = false;
-							break;
-						case "Adept":
-							// See if the character has anything else that is granting them access to the Adept tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Adept")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.AdeptEnabled = false;
-							break;
-						case "Technomancer":
-							// See if the character has anything else that is granting them access to the Technomancer tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Technomancer")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.TechnomancerEnabled = false;
-							break;
-                        case "Advanced Programs":
-                            // See if the character has anything else that is granting them access to the Advanced Programs tab.
-                            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                            {
-                                // Skip items from the current Improvement source.
-                                if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                                {
-                                    if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-                                        objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Advanced Programs")
-                                    {
-                                        blnFound = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (!blnFound)
-                                _objCharacter.AdvancedProgramsEnabled = false;
-                            break;
-						case "Critter":
-							// See if the character has anything else that is granting them access to the Critter tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Critter")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.CritterEnabled = false;
-							break;
-						case "Initiation":
-							// See if the character has anything else that is granting them access to the Initiation tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Initiation")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.InitiationEnabled = false;
-							break;
-					}
-				}
-
-                // Determine if access to any special tabs has been regained
-                if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialTab && objImprovement.UniqueName == "disabletab")
-                {
-                    bool blnFound = false;
-                    switch (objImprovement.ImprovedName)
-                    {
-                        case "Cyberware":
-                            // See if the character has anything else that is prohibiting them access to the Cyberware tab.
-                            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                            {
-                                // Skip items from the current Improvement source.
-                                if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                                {
-                                    if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-                                        objCharacterImprovement.UniqueName == "disabletab" && objCharacterImprovement.ImprovedName == "Cyberware")
-                                    {
-                                        blnFound = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (!blnFound)
-                                _objCharacter.CyberwareDisabled = false;
-                            break;
-                    }
-                }
-
-                // Turn of the Black Market flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Black Market.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-					{
-						_objCharacter.BlackMarketDiscount = false;
-						if (!_objCharacter.Created)
-						{
-							foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-							{
-								objVehicle.BlackMarketDiscount = false;
-								foreach (Weapon objWeapon in objVehicle.Weapons)
-								{
-									objWeapon.DiscountCost = false;
-									foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
-									{
-										objWeaponAccessory.DiscountCost = false;
-									}
-								}
-								foreach (Gear objGear in objVehicle.Gear)
-								{
-									objGear.DiscountCost = false;
-								}
-								foreach (VehicleMod objMod in objVehicle.Mods)
-								{
-									objMod.DiscountCost = false;
-								}
-							}
-							foreach (Weapon objWeapon in _objCharacter.Weapons)
-							{
-								objWeapon.DiscountCost = false;
-								foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
-								{
-									objWeaponAccessory.DiscountCost = false;
-								}
-							}
-							foreach (Gear objGear in _objCharacter.Gear)
-							{
-								objGear.DiscountCost = false;
-
-								foreach (Gear objChild in objGear.Children)
-								{
-									objChild.DiscountCost = false;
-								}
-							}
-						}
-					}
-				}
-
-				// Turn of the Uneducated flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Uneducated)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Uneducated.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Uneducated)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.SkillsSection.Uneducated = false;
-				}
-
-				// Turn off the Uncouth flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Uncouth)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Uncouth.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Uncouth)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.SkillsSection.Uncouth = false;
-                }
-
-                // Turn off the FriendsInHighPlaces flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to FriendsInHighPlaces.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.FriendsInHighPlaces = false;
-                }
-
-                // Turn off the SchoolOfHardKnocks flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.SchoolOfHardKnocks = false;
-                }
-
-                //Turn off the Ex-Con flag if it is being removed
-			    if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-			    {
-                     bool blnFound = false;
-                     // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
-                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                     {
-                         // Skip items from the current Improvement source.
-                         if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                         {
-                             if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-                             {
-                                 blnFound = true;
-                                 break;
-                             }
-                         }
-                     }
- 
-                     if (!blnFound)
-                         _objCharacter.ExCon = false;
- 			    }
-
-                // Turn off the FriendsInHighPlaces flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to FriendsInHighPlaces.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.FriendsInHighPlaces = false;
-                }
-                // Turn off the JackOfAllTrades flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.JackOfAllTrades)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to JackOfAllTrades.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.JackOfAllTrades)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.JackOfAllTrades = false;
-				}
-				// Turn off the prototypetranshuman flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to prototypetranshuman.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.PrototypeTranshuman = 0;
-				}
-				// Turn off the CollegeEducation flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to CollegeEducation.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.CollegeEducation = false;
-                }
-                // Turn off the Erased flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Erased)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Erased.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Erased)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.Erased = false;
-                }
-                // Turn off the BornRich flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.BornRich)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to BornRich.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BornRich)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.BornRich = false;
-                }
-                // Turn off the Fame flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Fame)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Fame.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Fame)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.Fame = false;
-                }
-                // Turn off the LightningReflexes flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LightningReflexes)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to LightningReflexes.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.LightningReflexes)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.LightningReflexes = false;
-                }
-                // Turn off the Linguist flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Linguist)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Linguist.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Linguist)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.Linguist = false;
-                }
-                // Turn off the MadeMan flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to MadeMan.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.MadeMan = false;
-				}
-
-				// Turn off the Ambidextrous flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Ambidextrous)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Ambidextrous.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Ambidextrous)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.Ambidextrous = false;
-				}
-
-				// Turn off the Overclocker flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Overclocker.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.Overclocker = false;
-                }
-                // Turn off the RestrictedGear flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.RestrictedGear)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to RestrictedGear.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.RestrictedGear)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.RestrictedGear = false;
-                }
-                // Turn off the TechSchool flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.TechSchool)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to TechSchool.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.TechSchool)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.TechSchool = false;
-                }
-                // Turn off the TrustFund flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to TrustFund.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.TrustFund = 0;
-                }
-                // Turn off the ExCon flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to ExCon.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.ExCon = false;
-                }
-				// Turn off the BlackMarketDiscount flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to BlackMarket.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-	                {
-		                _objCharacter.BlackMarketDiscount = false;
-	                }
-                }
-                // If the last instance of Adapsin is being removed, convert all Adapsin Cyberware Grades to their non-Adapsin version.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Adapsin)
-				{
-					if (!_objCharacter.AdapsinEnabled)
-					{
-						foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-						{
-							if (objCyberware.Grade.Adapsin)
-							{
-								// Determine which GradeList to use for the Cyberware.
-								GradeList objGradeList;
-								if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-									objGradeList = GlobalOptions.BiowareGrades;
-								else
-									objGradeList = GlobalOptions.CyberwareGrades;
-
-								objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
-							}
-						}
-					}
-				}
-
-                // Remove MadeMan tag from a contact
-				if (objImprovement.ImproveType == Improvement.ImprovementType.ContactMadeMan)
-			    {
-			        Contact contact = (from c in _objCharacter.Contacts
-			            where c.GUID == objImprovement.ImprovedName
-			            select c).First();
-
-			        contact.MadeMan = false;
-				}
-
-				if (objImprovement.ImproveType == Improvement.ImprovementType.AddContact)
-				{
-					Contact contact = (from c in _objCharacter.Contacts
-									   where c.GUID == objImprovement.ImprovedName
-									   select c).First();
-
-					_objCharacter.Contacts.Remove(contact);
-				}
-
-				// Decrease the character's Initiation Grade.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Initiation)
-					_objCharacter.InitiateGrade -= objImprovement.Value;
-
-				// Decrease the character's Submersion Grade.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Submersion)
-					_objCharacter.SubmersionGrade -= objImprovement.Value;
-				
-				//Remove special (magical/resonance) skills
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
-				{
-					_objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
-				}
-
-				//Remove qualities that were granted by the Improvement.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecificQuality)
-				{
-					foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objImprovement.ImprovedName == objQuality.InternalId))
-					{
-						_objCharacter.Qualities.Remove(objQuality);
-						break;
-					}
-				}
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillSpecialization)
-				{
-					Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objImprovement.ImprovedName);
-					if (objSkill != null)
-					{
-						SkillSpecialization objSkillSpec = objSkill.Specializations.First(x => x.Name == objImprovement.UniqueName);
-						objSkill.Specializations.Remove(objSkillSpec);
-					}
-				}
-
-                // Remove AI programs that were granted by the Improvement.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.AIProgram)
-                {
-                    foreach (AIProgram objProgram in _objCharacter.AIPrograms.Where(objProgram => objImprovement.ImprovedName == objProgram.InternalId))
-                    {
-                        _objCharacter.AIPrograms.Remove(objProgram);
+                        //		_objCharacter.SkillsSection.Skills.Remove(skill);
+                        //	}
+                        //}
                         break;
-                    }
+                    case Improvement.ImprovementType.SwapSkillAttribute:
+                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+                        break;
+                    case Improvement.ImprovementType.SkillsoftAccess:
+                        _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(_objCharacter.SkillsSection.KnowsoftSkills.Contains);
+                        break;
+                    case Improvement.ImprovementType.SkillKnowledgeForced:
+                        Guid guid = Guid.Parse(objImprovement.ImprovedName);
+                        _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
+                        _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
+                        break;
+                    case Improvement.ImprovementType.AdeptPower:
+                        // Load the power from XML.
+                        // objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
+                        // TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
+                        try
+                        {
+                            XmlDocument objXmlMentorDocument = new XmlDocument();
+                            objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
+                            XmlNode objXmlMentorBonus =
+                                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
+                                                                      objImprovement.Notes +
+                                                                      "\"]");
+                            XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
+                            foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
+                            {
+                                // Get the Power information
+                                XmlDocument objXmlDocument = new XmlDocument();
+                                objXmlDocument = XmlManager.Instance.Load("powers.xml");
+
+                                string strPowerName = objXmlSpecificPower["name"].InnerText;
+
+                                // Find the power (if it still exists)
+                                foreach (Power objPower in _objCharacter.Powers)
+                                {
+                                    if (objPower.Name == strPowerName)
+                                    {
+                                        // Disable the free property and remove any free levels.
+                                        objPower.Free = false;
+                                        objPower.FreeLevels = 0;
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        break;
+                    case Improvement.ImprovementType.Attribute:
+                        CharacterAttrib objChangedAttribute = null;
+                        switch (objImprovement.ImprovedName)
+                        {
+                            case "AGI":
+                                objChangedAttribute = _objCharacter.AGI;
+                                break;
+                            case "REA":
+                                objChangedAttribute = _objCharacter.REA;
+                                break;
+                            case "STR":
+                                objChangedAttribute = _objCharacter.STR;
+                                break;
+                            case "CHA":
+                                objChangedAttribute = _objCharacter.CHA;
+                                break;
+                            case "INT":
+                                objChangedAttribute = _objCharacter.INT;
+                                break;
+                            case "LOG":
+                                objChangedAttribute = _objCharacter.LOG;
+                                break;
+                            case "WIL":
+                                objChangedAttribute = _objCharacter.WIL;
+                                break;
+                            case "EDG":
+                                objChangedAttribute = _objCharacter.EDG;
+                                break;
+                            case "MAG":
+                                objChangedAttribute = _objCharacter.MAG;
+                                break;
+                            case "RES":
+                                objChangedAttribute = _objCharacter.RES;
+                                break;
+                            case "DEP":
+                                objChangedAttribute = _objCharacter.DEP;
+                                break;
+                            case "BOD":
+                            default:
+                                objChangedAttribute = _objCharacter.BOD;
+                                break;
+                        }
+                        if (objImprovement.Minimum > 0)
+                        {
+                            objChangedAttribute.Value -= objImprovement.Minimum;
+                        }
+
+                        // Determine if access to any Special Attributes have been lost.
+                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
+                        {
+                            switch (objImprovement.ImprovedName)
+                            {
+                                case "MAG":
+                                    _objCharacter.MAGEnabled = false;
+                                    break;
+                                case "RES":
+                                    _objCharacter.RESEnabled = false;
+                                    break;
+                                case "DEP":
+                                    _objCharacter.DEPEnabled = false;
+                                    break;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialTab:
+                        // Determine if access to any special tabs have been lost.
+                        if (!blnHasDuplicate)
+                        {
+                            if (objImprovement.UniqueName == "enabletab")
+                            {
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Magician":
+                                        _objCharacter.MagicianEnabled = false;
+                                        break;
+                                    case "Adept":
+                                        _objCharacter.AdeptEnabled = false;
+                                        break;
+                                    case "Technomancer":
+                                        _objCharacter.TechnomancerEnabled = false;
+                                        break;
+                                    case "Advanced Programs":
+                                        _objCharacter.AdvancedProgramsEnabled = false;
+                                        break;
+                                    case "Critter":
+                                        _objCharacter.CritterEnabled = false;
+                                        break;
+                                    case "Initiation":
+                                        _objCharacter.InitiationEnabled = false;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            // Determine if access to any special tabs has been regained
+                            else if (objImprovement.UniqueName == "disabletab")
+                            {
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Cyberware":
+                                        _objCharacter.CyberwareDisabled = false;
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.BlackMarketDiscount:
+                        if (!blnHasDuplicate)
+                        {
+                            _objCharacter.BlackMarketDiscount = false;
+                            if (!_objCharacter.Created)
+                            {
+                                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                                {
+                                    objVehicle.BlackMarketDiscount = false;
+                                    foreach (Weapon objWeapon in objVehicle.Weapons)
+                                    {
+                                        objWeapon.DiscountCost = false;
+                                        foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+                                        {
+                                            objWeaponAccessory.DiscountCost = false;
+                                        }
+                                    }
+                                    foreach (Gear objGear in objVehicle.Gear)
+                                    {
+                                        objGear.DiscountCost = false;
+                                    }
+                                    foreach (VehicleMod objMod in objVehicle.Mods)
+                                    {
+                                        objMod.DiscountCost = false;
+                                    }
+                                }
+                                foreach (Weapon objWeapon in _objCharacter.Weapons)
+                                {
+                                    objWeapon.DiscountCost = false;
+                                    foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+                                    {
+                                        objWeaponAccessory.DiscountCost = false;
+                                    }
+                                }
+                                foreach (Gear objGear in _objCharacter.Gear)
+                                {
+                                    objGear.DiscountCost = false;
+
+                                    foreach (Gear objChild in objGear.Children)
+                                    {
+                                        objChild.DiscountCost = false;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Uneducated:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.Uneducated = false;
+                        break;
+                    case Improvement.ImprovementType.Uncouth:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.Uncouth = false;
+                        break;
+                    case Improvement.ImprovementType.FriendsInHighPlaces:
+                        if (!blnHasDuplicate)
+                            _objCharacter.FriendsInHighPlaces = false;
+                        break;
+                    case Improvement.ImprovementType.SchoolOfHardKnocks:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.SchoolOfHardKnocks = false;
+                        break;
+                    case Improvement.ImprovementType.ExCon:
+                        if (!blnHasDuplicate)
+                            _objCharacter.ExCon = false;
+                        break;
+                    case Improvement.ImprovementType.JackOfAllTrades:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.JackOfAllTrades = false;
+                        break;
+                    case Improvement.ImprovementType.PrototypeTranshuman:
+                        if (!blnHasDuplicate)
+                            _objCharacter.PrototypeTranshuman = 0;
+                        break;
+                    case Improvement.ImprovementType.CollegeEducation:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.CollegeEducation = false;
+                        break;
+                    case Improvement.ImprovementType.Erased:
+                        if (!blnHasDuplicate)
+                            _objCharacter.Erased = false;
+                        break;
+                    case Improvement.ImprovementType.BornRich:
+                        if (!blnHasDuplicate)
+                            _objCharacter.BornRich = false;
+                        break;
+                    case Improvement.ImprovementType.Fame:
+                        if (!blnHasDuplicate)
+                            _objCharacter.Fame = false;
+                        break;
+                    case Improvement.ImprovementType.LightningReflexes:
+                        if (!blnHasDuplicate)
+                            _objCharacter.LightningReflexes = false;
+                        break;
+                    case Improvement.ImprovementType.Linguist:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.Linguist = false;
+                        break;
+                    case Improvement.ImprovementType.MadeMan:
+                        if (!blnHasDuplicate)
+                            _objCharacter.MadeMan = false;
+                        break;
+                    case Improvement.ImprovementType.Ambidextrous:
+                        if (!blnHasDuplicate)
+                            _objCharacter.Ambidextrous = false;
+                        break;
+                    case Improvement.ImprovementType.Overclocker:
+                        if (!blnHasDuplicate)
+                            _objCharacter.Overclocker = false;
+                        break;
+                    case Improvement.ImprovementType.RestrictedGear:
+                        if (!blnHasDuplicate)
+                            _objCharacter.RestrictedGear = false;
+                        break;
+                    case Improvement.ImprovementType.TechSchool:
+                        if (!blnHasDuplicate)
+                            _objCharacter.SkillsSection.TechSchool = false;
+                        break;
+                    case Improvement.ImprovementType.TrustFund:
+                        if (!blnHasDuplicate)
+                            _objCharacter.TrustFund = 0;
+                        break;
+                    case Improvement.ImprovementType.Adapsin:
+                        if (!_objCharacter.AdapsinEnabled)
+                        {
+                            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                            {
+                                if (objCyberware.Grade.Adapsin)
+                                {
+                                    // Determine which GradeList to use for the Cyberware.
+                                    GradeList objGradeList;
+                                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                                        objGradeList = GlobalOptions.BiowareGrades;
+                                    else
+                                        objGradeList = GlobalOptions.CyberwareGrades;
+
+                                    objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactMadeMan:
+                        Contact MadeManContact = (from c in _objCharacter.Contacts
+                                           where c.GUID == objImprovement.ImprovedName
+                                           select c).First();
+
+                        MadeManContact.MadeMan = false;
+                        break;
+                    case Improvement.ImprovementType.AddContact:
+                        Contact NewContact = (from c in _objCharacter.Contacts
+                                           where c.GUID == objImprovement.ImprovedName
+                                           select c).First();
+
+                        _objCharacter.Contacts.Remove(NewContact);
+                        break;
+                    case Improvement.ImprovementType.Initiation:
+                        _objCharacter.InitiateGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Submersion:
+                        _objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.SpecialSkills:
+                        _objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
+                        break;
+                    case Improvement.ImprovementType.SpecificQuality:
+                        foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objImprovement.ImprovedName == objQuality.InternalId))
+                        {
+                            _objCharacter.Qualities.Remove(objQuality);
+                            break;
+                        }
+                        break;
+                    case Improvement.ImprovementType.SkillSpecialization:
+                        Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objImprovement.ImprovedName);
+                        if (objSkill != null)
+                        {
+                            SkillSpecialization objSkillSpec = objSkill.Specializations.First(x => x.Name == objImprovement.UniqueName);
+                            objSkill.Specializations.Remove(objSkillSpec);
+                        }
+                        break;
+                    case Improvement.ImprovementType.AIProgram:
+                        foreach (AIProgram objProgram in _objCharacter.AIPrograms.Where(objProgram => objImprovement.ImprovedName == objProgram.InternalId))
+                        {
+                            _objCharacter.AIPrograms.Remove(objProgram);
+                            break;
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -2069,7 +1501,7 @@ namespace Chummer
 		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
 			string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
 			int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
-			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false)
+			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "")
 		{
             Log.Enter("CreateImprovement");
 			Log.Info(
@@ -2112,9 +1544,10 @@ namespace Chummer
 			objImprovement.AugmentedMaximum = intAugmentedMaximum;
 			objImprovement.Exclude = strExclude;
 			objImprovement.AddToRating = blnAddToRating;
+            objImprovement.Target = strTarget;
 
-			// Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
-			if (_objCharacter != null)
+            // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
+            if (_objCharacter != null)
 			{
 				// Add the Improvement to the list.
 				_objCharacter.Improvements.Add(objImprovement);
