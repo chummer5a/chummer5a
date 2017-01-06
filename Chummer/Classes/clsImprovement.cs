@@ -176,7 +176,8 @@ namespace Chummer
 			BlockSkillDefault,
 			Ambidextrous,
 	        UnarmedReach,
-			SkillSpecialization
+			SkillSpecialization,
+			NativeLanguageLimit
 		}
 
         public enum ImprovementSource

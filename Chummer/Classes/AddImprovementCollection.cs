@@ -1904,14 +1904,15 @@ namespace Chummer.Classes
 			_objCharacter.RestrictedGear = true;
 		}
 
-		// Check for Adept Linguistics.
-		public void adeptlinguistics(XmlNode bonusNode)
+		// Check for Improvements that grant bonuses to the maximum amount of Native languages a user can have.
+		public void nativelanguagelimit(XmlNode bonusNode)
 		{
-			Log.Info("adeptlinguistics");
-			Log.Info("adeptlinguistics = " + bonusNode.OuterXml.ToString());
+			Log.Info("nativelanguagelimit");
+			Log.Info("nativelanguagelimit = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptLinguistics, _strUnique,
-				1);
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.NativeLanguageLimit,
+				_strUnique,
+				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
 		// Check for Ambidextrous modifiers.

@@ -698,9 +698,9 @@
       <adeptway>0</adeptway>
       <levels>false</levels>
       <limit>1</limit>
-      <bonus>
-        <adeptlinguistics />
-      </bonus>
+			<bonus>
+				<nativelanguagelimit>1</nativelanguagelimit>
+			</bonus>
       <source>SG</source>
       <page>172</page>
     </power>

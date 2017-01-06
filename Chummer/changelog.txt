@@ -6,10 +6,12 @@ Application Changes:
 - Fixed an issue with default specialisations not translating properly. 
 - Fixed an issue that caused drones using the modification rules from Rigger 5 to lose their Armour Rating. 
 - Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus. 
+- Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
 Data Changes: 
 
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
+- Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
 
 Build 188
 

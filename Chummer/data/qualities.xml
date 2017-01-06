@@ -78,7 +78,9 @@
 			<name>Bilingual</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<nativelanguagelimit>1</nativelanguagelimit>
+			</bonus>
 			<source>SR5</source>
 			<page>72</page>
 		</quality>
