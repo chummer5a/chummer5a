@@ -1111,13 +1111,9 @@ namespace Chummer
 		private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			//Self implemented one way databinding workaround. Ugly and should probably be done in a better way. (One day...)
-			bool all = false;
 			switch (e?.PropertyName)
 			{
 				case null:
-					all = true;
-					goto case nameof(Character.Karma);
-
 				case nameof(Character.Karma):
 					tssKarma.Text = _objCharacter.Karma.ToString();
 					break;

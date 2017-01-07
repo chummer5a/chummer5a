@@ -28,8 +28,6 @@ namespace Chummer
 {
 	public class MainController : CharacterShared
     {
-		private Character _objCharacter;
-		private CommonFunctions _objFunctions;
 		private ImprovementManager _objImprovementManager;
 
 		public MainController(Character objCharacter)

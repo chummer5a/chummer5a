@@ -174,8 +174,7 @@ namespace Chummer
 					    "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
 					    field,
 					    typeof (T),
-					    mth.ReflectedType.Name,
-					    mth
+					    mth.ReflectedType.Name
 				    );
 #else //So if DEBUG flag is missing we don't reflect info
                 String errorMsg = String.Format("Tried to read missing field \"{0}\" of type \"{1}\"", field, typeof(T));

@@ -290,7 +290,7 @@ namespace Chummer
 		{
 			Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
 			TreeNode objNode = ((TreeView) sender).GetNodeAt(pt).Parent;
-			if (objNode.Tag != "Watch")
+			if (objNode.Tag.ToString() != "Watch")
 			{
 				objNode.BackColor = SystemColors.ControlDark;
 			}

@@ -636,22 +636,46 @@ namespace Chummer
 									Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
 								});
 						}
-						cboSkill1.ValueMember = "Value";
+                        bool blnOldInitializing = _blnInitializing;
+                        int intOldSelectedIndex = cboSkill1.SelectedIndex;
+                        int intOldDataSourceSize = cboSkill1.Items.Count;
+                        cboSkill1.ValueMember = "Value";
 						cboSkill1.DisplayMember = "Name";
 						cboSkill1.DataSource = lstSkills;
 						cboSkill1.Visible = true;
+                        if (intOldDataSourceSize == cboSkill1.Items.Count)
+                        {
+                            _blnInitializing = true;
+                            cboSkill1.SelectedIndex = intOldSelectedIndex;
+                            _blnInitializing = blnOldInitializing;
+                        }
 
-						if (strSkillCount == "2")
+                        if (strSkillCount == "2")
 						{
-							cboSkill2.BindingContext = new BindingContext();
+                            intOldSelectedIndex = cboSkill2.SelectedIndex;
+                            intOldDataSourceSize = cboSkill2.Items.Count;
+                            if (cboSkill2.BindingContext == null)
+							    cboSkill2.BindingContext = new BindingContext();
 							cboSkill2.ValueMember = "Value";
 							cboSkill2.DisplayMember = "Name";
 							cboSkill2.DataSource = lstSkills;
 							cboSkill2.Visible = true;
-                            cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
+                            if (intOldDataSourceSize == cboSkill2.Items.Count)
+                            {
+                                _blnInitializing = true;
+                                cboSkill2.SelectedIndex = intOldSelectedIndex;
+                                _blnInitializing = blnOldInitializing;
+                            }
+                            if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex)
+                            {
+                                if (cboSkill2.SelectedIndex + 1 >= cboSkill2.Items.Count)
+                                    cboSkill2.SelectedIndex = 0;
+                                else
+                                    cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
+                            }
 						}
 						lblMetatypeSkillSelection.Visible = true;
-					}
+                    }
 					else
 					{
 						cboSkill1.Visible = false;
@@ -902,22 +926,16 @@ namespace Chummer
 			{
 				ManagePriorityItems(cboHeritage);
 			}
-			_blnInitializing = false;
-
-			string strMetatype = "";
+			else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
+            string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
             lstMetatypes.SelectedValue = strMetatype;
-            PopulateTalents();
-
-            if (cboTalent.SelectedValue.ToString() == "E")
-                cboTalents.SelectedIndex = 0;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-			{
-				SumtoTen();
-			}
-		}
+        }
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -927,22 +945,11 @@ namespace Chummer
 			{
 				ManagePriorityItems(cboTalent);
 			}
-			_blnInitializing = false;
-
-            string strMetatype = "";
-            if (lstMetatypes.SelectedIndex >= 0)
-                strMetatype = lstMetatypes.SelectedValue.ToString();
-            LoadMetatypes();
-            lstMetatypes.SelectedValue = strMetatype;
-            PopulateTalents();
-            //cboTalents.SelectedIndex = -1;
-
-            if (cboTalent.SelectedValue.ToString() == "E")
-                cboTalents.SelectedIndex = 0;
-	        if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+	        else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 	        {
-			SumtoTen();
-		}
+			    SumtoTen();
+		    }
+            PopulateTalents();
         }
 
         private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
@@ -953,21 +960,10 @@ namespace Chummer
 			{
 				ManagePriorityItems(cboAttributes);
 			}
-			_blnInitializing = false;
-
-            string strMetatype = "";
-            if (lstMetatypes.SelectedIndex >= 0)
-                strMetatype = lstMetatypes.SelectedValue.ToString();
-            LoadMetatypes();
-            lstMetatypes.SelectedValue = strMetatype;
-            PopulateTalents();
-
-            if (cboTalent.SelectedValue.ToString() == "E")
-                cboTalents.SelectedIndex = 0;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
-			SumtoTen();
-		}
+			    SumtoTen();
+		    }
 		}
 
         private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
@@ -978,21 +974,10 @@ namespace Chummer
 			{
 				ManagePriorityItems(cboSkills);
 			}
-			_blnInitializing = false;
-
-            string strMetatype = "";
-            if (lstMetatypes.SelectedIndex >= 0)
-                strMetatype = lstMetatypes.SelectedValue.ToString();
-            LoadMetatypes();
-            lstMetatypes.SelectedValue = strMetatype;
-            PopulateTalents();
-
-            if (cboTalent.SelectedValue.ToString() == "E,0")
-                cboTalents.SelectedIndex = 0;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
-			SumtoTen();
-		}
+			    SumtoTen();
+		    }
 		}
 
         private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
@@ -1003,21 +988,10 @@ namespace Chummer
 	        {
 		        ManagePriorityItems(cboResources);
 			}
-			_blnInitializing = false;
-
-            string strMetatype = "";
-            if (lstMetatypes.SelectedIndex >= 0)
-                strMetatype = lstMetatypes.SelectedValue.ToString();
-            LoadMetatypes();
-            lstMetatypes.SelectedValue = strMetatype;
-            PopulateTalents();
-
-            if (cboTalent.SelectedValue.ToString() == "E,0")
-                cboTalents.SelectedIndex = 0;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
-			SumtoTen();
-		}
+			    SumtoTen();
+		    }
 		}
         #endregion
 
@@ -1805,27 +1779,27 @@ namespace Chummer
 				if (objPriorities.Count == 0)
 					return;
 
-				string strMissing = objPriorities[0];
+				string strMissing = objPriorities.First();
 
 				// Find the combo with the same value as this one and change it to the missing value.
-				_blnInitializing = true;
+				//_blnInitializing = true;
 				if (comboBox.Name != cboTalent.Name &&
 					cboTalent.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
 					cboTalent.SelectedValue = strMissing;
 
-				if (comboBox.Name != cboHeritage.Name &&
+				else if (comboBox.Name != cboHeritage.Name &&
 					cboHeritage.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
 					cboHeritage.SelectedValue = strMissing;
 
-				if (comboBox.Name != cboSkills.Name &&
+				else if (comboBox.Name != cboSkills.Name &&
 					cboSkills.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
 					cboSkills.SelectedValue = strMissing;
 
-				if (comboBox.Name != cboResources.Name &&
+				else if (comboBox.Name != cboResources.Name &&
 					cboResources.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
 					cboResources.SelectedValue = strMissing;
 
-				if (comboBox.Name != cboAttributes.Name &&
+				else if (comboBox.Name != cboAttributes.Name &&
 					cboAttributes.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
 					cboAttributes.SelectedValue = strMissing;
 			}
@@ -1987,11 +1961,19 @@ namespace Chummer
 
             SortListItem objSort = new SortListItem();
             lstTalent.Sort(objSort.Compare);
+            int intOldSelectedIndex = cboTalents.SelectedIndex;
+            int intOldDataSourceSize = cboTalents.Items.Count;
             cboTalents.DataSource = null;
             cboTalents.ValueMember = "Value";
             cboTalents.DisplayMember = "Name";
             cboTalents.DataSource = lstTalent;
-            //cboTalents.SelectedIndex = -1;
+            if (intOldDataSourceSize == cboTalents.Items.Count)
+            {
+                bool blnOldInitializing = _blnInitializing;
+                _blnInitializing = true;
+                cboTalents.SelectedIndex = intOldSelectedIndex;
+                _blnInitializing = blnOldInitializing;
+            }
         }
 
         /// <summary>
@@ -2023,13 +2005,23 @@ namespace Chummer
             }
 			SortListItem objSort = new SortListItem();
 			lstMetatype.Sort(objSort.Compare);
-			lstMetatypes.DataSource = null;
+            int intOldSelectedIndex = lstMetatypes.SelectedIndex;
+            int intOldDataSourceSize = lstMetatypes.Items.Count;
+            lstMetatypes.DataSource = null;
 			lstMetatypes.ValueMember = "Value";
 			lstMetatypes.DisplayMember = "Name";
 			lstMetatypes.DataSource = lstMetatype;
-			lstMetatypes.SelectedIndex = -1;
+            bool blnOldInitializing = _blnInitializing;
+            _blnInitializing = true;
+            if (intOldDataSourceSize == lstMetatypes.Items.Count)
+            {
+                lstMetatypes.SelectedIndex = intOldSelectedIndex;
+            }
+            else
+                lstMetatypes.SelectedIndex = 0;
+            _blnInitializing = blnOldInitializing;
 
-			if (cboCategory.SelectedValue.ToString().EndsWith("Spirits"))
+            if (cboCategory.SelectedValue.ToString().EndsWith("Spirits"))
 			{
 				chkBloodSpirit.Visible = true;
 				chkPossessionBased.Visible = true;

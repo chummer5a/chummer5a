@@ -41,7 +41,6 @@ namespace Chummer
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
 		private frmUpdate _frmUpdate;
-        private Character _objCharacter;
 		private List<Character> _lstCharacters = new List<Character>();
         #region Control Events
         public frmMain()
@@ -553,7 +552,8 @@ namespace Chummer
 
         private void trySkillToolStripMenuItem_Click(object sender, EventArgs e, Character objCharacter)
         {
-            objCharacter = _objCharacter;
+            if (objCharacter?.SkillsSection?.Skills == null)
+                return;
             foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
             {
                 if (objSkill.Name == "Impersonation")

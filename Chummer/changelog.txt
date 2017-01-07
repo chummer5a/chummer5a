@@ -38,6 +38,8 @@ Application Changes:
 - Optimized away some leftovers from SR4a that were taking up CPU time and lines.
 - Performed minor speed optimizations related to rounding of integer division results.
 - Fixed a crash when creating a piece of cyberware at a rating above its maximum or below its minimum.
+- Brought all projects to the same, .NET 4.5.2 target sku.
+- Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
 
 Data Changes:
 

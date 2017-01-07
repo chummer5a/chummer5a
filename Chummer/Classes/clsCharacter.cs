@@ -4042,9 +4042,6 @@ namespace Chummer
         {
             switch (strAttribute)
             {
-                case "BOD":
-                case "BODBase":
-                    return _attBOD;
                 case "AGI":
                 case "AGIBase":
                     return _attAGI;
@@ -4082,6 +4079,8 @@ namespace Chummer
 					return _attDEP;
 				case "ESS":
                     return _attESS;
+                case "BOD":
+                case "BODBase":
                 default:
                     return _attBOD;
             }

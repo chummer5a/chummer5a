@@ -165,24 +165,24 @@ namespace Chummer
 				bool blnFoundArchive = false;
 				foreach (string line in result)
 				{
-					if (line.Contains("tag_name"))
+					if (!blnFoundTag && line.Contains("tag_name"))
 					{
 						strLatestVersion = line.Split(':')[1];
 						strLatestVersion = strLatestVersion.Split('}')[0].Replace("\"", string.Empty);
 						blnFoundTag = true;
+                        if (blnFoundArchive)
+                            break;
 					}
-					if (line.Contains("browser_download_url"))
+					if (!blnFoundArchive && line.Contains("browser_download_url"))
 					{
 						strDownloadFile = line.Split(':')[2];
 						strDownloadFile = strDownloadFile.Substring(2);
 						strDownloadFile = strDownloadFile.Split('}')[0].Replace("\"", string.Empty);
 						strDownloadFile = "https://" + strDownloadFile;
 						blnFoundArchive = true;
-					}
-					if (blnFoundArchive && blnFoundTag)
-					{
-						break;
-					}
+                        if (blnFoundTag)
+                            break;
+                    }
 				}
 				// Cleanup the streams and the response.
 				reader.Close();
