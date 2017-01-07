@@ -5470,6 +5470,9 @@ namespace Chummer
 			    return intReturn;
 		    }
 	    }
+
+		public string Category { get; set; }
+
 		#endregion
 	}
 

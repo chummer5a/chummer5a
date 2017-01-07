@@ -142,6 +142,7 @@ namespace Chummer
             _blnLoading = true;
 
 			tabSkillUc.ObjCharacter = _objCharacter;
+	        tabPowerUc.ObjCharacter = _objCharacter;
 
 
 			if (!_objCharacter.IsCritter && (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objCharacter.BuildKarma == 0) || (_objCharacter.BuildMethod == CharacterBuildMethod.Priority && _objCharacter.BuildKarma == 0))
@@ -706,22 +707,7 @@ namespace Chummer
             {
                 treSpells.Add(objSpell, cmsSpell, _objCharacter);
                 }
-
-            // Populate Adept Powers.
-            i = -1;
-            foreach (Power objPower in _objCharacter.Powers)
-            {
-                i++;
-                PowerControl objPowerControl = new PowerControl(objPower);
-
-                // Attach an EventHandler for the PowerRatingChanged Event.
-                objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-                objPowerControl.DeletePower += objPower_DeletePower;
-
-                objPowerControl.Top = i * objPowerControl.Height;
-                panPowers.Controls.Add(objPowerControl);
-            }
-
+				
             // Populate Magician Spirits.
             i = -1;
             foreach (Spirit objSpirit in _objCharacter.Spirits)
@@ -967,8 +953,6 @@ namespace Chummer
             CalculateNuyen();
             _blnIsDirty = false;
             UpdateWindowTitle();
-            if (_objCharacter.AdeptEnabled)
-                CalculatePowerPoints();
 
             treGear.ItemDrag += treGear_ItemDrag;
             treGear.DragEnter += treGear_DragEnter;
@@ -1134,12 +1118,6 @@ namespace Chummer
                 {
                     objContactControl.DeleteContact -= objPet_DeleteContact;
                     objContactControl.FileNameChanged -= objPet_FileNameChanged;
-                }
-
-                foreach (PowerControl objPowerControl in panPowers.Controls.OfType<PowerControl>())
-                {
-                    objPowerControl.PowerRatingChanged -= objPower_PowerRatingChanged;
-                    objPowerControl.DeletePower -= objPower_DeletePower;
                 }
 
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
@@ -1420,8 +1398,6 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabAdept))
                     tabCharacterTabs.TabPages.Insert(3, tabAdept);
-
-                CalculatePowerPoints();
             }
             else
             {
@@ -4442,52 +4418,6 @@ namespace Chummer
         }
         #endregion
 
-        #region PowerControl Events
-        private void objPower_PowerRatingChanged(Object sender)
-        {
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-
-        private void objPower_DeletePower(Object sender)
-        {
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeletePower")))
-                return;
-
-            // Handle the DeletePower Event for the PowerControl.
-            PowerControl objSender = (PowerControl)sender;
-            bool blnFound = false;
-            foreach (PowerControl objPowerControl in panPowers.Controls)
-            {
-                // Set the flag to show that we have found the Power.
-                if (objPowerControl == objSender)
-                    blnFound = true;
-
-                // Once the Power has been found, all of the other PowerControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-                if (blnFound)
-                    objPowerControl.Top -= 25;
-            }
-
-            // Remove the Improvements that were created by the Power.
-            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objSender.PowerObject.InternalId);
-
-            // Remove the Power.
-            _objCharacter.Powers.Remove(objSender.PowerObject);
-
-            // Update the CharacterAttribute label.
-            UpdateCharacterInfo();
-
-            // Remove the PowerControl that raised the Event.
-            panPowers.Controls.Remove(objSender);
-            CalculatePowerPoints();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-        #endregion
-
         #region Martial Tab Control Events
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -4867,44 +4797,6 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-
-		private void cmdAddPower_Click(object sender, EventArgs e)
-		{
-			frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-			frmPickPower.ShowDialog(this);
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickPower.DialogResult == DialogResult.Cancel)
-				return;
-
-			int i = panPowers.Controls.Count;
-
-			Power objPower = new Power(_objCharacter);
-			_objCharacter.Powers.Add(objPower);
-
-			PowerControl objPowerControl = new PowerControl(objPower);
-
-			// Attach an EventHandler for the PowerRatingChanged Event.
-			objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-			objPowerControl.DeletePower += objPower_DeletePower;
-
-			// Open the Cyberware XML file and locate the selected piece.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
-			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-			objPower.Create(objXmlPower, _objImprovementManager);
-			objPowerControl.Top = i * objPowerControl.Height;
-			objPowerControl.RefreshTooltip();
-			panPowers.Controls.Add(objPowerControl);
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-
-			if (frmPickPower.AddAgain)
-				cmdAddPower_Click(sender, e);
-		}
-
 		private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
             // Select the root Cyberware node then open the Select Cyberware window.
@@ -6857,7 +6749,6 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateCharacterInfo();
             RefreshMartialArts();
-            RefreshPowers();
             RefreshContacts();
 			RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
             _blnIsDirty = true;
@@ -12663,7 +12554,6 @@ namespace Chummer
                     objGear.Bonded = false;
                     _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                     _objCharacter.Foci.Remove(objFocus);
-					RefreshPowers();
 				}
                 else
                 {
@@ -13002,38 +12892,6 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle(false);
         }
-
-
-		public void RefreshPowers()
-		{
-			//TODO: Refactor this to be managed through databinding.
-			_blnLoading = true;
-			if (panPowers.Controls.Count == _objCharacter.Powers.Count) return;
-			foreach (PowerControl pc in panPowers.Controls)
-			{
-				pc.PowerRatingChanged += objPower_PowerRatingChanged;
-				pc.DeletePower += objPower_DeletePower;
-			}
-
-			// Remove Adept Powers.
-			panPowers.Controls.Clear();
-
-			// Populate Adept Powers.
-			int i = -1;
-			foreach (Power objPower in _objCharacter.Powers)
-			{
-				i++;
-				PowerControl objPowerControl = new PowerControl(objPower);
-
-				// Attach an EventHandler for the PowerRatingChanged Event.
-				objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-				objPowerControl.DeletePower += objPower_DeletePower;
-
-				objPowerControl.Top = i * objPowerControl.Height;
-				panPowers.Controls.Add(objPowerControl);
-			}
-			_blnLoading = false;
-		}
 		#endregion
 
 		#region Additional Sprites and Complex Forms Tab Control Events
@@ -13471,7 +13329,7 @@ namespace Chummer
             _objController.ClearAdeptTab();
 
             // Remove all of the Adept Powers from the panel.
-            panPowers.Controls.Clear();
+            // TODO: Remove adept powers.
 
             _blnIsDirty = true;
             UpdateCharacterInfo();
@@ -14535,41 +14393,6 @@ namespace Chummer
             return Convert.ToInt32(tssBPRemain.Text);
         }
 
-        /// <summary>
-        /// Calculate the number of Adept Power Points used.
-        /// </summary>
-        private void CalculatePowerPoints()
-        {
-            decimal decPowerPoints = 0;
-
-            foreach (PowerControl objPowerControl in panPowers.Controls)
-            {
-                decPowerPoints += objPowerControl.PowerPoints;
-                objPowerControl.UpdatePointsPerLevel();
-            }
-
-            int intMAG = 0;
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-            {
-                // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                intMAG = _objCharacter.MAGAdept;
-            }
-            else
-            {
-                // The character is just an Adept, so use the full value.
-                intMAG = _objCharacter.MAG.TotalValue;
-            }
-
-            // Add any Power Point Improvements to MAG.
-            intMAG += _objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
-
-            string strRemain = (intMAG - decPowerPoints).ToString();
-            while (strRemain.EndsWith("0") && strRemain.Length > 4)
-                strRemain = strRemain.Substring(0, strRemain.Length - 1);
-
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
-        }
-
 		private void UpdateSkillRelatedInfo()
 		{
 			//Update Skill Labels
@@ -14727,14 +14550,7 @@ namespace Chummer
                         }
                         objSpiritControl.RebuildSpiritList(_objCharacter.MagicTradition);
                     }
-
-                    foreach (PowerControl objPowerControl in panPowers.Controls)
-                    {
-                        // Maximum Power Level for Mystic Adepts is based on their total MAG.
-                        objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-                        objPowerControl.RefreshTooltip();
-                    }
-
+					
 					//Update Build Summary for Spells.
 					int intSpellCount = treSpells.Nodes.Cast<TreeNode>().SelectMany(nodCategory => nodCategory.Nodes.Cast<TreeNode>()).Count();
 	                lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
@@ -14932,11 +14748,6 @@ namespace Chummer
                 // Calculate the number of Build Points remaining.
                 CalculateBP();
                 CalculateNuyen();
-	            if (_objCharacter.AdeptEnabled)
-	            {
-		            CalculatePowerPoints();
-		            
-	            }
                 if ((_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter) || _objCharacter.MetatypeCategory.EndsWith("Spirits"))
                 {
                     lblCritterPowerPointsLabel.Visible = true;
@@ -19835,33 +19646,7 @@ namespace Chummer
 
                 foreach (XmlNode objXmlPower in objXmlKit.SelectNodes("powers/power"))
                 {
-                    XmlNode objXmlPowerNode = objXmlPowerDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower["name"].InnerText + "\"]");
-
-                    int i = panPowers.Controls.Count;
-
-                    Power objPower = new Power(_objCharacter);
-                    _objCharacter.Powers.Add(objPower);
-
-                    PowerControl objPowerControl = new PowerControl(objPower);
-                    objPowerControl.PowerObject = objPower;
-
-                    // Attach an EventHandler for the PowerRatingChanged Event.
-                    objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-                    objPowerControl.DeletePower += objPower_DeletePower;
-
-                    if (objXmlPowerNode.InnerXml.Contains("bonus"))
-                    {
-                        objPower.Bonus = objXmlPowerNode["bonus"];
-
-                        if (objXmlPower["name"].Attributes["select"] != null)
-                            _objImprovementManager.ForcedValue = objXmlPower["name"].Attributes["select"].InnerText;
-
-                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort);
-                        objPower.Extra = _objImprovementManager.SelectedValue;
-                    }
-
-                    objPowerControl.Top = i * objPowerControl.Height;
-                    panPowers.Controls.Add(objPowerControl);
+                    //TODO: Fix
                 }
             }
 
@@ -21269,10 +21054,7 @@ namespace Chummer
             cboSpiritHealth.Left = lblTraditionName.Left + intWidth + 6;
             cboSpiritIllusion.Left = lblTraditionName.Left + intWidth + 6;
             cboSpiritManipulation.Left = lblTraditionName.Left + intWidth + 6;
-
-            // Adept Powers tab.
-            lblPowerPoints.Left = lblPowerPointsLabel.Left + lblPowerPointsLabel.Width + 6;
-
+			
             // Sprites and Complex Forms tab.
             int intLeft = lblDurationLabel.Width;
             intLeft = Math.Max(intLeft, lblTargetLabel.Width);

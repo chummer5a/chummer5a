@@ -270,7 +270,7 @@ namespace Chummer
         private List<Spell> _lstSpells = new List<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
-        private List<Power> _lstPowers = new List<Power>();
+        private BindingList<Power> _lstPowers = new BindingList<Power>();
         private List<ComplexForm> _lstComplexForms = new List<ComplexForm>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
@@ -2684,7 +2684,7 @@ namespace Chummer
             _lstSpells = new List<Spell>();
             _lstFoci = new List<Focus>();
             _lstStackedFoci = new List<StackedFocus>();
-            _lstPowers = new List<Power>();
+            _lstPowers = new BindingList<Power>();
             _lstComplexForms = new List<ComplexForm>();
             _lstMartialArts = new List<MartialArt>();
             _lstMartialArtManeuvers = new List<MartialArtManeuver>();
@@ -5228,7 +5228,7 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        public List<Power> Powers
+        public BindingList<Power> Powers
         {
             get
             {

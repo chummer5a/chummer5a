@@ -314,6 +314,12 @@
     <Compile Include="UI\Shared\BindingListDisplay.Designer.cs">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Shared\PowersTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\PowersTabUserControl.Designer.cs">
+      <DependentUpon>PowersTabUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Skills\SkillsTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -852,6 +858,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\BindingListDisplay.resx">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\PowersTabUserControl.resx">
+      <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>

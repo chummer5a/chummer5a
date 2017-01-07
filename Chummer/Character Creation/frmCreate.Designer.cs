@@ -450,10 +450,6 @@ namespace Chummer
 			this.panSpirits = new System.Windows.Forms.Panel();
 			this.cmdAddSpell = new SplitButton();
 			this.tabAdept = new System.Windows.Forms.TabPage();
-			this.panPowers = new System.Windows.Forms.Panel();
-			this.lblPowerPoints = new System.Windows.Forms.Label();
-			this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-			this.cmdAddPower = new System.Windows.Forms.Button();
 			this.tabTechnomancer = new System.Windows.Forms.TabPage();
 			this.lblLivingPersonaFirewall = new System.Windows.Forms.Label();
 			this.lblLivingPersonaFirewallLabel = new System.Windows.Forms.Label();
@@ -712,6 +708,8 @@ namespace Chummer
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
+			this.lblVehicleSeats = new System.Windows.Forms.Label();
+			this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
 			this.lblVehicleDroneModSlots = new System.Windows.Forms.Label();
 			this.lblVehicleDroneModSlotsLabel = new System.Windows.Forms.Label();
 			this.lblVehicleCosmetic = new System.Windows.Forms.Label();
@@ -926,8 +924,7 @@ namespace Chummer
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.lblVehicleSeats = new System.Windows.Forms.Label();
-			this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
+			this.tabPowerUc = new Chummer.UI.Skills.PowersTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -2389,7 +2386,7 @@ namespace Chummer
 			this.tsGearAddNexus.Size = new System.Drawing.Size(152, 22);
 			this.tsGearAddNexus.Tag = "Menu_AddNexus";
 			this.tsGearAddNexus.Text = "A&dd Nexus";
-	        this.tsGearAddNexus.Visible = false;
+			this.tsGearAddNexus.Visible = false;
 			this.tsGearAddNexus.Click += new System.EventHandler(this.tsGearAddNexus_Click);
 			// 
 			// cmsVehicle
@@ -5310,57 +5307,13 @@ namespace Chummer
 			// tabAdept
 			// 
 			this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabAdept.Controls.Add(this.panPowers);
-			this.tabAdept.Controls.Add(this.lblPowerPoints);
-			this.tabAdept.Controls.Add(this.lblPowerPointsLabel);
-			this.tabAdept.Controls.Add(this.cmdAddPower);
+			this.tabAdept.Controls.Add(this.tabPowerUc);
 			this.tabAdept.Location = new System.Drawing.Point(4, 22);
 			this.tabAdept.Name = "tabAdept";
 			this.tabAdept.Size = new System.Drawing.Size(838, 611);
 			this.tabAdept.TabIndex = 2;
 			this.tabAdept.Tag = "Tab_Adept";
 			this.tabAdept.Text = "Adept Powers";
-			// 
-			// panPowers
-			// 
-			this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panPowers.AutoScroll = true;
-			this.panPowers.Location = new System.Drawing.Point(11, 54);
-			this.panPowers.Name = "panPowers";
-			this.panPowers.Size = new System.Drawing.Size(827, 554);
-			this.panPowers.TabIndex = 4;
-			// 
-			// lblPowerPoints
-			// 
-			this.lblPowerPoints.AutoSize = true;
-			this.lblPowerPoints.Location = new System.Drawing.Point(86, 9);
-			this.lblPowerPoints.Name = "lblPowerPoints";
-			this.lblPowerPoints.Size = new System.Drawing.Size(76, 13);
-			this.lblPowerPoints.TabIndex = 3;
-			this.lblPowerPoints.Text = "0 (0 remaining)";
-			// 
-			// lblPowerPointsLabel
-			// 
-			this.lblPowerPointsLabel.AutoSize = true;
-			this.lblPowerPointsLabel.Location = new System.Drawing.Point(8, 9);
-			this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
-			this.lblPowerPointsLabel.Size = new System.Drawing.Size(72, 13);
-			this.lblPowerPointsLabel.TabIndex = 2;
-			this.lblPowerPointsLabel.Tag = "Label_PowerPoints";
-			this.lblPowerPointsLabel.Text = "Power Points:";
-			// 
-			// cmdAddPower
-			// 
-			this.cmdAddPower.Location = new System.Drawing.Point(11, 25);
-			this.cmdAddPower.Name = "cmdAddPower";
-			this.cmdAddPower.Size = new System.Drawing.Size(75, 23);
-			this.cmdAddPower.TabIndex = 1;
-			this.cmdAddPower.Tag = "Button_AddPower";
-			this.cmdAddPower.Text = "&Add Power";
-			this.cmdAddPower.UseVisualStyleBackColor = true;
-			this.cmdAddPower.Click += new System.EventHandler(this.cmdAddPower_Click);
 			// 
 			// tabTechnomancer
 			// 
@@ -8469,6 +8422,25 @@ namespace Chummer
 			this.tabVehicles.Text = "Vehicles & Drones";
 			this.tabVehicles.Click += new System.EventHandler(this.tabVehicles_Click);
 			// 
+			// lblVehicleSeats
+			// 
+			this.lblVehicleSeats.AutoSize = true;
+			this.lblVehicleSeats.Location = new System.Drawing.Point(485, 216);
+			this.lblVehicleSeats.Name = "lblVehicleSeats";
+			this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
+			this.lblVehicleSeats.TabIndex = 212;
+			this.lblVehicleSeats.Text = "[Seats]";
+			// 
+			// lblVehicleSeatsLabel
+			// 
+			this.lblVehicleSeatsLabel.AutoSize = true;
+			this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(416, 216);
+			this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
+			this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(34, 13);
+			this.lblVehicleSeatsLabel.TabIndex = 211;
+			this.lblVehicleSeatsLabel.Tag = "Label_VehicleSeats";
+			this.lblVehicleSeatsLabel.Text = "Seats";
+			// 
 			// lblVehicleDroneModSlots
 			// 
 			this.lblVehicleDroneModSlots.AutoSize = true;
@@ -10694,24 +10666,14 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// lblVehicleSeats
+			// tabPowersUC
 			// 
-			this.lblVehicleSeats.AutoSize = true;
-			this.lblVehicleSeats.Location = new System.Drawing.Point(485, 216);
-			this.lblVehicleSeats.Name = "lblVehicleSeats";
-			this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
-			this.lblVehicleSeats.TabIndex = 212;
-			this.lblVehicleSeats.Text = "[Seats]";
-			// 
-			// lblVehicleSeatsLabel
-			// 
-			this.lblVehicleSeatsLabel.AutoSize = true;
-			this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(416, 216);
-			this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
-			this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(34, 13);
-			this.lblVehicleSeatsLabel.TabIndex = 211;
-			this.lblVehicleSeatsLabel.Tag = "Label_VehicleSeats";
-			this.lblVehicleSeatsLabel.Text = "Seats";
+			this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
+			this.tabPowerUc.Name = "tabPowersUC";
+			this.tabPowerUc.ObjCharacter = null;
+			this.tabPowerUc.Size = new System.Drawing.Size(838, 611);
+			this.tabPowerUc.TabIndex = 0;
 			// 
 			// frmCreate
 			// 
@@ -10820,7 +10782,6 @@ namespace Chummer
 			this.tabMagician.ResumeLayout(false);
 			this.tabMagician.PerformLayout();
 			this.tabAdept.ResumeLayout(false);
-			this.tabAdept.PerformLayout();
 			this.tabTechnomancer.ResumeLayout(false);
 			this.tabTechnomancer.PerformLayout();
 			this.tabCritter.ResumeLayout(false);
@@ -10936,11 +10897,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddSprite;
         private System.Windows.Forms.Label lblSprites;
         private System.Windows.Forms.Panel panSprites;
-        private System.Windows.Forms.Button cmdAddPower;
         private System.Windows.Forms.Label lblComplexForms;
-        private System.Windows.Forms.Label lblPowerPoints;
-        private System.Windows.Forms.Label lblPowerPointsLabel;
-        private System.Windows.Forms.Panel panPowers;
         private System.Windows.Forms.Label lblCyberwareRatingLabel;
         private System.Windows.Forms.Label lblCyberwareCost;
         private System.Windows.Forms.Label lblCyberwareCostLabel;
@@ -11750,6 +11707,7 @@ namespace Chummer
 		private System.Windows.Forms.TreeView treFoci;
 		private System.Windows.Forms.Label lblVehicleSeats;
 		private System.Windows.Forms.Label lblVehicleSeatsLabel;
+		private UI.Skills.PowersTabUserControl tabPowerUc;
 	}
 }
 
