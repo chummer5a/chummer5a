@@ -578,6 +578,11 @@ namespace Chummer
                 nudMysticAdeptMAGMagician.Visible = true;
             }
 
+	        if (_objCharacter.AdeptEnabled)
+	        {
+				tabPowerUc.MissingDatabindingsWorkaround();
+			}
+
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
             if (_objCharacter.IgnoreRules == false)
             {
@@ -14556,8 +14561,14 @@ namespace Chummer
 	                lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
 				}
 
-                // If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
-                if (_objCharacter.RESEnabled)
+
+				if (_objCharacter.AdeptEnabled)
+				{
+					tabPowerUc.MissingDatabindingsWorkaround();
+				}
+
+				// If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
+				if (_objCharacter.RESEnabled)
                 {
                     foreach (SpiritControl objSpiritControl in panSprites.Controls)
                     {

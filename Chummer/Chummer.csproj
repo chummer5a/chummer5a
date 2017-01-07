@@ -314,10 +314,10 @@
     <Compile Include="UI\Shared\BindingListDisplay.Designer.cs">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shared\PowersTabUserControl.cs">
+    <Compile Include="UI\Powers\PowersTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Shared\PowersTabUserControl.Designer.cs">
+    <Compile Include="UI\Powers\PowersTabUserControl.Designer.cs">
       <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Skills\SkillsTabUserControl.cs">
@@ -740,10 +740,10 @@
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PowerControl.cs">
+    <Compile Include="UI\Powers\PowerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PowerControl.Designer.cs">
+    <Compile Include="UI\Powers\PowerControl.Designer.cs">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
@@ -859,7 +859,7 @@
     <EmbeddedResource Include="UI\Shared\BindingListDisplay.resx">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Shared\PowersTabUserControl.resx">
+    <EmbeddedResource Include="UI\Powers\PowersTabUserControl.resx">
       <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
@@ -1075,7 +1075,7 @@
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PowerControl.resx">
+    <EmbeddedResource Include="UI\Powers\PowerControl.resx">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">

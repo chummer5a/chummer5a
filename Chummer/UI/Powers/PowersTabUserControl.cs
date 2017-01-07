@@ -19,14 +19,13 @@ namespace Chummer.UI.Skills
 		public PowersTabUserControl()
 		{
 			InitializeComponent();
-			lblPowerPoints.DataBindings.Add("Text", this, nameof(this.CalculatedPowerPoints), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 		}
 
 		public void MissingDatabindingsWorkaround()
 		{
-			//UpdateKnoSkillRemaining();
+			CalculatePowerPoints();
 		}
 
 		private bool _loadCalled = false;
@@ -236,7 +235,7 @@ namespace Chummer.UI.Skills
 			objPower.Create(objXmlPower, ObjCharacter.ObjImprovementManager);
 
 			ObjCharacter.Powers.Add(objPower);
-
+			CalculatePowerPoints();
 			if (frmPickPower.AddAgain)
 				cmdAddPower_Click(sender, e);
 		}
@@ -246,14 +245,13 @@ namespace Chummer.UI.Skills
 		/// <summary>
 		/// Calculate the number of Adept Power Points used.
 		/// </summary>
-		private void CalculatedPowerPoints()
+		private void CalculatePowerPoints()
 		{
 			decimal decPowerPoints = 0;
 
-			foreach (PowerControl objPowerControl in pnlPowers.Controls)
+			foreach (Power objPower in ObjCharacter.Powers)
 			{
-				decPowerPoints += objPowerControl.PowerPoints;
-				objPowerControl.UpdatePointsPerLevel();
+				decPowerPoints += objPower.PowerPoints;
 			}
 
 			int intMAG = 0;

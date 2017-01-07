@@ -87,10 +87,7 @@ namespace Chummer
 
 		private void chkDiscounted_CheckedChanged(object sender, EventArgs e)
 		{
-			// Raise the PowerRatingChanged Event when the user has changed the discounted status.
-			// The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
 			_objPower.DiscountedAdeptWay = chkDiscountedAdeptWay.Checked;
-			PowerRatingChanged(this);
 			UpdatePointsPerLevel();
 		}
 
