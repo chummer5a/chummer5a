@@ -2062,6 +2062,13 @@ namespace Chummer
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
+				objWriter.WriteStartElement("drainattribute");
+	            foreach (string drainAttribute in strDrainAtt.Replace('+', ' ').Split(new [] {' '} , StringSplitOptions.RemoveEmptyEntries))
+	            {
+					objWriter.WriteElementString("attr",drainAttribute);
+				}
+				
+				objWriter.WriteEndElement();
 
 	            if (_strMagicTradition != "Custom")
 	            {
@@ -2179,6 +2186,7 @@ namespace Chummer
             objWriter.WriteElementString("init", this.Initiative);
 			objWriter.WriteElementString("initdice", this.InitiativeDice.ToString());
 			objWriter.WriteElementString("initvalue", this.InitiativeValue.ToString());
+			objWriter.WriteElementString("initbonus", Math.Max(_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative), 0).ToString());
 
 			// Astral Initiative.
 			if (this.MAGEnabled)

@@ -563,6 +563,7 @@ namespace Chummer.Backend.Equipment
 			//objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
 
 			objWriter.WriteElementString("dicepool", DicePool);
+			objWriter.WriteElementString("skill", Skill.Name);
 
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
@@ -2761,103 +2762,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strCategory = _strCategory;
-				string strSkill = "";
-				string strSpec = "";
-				string strReturn = "";
-
-				// If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
-				if (strCategory == "Special Weapons" && _strRange != "")
-					strCategory = _strRange;
-
-				// Exotic Skills require a matching Specialization.
-				switch (strCategory)
-				{
-					case "Bows":
-					case "Crossbows":
-						strSkill = "Archery";
-						break;
-					case "Assault Rifles":
-					case "Machine Pistols":
-					case "Submachine Guns":
-						strSkill = "Automatics";
-						break;
-					case "Blades":
-						strSkill = "Blades";
-						break;
-					case "Clubs":
-					case "Improvised Weapons":
-						strSkill = "Clubs";
-						break;
-					case "Exotic Melee Weapons":
-						strSkill = "Exotic Melee Weapon";
-						strSpec = DisplayNameShort;
-						break;
-					case "Exotic Ranged Weapons":
-					case "Special Weapons":
-						strSkill = "Exotic Ranged Weapon";
-						strSpec = DisplayNameShort;
-						break;
-					case "Flamethrowers":
-						strSkill = "Exotic Ranged Weapon";
-						strSpec = "Flamethrowers";
-						break;
-					case "Laser Weapons":
-						strSkill = "Exotic Ranged Weapon";
-						strSpec = "Laser Weapons";
-						break;
-					case "Assault Cannons":
-					case "Grenade Launchers":
-					case "Missile Launchers":
-					case "Light Machine Guns":
-					case "Medium Machine Guns":
-					case "Heavy Machine Guns":
-						strSkill = "Heavy Weapons";
-						break;
-					case "Shotguns":
-					case "Sniper Rifles":
-					case "Sporting Rifles":
-						strSkill = "Longarms";
-						break;
-					case "Throwing Weapons":
-						strSkill = "Throwing Weapons";
-						break;
-					case "Unarmed":
-						strSkill = "Unarmed Combat";
-						break;
-					default:
-						strSkill = "Pistols";
-						break;
-				}
-
-				// Use the Skill defined by the Weapon if one is present.
-				if (_strUseSkill != string.Empty)
-				{
-					strSkill = _strUseSkill;
-					strSpec = "";
-
-					if (_strUseSkill.Contains("Exotic"))
-						strSpec = DisplayNameShort;
-				}
-
-				// Locate the Active Skill to be used.
-				Skill objSkill = null; 
-				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
-				{
-					if (objCharacterSkill.Name == strSkill)
-					{
-						if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
-						{
-							objSkill = objCharacterSkill;
-							break;
-						}
-						if (_strSpec2 == "" || objCharacterSkill.HasSpecialization(_strSpec2))
-						{
-							objSkill = objCharacterSkill;
-							break;
-						}
-					}
-				}
+				var objSkill = Skill;
 
 				int intDicePool = 0;
 				int intSmartlinkBonus = 0;
@@ -2881,7 +2786,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;
-				strReturn = intRating.ToString();
+				var strReturn = intRating.ToString();
 
 				// If the character has a Specialization, include it in the Dice Pool string.
 				if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
@@ -2892,6 +2797,118 @@ namespace Chummer.Backend.Equipment
 
 				return strReturn;
 			}
+		}
+
+		private Skill Skill
+		{
+			get
+			{
+				string strCategory = _strCategory;
+				string strSkill = "";
+				string strSpec = "";
+				string strReturn = "";
+
+				// If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
+				if (strCategory == "Special Weapons" && _strRange != "")
+					strCategory = _strRange;
+
+				// Exotic Skills require a matching Specialization.
+				strSkill = GetSkillName(strCategory, ref strSpec);
+
+				// Use the Skill defined by the Weapon if one is present.
+				if (_strUseSkill != string.Empty)
+				{
+					strSkill = _strUseSkill;
+					strSpec = "";
+
+					if (_strUseSkill.Contains("Exotic"))
+						strSpec = DisplayNameShort;
+				}
+
+				// Locate the Active Skill to be used.
+				Skill objSkill = null;
+				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
+				{
+					if (objCharacterSkill.Name == strSkill)
+					{
+						if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
+						{
+							objSkill = objCharacterSkill;
+							break;
+						}
+						if (_strSpec2 == "" || objCharacterSkill.HasSpecialization(_strSpec2))
+						{
+							objSkill = objCharacterSkill;
+							break;
+						}
+					}
+				}
+				return objSkill;
+			}
+		}
+
+		private string GetSkillName(string strCategory, ref string strSpec)
+		{
+			string strSkill;
+			switch (strCategory)
+			{
+				case "Bows":
+				case "Crossbows":
+					strSkill = "Archery";
+					break;
+				case "Assault Rifles":
+				case "Machine Pistols":
+				case "Submachine Guns":
+					strSkill = "Automatics";
+					break;
+				case "Blades":
+					strSkill = "Blades";
+					break;
+				case "Clubs":
+				case "Improvised Weapons":
+					strSkill = "Clubs";
+					break;
+				case "Exotic Melee Weapons":
+					strSkill = "Exotic Melee Weapon";
+					strSpec = DisplayNameShort;
+					break;
+				case "Exotic Ranged Weapons":
+				case "Special Weapons":
+					strSkill = "Exotic Ranged Weapon";
+					strSpec = DisplayNameShort;
+					break;
+				case "Flamethrowers":
+					strSkill = "Exotic Ranged Weapon";
+					strSpec = "Flamethrowers";
+					break;
+				case "Laser Weapons":
+					strSkill = "Exotic Ranged Weapon";
+					strSpec = "Laser Weapons";
+					break;
+				case "Assault Cannons":
+				case "Grenade Launchers":
+				case "Missile Launchers":
+				case "Light Machine Guns":
+				case "Medium Machine Guns":
+				case "Heavy Machine Guns":
+					strSkill = "Heavy Weapons";
+					break;
+				case "Shotguns":
+				case "Sniper Rifles":
+				case "Sporting Rifles":
+					strSkill = "Longarms";
+					break;
+				case "Throwing Weapons":
+					strSkill = "Throwing Weapons";
+					break;
+				case "Unarmed":
+					strSkill = "Unarmed Combat";
+					break;
+				default:
+					strSkill = "Pistols";
+					break;
+			}
+			return strSkill;
 		}
 
 		/// <summary>
