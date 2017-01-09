@@ -515,22 +515,20 @@ namespace Chummer
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				// Convert the image to a string usinb Base64.
-				try
-				{
-                    _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
+                _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
 
-                    Image imgMugshot = new Bitmap(openFileDialog.FileName, true);
+                Image imgMugshot = new Bitmap(openFileDialog.FileName, true);
+                if (imgMugshot != null)
+                {
                     MemoryStream objStream = new MemoryStream();
                     imgMugshot.Save(objStream, imgMugshot.RawFormat);
-					string strResult = Convert.ToBase64String(objStream.ToArray());
+                    string strResult = Convert.ToBase64String(objStream.ToArray());
                     objStream.Close();
 
                     _objCharacter.Mugshots.Add(strResult);
                 }
-				catch
-				{
+                else
 					blnSuccess = false;
-				}
 			}
 			return blnSuccess;
 		}
@@ -547,22 +545,15 @@ namespace Chummer
                 return false;
             }
 
-            try
-            {
-                byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots.ElementAt(intCurrentMugshotIndexInList));
-                MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                objImageStream.Write(bytImage, 0, bytImage.Length);
-                Image imgMugshot = Image.FromStream(objImageStream, true);
-                objImageStream.Close();
+            byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots.ElementAt(intCurrentMugshotIndexInList));
+            MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+            objImageStream.Write(bytImage, 0, bytImage.Length);
+            Image imgMugshot = Image.FromStream(objImageStream, true);
+            objImageStream.Close();
 
-                picMugshot.Image = imgMugshot;
+            picMugshot.Image = imgMugshot;
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
         }
 
         /// <summary>
@@ -576,20 +567,14 @@ namespace Chummer
                 return;
             }
 
-            try
+            _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
+            if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
             {
-                _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
-                if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
-                {
-                    _objCharacter.MainMugshotIndex = 0;
-                }
-                else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
-                {
-                    _objCharacter.MainMugshotIndex -= 1;
-                }
+                _objCharacter.MainMugshotIndex = 0;
             }
-            catch
+            else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
             {
+                _objCharacter.MainMugshotIndex -= 1;
             }
         }
     }

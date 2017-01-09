@@ -1475,27 +1475,28 @@ namespace Chummer
 				return;
 
 			string[] strTemp = strSource.Split(' ');
-			string strBook = "";
-			Uri uriPath = null;
+            if (strTemp.Length < 2)
+                return;
+			string strBook = strTemp[0];
+            string strPage = strTemp[1];
+            Uri uriPath = null;
 			int intPage = 0;
 
 			try
 			{
-				strBook = strTemp[0];
-				string strPage = strTemp[1];
-
-				// Make sure the page is actually a number that we can use as well as being 1 or higher.
-				if (Convert.ToInt32(strPage) < 1)
-					return;
 				intPage = Convert.ToInt32(strPage);
 			}
-			catch
-			{
-				return;
-			}
+            catch(FormatException)
+            {
+                return;
+            }
 
-			// Revert the sourcebook code to the one from the XML file if necessary.
-			if (_objCharacter != null)
+            // Make sure the page is actually a number that we can use as well as being 1 or higher.
+            if (intPage < 1)
+                return;
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            if (_objCharacter != null)
 				strBook = _objCharacter.Options.BookFromAltCode(strBook);
 
 			// Retrieve the sourcebook information including page offset and PDF application name.

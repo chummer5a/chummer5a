@@ -26,14 +26,16 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_strName = objNode["name"].InnerText;
-			if (objNode["translate"] != null)
-				_strAltName = objNode["translate"].InnerText;
-			_decEss = Convert.ToDecimal(objNode["ess"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_dblCost = Convert.ToDouble(objNode["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_intAvail = Convert.ToInt32(objNode["avail"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_strSource = objNode["source"].InnerText;
-		}
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+            if (objNode["ess"] != null)
+			    _decEss = Convert.ToDecimal(objNode["ess"].InnerText, GlobalOptions.Instance.CultureInfo);
+            if (objNode["cost"] != null)
+                _dblCost = Convert.ToDouble(objNode["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
+            if (objNode["avail"] != null)
+                _intAvail = Convert.ToInt32(objNode["avail"].InnerText, GlobalOptions.Instance.CultureInfo);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+        }
 		#endregion
 
 		#region Properties

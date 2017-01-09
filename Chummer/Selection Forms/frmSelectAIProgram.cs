@@ -177,38 +177,24 @@ namespace Chummer
 		{
             if (e.KeyCode == Keys.Down)
             {
-                try
+                if (lstAIPrograms.SelectedIndex + 1 < lstAIPrograms.Items.Count)
                 {
                     lstAIPrograms.SelectedIndex++;
                 }
-                catch
+                else if (lstAIPrograms.Items.Count > 0)
                 {
-                    try
-                    {
-                        lstAIPrograms.SelectedIndex = 0;
-                    }
-                    catch
-                    {
-                    }
+                    lstAIPrograms.SelectedIndex = 0;
                 }
             }
             if (e.KeyCode == Keys.Up)
             {
-                try
+                if (lstAIPrograms.SelectedIndex - 1 >= 0)
                 {
                     lstAIPrograms.SelectedIndex--;
-                    if (lstAIPrograms.SelectedIndex == -1)
-                        lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
                 }
-                catch
+                else if (lstAIPrograms.Items.Count > 0)
                 {
-                    try
-                    {
-                        lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
-                    }
-                    catch
-                    {
-                    }
+                    lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
                 }
             }
         }
@@ -326,17 +312,12 @@ namespace Chummer
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlProgram["id"].InnerText;
                 objItem.Name = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                if (txtSearch.Text != "" && objXmlProgram["category"].InnerText != cboCategory.SelectedValue.ToString())
+                if (txtSearch.Text != "" && objXmlProgram["category"] != null && objXmlProgram["category"].InnerText != cboCategory.SelectedValue.ToString())
                 {
-                    try
+                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlProgram["category"].InnerText);
+                    if (objFoundItem != null)
                     {
-                        objItem.Name += " [" +
-                                        _lstCategory.Find(
-                                                objFind => objFind.Value == objXmlProgram["category"].InnerText)
-                                            .Name + "]";
-                    }
-                    catch
-                    {
+                        objItem.Name += " [" + objFoundItem.Name + "]";
                     }
                 }
                 lstPrograms.Add(objItem);

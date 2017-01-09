@@ -104,7 +104,7 @@ namespace Chummer
                     if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["forbidden"]["weapondetails"], false))
+                        if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
                         {
                             goto NextItem;
                         }
@@ -112,7 +112,7 @@ namespace Chummer
                     if (objXmlAccessory["required"]?["weapondetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (!Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["required"]["weapondetails"], false))
+                        if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
                         {
                             goto NextItem;
                         }

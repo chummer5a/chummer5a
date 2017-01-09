@@ -165,7 +165,7 @@ namespace Chummer
                 if (objXmlMod["forbidden"]?["vehicledetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlVehicleNode, objXmlMod["forbidden"]["vehicledetails"], false))
+                    if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
                     {
                         continue;
                     }
@@ -173,7 +173,7 @@ namespace Chummer
                 if (objXmlMod["required"]?["vehicledetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlVehicleNode, objXmlMod["required"]["vehicledetails"], false))
+                    if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
                     {
                         continue;
                     }
@@ -566,7 +566,7 @@ namespace Chummer
                     if (objXmlMod["forbidden"]?["vehicledetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlVehicleNode, objXmlMod["forbidden"]["vehicledetails"], false))
+                        if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
                         {
                             continue;
                         }
@@ -574,7 +574,7 @@ namespace Chummer
                     if (objXmlMod["required"]?["vehicledetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (!Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlVehicleNode, objXmlMod["required"]["vehicledetails"], false))
+                        if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
                         {
                             continue;
                         }

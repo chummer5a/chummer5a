@@ -72,12 +72,12 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		public void Create(XmlNode objXmlLifestyle, TreeNode objNode)
 		{
-			_strName = objXmlLifestyle["name"].InnerText;
-			_intCost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
-			_intDice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
-			_intMultiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
-			_strSource = objXmlLifestyle["source"].InnerText;
-			_strPage = objXmlLifestyle["page"].InnerText;
+            objXmlLifestyle.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlLifestyle.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objXmlLifestyle.TryGetInt32FieldQuickly("dice", ref _intDice);
+            objXmlLifestyle.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
+            objXmlLifestyle.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlLifestyle.TryGetStringFieldQuickly("page", ref _strPage);
 			if (!objXmlLifestyle.TryGetField<Guid>("id", Guid.TryParse, out _sourceID))
 			{
 				Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle});
@@ -151,44 +151,53 @@ namespace Chummer.Backend.Equipment
 				SourceID = source;
 			}
 
-			objNode.TryGetField<Guid>("guid", Guid.TryParse, out _guiID);
+
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+                _intMonths = 0;
+            }
+            else
+            {
+                objNode.TryGetInt32FieldQuickly("months", ref _intMonths);
+                objNode.TryGetField<Guid>("guid", Guid.TryParse, out _guiID);
+            }
 
 			//If not present something gone totaly wrong, throw something
 			if
 				(
-				!objNode.TryGetField("name", out _strName) ||
-				!objNode.TryGetField("cost", out _intCost) ||
-				!objNode.TryGetField("dice", out _intDice) ||
-				!objNode.TryGetField("multiplier", out _intMultiplier) ||
-				!objNode.TryGetField("months", out _intMonths)
+				!objNode.TryGetStringFieldQuickly("name", ref _strName) ||
+				!objNode.TryGetInt32FieldQuickly("cost", ref _intCost) ||
+				!objNode.TryGetInt32FieldQuickly("dice", ref _intDice) ||
+				!objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier)
 				)
 			{
-				throw new ArgumentNullException("One or more of name, cost, dice, multiplier or months is missing");
+				throw new ArgumentNullException("One or more of name, cost, dice, or multiplier is missing");
 			}
 
-			objNode.TryGetField("area", out _intArea);
-			objNode.TryGetField("security", out _intSecurity);
-			objNode.TryGetField("comforts", out _intComforts);
-			objNode.TryGetField("roommates", out _intRoommates);
-			objNode.TryGetField("percentage", out _intPercentage);
-			objNode.TryGetField("lifestylename", out _strLifestyleName);
-			if (!objNode.TryGetField("purchased", out _blnPurchased))
+			objNode.TryGetInt32FieldQuickly("area", ref _intArea);
+			objNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
+			objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts);
+			objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
+			objNode.TryGetInt32FieldQuickly("percentage", ref _intPercentage);
+			objNode.TryGetStringFieldQuickly("lifestylename", ref _strLifestyleName);
+			if (!objNode.TryGetBoolFieldQuickly("purchased", ref _blnPurchased))
 			{
 				throw new ArgumentNullException("purchased");
 			}
 
-			if (objNode.TryGetField("baselifestyle", out _strBaseLifestyle))
+			if (objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle))
 			{
 				if (_strBaseLifestyle == "Middle")
 					_strBaseLifestyle = "Medium";
 			}
 
-			if (!objNode.TryGetField("source", out _strSource))
+			if (!objNode.TryGetStringFieldQuickly("source", ref _strSource))
 			{
 				throw new ArgumentNullException("source");
 			}
-			objNode.TryGetField("trustfund", out _blnTrustFund);
-			objNode.TryGetField("page", out _strPage);
+			objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
+			objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
 			// Lifestyle Qualities
 			XmlNodeList objXmlNodeList = objNode.SelectNodes("lifestylequalities/lifestylequality");
@@ -208,34 +217,12 @@ namespace Chummer.Backend.Equipment
 				_lstLifestyleQualities.Add(objQuality);
 			}
 
-			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-			String strtemp;
-			if (objNode.TryGetField("type", out strtemp))
+			String strtemp = "";
+			if (objNode.TryGetStringFieldQuickly("type", ref strtemp))
 			{
 				_objType = ConverToLifestyleType(strtemp);
-			}
-
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_objType = ConverToLifestyleType(objNode["type"].InnerText);
-			}
-			catch
-			{
-			}
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-				_intMonths = 0;
 			}
 		}
 

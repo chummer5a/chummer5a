@@ -73,12 +73,8 @@ namespace Chummer
             // Raise the PowerRatingChanged Event when the NumericUpDown's Value changes.
             // The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
 
-            _objPower.Rating = nudRating.Value;
-            try
-            {
-                PowerRatingChanged(this);
-            }
-            catch { }
+            _objPower.Rating = Convert.ToInt32(nudRating.Value);
+            PowerRatingChanged(this);
 			UpdatePointsPerLevel();
         }
 

@@ -65,29 +65,23 @@ namespace Chummer.Backend.Equipment
 		/// <param name="intRating">Selected Rating for the Gear.</param>
 		public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, int intMarkup = 0)
 		{
-			_strName = objXmlMod["name"].InnerText;
-			_strCategory = objXmlMod["category"].InnerText;
-			objXmlMod.TryGetField("limit", out _strLimit);
-			objXmlMod.TryGetField("slots", out _strSlots);
-			if (intRating != 0)
-			{
-				_intRating = Convert.ToInt32(intRating);
-			}
-		    if (objXmlMod["downgrade"] != null)
+            objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
+			objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
+		    _intRating = intRating;
+            if (objXmlMod["downgrade"] != null)
 		    {
 		        _blnDowngrade = true;
 		    }
 
-			if (objXmlMod["rating"] != null)
-				_strMaxRating = objXmlMod["rating"].InnerText;
-			else
-				_strMaxRating = "0";
-			objXmlMod.TryGetField("response", out _intResponse);
-			objXmlMod.TryGetField("system", out _intSystem);
-			objXmlMod.TryGetField("firewall", out _intFirewall);
-			objXmlMod.TryGetField("signal", out _intSignal);
-			objXmlMod.TryGetField("pilot", out _intPilot);
-			objXmlMod.TryGetField("weaponmountcategories", out _strWeaponMountCategories);
+            objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+			objXmlMod.TryGetInt32FieldQuickly("response", ref _intResponse);
+			objXmlMod.TryGetInt32FieldQuickly("system", ref _intSystem);
+			objXmlMod.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
+			objXmlMod.TryGetInt32FieldQuickly("signal", ref _intSignal);
+			objXmlMod.TryGetInt32FieldQuickly("pilot", ref _intPilot);
+			objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
 			// Add Subsytem information if applicable.
 			if (objXmlMod.InnerXml.Contains("subsystems"))
 			{
@@ -98,7 +92,7 @@ namespace Chummer.Backend.Equipment
 				}
 				_strSubsystems = strSubsystem;
 			}
-			_strAvail = objXmlMod["avail"].InnerText;
+            objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 			
 			// Check for a Variable Cost.
 			if (objXmlMod["cost"] != null)
@@ -107,7 +101,8 @@ namespace Chummer.Backend.Equipment
 				{
 					int intMin = 0;
 					int intMax = 0;
-					string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    char[] chrParentheses = { '(', ')' };
+					string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
 					if (strCost.Contains("-"))
 					{
 						string[] strValues = strCost.Split('-');
@@ -135,10 +130,9 @@ namespace Chummer.Backend.Equipment
 			}
             _intMarkup = intMarkup;
 
-            _strSource = objXmlMod["source"].InnerText;
-			_strPage = objXmlMod["page"].InnerText;
-			if (objXmlMod["bonus"] != null)
-				_nodBonus = objXmlMod["bonus"];
+            objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
+		    _nodBonus = objXmlMod["bonus"];
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -146,10 +140,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
 				if (objModNode != null)
 				{
-					if (objModNode["translate"] != null)
-						_strAltName = objModNode["translate"].InnerText;
-					if (objModNode["altpage"] != null)
-						_strAltPage = objModNode["altpage"].InnerText;
+                    objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -218,27 +210,34 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			_strLimit = objNode["limit"].InnerText;
-			_strSlots = objNode["slots"].InnerText;
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_strMaxRating = objNode["maxrating"].InnerText;
-			objNode.TryGetField("weaponmountcategories", out _strWeaponMountCategories);
-			objNode.TryGetField("response", out _intResponse);
-			objNode.TryGetField("system", out _intSystem);
-			objNode.TryGetField("firewall", out _intFirewall);
-			objNode.TryGetField("signal", out _intSignal);
-			objNode.TryGetField("pilot", out _intPilot);
-			objNode.TryGetField("page", out _strPage);
-			_strAvail = objNode["avail"].InnerText;
-			_strCost = objNode["cost"].InnerText;
-            _intMarkup = objNode["markup"] != null ? Convert.ToInt32(objNode["markup"].InnerText) : 0;
-            _strSource = objNode["source"].InnerText;
-			_blnIncludeInVehicle = Convert.ToBoolean(objNode["included"].InnerText);
-			objNode.TryGetField("installed", out _blnInstalled);
-			objNode.TryGetField("subsystems", out _strSubsystems);
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+            }
+            else
+            {
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
+            objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
+			objNode.TryGetInt32FieldQuickly("response", ref _intResponse);
+			objNode.TryGetInt32FieldQuickly("system", ref _intSystem);
+			objNode.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
+			objNode.TryGetInt32FieldQuickly("signal", ref _intSignal);
+			objNode.TryGetInt32FieldQuickly("pilot", ref _intPilot);
+			objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetInt32FieldQuickly("markup", ref _intMarkup);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
+			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+			objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
 
 			if (objNode.InnerXml.Contains("<weapons>"))
 			{
@@ -261,16 +260,10 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			try
-			{
-				_nodBonus = objNode["bonus"];
-			}
-			catch
-			{
-			}
-			objNode.TryGetField("notes", out _strNotes);
-			objNode.TryGetField("discountedcost", out _blnDiscountCost);
-			objNode.TryGetField("extra", out _strExtra);
+			_nodBonus = objNode["bonus"];
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -278,10 +271,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
 				if (objModNode != null)
 				{
-					if (objModNode["translate"] != null)
-						_strAltName = objModNode["translate"].InnerText;
-					if (objModNode["altpage"] != null)
-						_strAltPage = objModNode["altpage"].InnerText;
+                    objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -290,11 +281,6 @@ namespace Chummer.Backend.Equipment
 					if (objModNode.Attributes["translate"] != null)
 						_strAltCategory = objModNode.Attributes["translate"].InnerText;
 				}
-			}
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
 			}
 		}
 

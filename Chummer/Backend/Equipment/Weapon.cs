@@ -84,15 +84,15 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
-			_strName = objXmlWeapon["name"].InnerText;
-			_strCategory = objXmlWeapon["category"].InnerText;
-			_strType = objXmlWeapon["type"].InnerText;
-			_intReach = Convert.ToInt32(objXmlWeapon["reach"].InnerText);
-			_strAccuracy = objXmlWeapon["accuracy"].InnerText;
-			_strDamage = objXmlWeapon["damage"].InnerText;
-			_strAP = objXmlWeapon["ap"].InnerText;
-			_strMode = objXmlWeapon["mode"].InnerText;
-			_strAmmo = objXmlWeapon["ammo"].InnerText;
+            objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlWeapon.TryGetStringFieldQuickly("type", ref _strType);
+            objXmlWeapon.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objXmlWeapon.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+            objXmlWeapon.TryGetStringFieldQuickly("damage", ref _strDamage);
+            objXmlWeapon.TryGetStringFieldQuickly("ap", ref _strAP);
+            objXmlWeapon.TryGetStringFieldQuickly("mode", ref _strMode);
+            objXmlWeapon.TryGetStringFieldQuickly("ammo", ref _strAmmo);
 			if (objXmlWeapon["accessorymounts"] != null)
 			{
 				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -107,56 +107,49 @@ namespace Chummer.Backend.Equipment
 				}
 				_strWeaponSlots = strMounts;
 			}
-			try
-			{
-				_strAmmoCategory = objXmlWeapon["ammocategory"].InnerText;
-			}
-			catch
-			{
-			}
-			_strRC = objXmlWeapon["rc"].InnerText;
-			try
-			{
-				_intConceal = Convert.ToInt32(objXmlWeapon["conceal"].InnerText);
-			}
-			catch
-			{
-			}
-			_strAvail = objXmlWeapon["avail"].InnerText;
-			_intCost = Convert.ToInt32(objXmlWeapon["cost"]?.InnerText);
-            // Check for a Variable Cost.
-            if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
+            objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
+            objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
+            objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
+            objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
+            if (objXmlWeapon["cost"] != null)
             {
-                int intMin = 0;
-                int intMax = 0;
-                string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                if (strCost.Contains("-"))
+                // Check for a Variable Cost.
+                if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
                 {
-                    string[] strValues = strCost.Split('-');
-                    intMin = Convert.ToInt32(strValues[0]);
-                    intMax = Convert.ToInt32(strValues[1]);
+                    int intMin = 0;
+                    int intMax = 0;
+                    char[] chrParentheses = { '(', ')' };
+                    string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _intCost = frmPickNumber.SelectedValue;
+                    }
                 }
                 else
-                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
-
-                if (intMin != 0 || intMax != 0)
-                {
-                    frmSelectNumber frmPickNumber = new frmSelectNumber();
-                    if (intMax == 0)
-                        intMax = 1000000;
-                    frmPickNumber.Minimum = intMin;
-                    frmPickNumber.Maximum = intMax;
-                    frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
-                    frmPickNumber.AllowCancel = false;
-                    frmPickNumber.ShowDialog();
-                    _intCost = frmPickNumber.SelectedValue;
-                }
+                    _intCost = Convert.ToInt32(objXmlWeapon["cost"].InnerText);
             }
 
             if (objXmlWeapon["cyberware"]?.InnerText == "yes")
 				_blnCyberware = true;
-			_strSource = objXmlWeapon["source"].InnerText;
-			_strPage = objXmlWeapon["page"].InnerText;
+            objXmlWeapon.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
 
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
@@ -165,10 +158,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
 				if (objWeaponNode != null)
 				{
-					if (objWeaponNode["translate"] != null)
-						_strAltName = objWeaponNode["translate"].InnerText;
-					if (objWeaponNode["altpage"] != null)
-						_strAltPage = objWeaponNode["altpage"].InnerText;
+                    objWeaponNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objWeaponNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -187,32 +178,13 @@ namespace Chummer.Backend.Equipment
 					_dblRangeMultiplier = Convert.ToDouble(objXmlWeapon["range"].Attributes["multiply"].InnerText, GlobalOptions.Instance.CultureInfo);
 			}
 
-			try
-			{
-				_intFullBurst = Convert.ToInt32(objXmlWeapon["fullburst"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSuppressive = Convert.ToInt32(objXmlWeapon["suppressive"].InnerText);
-			}
-			catch
-			{
-			}
+            objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
 
-			if (objXmlWeapon["useskill"] != null)
-				_strUseSkill = objXmlWeapon["useskill"].InnerText;
-
-			if (objXmlWeapon["requireammo"] != null)
-				_blnRequireAmmo = Convert.ToBoolean(objXmlWeapon["requireammo"].InnerText);
-
-			if (objXmlWeapon["spec"] != null)
-				_strSpec = objXmlWeapon["spec"].InnerText;
-
-			if (objXmlWeapon["spec2"] != null)
-				_strSpec2 = objXmlWeapon["spec2"].InnerText;
+            objXmlWeapon.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
+            objXmlWeapon.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
+            objXmlWeapon.TryGetStringFieldQuickly("spec", ref _strSpec);
+            objXmlWeapon.TryGetStringFieldQuickly("spec2", ref _strSpec2);
 
 			objNode.Text = DisplayName;
 			objNode.Tag = _guiID.ToString();
@@ -381,80 +353,81 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			if (objNode["category"].InnerText == "Hold-Outs")
-				objNode["category"].InnerText = "Holdouts";
-			if (objNode["category"].InnerText == "Cyberware Hold-Outs")
-				objNode["category"].InnerText = "Cyberware Holdouts";
-			_strCategory = objNode["category"].InnerText;
-			_strType = objNode["type"].InnerText;
-			if (objNode["spec"] != null)
-				_strSpec = objNode["spec"].InnerText;
-			if (objNode["spec2"] != null)
-				_strSpec2 = objNode["spec2"].InnerText;
-			_intReach = Convert.ToInt32(objNode["reach"].InnerText);
-			_strAccuracy = objNode["accuracy"].InnerText;
-			_strDamage = objNode["damage"].InnerText;
-			_strAP = objNode["ap"].InnerText;
-			_strMode = objNode["mode"].InnerText;
-			_strRC = objNode["rc"].InnerText;
-			_strAmmo = objNode["ammo"].InnerText;
-			objNode.TryGetField("cyberware", out _blnCyberware);
-			objNode.TryGetField("ammocategory", out _strAmmoCategory);
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+                _ammo = new List<Clip>();
+                _intActiveAmmoSlot = 1;
+            }
+            else
+            {
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+                _ammo.Clear();
+                if (objNode["clips"] != null)
+                {
+                    XmlNode clipNode = objNode["clips"];
 
-			_ammo.Clear();
-			if (objNode["clips"] != null)
-			{
-				XmlNode clipNode = objNode["clips"];
+                    foreach (XmlNode node in clipNode.ChildNodes)
+                    {
+                        Clip LoopClip = Clip.Load(node);
 
-				foreach (XmlNode node in clipNode.ChildNodes)
-				{
-					try
-					{
-						_ammo.Add(Clip.Load(node));
-					}
-					catch (Exception)
-					{
-						if (System.Diagnostics.Debugger.IsAttached)
-							System.Diagnostics.Debugger.Break();
-					}
-				}
-			}
-			else //Load old clips
-			{
-				foreach (string s in new[] {"", "2", "3", "4"})
-				{
-					int ammo;
-					Guid guid;
+                        _ammo.Add(LoopClip);
+                    }
+                }
+                else //Load old clips
+                {
+                    foreach (string s in new[] { "", "2", "3", "4" })
+                    {
+                        int ammo = 0;
+                        Guid guid = Guid.Empty;
 
-					if (objNode.TryGetField("ammoremaining" + s, out ammo) &&
-					    objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out guid) &&
-					    ammo > 0 && guid != Guid.Empty)
-					{
-						_ammo.Add(new Clip(guid, ammo));
-					}
-				}
-			}
-			objNode.TryGetField("conceal", out _intConceal);
-			_strAvail = objNode["avail"].InnerText;
-			_intCost = Convert.ToInt32(objNode["cost"].InnerText);
-			objNode.TryGetField("fullburst", out _intFullBurst);
-			objNode.TryGetField("suppressive", out _intSuppressive);
-			objNode.TryGetField("page", out _strPage);
-			objNode.TryGetField("fullburst", out _intFullBurst);
-			_strSource = objNode["source"].InnerText;
-			_strWeaponName = objNode["weaponname"].InnerText;
-			objNode.TryGetField("range", out _strRange);
+                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
+                            objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out guid) &&
+                            ammo > 0 && guid != Guid.Empty)
+                        {
+                            _ammo.Add(new Clip(guid, ammo));
+                        }
+                    }
+                }
+            }
+            
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (_strCategory == "Hold-Outs")
+                _strCategory = "Holdouts";
+			else if (_strCategory == "Cyberware Hold-Outs")
+                _strCategory = "Cyberware Holdouts";
+            objNode.TryGetStringFieldQuickly("type", ref _strType);
+            objNode.TryGetStringFieldQuickly("spec", ref _strSpec);
+            objNode.TryGetStringFieldQuickly("spec2", ref _strSpec2);
+            objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+            objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            objNode.TryGetStringFieldQuickly("ap", ref _strAP);
+            objNode.TryGetStringFieldQuickly("mode", ref _strMode);
+            objNode.TryGetStringFieldQuickly("rc", ref _strRC);
+            objNode.TryGetStringFieldQuickly("ammo", ref _strAmmo);
+			objNode.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
+			objNode.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
+			objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetInt32FieldQuickly("cost", ref _intCost);
+			objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
+			objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+			objNode.TryGetStringFieldQuickly("page", ref _strPage);
+			objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
+			objNode.TryGetStringFieldQuickly("range", ref _strRange);
 			if (_strRange == "Hold-Outs")
 			{
 				_strRange = "Holdouts";
 			}
-			objNode.TryGetField("useskill", out _strUseSkill);
+			objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
 			objNode.TryGetField("rangemultiply", out _dblRangeMultiplier);
-			objNode.TryGetField("included", out _blnIncludedInWeapon);
-			objNode.TryGetField("installed", out _blnInstalled);
-			objNode.TryGetField("requireammo", out _blnRequireAmmo);
+			objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
+			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+			objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -462,10 +435,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
 				if (objWeaponNode != null)
 				{
-					if (objWeaponNode["translate"] != null)
-						_strAltName = objWeaponNode["translate"].InnerText;
-					if (objWeaponNode["altpage"] != null)
-						_strAltPage = objWeaponNode["altpage"].InnerText;
+                    objWeaponNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objWeaponNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -498,16 +469,9 @@ namespace Chummer.Backend.Equipment
 					_lstUnderbarrel.Add(objUnderbarrel);
 				}
 			}
-			objNode.TryGetField("notes", out _strNotes);
-			objNode.TryGetField("location", out _strLocation);
-			objNode.TryGetField("discountedcost", out _blnDiscountCost);
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-				_ammo = new List<Clip>();
-				_intActiveAmmoSlot = 1;
-			}
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+			objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 		}
 
 		/// <summary>
@@ -1269,7 +1233,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public string CalculatedDamage(int intUseSTR = 0, bool blnForceEnglish = false)
 		{
-			string strReturn = "";
+			string strReturn = _strDamage;
 
 			// If the cost is determined by the Rating, evaluate the expression.
 			XmlDocument objXmlDocument = new XmlDocument();
@@ -1460,130 +1424,128 @@ namespace Chummer.Backend.Equipment
 			}
 			strDamage += " + " + intImprove.ToString();
 
-			try
-			{
-				CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
-				CharacterOptions objOptions = _objCharacter.Options;
-				int intBonus = 0;
-				if (objOptions.MoreLethalGameplay)
-					intBonus = 2;
+			CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
+			CharacterOptions objOptions = _objCharacter.Options;
+			int intBonus = 0;
+			if (objOptions.MoreLethalGameplay)
+				intBonus = 2;
 
-				// Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
-				if (AmmoLoaded != "")
+			// Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+			if (AmmoLoaded != "")
+			{
+				// Look for Ammo on the character.
+				Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+				if (objGear == null)
 				{
-					// Look for Ammo on the character.
-					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
-					if (objGear == null)
+					Vehicle objFoundVehicle;
+					objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+				}
+				if (objGear != null)
+				{
+					if (objGear.WeaponBonus != null)
 					{
-						Vehicle objFoundVehicle;
-						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+						// Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
+						if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
+						{
+							if (objGear.WeaponBonus["damagetype"] != null)
+							{
+								strDamageType = "";
+								strDamageExtra = objGear.WeaponBonus["damagetype"].InnerText;
+							}
+							// Adjust the Weapon's Damage.
+							if (objGear.WeaponBonus["damage"] != null)
+								strDamage += " + " + objGear.WeaponBonus["damage"].InnerText;
+							if (objGear.WeaponBonus["damagereplace"] != null)
+							{
+								blnDamageReplaced = true;
+								strDamage = objGear.WeaponBonus["damagereplace"].InnerText;
+							}
+						}
 					}
-					if (objGear != null)
+
+					// Do the same for any plugins.
+					foreach (Gear objChild in objGear.Children)
 					{
-						if (objGear.WeaponBonus != null)
+						if (objChild.WeaponBonus != null)
 						{
 							// Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-							if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
+							if (!(objChild.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
 							{
-								if (objGear.WeaponBonus["damagetype"] != null)
+								if (objChild.WeaponBonus["damagetype"] != null)
 								{
 									strDamageType = "";
-									strDamageExtra = objGear.WeaponBonus["damagetype"].InnerText;
+									strDamageExtra = objChild.WeaponBonus["damagetype"].InnerText;
 								}
 								// Adjust the Weapon's Damage.
-								if (objGear.WeaponBonus["damage"] != null)
-									strDamage += " + " + objGear.WeaponBonus["damage"].InnerText;
-								if (objGear.WeaponBonus["damagereplace"] != null)
+								if (objChild.WeaponBonus["damage"] != null)
+									strDamage += " + " + objChild.WeaponBonus["damage"].InnerText;
+								if (objChild.WeaponBonus["damagereplace"] != null)
 								{
 									blnDamageReplaced = true;
-									strDamage = objGear.WeaponBonus["damagereplace"].InnerText;
+									strDamage = objChild.WeaponBonus["damagereplace"].InnerText;
 								}
 							}
-						}
-
-						// Do the same for any plugins.
-						foreach (Gear objChild in objGear.Children)
-						{
-							if (objChild.WeaponBonus != null)
-							{
-								// Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-								if (!(objChild.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
-								{
-									if (objChild.WeaponBonus["damagetype"] != null)
-									{
-										strDamageType = "";
-										strDamageExtra = objChild.WeaponBonus["damagetype"].InnerText;
-									}
-									// Adjust the Weapon's Damage.
-									if (objChild.WeaponBonus["damage"] != null)
-										strDamage += " + " + objChild.WeaponBonus["damage"].InnerText;
-									if (objChild.WeaponBonus["damagereplace"] != null)
-									{
-										blnDamageReplaced = true;
-										strDamage = objChild.WeaponBonus["damagereplace"].InnerText;
-									}
-								}
-								break;
-							}
+							break;
 						}
 					}
-				}
-
-				if (!blnDamageReplaced)
-				{
-					xprDamage = nav.Compile(strDamage);
-					double dblDamage = 0;
-					dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.Instance.CultureInfo) + intBonus);
-					if (_strName == "Unarmed Attack (Smashing Blow)")
-						dblDamage *= 2.0;
-					strReturn = dblDamage.ToString() + strDamageType + strDamageExtra;
-				}
-				else
-				{
-					// Place the Damage Type (P or S) into a string and remove it from the expression.
-					if (strDamage.Contains("P or S"))
-					{
-						strDamageType = "P or S";
-						strDamage = strDamage.Replace("P or S", string.Empty);
-					}
-					else
-					{
-						if (strDamage.Contains("P"))
-						{
-							strDamageType = "P";
-							strDamage = strDamage.Replace("P", string.Empty);
-						}
-						if (strDamage.Contains("S"))
-						{
-							strDamageType = "S";
-							strDamage = strDamage.Replace("S", string.Empty);
-						}
-					}
-					// Place any extra text like (e) and (f) in a string and remove it from the expression.
-					if (strDamage.Contains("(e)"))
-					{
-						strDamageExtra = "(e)";
-						strDamage = strDamage.Replace("(e)", string.Empty);
-					}
-					if (strDamage.Contains("(f)"))
-					{
-						strDamageExtra = "(f)";
-						strDamage = strDamage.Replace("(f)", string.Empty);
-					}
-					// Replace the division sign with "div" since we're using XPath.
-					strDamage = strDamage.Replace("/", " div ");
-
-					xprDamage = nav.Compile(strDamage);
-					double dblDamage = 0;
-					dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.Instance.CultureInfo) + intBonus);
-					if (_strName == "Unarmed Attack (Smashing Blow)")
-						dblDamage *= 2.0;
-					strReturn = dblDamage.ToString() + strDamageType + strDamageExtra;
 				}
 			}
-			catch
+
+			if (!blnDamageReplaced)
 			{
-				strReturn = _strDamage;
+                double dblDamage = 0;
+                try
+                {
+                    xprDamage = nav.Compile(strDamage);
+                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.Instance.CultureInfo) + intBonus);
+                }
+                catch (System.Xml.XPath.XPathException) { }
+				if (_strName == "Unarmed Attack (Smashing Blow)")
+					dblDamage *= 2.0;
+				strReturn = dblDamage.ToString() + strDamageType + strDamageExtra;
+			}
+			else
+			{
+				// Place the Damage Type (P or S) into a string and remove it from the expression.
+				if (strDamage.Contains("P or S"))
+				{
+					strDamageType = "P or S";
+					strDamage = strDamage.Replace("P or S", string.Empty);
+				}
+				if (strDamage.Contains("P"))
+                {
+                    strDamageType = "P";
+                    strDamage = strDamage.Replace("P", string.Empty);
+                }
+                if (strDamage.Contains("S"))
+                {
+                    strDamageType = "S";
+                    strDamage = strDamage.Replace("S", string.Empty);
+                }
+                // Place any extra text like (e) and (f) in a string and remove it from the expression.
+                if (strDamage.Contains("(e)"))
+				{
+					strDamageExtra = "(e)";
+					strDamage = strDamage.Replace("(e)", string.Empty);
+				}
+				if (strDamage.Contains("(f)"))
+				{
+					strDamageExtra = "(f)";
+					strDamage = strDamage.Replace("(f)", string.Empty);
+				}
+				// Replace the division sign with "div" since we're using XPath.
+				strDamage = strDamage.Replace("/", " div ");
+
+				double dblDamage = 0;
+                try
+                {
+                    xprDamage = nav.Compile(strDamage);
+                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.Instance.CultureInfo) + intBonus);
+                }
+                catch (System.Xml.XPath.XPathException) { }
+                if (_strName == "Unarmed Attack (Smashing Blow)")
+					dblDamage *= 2.0;
+				strReturn = dblDamage.ToString() + strDamageType + strDamageExtra;
 			}
 
 			// If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.
@@ -1644,38 +1606,35 @@ namespace Chummer.Backend.Equipment
 				{
 					string strAmmoString = "";
 					string strPrepend = "";
-					try
+					int intAmmo = 0;
+					strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf("("));
+					if (strThisAmmo.Contains("x"))
 					{
-						int intAmmo = 0;
-						strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf("("));
-						if (strThisAmmo.Contains("x"))
-						{
-							strPrepend = strThisAmmo.Substring(0, strThisAmmo.IndexOf("x") + 1);
-							strThisAmmo = strThisAmmo.Substring(strThisAmmo.IndexOf("x") + 1, strThisAmmo.Length - (strThisAmmo.IndexOf("x") + 1));
-						}
-
-						// If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
-						if (IsUnderbarrelWeapon && !IncludedInWeapon)
-							intAmmo = Convert.ToInt32(strThisAmmo) / 2;
-						else
-							intAmmo = Convert.ToInt32(strThisAmmo);
-
-                        intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
-
-                        if (extendedMax > 0 && strAmmo.Contains("(c)"))
-						{
-							//Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
-							intAmmo = (intAmmo*(2 + extendedMax))/2; 
-						}
-
-						strAmmoString = intAmmo.ToString();
-						if (strPrepend != "")
-							strAmmoString = strPrepend + strAmmoString;
+						strPrepend = strThisAmmo.Substring(0, strThisAmmo.IndexOf("x") + 1);
+						strThisAmmo = strThisAmmo.Substring(strThisAmmo.IndexOf("x") + 1, strThisAmmo.Length - (strThisAmmo.IndexOf("x") + 1));
 					}
-					catch
+
+                    // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
+                    try
+                    {
+                        if (IsUnderbarrelWeapon && !IncludedInWeapon)
+                            intAmmo = Convert.ToInt32(strThisAmmo) / 2;
+                        else
+                            intAmmo = Convert.ToInt32(strThisAmmo);
+                    }
+                    catch (FormatException) { }
+
+                    intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
+
+                    if (extendedMax > 0 && strAmmo.Contains("(c)"))
 					{
-						// ignored
+						//Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
+						intAmmo = (intAmmo*(2 + extendedMax))/2; 
 					}
+
+					strAmmoString = intAmmo.ToString();
+					if (strPrepend != "")
+						strAmmoString = strPrepend + strAmmoString;
 					strThisAmmo = strAmmoString + strAmmo.Substring(strAmmo.IndexOf("("), strAmmo.Length - strAmmo.IndexOf("("));
 				}
 				strReturn += strThisAmmo + " ";
@@ -2019,7 +1978,7 @@ namespace Chummer.Backend.Equipment
 				{
 					intAP = Convert.ToInt32(strAP);
 				}
-				catch
+				catch (FormatException)
 				{
 					// If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
 					return _strAP.Replace("-half", LanguageManager.Instance.GetString("String_APHalf"));
@@ -2594,15 +2553,12 @@ namespace Chummer.Backend.Equipment
 			if (_strRange != "")
 				strRangeCategory = _strRange;
 
-			string strRange = "";
-			try
-			{
-				strRange = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRangeCategory + "\"]")[strFindRange].InnerText;
-			}
-			catch
-			{
-				return -1;
-			}
+            XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRangeCategory + "\"]");
+            if (objXmlCategoryNode == null || objXmlCategoryNode[strFindRange] != null)
+            {
+                return -1;
+            }
+            string strRange = objXmlCategoryNode[strFindRange].InnerText;
 
 			XPathNavigator nav = objXmlDocument.CreateNavigator();
 
@@ -3137,7 +3093,15 @@ namespace Chummer.Backend.Equipment
 
 			internal static Clip Load(XmlNode node)
 			{
-				return new Clip(Guid.Parse(node["id"].InnerText), int.Parse(node["count"].InnerText));
+                if (node != null && node["id"] != null && node["count"] != null)
+                {
+                    try
+                    {
+                        return new Clip(Guid.Parse(node["id"].InnerText), int.Parse(node["count"].InnerText));
+                    }
+                    catch (FormatException) { }
+                }
+                return null;
 			}
 
 			internal void Save(XmlTextWriter writer)

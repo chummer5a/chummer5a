@@ -140,17 +140,14 @@ namespace Chummer
 		/// </summary>
 		public string Base64Encode(string data)
 		{
-			try
+			if (!string.IsNullOrEmpty(data))
 			{
 				byte[] bytEncode = new byte[data.Length];
 				bytEncode = System.Text.Encoding.UTF8.GetBytes(data);
-				string strEncodedData = Convert.ToBase64String(bytEncode);
-				return strEncodedData;
+				return Convert.ToBase64String(bytEncode);
 			}
-			catch (Exception e)
-			{
-				throw new Exception("Error in Base64Encode" + e.Message);
-			}
+
+            return null;
 		}
 
 		/// <summary>
@@ -158,7 +155,7 @@ namespace Chummer
 		/// </summary>
 		public string Base64Decode(string data)
 		{
-			try
+			if (!string.IsNullOrEmpty(data))
 			{
 				System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
 				System.Text.Decoder utf8Decode = encoder.GetDecoder();
@@ -167,13 +164,10 @@ namespace Chummer
 				int charCount = utf8Decode.GetCharCount(bytToDecode, 0, bytToDecode.Length);
 				char[] chrDecoded = new char[charCount];
 				utf8Decode.GetChars(bytToDecode, 0, bytToDecode.Length, chrDecoded, 0);
-				string strResult = new String(chrDecoded);
-				return strResult;
+				return new String(chrDecoded);
 			}
-			catch (Exception e)
-			{
-				throw new Exception("Error in Base64Decode" + e.Message);
-			}
+
+            return null;
 		}
 		#endregion
 

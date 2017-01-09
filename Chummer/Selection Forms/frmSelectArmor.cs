@@ -217,13 +217,14 @@ namespace Chummer
 				objItem.Value = objXmlArmor["name"].InnerText;
 				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
 
-				try
+				if (objXmlArmor["category"] != null)
 				{
-					objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText).Name + "]";
+                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
+                    if (objFoundItem != null)
+                    {
+                        objItem.Name += " [" + objFoundItem.Name + "]";
+                    }
 					lstArmors.Add(objItem);
-				}
-				catch
-				{
 				}
 			}
 			SortListItem objSort = new SortListItem();
@@ -258,39 +259,25 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
+                if (lstArmor.SelectedIndex + 1 < lstArmor.Items.Count)
+                {
 					lstArmor.SelectedIndex++;
 				}
-				catch
-				{
-					try
-					{
-						lstArmor.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-			}
+				else if (lstArmor.Items.Count > 0)
+                {
+                    lstArmor.SelectedIndex = 0;
+                }
+            }
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstArmor.SelectedIndex--;
-					if (lstArmor.SelectedIndex == -1)
-						lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
+                if (lstArmor.SelectedIndex - 1 >= 0)
+                {
+                    lstArmor.SelectedIndex--;
+                }
+                else if (lstArmor.Items.Count > 0)
+                {
+                    lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
+                }
 			}
 		}
 
@@ -397,13 +384,14 @@ namespace Chummer
                     else
                         objItem.Name = objXmlArmor["name"].InnerText;
 
-                    try
+                    if (objXmlArmor["category"] != null)
                     {
-                        objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText).Name + "]";
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
+                        if (objFoundItem != null)
+                        {
+                            objItem.Name += " [" + objFoundItem.Name + "]";
+                        }
                         lstArmors.Add(objItem);
-                    }
-                    catch
-                    {
                     }
                 }
                 SortListItem objSort = new SortListItem();
@@ -460,17 +448,16 @@ namespace Chummer
                 return;
             else
             {
-                try
-                {
-                    int intResult;
-                    if (Convert.ToInt32(e.CellValue1) < Convert.ToInt32(e.CellValue2))
-                        intResult = -1;
-                    else
-                        intResult = 1;
-                    e.SortResult = intResult;
-                    e.Handled = true;
-                }
-                catch { }
+                int intResult = 1;
+                int intTmp1;
+                int intTmp2;
+                if (int.TryParse(e.CellValue1.ToString(), out intTmp1) &&
+                        int.TryParse(e.CellValue2.ToString(), out intTmp2) &&
+                        intTmp1 < intTmp2)
+                    intResult = -1;
+
+                e.SortResult = intResult;
+                e.Handled = true;
                 return;
             }
         }

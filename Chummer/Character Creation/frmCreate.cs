@@ -29,6 +29,7 @@ using System.Xml.XPath;
 using Chummer.Skills;
 using System.Diagnostics;
 using System.Drawing.Imaging;
+using Chummer.Backend;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -261,7 +262,7 @@ namespace Chummer
             tabCharacterTabs.TabPages.Remove(tabImprovements);
 			
 			if ((!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled) || !_objOptions.AllowInitiationInCreateMode)
-				tabCharacterTabs.TabPages.Remove(tabInitiation);
+                tabCharacterTabs.TabPages.Remove(tabInitiation);
 			else
 			{
 				if (_objCharacter.MAGEnabled)
@@ -1401,7 +1402,7 @@ namespace Chummer
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
-					UpdateInitiationCost();					
+					UpdateInitiationCost();
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                     {
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -1630,7 +1631,7 @@ namespace Chummer
             if (_objCharacter.InitiationEnabled)
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                    tabCharacterTabs.TabPages.Insert(4, tabInitiation);
+                    tabCharacterTabs.TabPages.Insert(3, tabInitiation);
             }
             else
             {
@@ -2371,7 +2372,7 @@ namespace Chummer
                         {
                             intRating = Convert.ToInt32(strSelected);
                         }
-                        catch
+                        catch (System.FormatException)
                         {
                             _objImprovementManager.ForcedValue = strSelected;
                         }
@@ -2722,14 +2723,58 @@ namespace Chummer
                 // Lifestyle Tab.
                 if (tabStreetGearTabs.SelectedTab == tabLifestyle)
                 {
-                    try
+                    // Copy the selected Lifestyle.
+                    Lifestyle objCopyLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+
+                    if (objCopyLifestyle == null)
+                        return;
+
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
+                    objWriter.Formatting = Formatting.Indented;
+                    objWriter.Indentation = 1;
+                    objWriter.IndentChar = '\t';
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    objCopyLifestyle.Save(objWriter);
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+                    objStream.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+                    objStream.Close();
+
+                    GlobalOptions.Instance.Clipboard = objCharacterXML;
+                    GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Lifestyle;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+                }
+
+                // Armor Tab.
+                if (tabStreetGearTabs.SelectedTab == tabArmor)
+                {
+                    // Copy the selected Armor.
+                    Armor objCopyArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+
+                    if (objCopyArmor != null)
                     {
-                        // Copy the selected Lifestyle.
-                        Lifestyle objCopyLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
-
-                        if (objCopyLifestyle == null)
-                            return;
-
                         MemoryStream objStream = new MemoryStream();
                         XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
                         objWriter.Formatting = Formatting.Indented;
@@ -2741,7 +2786,7 @@ namespace Chummer
                         // </characters>
                         objWriter.WriteStartElement("character");
 
-                        objCopyLifestyle.Save(objWriter);
+                        objCopyArmor.Save(objWriter);
 
                         // </characters>
                         objWriter.WriteEndElement();
@@ -2764,261 +2809,17 @@ namespace Chummer
                         objStream.Close();
 
                         GlobalOptions.Instance.Clipboard = objCharacterXML;
-                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Lifestyle;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
+                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Armor;
+
+                        RefreshPasteStatus();
+                        return;
                     }
-                    catch
+
+                    // Attempt to copy Gear.
+                    Gear objCopyGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objCopyArmor);
+
+                    if (objCopyGear != null)
                     {
-                    }
-                }
-
-                // Armor Tab.
-                if (tabStreetGearTabs.SelectedTab == tabArmor)
-                {
-                    try
-                    {
-                        // Copy the selected Armor.
-                        Armor objCopyArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-
-                        if (objCopyArmor != null)
-                        {
-                            MemoryStream objStream = new MemoryStream();
-                            XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
-                            objWriter.Formatting = Formatting.Indented;
-                            objWriter.Indentation = 1;
-                            objWriter.IndentChar = '\t';
-
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("character");
-
-                            objCopyArmor.Save(objWriter);
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-                            objStream.Flush();
-
-                            // Read the stream.
-                            StreamReader objReader = new StreamReader(objStream);
-                            objStream.Position = 0;
-                            XmlDocument objCharacterXML = new XmlDocument();
-
-                            // Put the stream into an XmlDocument.
-                            string strXML = objReader.ReadToEnd();
-                            objCharacterXML.LoadXml(strXML);
-
-                            objWriter.Close();
-                            objStream.Close();
-
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Armor;
-
-                            RefreshPasteStatus();
-                            return;
-                        }
-
-                        // Attempt to copy Gear.
-                        Gear objCopyGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objCopyArmor);
-
-                        if (objCopyGear != null)
-                        {
-                            MemoryStream objStream = new MemoryStream();
-                            XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
-                            objWriter.Formatting = Formatting.Indented;
-                            objWriter.Indentation = 1;
-                            objWriter.IndentChar = '\t';
-
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("character");
-
-                            if (objCopyGear.GetType() == typeof(Commlink))
-                            {
-                                Commlink objCommlink = (Commlink)objCopyGear;
-                                objCommlink.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
-                            }
-                            else
-                            {
-                                objCopyGear.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
-                            }
-
-                            if (objCopyGear.WeaponID != Guid.Empty.ToString())
-                            {
-                                // Copy any Weapon that comes with the Gear.
-                                Weapon objCopyWeapon = _objFunctions.FindWeapon(objCopyGear.WeaponID, _objCharacter.Weapons);
-                                objCopyWeapon.Save(objWriter);
-                            }
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-                            objStream.Flush();
-
-                            // Read the stream.
-                            StreamReader objReader = new StreamReader(objStream);
-                            objStream.Position = 0;
-                            XmlDocument objCharacterXML = new XmlDocument();
-
-                            // Put the stream into an XmlDocument.
-                            string strXML = objReader.ReadToEnd();
-                            objCharacterXML.LoadXml(strXML);
-
-                            objWriter.Close();
-                            objStream.Close();
-
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-
-                            RefreshPasteStatus();
-                            return;
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                // Weapons Tab.
-                if (tabStreetGearTabs.SelectedTab == tabWeapons)
-                {
-                    try
-                    {
-                        // Copy the selected Weapon.
-                        Weapon objCopyWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-
-                        if (objCopyWeapon != null)
-                        {
-                            // Do not let the user copy Gear or Cyberware Weapons.
-                            if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
-                                return;
-
-                            MemoryStream objStream = new MemoryStream();
-                            XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
-                            objWriter.Formatting = Formatting.Indented;
-                            objWriter.Indentation = 1;
-                            objWriter.IndentChar = '\t';
-
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("character");
-
-                            objCopyWeapon.Save(objWriter);
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-                            objStream.Flush();
-
-                            // Read the stream.
-                            StreamReader objReader = new StreamReader(objStream);
-                            objStream.Position = 0;
-                            XmlDocument objCharacterXML = new XmlDocument();
-
-                            // Put the stream into an XmlDocument.
-                            string strXML = objReader.ReadToEnd();
-                            objCharacterXML.LoadXml(strXML);
-
-                            objWriter.Close();
-                            objStream.Close();
-
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Weapon;
-
-                            RefreshPasteStatus();
-                            return;
-                        }
-
-                        WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                        Gear objCopyGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
-
-                        if (objCopyGear != null)
-                        {
-                            MemoryStream objStream = new MemoryStream();
-                            XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
-                            objWriter.Formatting = Formatting.Indented;
-                            objWriter.Indentation = 1;
-                            objWriter.IndentChar = '\t';
-
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("character");
-
-                            if (objCopyGear.GetType() == typeof(Commlink))
-                            {
-                                Commlink objCommlink = (Commlink)objCopyGear;
-                                objCommlink.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
-                            }
-                            else
-                            {
-                                objCopyGear.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
-                            }
-
-                            if (objCopyGear.WeaponID != Guid.Empty.ToString())
-                            {
-                                // Copy any Weapon that comes with the Gear.
-                                Weapon objCopyGearWeapon = _objFunctions.FindWeapon(objCopyGear.WeaponID, _objCharacter.Weapons);
-                                objCopyGearWeapon.Save(objWriter);
-                            }
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-                            objStream.Flush();
-
-                            // Read the stream.
-                            StreamReader objReader = new StreamReader(objStream);
-                            objStream.Position = 0;
-                            XmlDocument objCharacterXML = new XmlDocument();
-
-                            // Put the stream into an XmlDocument.
-                            string strXML = objReader.ReadToEnd();
-                            objCharacterXML.LoadXml(strXML);
-
-                            objWriter.Close();
-                            objStream.Close();
-
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-
-                            RefreshPasteStatus();
-                            return;
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                // Gear Tab.
-                if (tabStreetGearTabs.SelectedTab == tabGear)
-                {
-                    try
-                    {
-                        // Copy the selected Gear.
-                        Gear objCopyGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-
-                        if (objCopyGear == null)
-                            return;
-
                         MemoryStream objStream = new MemoryStream();
                         XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
                         objWriter.Formatting = Formatting.Indented;
@@ -3070,23 +2871,23 @@ namespace Chummer
                         objStream.Close();
 
                         GlobalOptions.Instance.Clipboard = objCharacterXML;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
-                    }
-                    catch
-                    {
+
+                        RefreshPasteStatus();
+                        return;
                     }
                 }
-            }
 
-            // Vehicles Tab.
-            if (tabCharacterTabs.SelectedTab == tabVehicles)
-            {
-                try
+                // Weapons Tab.
+                if (tabStreetGearTabs.SelectedTab == tabWeapons)
                 {
-                    if (treVehicles.SelectedNode.Level == 1)
+                    // Copy the selected Weapon.
+                    Weapon objCopyWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+
+                    if (objCopyWeapon != null)
                     {
-                        // Copy the selected Vehicle.
-                        Vehicle objCopyVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+                        // Do not let the user copy Gear or Cyberware Weapons.
+                        if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
+                            return;
 
                         MemoryStream objStream = new MemoryStream();
                         XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
@@ -3099,7 +2900,7 @@ namespace Chummer
                         // </characters>
                         objWriter.WriteStartElement("character");
 
-                        objCopyVehicle.Save(objWriter);
+                        objCopyWeapon.Save(objWriter);
 
                         // </characters>
                         objWriter.WriteEndElement();
@@ -3122,128 +2923,298 @@ namespace Chummer
                         objStream.Close();
 
                         GlobalOptions.Instance.Clipboard = objCharacterXML;
-                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Vehicle;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
+                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Weapon;
+
+                        RefreshPasteStatus();
+                        return;
+                    }
+
+                    WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                    Gear objCopyGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
+
+                    if (objCopyGear != null)
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
+                        objWriter.Formatting = Formatting.Indented;
+                        objWriter.Indentation = 1;
+                        objWriter.IndentChar = '\t';
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        if (objCopyGear.GetType() == typeof(Commlink))
+                        {
+                            Commlink objCommlink = (Commlink)objCopyGear;
+                            objCommlink.Save(objWriter);
+                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
+                        }
+                        else
+                        {
+                            objCopyGear.Save(objWriter);
+                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
+                        }
+
+                        if (objCopyGear.WeaponID != Guid.Empty.ToString())
+                        {
+                            // Copy any Weapon that comes with the Gear.
+                            Weapon objCopyGearWeapon = _objFunctions.FindWeapon(objCopyGear.WeaponID, _objCharacter.Weapons);
+                            objCopyGearWeapon.Save(objWriter);
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+                        objStream.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+                        objStream.Close();
+
+                        GlobalOptions.Instance.Clipboard = objCharacterXML;
+
+                        RefreshPasteStatus();
+                        return;
+                    }
+                }
+
+                // Gear Tab.
+                if (tabStreetGearTabs.SelectedTab == tabGear)
+                {
+                    // Copy the selected Gear.
+                    Gear objCopyGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+
+                    if (objCopyGear == null)
+                        return;
+
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
+                    objWriter.Formatting = Formatting.Indented;
+                    objWriter.Indentation = 1;
+                    objWriter.IndentChar = '\t';
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    if (objCopyGear.GetType() == typeof(Commlink))
+                    {
+                        Commlink objCommlink = (Commlink)objCopyGear;
+                        objCommlink.Save(objWriter);
+                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
                     }
                     else
                     {
-                        Vehicle objVehicle = new Vehicle(_objCharacter);
-                        Gear objCopyGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+                        objCopyGear.Save(objWriter);
+                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
+                    }
 
-                        if (objCopyGear != null)
+                    if (objCopyGear.WeaponID != Guid.Empty.ToString())
+                    {
+                        // Copy any Weapon that comes with the Gear.
+                        Weapon objCopyWeapon = _objFunctions.FindWeapon(objCopyGear.WeaponID, _objCharacter.Weapons);
+                        objCopyWeapon.Save(objWriter);
+                    }
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+                    objStream.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+                    objStream.Close();
+
+                    GlobalOptions.Instance.Clipboard = objCharacterXML;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+                }
+            }
+
+            // Vehicles Tab.
+            if (tabCharacterTabs.SelectedTab == tabVehicles)
+            {
+                if (treVehicles.SelectedNode.Level == 1)
+                {
+                    // Copy the selected Vehicle.
+                    Vehicle objCopyVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
+                    objWriter.Formatting = Formatting.Indented;
+                    objWriter.Indentation = 1;
+                    objWriter.IndentChar = '\t';
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    objCopyVehicle.Save(objWriter);
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+                    objStream.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+                    objStream.Close();
+
+                    GlobalOptions.Instance.Clipboard = objCharacterXML;
+                    GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Vehicle;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+                }
+                else
+                {
+                    Vehicle objVehicle = new Vehicle(_objCharacter);
+                    Gear objCopyGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+
+                    if (objCopyGear != null)
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
+                        objWriter.Formatting = Formatting.Indented;
+                        objWriter.Indentation = 1;
+                        objWriter.IndentChar = '\t';
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        if (objCopyGear.GetType() == typeof(Commlink))
                         {
-                            MemoryStream objStream = new MemoryStream();
-                            XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
-                            objWriter.Formatting = Formatting.Indented;
-                            objWriter.Indentation = 1;
-                            objWriter.IndentChar = '\t';
-
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("character");
-
-                            if (objCopyGear.GetType() == typeof(Commlink))
-                            {
-                                Commlink objCommlink = (Commlink)objCopyGear;
-                                objCommlink.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
-                            }
-                            else
-                            {
-                                objCopyGear.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
-                            }
-
-                            if (objCopyGear.WeaponID != Guid.Empty.ToString())
-                            {
-                                // Copy any Weapon that comes with the Gear.
-                                Weapon objCopyWeapon = _objFunctions.FindWeapon(objCopyGear.WeaponID, _objCharacter.Weapons);
-                                objCopyWeapon.Save(objWriter);
-                            }
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-                            objStream.Flush();
-
-                            // Read the stream.
-                            StreamReader objReader = new StreamReader(objStream);
-                            objStream.Position = 0;
-                            XmlDocument objCharacterXML = new XmlDocument();
-
-                            // Put the stream into an XmlDocument.
-                            string strXML = objReader.ReadToEnd();
-                            objCharacterXML.LoadXml(strXML);
-
-                            objWriter.Close();
-                            objStream.Close();
-
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-
-                            RefreshPasteStatus();
-                            return;
+                            Commlink objCommlink = (Commlink)objCopyGear;
+                            objCommlink.Save(objWriter);
+                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
+                        }
+                        else
+                        {
+                            objCopyGear.Save(objWriter);
+                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
                         }
 
-                        foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
+                        if (objCopyGear.WeaponID != Guid.Empty.ToString())
                         {
-                            foreach (VehicleMod objMod in objCharacterVehicle.Mods)
+                            // Copy any Weapon that comes with the Gear.
+                            Weapon objCopyWeapon = _objFunctions.FindWeapon(objCopyGear.WeaponID, _objCharacter.Weapons);
+                            objCopyWeapon.Save(objWriter);
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+                        objStream.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+                        objStream.Close();
+
+                        GlobalOptions.Instance.Clipboard = objCharacterXML;
+
+                        RefreshPasteStatus();
+                        return;
+                    }
+
+                    foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
+                    {
+                        foreach (VehicleMod objMod in objCharacterVehicle.Mods)
+                        {
+                            Weapon objCopyWeapon = _objFunctions.FindWeapon(treVehicles.SelectedNode.Tag.ToString(), objMod.Weapons);
+                            if (objCopyWeapon != null)
                             {
-                                Weapon objCopyWeapon = _objFunctions.FindWeapon(treVehicles.SelectedNode.Tag.ToString(), objMod.Weapons);
-                                if (objCopyWeapon != null)
-                                {
-                                    // Do not let the user copy Gear or Cyberware Weapons.
-                                    if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
-                                        return;
-
-                                    MemoryStream objStream = new MemoryStream();
-                                    XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
-                                    objWriter.Formatting = Formatting.Indented;
-                                    objWriter.Indentation = 1;
-                                    objWriter.IndentChar = '\t';
-
-                                    objWriter.WriteStartDocument();
-
-                                    // </characters>
-                                    objWriter.WriteStartElement("character");
-
-                                    objCopyWeapon.Save(objWriter);
-
-                                    // </characters>
-                                    objWriter.WriteEndElement();
-
-                                    // Finish the document and flush the Writer and Stream.
-                                    objWriter.WriteEndDocument();
-                                    objWriter.Flush();
-                                    objStream.Flush();
-
-                                    // Read the stream.
-                                    StreamReader objReader = new StreamReader(objStream);
-                                    objStream.Position = 0;
-                                    XmlDocument objCharacterXML = new XmlDocument();
-
-                                    // Put the stream into an XmlDocument.
-                                    string strXML = objReader.ReadToEnd();
-                                    objCharacterXML.LoadXml(strXML);
-
-                                    objWriter.Close();
-                                    objStream.Close();
-
-                                    GlobalOptions.Instance.Clipboard = objCharacterXML;
-                                    GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Weapon;
-
-                                    RefreshPasteStatus();
+                                // Do not let the user copy Gear or Cyberware Weapons.
+                                if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
                                     return;
-                                }
+
+                                MemoryStream objStream = new MemoryStream();
+                                XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode);
+                                objWriter.Formatting = Formatting.Indented;
+                                objWriter.Indentation = 1;
+                                objWriter.IndentChar = '\t';
+
+                                objWriter.WriteStartDocument();
+
+                                // </characters>
+                                objWriter.WriteStartElement("character");
+
+                                objCopyWeapon.Save(objWriter);
+
+                                // </characters>
+                                objWriter.WriteEndElement();
+
+                                // Finish the document and flush the Writer and Stream.
+                                objWriter.WriteEndDocument();
+                                objWriter.Flush();
+                                objStream.Flush();
+
+                                // Read the stream.
+                                StreamReader objReader = new StreamReader(objStream);
+                                objStream.Position = 0;
+                                XmlDocument objCharacterXML = new XmlDocument();
+
+                                // Put the stream into an XmlDocument.
+                                string strXML = objReader.ReadToEnd();
+                                objCharacterXML.LoadXml(strXML);
+
+                                objWriter.Close();
+                                objStream.Close();
+
+                                GlobalOptions.Instance.Clipboard = objCharacterXML;
+                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Weapon;
+
+                                RefreshPasteStatus();
+                                return;
                             }
                         }
                     }
-                }
-                catch
-                {
                 }
             }
             RefreshPasteStatus();
@@ -3623,33 +3594,28 @@ namespace Chummer
                     objWeapon.Load(objXmlNode, true);
                     objWeapon.VehicleMounted = true;
 
-                    try
+                    // Weapons can only be added to Vehicle Mods that support them (Weapon Mounts and Mechanical Arms).
+                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                    foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
                     {
-                        // Weapons can only be added to Vehicle Mods that support them (Weapon Mounts and Mechanical Arms).
-                        VehicleMod objMod = new VehicleMod(_objCharacter);
-                        foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
+                        foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
                         {
-                            foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
+                            if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
                             {
-                                if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
+                                // TODO: Make this not depend on string names
+                                if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.WeaponMountCategories != "")
                                 {
-                                    if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.WeaponMountCategories != "")
-                                    {
-                                        objVehicleMod.Weapons.Add(objWeapon);
+                                    objVehicleMod.Weapons.Add(objWeapon);
 
-                                        _objFunctions.CreateWeaponTreeNode(objWeapon, treVehicles.SelectedNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, null);
+                                    _objFunctions.CreateWeaponTreeNode(objWeapon, treVehicles.SelectedNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, null);
 
-                                        UpdateCharacterInfo();
-                                        _blnIsDirty = true;
-                                        UpdateWindowTitle();
-                                        return;
-                                    }
+                                    UpdateCharacterInfo();
+                                    _blnIsDirty = true;
+                                    UpdateWindowTitle();
+                                    return;
                                 }
                             }
                         }
-                    }
-                    catch
-                    {
                     }
                 }
             }
@@ -3712,26 +3678,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudBOD") && (nudBOD.Value + nudKBOD.Value) >= nudBOD.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudBOD.Value = nudBOD.Maximum - nudKBOD.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudBOD.Value = nudBOD.Minimum;
-                }
+                nudBOD.Value = Math.Max(Math.Min(nudBOD.Maximum - nudKBOD.Value - 1, nudBOD.Maximum), nudBOD.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudBOD.Value + nudKBOD.Value) > nudBOD.Maximum)
             {
-                try
-                {
-                    nudBOD.Value = nudBOD.Maximum - nudKBOD.Value;
-                }
-                catch
-                {
-                    nudBOD.Value = nudBOD.Minimum;
-                }
+                nudBOD.Value = Math.Max(Math.Min(nudBOD.Maximum - nudKBOD.Value, nudBOD.Maximum), nudBOD.Minimum);
             }
 
             _objCharacter.BOD.Base = Convert.ToInt32(nudBOD.Value);
@@ -3751,26 +3703,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudAGI") && (nudAGI.Value + nudKAGI.Value) >= nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudAGI.Value = nudAGI.Maximum - nudKAGI.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudAGI.Value = nudAGI.Minimum;
-                }
+                nudAGI.Value = Math.Max(Math.Min(nudAGI.Maximum - nudKAGI.Value - 1, nudAGI.Maximum), nudAGI.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudAGI.Value + nudKAGI.Value) > nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudAGI.Value = nudAGI.Maximum - nudKAGI.Value;
-                }
-                catch
-                {
-                    nudAGI.Value = nudAGI.Minimum;
-                }
+                nudAGI.Value = Math.Max(Math.Min(nudAGI.Maximum - nudKAGI.Value, nudAGI.Maximum), nudAGI.Minimum);
             }
 
             _objCharacter.AGI.Base = Convert.ToInt32(nudAGI.Value);
@@ -3790,26 +3728,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudREA") && (nudREA.Value + nudKREA.Value) >= nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudREA.Value = nudREA.Maximum - nudKREA.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudREA.Value = nudREA.Minimum;
-                }
+                nudREA.Value = Math.Max(Math.Min(nudREA.Maximum - nudKREA.Value - 1, nudREA.Maximum), nudREA.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudREA.Value + nudKREA.Value) > nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudREA.Value = nudREA.Maximum - nudKREA.Value;
-                }
-                catch
-                {
-                    nudREA.Value = nudREA.Minimum;
-                }
+                nudREA.Value = Math.Max(Math.Min(nudREA.Maximum - nudKREA.Value, nudREA.Maximum), nudREA.Minimum);
             }
 
             _objCharacter.REA.Base = Convert.ToInt32(nudREA.Value);
@@ -3829,26 +3753,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudSTR") && (nudSTR.Value + nudKSTR.Value) >= nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudSTR.Value = nudSTR.Maximum - nudKSTR.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudSTR.Value = nudSTR.Minimum;
-                }
+                nudSTR.Value = Math.Max(Math.Min(nudSTR.Maximum - nudKSTR.Value - 1, nudSTR.Maximum), nudSTR.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudSTR.Value + nudKREA.Value) > nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudSTR.Value = nudSTR.Maximum - nudKSTR.Value;
-                }
-                catch
-                {
-                    nudSTR.Value = nudSTR.Minimum;
-                }
+                nudSTR.Value = Math.Max(Math.Min(nudSTR.Maximum - nudKSTR.Value, nudSTR.Maximum), nudSTR.Minimum);
             }
 
             _objCharacter.STR.Base = Convert.ToInt32(nudSTR.Value);
@@ -3868,26 +3778,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudCHA") && (nudCHA.Value + nudKCHA.Value) >= nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudCHA.Value = nudCHA.Maximum - nudKCHA.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudCHA.Value = nudCHA.Minimum;
-                }
+                nudCHA.Value = Math.Max(Math.Min(nudCHA.Maximum - nudKCHA.Value - 1, nudCHA.Maximum), nudCHA.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudCHA.Value + nudKCHA.Value) > nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudCHA.Value = nudCHA.Maximum - nudKCHA.Value;
-                }
-                catch
-                {
-                    nudCHA.Value = nudCHA.Minimum;
-                }
+                nudCHA.Value = Math.Max(Math.Min(nudCHA.Maximum - nudKCHA.Value, nudCHA.Maximum), nudCHA.Minimum);
             }
 
             _objCharacter.CHA.Base = Convert.ToInt32(nudCHA.Value);
@@ -3909,26 +3805,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudINT") && (nudINT.Value + nudKINT.Value) >= nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudINT.Value = nudINT.Maximum - nudKINT.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudINT.Value = nudINT.Minimum;
-                }
+                nudINT.Value = Math.Max(Math.Min(nudINT.Maximum - nudKINT.Value- 1, nudINT.Maximum), nudINT.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudINT.Value + nudKINT.Value) > nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudINT.Value = nudINT.Maximum - nudKINT.Value;
-                }
-                catch
-                {
-                    nudINT.Value = nudINT.Minimum;
-                }
+                nudINT.Value = Math.Max(Math.Min(nudINT.Maximum - nudKINT.Value, nudINT.Maximum), nudINT.Minimum);
             }
 
             _objCharacter.INT.Base = Convert.ToInt32(nudINT.Value);
@@ -3948,26 +3830,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudLOG") && (nudLOG.Value + nudKLOG.Value) >= nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudLOG.Value = nudLOG.Maximum - nudKLOG.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudLOG.Value = nudLOG.Minimum;
-                }
+                nudLOG.Value = Math.Max(Math.Min(nudLOG.Maximum - nudKLOG.Value - 1, nudLOG.Maximum), nudLOG.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudLOG.Value + nudKLOG.Value) > nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudLOG.Value = nudLOG.Maximum - nudKLOG.Value;
-                }
-                catch
-                {
-                    nudLOG.Value = nudLOG.Minimum;
-                }
+                nudLOG.Value = Math.Max(Math.Min(nudLOG.Maximum - nudKLOG.Value, nudLOG.Maximum), nudLOG.Minimum);
             }
 
             _objCharacter.LOG.Base = Convert.ToInt32(nudLOG.Value);
@@ -3987,26 +3855,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudWIL") && (nudWIL.Value + nudKWIL.Value) >= nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudWIL.Value = nudWIL.Maximum - nudKWIL.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudWIL.Value = nudLOG.Minimum;
-                }
+                nudWIL.Value = Math.Max(Math.Min(nudWIL.Maximum - nudKWIL.Value - 1, nudWIL.Maximum), nudWIL.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudWIL.Value + nudKWIL.Value) > nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudWIL.Value = nudWIL.Maximum - nudKWIL.Value;
-                }
-                catch
-                {
-                    nudWIL.Value = nudWIL.Minimum;
-                }
+                nudWIL.Value = Math.Max(Math.Min(nudWIL.Maximum - nudKWIL.Value, nudWIL.Maximum), nudWIL.Minimum);
             }
 
             _objCharacter.WIL.Base = Convert.ToInt32(nudWIL.Value);
@@ -4025,14 +3879,7 @@ namespace Chummer
 
             if ((nudEDG.Value + nudKEDG.Value) > nudEDG.Maximum)
             {
-                try
-                {
-                    nudEDG.Value = nudEDG.Maximum - nudKEDG.Value;
-                }
-                catch
-                {
-                    nudEDG.Value = nudEDG.Minimum;
-                }
+                nudEDG.Value = Math.Max(Math.Min(nudEDG.Maximum - nudKEDG.Value, nudEDG.Maximum), nudEDG.Minimum);
             }
 
             _objCharacter.EDG.Base = Convert.ToInt32(nudEDG.Value);
@@ -4051,14 +3898,7 @@ namespace Chummer
 
             if ((nudMAG.Value + nudKMAG.Value) > nudMAG.Maximum)
             {
-                try
-                {
-                    nudMAG.Value = nudMAG.Maximum - nudKMAG.Value;
-                }
-                catch
-                {
-                    nudMAG.Value = nudMAG.Minimum;
-                }
+                nudMAG.Value = Math.Max(Math.Min(nudMAG.Maximum - nudKMAG.Value, nudMAG.Maximum), nudMAG.Minimum);
             }
 
             _objCharacter.MAG.Base = Convert.ToInt32(nudMAG.Value);
@@ -4096,31 +3936,18 @@ namespace Chummer
 
             if ((nudRES.Value + nudKRES.Value) > nudRES.Maximum)
             {
-                try
-                {
-                    nudRES.Value = nudRES.Maximum - nudKRES.Value;
-                }
-                catch
-                {
-                    nudRES.Value = nudRES.Minimum;
-                }
+                nudRES.Value = Math.Max(Math.Min(nudRES.Maximum - nudKRES.Value, nudRES.Maximum), nudRES.Minimum);
             }
 
             _objCharacter.RES.Base = Convert.ToInt32(nudRES.Value);
             _objCharacter.RES.Value = Convert.ToInt32(nudRES.Value) + Convert.ToInt32(nudKRES.Value);
 
-            try
+            if (treComplexForms.SelectedNode.Level == 1)
             {
-                if (treComplexForms.SelectedNode.Level == 1)
-                {
-                    // Locate the Program that is selected in the tree.
-                    ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
+                // Locate the Program that is selected in the tree.
+                ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
 
-                    _blnSkipRefresh = true;
-                }
-            }
-            catch
-            {
+                _blnSkipRefresh = true;
             }
 
             UpdateCharacterInfo();
@@ -4137,15 +3964,8 @@ namespace Chummer
 
 			if ((nudDEP.Value + nudKDEP.Value) > nudDEP.Maximum)
 			{
-				try
-				{
-					nudDEP.Value = nudDEP.Maximum - nudKDEP.Value;
-				}
-				catch
-				{
-					nudDEP.Value = nudDEP.Minimum;
-				}
-			}
+                nudDEP.Value = Math.Max(Math.Min(nudDEP.Maximum - nudKDEP.Value, nudDEP.Maximum), nudDEP.Minimum);
+            }
 
 			_objCharacter.DEP.Base = Convert.ToInt32(nudDEP.Value);
 			_objCharacter.DEP.Value = Convert.ToInt32(nudDEP.Value) + Convert.ToInt32(nudKDEP.Value);
@@ -4675,57 +4495,53 @@ namespace Chummer
         #region Martial Tab Control Events
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            try
+            string strBook = "";
+            string strPage = "";
+            // The Rating NUD is only enabled if a Martial Art is currently selected.
+            if (treMartialArts.SelectedNode.Level == 1)
             {
-                // The Rating NUD is only enabled if a Martial Art is currently selected.
-                if (treMartialArts.SelectedNode.Level == 1)
-                {
-                    MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
+                MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
 
-                    _blnSkipRefresh = true;
-                    string strBook = _objOptions.LanguageBookShort(objMartialArt.Source);
-                    string strPage = objMartialArt.Page;
-                    lblMartialArtSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objMartialArt.Source) + " page " + objMartialArt.Page);
-                    _blnSkipRefresh = false;
-                }
-
-                // Display the Martial Art Advantage information.
-                if (treMartialArts.SelectedNode.Level == 2)
-                {
-                    // Load the Martial Art information.
-                    XmlDocument _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                    XmlNode objXmlTechnique = _objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + treMartialArts.SelectedNode.Text.ToString() + "\"]");
-
-                    if (objXmlTechnique != null)
-                    {
-                        string strBook = _objOptions.LanguageBookShort(objXmlTechnique["source"].InnerText);
-                        string strPage = objXmlTechnique["page"].InnerText;
-                        lblMartialArtSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objXmlTechnique["source"].InnerText) + " page " + objXmlTechnique["page"].InnerText);
-                    }
-
-                }
-
-                //// Display the Maneuver information.
-                //if (treMartialArts.SelectedNode.Level == 1 && treMartialArts.SelectedNode.Parent == treMartialArts.Nodes[1])
-                //{
-                //    // Load the Martial Art information.
-                //    XmlDocument _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                //    XmlNode objXmlTechnique = _objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + treMartialArts.SelectedNode.Text.ToString() + "\"]");
-
-                //    if (objXmlTechnique != null)
-                //    {
-                //        string strBook = _objOptions.LanguageBookShort(objXmlTechnique["source"].InnerText);
-                //        string strPage = objXmlTechnique["page"].InnerText;
-                //        lblMartialArtSource.Text = strBook + " " + strPage;
-                //        tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objXmlTechnique["source"].InnerText) + " page " + objXmlTechnique["page"].InnerText);
-                //    }
-                //}
+                _blnSkipRefresh = true;
+                strBook = _objOptions.LanguageBookShort(objMartialArt.Source);
+                strPage = objMartialArt.Page;
+                lblMartialArtSource.Text = strBook + " " + strPage;
+                tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objMartialArt.Source) + " page " + strPage);
+                _blnSkipRefresh = false;
             }
-            catch
+
+            // Display the Martial Art Advantage information.
+            else if (treMartialArts.SelectedNode.Level == 2)
             {
+                // Load the Martial Art information.
+                XmlDocument _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+                XmlNode objXmlTechnique = _objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + treMartialArts.SelectedNode.Text.ToString() + "\"]");
+
+                if (objXmlTechnique != null)
+                {
+                    objXmlTechnique.TryGetStringFieldQuickly("source", ref strBook);
+                    string strBookShort = _objOptions.LanguageBookShort(strBook);
+                    objXmlTechnique.TryGetStringFieldQuickly("page", ref strPage);
+                    lblMartialArtSource.Text = strBookShort + " " + strPage;
+                    tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(strBook) + " page " + strPage);
+                }
             }
+
+            //// Display the Maneuver information.
+            //if (treMartialArts.SelectedNode.Level == 1 && treMartialArts.SelectedNode.Parent == treMartialArts.Nodes[1])
+            //{
+            //    // Load the Martial Art information.
+            //    XmlDocument _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+            //    XmlNode objXmlTechnique = _objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + treMartialArts.SelectedNode.Text.ToString() + "\"]");
+
+            //    if (objXmlTechnique != null)
+            //    {
+            //        string strBook = _objOptions.LanguageBookShort(objXmlTechnique["source"].InnerText);
+            //        string strPage = objXmlTechnique["page"].InnerText;
+            //        lblMartialArtSource.Text = strBook + " " + strPage;
+            //        tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objXmlTechnique["source"].InnerText) + " page " + objXmlTechnique["page"].InnerText);
+            //    }
+            //}
         }
         #endregion
 
@@ -4740,14 +4556,7 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (nudAdeptWayDiscount.Value > _objCharacter.Foci.Count)
             {
-                try
-                {
-                    nudAdeptWayDiscount.Value = _objCharacter.Foci.Count;
-                }
-                catch
-                {
-                    nudAdeptWayDiscount.Value = nudAdeptWayDiscount.Minimum;
-                }
+                nudAdeptWayDiscount.Value = Math.Max(Math.Min(_objCharacter.Foci.Count, nudAdeptWayDiscount.Maximum), nudAdeptWayDiscount.Minimum);
             }
 
             _objCharacter.AdeptWayDiscount = Convert.ToInt32(nudAdeptWayDiscount.Value);
@@ -4939,28 +4748,26 @@ namespace Chummer
         private void cmdDeleteSpell_Click(object sender, EventArgs e)
         {
             // Delete the selected Spell.
-            try
+            if (treSpells.SelectedNode.Level > 0)
             {
-                if (treSpells.SelectedNode.Level > 0)
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteSpell")))
+                    return;
+
+                // Locate the Spell that is selected in the tree.
+                Spell objSpell = _objFunctions.FindSpell(treSpells.SelectedNode.Tag.ToString(), _objCharacter.Spells);
+
+                if (objSpell != null)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteSpell")))
-                        return;
-
-                    // Locate the Spell that is selected in the tree.
-                    Spell objSpell = _objFunctions.FindSpell(treSpells.SelectedNode.Tag.ToString(), _objCharacter.Spells);
-
                     _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Spell, objSpell.InternalId);
 
                     _objCharacter.Spells.Remove(objSpell);
                     treSpells.SelectedNode.Remove();
-                }
-                UpdateCharacterInfo();
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
+                    UpdateCharacterInfo();
+
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
+                }
             }
         }
 
@@ -5148,187 +4955,176 @@ namespace Chummer
 
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
-            try
+            if (treCyberware.SelectedNode.Level > 0)
             {
-                if (treCyberware.SelectedNode.Level > 0)
+                Cyberware objCyberware = new Cyberware(_objCharacter);
+				XmlDocument objXmlDocument = new XmlDocument();
+                // Locate the piece of Cyberware that is selected in the tree.
+                objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
+                if (objCyberware != null)
                 {
-                    Cyberware objCyberware = new Cyberware(_objCharacter);
-                    Cyberware objParent = new Cyberware(_objCharacter);
-					XmlDocument objXmlDocument = new XmlDocument();
-					bool blnFound = false;
-                    // Locate the piece of Cyberware that is selected in the tree.
-                    objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
-                    if (objCyberware != null)
+                    if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2 && !_objCharacter.IgnoreRules)
                     {
-                        blnFound = true;
-                        objParent = objCyberware.Parent;
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberware"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
                     }
-
-                    if (blnFound)
-                    {
-						if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-						{
-							objXmlDocument = XmlManager.Instance.Load("bioware.xml");
-						}
-						else
-						{
-							objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
-						}
-						if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2 && !_objCharacter.IgnoreRules)
-                        {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberware"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+					{
+                        if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteBioware")))
                             return;
-                        }
+                        objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+					}
+					else
+                    {
+                        if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCyberware")))
+                            return;
+                        objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+					}
 
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                        {
-                            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCyberware")))
-                                return;
-                        }
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                        {
-                            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteBioware")))
-                                return;
-                        }
-
-                        // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
-                        foreach (Cyberware objChildCyberware in objCyberware.Children)
-                        {
-                            _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objChildCyberware.InternalId);
-                            if (objChildCyberware.WeaponID != Guid.Empty.ToString())
-                            {
-                                // Remove the Weapon from the TreeView.
-                                TreeNode objRemoveNode = new TreeNode();
-                                foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
-                                {
-                                    if (objWeaponNode.Tag.ToString() == objChildCyberware.WeaponID)
-                                        objRemoveNode = objWeaponNode;
-                                }
-                                treWeapons.Nodes.Remove(objRemoveNode);
-
-                                // Remove the Weapon from the Character.
-                                Weapon objRemoveWeapon = new Weapon(_objCharacter);
-                                foreach (Weapon objWeapon in _objCharacter.Weapons)
-                                {
-                                    if (objWeapon.InternalId == objChildCyberware.WeaponID)
-                                        objRemoveWeapon = objWeapon;
-                                }
-                                _objCharacter.Weapons.Remove(objRemoveWeapon);
-
-                                // Remove the Vehicle from the Character.
-                                Vehicle objRemoveCyberVehicle = new Vehicle(_objCharacter);
-                                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-                                {
-                                    if (objVehicle.InternalId == objChildCyberware.VehicleID)
-                                        objRemoveCyberVehicle = objVehicle;
-                                }
-                                _objCharacter.Vehicles.Remove(objRemoveCyberVehicle);
-                            }
-                        }
-                        // Remove the Children.
-                        objCyberware.Children.Clear();
-
-                        // Remove the Cyberweapon created by the Cyberware if applicable.
-                        if (objCyberware.WeaponID != Guid.Empty.ToString())
+                    // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
+                    foreach (Cyberware objChildCyberware in objCyberware.Children)
+                    {
+                        _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objChildCyberware.InternalId);
+                        if (objChildCyberware.WeaponID != Guid.Empty.ToString())
                         {
                             // Remove the Weapon from the TreeView.
-                            TreeNode objRemoveNode = new TreeNode();
                             foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
                             {
-                                if (objWeaponNode.Tag.ToString() == objCyberware.WeaponID)
-                                    objRemoveNode = objWeaponNode;
+                                if (objWeaponNode.Tag.ToString() == objChildCyberware.WeaponID)
+                                {
+                                    treWeapons.Nodes.Remove(objWeaponNode);
+                                    break;
+                                }
                             }
-                            treWeapons.Nodes.Remove(objRemoveNode);
 
                             // Remove the Weapon from the Character.
-                            Weapon objRemoveWeapon = new Weapon(_objCharacter);
                             foreach (Weapon objWeapon in _objCharacter.Weapons)
                             {
-                                if (objWeapon.InternalId == objCyberware.WeaponID)
-                                    objRemoveWeapon = objWeapon;
+                                if (objWeapon.InternalId == objChildCyberware.WeaponID)
+                                {
+                                    _objCharacter.Weapons.Remove(objWeapon);
+                                    break;
+                                }
                             }
-                            _objCharacter.Weapons.Remove(objRemoveWeapon);
-                        }
-
-                        // Remove the Cybervehicle created by the Cyberware if applicable.
-                        if (objCyberware.VehicleID != Guid.Empty.ToString())
-                        {
-                            // Remove the Vehicle from the TreeView.
-                            TreeNode objRemoveVehicleNode = new TreeNode();
-                            foreach (TreeNode objVehicleNode in treVehicles.Nodes[0].Nodes)
-                            {
-                                if (objVehicleNode.Tag.ToString() == objCyberware.VehicleID)
-                                    objRemoveVehicleNode = objVehicleNode;
-                            }
-                            treVehicles.Nodes.Remove(objRemoveVehicleNode);
 
                             // Remove the Vehicle from the Character.
-                            Vehicle objRemoveVehicle = new Vehicle(_objCharacter);
+                            Vehicle objRemoveCyberVehicle = new Vehicle(_objCharacter);
                             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                             {
-                                if (objVehicle.InternalId == objCyberware.VehicleID)
-                                    objRemoveVehicle = objVehicle;
+                                if (objVehicle.InternalId == objChildCyberware.VehicleID)
+                                {
+                                    _objCharacter.Vehicles.Remove(objVehicle);
+                                    break;
+                                }
+                            }              
+                        }
+                    }
+                    // Remove the Children.
+                    objCyberware.Children.Clear();
+
+                    // Remove the Cyberweapon created by the Cyberware if applicable.
+                    if (objCyberware.WeaponID != Guid.Empty.ToString())
+                    {
+                        // Remove the Weapon from the TreeView.
+                        foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
+                        {
+                            if (objWeaponNode.Tag.ToString() == objCyberware.WeaponID)
+                            {
+                                treWeapons.Nodes.Remove(objWeaponNode);
+                                break;
                             }
-                            _objCharacter.Vehicles.Remove(objRemoveVehicle);
                         }
 
-                        // Remove any Gear attached to the Cyberware.
-                        foreach (Gear objGear in objCyberware.Gear)
-						{ _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager); }
-
-
-						// Open the Cyberware XML file and locate the selected piece.
-						XmlNode objXmlCyberware;
-						if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-						{
-							objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
-						}
-						else
-						{
-							objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
-						}
-
-						// Fix for legacy characters with old addqualities improvements. 
-						if (objXmlCyberware["addqualities"] != null)
-						{
-							RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
-						}
-						RefreshQualities(treQualities, cmsQuality);
-						// Remove any Improvements created by the piece of Cyberware.
-						_objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
-                        _objCharacter.Cyberware.Remove(objCyberware);
+                        // Remove the Weapon from the Character.
+                        foreach (Weapon objWeapon in _objCharacter.Weapons)
+                        {
+                            if (objWeapon.InternalId == objCyberware.WeaponID)
+                            {
+                                _objCharacter.Weapons.Remove(objWeapon);
+                                break;
+                            }
+                        }
                     }
-                    else
+
+                    // Remove the Cybervehicle created by the Cyberware if applicable.
+                    if (objCyberware.VehicleID != Guid.Empty.ToString())
                     {
-                        // Find and remove the selected piece of Gear.
-                        Gear objGear = _objFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objCyberware);
-                        if (objGear.Parent == null)
-                            objCyberware.Gear.Remove(objGear);
-                        else
-                            objGear.Parent.Children.Remove(objGear);
-                        _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                        // Remove the Vehicle from the TreeView.
+                        foreach (TreeNode objVehicleNode in treVehicles.Nodes[0].Nodes)
+                        {
+                            if (objVehicleNode.Tag.ToString() == objCyberware.VehicleID)
+                            {
+                                treVehicles.Nodes.Remove(objVehicleNode);
+                                break;
+                            }
+                        }
+
+                        // Remove the Vehicle from the Character.
+                        Vehicle objRemoveVehicle = new Vehicle(_objCharacter);
+                        foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                        {
+                            if (objVehicle.InternalId == objCyberware.VehicleID)
+                            {
+                                _objCharacter.Vehicles.Remove(objVehicle);
+                                break;
+                            }
+                        }
                     }
 
-                    // Remove the item from the TreeView.
-                    treCyberware.Nodes.Remove(treCyberware.SelectedNode);
+                    // Remove any Gear attached to the Cyberware.
+                    foreach (Gear objGear in objCyberware.Gear)
+					{ _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager); }
+
+
+					// Open the Cyberware XML file and locate the selected piece.
+					XmlNode objXmlCyberware;
+					if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+					{
+						objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
+					}
+					else
+					{
+						objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
+					}
+
+					// Fix for legacy characters with old addqualities improvements. 
+					if (objXmlCyberware["addqualities"] != null)
+					{
+						RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
+					}
+					RefreshQualities(treQualities, cmsQuality);
+					// Remove any Improvements created by the piece of Cyberware.
+					_objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
+                    _objCharacter.Cyberware.Remove(objCyberware);
 
                     // If the Parent is populated, remove the item from its Parent.
-                    if (objParent != null)
-                        objParent.Children.Remove(objCyberware);
+                    if (objCyberware.Parent != null)
+                        objCyberware.Parent.Children.Remove(objCyberware);
+                }
+                else
+                {
+                    // Find and remove the selected piece of Gear.
+                    Gear objGear = _objFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objCyberware);
+                    if (objGear == null)
+                        return;
+                    if (objGear.Parent == null)
+                        objCyberware.Gear.Remove(objGear);
+                    else
+                        objGear.Parent.Children.Remove(objGear);
+                    _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
                 }
 
-				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
-				RefreshSelectedCyberware();
-            }
-            catch
-            {
-                return;
-            }
+                // Remove the item from the TreeView.
+                treCyberware.Nodes.Remove(treCyberware.SelectedNode);
 
-            UpdateCharacterInfo();
+                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
+                RefreshSelectedCyberware();
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+                UpdateCharacterInfo();
+
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
         }
 
         private void cmdAddComplexForm_Click(object sender, EventArgs e)
@@ -5591,163 +5387,160 @@ namespace Chummer
         private void cmdDeleteWeapon_Click(object sender, EventArgs e)
         {
             // Delete the selected Weapon.
-            try
+            if (treWeapons.SelectedNode.Level == 0)
             {
-                if (treWeapons.SelectedNode.Level == 0)
+                if (treWeapons.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedWeapons"))
+                    return;
+
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteWeaponLocation")))
+                    return;
+
+                // Move all of the child nodes in the current parent to the Selected Weapons parent node.
+                foreach (TreeNode objNode in treWeapons.SelectedNode.Nodes)
                 {
-                    if (treWeapons.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedWeapons"))
-                        return;
+                    Weapon objWeapon = new Weapon(_objCharacter);
+                    objWeapon = _objFunctions.FindWeapon(objNode.Tag.ToString(), _objCharacter.Weapons);
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteWeaponLocation")))
-                        return;
-
-                    // Move all of the child nodes in the current parent to the Selected Weapons parent node.
-                    foreach (TreeNode objNode in treWeapons.SelectedNode.Nodes)
-                    {
-                        Weapon objWeapon = new Weapon(_objCharacter);
-                        objWeapon = _objFunctions.FindWeapon(objNode.Tag.ToString(), _objCharacter.Weapons);
-
-                        // Change the Location for the Weapon.
+                    // Change the Location for the Weapon.
+                    if (objWeapon != null)
                         objWeapon.Location = "";
-                    }
-
-                    List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                    foreach (TreeNode objNode in treWeapons.SelectedNode.Nodes)
-                        lstMoveNodes.Add(objNode);
-
-                    foreach (TreeNode objNode in lstMoveNodes)
-                    {
-                        treWeapons.SelectedNode.Nodes.Remove(objNode);
-                        treWeapons.Nodes[0].Nodes.Add(objNode);
-                    }
-
-                    // Remove the Weapon Location from the character, then remove the selected node.
-                    _objCharacter.WeaponLocations.Remove(treWeapons.SelectedNode.Text);
-                    treWeapons.SelectedNode.Remove();
                 }
 
-                if (treWeapons.SelectedNode.Level > 0)
+                List<TreeNode> lstMoveNodes = new List<TreeNode>();
+                foreach (TreeNode objNode in treWeapons.SelectedNode.Nodes)
+                    lstMoveNodes.Add(objNode);
+
+                foreach (TreeNode objNode in lstMoveNodes)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteWeapon")))
+                    treWeapons.SelectedNode.Nodes.Remove(objNode);
+                    treWeapons.Nodes[0].Nodes.Add(objNode);
+                }
+
+                // Remove the Weapon Location from the character, then remove the selected node.
+                _objCharacter.WeaponLocations.Remove(treWeapons.SelectedNode.Text);
+                treWeapons.SelectedNode.Remove();
+            }
+            else if (treWeapons.SelectedNode.Level > 0)
+            {
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteWeapon")))
+                    return;
+
+                if (treWeapons.SelectedNode.Level == 1)
+                {
+                    // Locate the Weapon that is selected in the tree.
+                    Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+
+                    if (objWeapon == null)
                         return;
-
-                    if (treWeapons.SelectedNode.Level == 1)
+                    // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
+                    if (objWeapon.Cyberware)
                     {
-                        // Locate the Weapon that is selected in the tree.
-                        Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberweapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberweapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    if (objWeapon.Category == "Gear")
+                    {
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveGearWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    if (objWeapon.Category.StartsWith("Quality"))
+                    {
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveQualityWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveQualityWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
 
-                        // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
-                        if (objWeapon.Cyberware)
+                    foreach (WeaponAccessory objDelAccessory in objWeapon.WeaponAccessories)
+                    {
+                        foreach (Gear objGear in objDelAccessory.Gear)
+                            _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                    }
+                    if (objWeapon.UnderbarrelWeapons.Count > 0)
+                    {
+                        foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberweapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberweapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        if (objWeapon.Category == "Gear")
-                        {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveGearWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        if (objWeapon.Category.StartsWith("Quality"))
-                        {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveQualityWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveQualityWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-
-                        foreach (WeaponAccessory objDelAccessory in objWeapon.WeaponAccessories)
-                        {
-                            foreach (Gear objGear in objDelAccessory.Gear)
-                                _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-                        }
-                        if (objWeapon.UnderbarrelWeapons.Count > 0)
-                        {
-                            foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                            foreach (WeaponAccessory objDelAccessory in objUnderbarrelWeapon.WeaponAccessories)
                             {
-                                foreach (WeaponAccessory objDelAccessory in objUnderbarrelWeapon.WeaponAccessories)
+                                foreach (Gear objGear in objDelAccessory.Gear)
+                                    _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                            }
+                        }
+                    }
+
+                    _objCharacter.Weapons.Remove(objWeapon);
+                    treWeapons.SelectedNode.Remove();
+                }
+                else
+                {
+                    // Locate the selected Underbarrel Weapon if applicable.
+                    foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
+                    {
+                        if (objCharacterWeapon.UnderbarrelWeapons.Count > 0)
+                        {
+                            foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.UnderbarrelWeapons)
+                            {
+                                if (objUnderbarrelWeapon.InternalId == treWeapons.SelectedNode.Tag.ToString())
                                 {
-                                    foreach (Gear objGear in objDelAccessory.Gear)
-                                        _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                                    objCharacterWeapon.UnderbarrelWeapons.Remove(objUnderbarrelWeapon);
+                                    treWeapons.SelectedNode.Remove();
+                                    return;
                                 }
                             }
                         }
+                    }
 
-                        _objCharacter.Weapons.Remove(objWeapon);
+                    Weapon objWeapon = new Weapon(_objCharacter);
+                    // Locate the Weapon that is selected in the tree.
+                    foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
+                    {
+                        if (objCharacterWeapon.InternalId == treWeapons.SelectedNode.Parent.Tag.ToString())
+                        {
+                            objWeapon = objCharacterWeapon;
+                            break;
+                        }
+                        if (objCharacterWeapon.UnderbarrelWeapons.Count > 0)
+                        {
+                            foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.UnderbarrelWeapons)
+                            {
+                                if (objUnderbarrelWeapon.InternalId == treWeapons.SelectedNode.Parent.Tag.ToString())
+                                {
+                                    objWeapon = objUnderbarrelWeapon;
+                                    goto EndWeaponListLoop;
+                                }
+                            }
+                        }
+                    }
+                EndWeaponListLoop:;
+
+                    // Locate the Accessory that is selected in the tree.
+                    WeaponAccessory objAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+                    if (objAccessory != null)
+                    {
+                        foreach (Gear objGear in objAccessory.Gear)
+                            _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                        objWeapon.WeaponAccessories.Remove(objAccessory);
                         treWeapons.SelectedNode.Remove();
                     }
                     else
                     {
-                        bool blnAccessory = false;
-                        // Locate the selected Underbarrel Weapon if applicable.
-                        foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
+                        // Find the selected Gear.
+                        Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
+                        if (objGear != null)
                         {
-                            if (objCharacterWeapon.UnderbarrelWeapons.Count > 0)
-                            {
-                                foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.UnderbarrelWeapons)
-                                {
-                                    if (objUnderbarrelWeapon.InternalId == treWeapons.SelectedNode.Tag.ToString())
-                                    {
-                                        objCharacterWeapon.UnderbarrelWeapons.Remove(objUnderbarrelWeapon);
-                                        treWeapons.SelectedNode.Remove();
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-
-                        Weapon objWeapon = new Weapon(_objCharacter);
-                        // Locate the Weapon that is selected in the tree.
-                        foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
-                        {
-                            if (objCharacterWeapon.InternalId == treWeapons.SelectedNode.Parent.Tag.ToString())
-                            {
-                                objWeapon = objCharacterWeapon;
-                                break;
-                            }
-                            if (objCharacterWeapon.UnderbarrelWeapons.Count > 0)
-                            {
-                                foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.UnderbarrelWeapons)
-                                {
-                                    if (objUnderbarrelWeapon.InternalId == treWeapons.SelectedNode.Parent.Tag.ToString())
-                                    {
-                                        objWeapon = objUnderbarrelWeapon;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        // Locate the Accessory that is selected in the tree.
-                        WeaponAccessory objAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                        if (objAccessory != null)
-                        {
-                            foreach (Gear objGear in objAccessory.Gear)
-                                _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-                            objWeapon.WeaponAccessories.Remove(objAccessory);
+                            _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                            if (objGear.Parent == null)
+                                objAccessory.Gear.Remove(objGear);
+                            else
+                                objGear.Parent.Children.Remove(objGear);
                             treWeapons.SelectedNode.Remove();
-                            blnAccessory = true;
-                        }
-
-                        if (!blnAccessory)
-                        {
-                                // Find the selected Gear.
-                                Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
-                                _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
-                                if (objGear.Parent == null)
-                                    objAccessory.Gear.Remove(objGear);
-                                else
-                                    objGear.Parent.Children.Remove(objGear);
-                                treWeapons.SelectedNode.Remove();
                         }
                     }
                 }
-                UpdateCharacterInfo();
-                RefreshSelectedWeapon();
+            }
+            UpdateCharacterInfo();
+            RefreshSelectedWeapon();
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
+            _blnIsDirty = true;
+            UpdateWindowTitle();
         }
 
         private void cmdAddLifestyle_Click(object sender, EventArgs e)
@@ -5782,27 +5575,22 @@ namespace Chummer
         private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
         {
             // Delete the selected Lifestyle.
-            try
+            if (treLifestyles.SelectedNode.Level > 0)
             {
-                if (treLifestyles.SelectedNode.Level > 0)
-                {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteLifestyle")))
-                        return;
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteLifestyle")))
+                    return;
 
-                    Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
-                    if (objLifestyle == null)
-                        return;
+                Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+                if (objLifestyle == null)
+                    return;
 
-                    _objCharacter.Lifestyles.Remove(objLifestyle);
-                    treLifestyles.SelectedNode.Remove();
-                }
+                _objCharacter.Lifestyles.Remove(objLifestyle);
+                treLifestyles.SelectedNode.Remove();
+
                 UpdateCharacterInfo();
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
-            }
-            catch
-            {
             }
         }
 
@@ -5819,47 +5607,48 @@ namespace Chummer
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
             // Delete the selected Gear.
-            try
+            if (treGear.SelectedNode.Level == 0)
             {
-                if (treGear.SelectedNode.Level == 0)
+                if (treGear.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedGear"))
+                    return;
+
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteGearLocation")))
+                    return;
+
+                // Move all of the child nodes in the current parent to the Selected Gear parent node.
+                foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
                 {
-                    if (treGear.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedGear"))
-                        return;
-
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteGearLocation")))
-                        return;
-
-                    // Move all of the child nodes in the current parent to the Selected Gear parent node.
-                    foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
-                    {
-                        Gear objGear = new Gear(_objCharacter);
-                        objGear = _objFunctions.FindGear(objNode.Tag.ToString(), _objCharacter.Gear);
-
-                        // Change the Location for the Gear.
-                        objGear.Location = "";
-                    }
-
-                    List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                    foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
-                        lstMoveNodes.Add(objNode);
-
-                    foreach (TreeNode objNode in lstMoveNodes)
-                    {
-                        treGear.SelectedNode.Nodes.Remove(objNode);
-                        treGear.Nodes[0].Nodes.Add(objNode);
-                    }
-
-                    // Remove the Location from the character, then remove the selected node.
-                    _objCharacter.Locations.Remove(treGear.SelectedNode.Text);
-                    treGear.SelectedNode.Remove();
-                }
-                if (treGear.SelectedNode.Level > 0)
-                {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteGear")))
-                        return;
-
                     Gear objGear = new Gear(_objCharacter);
-                    objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+                    objGear = _objFunctions.FindGear(objNode.Tag.ToString(), _objCharacter.Gear);
+
+                    // Change the Location for the Gear.
+                    if (objGear != null)
+                        objGear.Location = "";
+                }
+
+                List<TreeNode> lstMoveNodes = new List<TreeNode>();
+                foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
+                    lstMoveNodes.Add(objNode);
+
+                foreach (TreeNode objNode in lstMoveNodes)
+                {
+                    treGear.SelectedNode.Nodes.Remove(objNode);
+                    treGear.Nodes[0].Nodes.Add(objNode);
+                }
+
+                // Remove the Location from the character, then remove the selected node.
+                _objCharacter.Locations.Remove(treGear.SelectedNode.Text);
+                treGear.SelectedNode.Remove();
+            }
+            else if (treGear.SelectedNode.Level > 0)
+            {
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteGear")))
+                    return;
+
+                Gear objGear = new Gear(_objCharacter);
+                objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+                if (objGear != null)
+                {
                     Gear objParent = new Gear(_objCharacter);
                     objParent = _objFunctions.FindGear(treGear.SelectedNode.Parent.Tag.ToString(), _objCharacter.Gear);
 
@@ -5872,18 +5661,15 @@ namespace Chummer
                     if (objParent != null)
                         objParent.Children.Remove(objGear);
                 }
-                _objController.PopulateFocusList(treFoci);
-
-				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
-				UpdateCharacterInfo();
-                RefreshSelectedGear();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
             }
-            catch
-            {
-            }
+            _objController.PopulateFocusList(treFoci);
+
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
+			UpdateCharacterInfo();
+            RefreshSelectedGear();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
         }
 
         private void cmdAddVehicle_Click(object sender, EventArgs e)
@@ -5934,15 +5720,8 @@ namespace Chummer
         private void cmdDeleteVehicle_Click(object sender, EventArgs e)
         {
             // Delete the selected Vehicle.
-            try
-            {
-                if (treVehicles.SelectedNode.Level == 0)
-                    return;
-            }
-            catch
-            {
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
                 return;
-            }
 
             if (treVehicles.SelectedNode.Level != 2)
             {
@@ -6343,101 +6122,84 @@ namespace Chummer
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
-            try
+            if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
+                return;
+
+            LimitModifier objLimitModifier = _objFunctions.FindLimitModifier(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers);
+            if (objLimitModifier == null)
             {
-                if (treLimit.SelectedNode.Level == 0)
-                    return;
-
-                LimitModifier objLimit = _objFunctions.FindLimitModifier(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers);
-                if (objLimit == null)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.Instance.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteLimitModifier")))
-                    return;
-
-                string strLimit = treLimit.SelectedNode.Parent.Text;
-
-                // Delete the selected Martial Art.
-                LimitModifier objLimitModifier = _objFunctions.FindLimitModifier(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers);
-
-                _objCharacter.LimitModifiers.Remove(objLimitModifier);
-                treLimit.SelectedNode.Remove();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.Instance.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
-            catch
-            {
-            }
+
+            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteLimitModifier")))
+                return;
+
+            string strLimit = treLimit.SelectedNode.Parent.Text;
+
+            // Delete the selected Limit Modifier.
+            _objCharacter.LimitModifiers.Remove(objLimitModifier);
+            treLimit.SelectedNode.Remove();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
         }
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            try
+            if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
+                return;
+
+            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMartialArt")))
+                return;
+
+            if (treMartialArts.SelectedNode.Level == 1)
             {
-                if (treMartialArts.SelectedNode.Level == 0)
+                // Delete the selected Martial Art.
+                MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
+                if (objMartialArt == null)
+                    return;
+                if (objMartialArt.Name == "One Trick Pony")
+                {
+                    foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Name == "One Trick Pony"))
+                    {
+	                    _objCharacter.Qualities.Remove(objQuality);
+	                    foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text.ToString() == "One Trick Pony"))
+	                    {
+		                    nodQuality.Remove();
+	                    }
+	                    break;
+                    }
+                }
+				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArt, objMartialArt.InternalID);
+				// Remove the Improvements for any Advantages for the Martial Art that is being removed.
+				foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                {
+                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                }
+
+                _objCharacter.MartialArts.Remove(objMartialArt);
+                treMartialArts.SelectedNode.Remove();
+            }
+            else if (treMartialArts.SelectedNode.Level == 2)
+            {
+                // Find the selected Advantage object.
+                MartialArt objSelectedMartialArt = new MartialArt(_objCharacter);
+                MartialArtAdvantage objSelectedAdvantage = _objFunctions.FindMartialArtAdvantage(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts, out objSelectedMartialArt);
+                if (objSelectedAdvantage == null)
                     return;
 
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMartialArt")))
-                    return;
+                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objSelectedAdvantage.InternalId);
+                treMartialArts.SelectedNode.Remove();
 
-                if (treMartialArts.SelectedNode.Level == 1)
-                {
-                    // Delete the selected Martial Art.
-                    MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
-
-                    if (objMartialArt.Name == "One Trick Pony")
-                    {
-                        foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Name == "One Trick Pony"))
-                        {
-	                        _objCharacter.Qualities.Remove(objQuality);
-	                        foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text.ToString() == "One Trick Pony"))
-	                        {
-		                        nodQuality.Remove();
-	                        }
-	                        break;
-                        }
-                    }
-					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArt, objMartialArt.InternalID);
-					// Remove the Improvements for any Advantages for the Martial Art that is being removed.
-					foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
-                    {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
-                    }
-
-                    _objCharacter.MartialArts.Remove(objMartialArt);
-                    treMartialArts.SelectedNode.Remove();
-
-                    CalculateBP();
-                    UpdateCharacterInfo();
-
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
-                if (treMartialArts.SelectedNode.Level == 2)
-                {
-                    // Find the selected Advantage object.
-                    MartialArt objSelectedMartialArt = new MartialArt(_objCharacter);
-                    MartialArtAdvantage objSelectedAdvantage = _objFunctions.FindMartialArtAdvantage(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts, out objSelectedMartialArt);
-
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objSelectedAdvantage.InternalId);
-                    treMartialArts.SelectedNode.Remove();
-
-                    objSelectedMartialArt.Advantages.Remove(objSelectedAdvantage);
-
-                    CalculateBP();
-                    UpdateCharacterInfo();
-
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
+                objSelectedMartialArt.Advantages.Remove(objSelectedAdvantage);
             }
-            catch
-            {
-            }
+
+            CalculateBP();
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
         }
 
         private void cmdAddManeuver_Click(object sender, EventArgs e)
@@ -6673,245 +6435,232 @@ namespace Chummer
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            try
+            if (treMetamagic.SelectedNode.Level == 0)
             {
-                if (treMetamagic.SelectedNode.Level == 0)
+                // Locate the selected Grade.
+                InitiationGrade objGrade = _objFunctions.FindInitiationGrade(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.InitiationGrades);
+                if (objGrade == null)
+                    return;
+
+                // Stop if this isn't the highest grade
+
+                if (_objCharacter.MAGEnabled)
                 {
-                    // Locate the selected Grade.
-                    InitiationGrade objGrade = _objFunctions.FindInitiationGrade(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.InitiationGrades);
-
-                    // Stop if this isn't the highest grade
-
-                    if (_objCharacter.MAGEnabled)
+                    if (objGrade.Grade != _objCharacter.InitiateGrade)
                     {
-                        if (objGrade.Grade != _objCharacter.InitiateGrade)
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else if (_objCharacter.RESEnabled)
+                {
+                    if (objGrade.Grade != _objCharacter.SubmersionGrade)
+                    {
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                // We're deleting an entire grade
+                string strMessage = "";
+                if (_objCharacter.MAGEnabled)
+                    strMessage = LanguageManager.Instance.GetString("Message_DeleteInitiateGrade");
+                else if (_objCharacter.RESEnabled)
+                    strMessage = LanguageManager.Instance.GetString("Message_DeleteSubmersionGrade");
+                if (!_objFunctions.ConfirmDelete(strMessage))
+                    return;
+
+                // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+                // Arts
+                List<Art> lstRemoveArts = new List<Art>();
+                foreach (Art objArt in _objCharacter.Arts)
+                {
+                    if (objArt.Grade == objGrade.Grade)
+                    {
+                        lstRemoveArts.Add(objArt);
+                        foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            if (nodItem.Tag.ToString() == objArt.InternalId.ToString())
+                            {
+                                treMetamagic.SelectedNode.Nodes.Remove(nodItem);
+                                break;
+                            }
                         }
                     }
-                    else if (_objCharacter.RESEnabled)
+                }
+                foreach (Art objArt in lstRemoveArts)
+                    _objCharacter.Arts.Remove(objArt);
+
+                // Metamagics
+                List<Metamagic> lstRemoveMetamagics = new List<Metamagic>();
+                foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+                {
+                    if (objMetamagic.Grade == objGrade.Grade)
                     {
-                        if (objGrade.Grade != _objCharacter.SubmersionGrade)
+                        lstRemoveMetamagics.Add(objMetamagic);
+                        foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            if (nodItem.Tag.ToString() == objMetamagic.InternalId.ToString())
+                            {
+                                treMetamagic.SelectedNode.Nodes.Remove(nodItem);
+                                break;
+                            }
                         }
                     }
+                }
+                foreach (Metamagic objMetamagic in lstRemoveMetamagics)
+                {
+                    _objCharacter.Metamagics.Remove(objMetamagic);
+                    _objImprovementManager.RemoveImprovements(objMetamagic.SourceType, objMetamagic.InternalId);
+                }
 
-                    // We're deleting an entire grade
+                // Enhancements
+                List<Enhancement> lstRemoveEnhancements = new List<Enhancement>();
+                foreach (Enhancement objEnhancement in _objCharacter.Enhancements)
+                {
+                    if (objEnhancement.Grade == objGrade.Grade)
+                    {
+                        lstRemoveEnhancements.Add(objEnhancement);
+                        foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
+                        {
+                            if (nodItem.Tag.ToString() == objEnhancement.InternalId.ToString())
+                            {
+                                treMetamagic.SelectedNode.Nodes.Remove(nodItem);
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach (Enhancement objEnhancement in lstRemoveEnhancements)
+                    _objCharacter.Enhancements.Remove(objEnhancement);
+
+                // Spells
+                List<Spell> lstRemoveSpells = new List<Spell>();
+                foreach (Spell objSpell in _objCharacter.Spells)
+                {
+                    if (objSpell.Grade == objGrade.Grade)
+                    {
+                        lstRemoveSpells.Add(objSpell);
+                        foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
+                        {
+                            if (nodItem.Tag.ToString() == objSpell.InternalId.ToString())
+                            {
+                                treMetamagic.SelectedNode.Nodes.Remove(nodItem);
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach (Spell objSpell in lstRemoveSpells)
+                    _objCharacter.Spells.Remove(objSpell);
+
+                // Grade
+                _objCharacter.InitiationGrades.Remove(objGrade);
+
+                treMetamagic.SelectedNode.Remove();
+                if (_objCharacter.MAGEnabled)
+                {
+                    _objCharacter.InitiateGrade = objGrade.Grade - 1;
+                    // Remove any existing Initiation Improvements.
+                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Initiation, "Initiation");
+
+                    // Create the replacement Improvement.
+                    _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, "", 0, 1, 0, _objCharacter.InitiateGrade);
+                    _objImprovementManager.Commit();
+                }
+                else if (_objCharacter.RESEnabled)
+                {
+                    _objCharacter.SubmersionGrade = objGrade.Grade - 1;
+
+                    // Remove any existing Initiation Improvements.
+                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Submersion, "Submersion");
+
+                    // Create the replacement Improvement.
+                    _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.Submersion, "Submersion", Improvement.ImprovementType.Attribute, "", 0, 1, 0, _objCharacter.SubmersionGrade);
+                    _objImprovementManager.Commit();
+                }
+            }
+            else
+            {
+                // We're deleting a single bonus attached to a grade
+                string strItemId = treMetamagic.SelectedNode.Tag.ToString();
+                Art objArt = _objFunctions.FindArt(strItemId, _objCharacter.Arts);
+                if (objArt != null)
+                {
                     string strMessage = "";
-                    if (_objCharacter.MAGEnabled)
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteInitiateGrade");
-                    else if (_objCharacter.RESEnabled)
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteSubmersionGrade");
+                    strMessage = LanguageManager.Instance.GetString("Message_DeleteArt");
                     if (!_objFunctions.ConfirmDelete(strMessage))
                         return;
 
-                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-                    // Arts
-                    List<Art> lstRemoveArts = new List<Art>();
-                    foreach (Art objArt in _objCharacter.Arts)
-                    {
-                        if (objArt.Grade == objGrade.Grade)
-                        {
-                            lstRemoveArts.Add(objArt);
-                            foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
-                            {
-                                if (nodItem.Tag.ToString() == objArt.InternalId.ToString())
-                                {
-                                    treMetamagic.SelectedNode.Nodes.Remove(nodItem);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    foreach (Art objArt in lstRemoveArts)
-                        _objCharacter.Arts.Remove(objArt);
-
-                    // Metamagics
-                    List<Metamagic> lstRemoveMetamagics = new List<Metamagic>();
-                    foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-                    {
-                        if (objMetamagic.Grade == objGrade.Grade)
-                        {
-                            lstRemoveMetamagics.Add(objMetamagic);
-                            foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
-                            {
-                                if (nodItem.Tag.ToString() == objMetamagic.InternalId.ToString())
-                                {
-                                    treMetamagic.SelectedNode.Nodes.Remove(nodItem);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    foreach (Metamagic objMetamagic in lstRemoveMetamagics)
-                    {
-                        _objCharacter.Metamagics.Remove(objMetamagic);
-                        _objImprovementManager.RemoveImprovements(objMetamagic.SourceType, objMetamagic.InternalId);
-                    }
-
-                    // Enhancements
-                    List<Enhancement> lstRemoveEnhancements = new List<Enhancement>();
-                    foreach (Enhancement objEnhancement in _objCharacter.Enhancements)
-                    {
-                        if (objEnhancement.Grade == objGrade.Grade)
-                        {
-                            lstRemoveEnhancements.Add(objEnhancement);
-                            foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
-                            {
-                                if (nodItem.Tag.ToString() == objEnhancement.InternalId.ToString())
-                                {
-                                    treMetamagic.SelectedNode.Nodes.Remove(nodItem);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    foreach (Enhancement objEnhancement in lstRemoveEnhancements)
-                        _objCharacter.Enhancements.Remove(objEnhancement);
-
-                    // Spells
-                    List<Spell> lstRemoveSpells = new List<Spell>();
-                    foreach (Spell objSpell in _objCharacter.Spells)
-                    {
-                        if (objSpell.Grade == objGrade.Grade)
-                        {
-                            lstRemoveSpells.Add(objSpell);
-                            foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
-                            {
-                                if (nodItem.Tag.ToString() == objSpell.InternalId.ToString())
-                                {
-                                    treMetamagic.SelectedNode.Nodes.Remove(nodItem);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    foreach (Spell objSpell in lstRemoveSpells)
-                        _objCharacter.Spells.Remove(objSpell);
-
-                    // Grade
-                    _objCharacter.InitiationGrades.Remove(objGrade);
-
-                    treMetamagic.SelectedNode.Remove();
-                    if (_objCharacter.MAGEnabled)
-                    {
-                        _objCharacter.InitiateGrade = objGrade.Grade - 1;
-                        // Remove any existing Initiation Improvements.
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Initiation, "Initiation");
-
-                        // Create the replacement Improvement.
-                        _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, "", 0, 1, 0, _objCharacter.InitiateGrade);
-                        _objImprovementManager.Commit();
-                    }
-                    else if (_objCharacter.RESEnabled)
-                    {
-                        _objCharacter.SubmersionGrade = objGrade.Grade - 1;
-
-                        // Remove any existing Initiation Improvements.
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Submersion, "Submersion");
-
-                        // Create the replacement Improvement.
-                        _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.Submersion, "Submersion", Improvement.ImprovementType.Attribute, "", 0, 1, 0, _objCharacter.SubmersionGrade);
-                        _objImprovementManager.Commit();
-                    }
-
-
+                    _objCharacter.Arts.Remove(objArt);
+                    treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+                    return;
                 }
-                else
+
+                Metamagic objMetamagic = _objFunctions.FindMetamagic(strItemId, _objCharacter.Metamagics);
+                if (objMetamagic != null)
                 {
-                    // We're deleting a single bonus attached to a grade
-                    string strItemId = treMetamagic.SelectedNode.Tag.ToString();
-                    Art objArt = _objFunctions.FindArt(strItemId, _objCharacter.Arts);
-                    if (objArt != null)
-                    {
-                        string strMessage = "";
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteArt");
-                        if (!_objFunctions.ConfirmDelete(strMessage))
-                            return;
-
-                        _objCharacter.Arts.Remove(objArt);
-                        treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+                    string strMessage = "";
+                    if (_objCharacter.MAGEnabled)
+                        strMessage = LanguageManager.Instance.GetString("Message_DeleteMetamagic");
+                    else if (_objCharacter.RESEnabled)
+                        strMessage = LanguageManager.Instance.GetString("Message_DeleteEcho");
+                    if (!_objFunctions.ConfirmDelete(strMessage))
                         return;
-                    }
 
-                    Metamagic objMetamagic = _objFunctions.FindMetamagic(strItemId, _objCharacter.Metamagics);
-                    if (objMetamagic != null)
-                    {
-                        string strMessage = "";
-                        if (_objCharacter.MAGEnabled)
-                            strMessage = LanguageManager.Instance.GetString("Message_DeleteMetamagic");
-                        else if (_objCharacter.RESEnabled)
-                            strMessage = LanguageManager.Instance.GetString("Message_DeleteEcho");
-                        if (!_objFunctions.ConfirmDelete(strMessage))
-                            return;
+                    _objCharacter.Metamagics.Remove(objMetamagic);
+                    _objImprovementManager.RemoveImprovements(objMetamagic.SourceType, objMetamagic.InternalId);
+                    treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+                    return;
+                }
 
-                        _objCharacter.Metamagics.Remove(objMetamagic);
-                        _objImprovementManager.RemoveImprovements(objMetamagic.SourceType, objMetamagic.InternalId);
-                        treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+                Enhancement objEnhancement = _objFunctions.FindEnhancement(strItemId, _objCharacter);
+                if (objEnhancement != null)
+                {
+                    string strMessage = "";
+                    strMessage = LanguageManager.Instance.GetString("Message_DeleteEnhancement");
+                    if (!_objFunctions.ConfirmDelete(strMessage))
                         return;
-                    }
 
-                    Enhancement objEnhancement = _objFunctions.FindEnhancement(strItemId, _objCharacter);
-                    if (objMetamagic != null)
+                    _objCharacter.Enhancements.Remove(objEnhancement);
+                    foreach (Power objPower in _objCharacter.Powers)
                     {
-                        string strMessage = "";
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteEnhancement");
-                        if (!_objFunctions.ConfirmDelete(strMessage))
-                            return;
+                        if (objPower.Enhancements.Contains(objEnhancement))
+                            objPower.Enhancements.Remove(objEnhancement);
+                    }
+                    treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+                    return;
+                }
 
-                        try
+                Spell objSpell = _objFunctions.FindSpell(strItemId, _objCharacter.Spells);
+                if (objSpell != null)
+                {
+                    string strMessage = "";
+                    strMessage = LanguageManager.Instance.GetString("Message_DeleteSpell");
+                    if (!_objFunctions.ConfirmDelete(strMessage))
+                        return;
+
+                    _objCharacter.Spells.Remove(objSpell);
+                    treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+
+
+                    foreach (TreeNode objRootNode in treSpells.Nodes)
+                    {
+                        if (objRootNode.Text == ("Selected " + objSpell.Category))
                         {
-                            _objCharacter.Enhancements.Remove(objEnhancement);
-                        }
-                        catch { }
-                        foreach (Power objPower in _objCharacter.Powers)
-                        {
-                            try
+                            foreach (TreeNode objNode in objRootNode.Nodes)
                             {
-                                objPower.Enhancements.Remove(objEnhancement);
-                            }
-                            catch { }
-                        }
-                        treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
-                        return;
-                    }
-
-                    Spell objSpell = _objFunctions.FindSpell(strItemId, _objCharacter.Spells);
-                    if (objSpell != null)
-                    {
-                        string strMessage = "";
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteSpell");
-                        if (!_objFunctions.ConfirmDelete(strMessage))
-                            return;
-
-                        _objCharacter.Spells.Remove(objSpell);
-                        treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
-
-
-                        foreach (TreeNode objRootNode in treSpells.Nodes)
-                        {
-                            if (objRootNode.Text == ("Selected " + objSpell.Category))
-                            {
-                                foreach (TreeNode objNode in objRootNode.Nodes)
+                                if (objNode.Tag.ToString() == objSpell.InternalId.ToString())
                                 {
-                                    if (objNode.Tag.ToString() == objSpell.InternalId.ToString())
-                                    {
-                                        objNode.Remove();
-                                    }
+                                    objNode.Remove();
+                                    goto EndSpellLoop;
                                 }
                             }
                         }
-                        return;
                     }
-
-
+                EndSpellLoop:;
+                    return;
                 }
-            }
-            catch
-            {
             }
 
             CalculateBP();
@@ -6974,15 +6723,8 @@ namespace Chummer
 
         private void cmdDeleteCritterPower_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (treCritterPowers.SelectedNode.Level == 0)
-                    return;
-            }
-            catch
-            {
+            if (treCritterPowers.SelectedNode == null || treCritterPowers.SelectedNode.Level <= 0)
                 return;
-            }
 
             if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCritterPower")))
                 return;
@@ -7005,76 +6747,54 @@ namespace Chummer
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
             // Delete the selected Complex Form.
-            try
+            if (treComplexForms.SelectedNode.Level == 1)
             {
-                if (treComplexForms.SelectedNode.Level == 1)
-                {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteComplexForm")))
-                        return;
+                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteComplexForm")))
+                    return;
 
-                    // Locate the Program that is selected in the tree.
-                    ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
+                // Locate the Program that is selected in the tree.
+                ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
 
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
+                if (objProgram == null)
+                    return;
 
-                    _objCharacter.ComplexForms.Remove(objProgram);
-                    treComplexForms.SelectedNode.Remove();
-                }
+                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
 
-                int intComplexForms = 0;
-                foreach (ComplexForm tp in _objCharacter.ComplexForms)
-                {
-                    intComplexForms++;
-                }
-                lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+                _objCharacter.ComplexForms.Remove(objProgram);
+                treComplexForms.SelectedNode.Remove();
+
+                lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
 
                 UpdateCharacterInfo();
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
             }
-            catch
-            {
-            }
         }
 
         private void cmdDeleteAIProgram_Click(object sender, EventArgs e)
         {
             // Delete the selected AI Program.
-            try
+            if (treAIPrograms.SelectedNode.Level == 1)
             {
-                if (treAIPrograms.SelectedNode.Level == 1)
+                // Locate the Program that is selected in the tree.
+                AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+
+                if (objProgram != null && objProgram.CanDelete)
                 {
-                    // Locate the Program that is selected in the tree.
-                    AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteAIProgram")))
+                        return;
 
-                    if (objProgram.CanDelete)
-                    {
-                        if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteAIProgram")))
-                            return;
+                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
 
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+                    _objCharacter.AIPrograms.Remove(objProgram);
+                    treAIPrograms.SelectedNode.Remove();
 
-                        _objCharacter.AIPrograms.Remove(objProgram);
-                        treAIPrograms.SelectedNode.Remove();
-                /*
-                int intComplexForms = 0;
-                foreach (ComplexForm tp in _objCharacter.ComplexForms)
-                {
-                    intComplexForms++;
+                    UpdateCharacterInfo();
+
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
                 }
-                lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
-                */
-
-                        UpdateCharacterInfo();
-
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-            }
-            catch
-            {
             }
         }
 
@@ -7360,15 +7080,8 @@ namespace Chummer
         private void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            try
-            {
-                if (treQualities.SelectedNode.Level == 0)
-                    return;
-            }
-            catch
-            {
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
                 return;
-            }
 
             Quality objQuality = _objFunctions.FindQuality(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
 
@@ -7476,7 +7189,6 @@ namespace Chummer
                     break;
             }
 
-
             _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
 
             if (objQuality.Name == "One Trick Pony")
@@ -7552,40 +7264,39 @@ namespace Chummer
 
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // Select the Limit node if we're currently on a child.
-                if (treLimit.SelectedNode.Level > 1)
-                    treLimit.SelectedNode = treLimit.SelectedNode.Parent;
+            // Select the Limit node if we're currently on a child.
+            while (treLimit.SelectedNode != null && treLimit.SelectedNode.Level > 1)
+                treLimit.SelectedNode = treLimit.SelectedNode.Parent;
 
-                frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier();
-                frmPickLimitModifier.ShowDialog(this);
-
-                if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                    return;
-
-                // Create the new limit modifier.
-                TreeNode objNode = new TreeNode();
-                LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
-                string strLimit = treLimit.SelectedNode.Text;
-                string strCondition = frmPickLimitModifier.SelectedCondition;
-                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition, _objCharacter, objNode);
-                if (objLimitModifier.InternalId == Guid.Empty.ToString())
-                    return;
-
-                objNode.ContextMenuStrip = cmsLimitModifier;
-                _objCharacter.LimitModifiers.Add(objLimitModifier);
-
-                treLimit.SelectedNode.Nodes.Add(objNode);
-                treLimit.SelectedNode.Expand();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
+            if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectLimitModifier"), LanguageManager.Instance.GetString("MessageTitle_SelectLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier();
+            frmPickLimitModifier.ShowDialog(this);
+
+            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Create the new limit modifier.
+            TreeNode objNode = new TreeNode();
+            LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
+            string strLimit = treLimit.SelectedNode.Text;
+            string strCondition = frmPickLimitModifier.SelectedCondition;
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition, _objCharacter, objNode);
+            if (objLimitModifier.InternalId == Guid.Empty.ToString())
+                return;
+
+            objNode.ContextMenuStrip = cmsLimitModifier;
+            _objCharacter.LimitModifiers.Add(objLimitModifier);
+
+            treLimit.SelectedNode.Nodes.Add(objNode);
+            treLimit.SelectedNode.Expand();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
         }
 
         private void cmdAddLocation_Click(object sender, EventArgs e)
@@ -7896,19 +7607,11 @@ namespace Chummer
         {
             // Make sure a Vehicle is selected.
             Vehicle objVehicle = new Vehicle(_objCharacter);
-            try
+            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level == 1)
             {
-                if (treVehicles.SelectedNode.Level == 1)
-                {
-                    objVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                }
-                else
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleLocation"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
+                objVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             }
-            catch
+            else
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleLocation"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7979,15 +7682,7 @@ namespace Chummer
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            try
-            {
-                if (treCyberware.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectCyberware"), LanguageManager.Instance.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectCyberware"), LanguageManager.Instance.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8012,15 +7707,7 @@ namespace Chummer
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
             // Make sure a parent item is selected, then open the Select Accessory window.
-            try
-            {
-                if (treWeapons.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponAccessory"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponAccessory"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8028,6 +7715,11 @@ namespace Chummer
 
             // Locate the Weapon that is selected in the Tree.
             Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+
+            if (objWeapon == null)
+            {
+                return;
+            }
 
             // Accessories cannot be added to Cyberweapons.
             if (objWeapon.Cyberware)
@@ -8148,23 +7840,15 @@ namespace Chummer
 
         private void tsAddArmorMod_Click(object sender, EventArgs e)
         {
+            while (treArmor.SelectedNode != null && treArmor.SelectedNode.Level > 1)
+                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
+
             // Make sure a parent item is selected, then open the Select Accessory window.
-            try
-            {
-                if (treArmor.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            if (treArmor.SelectedNode.Level > 1)
-                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
 
             // Locate the Armor that is selected in the tree.
             Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
@@ -8230,15 +7914,7 @@ namespace Chummer
         private void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treGear.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8251,23 +7927,15 @@ namespace Chummer
 
         private void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
+            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
+
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            try
-            {
-                if (treVehicles.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            if (treVehicles.SelectedNode.Level > 1)
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
 
             Vehicle objSelectedVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
@@ -8393,19 +8061,10 @@ namespace Chummer
             VehicleMod objMod = new VehicleMod(_objCharacter);
 
             // Make sure that a Weapon Mount has been selected.
-            try
-            {
-                // Attempt to locate the selected VehicleMod.
-                Vehicle objFoundVehicle = new Vehicle(_objCharacter);
-                objMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
+            Vehicle objFoundVehicle = new Vehicle(_objCharacter);
+            objMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
 
-                if (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories == "")
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotAddWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (objMod == null || (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories == ""))
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotAddWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8444,13 +8103,9 @@ namespace Chummer
         private void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            bool blnWeaponFound = false;
             Vehicle objFoundVehicle = new Vehicle(_objCharacter);
             Weapon objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
-            if (objWeapon != null)
-                blnWeaponFound = true;
-
-            if (!blnWeaponFound)
+            if (objWeapon == null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleWeaponAccessories"), LanguageManager.Instance.GetString("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8528,13 +8183,9 @@ namespace Chummer
         private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            bool blnWeaponFound = false;
             Vehicle objFoundVehicle = new Vehicle(_objCharacter);
             Weapon objSelectedWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
-            if (objSelectedWeapon != null)
-                blnWeaponFound = true;
-
-            if (!blnWeaponFound)
+            if (objSelectedWeapon == null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleWeaponUnderbarrel"), LanguageManager.Instance.GetString("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8580,70 +8231,72 @@ namespace Chummer
 
         private void tsMartialArtsAddAdvantage_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // Select the Martial Arts node if we're currently on a child.
-                if (treMartialArts.SelectedNode.Level > 1)
-                    treMartialArts.SelectedNode = treMartialArts.SelectedNode.Parent;
+            // Select the Martial Arts node if we're currently on a child.
+            while (treMartialArts.SelectedNode != null && treMartialArts.SelectedNode.Level > 1)
+                treMartialArts.SelectedNode = treMartialArts.SelectedNode.Parent;
 
-                MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
-
-                frmSelectMartialArtAdvantage frmPickMartialArtAdvantage = new frmSelectMartialArtAdvantage(_objCharacter);
-                frmPickMartialArtAdvantage.MartialArt = objMartialArt.Name;
-                frmPickMartialArtAdvantage.ShowDialog(this);
-
-                if (frmPickMartialArtAdvantage.DialogResult == DialogResult.Cancel)
-                    return;
-
-                // Open the Martial Arts XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-
-                XmlNode objXmlAdvantage = objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + frmPickMartialArtAdvantage.SelectedAdvantage + "\"]");
-
-                // Create the Improvements for the Advantage if there are any.
-                TreeNode objNode = new TreeNode();
-                MartialArtAdvantage objAdvantage = new MartialArtAdvantage(_objCharacter);
-                objAdvantage.Create(objXmlAdvantage, _objCharacter, objNode);
-                if (objAdvantage.InternalId == Guid.Empty.ToString())
-                    return;
-
-                objMartialArt.Advantages.Add(objAdvantage);
-
-                objNode.ContextMenuStrip = cmsTechnique;
-                treMartialArts.SelectedNode.Nodes.Add(objNode);
-                treMartialArts.SelectedNode.Expand();
-
-                CalculateBP();
-                UpdateCharacterInfo();
-            }
-            catch
+            if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectMartialArtAdvantage"), LanguageManager.Instance.GetString("MessageTitle_SelectMartialArtAdvantage"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
+
+            if (objMartialArt == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectMartialArtAdvantage"), LanguageManager.Instance.GetString("MessageTitle_SelectMartialArtAdvantage"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            frmSelectMartialArtAdvantage frmPickMartialArtAdvantage = new frmSelectMartialArtAdvantage(_objCharacter);
+            frmPickMartialArtAdvantage.MartialArt = objMartialArt.Name;
+            frmPickMartialArtAdvantage.ShowDialog(this);
+
+            if (frmPickMartialArtAdvantage.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Open the Martial Arts XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+
+            XmlNode objXmlAdvantage = objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + frmPickMartialArtAdvantage.SelectedAdvantage + "\"]");
+
+            // Create the Improvements for the Advantage if there are any.
+            TreeNode objNode = new TreeNode();
+            MartialArtAdvantage objAdvantage = new MartialArtAdvantage(_objCharacter);
+            objAdvantage.Create(objXmlAdvantage, _objCharacter, objNode);
+            if (objAdvantage.InternalId == Guid.Empty.ToString())
+                return;
+
+            objMartialArt.Advantages.Add(objAdvantage);
+
+            objNode.ContextMenuStrip = cmsTechnique;
+            treMartialArts.SelectedNode.Nodes.Add(objNode);
+            treMartialArts.SelectedNode.Expand();
+
+            CalculateBP();
+            UpdateCharacterInfo();
         }
 
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
+            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
+
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treVehicles.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treVehicles.SelectedNode.Level > 1)
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-
             // Locate the selected Vehicle.
             Vehicle objSelectedVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            if (objSelectedVehicle == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
             //frmPickGear.ShowPositiveCapacityOnly = true;
@@ -8717,14 +8370,8 @@ namespace Chummer
 
             objGear.Quantity = frmPickGear.SelectedQty;
             objNode.Text = objGear.DisplayName;
-            try
-            {
-                nudVehicleRating.Increment = objGear.CostFor;
-                nudVehicleRating.Minimum = nudGearQty.Increment;
-            }
-            catch
-            {
-            }
+            nudVehicleRating.Increment = objGear.CostFor;
+            nudVehicleRating.Minimum = nudVehicleRating.Increment;
 
             // Change the cost of the Sensor itself to 0.
             //if (frmPickGear.SelectedCategory == "Sensors")
@@ -8782,29 +8429,18 @@ namespace Chummer
         private void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treVehicles.SelectedNode.Level < 2)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level < 2)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
-            bool blnFound = false;
             Vehicle objVehicle = new Vehicle(_objCharacter);
             Gear objSensor = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-            if (objSensor != null)
-                blnFound = true;
 
             // Make sure the Gear was found.
-            if (!blnFound)
+            if (objSensor == null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8898,16 +8534,10 @@ namespace Chummer
 
             objNode.Text = objGear.DisplayName;
 
-            try
-            {
-                _blnSkipRefresh = true;
-                nudVehicleGearQty.Increment = objGear.CostFor;
-                //nudVehicleGearQty.Minimum = objGear.CostFor;
-                _blnSkipRefresh = false;
-            }
-            catch
-            {
-            }
+            _blnSkipRefresh = true;
+            nudVehicleGearQty.Increment = objGear.CostFor;
+            //nudVehicleGearQty.Minimum = objGear.CostFor;
+            _blnSkipRefresh = false;
 
             objGear.Parent = objSensor;
             objNode.ContextMenuStrip = cmsVehicleGear;
@@ -8931,40 +8561,32 @@ namespace Chummer
 
         private void tsVehicleGearNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treVehicles.SelectedNode == null)
+                return;
+            Vehicle objVehicle = new Vehicle(_objCharacter);
+            Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+            if (objGear != null)
             {
-                bool blnFound = false;
-                Vehicle objVehicle = new Vehicle(_objCharacter);
-                Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-                if (objGear != null)
-                    blnFound = true;
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objGear.Notes;
+                string strOldValue = objGear.Notes;
+                frmItemNotes.ShowDialog(this);
 
-                if (blnFound)
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objGear.Notes;
-                    string strOldValue = objGear.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objGear.Notes = frmItemNotes.Notes;
+                    if (objGear.Notes != strOldValue)
                     {
-                        objGear.Notes = frmItemNotes.Notes;
-                        if (objGear.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objGear.Notes != string.Empty)
-                        treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objGear.Notes != string.Empty)
+                    treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
+                treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
             }
         }
 
@@ -8997,28 +8619,23 @@ namespace Chummer
 
         private void tsWeaponName_Click(object sender, EventArgs e)
         {
+            while (treWeapons.SelectedNode != null && treWeapons.SelectedNode.Level > 1)
+                treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
+
             // Make sure a parent item is selected, then open the Select Accessory window.
-            try
-            {
-                if (treWeapons.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponName"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponName"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treWeapons.SelectedNode.Level > 1)
-                treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
-
             // Get the information for the currently selected Weapon.
             Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
             if (objWeapon == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponName"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_WeaponName");
@@ -9037,15 +8654,7 @@ namespace Chummer
 
         private void tsGearName_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (treGear.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearName"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearName"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -9054,7 +8663,10 @@ namespace Chummer
             // Get the information for the currently selected Gear.
             Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
             if (objGear == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearName"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_GearName");
@@ -9073,23 +8685,15 @@ namespace Chummer
 
         private void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
         {
+            while (treWeapons.SelectedNode != null && treWeapons.SelectedNode.Level > 1)
+                treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
+
             // Make sure a parent item is selected, then open the Select Accessory window.
-            try
-            {
-                if (treWeapons.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponUnderbarrel"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponUnderbarrel"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            if (treWeapons.SelectedNode.Level > 1)
-                treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
 
             // Get the information for the currently selected Weapon.
             foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
@@ -9110,7 +8714,10 @@ namespace Chummer
             // Locate the Weapon that is selected in the tree.
             Weapon objSelectedWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
             if (objSelectedWeapon == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponUnderbarrel"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
 
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
             frmPickWeapon.ShowDialog(this);
@@ -9183,26 +8790,23 @@ namespace Chummer
 
         private void tsVehicleAddNexus_Click(object sender, EventArgs e)
         {
+            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
+
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treVehicles.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treVehicles.SelectedNode.Level > 1)
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-
             // Attempt to locate the selected Vehicle.
             Vehicle objSelectedVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            if (objSelectedVehicle == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             frmSelectNexus frmPickNexus = new frmSelectNexus(_objCharacter);
             frmPickNexus.ShowDialog(this);
@@ -9240,15 +8844,7 @@ namespace Chummer
         private void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treArmor.SelectedNode.Level != 1)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level != 1)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -9263,28 +8859,16 @@ namespace Chummer
         private void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treArmor.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the selected item is another piece of Gear.
-            bool blnFound = false;
             Armor objFoundArmor = new Armor(_objCharacter);
             Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor);
-            if (objGear != null)
-                blnFound = true;
-
-            if (!blnFound)
+            if (objGear == null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -9297,816 +8881,697 @@ namespace Chummer
 
         private void tsArmorNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treArmor.SelectedNode == null)
+                return;
+            Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+            if (objArmor != null)
             {
-                bool blnFound = false;
-                Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                if (objArmor != null)
-                    blnFound = true;
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objArmor.Notes;
+                string strOldValue = objArmor.Notes;
+                frmItemNotes.ShowDialog(this);
 
-                if (blnFound)
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objArmor.Notes;
-                    string strOldValue = objArmor.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objArmor.Notes = frmItemNotes.Notes;
+                    if (objArmor.Notes != strOldValue)
                     {
-                        objArmor.Notes = frmItemNotes.Notes;
-                        if (objArmor.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objArmor.Notes != string.Empty)
-                        treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmor.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objArmor.Notes != string.Empty)
+                    treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
+                treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmor.Notes, 100);
             }
         }
 
         private void tsArmorModNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treArmor.SelectedNode == null)
+                return;
+            ArmorMod objArmorMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+            if (objArmorMod != null)
             {
-                bool blnFound = false;
-                ArmorMod objArmorMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                if (objArmorMod != null)
-                    blnFound = true;
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objArmorMod.Notes;
+                string strOldValue = objArmorMod.Notes;
+                frmItemNotes.ShowDialog(this);
 
-                if (blnFound)
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objArmorMod.Notes;
-                    string strOldValue = objArmorMod.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objArmorMod.Notes = frmItemNotes.Notes;
+                    if (objArmorMod.Notes != strOldValue)
                     {
-                        objArmorMod.Notes = frmItemNotes.Notes;
-                        if (objArmorMod.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objArmorMod.Notes != string.Empty)
-                        treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmorMod.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objArmorMod.Notes != string.Empty)
+                    treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
+                treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmorMod.Notes, 100);
             }
         }
 
         private void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treLimit.SelectedNode == null)
+                return;
+            LimitModifier obLimitModifier = _objFunctions.FindLimitModifier(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers);
+            if (obLimitModifier != null)
             {
-                LimitModifier obLimitModifier = _objFunctions.FindLimitModifier(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers);
-                if (obLimitModifier != null)
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = obLimitModifier.Notes;
+                string strOldValue = obLimitModifier.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = obLimitModifier.Notes;
-                    string strOldValue = obLimitModifier.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    obLimitModifier.Notes = frmItemNotes.Notes;
+                    if (obLimitModifier.Notes != strOldValue)
                     {
-                        obLimitModifier.Notes = frmItemNotes.Notes;
-                        if (obLimitModifier.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (obLimitModifier.Notes != string.Empty)
-                        treLimit.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treLimit.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treLimit.SelectedNode.ToolTipText = CommonFunctions.WordWrap(obLimitModifier.Notes, 100);
                 }
+
+                if (obLimitModifier.Notes != string.Empty)
+                    treLimit.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
+                    treLimit.SelectedNode.ForeColor = SystemColors.WindowText;
+                treLimit.SelectedNode.ToolTipText = CommonFunctions.WordWrap(obLimitModifier.Notes, 100);
+            }
+            else
+            {
+                // the limit modifier has a source
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    // the limit modifier has a source
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.SourceName == treLimit.SelectedNode.Tag.ToString())
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.SourceName == treLimit.SelectedNode.Tag.ToString())
+                        frmNotes frmItemNotes = new frmNotes();
+                        frmItemNotes.Notes = objImprovement.Notes;
+                        string strOldValue = objImprovement.Notes;
+                        frmItemNotes.ShowDialog(this);
+
+                        if (frmItemNotes.DialogResult == DialogResult.OK)
                         {
-                            frmNotes frmItemNotes = new frmNotes();
-                            frmItemNotes.Notes = objImprovement.Notes;
-                            string strOldValue = objImprovement.Notes;
-                            frmItemNotes.ShowDialog(this);
-
-                            if (frmItemNotes.DialogResult == DialogResult.OK)
+                            objImprovement.Notes = frmItemNotes.Notes;
+                            if (objImprovement.Notes != strOldValue)
                             {
-                                objImprovement.Notes = frmItemNotes.Notes;
-                                if (objImprovement.Notes != strOldValue)
-                                {
-                                    _blnIsDirty = true;
-                                    UpdateWindowTitle();
-                                }
+                                _blnIsDirty = true;
+                                UpdateWindowTitle();
                             }
-
-                            if (objImprovement.Notes != string.Empty)
-                                treLimit.SelectedNode.ForeColor = Color.SaddleBrown;
-                            else
-                                treLimit.SelectedNode.ForeColor = SystemColors.WindowText;
-                            treLimit.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objImprovement.Notes, 100);
                         }
+
+                        if (objImprovement.Notes != string.Empty)
+                            treLimit.SelectedNode.ForeColor = Color.SaddleBrown;
+                        else
+                            treLimit.SelectedNode.ForeColor = SystemColors.WindowText;
+                        treLimit.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objImprovement.Notes, 100);
                     }
                 }
-            }
-            catch
-            {
             }
         }
 
         private void tsArmorGearNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Armor objFoundArmor = new Armor(_objCharacter);
-                Gear objArmorGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor);
-                if (objArmorGear != null)
-                    blnFound = true;
+            if (treArmor.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Armor objFoundArmor = new Armor(_objCharacter);
+            Gear objArmorGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor);
+            if (objArmorGear != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objArmorGear.Notes;
+                string strOldValue = objArmorGear.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objArmorGear.Notes;
-                    string strOldValue = objArmorGear.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objArmorGear.Notes = frmItemNotes.Notes;
+                    if (objArmorGear.Notes != strOldValue)
                     {
-                        objArmorGear.Notes = frmItemNotes.Notes;
-                        if (objArmorGear.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objArmorGear.Notes != string.Empty)
-                        treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmorGear.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objArmorGear.Notes != string.Empty)
+                    treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
+                treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmorGear.Notes, 100);
             }
         }
 
         private void tsWeaponNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                if (objWeapon != null)
-                    blnFound = true;
+            if (treWeapons.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+            if (objWeapon != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objWeapon.Notes;
+                string strOldValue = objWeapon.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objWeapon.Notes;
-                    string strOldValue = objWeapon.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objWeapon.Notes = frmItemNotes.Notes;
+                    if (objWeapon.Notes != strOldValue)
                     {
-                        objWeapon.Notes = frmItemNotes.Notes;
-                        if (objWeapon.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objWeapon.Notes != string.Empty)
-                        treWeapons.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                    {
-                        if (objWeapon.Cyberware || objWeapon.Category == "Gear")
-                            treWeapons.SelectedNode.ForeColor = SystemColors.GrayText;
-                        else
-                            treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
-                    }
-                    treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objWeapon.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objWeapon.Notes != string.Empty)
+                    treWeapons.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                {
+                    if (objWeapon.Cyberware || objWeapon.Category == "Gear")
+                        treWeapons.SelectedNode.ForeColor = SystemColors.GrayText;
+                    else
+                        treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
+                }
+                treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objWeapon.Notes, 100);
             }
         }
 
         private void tsWeaponAccessoryNotes_Click(object sender, EventArgs e)
         {
+            if (treWeapons.SelectedNode == null)
+                return;
             WeaponAccessory objAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
 
-            frmNotes frmItemNotes = new frmNotes();
-            frmItemNotes.Notes = objAccessory.Notes;
-            string strOldValue = objAccessory.Notes;
-            frmItemNotes.ShowDialog(this);
-
-            if (frmItemNotes.DialogResult == DialogResult.OK)
+            if (objAccessory != null)
             {
-                objAccessory.Notes = frmItemNotes.Notes;
-                if (objAccessory.Notes != strOldValue)
-                {
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
-            }
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objAccessory.Notes;
+                string strOldValue = objAccessory.Notes;
+                frmItemNotes.ShowDialog(this);
 
-            if (objAccessory.Notes != string.Empty)
-                treWeapons.SelectedNode.ForeColor = Color.SaddleBrown;
-            else
-                treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
-            treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAccessory.Notes, 100);
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    objAccessory.Notes = frmItemNotes.Notes;
+                    if (objAccessory.Notes != strOldValue)
+                    {
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
+
+                if (objAccessory.Notes != string.Empty)
+                    treWeapons.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
+                treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAccessory.Notes, 100);
+            }
         }
 
         private void tsCyberwareNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treCyberware.SelectedNode == null)
+                return;
+            Cyberware objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
+            if (objCyberware != null)
             {
-                bool blnFound = false;
-                Cyberware objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
-                if (objCyberware != null)
-                    blnFound = true;
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objCyberware.Notes;
+                string strOldValue = objCyberware.Notes;
+                frmItemNotes.ShowDialog(this);
 
-                if (blnFound)
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objCyberware.Notes;
-                    string strOldValue = objCyberware.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objCyberware.Notes = frmItemNotes.Notes;
+                    if (objCyberware.Notes != strOldValue)
                     {
-                        objCyberware.Notes = frmItemNotes.Notes;
-                        if (objCyberware.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objCyberware.Notes != string.Empty)
-                        treCyberware.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                    {
-                        if (objCyberware.Capacity == "[*]")
-                            treCyberware.SelectedNode.ForeColor = SystemColors.GrayText;
-                        else
-                            treCyberware.SelectedNode.ForeColor = SystemColors.WindowText;
-                    }
-                    treCyberware.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objCyberware.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objCyberware.Notes != string.Empty)
+                    treCyberware.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                {
+                    if (objCyberware.Capacity == "[*]")
+                        treCyberware.SelectedNode.ForeColor = SystemColors.GrayText;
+                    else
+                        treCyberware.SelectedNode.ForeColor = SystemColors.WindowText;
+                }
+                treCyberware.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objCyberware.Notes, 100);
             }
         }
 
         private void tsQualityNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Quality objQuality = _objFunctions.FindQuality(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
-                if (objQuality != null)
-                    blnFound = true;
+            if (treQualities.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Quality objQuality = _objFunctions.FindQuality(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
+            if (objQuality != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objQuality.Notes;
+                string strOldValue = objQuality.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objQuality.Notes;
-                    string strOldValue = objQuality.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objQuality.Notes = frmItemNotes.Notes;
+                    if (objQuality.Notes != strOldValue)
                     {
-                        objQuality.Notes = frmItemNotes.Notes;
-                        if (objQuality.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objQuality.Notes != string.Empty)
-                        treQualities.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                    {
-                        if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
-                            treQualities.SelectedNode.ForeColor = SystemColors.GrayText;
-						else if (!objQuality.Implemented)
-							treQualities.SelectedNode.ForeColor = Color.Red;
-						else
-						treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
-                    }
-                    treQualities.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objQuality.Notes != string.Empty)
+                    treQualities.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                {
+                    if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
+                        treQualities.SelectedNode.ForeColor = SystemColors.GrayText;
+					else if (!objQuality.Implemented)
+						treQualities.SelectedNode.ForeColor = Color.Red;
+					else
+					treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
+                }
+                treQualities.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
             }
         }
 
         private void tsMartialArtsNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
-                if (objMartialArt != null)
-                    blnFound = true;
+            if (treMartialArts.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            MartialArt objMartialArt = _objFunctions.FindMartialArt(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts);
+            if (objMartialArt != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objMartialArt.Notes;
+                string strOldValue = objMartialArt.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objMartialArt.Notes;
-                    string strOldValue = objMartialArt.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objMartialArt.Notes = frmItemNotes.Notes;
+                    if (objMartialArt.Notes != strOldValue)
                     {
-                        objMartialArt.Notes = frmItemNotes.Notes;
-                        if (objMartialArt.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objMartialArt.Notes != string.Empty)
-                        treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMartialArt.Notes, 100);
-                    return;
                 }
-            }
-            catch
-            {
+
+                if (objMartialArt.Notes != string.Empty)
+                    treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMartialArt.Notes, 100);
+                return;
             }
         }
 
         private void tsMartialArtManeuverNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                MartialArtManeuver objMartialArtManeuver = _objFunctions.FindMartialArtManeuver(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArtManeuvers);
-                if (objMartialArtManeuver != null)
-                    blnFound = true;
+            if (treMartialArts.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            MartialArtManeuver objMartialArtManeuver = _objFunctions.FindMartialArtManeuver(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArtManeuvers);
+            if (objMartialArtManeuver != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objMartialArtManeuver.Notes;
+                string strOldValue = objMartialArtManeuver.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objMartialArtManeuver.Notes;
-                    string strOldValue = objMartialArtManeuver.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objMartialArtManeuver.Notes = frmItemNotes.Notes;
+                    if (objMartialArtManeuver.Notes != strOldValue)
                     {
-                        objMartialArtManeuver.Notes = frmItemNotes.Notes;
-                        if (objMartialArtManeuver.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objMartialArtManeuver.Notes != string.Empty)
-                        treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMartialArtManeuver.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objMartialArtManeuver.Notes != string.Empty)
+                    treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMartialArtManeuver.Notes, 100);
             }
         }
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Spell objSpell = _objFunctions.FindSpell(treSpells.SelectedNode.Tag.ToString(), _objCharacter.Spells);
-                if (objSpell != null)
-                    blnFound = true;
+            if (treSpells.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Spell objSpell = _objFunctions.FindSpell(treSpells.SelectedNode.Tag.ToString(), _objCharacter.Spells);
+            if (objSpell != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objSpell.Notes;
+                string strOldValue = objSpell.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objSpell.Notes;
-                    string strOldValue = objSpell.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objSpell.Notes = frmItemNotes.Notes;
+                    if (objSpell.Notes != strOldValue)
                     {
-                        objSpell.Notes = frmItemNotes.Notes;
-                        if (objSpell.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objSpell.Notes != string.Empty)
-                        treSpells.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treSpells.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treSpells.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objSpell.Notes != string.Empty)
+                    treSpells.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treSpells.SelectedNode.ForeColor = SystemColors.WindowText;
+                treSpells.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
             }
         }
 
         private void tsComplexFormNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                ComplexForm objComplexForm = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
-                if (objComplexForm != null)
-                    blnFound = true;
+            if (treComplexForms.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            ComplexForm objComplexForm = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
+            if (objComplexForm != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objComplexForm.Notes;
+                string strOldValue = objComplexForm.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objComplexForm.Notes;
-                    string strOldValue = objComplexForm.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objComplexForm.Notes = frmItemNotes.Notes;
+                    if (objComplexForm.Notes != strOldValue)
                     {
-                        objComplexForm.Notes = frmItemNotes.Notes;
-                        if (objComplexForm.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objComplexForm.Notes != string.Empty)
-                        treComplexForms.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treComplexForms.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treComplexForms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objComplexForm.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objComplexForm.Notes != string.Empty)
+                    treComplexForms.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treComplexForms.SelectedNode.ForeColor = SystemColors.WindowText;
+                treComplexForms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objComplexForm.Notes, 100);
             }
         }
 
         private void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                AIProgram objAIProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
-                if (objAIProgram != null)
-                    blnFound = true;
+            if (treComplexForms.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            AIProgram objAIProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+            if (objAIProgram != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objAIProgram.Notes;
+                string strOldValue = objAIProgram.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objAIProgram.Notes;
-                    string strOldValue = objAIProgram.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objAIProgram.Notes = frmItemNotes.Notes;
+                    if (objAIProgram.Notes != strOldValue)
                     {
-                        objAIProgram.Notes = frmItemNotes.Notes;
-                        if (objAIProgram.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objAIProgram.Notes != string.Empty)
-                        treAIPrograms.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else if (!objAIProgram.CanDelete)
-                        treAIPrograms.SelectedNode.ForeColor = SystemColors.GrayText;
-                    else
-                        treAIPrograms.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treAIPrograms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objAIProgram.Notes != string.Empty)
+                    treAIPrograms.SelectedNode.ForeColor = Color.SaddleBrown;
+                else if (!objAIProgram.CanDelete)
+                    treAIPrograms.SelectedNode.ForeColor = SystemColors.GrayText;
+                else
+                    treAIPrograms.SelectedNode.ForeColor = SystemColors.WindowText;
+                treAIPrograms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
             }
         }
 
         private void tsCritterPowersNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                CritterPower objCritterPower = _objFunctions.FindCritterPower(treCritterPowers.SelectedNode.Tag.ToString(), _objCharacter.CritterPowers);
-                if (objCritterPower != null)
-                    blnFound = true;
+            if (treCritterPowers.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            CritterPower objCritterPower = _objFunctions.FindCritterPower(treCritterPowers.SelectedNode.Tag.ToString(), _objCharacter.CritterPowers);
+            if (objCritterPower != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objCritterPower.Notes;
+                string strOldValue = objCritterPower.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objCritterPower.Notes;
-                    string strOldValue = objCritterPower.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objCritterPower.Notes = frmItemNotes.Notes;
+                    if (objCritterPower.Notes != strOldValue)
                     {
-                        objCritterPower.Notes = frmItemNotes.Notes;
-                        if (objCritterPower.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objCritterPower.Notes != string.Empty)
-                        treCritterPowers.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treCritterPowers.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treCritterPowers.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objCritterPower.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objCritterPower.Notes != string.Empty)
+                    treCritterPowers.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treCritterPowers.SelectedNode.ForeColor = SystemColors.WindowText;
+                treCritterPowers.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objCritterPower.Notes, 100);
             }
         }
 
         private void tsMetamagicNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Metamagic objMetamagic = _objFunctions.FindMetamagic(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Metamagics);
-                if (objMetamagic != null)
-                    blnFound = true;
+            if (treMetamagic.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Metamagic objMetamagic = _objFunctions.FindMetamagic(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Metamagics);
+            if (objMetamagic != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objMetamagic.Notes;
+                string strOldValue = objMetamagic.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objMetamagic.Notes;
-                    string strOldValue = objMetamagic.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objMetamagic.Notes = frmItemNotes.Notes;
+                    if (objMetamagic.Notes != strOldValue)
                     {
-                        objMetamagic.Notes = frmItemNotes.Notes;
-                        if (objMetamagic.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objMetamagic.Notes != string.Empty)
-                        treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objMetamagic.Notes != string.Empty)
+                    treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
             }
         }
 
         private void tsGearNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-                if (objGear != null)
-                    blnFound = true;
+            if (treGear.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+            if (objGear != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objGear.Notes;
+                string strOldValue = objGear.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objGear.Notes;
-                    string strOldValue = objGear.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objGear.Notes = frmItemNotes.Notes;
+                    if (objGear.Notes != strOldValue)
                     {
-                        objGear.Notes = frmItemNotes.Notes;
-                        if (objGear.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objGear.Notes != string.Empty)
-                        treGear.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treGear.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treGear.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objGear.Notes != string.Empty)
+                    treGear.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treGear.SelectedNode.ForeColor = SystemColors.WindowText;
+                treGear.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
             }
         }
 
         private void tsGearPluginNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-                if (objGear != null)
-                    blnFound = true;
+            if (treGear.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+            if (objGear != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objGear.Notes;
+                string strOldValue = objGear.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objGear.Notes;
-                    string strOldValue = objGear.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objGear.Notes = frmItemNotes.Notes;
+                    if (objGear.Notes != strOldValue)
                     {
-                        objGear.Notes = frmItemNotes.Notes;
-                        if (objGear.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objGear.Notes != string.Empty)
-                        treGear.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treGear.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treGear.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objGear.Notes != string.Empty)
+                    treGear.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treGear.SelectedNode.ForeColor = SystemColors.WindowText;
+                treGear.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
             }
         }
 
         private void tsVehicleNotes_Click(object sender, EventArgs e)
         {
+            if (treVehicles.SelectedNode == null)
+                return;
             Vehicle objVehicle = new Vehicle(_objCharacter);
             VehicleMod objMod = new VehicleMod(_objCharacter);
             bool blnFoundVehicle = false;
             bool blnFoundMod = false;
-            try
+
+            foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
             {
-                foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
+                if (objCharacterVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
                 {
-                    if (objCharacterVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
+                    objVehicle = objCharacterVehicle;
+                    blnFoundVehicle = true;
+                    break;
+                }
+                foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
+                {
+                    if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
                     {
-                        objVehicle = objCharacterVehicle;
-                        blnFoundVehicle = true;
+                        objMod = objVehicleMod;
+                        blnFoundMod = true;
                         break;
                     }
-                    foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
-                    {
-                        if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                        {
-                            objMod = objVehicleMod;
-                            blnFoundMod = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (blnFoundVehicle)
-                {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objVehicle.Notes;
-                    string strOldValue = objVehicle.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
-                    {
-                        objVehicle.Notes = frmItemNotes.Notes;
-                        if (objVehicle.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
-                    }
-
-                    if (objVehicle.Notes != string.Empty)
-                        treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objVehicle.Notes, 100);
-                }
-                if (blnFoundMod)
-                {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objMod.Notes;
-                    string strOldValue = objMod.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
-                    {
-                        objMod.Notes = frmItemNotes.Notes;
-                        if (objMod.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
-                    }
-
-                    if (objMod.Notes != string.Empty)
-                        treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                    {
-                        if (objMod.IncludedInVehicle)
-                            treVehicles.SelectedNode.ForeColor = SystemColors.GrayText;
-                        else
-                            treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    }
-                    treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMod.Notes, 100);
                 }
             }
-            catch
+
+            if (blnFoundVehicle)
             {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objVehicle.Notes;
+                string strOldValue = objVehicle.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    objVehicle.Notes = frmItemNotes.Notes;
+                    if (objVehicle.Notes != strOldValue)
+                    {
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
+
+                if (objVehicle.Notes != string.Empty)
+                    treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
+                treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objVehicle.Notes, 100);
+            }
+            if (blnFoundMod)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objMod.Notes;
+                string strOldValue = objMod.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    objMod.Notes = frmItemNotes.Notes;
+                    if (objMod.Notes != strOldValue)
+                    {
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
+
+                if (objMod.Notes != string.Empty)
+                    treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                {
+                    if (objMod.IncludedInVehicle)
+                        treVehicles.SelectedNode.ForeColor = SystemColors.GrayText;
+                    else
+                        treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
+                }
+                treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMod.Notes, 100);
             }
         }
 
         private void tsLifestyleNotes_Click(object sender, EventArgs e)
         {
-            try
-            {
-                bool blnFound = false;
-                Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
-                if (objLifestyle != null)
-                    blnFound = true;
+            if (treLifestyles.SelectedNode == null)
+                return;
 
-                if (blnFound)
+            Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+            if (objLifestyle != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objLifestyle.Notes;
+                string strOldValue = objLifestyle.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objLifestyle.Notes;
-                    string strOldValue = objLifestyle.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objLifestyle.Notes = frmItemNotes.Notes;
+                    if (objLifestyle.Notes != strOldValue)
                     {
-                        objLifestyle.Notes = frmItemNotes.Notes;
-                        if (objLifestyle.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objLifestyle.Notes != string.Empty)
-                        treLifestyles.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treLifestyles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treLifestyles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objLifestyle.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objLifestyle.Notes != string.Empty)
+                    treLifestyles.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treLifestyles.SelectedNode.ForeColor = SystemColors.WindowText;
+                treLifestyles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objLifestyle.Notes, 100);
             }
         }
 
         private void tsVehicleWeaponNotes_Click(object sender, EventArgs e)
         {
-            bool blnFound = false;
+            if (treVehicles.SelectedNode == null)
+                return;
             Vehicle objFoundVehicle = new Vehicle(_objCharacter);
             Weapon objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
             if (objWeapon != null)
-                blnFound = true;
-
-            if (blnFound)
             {
                 frmNotes frmItemNotes = new frmNotes();
                 frmItemNotes.Notes = objWeapon.Notes;
@@ -10138,28 +9603,25 @@ namespace Chummer
 
         private void tsVehicleName_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected.
-            try
+            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
             {
-                if (treVehicles.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleName"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
+                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
             }
-            catch
+
+            // Make sure a parent item is selected.
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleName"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            while (treVehicles.SelectedNode.Level > 1)
-            {
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-            }
-
             // Get the information for the currently selected Vehicle.
             Vehicle objVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            if (objVehicle == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleName"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_VehicleName");
@@ -10176,6 +9638,11 @@ namespace Chummer
 
         private void tsVehicleAddCyberware_Click(object sender, EventArgs e)
         {
+            if (treVehicles.SelectedNode == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.Instance.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             Vehicle objVehicle = new Vehicle(_objCharacter);
             VehicleMod objMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
 
@@ -10267,26 +9734,23 @@ namespace Chummer
 
         private void tsArmorName_Click(object sender, EventArgs e)
         {
+            while (treArmor.SelectedNode != null && treArmor.SelectedNode.Level > 1)
+                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
+
             // Make sure a parent item is selected, then open the Select Accessory window.
-            try
-            {
-                if (treArmor.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmorName"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmorName"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treArmor.SelectedNode.Level > 1)
-                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
-
             // Get the information for the currently selected Armor.
             Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+            if (objArmor == null)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmorName"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             frmSelectText frmPickText = new frmSelectText();
             frmPickText.Description = LanguageManager.Instance.GetString("String_ArmorName");
@@ -10317,15 +9781,7 @@ namespace Chummer
 
         private void tsLifestyleName_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (treLifestyles.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectLifestyleName"), LanguageManager.Instance.GetString("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectLifestyleName"), LanguageManager.Instance.GetString("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -10533,15 +9989,7 @@ namespace Chummer
         private void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treCyberware.SelectedNode.Level == 0)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectCyberware"), LanguageManager.Instance.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectCyberware"), LanguageManager.Instance.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -10602,16 +10050,10 @@ namespace Chummer
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
                     objCommlink.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objCommlink.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objCommlink.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objCommlink.DisplayName;
 
                     objNewGear = objCommlink;
@@ -10620,16 +10062,10 @@ namespace Chummer
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
                     objGear.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objGear.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objGear.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objGear.DisplayName;
 
                     objNewGear = objGear;
@@ -10697,33 +10133,20 @@ namespace Chummer
 
         private void tsCyberwareGearAddAsPlugin_Click(object sender, EventArgs e)
         {
+            while (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 3)
+                treCyberware.SelectedNode = treCyberware.SelectedNode.Parent;
+
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treCyberware.SelectedNode.Level < 2)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level < 2)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treCyberware.SelectedNode.Level > 3)
-                treCyberware.SelectedNode = treCyberware.SelectedNode.Parent;
-
             // Locate the Vehicle Sensor Gear.
-            bool blnFound = false;
             Cyberware objFoundCyber = new Cyberware(_objCharacter);
             Gear objSensor = _objFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objFoundCyber);
-            if (objSensor != null)
-                blnFound = true;
-
-            // Make sure the Gear was found.
-            if (!blnFound)
+            if (objSensor == null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -10834,33 +10257,20 @@ namespace Chummer
 
         private void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
+            while (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 3)
+                treCyberware.SelectedNode = treCyberware.SelectedNode.Parent;
+
             // Make sure a parent items is selected, then open the Select Gear window.
-            try
-            {
-                if (treCyberware.SelectedNode.Level < 2)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            catch
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level < 2)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treCyberware.SelectedNode.Level > 3)
-                treCyberware.SelectedNode = treCyberware.SelectedNode.Parent;
-
             // Locate the Vehicle Sensor Gear.
-            bool blnFound = false;
             Cyberware objFoundCyber = new Cyberware(_objCharacter);
             Gear objSensor = _objFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objFoundCyber);
-            if (objSensor != null)
-                blnFound = true;
-
-            // Make sure the Gear was found.
-            if (!blnFound)
+            if (objSensor == null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -11014,16 +10424,10 @@ namespace Chummer
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
                     objCommlink.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objCommlink.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objCommlink.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objCommlink.DisplayName;
 
                     objNewGear = objCommlink;
@@ -11032,16 +10436,10 @@ namespace Chummer
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
                     objGear.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objGear.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objGear.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objGear.DisplayName;
 
                     objNewGear = objGear;
@@ -11475,16 +10873,10 @@ namespace Chummer
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
                     objCommlink.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objCommlink.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objCommlink.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objCommlink.DisplayName;
 
                     objNewGear = objCommlink;
@@ -11493,16 +10885,10 @@ namespace Chummer
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
                     objGear.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objGear.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objGear.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objGear.DisplayName;
 
                     objNewGear = objGear;
@@ -11564,15 +10950,8 @@ namespace Chummer
             // Locate the selected Quality.
             lblQualitySource.Text = "";
             tipTooltip.SetToolTip(lblQualitySource, null);
-            try
-            {
-                if (treQualities.SelectedNode.Level == 0)
-                    return;
-            }
-            catch
-            {
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
                 return;
-            }
 
             Quality objQuality = _objFunctions.FindQuality(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
 
@@ -11694,19 +11073,12 @@ namespace Chummer
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            try
-            {
-                if (treWeapons.SelectedNode.Level != 1 && treWeapons.SelectedNode.Level != 0)
-                    return;
-
-                // Do not allow the root element to be moved.
-                if (treWeapons.SelectedNode.Tag.ToString() == "Node_SelectedWeapons")
-                    return;
-            }
-            catch
-            {
+            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level > 1 || treWeapons.SelectedNode.Level < 0)
                 return;
-            }
+
+            // Do not allow the root element to be moved.
+            if (treWeapons.SelectedNode.Tag.ToString() == "Node_SelectedWeapons")
+                return;
             _intDragLevel = treWeapons.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
@@ -11722,11 +11094,11 @@ namespace Chummer
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
             int intNewIndex = 0;
-            try
+            if (nodDestination != null)
             {
                 intNewIndex = nodDestination.Index;
             }
-            catch
+            else
             {
                 intNewIndex = treWeapons.Nodes[treWeapons.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treWeapons.Nodes[treWeapons.Nodes.Count - 1];
@@ -11783,15 +11155,9 @@ namespace Chummer
 
         private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            try
-            {
-                if (treArmor.SelectedNode.Level != 1)
-                    return;
-            }
-            catch
-            {
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level != 1)
                 return;
-            }
+
             _intDragLevel = treArmor.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
@@ -11807,11 +11173,11 @@ namespace Chummer
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
             int intNewIndex = 0;
-            try
+            if (nodDestination != null)
             {
                 intNewIndex = nodDestination.Index;
             }
-            catch
+            else
             {
                 intNewIndex = treArmor.Nodes[treArmor.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
@@ -11850,15 +11216,8 @@ namespace Chummer
 
         private void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            try
-            {
-                if (treLifestyles.SelectedNode.Level == 0)
-                    return;
-            }
-            catch
-            {
+            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level == 0)
                 return;
-            }
 
             // Locate the selected Lifestyle.
             Lifestyle objLifestyle = new Lifestyle(_objCharacter);
@@ -11920,15 +11279,9 @@ namespace Chummer
 
         private void treLifestyles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            try
-            {
-                if (treLifestyles.SelectedNode.Level != 1)
-                    return;
-            }
-            catch
-            {
+            if (treLifestyles.SelectedNode == null ||  treLifestyles.SelectedNode.Level != 1)
                 return;
-            }
+
             _intDragLevel = treLifestyles.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
@@ -11944,11 +11297,11 @@ namespace Chummer
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
             int intNewIndex = 0;
-            try
+            if (nodDestination != null)
             {
                 intNewIndex = nodDestination.Index;
             }
-            catch
+            else
             {
                 intNewIndex = treLifestyles.Nodes[treLifestyles.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treLifestyles.Nodes[treLifestyles.Nodes.Count - 1];
@@ -12052,173 +11405,163 @@ namespace Chummer
 
         private void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_blnSkipRefresh || treGear.SelectedNode == null)
                 return;
 
             Gear objSelectedGear = new Gear(_objCharacter);
 
             // Attempt to locate the selected piece of Gear.
-            try
+            if (treGear.SelectedNode.Level == 1)
             {
-                if (treGear.SelectedNode.Level == 1)
-                    objSelectedGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+                objSelectedGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 
-                objSelectedGear.Quantity = Convert.ToInt32(nudGearQty.Value);
-                RefreshSelectedGear();
-                UpdateCharacterInfo();
+                if (objSelectedGear != null)
+                {
+                    objSelectedGear.Quantity = Convert.ToInt32(nudGearQty.Value);
+                    RefreshSelectedGear();
+                    UpdateCharacterInfo();
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
+                }
             }
         }
 
         private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_blnSkipRefresh || treArmor.SelectedNode == null)
                 return;
 
             // Locate the selected Armor or Armor Mod.
-            try
+            if (treArmor.SelectedNode.Level == 1)
             {
-                if (treArmor.SelectedNode.Level == 1)
+                Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+                if (objArmor != null)
                 {
-                    Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                    if (objArmor != null)
+                    objArmor.Equipped = chkArmorEquipped.Checked;
+                    if (chkArmorEquipped.Checked)
                     {
-                        objArmor.Equipped = chkArmorEquipped.Checked;
-                        if (chkArmorEquipped.Checked)
+                        // Add the Armor's Improevments to the character.
+                        if (objArmor.Bonus != null)
+                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, 1, objArmor.DisplayNameShort);
+                        // Add the Improvements from any Armor Mods in the Armor.
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            // Add the Armor's Improevments to the character.
-                            if (objArmor.Bonus != null)
-                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, 1, objArmor.DisplayNameShort);
-                            // Add the Improvements from any Armor Mods in the Armor.
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
-                            {
-                                if (objMod.Bonus != null && objMod.Equipped)
-                                    _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
-                            }
-                            // Add the Improvements from any Gear in the Armor.
-                            foreach (Gear objGear in objArmor.Gear)
-                            {
-                                if (objGear.Bonus != null && objGear.Equipped)
-                                    _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            }
-                        }
-                        else
-                        {
-                            // Remove any Improvements the Armor created.
-                            if (objArmor.Bonus != null)
-                                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
-                            // Remove any Improvements from any Armor Mods in the Armor.
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
-                            {
-                                if (objMod.Bonus != null)
-                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-                            }
-                            // Remove any Improvements from any Gear in the Armor.
-                            foreach (Gear objGear in objArmor.Gear)
-                            {
-                                if (objGear.Bonus != null)
-                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            }
-                        }
-                    }
-                }
-                else if (treArmor.SelectedNode.Level > 1)
-                {
-                    ArmorMod objMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                    if (objMod != null)
-                    {
-                        objMod.Equipped = chkArmorEquipped.Checked;
-                        if (chkArmorEquipped.Checked)
-                        {
-                            // Add the Mod's Improevments to the character.
-                            if (objMod.Bonus != null && objMod.Parent.Equipped)
+                            if (objMod.Bonus != null && objMod.Equipped)
                                 _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
                         }
-                        else
+                        // Add the Improvements from any Gear in the Armor.
+                        foreach (Gear objGear in objArmor.Gear)
                         {
-                            // Remove any Improvements the Mod created.
+                            if (objGear.Bonus != null && objGear.Equipped)
+                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                        }
+                    }
+                    else
+                    {
+                        // Remove any Improvements the Armor created.
+                        if (objArmor.Bonus != null)
+                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
+                        // Remove any Improvements from any Armor Mods in the Armor.
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        {
                             if (objMod.Bonus != null)
                                 _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                         }
-                    }
-
-                    Armor objFoundArmor = new Armor(_objCharacter);
-                    Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor);
-                    if (objGear != null)
-                    {
-                        objGear.Equipped = chkArmorEquipped.Checked;
-                        if (chkArmorEquipped.Checked)
+                        // Remove any Improvements from any Gear in the Armor.
+                        foreach (Gear objGear in objArmor.Gear)
                         {
-                            // Add the Gear's Improevments to the character.
-                            if (objGear.Bonus != null && objFoundArmor.Equipped)
-                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                        }
-                        else
-                        {
-                            // Remove any Improvements the Gear created.
                             if (objGear.Bonus != null)
                                 _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                         }
                     }
                 }
-                RefreshSelectedArmor();
-                UpdateCharacterInfo();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
+                else
+                    return;
             }
-            catch
+            else if (treArmor.SelectedNode.Level > 1)
             {
+                ArmorMod objMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+                if (objMod != null)
+                {
+                    objMod.Equipped = chkArmorEquipped.Checked;
+                    if (chkArmorEquipped.Checked)
+                    {
+                        // Add the Mod's Improevments to the character.
+                        if (objMod.Bonus != null && objMod.Parent.Equipped)
+                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
+                    }
+                    else
+                    {
+                        // Remove any Improvements the Mod created.
+                        if (objMod.Bonus != null)
+                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                    }
+                }
+
+                Armor objFoundArmor = new Armor(_objCharacter);
+                Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor);
+                if (objGear != null)
+                {
+                    objGear.Equipped = chkArmorEquipped.Checked;
+                    if (chkArmorEquipped.Checked)
+                    {
+                        // Add the Gear's Improevments to the character.
+                        if (objGear.Bonus != null && objFoundArmor.Equipped)
+                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                    }
+                    else
+                    {
+                        // Remove any Improvements the Gear created.
+                        if (objGear.Bonus != null)
+                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+                    }
+                }
+                else if (objMod == null)
+                    return;
             }
+            RefreshSelectedArmor();
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
         }
 
         private void chkWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
-            bool blnAccessory = false;
-
+            if (treWeapons.SelectedNode == null)
+                return;
             // Locate the selected Weapon Accessory or Modification.
             WeaponAccessory objAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
             if (objAccessory != null)
-                blnAccessory = true;
-
-            if (blnAccessory)
             {
                 objAccessory.Installed = chkWeaponAccessoryInstalled.Checked;
             }
             else
             {
-                    // Determine if this is an Underbarrel Weapon.
-                    bool blnUnderbarrel = false;
-                    Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                    if (objWeapon != null)
+                // Determine if this is an Underbarrel Weapon.
+                Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+                if (objWeapon != null)
+                {
+                    objWeapon.Installed = chkWeaponAccessoryInstalled.Checked;
+                }
+                else
+                {
+                    // Find the selected Gear.
+                    Gear objSelectedGear = new Gear(_objCharacter);
+
+                    objSelectedGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
+                    if (objSelectedGear != null)
                     {
-                        objWeapon.Installed = chkWeaponAccessoryInstalled.Checked;
-                        blnUnderbarrel = true;
+                        objSelectedGear.Equipped = chkWeaponAccessoryInstalled.Checked;
+
+                        _objController.ChangeGearEquippedStatus(objSelectedGear, chkWeaponAccessoryInstalled.Checked);
+
+                        UpdateCharacterInfo();
                     }
-
-                    if (!blnUnderbarrel)
-                    {
-                        // Find the selected Gear.
-                        Gear objSelectedGear = new Gear(_objCharacter);
-
-                        try
-                        {
-                            objSelectedGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
-                            objSelectedGear.Equipped = chkWeaponAccessoryInstalled.Checked;
-
-                            _objController.ChangeGearEquippedStatus(objSelectedGear, chkWeaponAccessoryInstalled.Checked);
-
-                            UpdateCharacterInfo();
-                        }
-                        catch
-                        {
-                        }
-                    }
+                    else
+                        return;
+                }
             }
 
             _blnIsDirty = true;
@@ -12227,48 +11570,38 @@ namespace Chummer
 
         private void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
         {
-            bool blnAccessory = false;
-
             // Locate the selected Weapon Accessory or Modification.
             WeaponAccessory objAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
             if (objAccessory != null)
-                blnAccessory = true;
-
-            if (blnAccessory)
             {
                 objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+                UpdateCharacterInfo();
             }
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-            UpdateCharacterInfo();
         }
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            try
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    if (treGear.SelectedNode.Level != 1 && treGear.SelectedNode.Level != 0)
-                        return;
-                    _objDragButton = MouseButtons.Left;
-                }
-                else
-                {
-                    if (treGear.SelectedNode.Level == 0)
-                        return;
-                    _objDragButton = MouseButtons.Right;
-                }
-
-                // Do not allow the root element to be moved.
-                if (treGear.SelectedNode.Tag.ToString() == "Node_SelectedGear")
-                    return;
-            }
-            catch
-            {
+            if (treGear.SelectedNode == null)
                 return;
+            if (e.Button == MouseButtons.Left)
+            {
+                if (treGear.SelectedNode.Level > 1 || treGear.SelectedNode.Level < 0)
+                    return;
+                _objDragButton = MouseButtons.Left;
             }
+            else
+            {
+                if (treGear.SelectedNode.Level == 0)
+                    return;
+                _objDragButton = MouseButtons.Right;
+            }
+
+            // Do not allow the root element to be moved.
+            if (treGear.SelectedNode.Tag.ToString() == "Node_SelectedGear")
+                return;
+
             _intDragLevel = treGear.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
@@ -12284,11 +11617,11 @@ namespace Chummer
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
             int intNewIndex = 0;
-            try
+            if (nodDestination != null)
             {
                 intNewIndex = nodDestination.Index;
             }
-            catch
+            else
             {
                 intNewIndex = treGear.Nodes[treGear.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treGear.Nodes[treGear.Nodes.Count - 1];
@@ -12337,15 +11670,15 @@ namespace Chummer
 
         private void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_blnSkipRefresh || treGear.SelectedNode == null)
                 return;
 
             Gear objSelectedGear = new Gear(_objCharacter);
 
             // Attempt to locate the selected piece of Gear.
-            try
+            objSelectedGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+            if (objSelectedGear != null)
             {
-                objSelectedGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
                 objSelectedGear.Equipped = chkGearEquipped.Checked;
 
                 _objController.ChangeGearEquippedStatus(objSelectedGear, chkGearEquipped.Checked);
@@ -12355,9 +11688,6 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
-            }
-            catch
-            {
             }
         }
 
@@ -12397,20 +11727,17 @@ namespace Chummer
 
         private void chkActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_blnSkipRefresh || treGear.SelectedNode == null)
                 return;
 
-            Gear objSelectedGear = new Gear(_objCharacter);
+            Commlink objSelectedGear = new Commlink(_objCharacter);
 
             // Attempt to locate the selected piece of Gear.
-            try
+            objSelectedGear = _objFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+
+            if (objSelectedGear != null && objSelectedGear.GetType() != typeof(Commlink))
             {
-                objSelectedGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-
-                if (objSelectedGear.GetType() != typeof(Commlink))
-                    return;
-
-                Commlink objCommlink = (Commlink)objSelectedGear;
+                Commlink objCommlink = objSelectedGear;
                 objCommlink.IsActive = chkActiveCommlink.Checked;
 
                 ChangeActiveCommlink(objCommlink);
@@ -12420,9 +11747,6 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
-            }
-            catch
-            {
             }
         }
 
@@ -12785,30 +12109,19 @@ namespace Chummer
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            try
+            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
             {
-                if (treVehicles.SelectedNode.Level != 1)
+                // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
+                Vehicle objVehicle = new Vehicle(_objCharacter);
+                Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+                if (objGear != null)
                 {
-                    // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
-                    Vehicle objVehicle = new Vehicle(_objCharacter);
-                    Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-                    if (objGear != null)
-                    {
-                        _objDragButton = e.Button;
-                        _blnDraggingGear = true;
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    _objDragButton = e.Button;
+                    _blnDraggingGear = true;
+                    _intDragLevel = treVehicles.SelectedNode.Level;
+                    DoDragDrop(e.Item, DragDropEffects.Move);
                 }
             }
-            catch
-            {
-                return;
-            }
-            _intDragLevel = treVehicles.SelectedNode.Level;
-            DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
         private void treVehicles_DragEnter(object sender, DragEventArgs e)
@@ -12822,11 +12135,11 @@ namespace Chummer
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
             int intNewIndex = 0;
-            try
+            if (nodDestination != null)
             {
                 intNewIndex = nodDestination.Index;
             }
-            catch
+            else
             {
                 intNewIndex = treVehicles.Nodes[treVehicles.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treVehicles.Nodes[treVehicles.Nodes.Count - 1];
@@ -13050,50 +12363,53 @@ namespace Chummer
                 // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
                 {
+                    string strTip = "";
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+                    objXmlDocument = new XmlDocument();
+                    nav = objXmlDocument.CreateNavigator();
+                    string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
+                    int intDrain = 0;
                     try
                     {
-                        string strTip = "";
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                        objXmlDocument = new XmlDocument();
-                        nav = objXmlDocument.CreateNavigator();
-                        string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
                         XPathExpression xprDrain = nav.Compile(strDrain);
-                        int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
-                        intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
-
-                        strTip = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), LanguageManager.Instance.GetString("String_AttributeMAGShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
-
-                        if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance) != 0)
-                            strTip += " + " + LanguageManager.Instance.GetString("Tip_Skill_DicePoolModifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance).ToString() + ")";
-                        //if (objSpell.Limited)
-                        //{
-                        //    intDrain += 2;
-                        //    strTip += " + " + LanguageManager.Instance.GetString("String_SpellLimited") + " (2)";
-                        //}
-                        lblDrainAttributesValue.Text = intDrain.ToString();
-                        tipTooltip.SetToolTip(lblDrainAttributesValue, strTip);
+                        object objEvaluateResult = nav.Evaluate(xprDrain);
+                        if (objEvaluateResult.GetType() == typeof(System.Double))
+                        {
+                            intDrain = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(objEvaluateResult.ToString())));
+                        }
                     }
-                    catch
-                    {
-                    }
+                    catch (System.Xml.XPath.XPathException) { }
+                    intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
+
+                    strTip = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), LanguageManager.Instance.GetString("String_AttributeMAGShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
+
+                    if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance) != 0)
+                        strTip += " + " + LanguageManager.Instance.GetString("Tip_Skill_DicePoolModifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance).ToString() + ")";
+                    //if (objSpell.Limited)
+                    //{
+                    //    intDrain += 2;
+                    //    strTip += " + " + LanguageManager.Instance.GetString("String_SpellLimited") + " (2)";
+                    //}
+                    lblDrainAttributesValue.Text = intDrain.ToString();
+                    tipTooltip.SetToolTip(lblDrainAttributesValue, strTip);
                 }
 
                 _blnSkipRefresh = false;
@@ -13245,7 +12561,7 @@ namespace Chummer
                                 {
                                     //Should never happen currently.
                                     objPower.FreePoints -= freePointsByThisFocus;
-                                    objPower.Rating -= freePointsByThisFocus * objPower.PointsPerLevel;
+                                    objPower.Rating -= Convert.ToInt32(freePointsByThisFocus * objPower.PointsPerLevel);
                                 }
                             }
                             else
@@ -13600,15 +12916,13 @@ namespace Chummer
         #region Additional Sprites and Complex Forms Tab Control Events
         private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            try
+            if (treComplexForms.SelectedNode != null && treComplexForms.SelectedNode.Level == 1)
             {
-                if (treComplexForms.SelectedNode.Level == 1)
-                {
-                    // Locate the Program that is selected in the tree.
-                    ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
+                // Locate the Program that is selected in the tree.
+                ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
 
-                    _blnSkipRefresh = true;
-                    _blnSkipRefresh = false;
+                if (objProgram != null)
+                {
                     string strDuration = objProgram.Duration;
                     string strTarget = objProgram.Target;
                     string strFV = objProgram.FV;
@@ -13623,32 +12937,26 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblComplexFormSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objProgram.Page);
                 }
             }
-            catch
-            {
-            }
         }
 
         private void nudComplexFormRating_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_blnSkipRefresh || treComplexForms.SelectedNode == null)
                 return;
 
-            try
+            if (treComplexForms.SelectedNode.Level == 1)
             {
-                if (treComplexForms.SelectedNode.Level == 1)
-                {
-                    // Locate the Program that is selected in the tree.
-                    ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
+                // Locate the Program that is selected in the tree.
+                ComplexForm objProgram = _objFunctions.FindComplexForm(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
 
+                if (objProgram != null)
+                {
                     treComplexForms.SelectedNode.Text = objProgram.DisplayName;
                     UpdateCharacterInfo();
 
                     _blnIsDirty = true;
                     UpdateWindowTitle();
                 }
-            }
-            catch
-            {
             }
         }
 
@@ -13664,13 +12972,13 @@ namespace Chummer
         #region Additional AI Advanced Programs Tab Control Events
         private void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            try
+            if (treAIPrograms.SelectedNode != null && treAIPrograms.SelectedNode.Level == 1)
             {
-                if (treAIPrograms.SelectedNode.Level == 1)
-                {
-                    // Locate the Program that is selected in the tree.
-                    AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
+                // Locate the Program that is selected in the tree.
+                AIProgram objProgram = _objFunctions.FindAIProgram(treAIPrograms.SelectedNode.Tag.ToString(), _objCharacter.AIPrograms);
 
+                if (objProgram != null)
+                {
                     string strRequires = objProgram.DisplayRequiresProgram;
 
                     lblAIProgramsRequires.Text = strRequires;
@@ -13680,9 +12988,6 @@ namespace Chummer
                     lblAIProgramsSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblAIProgramsSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objProgram.Page);
                 }
-            }
-            catch
-            {
             }
         }
 
@@ -13775,12 +13080,12 @@ namespace Chummer
             tipTooltip.SetToolTip(lblCritterPowerSource, null);
             lblCritterPowerPointCost.Visible = false;
             lblCritterPowerPointCostLabel.Visible = false;
-            try
+            if (treCritterPowers.SelectedNode != null && treCritterPowers.SelectedNode.Level > 0)
             {
-                if (treCritterPowers.SelectedNode.Level > 0)
-                {
-                    CritterPower objPower = _objFunctions.FindCritterPower(treCritterPowers.SelectedNode.Tag.ToString(), _objCharacter.CritterPowers);
+                CritterPower objPower = _objFunctions.FindCritterPower(treCritterPowers.SelectedNode.Tag.ToString(), _objCharacter.CritterPowers);
 
+                if (objPower != null)
+                {
                     lblCritterPowerName.Text = objPower.DisplayName;
                     lblCritterPowerCategory.Text = objPower.DisplayCategory;
                     lblCritterPowerType.Text = objPower.DisplayType;
@@ -13800,22 +13105,12 @@ namespace Chummer
                     }
                 }
             }
-            catch
-            {
-            }
         }
 
         private void chkCritterPowerCount_CheckedChanged(object sender, EventArgs e)
         {
-            try
-            {
-                if (treCritterPowers.SelectedNode.Level == 0)
-                    return;
-            }
-            catch
-            {
+            if (treCritterPowers.SelectedNode == null || treCritterPowers.SelectedNode.Level == 0)
                 return;
-            }
 
             // Locate the selected Critter Power.
             CritterPower objPower = _objFunctions.FindCritterPower(treCritterPowers.SelectedNode.Tag.ToString(), _objCharacter.CritterPowers);
@@ -15426,65 +14721,71 @@ namespace Chummer
                 // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
                 {
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    XPathNavigator nav = objXmlDocument.CreateNavigator();
+                    string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
+                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
+                    int intDrain = 0;
                     try
                     {
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
-                        string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
-                        strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
                         XPathExpression xprDrain = nav.Compile(strDrain);
-                        int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
-                        intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
-                        lblDrainAttributesValue.Text = intDrain.ToString();
+                        object objEvaluateResult = nav.Evaluate(xprDrain);
+                        if (objEvaluateResult.GetType() == typeof(System.Double))
+                        {
+                            intDrain = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(objEvaluateResult.ToString())));
+                        }
                     }
-                    catch
-                    {
-                    }
+                    catch (System.Xml.XPath.XPathException) { }
+                    intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
+                    lblDrainAttributesValue.Text = intDrain.ToString();
                 }
 
                 // Update the Fading CharacterAttribute Value.
                 if (_objCharacter.RESEnabled)
                 {
+                    lblFadingAttributes.Text = string.Format("{0} + {1}", LanguageManager.Instance.GetString("String_AttributeRESShort"), LanguageManager.Instance.GetString("String_AttributeWILShort"));
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    XPathNavigator nav = objXmlDocument.CreateNavigator();
+                    string strFading = lblFadingAttributes.Text.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
+                    strFading = strFading.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
+                    strFading = strFading.Replace("REA", _objCharacter.REA.TotalValue.ToString());
+                    strFading = strFading.Replace("STR", _objCharacter.STR.TotalValue.ToString());
+                    strFading = strFading.Replace("CHA", _objCharacter.CHA.TotalValue.ToString());
+                    strFading = strFading.Replace("INT", _objCharacter.INT.TotalValue.ToString());
+                    strFading = strFading.Replace("LOG", _objCharacter.LOG.TotalValue.ToString());
+                    strFading = strFading.Replace("WIL", _objCharacter.WIL.TotalValue.ToString());
+                    strFading = strFading.Replace("RES", _objCharacter.RES.TotalValue.ToString());
+                    int intFading = 0;
                     try
                     {
-                        lblFadingAttributes.Text = string.Format("{0} + {1}", LanguageManager.Instance.GetString("String_AttributeRESShort"), LanguageManager.Instance.GetString("String_AttributeWILShort"));
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
-                        string strFading = lblFadingAttributes.Text.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
-                        strFading = strFading.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
-                        strFading = strFading.Replace("REA", _objCharacter.REA.TotalValue.ToString());
-                        strFading = strFading.Replace("STR", _objCharacter.STR.TotalValue.ToString());
-                        strFading = strFading.Replace("CHA", _objCharacter.CHA.TotalValue.ToString());
-                        strFading = strFading.Replace("INT", _objCharacter.INT.TotalValue.ToString());
-                        strFading = strFading.Replace("LOG", _objCharacter.LOG.TotalValue.ToString());
-                        strFading = strFading.Replace("WIL", _objCharacter.WIL.TotalValue.ToString());
-                        strFading = strFading.Replace("RES", _objCharacter.RES.TotalValue.ToString());
                         XPathExpression xprFading = nav.Compile(strFading);
-                        int intFading = Convert.ToInt32(nav.Evaluate(xprFading).ToString());
-                        intFading += _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
-                        lblFadingAttributesValue.Text = intFading.ToString();
+                        object objEvaluateResult = nav.Evaluate(xprFading);
+                        if (objEvaluateResult.GetType() == typeof(System.Double))
+                        {
+                            intFading = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(objEvaluateResult.ToString())));
+                        }
+                    }
+                    catch (System.Xml.XPath.XPathException) { }
+                    intFading += _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
+                    lblFadingAttributesValue.Text = intFading.ToString();
 
-                        strTip = lblFadingAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")");
-                        strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeRESShort"), LanguageManager.Instance.GetString("String_AttributeRESShort") + " (" + _objCharacter.RES.TotalValue.ToString() + ")");
-                        tipTooltip.SetToolTip(lblFadingAttributesValue, strTip);
-                    }
-                    catch
-                    {
-                    }
+                    strTip = lblFadingAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")");
+                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeRESShort"), LanguageManager.Instance.GetString("String_AttributeRESShort") + " (" + _objCharacter.RES.TotalValue.ToString() + ")");
+                    tipTooltip.SetToolTip(lblFadingAttributesValue, strTip);
                 }
 
                 // Update Living Persona values.
@@ -15828,17 +15129,7 @@ namespace Chummer
             lblCyberDataProcessingLabel.Visible = false;
             lblCyberFirewallLabel.Visible = false;
 
-            bool blnClear = false;
-            try
-            {
-                if (treCyberware.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-            if (blnClear)
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
                 nudCyberwareRating.Enabled = false;
                 cboCyberwareGrade.Enabled = false;
@@ -15858,17 +15149,8 @@ namespace Chummer
             }
 
             // Locate the selected piece of Cyberware.
-            bool blnChild = false;
-            bool blnFound = false;
             Cyberware objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
             if (objCyberware != null)
-            {
-                blnFound = true;
-                if (objCyberware.Parent != null)
-                    blnChild = true;
-            }
-
-            if (blnFound)
             {
                 _blnSkipRefresh = true;
                 lblCyberwareName.Text = objCyberware.DisplayNameShort;
@@ -15901,7 +15183,7 @@ namespace Chummer
                 cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
 
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
-                if (!blnChild)
+                if (objCyberware.Parent == null)
                     if (!objCyberware.Suite)
                         cboCyberwareGrade.Enabled = true;
                     else
@@ -16215,17 +15497,7 @@ namespace Chummer
             lblWeaponDataProcessing.Text = "";
             lblWeaponFirewall.Text = "";
 
-            bool blnClear = false;
-            try
-            {
-                if (treWeapons.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-            if (blnClear)
+            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
             {
                 lblWeaponName.Text = "";
                 lblWeaponCategory.Text = "";
@@ -16320,15 +15592,8 @@ namespace Chummer
             else
             {
                 // See if this is an Underbarrel Weapon.
-                bool blnUnderbarrel = false;
                 Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                if (objWeapon != null)
-                {
-                    if (objWeapon.IsUnderbarrelWeapon)
-                        blnUnderbarrel = true;
-                }
-
-                if (blnUnderbarrel)
+                if (objWeapon != null && objWeapon.IsUnderbarrelWeapon)
                 {
                     _blnSkipRefresh = true;
                     lblWeaponName.Text = objWeapon.DisplayNameShort;
@@ -16368,17 +15633,11 @@ namespace Chummer
                 }
                 else
                 {
-                    bool blnAccessory = false;
                     Weapon objSelectedWeapon = new Weapon(_objCharacter);
                     WeaponAccessory objSelectedAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
                     if (objSelectedAccessory != null)
                     {
-                        blnAccessory = true;
                         objSelectedWeapon = objSelectedAccessory.Parent;
-                    }
-
-                    if (blnAccessory)
-                    {
                         lblWeaponName.Text = objSelectedAccessory.DisplayNameShort;
                         lblWeaponCategory.Text = LanguageManager.Instance.GetString("String_WeaponAccessory");
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail;
@@ -16438,43 +15697,43 @@ namespace Chummer
                     }
                     else
                     {
-						    // Find the selected Gear.
-                            _blnSkipRefresh = true;
-                            WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                            Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
-                            lblWeaponName.Text = objGear.DisplayNameShort;
-                            lblWeaponCategory.Text = objGear.DisplayCategory;
-                            lblWeaponAvail.Text = objGear.TotalAvail(true);
-                            lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
-                            lblWeaponConceal.Text = "";
-                            lblWeaponDamage.Text = "";
-                            lblWeaponRC.Text = "";
-                            lblWeaponAP.Text = "";
-                            lblWeaponAccuracy.Text = "";
-                            lblWeaponReach.Text = "";
-                            lblWeaponMode.Text = "";
-                            lblWeaponAmmo.Text = "";
-                            lblWeaponSlots.Text = "";
-							lblWeaponRating.Text = "";
-							string strBook = _objOptions.LanguageBookShort(objGear.Source);
-                            string strPage = objGear.Page;
-                            lblWeaponSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
-                            chkWeaponAccessoryInstalled.Enabled = true;
-                            chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
-                            chkIncludedInWeapon.Enabled = false;
-                            chkIncludedInWeapon.Checked = false;
-                            _blnSkipRefresh = false;
+						// Find the selected Gear.
+                        _blnSkipRefresh = true;
+                        WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                        Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
+                        lblWeaponName.Text = objGear.DisplayNameShort;
+                        lblWeaponCategory.Text = objGear.DisplayCategory;
+                        lblWeaponAvail.Text = objGear.TotalAvail(true);
+                        lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+                        lblWeaponConceal.Text = "";
+                        lblWeaponDamage.Text = "";
+                        lblWeaponRC.Text = "";
+                        lblWeaponAP.Text = "";
+                        lblWeaponAccuracy.Text = "";
+                        lblWeaponReach.Text = "";
+                        lblWeaponMode.Text = "";
+                        lblWeaponAmmo.Text = "";
+                        lblWeaponSlots.Text = "";
+						lblWeaponRating.Text = "";
+						string strBook = _objOptions.LanguageBookShort(objGear.Source);
+                        string strPage = objGear.Page;
+                        lblWeaponSource.Text = strBook + " " + strPage;
+                        tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                        chkWeaponAccessoryInstalled.Enabled = true;
+                        chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
+                        chkIncludedInWeapon.Enabled = false;
+                        chkIncludedInWeapon.Checked = false;
+                        _blnSkipRefresh = false;
 
-                            if (objGear.GetType() == typeof(Commlink))
-                            {
-                                Commlink objCommlink = (Commlink)objGear;
-                                lblWeaponDeviceRating.Text = objCommlink.DeviceRating.ToString();
-                                lblWeaponAttack.Text = objCommlink.Attack.ToString();
-                                lblWeaponSleaze.Text = objCommlink.Sleaze.ToString();
-                                lblWeaponDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                                lblWeaponFirewall.Text = objCommlink.Firewall.ToString();
-                            }
+                        if (objGear.GetType() == typeof(Commlink))
+                        {
+                            Commlink objCommlink = (Commlink)objGear;
+                            lblWeaponDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                            lblWeaponAttack.Text = objCommlink.Attack.ToString();
+                            lblWeaponSleaze.Text = objCommlink.Sleaze.ToString();
+                            lblWeaponDataProcessing.Text = objCommlink.DataProcessing.ToString();
+                            lblWeaponFirewall.Text = objCommlink.Firewall.ToString();
+                        }
                     }
 
                     // Show the Weapon Ranges.
@@ -16872,17 +16131,7 @@ namespace Chummer
         /// </summary>
         public void RefreshSelectedGear()
         {
-            bool blnClear = false;
-            try
-            {
-                if (treGear.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-            if (blnClear)
+            if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
                 _blnSkipRefresh = true;
                 nudGearRating.Minimum = 0;
@@ -16913,7 +16162,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    lblGearCost.Text = objGear.Cost;
+                    lblGearCost.Text = String.Format("{0:###,###,##0¥}", objGear.Cost);
                 }
                 lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objGear.Source);
@@ -17013,17 +16262,11 @@ namespace Chummer
                     _blnSkipRefresh = false;
                 }
 
-                try
-                {
-                    _blnSkipRefresh = true;
-                    //nudGearQty.Minimum = objGear.CostFor;
-                    nudGearQty.Increment = objGear.CostFor;
-                    nudGearQty.Value = objGear.Quantity;
-                    _blnSkipRefresh = false;
-                }
-                catch
-                {
-                }
+                _blnSkipRefresh = true;
+                //nudGearQty.Minimum = objGear.CostFor;
+                nudGearQty.Increment = objGear.CostFor;
+                nudGearQty.Value = objGear.Quantity;
+                _blnSkipRefresh = false;
 
                 if (treGear.SelectedNode.Level == 1)
                 {
@@ -17256,14 +16499,8 @@ namespace Chummer
                 intNode = 1;
 
             // Attempt to locate the selected piece of Cyberware.
-            try
-            {
-                if (treCyberware.SelectedNode.Level > 0)
-                    objSelectedCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
-            }
-            catch
-            {
-            }
+            if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
+                objSelectedCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
 
             frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter);
             double dblMultiplier = 1;
@@ -17325,28 +16562,22 @@ namespace Chummer
                 frmPickCyberware.TransgenicsBiowareCostMultiplier = dblMultiplier;
             }
 
-            try
+            if (objSelectedCyberware != null)
             {
-                if (treCyberware.SelectedNode.Level > 0)
+                frmPickCyberware.SetGrade = cboCyberwareGrade.SelectedValue.ToString();
+                frmPickCyberware.LockGrade();
+                // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
+                if (!objSelectedCyberware.Capacity.Contains('['))
                 {
-                    frmPickCyberware.SetGrade = cboCyberwareGrade.SelectedValue.ToString();
-                    frmPickCyberware.LockGrade();
-                    // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                    if (!objSelectedCyberware.Capacity.Contains('['))
-                    {
-                        frmPickCyberware.ShowOnlySubsystems = true;
-                        frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
-                        frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
-                    }
-                    if (objSelectedCyberware.Name.StartsWith("Modular Connector"))
-                    {
-                        frmPickCyberware.ShowOnlySubsystems = false;
-                        frmPickCyberware.ShowOnlyLimbs = true;
-                    }
+                    frmPickCyberware.ShowOnlySubsystems = true;
+                    frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
+                    frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
                 }
-            }
-            catch
-            {
+                if (objSelectedCyberware.Name.StartsWith("Modular Connector"))
+                {
+                    frmPickCyberware.ShowOnlySubsystems = false;
+                    frmPickCyberware.ShowOnlyLimbs = true;
+                }
             }
 
             if (objSource == Improvement.ImprovementSource.Bioware)
@@ -17399,23 +16630,14 @@ namespace Chummer
             if (frmPickCyberware.FreeCost)
                 objCyberware.Cost = "0";
 
-            try
+            if (objSelectedCyberware != null)
             {
-                if (treCyberware.SelectedNode.Level > 0)
-                {
-                    treCyberware.SelectedNode.Nodes.Add(objNode);
-                    treCyberware.SelectedNode.Expand();
-                    objSelectedCyberware.Children.Add(objCyberware);
-                    objCyberware.Parent = objSelectedCyberware;
-                }
-                else
-                {
-                    treCyberware.Nodes[intNode].Nodes.Add(objNode);
-                    treCyberware.Nodes[intNode].Expand();
-                    _objCharacter.Cyberware.Add(objCyberware);
-                }
+                treCyberware.SelectedNode.Nodes.Add(objNode);
+                treCyberware.SelectedNode.Expand();
+                objSelectedCyberware.Children.Add(objCyberware);
+                objCyberware.Parent = objSelectedCyberware;
             }
-            catch
+            else
             {
                 treCyberware.Nodes[intNode].Nodes.Add(objNode);
                 treCyberware.Nodes[intNode].Expand();
@@ -17485,33 +16707,28 @@ namespace Chummer
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier);
-            try
+            if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0)
             {
-                if (treGear.SelectedNode.Level > 0)
+                if (objXmlGear.InnerXml.Contains("<addoncategory>"))
                 {
-                    if (objXmlGear.InnerXml.Contains("<addoncategory>"))
-                    {
-                        string strCategories = "";
-                        foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
-                            strCategories += objXmlCategory.InnerText + ",";
-                        // Remove the trailing comma.
+                    string strCategories = "";
+                    foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
+                        strCategories += objXmlCategory.InnerText + ",";
+                    // Remove the trailing comma.
+                    if (strCategories.Length > 0)
                         strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                        frmPickGear.AllowedCategories = strCategories;
-                    }
-
-                    // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                    if (!objSelectedGear.Capacity.Contains('['))
-                        frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
-
-                    if (objSelectedGear.Category == "Commlinks" || objSelectedGear.Category == "Cyberdecks")
-                    {
-                        Commlink objCommlink = (Commlink)objSelectedGear;
-                        frmPickGear.CommlinkResponse = objCommlink.DeviceRating;
-                    }
+                    frmPickGear.AllowedCategories = strCategories;
                 }
-            }
-            catch
-            {
+
+                // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
+                if (!objSelectedGear.Capacity.Contains('['))
+                    frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+
+                if (objSelectedGear.Category == "Commlinks" || objSelectedGear.Category == "Cyberdecks")
+                {
+                    Commlink objCommlink = (Commlink)objSelectedGear;
+                    frmPickGear.CommlinkResponse = objCommlink.DeviceRating;
+                }
             }
 
             frmPickGear.ShowDialog(this);
@@ -17541,16 +16758,10 @@ namespace Chummer
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
                     objCommlink.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objCommlink.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objCommlink.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objCommlink.DisplayName;
 
                     // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
@@ -17563,16 +16774,10 @@ namespace Chummer
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
                     objGear.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        _blnSkipRefresh = true;
-                        nudGearQty.Increment = objGear.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                        _blnSkipRefresh = false;
-                    }
-                    catch
-                    {
-                    }
+                    _blnSkipRefresh = true;
+                    nudGearQty.Increment = objGear.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
+                    _blnSkipRefresh = false;
                     objNode.Text = objGear.DisplayName;
 
                     objNewGear = objGear;
@@ -17627,25 +16832,16 @@ namespace Chummer
             if (blnNullParent)
                 objNewGear.Parent = null;
 
-            try
+            if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0 && objSelectedGear != null)
             {
-                if (treGear.SelectedNode.Level > 0)
-                {
-                    objNode.ContextMenuStrip = cmsGear;
-                    treGear.SelectedNode.Nodes.Add(objNode);
-                    treGear.SelectedNode.Expand();
-                    objSelectedGear.Children.Add(objNewGear);
-                }
-                else
-                {
-                    objNode.ContextMenuStrip = cmsGear;
-                    treGear.Nodes[0].Nodes.Add(objNode);
-                    treGear.Nodes[0].Expand();
-                    _objCharacter.Gear.Add(objNewGear);
-                }
+                objNode.ContextMenuStrip = cmsGear;
+                treGear.SelectedNode.Nodes.Add(objNode);
+                treGear.SelectedNode.Expand();
+                objSelectedGear.Children.Add(objNewGear);
             }
-            catch
+            else
             {
+                objNode.ContextMenuStrip = cmsGear;
                 treGear.Nodes[0].Nodes.Add(objNode);
                 treGear.Nodes[0].Expand();
                 _objCharacter.Gear.Add(objNewGear);
@@ -17698,7 +16894,7 @@ namespace Chummer
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
             frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
-            try
+            if (treArmor.SelectedNode != null)
             {
                 if (treArmor.SelectedNode.Level > 1)
                 {
@@ -17708,7 +16904,8 @@ namespace Chummer
                         foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
                             strCategories += objXmlCategory.InnerText + ",";
                         // Remove the trailing comma.
-                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
+                        if (strCategories.Length > 0)
+                            strCategories = strCategories.Substring(0, strCategories.Length - 1);
                         frmPickGear.AllowedCategories = strCategories;
                     }
 
@@ -17734,15 +16931,12 @@ namespace Chummer
                         foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
                             strCategories += objXmlCategory.InnerText + ",";
                         // Remove the trailing comma.
-                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
+                        if (strCategories.Length > 0)
+                            strCategories = strCategories.Substring(0, strCategories.Length - 1);
                         frmPickGear.AllowedCategories = strCategories;
                     }
                 }
             }
-            catch
-            {
-            }
-
             frmPickGear.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
@@ -17770,28 +16964,16 @@ namespace Chummer
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
                     objCommlink.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        nudGearQty.Increment = objCommlink.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                    }
-                    catch
-                    {
-                    }
+                    nudGearQty.Increment = objCommlink.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
 
                     objNewGear = objCommlink;
                     break;
                 default:
                     objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, "", false, false, true, true, frmPickGear.Aerodynamic);
                     objNewGear.Quantity = frmPickGear.SelectedQty;
-                    try
-                    {
-                        nudGearQty.Increment = objNewGear.CostFor;
-                        //nudGearQty.Minimum = nudGearQty.Increment;
-                    }
-                    catch
-                    {
-                    }
+                    nudGearQty.Increment = objNewGear.CostFor;
+                    //nudGearQty.Minimum = nudGearQty.Increment;
                     break;
             }
 
@@ -17887,17 +17069,7 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedLifestyle()
         {
-            bool blnClear = false;
-            try
-            {
-                if (treLifestyles.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-            if (blnClear)
+            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
             {
                 lblLifestyleCost.Text = "";
                 lblLifestyleTotalCost.Text = "";
@@ -17909,129 +17081,126 @@ namespace Chummer
                 return;
             }
 
-            if (treLifestyles.SelectedNode.Level > 0)
+            _blnSkipRefresh = true;
+
+            nudLifestyleMonths.Enabled = true;
+
+            // Locate the selected Lifestyle.
+            Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+            if (objLifestyle == null)
+                return;
+
+            decimal decMultiplier = 1.0m;
+            decimal decModifier = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
+            if (objLifestyle.StyleType == LifestyleType.Standard)
+                decModifier += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
+            decMultiplier = 1.0m + Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
+
+            lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
+            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo);
+            lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + String.Format("{0:###,###,##0¥}", objLifestyle.Multiplier);
+            string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
+            string strPage = objLifestyle.Page;
+            lblLifestyleSource.Text = strBook + " " + strPage;
+            tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
+            lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0¥}", objLifestyle.TotalCost);
+
+
+            // Change the Cost/Month label.
+            if (objLifestyle.StyleType == LifestyleType.Safehouse)
+                lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
+			else
+				lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
+
+            if (objLifestyle.BaseLifestyle != "")
             {
-                _blnSkipRefresh = true;
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+                string strBaseLifestyle = "";
+                string strQualities = "";
 
-                nudLifestyleMonths.Enabled = true;
-
-                // Locate the selected Lifestyle.
-                Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
-                if (objLifestyle == null)
-                    return;
-
-                decimal decMultiplier = 1.0m;
-                decimal decModifier = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
-                if (objLifestyle.StyleType == LifestyleType.Standard)
-                    decModifier += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
-                decMultiplier = 1.0m + Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
-
-                lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
-                nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo);
-                lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + String.Format("{0:###,###,##0¥}", objLifestyle.Multiplier);
-                string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
-                string strPage = objLifestyle.Page;
-                lblLifestyleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
-                lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0¥}", objLifestyle.TotalCost);
-
-
-                // Change the Cost/Month label.
-                if (objLifestyle.StyleType == LifestyleType.Safehouse)
-                    lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
-				else
-					lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
-
-                if (objLifestyle.BaseLifestyle != "")
-                {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                    string strBaseLifestyle = "";
-                    string strQualities = "";
-
-                    lblLifestyleQualities.Text = "";
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-                    if (objNode["translate"] != null)
-                        strBaseLifestyle = objNode["translate"].InnerText;
-                    else
-                        strBaseLifestyle = objNode["name"].InnerText;
+                lblLifestyleQualities.Text = "";
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                if (objNode["translate"] != null)
+                    strBaseLifestyle = objNode["translate"].InnerText;
+                else
+                    strBaseLifestyle = objNode["name"].InnerText;
 					
-					foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
+				foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
+				{
+					if (strQualities.Length > 0)
+						strQualities += ", ";
+					string strQualityName = objQuality.DisplayName;
+					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+					XmlNode nodMultiplier = objNode["multiplier"];
+					if (objNode["translate"] != null)
 					{
-						if (strQualities.Length > 0)
-							strQualities += ", ";
-						string strQualityName = objQuality.DisplayName;
-						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-						XmlNode nodMultiplier = objNode["multiplier"];
-						if (objNode["translate"] != null)
+						strQualities += objNode["translate"].InnerText;
+					}
+					else
+					{
+						strQualities += objNode["name"].InnerText;
+					}
+					if (objQuality.Extra.Length > 0)
+					{
+						strQualities += " (" + objQuality.Extra + ")";
+					}
+					if (nodMultiplier != null)
+					{
+						string strMultiplier = nodMultiplier.InnerText;
+						int intCost = Convert.ToInt32(strMultiplier);
+						if (intCost > 0)
 						{
-							strQualities += objNode["translate"].InnerText;
+							strQualities += " [+" + intCost.ToString() + "%]";
 						}
 						else
 						{
-							strQualities += objNode["name"].InnerText;
+							strQualities += " [" + intCost.ToString() + "%]";
 						}
-						if (objQuality.Extra.Length > 0)
+					}
+					else
+					{
+						if (objNode["cost"] != null)
 						{
-							strQualities += " (" + objQuality.Extra + ")";
+							string strCost = objNode["cost"].InnerText;
+							if (objNode["translate"] != null)
+								strQualities +=  " [" + strCost + "¥]";
 						}
-						if (nodMultiplier != null)
-						{
-							string strMultiplier = nodMultiplier.InnerText;
-							int intCost = Convert.ToInt32(strMultiplier);
-							if (intCost > 0)
-							{
-								strQualities += " [+" + intCost.ToString() + "%]";
-							}
-							else
-							{
-								strQualities += " [" + intCost.ToString() + "%]";
-							}
 						}
-						else
-						{
-							if (objNode["cost"] != null)
-							{
-								string strCost = objNode["cost"].InnerText;
-								if (objNode["translate"] != null)
-									strQualities +=  " [" + strCost + "¥]";
-							}
-							}
-						}
-
-					foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
-                        {
-                            if (strQualities.Length > 0)
-                                strQualities += ", ";
-
-                            if (objImprovement.Value > 0)
-                                strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
-                            else
-                                strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
-                        }
-                    }
-
-	                foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
-	                {
-		                if (strQualities.Length > 0)
-		                {
-			                strQualities += ", ";
-						}
-						strQualities += objQuality.DisplayName;
 					}
 
-	                lblLifestyleComforts.Text = strBaseLifestyle;
-                    lblLifestyleQualities.Text += strQualities;
-                }
-                else
+				foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    lblLifestyleComforts.Text = "";
-                    lblLifestyleQualities.Text = "";
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
+                    {
+                        if (strQualities.Length > 0)
+                            strQualities += ", ";
+
+                        if (objImprovement.Value > 0)
+                            strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
+                        else
+                            strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
+                    }
                 }
 
-                _blnSkipRefresh = false;
+	            foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+	            {
+		            if (strQualities.Length > 0)
+		            {
+			            strQualities += ", ";
+					}
+					strQualities += objQuality.DisplayName;
+				}
+
+	            lblLifestyleComforts.Text = strBaseLifestyle;
+                lblLifestyleQualities.Text += strQualities;
             }
+            else
+            {
+                lblLifestyleComforts.Text = "";
+                lblLifestyleQualities.Text = "";
+            }
+
+            _blnSkipRefresh = false;
 		}
 
 		/// <summary>
@@ -18159,18 +17328,7 @@ namespace Chummer
 		/// </summary>
 		private void RefreshSelectedVehicle()
         {
-            bool blnClear = false;
-
-            try
-            {
-                if (treVehicles.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-            if (blnClear)
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
                 _blnSkipRefresh = true;
                 nudVehicleRating.Enabled = false;
@@ -22636,6 +21794,8 @@ namespace Chummer
         /// </summary>
         private void RefreshPasteStatus()
         {
+            if (treLifestyles.SelectedNode == null)
+                return;
             bool blnPasteEnabled = false;
             bool blnCopyEnabled = false;
 
@@ -22647,19 +21807,13 @@ namespace Chummer
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Lifestyle)
                         blnPasteEnabled = true;
 
-                    try
+                    foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
                     {
-                        foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                        if (objLifestyle.InternalId == treLifestyles.SelectedNode.Tag.ToString())
                         {
-                            if (objLifestyle.InternalId == treLifestyles.SelectedNode.Tag.ToString())
-                            {
-                                blnCopyEnabled = true;
-                                break;
-                            }
+                            blnCopyEnabled = true;
+                            break;
                         }
-                    }
-                    catch
-                    {
                     }
                 }
 
@@ -22671,45 +21825,30 @@ namespace Chummer
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Gear || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Commlink || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.OperatingSystem)
                     {
                         // Gear can only be pasted into Armor, not Armor Mods.
-                        try
-                        {
-                            foreach (Armor objArmor in _objCharacter.Armor)
-                            {
-                                if (objArmor.InternalId == treArmor.SelectedNode.Tag.ToString())
-                                {
-                                    blnPasteEnabled = true;
-                                    break;
-                                }
-                            }
-                        }
-                        catch
-                        {
-                        }
-                    }
-
-                    try
-                    {
                         foreach (Armor objArmor in _objCharacter.Armor)
                         {
                             if (objArmor.InternalId == treArmor.SelectedNode.Tag.ToString())
                             {
-                                blnCopyEnabled = true;
+                                blnPasteEnabled = true;
                                 break;
                             }
                         }
                     }
-                    catch
+
+                    foreach (Armor objLoopArmor in _objCharacter.Armor)
                     {
+                        if (objLoopArmor.InternalId == treArmor.SelectedNode.Tag.ToString())
+                        {
+                            blnCopyEnabled = true;
+                            break;
+                        }
                     }
-                    try
+                    if (!blnCopyEnabled)
                     {
                         Armor objArmor = new Armor(_objCharacter);
                         Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objArmor);
                         if (objGear != null)
                             blnCopyEnabled = true;
-                    }
-                    catch
-                    {
                     }
                 }
 
@@ -22745,60 +21884,45 @@ namespace Chummer
 
                             // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
                             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                            try
+                            foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
                             {
-                                foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
+                                foreach (WeaponAccessory objWeaponAccessory in objCharacterWeapon.WeaponAccessories)
                                 {
-                                    foreach (WeaponAccessory objWeaponAccessory in objCharacterWeapon.WeaponAccessories)
+                                    if (objWeaponAccessory.InternalId == treWeapons.SelectedNode.Tag.ToString())
                                     {
-                                        if (objWeaponAccessory.InternalId == treWeapons.SelectedNode.Tag.ToString())
-                                        {
-                                            objAccessory = objWeaponAccessory;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (objAccessory.AllowGear != null)
-                                {
-                                    foreach (XmlNode objAllowed in objAccessory.AllowGear.SelectNodes("gearcategory"))
-                                    {
-                                        if (objAllowed.InnerText == objGear.Category)
-                                        {
-                                            blnPasteEnabled = true;
-                                            break;
-                                        }
+                                        objAccessory = objWeaponAccessory;
+                                        break;
                                     }
                                 }
                             }
-                            catch
+                            if (objAccessory.AllowGear != null)
                             {
+                                foreach (XmlNode objAllowed in objAccessory.AllowGear.SelectNodes("gearcategory"))
+                                {
+                                    if (objAllowed.InnerText == objGear.Category)
+                                    {
+                                        blnPasteEnabled = true;
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
 
-                    try
+                    foreach (Weapon objWeapon in _objCharacter.Weapons)
                     {
-                        foreach (Weapon objWeapon in _objCharacter.Weapons)
+                        if (objWeapon.InternalId == treWeapons.SelectedNode.Tag.ToString())
                         {
-                            if (objWeapon.InternalId == treWeapons.SelectedNode.Tag.ToString())
-                            {
-                                blnCopyEnabled = true;
-                                break;
-                            }
+                            blnCopyEnabled = true;
+                            break;
                         }
                     }
-                    catch
-                    {
-                    }
-                    try
+                    if (!blnCopyEnabled)
                     {
                         WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                         Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
                         if (objGear != null)
                             blnCopyEnabled = true;
-                    }
-                    catch
-                    {
                     }
                 }
 
@@ -22808,15 +21932,9 @@ namespace Chummer
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Gear || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Commlink || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.OperatingSystem)
                         blnPasteEnabled = true;
 
-                    try
-                    {
-                        Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-                        if (objGear != null)
-                            blnCopyEnabled = true;
-                    }
-                    catch
-                    {
-                    }
+                    Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+                    if (objGear != null)
+                        blnCopyEnabled = true;
                 }
             }
 
@@ -22828,100 +21946,73 @@ namespace Chummer
                 if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Gear || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Commlink || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.OperatingSystem)
                 {
                     // Gear can only be pasted into Vehicles and Vehicle Gear.
-                    try
+                    foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                     {
-                        foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                        if (objVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
                         {
-                            if (objVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                            {
-                                blnPasteEnabled = true;
-                                break;
-                            }
+                            blnPasteEnabled = true;
+                            break;
                         }
                     }
-                    catch
-                    {
-                    }
-                    try
+                    if (!blnPasteEnabled)
                     {
                         Vehicle objVehicle = new Vehicle(_objCharacter);
                         Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
                         if (objGear != null)
                             blnPasteEnabled = true;
                     }
-                    catch
-                    {
-                    }
                 }
                 if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Weapon)
                 {
                     // Weapons can only be pasted into Vehicle Mods that allow them (Weapon Mounts and Mechanical Arms).
-                    try
-                    {
-                        VehicleMod objMod = new VehicleMod(_objCharacter);
-                        foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-                        {
-                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
-                            {
-                                if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                                {
-                                    if (objVehicleMod.Name.Contains("Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories != "")
-                                    {
-                                        blnPasteEnabled = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                try
-                {
+                    VehicleMod objMod = new VehicleMod(_objCharacter);
                     foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                     {
-                        if (objVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
+                        foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                         {
-                            blnCopyEnabled = true;
-                            break;
-                        }
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    Vehicle objVehicle = new Vehicle(_objCharacter);
-                    Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-                    if (objGear != null)
-                        blnCopyEnabled = true;
-                }
-                catch
-                {
-                }
-                try
-                {
-                    foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-                    {
-                        foreach (VehicleMod objMod in objVehicle.Mods)
-                        {
-                            foreach (Weapon objWeapon in objMod.Weapons)
+                            if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
                             {
-                                if (objWeapon.InternalId == treVehicles.SelectedNode.Tag.ToString())
+                                if (objVehicleMod.Name.Contains("Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories != "")
                                 {
-                                    blnCopyEnabled = true;
+                                    blnPasteEnabled = true;
                                     break;
                                 }
                             }
                         }
                     }
                 }
-                catch
+
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
+                    if (objVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
+                    {
+                        blnCopyEnabled = true;
+                        break;
+                    }
+                }
+                if (!blnCopyEnabled)
+                {
+                    Vehicle objVehicle = new Vehicle(_objCharacter);
+                    Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+                    if (objGear != null)
+                        blnCopyEnabled = true;
+                    else
+                    {
+                        foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles)
+                        {
+                            foreach (VehicleMod objMod in objLoopVehicle.Mods)
+                            {
+                                foreach (Weapon objWeapon in objMod.Weapons)
+                                {
+                                    if (objWeapon.InternalId == treVehicles.SelectedNode.Tag.ToString())
+                                    {
+                                        blnCopyEnabled = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -23310,26 +22401,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudBOD") && (nudBOD.Value + nudKBOD.Value) >= nudBOD.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKBOD.Value = nudBOD.Maximum - nudBOD.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKBOD.Value = 0;
-                }
+                nudKBOD.Value = Math.Max(Math.Min(nudBOD.Maximum - nudBOD.Value - 1, nudKBOD.Maximum), nudKBOD.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudBOD.Value + nudKBOD.Value) > nudBOD.Maximum)
             {
-                try
-                {
-                    nudKBOD.Value = nudBOD.Maximum - nudBOD.Value;
-                }
-                catch
-                {
-                    nudKBOD.Value = 0;
-                }
+                nudKBOD.Value = Math.Max(Math.Min(nudBOD.Maximum - nudBOD.Value, nudKBOD.Maximum), nudKBOD.Minimum);
             }
 
             _objCharacter.BOD.Base = Convert.ToInt32(nudBOD.Value);
@@ -23350,26 +22427,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudAGI") && (nudAGI.Value + nudKAGI.Value) >= nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKAGI.Value = nudAGI.Maximum - nudAGI.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKAGI.Value = 0;
-                }
+                nudKAGI.Value = Math.Max(Math.Min(nudAGI.Maximum - nudAGI.Value - 1, nudKAGI.Maximum), nudKAGI.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudAGI.Value + nudKAGI.Value) > nudAGI.Maximum)
             {
-                try
-                {
-                    nudKAGI.Value = nudAGI.Maximum - nudAGI.Value;
-                }
-                catch
-                {
-                    nudKAGI.Value = 0;
-                }
+                nudKAGI.Value = Math.Max(Math.Min(nudAGI.Maximum - nudAGI.Value, nudKAGI.Maximum), nudKAGI.Minimum);
             }
 
             _objCharacter.AGI.Base = Convert.ToInt32(nudAGI.Value);
@@ -23390,26 +22453,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudREA") && (nudREA.Value + nudKREA.Value) >= nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKREA.Value = nudREA.Maximum - nudREA.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKREA.Value = 0;
-                }
+                nudKREA.Value = Math.Max(Math.Min(nudREA.Maximum - nudREA.Value - 1, nudKREA.Maximum), nudKREA.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudREA.Value + nudKREA.Value) > nudREA.Maximum)
             {
-                try
-                {
-                    nudKREA.Value = nudREA.Maximum - nudREA.Value;
-                }
-                catch
-                {
-                    nudKREA.Value = 0;
-                }
+                nudKREA.Value = Math.Max(Math.Min(nudREA.Maximum - nudREA.Value, nudKREA.Maximum), nudKREA.Minimum);
             }
 
             _objCharacter.REA.Base = Convert.ToInt32(nudREA.Value);
@@ -23430,26 +22479,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudSTR") && (nudSTR.Value + nudKSTR.Value) >= nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKSTR.Value = nudSTR.Maximum - nudSTR.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKSTR.Value = 0;
-                }
+                nudKSTR.Value = Math.Max(Math.Min(nudSTR.Maximum - nudSTR.Value - 1, nudKSTR.Maximum), nudKSTR.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudSTR.Value + nudKSTR.Value) > nudSTR.Maximum)
             {
-                try
-                {
-                    nudKSTR.Value = nudSTR.Maximum - nudSTR.Value;
-                }
-                catch
-                {
-                    nudKSTR.Value = 0;
-                }
+                nudKSTR.Value = Math.Max(Math.Min(nudSTR.Maximum - nudSTR.Value, nudKSTR.Maximum), nudKSTR.Minimum);
             }
 
             _objCharacter.STR.Base = Convert.ToInt32(nudSTR.Value);
@@ -23470,26 +22505,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudCHA") && (nudCHA.Value + nudKCHA.Value) >= nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKCHA.Value = nudCHA.Maximum - nudCHA.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKCHA.Value = 0;
-                }
+                nudKCHA.Value = Math.Max(Math.Min(nudCHA.Maximum - nudCHA.Value - 1, nudKCHA.Maximum), nudKCHA.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudCHA.Value + nudKCHA.Value) > nudCHA.Maximum)
             {
-                try
-                {
-                    nudKCHA.Value = nudCHA.Maximum - nudCHA.Value;
-                }
-                catch
-                {
-                    nudKCHA.Value = 0;
-                }
+                nudKCHA.Value = Math.Max(Math.Min(nudCHA.Maximum - nudCHA.Value, nudKCHA.Maximum), nudKCHA.Minimum);
             }
 
 			_objCharacter.CHA.Base = Convert.ToInt32(nudCHA.Value);
@@ -23512,26 +22533,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudINT") && (nudINT.Value + nudKINT.Value) >= nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKINT.Value = nudINT.Maximum - nudINT.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKINT.Value = 0;
-                }
+                nudKINT.Value = Math.Max(Math.Min(nudINT.Maximum - nudINT.Value - 1, nudKINT.Maximum), nudKINT.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudINT.Value + nudKINT.Value) > nudINT.Maximum)
             {
-                try
-                {
-                    nudKINT.Value = nudINT.Maximum - nudINT.Value;
-                }
-                catch
-                {
-                    nudKINT.Value = 0;
-                }
+                nudKINT.Value = Math.Max(Math.Min(nudINT.Maximum - nudINT.Value, nudKINT.Maximum), nudKINT.Minimum);
             }
 
             _objCharacter.INT.Base = Convert.ToInt32(nudINT.Value);
@@ -23552,26 +22559,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudLOG") && (nudLOG.Value + nudKLOG.Value) >= nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKLOG.Value = nudLOG.Maximum - nudLOG.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKLOG.Value = 0;
-                }
+                nudKLOG.Value = Math.Max(Math.Min(nudLOG.Maximum - nudLOG.Value - 1, nudKLOG.Maximum), nudKLOG.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudLOG.Value + nudKLOG.Value) > nudLOG.Maximum)
             {
-                try
-                {
-                    nudKLOG.Value = nudLOG.Maximum - nudLOG.Value;
-                }
-                catch
-                {
-                    nudKLOG.Value = 0;
-                }
+                nudKLOG.Value = Math.Max(Math.Min(nudLOG.Maximum - nudLOG.Value, nudKLOG.Maximum), nudKLOG.Minimum);
             }
 
             _objCharacter.LOG.Base = Convert.ToInt32(nudLOG.Value);
@@ -23592,26 +22585,12 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudWIL") && (nudWIL.Value + nudKWIL.Value) >= nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
-                try
-                {
-                    nudKWIL.Value = nudWIL.Maximum - nudWIL.Value - 1;
-                    ShowAttributeRule();
-                }
-                catch
-                {
-                    nudKWIL.Value = 0;
-                }
+                nudKWIL.Value = Math.Max(Math.Min(nudWIL.Maximum - nudWIL.Value - 1, nudKWIL.Maximum), nudKWIL.Minimum);
+                ShowAttributeRule();
             }
             else if ((nudWIL.Value + nudKWIL.Value) > nudWIL.Maximum)
             {
-                try
-                {
-                    nudKWIL.Value = nudWIL.Maximum - nudWIL.Value;
-                }
-                catch
-                {
-                    nudKWIL.Value = 0;
-                }
+                nudKWIL.Value = Math.Max(Math.Min(nudWIL.Maximum - nudWIL.Value, nudKWIL.Maximum), nudKWIL.Minimum);
             }
 
             _objCharacter.WIL.Base = Convert.ToInt32(nudWIL.Value);
@@ -23632,14 +22611,7 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudEDG.Value + nudKEDG.Value) > nudEDG.Maximum)
             {
-                try
-                {
-                    nudKEDG.Value = nudEDG.Maximum - nudEDG.Value;
-                }
-                catch
-                {
-                    nudKEDG.Value = 0;
-                }
+                nudKEDG.Value = Math.Max(Math.Min(nudEDG.Maximum - nudEDG.Value, nudKEDG.Maximum), nudKEDG.Minimum);
             }
 
             _objCharacter.EDG.Base = Convert.ToInt32(nudEDG.Value);
@@ -23660,14 +22632,7 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudMAG.Value + nudKMAG.Value) > nudMAG.Maximum)
             {
-                try
-                {
-                    nudKMAG.Value = nudMAG.Maximum - nudMAG.Value;
-                }
-                catch
-                {
-                    nudKMAG.Value = 0;
-                }
+                nudKMAG.Value = Math.Max(Math.Min(nudMAG.Maximum - nudMAG.Value, nudKMAG.Maximum), nudKMAG.Minimum);
             }
 
             _objCharacter.MAG.Base = Convert.ToInt32(nudMAG.Value);
@@ -23689,14 +22654,7 @@ namespace Chummer
             // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudRES.Value + nudKRES.Value) > nudRES.Maximum)
             {
-                try
-                {
-                    nudKRES.Value = nudRES.Maximum - nudRES.Value;
-                }
-                catch
-                {
-                    nudKRES.Value = 0;
-                }
+                nudKRES.Value = Math.Max(Math.Min(nudRES.Maximum - nudRES.Value, nudKRES.Maximum), nudKRES.Minimum);
             }
 
             _objCharacter.RES.Base = Convert.ToInt32(nudRES.Value);
@@ -23717,15 +22675,8 @@ namespace Chummer
 			// Verify that the Attribute can be improved within the rules.
 			if ((nudDEP.Value + nudKDEP.Value) > nudDEP.Maximum)
 			{
-				try
-				{
-					nudKDEP.Value = nudDEP.Maximum - nudDEP.Value;
-				}
-				catch
-				{
-					nudKDEP.Value = 0;
-				}
-			}
+                nudKDEP.Value = Math.Max(Math.Min(nudDEP.Maximum - nudDEP.Value, nudKDEP.Maximum), nudKDEP.Minimum);
+            }
 
 			_objCharacter.DEP.Base = Convert.ToInt32(nudDEP.Value);
 			_objCharacter.DEP.Karma = Convert.ToInt32(nudKDEP.Value);
@@ -23992,107 +22943,103 @@ namespace Chummer
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treMetamagic.SelectedNode == null)
+                return;
+            // Locate the selected Metamagic.
+            Metamagic objMetamagic = _objFunctions.FindMetamagic(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Metamagics);
+            if (objMetamagic != null)
             {
-                // Locate the selected Metamagic.
-                Metamagic objMetamagic = _objFunctions.FindMetamagic(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Metamagics);
-                if (objMetamagic != null)
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objMetamagic.Notes;
+                string strOldValue = objMetamagic.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objMetamagic.Notes;
-                    string strOldValue = objMetamagic.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objMetamagic.Notes = frmItemNotes.Notes;
+                    if (objMetamagic.Notes != strOldValue)
                     {
-                        objMetamagic.Notes = frmItemNotes.Notes;
-                        if (objMetamagic.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objMetamagic.Notes != string.Empty)
-                        treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
-                    return;
                 }
 
-                // Locate the selected Art.
-                Art objArt = _objFunctions.FindArt(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Arts);
-                if (objArt != null)
-                {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objArt.Notes;
-                    string strOldValue = objArt.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
-                    {
-                        objArt.Notes = frmItemNotes.Notes;
-                        if (objArt.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
-                    }
-
-                    if (objArt.Notes != string.Empty)
-                        treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArt.Notes, 100);
-                    return;
-                }
-
-                // Locate the selected Spell.
-                Spell objSpell = _objFunctions.FindSpell(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Spells);
-                if (objSpell != null)
-                {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objSpell.Notes;
-                    string strOldValue = objSpell.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
-                    {
-                        objSpell.Notes = frmItemNotes.Notes;
-                        if (objSpell.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
-                    }
-
-                    if (objSpell.Notes != string.Empty)
-                        treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMetamagic.SelectedNode.ToolTipText = objSpell.Notes;
-
-                    foreach (TreeNode nodSchool in treSpells.Nodes)
-                    {
-                        foreach (TreeNode nodSpell in nodSchool.Nodes)
-                        {
-                            if (nodSpell.Tag.ToString() == treMetamagic.SelectedNode.Tag.ToString())
-                            {
-                                if (objSpell.Notes != string.Empty)
-                                    nodSpell.ForeColor = Color.SaddleBrown;
-                                else
-                                    nodSpell.ForeColor = SystemColors.WindowText;
-                                nodSpell.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
-                            }
-                        }
-                    }
-
-                    return;
-                }
+                if (objMetamagic.Notes != string.Empty)
+                    treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
+                return;
             }
-            catch
+
+            // Locate the selected Art.
+            Art objArt = _objFunctions.FindArt(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Arts);
+            if (objArt != null)
             {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objArt.Notes;
+                string strOldValue = objArt.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    objArt.Notes = frmItemNotes.Notes;
+                    if (objArt.Notes != strOldValue)
+                    {
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
+
+                if (objArt.Notes != string.Empty)
+                    treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArt.Notes, 100);
+                return;
+            }
+
+            // Locate the selected Spell.
+            Spell objSpell = _objFunctions.FindSpell(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Spells);
+            if (objSpell != null)
+            {
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objSpell.Notes;
+                string strOldValue = objSpell.Notes;
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    objSpell.Notes = frmItemNotes.Notes;
+                    if (objSpell.Notes != strOldValue)
+                    {
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                }
+
+                if (objSpell.Notes != string.Empty)
+                    treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMetamagic.SelectedNode.ToolTipText = objSpell.Notes;
+
+                foreach (TreeNode nodSchool in treSpells.Nodes)
+                {
+                    foreach (TreeNode nodSpell in nodSchool.Nodes)
+                    {
+                        if (nodSpell.Tag.ToString() == treMetamagic.SelectedNode.Tag.ToString())
+                        {
+                            if (objSpell.Notes != string.Empty)
+                                nodSpell.ForeColor = Color.SaddleBrown;
+                            else
+                                nodSpell.ForeColor = SystemColors.WindowText;
+                            nodSpell.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
+
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -24230,40 +23177,32 @@ namespace Chummer
 
         private void tsAddTechniqueNotes_Click(object sender, EventArgs e)
         {
-            try
+            if (treMartialArts.SelectedNode == null)
+                return;
+            MartialArt objMartialArt = new MartialArt(_objCharacter);
+            MartialArtAdvantage objTechnique = _objFunctions.FindMartialArtAdvantage(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts, out objMartialArt);
+            if (objTechnique != null)
             {
-                bool blnFound = false;
-                MartialArt objMartialArt = new MartialArt(_objCharacter);
-                MartialArtAdvantage objTechnique = _objFunctions.FindMartialArtAdvantage(treMartialArts.SelectedNode.Tag.ToString(), _objCharacter.MartialArts, out objMartialArt);
-                if (objTechnique != null)
-                    blnFound = true;
+                frmNotes frmItemNotes = new frmNotes();
+                frmItemNotes.Notes = objTechnique.Notes;
+                string strOldValue = objTechnique.Notes;
+                frmItemNotes.ShowDialog(this);
 
-                if (blnFound)
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    frmNotes frmItemNotes = new frmNotes();
-                    frmItemNotes.Notes = objTechnique.Notes;
-                    string strOldValue = objTechnique.Notes;
-                    frmItemNotes.ShowDialog(this);
-
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objTechnique.Notes = frmItemNotes.Notes;
+                    if (objTechnique.Notes != strOldValue)
                     {
-                        objTechnique.Notes = frmItemNotes.Notes;
-                        if (objTechnique.Notes != strOldValue)
-                        {
-                            _blnIsDirty = true;
-                            UpdateWindowTitle();
-                        }
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
                     }
-
-                    if (objTechnique.Notes != string.Empty)
-                        treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objTechnique.Notes, 100);
                 }
-            }
-            catch
-            {
+
+                if (objTechnique.Notes != string.Empty)
+                    treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
+                else
+                    treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
+                treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objTechnique.Notes, 100);
             }
         }
 

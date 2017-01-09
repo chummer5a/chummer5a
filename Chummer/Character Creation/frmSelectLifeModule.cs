@@ -161,23 +161,21 @@ namespace Chummer
                                  (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));
             }
 
-	        try
-	        {
+            _selectedId = (string)e.Node.Tag;
+            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable(_selectedId);
 
+            if (selectedNodeInfo != null)
+            {
+                cmdOK.Enabled = blnSelectAble;
+                cmdOKAdd.Enabled = blnSelectAble;
 
-		        XmlNode selectedNodeInfo = Quality.GetNodeOverrideable((string) e.Node.Tag);
-		        _selectedId = (string) e.Node.Tag;
+                lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : "";
+                lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : "") +
+                                    " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : "");
 
-		        cmdOK.Enabled = blnSelectAble;
-		        cmdOKAdd.Enabled = blnSelectAble;
-
-		        lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : "";
-		        lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : "") +
-		                         " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : "");
-
-		        lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : "";
-	        }
-	        catch (Exception)
+                lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : "";
+            }
+            else
 	        {
 		        lblBP.Text = "ERROR";
 		        lblStage.Text = "ERROR";
@@ -311,10 +309,9 @@ namespace Chummer
 				{
 					searchRegex = new Regex(txtSearch.Text, RegexOptions.IgnoreCase);
 				}
-				catch (Exception)
+				catch (ArgumentException)
 				{
 					//No other way to check for a valid regex that i know of
-					
 				}
 			}
 			

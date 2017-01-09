@@ -77,20 +77,11 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		public void Create(XmlNode objXmlLifestyleQuality, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
 		{
-			_strName = objXmlLifestyleQuality["name"].InnerText;
-			if (objXmlLifestyleQuality["lp"] != null)
-			{
-				_intLP = Convert.ToInt32(objXmlLifestyleQuality["lp"].InnerText);
-			}
-			else
-			{
-				_intLP = 0;
-			}
-			if (objXmlLifestyleQuality["cost"] != null)
-			{
-				_intCost = Convert.ToInt32(objXmlLifestyleQuality["cost"].InnerText);
-			}
-			_objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
+            objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("cost", ref _intCost);
+            if (objXmlLifestyleQuality["category"] != null)
+			    _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
 			_objLifestyleQualitySource = objLifestyleQualitySource;
 			if (objXmlLifestyleQuality["print"] != null)
 			{
@@ -102,8 +93,8 @@ namespace Chummer.Backend.Equipment
 				if (objXmlLifestyleQuality["contributetolimit"].InnerText == "no")
 					_blnContributeToLimit = false;
 			}
-			_strSource = objXmlLifestyleQuality["source"].InnerText;
-			_strPage = objXmlLifestyleQuality["page"].InnerText;
+            objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
 			if (objNode.Text.Contains('('))
 			{
 				_strExtra = objNode.Text.Split('(')[1].TrimEnd(')');
@@ -114,10 +105,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/LifestyleQuality[name = \"" + _strName + "\"]");
 				if (objLifestyleQualityNode != null)
 				{
-					if (objLifestyleQualityNode["translate"] != null)
-						_strAltName = objLifestyleQualityNode["translate"].InnerText;
-					if (objLifestyleQualityNode["altpage"] != null)
-						_strAltPage = objLifestyleQualityNode["altpage"].InnerText;
+                    objXmlLifestyleQuality.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objXmlLifestyleQuality.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
 
@@ -180,31 +169,21 @@ namespace Chummer.Backend.Equipment
 		public void Load(XmlNode objNode)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strExtra = objNode["extra"].InnerText;
-			_intLP = Convert.ToInt32(objNode["lp"].InnerText);
-			if (objNode["cost"].InnerText != "")
-			{
-				_intCost = Convert.ToInt32(objNode["cost"].InnerText);
-			}
-			if (objNode["multiplier"] != null)
-			{
-				_intMultiplier = Convert.ToInt32(objNode["multiplier"].InnerText);
-			}
-			_blnContributeToLimit = Convert.ToBoolean(objNode["contributetolimit"].InnerText);
-			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
-			_objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
-			_objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
-			_strSource = objNode["source"].InnerText;
-			_strPage = objNode["page"].InnerText;
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
+            objNode.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
+            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
+            if (objNode["lifestylequalitytype"] != null)
+			    _objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
+            if (objNode["lifestylequalitysource"] != null)
+			    _objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
 			_nodBonus = objNode["bonus"];
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -212,10 +191,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestylequalities/lifestylequality[name = \"" + _strName + "\"]");
 				if (objLifestyleQualityNode != null)
 				{
-					if (objLifestyleQualityNode["translate"] != null)
-						_strAltName = objLifestyleQualityNode["translate"].InnerText;
-					if (objLifestyleQualityNode["altpage"] != null)
-						_strAltPage = objLifestyleQualityNode["altpage"].InnerText;
+                    objLifestyleQualityNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objLifestyleQualityNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
 		}

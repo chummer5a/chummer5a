@@ -316,7 +316,7 @@ namespace Chummer
 				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
 				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
 			}
-			catch
+			catch (System.Xml.XPath.XPathException)
 			{
 				lblAvail.Text = objXmlMod["avail"].InnerText;
 			}

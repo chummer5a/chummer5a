@@ -769,18 +769,15 @@ namespace Chummer
 					objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 			}
 
-			// Add the Unarmed Attack Weapon to the character.
-			try
+            // Add the Unarmed Attack Weapon to the character.
+            objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            if (objXmlWeapon != null)
 			{
-				objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-				XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
 				TreeNode objDummy = new TreeNode();
 				Weapon objWeapon = new Weapon(objCharacter);
 				objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
 				objCharacter.Weapons.Add(objWeapon);
-			}
-			catch
-			{
 			}
 
 			objCharacter.Alias = strCritterName;
@@ -814,16 +811,16 @@ namespace Chummer
 			XmlDocument objXmlDocument = new XmlDocument();
 			XPathNavigator nav = objXmlDocument.CreateNavigator();
 			XPathExpression xprAttribute = nav.Compile(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
-			// This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
-			try
-			{
-				intValue = Convert.ToInt32(nav.Evaluate(xprAttribute).ToString());
-			}
-			catch
-			{
-				intValue = 1;
-			}
-			intValue += intOffset;
+            object xprEvaluateResult = null;
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                xprEvaluateResult = nav.Evaluate(xprAttribute);
+            }
+            catch (System.Xml.XPath.XPathException) { }
+            if (xprEvaluateResult != null && xprEvaluateResult.GetType() == typeof(System.Double))
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
+            intValue += intOffset;
 			if (intForce > 0)
 			{
 				if (intValue < 1)

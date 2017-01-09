@@ -187,14 +187,8 @@ namespace Chummer.helpers
                 foreach (TreeNode objNode in this.Nodes[i].Nodes)
                     lstNodes.Add(objNode);
                 this.Nodes[i].Nodes.Clear();
-                try
-                {
-                    SortByName objSort = new SortByName();
-                    lstNodes.Sort(objSort.Compare);
-                }
-                catch
-                {
-                }
+                SortByName objSort = new SortByName();
+                lstNodes.Sort(objSort.Compare);
 
                 foreach (TreeNode objNode in lstNodes)
                     this.Nodes[i].Nodes.Add(objNode);

@@ -398,23 +398,21 @@ namespace Chummer
 		{
 			// Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
 			Character objCharacter = (Character)sender;
-			string strTitle = objCharacter.Name;
-			if (objCharacter.Alias.Trim() != string.Empty)
-			{
-				strTitle = objCharacter.Alias;
-			}
-			else
-			{
-				strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
-			}
+            if (objCharacter != null)
+            {
+                string strTitle = objCharacter.Name;
+                if (objCharacter.Alias.Trim() != string.Empty)
+                {
+                    strTitle = objCharacter.Alias;
+                }
+                else
+                {
+                    strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
+                }
 
-			try
-			{
-				tabForms.SelectedTab.Text = strTitle;
-			}
-			catch
-			{
-			}
+                if (tabForms.SelectedTab != null)
+                    tabForms.SelectedTab.Text = strTitle;
+            }
 		}
 
 		private void mnuToolsDiceRoller_Click(object sender, EventArgs e)

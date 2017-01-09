@@ -228,7 +228,7 @@ namespace Chummer.Backend.Equipment
 				frmPickWeaponCategory.ShowDialog();
 
 				_strExtra = frmPickWeaponCategory.SelectedCategory;
-				objNode.Text += " (" + _strExtra + ")";
+                objNode.Text += " (" + _strExtra + ")";
 			}
 
 			// Add Gear Weapons if applicable.
@@ -616,147 +616,46 @@ namespace Chummer.Backend.Equipment
 		public virtual void Load(XmlNode objNode, bool blnCopy = false)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
-			objNode.TryGetField("capacity", out _strCapacity, "");
-			objNode.TryGetField("armorcapacity", out _strArmorCapacity);
-			objNode.TryGetField("minrating", out _intMinRating);
-			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_intQty = Convert.ToInt32(objNode["qty"].InnerText);
-			_strAvail = objNode["avail"].InnerText;
-			try
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
+            objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
+            objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
+            objNode.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
+            objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetInt32FieldQuickly("qty", ref _intQty);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("avail3", ref _strAvail3);
+            objNode.TryGetStringFieldQuickly("avail6", ref _strAvail6);
+            objNode.TryGetStringFieldQuickly("avail10", ref _strAvail10);
+            objNode.TryGetInt32FieldQuickly("costfor", ref _intCostFor);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetStringFieldQuickly("cost3", ref _strCost3);
+            objNode.TryGetStringFieldQuickly("cost6", ref _strCost6);
+            objNode.TryGetStringFieldQuickly("cost10", ref _strCost10);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            if (_strExtra == "Hold-Outs")
+                _strExtra = "Holdouts";
+            objNode.TryGetBoolFieldQuickly("bonded", ref _blnBonded);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
+            _nodBonus = objNode["bonus"];
+            _nodWeaponBonus = objNode["weaponbonus"];
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating);
+            string strWeaponID = "";
+            if (objNode.TryGetStringFieldQuickly("weaponguid", ref strWeaponID))
 			{
-				_strAvail3 = objNode["avail3"].InnerText;
+				_guiWeaponID = Guid.Parse(strWeaponID);
 			}
-			catch
-			{
-			}
-			try
-			{
-				_strAvail6 = objNode["avail6"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAvail10 = objNode["avail10"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intCostFor = Convert.ToInt32(objNode["costfor"].InnerText);
-			}
-			catch
-			{
-			}
-			_strCost = objNode["cost"].InnerText;
-			try
-			{
-				_strCost3 = objNode["cost3"].InnerText;
-			}
-			catch { }
-			try
-			{
-				_strCost6 = objNode["cost6"].InnerText;
-			}
-			catch { }
-			try
-			{
-				_strCost10 = objNode["cost10"].InnerText;
-			}
-			catch
-			{
-			}
-			if (objNode["extra"].InnerText == "Hold-Outs")
-				objNode["extra"].InnerText = "Holdouts";
-			_strExtra = objNode["extra"].InnerText;
-			try
-			{
-				_blnBonded = Convert.ToBoolean(objNode["bonded"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnEquipped = Convert.ToBoolean(objNode["equipped"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnHomeNode = Convert.ToBoolean(objNode["homenode"].InnerText);
-			}
-			catch
-			{
-			}
-			_nodBonus = objNode["bonus"];
-			try
-			{
-				_nodWeaponBonus = objNode["weaponbonus"];
-			}
-			catch
-			{
-			}
-			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intDeviceRating = Convert.ToInt32(objNode["devicerating"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
-			}
-			catch
-			{
-			}
+            objNode.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
+            objNode.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
 
-			try
-			{
-				_intChildCostMultiplier = Convert.ToInt32(objNode["childcostmultiplier"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intChildAvailModifier = Convert.ToInt32(objNode["childavailmodifier"].InnerText);
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("gearname", ref _strGearName);
 
-			try
-			{
-				_strGearName = objNode["gearname"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnIncludedInParent = Convert.ToBoolean(objNode["includedinparent"].InnerText);
-			}
-			catch
-			{
-			}
+            objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
 
 			if (objNode.InnerXml.Contains("<gear>"))
 			{
@@ -784,29 +683,10 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			try
-			{
-				_strLocation = objNode["location"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
+            objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -814,10 +694,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objGearNode = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strName + "\"]");
 				if (objGearNode != null)
 				{
-					if (objGearNode["translate"] != null)
-						_strAltName = objGearNode["translate"].InnerText;
-					if (objGearNode["altpage"] != null)
-						_strAltPage = objGearNode["altpage"].InnerText;
+                    objGearNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objGearNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				if (_strAltName.StartsWith("Stacked Focus"))
@@ -826,8 +704,7 @@ namespace Chummer.Backend.Equipment
 				objGearNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
 				if (objGearNode != null)
 				{
-					if (objGearNode.Attributes["translate"] != null)
-						_strAltCategory = objGearNode.Attributes["translate"].InnerText;
+                    objGearNode.TryGetStringFieldQuickly("translate", ref _strAltCategory);
 				}
 
 				if (_strAltCategory.StartsWith("Stacked Focus"))
@@ -1344,10 +1221,10 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Whether or not the Foci is bonded.
-		/// </summary>
-		public bool Bonded
+        /// <summary>
+        /// Whether or not the Foci is bonded.
+        /// </summary>
+        public bool Bonded
 		{
 			get
 			{
@@ -1715,41 +1592,24 @@ namespace Chummer.Backend.Equipment
 					bool blnSquareBrackets = false;
 					string strCapacity = "";
 
-					try
-					{
-						blnSquareBrackets = strFirstHalf.Contains('[');
-						strCapacity = strFirstHalf;
-						if (blnSquareBrackets)
-							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					}
-					catch
-					{
-					}
+					blnSquareBrackets = strFirstHalf.Contains('[');
+					strCapacity = strFirstHalf;
+					if (blnSquareBrackets && strCapacity.Length > 2)
+						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-					string strReturn = "";
-					try
-					{
-						if (_strCapacity == "[*]")
-							strReturn = "*";
-						else
-						{
-							if (_strCapacity.StartsWith("FixedValues"))
-							{
-								string[] strValues = _strCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-								strReturn = strValues[Convert.ToInt32(_intRating) - 1];
-							}
-							else
-								strReturn = nav.Evaluate(xprCapacity).ToString();
-						}
-						if (blnSquareBrackets)
-							strReturn = "[" + strCapacity + "]";
-					}
-					catch
-					{
-						strReturn = "0";
-					}
-					strReturn += "/" + strSecondHalf;
+					string strReturn = "0";
+                    if (_strArmorCapacity == "[*]")
+                        strReturn = "*";
+                    else if (_strArmorCapacity.StartsWith("FixedValues"))
+                    {
+                        char[] chrParentheses = { '(', ')' };
+                        string[] strValues = _strArmorCapacity.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
+                        strReturn = strValues[Convert.ToInt32(_intRating) - 1];
+                    }
+                    else
+                        strReturn = nav.Evaluate(xprCapacity).ToString();
+                    strReturn += "/" + strSecondHalf;
 					return strReturn;
 				}
 				else if (_strCapacity.Contains("Rating"))
@@ -1808,41 +1668,27 @@ namespace Chummer.Backend.Equipment
 					bool blnSquareBrackets = false;
 					string strCapacity = "";
 
-					try
-					{
-						blnSquareBrackets = strFirstHalf.Contains('[');
-						strCapacity = strFirstHalf;
-						if (blnSquareBrackets)
-							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					}
-					catch
-					{
-					}
+					blnSquareBrackets = strFirstHalf.Contains('[');
+					strCapacity = strFirstHalf;
+                    if (blnSquareBrackets && strCapacity.Length > 2)
+                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+
 					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-					string strReturn = "";
-					try
-					{
-						if (_strArmorCapacity == "[*]")
-							strReturn = "*";
-						else
-						{
-							if (_strArmorCapacity.StartsWith("FixedValues"))
-							{
-								string[] strValues = _strArmorCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-								strReturn = strValues[Convert.ToInt32(_intRating) - 1];
-							}
-							else
-								strReturn = nav.Evaluate(xprCapacity).ToString();
-						}
-						if (blnSquareBrackets)
-							strReturn = "[" + strCapacity + "]";
-					}
-					catch
-					{
-						strReturn = "0";
-					}
-					strReturn += "/" + strSecondHalf;
+					string strReturn = "0";
+                    if (_strArmorCapacity == "[*]")
+                        strReturn = "*";
+                    else if(_strArmorCapacity.StartsWith("FixedValues"))
+                    {
+                        char[] chrParentheses = { '(', ')' };
+                        string[] strValues = _strArmorCapacity.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
+                        strReturn = strValues[Convert.ToInt32(_intRating) - 1];
+                    }
+                    else
+                        strReturn = nav.Evaluate(xprCapacity).ToString();
+                    if (blnSquareBrackets)
+                        strReturn = "[" + strCapacity + "]";
+                    strReturn += "/" + strSecondHalf;
 					return strReturn;
 				}
 				else if (_strArmorCapacity.Contains("Rating"))

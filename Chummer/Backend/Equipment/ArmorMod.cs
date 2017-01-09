@@ -73,15 +73,15 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
 		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, bool blnSkipCost = false)
 		{
-			_strName = objXmlArmorNode["name"].InnerText;
-			_strCategory = objXmlArmorNode["category"].InnerText;
-			_strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
-			_intA = Convert.ToInt32(objXmlArmorNode["armor"].InnerText);
+            objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
 			_intRating = intRating;
-			_intMaxRating = Convert.ToInt32(objXmlArmorNode["maxrating"].InnerText);
-			_strAvail = objXmlArmorNode["avail"].InnerText;
-			_strSource = objXmlArmorNode["source"].InnerText;
-			_strPage = objXmlArmorNode["page"].InnerText;
+            objXmlArmorNode.TryGetInt32FieldQuickly("armor", ref _intA);
+            objXmlArmorNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+            objXmlArmorNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
 			_nodBonus = objXmlArmorNode["bonus"];
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -90,30 +90,31 @@ namespace Chummer.Backend.Equipment
 				XmlNode objArmorNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode["translate"] != null)
-						_strAltName = objArmorNode["translate"].InnerText;
-					if (objArmorNode["altpage"] != null)
-						_strAltPage = objArmorNode["altpage"].InnerText;
+                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode.Attributes["translate"] != null)
-						_strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-				}
+                    if (objArmorNode.Attributes["translate"] != null)
+                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
+                }
 			}
 
             // Check for a Variable Cost.
-            if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable"))
+            if (blnSkipCost)
+                _strCost = "0";
+            else if (objXmlArmorNode["cost"] != null)
             {
-                if (blnSkipCost)
-                    _strCost = "0";
-                else
+                XmlNode objXmlArmorCostNode = objXmlArmorNode["cost"];
+
+                if (objXmlArmorCostNode.InnerText.StartsWith("Variable"))
                 {
                     int intMin = 0;
                     int intMax = 0;
-                    string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    char[] chrParentheses = { '(', ')' };
+                    string strCost = objXmlArmorCostNode.InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
@@ -136,13 +137,13 @@ namespace Chummer.Backend.Equipment
                         _strCost = frmPickNumber.SelectedValue.ToString();
                     }
                 }
-            }
-            else
-            {
-                _strCost = objXmlArmorNode["cost"].InnerText;
+                else
+                {
+                    _strCost = objXmlArmorCostNode.InnerText;
+                }
             }
 
-            if (objXmlArmorNode["bonus"] != null && !blnSkipCost)
+            if (objXmlArmorNode["bonus"] != null)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort))
@@ -221,79 +222,35 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			_intA = Convert.ToInt32(objNode["armor"].InnerText);
-			try
-			{
-				_strArmorCapacity = objNode["armorcapacity"].InnerText;
-			}
-			catch
-			{
-			}
-			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_strAvail = objNode["avail"].InnerText;
-			_strCost = objNode["cost"].InnerText;
-			try
-			{
-				_nodBonus = objNode["bonus"];
-			}
-			catch
-			{
-			}
-			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnIncludedInArmor = Convert.ToBoolean(objNode["included"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnEquipped = Convert.ToBoolean(objNode["equipped"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strExtra = objNode["extra"].InnerText;
-			}
-			catch
-			{
-			}
-			try
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+            }
+            else
+            {
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetInt32FieldQuickly("armor", ref _intA);
+            objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
+            objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+		    _nodBonus = objNode["bonus"];
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInArmor);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+			if (objNode["weaponguid"] != null)
 			{
 				_guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
 			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
+            objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -301,23 +258,16 @@ namespace Chummer.Backend.Equipment
 				XmlNode objArmorNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode["translate"] != null)
-						_strAltName = objArmorNode["translate"].InnerText;
-					if (objArmorNode["altpage"] != null)
-						_strAltPage = objArmorNode["altpage"].InnerText;
+                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode.Attributes["translate"] != null)
-						_strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-				}
-			}
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
+                    if (objArmorNode.Attributes["translate"] != null)
+                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
+                }
 			}
 		}
 

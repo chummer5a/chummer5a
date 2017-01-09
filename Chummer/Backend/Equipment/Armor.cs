@@ -59,18 +59,16 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
 		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
 		{
-			_strName = objXmlArmorNode["name"].InnerText;
-			_strCategory = objXmlArmorNode["category"].InnerText;
-			_strA = objXmlArmorNode["armor"].InnerText;
-			if (objXmlArmorNode["armoroverride"] != null)
-				_strO = objXmlArmorNode["armoroverride"].InnerText;
+            objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strA);
+            objXmlArmorNode.TryGetStringFieldQuickly("armoroverride", ref _strO);
 			_intRating = intRating;
-			if (objXmlArmorNode["rating"] != null)
-				_intMaxRating = Convert.ToInt32(objXmlArmorNode["rating"].InnerText);
-			_strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
-			_strAvail = objXmlArmorNode["avail"].InnerText;
-			_strSource = objXmlArmorNode["source"].InnerText;
-			_strPage = objXmlArmorNode["page"].InnerText;
+            objXmlArmorNode.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
+            objXmlArmorNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
 			_nodBonus = objXmlArmorNode["bonus"];
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -79,72 +77,71 @@ namespace Chummer.Backend.Equipment
 				XmlNode objArmorNode = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode["translate"] != null)
-						_strAltName = objArmorNode["translate"].InnerText;
-					if (objArmorNode["altpage"] != null)
-						_strAltPage = objArmorNode["altpage"].InnerText;
+                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objNode != null)
+				if (objArmorNode != null)
 				{
-					if (objArmorNode.Attributes["translate"] != null)
-						_strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-				}
+                    if (objArmorNode.Attributes["translate"] != null)
+                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
+                }
 			}
 
-			// Check for a Variable Cost.
-			if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable"))
-			{
-				if (blnSkipCost)
-					_strCost = "0";
-				else
-				{
-					int intMin = 0;
-					int intMax = 0;
-					string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-					if (strCost.Contains("-"))
-					{
-						string[] strValues = strCost.Split('-');
-						intMin = Convert.ToInt32(strValues[0]);
-						intMax = Convert.ToInt32(strValues[1]);
-					}
-					else
-						intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+            // Check for a Variable Cost.
+            if (blnSkipCost)
+                _strCost = "0";
+            else if (objXmlArmorNode["cost"] != null)
+            {
+                if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable"))
+                {
+                    int intMin = 0;
+                    int intMax = 0;
+                    char[] charParentheses = { '(', ')' };
+                    string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-					if (intMin != 0 || intMax != 0)
-					{
-						frmSelectNumber frmPickNumber = new frmSelectNumber();
-						if (intMax == 0)
-							intMax = 1000000;
-						frmPickNumber.Minimum = intMin;
-						frmPickNumber.Maximum = intMax;
-						frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
-						frmPickNumber.AllowCancel = false;
-						frmPickNumber.ShowDialog();
-						_strCost = frmPickNumber.SelectedValue.ToString();
-					}
-				}
-			}
-			else if (objXmlArmorNode["cost"].InnerText.StartsWith("Rating"))
-			{
-				// If the cost is determined by the Rating, evaluate the expression.
-				XmlDocument objXmlDocument = new XmlDocument();
-				XPathNavigator nav = objXmlDocument.CreateNavigator();
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString();
+                    }
+                }
+                else if (objXmlArmorNode["cost"].InnerText.StartsWith("Rating"))
+                {
+                    // If the cost is determined by the Rating, evaluate the expression.
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-				string strCost = "";
-				string strCostExpression = _strCost;
+                    string strCost = "";
+                    string strCostExpression = _strCost;
 
-				strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-				XPathExpression xprCost = nav.Compile(strCost);
-				_strCost = nav.Evaluate(xprCost).ToString();
-			}
-			else
-			{
-				_strCost = objXmlArmorNode["cost"].InnerText;
-			}
+                    strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+                    XPathExpression xprCost = nav.Compile(strCost);
+                    _strCost = nav.Evaluate(xprCost).ToString();
+                }
+                else
+                {
+                    _strCost = objXmlArmorNode["cost"].InnerText;
+                }
+            }
 
-			if (objXmlArmorNode["bonus"] != null && !blnSkipCost)
+			if (objXmlArmorNode["bonus"] != null)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Armor, _guiID.ToString(), objXmlArmorNode["bonus"], false, 1, DisplayNameShort))
@@ -205,8 +202,8 @@ namespace Chummer.Backend.Equipment
 
 						TreeNode objModNode = new TreeNode();
 
-						objMod.Name = objXmlArmorNode["name"].InnerText;
-						objMod.Category = "Features";
+                        objMod.Name = _strName;
+                        objMod.Category = "Features";
 						objMod.Avail = "0";
 						objMod.Source = _strSource;
 						objMod.Page = _strPage;
@@ -234,10 +231,8 @@ namespace Chummer.Backend.Equipment
 				{
 					intRating = 0;
 					string strForceValue = "";
-					if (objXmlArmorMod.Attributes["rating"] != null)
-						intRating = Convert.ToInt32(objXmlArmorMod.Attributes["rating"].InnerText);
-					if (objXmlArmorMod.Attributes["select"] != null)
-						strForceValue = objXmlArmorMod.Attributes["select"].ToString();
+                    objXmlArmorMod.TryGetInt32FieldQuickly("rating", ref intRating);
+                    objXmlArmorMod.TryGetStringFieldQuickly("select", ref strForceValue);
 
 					XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlArmorMod.InnerText + "\"]");
 					if (objXmlMod != null)
@@ -268,8 +263,8 @@ namespace Chummer.Backend.Equipment
 
 						TreeNode objModNode = new TreeNode();
 
-						objMod.Name = objXmlArmorNode["name"].InnerText;
-						objMod.Category = "Features";
+                        objMod.Name = _strName;
+                        objMod.Category = "Features";
 						objMod.Avail = "0";
 						objMod.Source = _strSource;
 						objMod.Page = _strPage;
@@ -294,32 +289,30 @@ namespace Chummer.Backend.Equipment
 				XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
 				foreach (XmlNode objXmlArmorGear in objXmlArmorNode.SelectNodes("gears/usegear"))
 				{
-						intRating = 0;
-						string strForceValue = "";
-						if (objXmlArmorGear.Attributes["rating"] != null)
-							intRating = Convert.ToInt32(objXmlArmorGear.Attributes["rating"].InnerText);
-						if (objXmlArmorGear.Attributes["select"] != null)
-							strForceValue = objXmlArmorGear.Attributes["select"].InnerText;
+					intRating = 0;
+					string strForceValue = "";
+                    objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
+                    objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
 
-						XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
-						Gear objGear = new Gear(_objCharacter);
+                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
+					Gear objGear = new Gear(_objCharacter);
 
-						TreeNode objGearNode = new TreeNode();
-						List<Weapon> lstWeapons = new List<Weapon>();
-						List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+					TreeNode objGearNode = new TreeNode();
+					List<Weapon> lstWeapons = new List<Weapon>();
+					List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-						objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
-						objGear.Capacity = "[0]";
-						objGear.ArmorCapacity = "[0]";
-						objGear.Cost = "0";
-						objGear.MaxRating = objGear.Rating;
-						objGear.MinRating = objGear.Rating;
-						objGear.IncludedInParent = true;
-						_lstGear.Add(objGear);
+					objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+					objGear.Capacity = "[0]";
+					objGear.ArmorCapacity = "[0]";
+					objGear.Cost = "0";
+					objGear.MaxRating = objGear.Rating;
+					objGear.MinRating = objGear.Rating;
+					objGear.IncludedInParent = true;
+					_lstGear.Add(objGear);
 
-						objNode.Nodes.Add(objGearNode);
-						objNode.Expand();
-					}
+					objNode.Nodes.Add(objGearNode);
+					objNode.Expand();
+				}
 			}
 
 			if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
@@ -405,70 +398,74 @@ namespace Chummer.Backend.Equipment
 			_objCharacter.SourceProcess(_strSource);
 		}
 
-		/// <summary>
-		/// Load the CharacterAttribute from the XmlNode.
-		/// </summary>
-		/// <param name="objNode">XmlNode to load.</param>
-		/// <param name="blnCopy">Check if we are copying an existing item.</param>
-		public void Load(XmlNode objNode, bool blnCopy = false)
-		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			_strA = objNode["armor"].InnerText;
-			_strAvail = objNode["avail"].InnerText;
-			_strCost = objNode["cost"].InnerText;
-			_strSource = objNode["source"].InnerText;
-			objNode.TryGetField("armoroverride", out _strO);
-			objNode.TryGetField("armorcapacity", out _strArmorCapacity);
-			objNode.TryGetField("rating", out _intRating);
-			objNode.TryGetField("maxrating", out _intMaxRating);
-			objNode.TryGetField("page", out _strPage);
-			objNode.TryGetField("armorname", out _strArmorName);
-			objNode.TryGetField("equipped", out _blnEquipped);
-			objNode.TryGetField("extra", out _strExtra);
-			objNode.TryGetField("damage", out _intDamage);
-			objNode.TryGetField("location", out _strLocation);
-			objNode.TryGetField("notes", out _strNotes);
-			objNode.TryGetField("discountedcost", out _blnDiscountCost);
-			try
-			{
-				_nodBonus = objNode["bonus"];
-			}
-			catch { }
+        /// <summary>
+        /// Load the CharacterAttribute from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Check if we are copying an existing item.</param>
+        public void Load(XmlNode objNode, bool blnCopy = false)
+        {
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+                _strLocation = string.Empty;
+            }
+            else
+            {
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+                objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetStringFieldQuickly("armor", ref _strA);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("armoroverride", ref _strO);
+			objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
+			objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+			objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+			objNode.TryGetStringFieldQuickly("page", ref _strPage);
+			objNode.TryGetStringFieldQuickly("armorname", ref _strArmorName);
+			objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+			objNode.TryGetInt32FieldQuickly("damage", ref _intDamage);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+		    _nodBonus = objNode["bonus"];
 			if (objNode.InnerXml.Contains("armormods"))
 			{
 				XmlNodeList nodMods = objNode.SelectNodes("armormods/armormod");
-					foreach (XmlNode nodMod in nodMods)
-					{
-						ArmorMod objMod = new ArmorMod(_objCharacter);
-						objMod.Load(nodMod, blnCopy);
-						objMod.Parent = this;
-						_lstArmorMods.Add(objMod);
-					}
+				foreach (XmlNode nodMod in nodMods)
+				{
+					ArmorMod objMod = new ArmorMod(_objCharacter);
+					objMod.Load(nodMod, blnCopy);
+					objMod.Parent = this;
+					_lstArmorMods.Add(objMod);
+				}
 			}
 			if (objNode.InnerXml.Contains("gears"))
 			{
 				XmlNodeList nodGears = objNode.SelectNodes("gears/gear");
-					foreach (XmlNode nodGear in nodGears)
+				foreach (XmlNode nodGear in nodGears)
+				{
+					switch (nodGear["category"].InnerText)
 					{
-						switch (nodGear["category"].InnerText)
-						{
-							case "Commlinks":
-							case "Commlink Accessories":
-							case "Cyberdecks":
-							case "Rigger Command Consoles":
-								Commlink objCommlink = new Commlink(_objCharacter);
-								objCommlink.Load(nodGear, blnCopy);
-								_lstGear.Add(objCommlink);
-								break;
-							default:
-								Gear objGear = new Gear(_objCharacter);
-								objGear.Load(nodGear, blnCopy);
-								_lstGear.Add(objGear);
-								break;
-						}
+						case "Commlinks":
+						case "Commlink Accessories":
+						case "Cyberdecks":
+						case "Rigger Command Consoles":
+							Commlink objCommlink = new Commlink(_objCharacter);
+							objCommlink.Load(nodGear, blnCopy);
+							_lstGear.Add(objCommlink);
+							break;
+						default:
+							Gear objGear = new Gear(_objCharacter);
+							objGear.Load(nodGear, blnCopy);
+							_lstGear.Add(objGear);
+							break;
 					}
+				}
 			}
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -477,24 +474,16 @@ namespace Chummer.Backend.Equipment
 				XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode["translate"] != null)
-						_strAltName = objArmorNode["translate"].InnerText;
-					if (objArmorNode["altpage"] != null)
-						_strAltPage = objArmorNode["altpage"].InnerText;
+                    objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
 				if (objArmorNode != null)
 				{
-					if (objArmorNode.Attributes["translate"] != null)
-						_strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-				}
-			}
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-				_strLocation = string.Empty;
+                    if (objArmorNode.Attributes["translate"] != null)
+                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
+                }
 			}
 		}
 

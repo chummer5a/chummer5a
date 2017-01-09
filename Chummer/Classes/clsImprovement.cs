@@ -313,83 +313,34 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
+            if (objNode == null)
+                return;
             Log.Enter("Load");
-            
-            try
-			{
-				_strUniqueName = objNode["unique"].InnerText;
-			}
-			catch
-			{
-			}
-            try
-            {
-                _strTarget = objNode["target"].InnerText;
-            }
-            catch
-            {
-            }
-            _strImprovedName = objNode["improvedname"].InnerText;
-			_strSourceName = objNode["sourcename"].InnerText;
-			try
-			{
-				_intMin = Convert.ToInt32(objNode["min"].InnerText);
-			}
-			catch
-			{
-			}
-			_intMax = Convert.ToInt32(objNode["max"].InnerText);
-			_intAug = Convert.ToInt32(objNode["aug"].InnerText);
-			_intAugMax = Convert.ToInt32(objNode["augmax"].InnerText);
-			_intVal = Convert.ToInt32(objNode["val"].InnerText);
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_strExclude = objNode["exclude"].InnerText;
-			_objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
-			_objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
-			_blnCustom = Convert.ToBoolean(objNode["custom"].InnerText);
-			_strCustomName = objNode["customname"].InnerText;
-			try
-			{
-				_strCustomId = objNode["customid"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCustomGroup = objNode["customgroup"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnAddToRating = Convert.ToBoolean(objNode["addtorating"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnEnabled = Convert.ToBoolean(objNode["enabled"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intOrder = Convert.ToInt32(objNode["order"].InnerText);
-			}
-			catch
-			{
-			}
+
+            objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
+            objNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
+            objNode.TryGetInt32FieldQuickly("min", ref _intMin);
+            objNode.TryGetInt32FieldQuickly("max", ref _intMax);
+            objNode.TryGetInt32FieldQuickly("aug", ref _intAug);
+            objNode.TryGetInt32FieldQuickly("augmax", ref _intAugMax);
+            objNode.TryGetInt32FieldQuickly("val", ref _intVal);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
+            if (objNode["improvementttype"] != null)
+			    _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
+            if (objNode["improvementsource"] != null)
+                _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
+            objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
+            objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);
+            objNode.TryGetStringFieldQuickly("customgroup", ref _strCustomGroup);
+            objNode.TryGetBoolFieldQuickly("addtorating", ref _blnAddToRating);
+            objNode.TryGetBoolFieldQuickly("enabled", ref _blnEnabled);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
             Log.Exit("Load");
         }
@@ -841,22 +792,18 @@ namespace Chummer
 		/// <param name="strName">Name of the XmlNode to look for.</param>
 		private bool NodeExists(XmlNode objXmlNode, string strName)
 		{
-   //         Log.Enter("NodeExists");
+            //Log.Enter("NodeExists");
 			//Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-   //         Log.Info("strName = " + strName);
+            //Log.Info("strName = " + strName);
 
-            bool blnReturn = false;
-			try
+			if (objXmlNode != null)
 			{
 				XmlNode objXmlTest = objXmlNode.SelectSingleNode(strName);
 				if (objXmlTest != null)
-					blnReturn = true;
-			}
-			catch
-			{
+					return true;
 			}
 
-			return blnReturn;
+			return false;
 		}
 
 		#endregion
@@ -941,7 +888,7 @@ namespace Chummer
                         _strSelectedValue = LimitSelection;
 				    }
 				    else
-                {
+                    {
 
                     // Display the Select Text window and record the value that was entered.
                     frmSelectText frmPickText = new frmSelectText();
@@ -1022,42 +969,46 @@ namespace Chummer
 			bool blnConcatSelectedValue,
 			int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
 		{
-			try
-			{
-				//As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
-				//So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
-				//getting a different parameter injected
-
-				AddImprovementCollection container = new AddImprovementCollection(_objCharacter, this, objImprovementSource,
-					strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
-					strFriendlyName, intRating, ValueToInt, Rollback);
-
-				MethodInfo info;
-				if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
-				{
-					info.Invoke(container, new object[] {bonusNode});
-
-					strSourceName = container.SourceName;
-					_strForcedValue = container.ForcedValue;
-					_strLimitSelection = container.LimitSelection;
-					_strSelectedValue = container.SelectedValue;
-				}
-				else
-				{
-					if (bonusNode.OuterXml != "<selecttext />")
-					{
-						Utils.BreakIfDebug();
-						Log.Warning(new object[]
-						{"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
-					}
-				}
-			}
-			catch (TargetInvocationException ex) when (ex.InnerException.GetType() == typeof(AbortedException))
-			{
-				Rollback();
-				return false;
+            if (bonusNode == null)
+                return false;
 			
+			//As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
+			//So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+			//getting a different parameter injected
+
+			AddImprovementCollection container = new AddImprovementCollection(_objCharacter, this, objImprovementSource,
+				strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
+				strFriendlyName, intRating, ValueToInt, Rollback);
+
+			MethodInfo info;
+			if (container != null && AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
+			{
+                try
+                {
+                    info.Invoke(container, new object[] {bonusNode});
+                }
+                catch (TargetInvocationException ex) when (ex.InnerException.GetType() == typeof(AbortedException))
+                {
+                    Rollback();
+                    return false;
+                }
+
+                strSourceName = container.SourceName;
+				_strForcedValue = container.ForcedValue;
+				_strLimitSelection = container.LimitSelection;
+				_strSelectedValue = container.SelectedValue;
 			}
+			else
+			{
+				if (bonusNode.OuterXml != "<selecttext />")
+				{
+					Utils.BreakIfDebug();
+					Log.Warning(new object[]
+					{"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+				}
+                return false;
+            }
+			
 			return true;
 		}
 
@@ -1146,21 +1097,22 @@ namespace Chummer
                         // Load the power from XML.
                         // objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
                         // TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
-                        try
+                        XmlDocument objXmlMentorDocument = new XmlDocument();
+                        objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
+                        XmlNode objXmlMentorBonus =
+                            objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
+                                                                    objImprovement.Notes +
+                                                                    "\"]");
+                        if (objXmlMentorBonus != null && objXmlMentorBonus["bonus"] != null)
                         {
-                            XmlDocument objXmlMentorDocument = new XmlDocument();
-                            objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-                            XmlNode objXmlMentorBonus =
-                                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
-                                                                      objImprovement.Notes +
-                                                                      "\"]");
                             XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
+                            // Get the Power information
+                            XmlDocument objXmlDocument = new XmlDocument();
+                            objXmlDocument = XmlManager.Instance.Load("powers.xml");
                             foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
                             {
-                                // Get the Power information
-                                XmlDocument objXmlDocument = new XmlDocument();
-                                objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
+                                if (objXmlSpecificPower["name"] == null)
+                                    continue;
                                 string strPowerName = objXmlSpecificPower["name"].InnerText;
 
                                 // Find the power (if it still exists)
@@ -1174,9 +1126,6 @@ namespace Chummer
                                     }
                                 }
                             }
-                        }
-                        catch
-                        {
                         }
                         break;
                     case Improvement.ImprovementType.Attribute:

@@ -135,7 +135,6 @@
     <Compile Include="Backend\Equipment\Weapon.cs" />
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
-    <Compile Include="Backend\Extensions\XmlNodeExtensions.cs" />
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />

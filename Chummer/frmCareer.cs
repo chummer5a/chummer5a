@@ -18643,7 +18643,7 @@ namespace Chummer
                                 {
                                     //Should never happen currently.
                                     objPower.FreePoints -= freePointsByThisFocus;
-                                    objPower.Rating -= freePointsByThisFocus * objPower.PointsPerLevel;
+                                    objPower.Rating -= Convert.ToInt32(freePointsByThisFocus * objPower.PointsPerLevel);
                                 }
                             }
                             else

@@ -31,6 +31,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
  using Chummer.Backend.Equipment;
+using Chummer.Backend;
  using Chummer.Skills;
 
 namespace Chummer
@@ -89,16 +90,20 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_strAbbrev = objNode["name"].InnerText;
-			_intMetatypeMin = Convert.ToInt32(objNode["metatypemin"].InnerText);
-			_intMetatypeMax = Convert.ToInt32(objNode["metatypemax"].InnerText);
-			_intMetatypeAugMax = Convert.ToInt32(objNode["metatypeaugmax"].InnerText);
-		    
-            objNode.TryGetField("base", out _intBase);
-		    objNode.TryGetField("karma", out _intKarma);
-            
-            Value = Convert.ToInt32(objNode["value"].InnerText);
-			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
+            if (objNode == null)
+                return;
+            objNode.TryGetStringFieldQuickly("name", ref _strAbbrev);
+            objNode.TryGetInt32FieldQuickly("metatypemin", ref _intMetatypeMin);
+            objNode.TryGetInt32FieldQuickly("metatypemax", ref _intMetatypeMax);
+            objNode.TryGetInt32FieldQuickly("metatypeaugmax", ref _intMetatypeAugMax);
+
+            objNode.TryGetInt32FieldQuickly("base", ref _intBase);
+		    objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
+
+            int intTemp = 0;
+            if (objNode.TryGetInt32FieldQuickly("value", ref intTemp))
+                Value = intTemp;
+            objNode.TryGetInt32FieldQuickly("augmodifier", ref _intAugModifier);
 
 			//TODO: This causes an issue if MAG/RES is burned down to 0 from Essence loss. Is this a legacy load item?
             //if (_intBase == 0)
@@ -1177,48 +1182,46 @@ namespace Chummer
 		/// <param name="strForceValue">Force a value to be selected for the Quality.</param>
 		public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
 		{
-			_strName = objXmlQuality["name"].InnerText;
-            if (objXmlQuality["metagenetic"] != null)
+            objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlQuality.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
+            // Check for a Variable Cost.
+            if (objXmlQuality["karma"] != null)
             {
-                _strMetagenetic = objXmlQuality["metagenetic"].InnerText;
-            }
-			// Check for a Variable Cost.
-			if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
-			{
-					int intMin = 0;
-					int intMax = 0;
-					string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-					if (strCost.Contains("-"))
-					{
-						string[] strValues = strCost.Split('-');
-						intMin = Convert.ToInt32(strValues[0]);
-						intMax = Convert.ToInt32(strValues[1]);
-					}
-					else
-						intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
+                {
+                    int intMin = 0;
+                    int intMax = 0;
+                    string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-					if (intMin != 0 || intMax != 0)
-					{
-						frmSelectNumber frmPickNumber = new frmSelectNumber();
-						if (intMax == 0)
-							intMax = 1000000;
-						frmPickNumber.Minimum = intMin;
-						frmPickNumber.Maximum = intMax;
-						frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
-						frmPickNumber.AllowCancel = false;
-						frmPickNumber.ShowDialog();
-						_intBP = frmPickNumber.SelectedValue;
-					}
-			}
-			else
-			{ 
-                _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _intBP = frmPickNumber.SelectedValue;
+                    }
+                }
+                else
+                {
+                    _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+                }
             }
-            if (objXmlQuality["lp"] != null)
-            {
-                _intLP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
-            }
-			_objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
+            objXmlQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
+            if (objXmlQuality["category"] != null)
+			    _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
 			_objQualitySource = objQualitySource;
 			if (objXmlQuality["print"] != null)
 			{
@@ -1235,14 +1238,14 @@ namespace Chummer
 				if (objXmlQuality["contributetolimit"].InnerText == "no")
 					_blnContributeToLimit = false;
 			}
-			_strSource = objXmlQuality["source"].InnerText;
-			_strPage = objXmlQuality["page"].InnerText;
+            objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
 			if (objXmlQuality["mutant"] != null)
 				_strMutant = "yes";
 
 			if (_objQualityType == QualityType.LifeModule)
 			{
-				objXmlQuality.TryGetField("stage", out _stage);
+				objXmlQuality.TryGetStringFieldQuickly("stage", ref _stage);
 			}
 
             if(objXmlQuality["id"] != null)
@@ -1254,10 +1257,8 @@ namespace Chummer
 				XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
 				if (objQualityNode != null)
 				{
-					if (objQualityNode["translate"] != null)
-						_strAltName = objQualityNode["translate"].InnerText;
-					if (objQualityNode["altpage"] != null)
-						_strAltPage = objQualityNode["altpage"].InnerText;
+                    objQualityNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objQualityNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
 
@@ -1288,21 +1289,29 @@ namespace Chummer
 				{
 					TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objWeapon = new Weapon(_objCharacter);
-					objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-					objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+                    if (objXmlNaturalWeapon["name"] != null)
+					    objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+                    objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
 					objWeapon.WeaponType = "Melee";
-					objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-				    objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
-					objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
-					objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+                    if (objXmlNaturalWeapon["reach"] != null)
+                        objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+                    if (objXmlNaturalWeapon["accuracy"] != null)
+                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
+                    if (objXmlNaturalWeapon["damage"] != null)
+                        objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
+                    if (objXmlNaturalWeapon["ap"] != null)
+                        objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
 					objWeapon.Mode = "0";
 					objWeapon.RC = "0";
 					objWeapon.Concealability = 0;
 					objWeapon.Avail = "0";
 					objWeapon.Cost = 0;
-					objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-					objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-					objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+                    if (objXmlNaturalWeapon["useskill"] != null)
+                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+                    if (objXmlNaturalWeapon["source"] != null)
+                        objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+                    if (objXmlNaturalWeapon["page"] != null)
+                        objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
 					objGearWeaponNode.Text = objWeapon.Name;
 					objGearWeaponNode.Tag = objWeapon.InternalId;
@@ -1391,40 +1400,31 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public virtual void Load(XmlNode objNode)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strExtra = objNode["extra"].InnerText;
-			_intBP = Convert.ToInt32(objNode["bp"].InnerText);
-			//_blnImplemented = Convert.ToBoolean(objNode["implemented"].InnerText);
-
-			objNode.TryPreserveField("implemented", ref _blnImplemented);
-			_blnContributeToLimit = Convert.ToBoolean(objNode["contributetolimit"].InnerText);
-			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
-			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
-			_objQualitySource = ConvertToQualitySource(objNode["qualitysource"].InnerText);
-			objNode.TryGetField("metagenetic", out _strMetagenetic);
-			objNode.TryGetField("mutant", out _strMutant);
-			_strSource = objNode["source"].InnerText;
-			_strPage = objNode["page"].InnerText;
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
+            objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
+            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
+            if (objNode["qualitytype"] != null)
+			    _objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
+            if (objNode["qualitysource"] != null)
+                _objQualitySource = ConvertToQualitySource(objNode["qualitysource"].InnerText);
+			objNode.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
+			objNode.TryGetStringFieldQuickly("mutant", ref _strMutant);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
 			_nodBonus = objNode["bonus"];
 			_nodDiscounts = objNode["costdiscount"];
-			try
-			{
-				_guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
-			}
-			catch
-			{
-			}
-			objNode.TryGetField("notes", out _strNotes);
+            objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
 			if (_objQualityType == QualityType.LifeModule)
 			{
-				objNode.TryGetField("stage", out _stage);
+				objNode.TryGetStringFieldQuickly("stage", ref _stage);
 			}
-			if (objNode["id"] != null)
-			{
-				Guid.TryParse(objNode["id"].InnerText, out _qualiyGuid);
-			}
+            objNode.TryGetField("id", Guid.TryParse, out _qualiyGuid);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -1432,10 +1432,8 @@ namespace Chummer
 				XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
 				if (objQualityNode != null)
 				{
-					if (objQualityNode["translate"] != null)
-						_strAltName = objQualityNode["translate"].InnerText;
-					if (objQualityNode["altpage"] != null)
-						_strAltPage = objQualityNode["altpage"].InnerText;
+                    objQualityNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objQualityNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
 		}
@@ -2067,31 +2065,31 @@ namespace Chummer
 		private static XmlNode GetNodeOverrideable(XmlNode n)
 		{
 			XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
-			XmlNode parrentNode = n.SelectSingleNode("../..");
-			XmlNode sourceNode = null;
-			if (parrentNode != null && parrentNode["id"] != null)
-			{
-				sourceNode = GetNodeOverrideable(parrentNode);
-				if (sourceNode != null)
-				{
-					foreach (XmlNode node in sourceNode.ChildNodes)
-					{
-						if (workNode[node.LocalName] == null && node.LocalName != "versions")
-						{
-							workNode.AppendChild(node.Clone());
-						}
-						else if (node.LocalName == "bonus" && workNode["bonus"] != null)
-						{
-							foreach (XmlNode childNode in node.ChildNodes)
-							{
-								workNode["bonus"].AppendChild(childNode.Clone());
-							}
-						}
-						else
-						{ }
-					}
-				}
-			}
+            if (workNode != null)
+            {
+                XmlNode parentNode = n.SelectSingleNode("../..");
+                if (parentNode != null && parentNode["id"] != null)
+                {
+                    XmlNode sourceNode = GetNodeOverrideable(parentNode);
+                    if (sourceNode != null)
+                    {
+                        foreach (XmlNode node in sourceNode.ChildNodes)
+                        {
+                            if (workNode[node.LocalName] == null && node.LocalName != "versions")
+                            {
+                                workNode.AppendChild(node.Clone());
+                            }
+                            else if (node.LocalName == "bonus" && workNode["bonus"] != null)
+                            {
+                                foreach (XmlNode childNode in node.ChildNodes)
+                                {
+                                    workNode["bonus"].AppendChild(childNode.Clone());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
 			return workNode;
 		}
@@ -2659,69 +2657,28 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
             Improvement objImprovement = new Improvement();
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strDescriptors = objNode["descriptors"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			_strType = objNode["type"].InnerText;
-			_strRange = objNode["range"].InnerText;
-			_strDamage = objNode["damage"].InnerText;
-			_strDuration = objNode["duration"].InnerText;
-            try
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetStringFieldQuickly("type", ref _strType);
+            objNode.TryGetStringFieldQuickly("range", ref _strRange);
+            objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            if (objNode["improvementsource"] != null)
             {
                 _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             }
-            catch { }
-            try
-            {
-                _intGrade = Convert.ToInt32(objNode["grade"].InnerText);
-            }
-            catch { }
-            _strDV = objNode["dv"].InnerText;
-			try
-			{
-				_blnLimited = Convert.ToBoolean(objNode["limited"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnExtended = Convert.ToBoolean(objNode["extended"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _blnAlchemical = Convert.ToBoolean(objNode["alchemical"].InnerText);
-            }
-            catch
-            {
-            }
-            _strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            objNode.TryGetStringFieldQuickly("dv", ref _strDV);
+            objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited);
+            objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
+            objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strSource);
 
-			try
-			{
-				_strExtra = objNode["extra"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -2729,10 +2686,8 @@ namespace Chummer
 				XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
 				if (objSpellNode != null)
 				{
-					if (objSpellNode["translate"] != null)
-						_strAltName = objSpellNode["translate"].InnerText;
-					if (objSpellNode["altpage"] != null)
-						_strAltPage = objSpellNode["altpage"].InnerText;
+                    objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -3076,24 +3031,35 @@ namespace Chummer
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 				XPathExpression xprDV;
+                object xprResult = null;
 
-				try
-				{
-					for (int i = 1; i <= intMAG * 2; i++)
-					{
-						// Calculate the Spell's Drain for the current Force.
-						xprDV = nav.Compile(_strDV.Replace("F", i.ToString()).Replace("/", " div "));
-						int intDV = Convert.ToInt32(Math.Floor(Convert.ToDecimal(nav.Evaluate(xprDV).ToString())));
-						// Drain cannot be lower than 2.
-						if (intDV < 2)
-							intDV = 2;
-						strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
-					}
-				}
-				catch
-				{
-					strTip = LanguageManager.Instance.GetString("Tip_SpellDrainSeeDescription");
-				}
+                for (int i = 1; i <= intMAG * 2; i++)
+                {
+                    // Calculate the Spell's Drain for the current Force.
+                    xprDV = nav.Compile(_strDV.Replace("F", i.ToString()).Replace("/", " div "));
+                    
+                    try
+                    {
+                        xprResult = nav.Evaluate(xprDV);
+                    }
+                    catch (System.Xml.XPath.XPathException)
+                    {
+                        xprResult = null;
+                    }
+                    if (xprResult != null)
+                    {
+                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString())));
+                        // Drain cannot be lower than 2.
+                        if (intDV < 2)
+                            intDV = 2;
+                        strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
+                    }
+                    else
+                    {
+                        strTip = LanguageManager.Instance.GetString("Tip_SpellDrainSeeDescription");
+                        break;
+                    }
+                }
 
 				return strTip;
 			}
@@ -3842,19 +3808,14 @@ namespace Chummer
 		/// <param name="objSource">Source of the Improvement.</param>
 		public void Create(XmlNode objXmlMetamagicNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
 		{
-			_strName = objXmlMetamagicNode["name"].InnerText;
-			_strSource = objXmlMetamagicNode["source"].InnerText;
-			_strPage = objXmlMetamagicNode["page"].InnerText;
+            objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
 			_objImprovementSource = objSource;
-            try
-            {
-                _intGrade = Convert.ToInt32(objXmlMetamagicNode["grade"].InnerText);
-            }
-            catch { }
-			if (objXmlMetamagicNode.InnerXml.Contains("<bonus>"))
+            objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            _nodBonus = objXmlMetamagicNode["bonus"];
+            if (_nodBonus != null)
 			{
-				_nodBonus = objXmlMetamagicNode["bonus"];
-
 				int intRating = 1;
 				if (_objCharacter.SubmersionGrade > 0)
 					intRating = _objCharacter.SubmersionGrade;
@@ -3910,35 +3871,18 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 			Improvement objImprovement = new Improvement();
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strSource = objNode["source"].InnerText;
-			_strPage = objNode["page"].InnerText;
-			try
-			{
-				_blnPaidWithKarma = Convert.ToBoolean(objNode["paidwithkarma"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _intGrade = Convert.ToInt32(objNode["grade"].InnerText);
-            }
-            catch
-            {
-            }
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetBoolFieldQuickly("paidwithkarma", ref _blnPaidWithKarma);
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
 
 			_nodBonus = objNode["bonus"];
-			_objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            if (objNode["improvementsource"] != null)
+    			_objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 		}
 
 		/// <summary>
@@ -4198,19 +4142,14 @@ namespace Chummer
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
-            _strName = objXmlArtNode["name"].InnerText;
-            _strSource = objXmlArtNode["source"].InnerText;
-            _strPage = objXmlArtNode["page"].InnerText;
+            objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            try
+            objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            _nodBonus = objXmlArtNode["bonus"];
+            if (_nodBonus != null)
             {
-                _intGrade = Convert.ToInt32(objXmlArtNode["grade"].InnerText);
-            }
-            catch { }
-            if (objXmlArtNode.InnerXml.Contains("<bonus>"))
-            {
-                _nodBonus = objXmlArtNode["bonus"];
-
                 ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
                 if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
                 {
@@ -4254,27 +4193,16 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             Improvement objImprovement = new Improvement();
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _strName = objNode["name"].InnerText;
-            _strSource = objNode["source"].InnerText;
-            _strPage = objNode["page"].InnerText;
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
-            _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            if (objNode["improvementsource"] != null)
+                _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
-            try
-            {
-                _intGrade = Convert.ToInt32(objNode["grade"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strNotes = objNode["notes"].InnerText;
-            }
-            catch
-            {
-            }
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -4499,19 +4427,14 @@ namespace Chummer
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
-            _strName = objXmlArtNode["name"].InnerText;
-            _strSource = objXmlArtNode["source"].InnerText;
-            _strPage = objXmlArtNode["page"].InnerText;
+            objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            try
+            objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            _nodBonus = objXmlArtNode["bonus"];
+            if (_nodBonus != null)
             {
-                _intGrade = Convert.ToInt32(objXmlArtNode["grade"].InnerText);
-            }
-            catch { }
-            if (objXmlArtNode.InnerXml.Contains("<bonus>"))
-            {
-                _nodBonus = objXmlArtNode["bonus"];
-
                 ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
                 if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
                 {
@@ -4555,27 +4478,16 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             Improvement objImprovement = new Improvement();
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _strName = objNode["name"].InnerText;
-            _strSource = objNode["source"].InnerText;
-            _strPage = objNode["page"].InnerText;
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
-            _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            if (objNode["improvementsource"] != null)
+                _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
-            try
-            {
-                _intGrade = Convert.ToInt32(objNode["grade"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strNotes = objNode["notes"].InnerText;
-            }
-            catch
-            {
-            }
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -4794,7 +4706,7 @@ namespace Chummer
 		private string _strSource = "";
 		private string _strPage = "";
 		private decimal _decPointsPerLevel = 0;
-		private decimal _intRating = 1;
+		private int _intRating = 1;
 		private bool _blnLevelsEnabled = false;
 		private int _intMaxLevel = 0;
 		private bool _blnDiscountedAdeptWay = false;
@@ -4864,10 +4776,11 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strExtra = objNode["extra"].InnerText;
-			_decPointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.Instance.CultureInfo);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            if (objNode["pointsperlevel"] != null)
+			    _decPointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.Instance.CultureInfo);
             if (objNode["adeptway"] != null)
                 _decAdeptWayDiscount = Convert.ToDecimal(objNode["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
             else
@@ -4877,71 +4790,24 @@ namespace Chummer
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
+                if (objXmlPower != null && objXmlPower["adeptway"] != null)
+                    _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
             }
-            _intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_blnLevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
-            _blnFree = Convert.ToBoolean(objNode["free"].InnerText);
-            _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
-            _intMaxLevel = Convert.ToInt32(objNode["maxlevel"].InnerText);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
+            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
+            objNode.TryGetInt32FieldQuickly("freelevels", ref _intFreeLevels);
+            objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
 
-			try
-			{
-				_blnDiscountedAdeptWay = Convert.ToBoolean(objNode["discounted"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnDiscountedGeas = Convert.ToBoolean(objNode["discountedgeas"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _strBonusSource = objNode["bonussource"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _decFreePoints = Convert.ToDecimal(objNode["freepoints"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-			{
-				_strSource = objNode["source"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnDoubleCost = Convert.ToBoolean(objNode["doublecost"].InnerText);
-			}
-			catch
-			{
-			}
+            objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
+            objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
+            objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
+            objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetBoolFieldQuickly("doublecost", ref _blnDoubleCost);
 			_nodBonus = objNode["bonus"];
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (objNode.InnerXml.Contains("enhancements"))
             {
                 XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
@@ -5149,7 +5015,7 @@ namespace Chummer
 		/// <summary>
 		/// The current Rating of the Power.
 		/// </summary>
-		public decimal Rating
+		public int Rating
 		{
 			get
 			{
@@ -5490,25 +5356,19 @@ namespace Chummer
 				XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + _strName + "\"]");
 				if (objSpellNode != null)
 				{
-					if (objSpellNode["translate"] != null)
-						_strAltName = objSpellNode["translate"].InnerText;
-					if (objSpellNode["altpage"] != null)
-						_strAltPage = objSpellNode["altpage"].InnerText;
+                    objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
-			_strName = objXmlProgramNode["name"].InnerText;
-            _strTarget = objXmlProgramNode["target"].InnerText;
-			_strSource = objXmlProgramNode["source"].InnerText;
-			_strPage = objXmlProgramNode["page"].InnerText;
-            _strDuration = objXmlProgramNode["duration"].InnerText;
+            objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlProgramNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlProgramNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objXmlProgramNode.TryGetStringFieldQuickly("fv", ref _strFV);
             _strExtra = strExtra;
-            _strFV = objXmlProgramNode["fv"].InnerText;
 
-            try
-            {
-                _strNotes = objXmlProgramNode["notes"].InnerText;
-            }
-            catch { }
+            objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
 			objNode.Text = DisplayName;
 			objNode.Tag = _guiID.ToString();
@@ -5540,63 +5400,15 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			try
-			{
-				_guiID = Guid.Parse(objNode["guid"].InnerText);
-			}
-			catch
-			{
-			}
-			_strName = objNode["name"].InnerText;
-			try
-			{
-                _strTarget = objNode["target"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-                _strDuration = objNode["duration"].InnerText;
-			}
-			catch
-			{
-			}
-            try
-            {
-                _strFV = objNode["fv"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strExtra = objNode["extra"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-			{
-				_strSource = objNode["source"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("fv", ref _strFV);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 		}
 
 		/// <summary>
@@ -5842,27 +5654,20 @@ namespace Chummer
                 XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + _strName + "\"]");
                 if (objSpellNode != null)
                 {
-                    if (objSpellNode["translate"] != null)
-                        _strAltName = objSpellNode["translate"].InnerText;
-                    if (objSpellNode["altpage"] != null)
-                        _strAltPage = objSpellNode["altpage"].InnerText;
+                    objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
             }
-            _strName = objXmlProgramNode["name"].InnerText;
+            objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
             _strRequiresProgram = LanguageManager.Instance.GetString("String_None");
             _boolCanDelete = boolCanDelete;
-            if (objXmlProgramNode["require"] != null)
-                _strRequiresProgram = objXmlProgramNode["require"].InnerText;
-            _strSource = objXmlProgramNode["source"].InnerText;
-            _strPage = objXmlProgramNode["page"].InnerText;
+            objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
+            objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
             _strExtra = strExtra;
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
 
-            try
-            {
-                _strNotes = objXmlProgramNode["notes"].InnerText;
-            }
-            catch { }
+            objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
@@ -5893,55 +5698,16 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            try
-            {
-                _guiID = Guid.Parse(objNode["guid"].InnerText);
-            }
-            catch
-            {
-            }
-            _strName = objNode["name"].InnerText;
-            try
-            {
-                _strRequiresProgram = objNode["requiresprogram"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strExtra = objNode["extra"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strSource = objNode["source"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strPage = objNode["page"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strNotes = objNode["notes"].InnerText;
-            }
-            catch
-            {
-            }
-            try
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (objNode["isadvancedprogram"] != null)
             {
                 _boolIsAdvancedProgram = objNode["isadvancedprogram"].InnerText == "true";
-            }
-            catch
-            {
             }
         }
 
@@ -6199,9 +5965,9 @@ namespace Chummer
 		public void Create(XmlNode objXmlArtNode, TreeNode objNode, Character objCharacter)
 		{
 			_objCharacter = objCharacter;
-			_strName = objXmlArtNode["name"].InnerText;
-			_strSource = objXmlArtNode["source"].InnerText;
-			_strPage = objXmlArtNode["page"].InnerText;
+            objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _blnIsQuality = objXmlArtNode["isquality"] != null && Convert.ToBoolean(objXmlArtNode["isquality"].InnerText);
 
 			if (objXmlArtNode["bonus"] != null)
@@ -6245,19 +6011,13 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			try
-			{
-				_guiID = Guid.Parse(objNode["guid"].InnerText);
-			}
-			catch
-			{
-				_guiID = Guid.NewGuid();
-			}
-			_strName = objNode["name"].InnerText;
-			_strSource = objNode["source"].InnerText;
-			_strPage = objNode["page"].InnerText;
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-            _blnIsQuality = Convert.ToBoolean(objNode["isquality"].InnerText);
+            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
 			if (objNode.InnerXml.Contains("martialartadvantages"))
 			{
@@ -6270,13 +6030,7 @@ namespace Chummer
 				}
 			}
 
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 		}
 
 		/// <summary>
@@ -6487,11 +6241,11 @@ namespace Chummer
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		public void Create(XmlNode objXmlAdvantageNode, Character objCharacter, TreeNode objNode)
 		{
-			_strName = objXmlAdvantageNode["name"].InnerText;
-            _strSource = objXmlAdvantageNode["source"].InnerText;
-            _strPage = objXmlAdvantageNode["page"].InnerText;
+            objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlAdvantageNode.TryGetStringFieldQuickly("page", ref _strPage);
 
-			if (objXmlAdvantageNode["bonus"] != null)
+            if (objXmlAdvantageNode["bonus"] != null)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
 				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayNameShort))
@@ -6527,31 +6281,12 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-            try
-            {
-                _strSource = objNode["source"].InnerText;
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                _strPage = objNode["page"].InnerText;
-            }
-            catch
-            {
-            }
+            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
 		/// <summary>
@@ -6706,11 +6441,11 @@ namespace Chummer
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		public void Create(XmlNode objXmlManeuverNode, TreeNode objNode)
 		{
-			_strName = objXmlManeuverNode["name"].InnerText;
-			_strSource = objXmlManeuverNode["source"].InnerText;
-			_strPage = objXmlManeuverNode["page"].InnerText;
+            objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
 
-			objNode.Text = DisplayName;
+            objNode.Text = DisplayName;
 			objNode.Tag = _guiID.ToString();
 		}
 
@@ -6736,18 +6471,13 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strSource = objNode["source"].InnerText;
-			_strPage = objNode["page"].InnerText;
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-		}
+            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+        }
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.
@@ -6981,24 +6711,13 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _strName = objNode["name"].InnerText;
-            _strLimit = objNode["limit"].InnerText;
-            _intBonus = Convert.ToInt32(objNode["bonus"].InnerText);
-            try
-            {
-                _strCondition = objNode["condition"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strNotes = objNode["notes"].InnerText;
-            }
-            catch
-            {
-            }
+            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
+            objNode.TryGetInt32FieldQuickly("bonus", ref _intBonus);
+            objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -7250,30 +6969,30 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_strName = objNode["name"].InnerText;
-			objNode.TryGetField("role", out _strRole);
-			objNode.TryGetField("location", out _strLocation);
-            _intConnection = Convert.ToInt32(objNode["connection"].InnerText);
-			_intLoyalty = Convert.ToInt32(objNode["loyalty"].InnerText);
-            _objContactType = ConvertToContactType(objNode["type"].InnerText);
-			objNode.TryGetField("file", out _strFileName);
-			objNode.TryGetField("notes", out _strNotes);
-			objNode.TryGetField("groupname", out _strGroupName);
-			objNode.TryGetField("free", out _blnFree);
-			objNode.TryGetField("group", out _blnIsGroup);
-			objNode.TryGetField("guid", out _strUnique);
-			objNode.TryGetField("family", out _blnFamily);
-			objNode.TryGetField("blackmail", out _blnBlackmail);
-			try
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("role", ref _strRole);
+			objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            objNode.TryGetInt32FieldQuickly("connection", ref _intConnection);
+            objNode.TryGetInt32FieldQuickly("loyalty", ref _intLoyalty);
+            if (objNode["type"] != null)
+                _objContactType = ConvertToContactType(objNode["type"].InnerText);
+			objNode.TryGetStringFieldQuickly("file", ref _strFileName);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+			objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
+			objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
+			objNode.TryGetBoolFieldQuickly("group", ref _blnIsGroup);
+			objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
+			objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
+			objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
+			if (objNode["colour"] != null)
 			{
-				_objColour = Color.FromArgb(Convert.ToInt32(objNode["colour"].InnerText));
-			}
-			catch
-			{
+                int intTmp = _objColour.ToArgb();
+                if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
+                    _objColour = Color.FromArgb(intTmp);
 			}
 
 			if (objNode["readonly"] != null) _readonly = true;
-		    objNode.TryGetField("mademan", out _blnMadeMan);
+		    objNode.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
 		}
 
 		/// <summary>
@@ -8231,19 +7950,14 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_blnTechnomancer = Convert.ToBoolean(objNode["res"].InnerText);
-			_intGrade = Convert.ToInt32(objNode["grade"].InnerText);
-			_blnGroup = Convert.ToBoolean(objNode["group"].InnerText);
-			_blnOrdeal = Convert.ToBoolean(objNode["ordeal"].InnerText);
-            _blnSchooling = Convert.ToBoolean(objNode["schooling"].InnerText);
-            try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            objNode.TryGetBoolFieldQuickly("res", ref _blnTechnomancer);
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            objNode.TryGetBoolFieldQuickly("group", ref _blnGroup);
+            objNode.TryGetBoolFieldQuickly("ordeal", ref _blnOrdeal);
+            objNode.TryGetBoolFieldQuickly("schooling", ref _blnSchooling);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 		}
 		#endregion
 

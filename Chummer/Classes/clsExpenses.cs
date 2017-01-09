@@ -18,6 +18,7 @@
  */
 ﻿using System;
 using System.Xml;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -167,11 +168,15 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_objKarmaExpenseType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
-			_objNuyenExpenseType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
-			_strObjectId = objNode["objectid"].InnerText;
-			_intQty = Convert.ToInt32(objNode["qty"].InnerText);
-			_strExtra = objNode["extra"].InnerText;
+            if (objNode == null)
+                return;
+            if (objNode["karmatype"] != null)
+			    _objKarmaExpenseType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
+            if (objNode["nuyentype"] != null)
+                _objNuyenExpenseType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
+            objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
+            objNode.TryGetInt32FieldQuickly("qty", ref _intQty);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
 		}
 		
 		#endregion
@@ -362,28 +367,18 @@ namespace Chummer
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_intAmount = Convert.ToInt32(objNode["amount"].InnerText);
-			_strReason = objNode["reason"].InnerText;
-			_objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
-			try
-			{
-				_blnRefund = Convert.ToBoolean(objNode["refund"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				if (objNode["undo"] != null)
-				{
-					_objUndo = new ExpenseUndo();
-					_objUndo.Load(objNode["undo"]);
-				}
-			}
-			catch
-			{
-			}
-		}
+            objNode.TryGetInt32FieldQuickly("amount", ref _intAmount);
+            objNode.TryGetStringFieldQuickly("reason", ref _strReason);
+            if (objNode["type"] != null)
+			    _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
+            objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
+
+            if (objNode["undo"] != null)
+            {
+                _objUndo = new ExpenseUndo();
+                _objUndo.Load(objNode["undo"]);
+            }
+        }
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.

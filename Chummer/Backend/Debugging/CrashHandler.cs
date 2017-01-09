@@ -48,23 +48,23 @@ namespace Chummer.Backend.Debugging
 					);
 				attributes.Add("commandline", Environment.CommandLine);
 				attributes.Add("visible-version", Application.ProductVersion);
-				
-				try
-				{
-					RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-					if (!cv.GetValueNames().Contains("ProductId"))
-					{
-						//On 32 bit builds? get 64 bit registry
-						cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-					}
-					
-					attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
-					attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+                if (Registry.LocalMachine != null)
+                {
+                    RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-					
-				}
-				catch{ }
+                    if (cv != null)
+                    {
+                        if (!cv.GetValueNames().Contains("ProductId"))
+                        {
+                            //On 32 bit builds? get 64 bit registry
+                            cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                        }
+
+                        attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
+                        attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+                    }
+                }
 
 				attributes.Add("machine-name", Environment.MachineName);
 				attributes.Add("current-dir", Application.StartupPath);

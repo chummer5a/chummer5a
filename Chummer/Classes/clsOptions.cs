@@ -134,8 +134,34 @@ namespace Chummer
         public static bool _blnUseLogging = false;
 		private static string _strCharacterRosterPath;
 
-		#region Constructor and Instance
-		static GlobalOptions()
+        #region Constructor and Instance
+        /// <summary>
+        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
+        {
+            object objRegistryResult = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue(strBoolName);
+            if (objRegistryResult != null)
+            {
+                bool blnTemp;
+                if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
+                    blnStorage = blnTemp;
+            }
+        }
+
+        /// <summary>
+        /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private static void LoadStringFromRegistry(ref string strStorage, string strBoolName)
+        {
+            object objRegistryResult = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue(strBoolName);
+            if (objRegistryResult != null)
+            {
+                strStorage = objRegistryResult.ToString();
+            }
+        }
+
+        static GlobalOptions()
 		{
 			if (Utils.IsRunningInVisualStudio()) return;
 
@@ -143,205 +169,84 @@ namespace Chummer
 			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
-			// Automatic Update.
-			try
-			{
-				_blnAutomaticUpdate = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("autoupdate").ToString());
-			}
-			catch
-			{
-			}
+            // Automatic Update.
+            LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
-			try
-			{
-				_lifeModuleEnabled =
-					Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("lifemodule").ToString());
-			}
-			catch 
-			{
-			}
+            LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
 
-			try
-			{
-				_omaeEnabled =
-					Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeenabled").ToString());
-			}
-			catch 
-			{
-			}
+            LoadBoolFromRegistry(ref _omaeEnabled, "omaeenabled");
 
             // Whether or not the app should only download localised files in the user's selected language.
-			try
-			{
-				_blnLocalisedUpdatesOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("localisedupdatesonly").ToString());
-			}
-			catch
-			{
-			}
+            LoadBoolFromRegistry(ref _blnLocalisedUpdatesOnly, "localisedupdatesonly");
 
             // Whether or not the app should use logging.
-            try
-            {
-                _blnUseLogging = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("uselogging").ToString());
-            }
-            catch
-            {
-            }
+            LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             // Whether or not dates should include the time.
-			try
-			{
-				_blnDatesIncludeTime = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("datesincludetime").ToString());
-			}
-			catch
-			{
-			}
+            LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
 
-			try
-			{
-				_blnMissionsOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("missionsonly").ToString());
-			}
-			catch { }
+            LoadBoolFromRegistry(ref _blnMissionsOnly, "missionsonly");
 
-			try
-			{
-				_blnDronemods = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("dronemods").ToString());
-			}
-			catch { }
+            LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
 
-            try
-            {
-                _blnDronemodsMaximumPilot = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("dronemodsPilot").ToString());
-            }
-            catch { }
-
+            LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
 
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
-            try
-			{
-				_blnPrintToFileFirst = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printtofilefirst").ToString());
-			}
-			catch
-			{
-			}
+            LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
-			// Default character sheet.
-			try
-			{
-				_strDefaultCharacterSheet = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("defaultsheet").ToString();
-			}
-			catch
-			{
-			}
+            // Default character sheet.
+            LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
 
-			// Omae Settings.
-			// Username.
-			try
+            // Omae Settings.
+            // Username.
+            LoadStringFromRegistry(ref _strOmaeUserName, "omaeusername");
+            // Password.
+            LoadStringFromRegistry(ref _strOmaePassword, "omaepassword");
+            // AutoLogin.
+            LoadBoolFromRegistry(ref _blnOmaeAutoLogin, "omaeautologin");
+            // Language.
+            LoadStringFromRegistry(ref _strLanguage, "language");
+			if (_strLanguage == "en-us2")
 			{
-				_strOmaeUserName = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeusername").ToString();
+				_strLanguage = "en-us";
 			}
-			catch
-			{
-			}
-			// Password.
-			try
-			{
-				_strOmaePassword = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaepassword").ToString();
-			}
-			catch
-			{
-			}
-			// AutoLogin.
-			try
-			{
-				_blnOmaeAutoLogin = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeautologin").ToString());
-			}
-			catch
-			{
-			}
-			// Language.
-			try
-			{
-				_strLanguage = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("language").ToString();
-				if (_strLanguage == "en-us2")
-				{
-					_strLanguage = "en-us";
-				}
-			}
-			catch
-			{
-			}
-			// Startup in Fullscreen mode.
-			try
-			{
-				_blnStartupFullscreen = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("startupfullscreen").ToString());
-			}
-			catch
-			{
-			}
-			// Single instace of the Dice Roller window.
-			try
-			{
-				_blnSingleDiceRoller = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("singlediceroller").ToString());
-			}
-			catch
-			{
-			}
+            // Startup in Fullscreen mode.
+            LoadBoolFromRegistry(ref _blnStartupFullscreen, "startupfullscreen");
+            // Single instace of the Dice Roller window.
+            LoadBoolFromRegistry(ref _blnSingleDiceRoller, "singlediceroller");
 
             // Open PDFs as URLs. For use with Chrome, Firefox, etc.
-            try
-            {
-                _strPDFParameters = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("pdfparameters").ToString();
-            }
-            catch
-            {
-            }
+            LoadStringFromRegistry(ref _strPDFParameters, "pdfparameters");
 
             // PDF application path.
-            try
-			{
-				_strPDFAppPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("pdfapppath").ToString();
-			}
-			catch
-			{
-			}
+            LoadStringFromRegistry(ref _strPDFAppPath, "pdfapppath");
 
-			// Folder path to check for characters.
-			try
-			{
-				_strCharacterRosterPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("characterrosterpath").ToString();
-			}
-			catch
-			{
-			}
+            // Folder path to check for characters.
+            LoadStringFromRegistry(ref _strCharacterRosterPath, "characterrosterpath");
 
-			// Prefer Nightly Updates.
-			try
-			{
-				_blnPreferNightlyUpdates = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("prefernightlybuilds").ToString());
-			}
-			catch
-			{
-			}
+            // Prefer Nightly Updates.
+            LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
 			// Retrieve the SourcebookInfo objects.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
 			XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book");
 			foreach (XmlNode objXmlBook in objXmlBookList)
 			{
-				try
+				if (objXmlBook["code"] != null)
 				{
 					SourcebookInfo objSource = new SourcebookInfo();
-					string strTemp = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook").GetValue(objXmlBook["code"].InnerText).ToString();
-					string[] strParts = strTemp.Split('|');
-					objSource.Code = objXmlBook["code"].InnerText;
-					objSource.Path = strParts[0];
-					objSource.Offset = Convert.ToInt32(strParts[1]);
+                    string strTemp = "";
+                    LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText);
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string[] strParts = strTemp.Split('|');
+                        objSource.Code = objXmlBook["code"].InnerText;
+                        objSource.Path = strParts[0];
+                        if (strParts.Length > 1)
+                            objSource.Offset = Convert.ToInt32(strParts[1]);
 
-					_lstSourcebookInfo.Add(objSource);
-				}
-				catch
-				{
+                        _lstSourcebookInfo.Add(objSource);
+                    }
 				}
 			}
 
@@ -773,12 +678,9 @@ namespace Chummer
 			{
 				for (i = strFiles.Count + 1; i <= 10; i++)
 				{
-					try
+					if (objRegistry.GetValue("mru" + i.ToString()) != null)
 					{
 						objRegistry.DeleteValue("mru" + i.ToString());
-					}
-					catch
-					{
 					}
 				}
 			}
@@ -859,12 +761,9 @@ namespace Chummer
 			{
 				for (i = strFiles.Count + 1; i <= 10; i++)
 				{
-					try
-					{
+                    if (objRegistry.GetValue("stickymru" + i.ToString()) != null)
+                    {
 						objRegistry.DeleteValue("stickymru" + i.ToString());
-					}
-					catch
-					{
 					}
 				}
 			}

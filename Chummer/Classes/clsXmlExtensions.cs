@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Chummer;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
@@ -230,5 +231,188 @@ namespace Chummer
 		    return false;
 	    }
 
+        /// <summary>
+        /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
+        /// </summary>
+        public static bool ProcessFilterOperationNode(this XmlNode objXmlParentNode, XmlNode objXmlOperationNode, bool boolIsOrNode = false)
+        {
+            if (objXmlParentNode == null || objXmlOperationNode == null)
+                return false;
+
+            XmlNodeList objXmlNodeList = objXmlOperationNode.SelectNodes("*");
+            bool boolInvert = false;
+            string strOperationType = "==";
+            bool boolOperationChildNodeResult = false;
+            bool boolSubNodeResult = false;
+            foreach (XmlNode objXmlOperationChildNode in objXmlNodeList)
+            {
+                boolInvert = false;
+                if (objXmlOperationChildNode.Attributes?["NOT"] != null)
+                    boolInvert = true;
+
+                if (objXmlOperationChildNode.Name == "OR")
+                {
+                    boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, true) != boolInvert;
+                }
+                else if (objXmlOperationChildNode.Name == "AND")
+                {
+                    boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, false) != boolInvert;
+                }
+                else
+                {
+                    XmlNodeList objXmlTargetNodeList = objXmlParentNode.SelectNodes(objXmlOperationChildNode.Name);
+                    // If we're just checking for existance of a node, no need for more processing
+                    if (objXmlOperationChildNode.Attributes["operation"]?.InnerText == "exists")
+                    {
+                        boolOperationChildNodeResult = (objXmlTargetNodeList.Count > 0) != boolInvert;
+                    }
+                    else
+                    {
+                        // default is "any", replace with switch() if more check modes are necessary
+                        boolOperationChildNodeResult = false;
+                        if (objXmlOperationChildNode.Attributes["checktype"]?.InnerText == "all")
+                            boolOperationChildNodeResult = true;
+
+                        boolSubNodeResult = boolInvert;
+                        foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
+                        {
+                            boolSubNodeResult = boolInvert;
+                            if (objXmlTargetNode.SelectNodes("*").Count > 0)
+                            {
+                                if (objXmlOperationChildNode.SelectNodes("*").Count > 0)
+                                    boolSubNodeResult = ProcessFilterOperationNode(objXmlTargetNode, objXmlOperationChildNode, objXmlOperationChildNode.Attributes?["OR"] != null) != boolInvert;
+                            }
+                            else
+                            {
+                                strOperationType = "==";
+                                if (objXmlOperationChildNode.Attributes["operation"] != null)
+                                    strOperationType = objXmlOperationChildNode.Attributes["operation"].InnerText;
+                                // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
+                                switch (strOperationType)
+                                {
+                                    case "doesnotequal":
+                                    case "notequals":
+                                    case "!=":
+                                        boolInvert = !boolInvert;
+                                        goto case "==";
+                                    case "lessthan":
+                                        boolInvert = !boolInvert;
+                                        goto case ">=";
+                                    case "lessthanequals":
+                                        boolInvert = !boolInvert;
+                                        goto case ">";
+
+                                    case "like":
+                                    case "contains":
+                                        boolSubNodeResult = objXmlTargetNode.InnerText.Contains(objXmlOperationChildNode.InnerText) != boolInvert;
+                                        break;
+                                    case "greaterthan":
+                                    case ">":
+                                        boolSubNodeResult = (System.Convert.ToInt32(objXmlTargetNode.InnerText) > Convert.ToInt32(objXmlOperationChildNode.InnerText)) != boolInvert;
+                                        break;
+                                    case "greaterthanequals":
+                                    case ">=":
+                                        boolSubNodeResult = (Convert.ToInt32(objXmlTargetNode.InnerText) >= Convert.ToInt32(objXmlOperationChildNode.InnerText)) != boolInvert;
+                                        break;
+                                    case "equals":
+                                    case "==":
+                                    default:
+                                        boolSubNodeResult = (objXmlTargetNode.InnerText == objXmlOperationChildNode.InnerText) != boolInvert;
+                                        break;
+                                }
+                            }
+                            if (objXmlOperationChildNode.Attributes["checktype"]?.InnerText == "all")
+                            {
+                                if (!boolSubNodeResult)
+                                {
+                                    boolOperationChildNodeResult = false;
+                                    break;
+                                }
+                            }
+                            // default is "any", replace above with a switch() should more than two checktypes be required
+                            else if (boolSubNodeResult)
+                            {
+                                boolOperationChildNodeResult = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (boolIsOrNode && boolOperationChildNodeResult)
+                    return true;
+                else if (!boolIsOrNode && !boolOperationChildNodeResult)
+                    return false;
+            }
+
+            return !boolIsOrNode;
+        }
+
+        /// <summary>
+        /// Like TryGetField for strings, only with as little overhead as possible.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetStringFieldQuickly(this XmlNode node, String field, ref String read)
+        {
+            if (node[field] != null)
+            {
+                read = node[field].InnerText;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Like TryGetField for ints, but taking advantage of int.TryParse... boo, no TryParse interface! :(
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetInt32FieldQuickly(this XmlNode node, String field, ref int read)
+        {
+            if (node[field] != null)
+            {
+                int intTmp;
+                if (int.TryParse(node[field].InnerText, out intTmp))
+                {
+                    read = intTmp;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Like TryGetField for bools, but taking advantage of bool.TryParse... boo, no TryParse interface! :(
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetBoolFieldQuickly(this XmlNode node, String field, ref bool read)
+        {
+            if (node[field] != null)
+            {
+                bool blnTmp;
+                if (bool.TryParse(node[field].InnerText, out blnTmp))
+                {
+                    read = blnTmp;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Like TryGetField for decimals, but taking advantage of decimal.TryParse... boo, no TryParse interface! :(
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetDecFieldQuickly(this XmlNode node, String field, ref decimal read)
+        {
+            if (node[field] != null)
+            {
+                decimal decTmp;
+                if (decimal.TryParse(node[field].InnerText, out decTmp))
+                {
+                    read = decTmp;
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

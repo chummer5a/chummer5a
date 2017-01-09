@@ -76,83 +76,98 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
-			_strName = objXmlVehicle["name"].InnerText;
-			_strCategory = objXmlVehicle["category"].InnerText;
-			//Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
-			if (objXmlVehicle["handling"].InnerText.Contains('/'))
-			{
-				_intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText.Split('/')[0]);
-				_intOffroadHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText.Split('/')[1]);
-			}
-			else
-			{
-				_intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText);
-                _intOffroadHandling = _intHandling;
-            }
-            if (objXmlVehicle["accel"].InnerText.Contains('/'))
+            objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (objXmlVehicle["handling"] != null)
             {
-                _intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText.Split('/')[0]);
-                _intOffroadAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText.Split('/')[1]);
+                //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
+                if (objXmlVehicle["handling"].InnerText.Contains('/'))
+                {
+                    _intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText.Split('/')[0]);
+                    _intOffroadHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText.Split('/')[1]);
+                }
+                else
+                {
+                    _intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText);
+                    _intOffroadHandling = _intHandling;
+                }
             }
-            else
+            if (objXmlVehicle["accel"] != null)
             {
-                _intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText);
-                _intOffroadAccel = _intAccel;
+                if (objXmlVehicle["accel"].InnerText.Contains('/'))
+                {
+                    _intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText.Split('/')[0]);
+                    _intOffroadAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText.Split('/')[1]);
+                }
+                else
+                {
+                    _intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText);
+                    _intOffroadAccel = _intAccel;
+                }
             }
-            if (objXmlVehicle["speed"].InnerText.Contains('/'))
+            if (objXmlVehicle["speed"] != null)
             {
-                _intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText.Split('/')[0]);
-                _intOffroadSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText.Split('/')[1]);
+                if (objXmlVehicle["speed"].InnerText.Contains('/'))
+                {
+                    _intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText.Split('/')[0]);
+                    _intOffroadSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText.Split('/')[1]);
+                }
+                else
+                {
+                    _intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText);
+                    _intOffroadSpeed = _intSpeed;
+                }
             }
-            else
+            objXmlVehicle.TryGetInt32FieldQuickly("pilot", ref _intPilot);
+            objXmlVehicle.TryGetInt32FieldQuickly("body", ref _intBody);
+            objXmlVehicle.TryGetInt32FieldQuickly("armor", ref _intArmor);
+            objXmlVehicle.TryGetInt32FieldQuickly("sensor", ref _intSensor);
+			objXmlVehicle.TryGetInt32FieldQuickly("seats", ref _intSeats);
+            if (!objXmlVehicle.TryGetInt32FieldQuickly("modslots", ref _intDroneModSlots))
+                _intDroneModSlots = _intBody;
+            objXmlVehicle.TryGetInt32FieldQuickly("powertrainmodslots", ref _intAddPowertrainModSlots);
+			objXmlVehicle.TryGetInt32FieldQuickly("protectionmodslots", ref _intAddProtectionModSlots);
+			objXmlVehicle.TryGetInt32FieldQuickly("weaponmodslots", ref _intAddWeaponModSlots);
+			objXmlVehicle.TryGetInt32FieldQuickly("bodymodslots", ref _intAddBodyModSlots);
+			objXmlVehicle.TryGetInt32FieldQuickly("electromagneticmodslots", ref _intAddElectromagneticModSlots);
+			objXmlVehicle.TryGetInt32FieldQuickly("cosmeticmodslots", ref _intAddCosmeticModSlots);
+            objXmlVehicle.TryGetStringFieldQuickly("avail", ref _strAvail);
+            if (objXmlVehicle["cost"] != null)
             {
-                _intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText);
-                _intOffroadSpeed = _intSpeed;
-            }
-			_intPilot = Convert.ToInt32(objXmlVehicle["pilot"].InnerText);
-			_intBody = Convert.ToInt32(objXmlVehicle["body"].InnerText);
-			_intArmor = Convert.ToInt32(objXmlVehicle["armor"].InnerText);
-			_intSensor = Convert.ToInt32(objXmlVehicle["sensor"].InnerText);
-			objXmlVehicle.TryGetField("seats", out _intSeats);
-			objXmlVehicle.TryGetField("modslots", out _intDroneModSlots,_intBody);
-			objXmlVehicle.TryGetField("powertrainmodslots", out _intAddPowertrainModSlots);
-			objXmlVehicle.TryGetField("protectionmodslots", out _intAddProtectionModSlots);
-			objXmlVehicle.TryGetField("weaponmodslots", out _intAddWeaponModSlots);
-			objXmlVehicle.TryGetField("bodymodslots", out _intAddBodyModSlots);
-			objXmlVehicle.TryGetField("electromagneticmodslots", out _intAddElectromagneticModSlots);
-			objXmlVehicle.TryGetField("cosmeticmodslots", out _intAddCosmeticModSlots);
-			_strAvail = objXmlVehicle["avail"].InnerText;
-			_strCost = objXmlVehicle["cost"].InnerText;
-			// Check for a Variable Cost.
-			if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
-			{
-				int intMin = 0;
-				int intMax = 0;
-				string strCost = objXmlVehicle["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-				if (strCost.Contains("-"))
-				{
-					string[] strValues = strCost.Split('-');
-					intMin = Convert.ToInt32(strValues[0]);
-					intMax = Convert.ToInt32(strValues[1]);
-				}
-				else
-					intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                // Check for a Variable Cost.
+                if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
+                {
+                    int intMin = 0;
+                    int intMax = 0;
+                    char[] chrParentheses = { '(', ')' };
+                    string strCost = objXmlVehicle["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-				if (intMin != 0 || intMax != 0)
-				{
-					frmSelectNumber frmPickNumber = new frmSelectNumber();
-					if (intMax == 0)
-						intMax = 1000000;
-					frmPickNumber.Minimum = intMin;
-					frmPickNumber.Maximum = intMax;
-					frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
-					frmPickNumber.AllowCancel = false;
-					frmPickNumber.ShowDialog();
-					_strCost = frmPickNumber.SelectedValue.ToString();
-				}
-			}
-			_strSource = objXmlVehicle["source"].InnerText;
-			_strPage = objXmlVehicle["page"].InnerText;
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString();
+                    }
+                }
+                else
+                    _strCost = objXmlVehicle["cost"].InnerText;
+            }
+            objXmlVehicle.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlVehicle.TryGetStringFieldQuickly("page", ref _strPage);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -160,10 +175,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _strName + "\"]");
 				if (objVehicleNode != null)
 				{
-					if (objVehicleNode["translate"] != null)
-						_strAltName = objVehicleNode["translate"].InnerText;
-					if (objVehicleNode["altpage"] != null)
-						_strAltPage = objVehicleNode["altpage"].InnerText;
+                    objVehicleNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objVehicleNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -338,8 +351,7 @@ namespace Chummer.Backend.Equipment
 							TreeNode objModNode = new TreeNode();
 							string strMount = "Internal";
 							int intRating = 0;
-							if (objXmlAccessory["mount"] != null)
-								strMount = objXmlAccessory["mount"].InnerText;
+                            objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
                             string strExtraMount = "None";
                             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                                 strMount = objXmlAccessory["extramount"].InnerText;      
@@ -443,70 +455,88 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			//Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
-			if (objNode["handling"].InnerText.Contains('/'))
-			{
-				_intHandling = Convert.ToInt32(objNode["handling"].InnerText.Split('/')[0]);
-				_intOffroadHandling = Convert.ToInt32(objNode["handling"].InnerText.Split('/')[1]);
-			}
-			else
-			{
-				_intHandling = Convert.ToInt32(objNode["handling"].InnerText);
-				if (objNode.InnerXml.Contains("offroadhandling"))
-				{
-					_intOffroadHandling = Convert.ToInt32(objNode["offroadhandling"].InnerText);
-				}
-			}
-            if (objNode["accel"].InnerText.Contains('/'))
+            if (blnCopy)
             {
-                _intAccel = Convert.ToInt32(objNode["accel"].InnerText.Split('/')[0]);
-                _intOffroadAccel = Convert.ToInt32(objNode["accel"].InnerText.Split('/')[1]);
+                _guiID = Guid.NewGuid();
+                _blnHomeNode = false;
             }
             else
             {
-                _intAccel = Convert.ToInt32(objNode["accel"].InnerText);
-                if (objNode.InnerXml.Contains("offroadaccel"))
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+                objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
+            }
+            
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (objNode["handling"] != null)
+            {
+                //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
+                if (objNode["handling"].InnerText.Contains('/'))
                 {
-                    _intOffroadAccel = Convert.ToInt32(objNode["offroadaccel"].InnerText);
+                    _intHandling = Convert.ToInt32(objNode["handling"].InnerText.Split('/')[0]);
+                    _intOffroadHandling = Convert.ToInt32(objNode["handling"].InnerText.Split('/')[1]);
+                }
+                else
+                {
+                    _intHandling = Convert.ToInt32(objNode["handling"].InnerText);
+                    if (objNode.InnerXml.Contains("offroadhandling"))
+                    {
+                        _intOffroadHandling = Convert.ToInt32(objNode["offroadhandling"].InnerText);
+                    }
                 }
             }
-            if (objNode["speed"].InnerText.Contains('/'))
+            if (objNode["accel"] != null)
             {
-                _intSpeed = Convert.ToInt32(objNode["speed"].InnerText.Split('/')[0]);
-                _intOffroadSpeed = Convert.ToInt32(objNode["speed"].InnerText.Split('/')[1]);
-            }
-            else
-            {
-                _intSpeed = Convert.ToInt32(objNode["speed"].InnerText);
-                if (objNode.InnerXml.Contains("offroadspeed"))
+                if (objNode["accel"].InnerText.Contains('/'))
                 {
-                    _intOffroadSpeed = Convert.ToInt32(objNode["offroadspeed"].InnerText);
+                    _intAccel = Convert.ToInt32(objNode["accel"].InnerText.Split('/')[0]);
+                    _intOffroadAccel = Convert.ToInt32(objNode["accel"].InnerText.Split('/')[1]);
+                }
+                else
+                {
+                    _intAccel = Convert.ToInt32(objNode["accel"].InnerText);
+                    if (objNode.InnerXml.Contains("offroadaccel"))
+                    {
+                        _intOffroadAccel = Convert.ToInt32(objNode["offroadaccel"].InnerText);
+                    }
                 }
             }
-			objNode.TryGetField("seats", out _intSeats);
-			_intPilot = Convert.ToInt32(objNode["pilot"].InnerText);
-			_intBody = Convert.ToInt32(objNode["body"].InnerText);
-			_intArmor = Convert.ToInt32(objNode["armor"].InnerText);
-			_intSensor = Convert.ToInt32(objNode["sensor"].InnerText);
-			_strAvail = objNode["avail"].InnerText;
-			_strCost = objNode["cost"].InnerText;
-			objNode.TryGetField("addslots", out _intAddSlots);
-			objNode.TryGetField("modslots", out _intDroneModSlots);
-			objNode.TryGetField("powertrainmodslots", out _intAddPowertrainModSlots);
-			objNode.TryGetField("protectionmodslots", out _intAddProtectionModSlots);
-			objNode.TryGetField("weaponmodslots", out _intAddWeaponModSlots);
-			objNode.TryGetField("bodymodslots", out _intAddBodyModSlots);
-			objNode.TryGetField("electromagneticmodslots", out _intAddElectromagneticModSlots);
-			objNode.TryGetField("cosmeticmodslots", out _intAddCosmeticModSlots);
-			_strSource = objNode["source"].InnerText;
-			objNode.TryGetField("page", out _strPage);
-			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
-			objNode.TryGetField("physicalcmfilled", out _intPhysicalCMFilled);
-			objNode.TryGetField("vehiclename", out _strVehicleName);
-			objNode.TryGetField("homenode", out _blnHomeNode);
+            if (objNode["speed"] != null)
+            {
+                if (objNode["speed"].InnerText.Contains('/'))
+                {
+                    _intSpeed = Convert.ToInt32(objNode["speed"].InnerText.Split('/')[0]);
+                    _intOffroadSpeed = Convert.ToInt32(objNode["speed"].InnerText.Split('/')[1]);
+                }
+                else
+                {
+                    _intSpeed = Convert.ToInt32(objNode["speed"].InnerText);
+                    if (objNode.InnerXml.Contains("offroadspeed"))
+                    {
+                        _intOffroadSpeed = Convert.ToInt32(objNode["offroadspeed"].InnerText);
+                    }
+                }
+            }
+			objNode.TryGetInt32FieldQuickly("seats", ref _intSeats);
+            objNode.TryGetInt32FieldQuickly("pilot", ref _intPilot);
+            objNode.TryGetInt32FieldQuickly("body", ref _intBody);
+            objNode.TryGetInt32FieldQuickly("armor", ref _intArmor);
+            objNode.TryGetInt32FieldQuickly("sensor", ref _intSensor);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+			objNode.TryGetInt32FieldQuickly("addslots", ref _intAddSlots);
+			objNode.TryGetInt32FieldQuickly("modslots", ref _intDroneModSlots);
+			objNode.TryGetInt32FieldQuickly("powertrainmodslots", ref _intAddPowertrainModSlots);
+			objNode.TryGetInt32FieldQuickly("protectionmodslots", ref _intAddProtectionModSlots);
+			objNode.TryGetInt32FieldQuickly("weaponmodslots", ref _intAddWeaponModSlots);
+			objNode.TryGetInt32FieldQuickly("bodymodslots", ref _intAddBodyModSlots);
+			objNode.TryGetInt32FieldQuickly("electromagneticmodslots", ref _intAddElectromagneticModSlots);
+			objNode.TryGetInt32FieldQuickly("cosmeticmodslots", ref _intAddCosmeticModSlots);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+			objNode.TryGetStringFieldQuickly("page", ref _strPage);
+			objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
+			objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
+			objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -514,10 +544,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _strName + "\"]");
 				if (objVehicleNode != null)
 				{
-					if (objVehicleNode["translate"] != null)
-						_strAltName = objVehicleNode["translate"].InnerText;
-					if (objVehicleNode["altpage"] != null)
-						_strAltPage = objVehicleNode["altpage"].InnerText;
+                    objVehicleNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objVehicleNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -580,8 +608,8 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			objNode.TryGetField("notes", out _strNotes);
-			objNode.TryGetField("dealerconnection", out _blnDealerConnectionDiscount);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+			objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount);
 
 			if (objNode["locations"] != null)
 			{
@@ -590,12 +618,6 @@ namespace Chummer.Backend.Equipment
 				{
 					_lstLocations.Add(objXmlLocation.InnerText);
 				}
-			}
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-				_blnHomeNode = false;
 			}
 		}
 

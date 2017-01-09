@@ -183,16 +183,10 @@ namespace Chummer
 			// Select the first Category in the list.
 			if (_strSelectCategory == "")
 				cboCategory.SelectedIndex = 0;
-			else
+			else if (cboCategory.Items.Contains(_strSelectCategory))
 			{
-				try
-				{
-					cboCategory.SelectedValue = _strSelectCategory;
-				}
-				catch
-				{
-				}
-			}
+                cboCategory.SelectedValue = _strSelectCategory;
+            }
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
@@ -510,14 +504,15 @@ namespace Chummer
 				else
 					objItem.Name = objXmlCyberware["name"].InnerText;
 
-				try
-				{
-					objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText).Name + "]";
-					lstCyberwares.Add(objItem);
-				}
-				catch
-				{
-				}
+                if (objXmlCyberware["category"] != null && objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
+                {
+                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
+                    if (objFoundItem != null)
+                    {
+                        objItem.Name += " [" + objFoundItem.Name + "]";
+                    }
+                }
+                lstCyberwares.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
@@ -544,39 +539,25 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstCyberware.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstCyberware.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
+                if (lstCyberware.SelectedIndex + 1 < lstCyberware.Items.Count)
+                {
+                    lstCyberware.SelectedIndex++;
+                }
+                else if (lstCyberware.Items.Count > 0)
+                {
+                    lstCyberware.SelectedIndex = 0;
+                }
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstCyberware.SelectedIndex--;
-					if (lstCyberware.SelectedIndex == -1)
-						lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
+                if (lstCyberware.SelectedIndex - 1 >= 0)
+                {
+                    lstCyberware.SelectedIndex--;
+                }
+                else if (lstCyberware.Items.Count > 0)
+                {
+                    lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
+                }
 			}
 		}
 
@@ -1180,16 +1161,10 @@ namespace Chummer
 					string strFirstHalf = objXmlCyberware["capacity"].InnerText.Substring(0, intPos);
 					string strSecondHalf = objXmlCyberware["capacity"].InnerText.Substring(intPos + 1, objXmlCyberware["capacity"].InnerText.Length - intPos - 1);
 
-					try
-					{
-						blnSquareBrackets = strFirstHalf.Contains('[');
-						strCapacity = strFirstHalf;
-						if (blnSquareBrackets)
-							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					}
-					catch
-					{
-					}
+					blnSquareBrackets = strFirstHalf.Contains('[');
+					strCapacity = strFirstHalf;
+					if (blnSquareBrackets && strCapacity.Length > 1)
+						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 					xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
 
 					try

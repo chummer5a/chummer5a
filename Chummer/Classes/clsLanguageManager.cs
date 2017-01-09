@@ -146,29 +146,24 @@ namespace Chummer
 		{
 			if (Utils.IsRunningInVisualStudio()) return;
 
-			try
-			{
-				_objDictionary.Clear();
-				XmlDocument objEnglishDocument = new XmlDocument();
-				string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
-				objEnglishDocument.Load(strFilePath);
-				foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
-				{
-					LanguageString objString = new LanguageString();
-					objString.Key = objNode["key"].InnerText;
-					objString.Text = objNode["text"].InnerText;
-					_objDictionary.Add(objNode["key"].InnerText, objNode["text"].InnerText);
-				}
-				_blnLoaded = true;
-			}
-			catch(Exception ex)
-			{
-				MessageBox.Show(ex.ToString());
-				//TODO this might fuck stuff up, remove before release, or fix?
-				//Had obscure bug where this closed visual studio
-				MessageBox.Show("Could not load default language file!" + Path.Combine(Application.StartupPath, "lang", "en-us.xml"), "Default Language Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//Application.Exit();
-			}
+			_objDictionary.Clear();
+			XmlDocument objEnglishDocument = new XmlDocument();
+			string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
+            if (File.Exists(strFilePath))
+            {
+                objEnglishDocument.Load(strFilePath);
+                if (objEnglishDocument != null)
+                {
+                    foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                    {
+                        if (objNode["key"] != null && objNode["text"] != null)
+                        {
+                            _objDictionary.Add(objNode["key"].InnerText, objNode["text"].InnerText);
+                        }
+                    }
+                    _blnLoaded = true;
+                }
+            }
 		}
 
 		/// <summary>
@@ -182,47 +177,43 @@ namespace Chummer
 			string strFilePath = "";
 			if (strLanguage != "en-us" && _strLanguage == "")
 			{
-				try
-				{
-					_strLanguage = strLanguage;
-					XmlDocument objLanguageDocument = new XmlDocument();
-					strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
-					objLanguageDocument.Load(strFilePath);
-					_objXmlDocument.Load(strFilePath);
-					foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
-					{
-						// Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
-						// If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-						try
-						{
-							if (_objDictionary[objNode["key"].InnerText] != null)
-								_objDictionary[objNode["key"].InnerText] = objNode["text"].InnerText;
-						}
-						catch
-						{
-						}
-					}
-				}
-				catch (Exception)
-				{
-					_strLanguage = strLanguage;
-					MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
+				_strLanguage = strLanguage;
+				XmlDocument objLanguageDocument = new XmlDocument();
+				strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                if (File.Exists(strFilePath))
+                {
+                    objLanguageDocument.Load(strFilePath);
+                    if (objLanguageDocument != null)
+                    {
+                        _objXmlDocument.Load(strFilePath);
+                        foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                        {
+                            // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                            // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                            if (objNode["key"] != null && _objDictionary[objNode["key"].InnerText] != null)
+                            {
+                                _objDictionary[objNode["key"].InnerText] = objNode["text"].InnerText;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
 				// Check to see if the data translation file for the selected language exists.
 				string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
 				if (File.Exists(strDataPath))
 				{
-					try
-					{
-						_objXmlDataDocument = new XmlDocument();
-						_objXmlDataDocument.Load(strDataPath);
-					}
-					catch
-					{
-						// Failing to load the data translation file should not render the application unusable.
-					}
+					_objXmlDataDocument = new XmlDocument();
+					_objXmlDataDocument.Load(strDataPath);
 				}
 			}
 
@@ -241,70 +232,39 @@ namespace Chummer
 		/// <param name="objParent">Control container to translate.</param>
 		private void UpdateControls(Control objParent)
 		{
+            if (objParent == null)
+                return;
 			// Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
 
 			foreach (Label lblLabel in objParent.Controls.OfType<Label>())
 			{
-			    if (lblLabel.Tag == null || lblLabel.Tag.ToString() == "") continue;
-			    try
-			    {
-			        lblLabel.Text = GetString(lblLabel.Tag.ToString());
-			    }
-			    catch
-			    {
-			        if (_blnDebug)
-			            throw;
-			        else
-			            lblLabel.Text = lblLabel.Tag.ToString();
-			    }
+			    if (lblLabel.Tag != null && !string.IsNullOrEmpty(lblLabel.Tag.ToString()))
+                {
+                    lblLabel.Text = GetString(lblLabel.Tag.ToString());
+                }
 			}
 			foreach (Button cmdButton in objParent.Controls.OfType<Button>())
 			{
-			    if (cmdButton.Tag == null || cmdButton.Tag.ToString() == "") continue;
-			    try
-			    {
-			        cmdButton.Text = GetString(cmdButton.Tag.ToString());
-			    }
-			    catch
-			    {
-			        if (_blnDebug)
-			            throw;
-			        else
-			            cmdButton.Text = cmdButton.Tag.ToString();
-			    }
+                if (cmdButton.Tag != null && !string.IsNullOrEmpty(cmdButton.Tag.ToString()))
+                {
+                    cmdButton.Text = GetString(cmdButton.Tag.ToString());
+                }
 			}
 			foreach (CheckBox chkCheckbox in objParent.Controls.OfType<CheckBox>())
 			{
-                if (chkCheckbox.Tag == null || chkCheckbox.Tag.ToString() == "") continue;
-				try
-				{
-					if (chkCheckbox.Tag.ToString().Contains("_"))
-						chkCheckbox.Text = GetString(chkCheckbox.Tag.ToString());
-				}
-				catch
-				{
-					if (_blnDebug)
-						throw;
-					else
-						chkCheckbox.Text = chkCheckbox.Tag.ToString();
-				}
+                if (chkCheckbox.Tag != null && !string.IsNullOrEmpty(chkCheckbox.Tag.ToString()))
+                {
+                    chkCheckbox.Text = GetString(chkCheckbox.Tag.ToString());
+                }
 			}
 			foreach (ListView lstList in objParent.Controls.OfType<ListView>())
 			{
 				foreach (ColumnHeader objHeader in lstList.Columns)
 				{
-				    if (objHeader.Tag == null || objHeader.Tag.ToString() == "") continue;
-				    try
-				    {
-				        objHeader.Text = GetString(objHeader.Tag.ToString());
-				    }
-				    catch
-				    {
-				        if (_blnDebug)
-				            throw;
-				        else
-				            objHeader.Text = objHeader.Tag.ToString();
-				    }
+                    if (objHeader.Tag != null && !string.IsNullOrEmpty(objHeader.Tag.ToString()))
+                    {
+                        objHeader.Text = GetString(objHeader.Tag.ToString());
+                    }
 				}
 			}
 
@@ -319,22 +279,12 @@ namespace Chummer
 			{
 				foreach (TabPage tabPage in objTabControl.TabPages)
 				{
-					if (tabPage.Tag != null && tabPage.Tag.ToString() != "")
-					{
-						try
-						{
-							tabPage.Text = GetString(tabPage.Tag.ToString());
-						}
-						catch
-						{
-							if (_blnDebug)
-								throw;
-							else
-								tabPage.Text = tabPage.Tag.ToString();
-						}
-					}
+                    if (tabPage.Tag != null && !string.IsNullOrEmpty(tabPage.Tag.ToString()))
+                    {
+                        tabPage.Text = GetString(tabPage.Tag.ToString());
+                    }
 
-					UpdateControls(tabPage);
+                    UpdateControls(tabPage);
 				}
 			}
 
@@ -369,17 +319,7 @@ namespace Chummer
 						{
 							if (objNode.Tag.ToString().StartsWith("Node_"))
 							{
-								try
-								{
-									objNode.Text = GetString(objNode.Tag.ToString());
-								}
-								catch
-								{
-									if (_blnDebug)
-										throw;
-									else
-										objNode.Text = objNode.Tag.ToString();
-								}
+							    objNode.Text = GetString(objNode.Tag.ToString());
 							}
 						}
 					}
@@ -406,17 +346,7 @@ namespace Chummer
 			// Update the Form itself.
 			if (objForm.Tag != null)
 			{
-				try
-				{
-					objForm.Text = GetString(objForm.Tag.ToString());
-				}
-				catch
-				{
-					if (_blnDebug)
-						throw;
-					else
-						objForm.Text = objForm.Tag.ToString();
-				}
+				objForm.Text = GetString(objForm.Tag.ToString());
 			}
 
             // update any menu strip items that have tags
@@ -432,17 +362,7 @@ namespace Chummer
 				foreach (ToolStripStatusLabel tssLabel in objStrip.Items.OfType<ToolStripStatusLabel>())
 				{
 					if (tssLabel.Tag != null)
-						try
-						{
-							tssLabel.Text = GetString(tssLabel.Tag.ToString());
-						}
-						catch
-						{
-							if (_blnDebug)
-								throw;
-							else
-								tssLabel.Text = tssLabel.Tag.ToString();
-						}
+						tssLabel.Text = GetString(tssLabel.Tag.ToString());
 				}
 			}
 
@@ -457,17 +377,7 @@ namespace Chummer
         private void SetMenuItemsRecursively(ToolStripMenuItem objItem)
         {
             if (objItem.Tag != null)
-                try
-                {
-                    objItem.Text = GetString(objItem.Tag.ToString());
-                }
-                catch
-                {
-                    if (_blnDebug)
-                        throw;
-                    else
-                        objItem.Text = objItem.Tag.ToString();
-                }
+                objItem.Text = GetString(objItem.Tag.ToString());
 
             if (objItem.DropDownItems == null || objItem.DropDownItems.Count == 0)
                 return; // we have no more drop down items to pull
@@ -476,17 +386,7 @@ namespace Chummer
             {
                 SetMenuItemsRecursively(objRecursiveItem);
                 if (objItem.Tag != null)
-                    try
-                    {
-                        objItem.Text = GetString(objItem.Tag.ToString());
-                    }
-                    catch
-                    {
-                        if (_blnDebug)
-                            throw;
-                        else
-                            objItem.Text = objItem.Tag.ToString();
-                    }
+                    objItem.Text = GetString(objItem.Tag.ToString());
             }
         }
        
@@ -497,18 +397,15 @@ namespace Chummer
 		/// <param name="strKey">Key to retrieve.</param>
 		public string GetString(string strKey)
 		{
-            try
+            if (_objDictionary.ContainsKey(strKey))
             {
-                string strReturn = "";
-                strReturn = _objDictionary[strKey].Replace("\\n", "\n");
-                return strReturn;
+                return _objDictionary[strKey].Replace("\\n", "\n");
             }
-            catch
+            else
             {
                 if (Debugger.IsAttached)
                     Debugger.Break();
-                string strReturn = "Error finding string for key - " + strKey;
-                return strReturn;
+                return "Error finding string for key - " + strKey;
             }
 		}
 

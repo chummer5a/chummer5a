@@ -201,27 +201,23 @@ namespace Chummer
 			cboCategory.DataSource = _lstCategory;
 
 			// Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
-			try
+			if (cboCategory.Items.Contains("Metahuman"))
 			{
 				cboCategory.SelectedValue = "Metahuman";
 			}
-			catch
+			else
 			{
 				cboCategory.SelectedIndex = 0;
 			}
-			if (cboCategory.SelectedIndex == -1)
-				cboCategory.SelectedIndex = 0;
 
-            try
+            if (cboCategory.Items.Contains("Human"))
             {
                 lstMetatypes.SelectedValue = "Human";
             }
-            catch
+            else
             {
                 cboCategory.SelectedIndex = 0;
             }
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
 
 			this.Height = cmdOK.Bottom + 40;
 			lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
@@ -352,56 +348,44 @@ namespace Chummer
                     // Build a list of the Metavariant's Positive Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                     {
-                        try
+                        if (GlobalOptions.Instance.Language != "en-us")
                         {
-                            if (GlobalOptions.Instance.Language != "en-us")
-                            {
-                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                                if (objQuality["translate"] != null)
-                                    strQualities += objQuality["translate"].InnerText;
-                                else
-                                    strQualities += objXmlQuality.InnerText;
-
-                                if (objXmlQuality.Attributes["select"].InnerText != "")
-                                    strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-                            }
+                            XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                            if (objQuality["translate"] != null)
+                                strQualities += objQuality["translate"].InnerText;
                             else
-                            {
                                 strQualities += objXmlQuality.InnerText;
-                                if (objXmlQuality.Attributes["select"].InnerText != "")
-                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-                            }
+
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
-                        catch
+                        else
                         {
+                            strQualities += objXmlQuality.InnerText;
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
                         }
                         strQualities += "\n";
                     }
                     // Build a list of the Metavariant's Negative Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                     {
-                        try
+                        if (GlobalOptions.Instance.Language != "en-us")
                         {
-                            if (GlobalOptions.Instance.Language != "en-us")
-                            {
-                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                                if (objQuality["translate"] != null)
-                                    strQualities += objQuality["translate"].InnerText;
-                                else
-                                    strQualities += objXmlQuality.InnerText;
-
-                                if (objXmlQuality.Attributes["select"].InnerText != "")
-                                    strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-                            }
+                            XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                            if (objQuality["translate"] != null)
+                                strQualities += objQuality["translate"].InnerText;
                             else
-                            {
                                 strQualities += objXmlQuality.InnerText;
-                                if (objXmlQuality.Attributes["select"].InnerText != "")
-                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-                            }
+
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
-                        catch
+                        else
                         {
+                            strQualities += objXmlQuality.InnerText;
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
                         }
                         strQualities += "\n";
                     }
@@ -456,56 +440,44 @@ namespace Chummer
 				// Build a list of the Metavariant's Positive Qualities.
 				foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/positive/quality"))
 				{
-					try
+					if (GlobalOptions.Instance.Language != "en-us")
 					{
-						if (GlobalOptions.Instance.Language != "en-us")
-						{
-							XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-							if (objQuality["translate"] != null)
-								strQualities += objQuality["translate"].InnerText;
-							else
-								strQualities += objXmlQuality.InnerText;
-
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-						}
+						XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+						if (objQuality["translate"] != null)
+							strQualities += objQuality["translate"].InnerText;
 						else
-						{
 							strQualities += objXmlQuality.InnerText;
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-						}
+
+						if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+							strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
 					}
-					catch
+					else
 					{
+						strQualities += objXmlQuality.InnerText;
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
 					}
 					strQualities += "\n";
 				}
 				// Build a list of the Metavariant's Negative Qualities.
 				foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/negative/quality"))
 				{
-					try
+					if (GlobalOptions.Instance.Language != "en-us")
 					{
-						if (GlobalOptions.Instance.Language != "en-us")
-						{
-							XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-							if (objQuality["translate"] != null)
-								strQualities += objQuality["translate"].InnerText;
-							else
-								strQualities += objXmlQuality.InnerText;
-
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-						}
+						XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+						if (objQuality["translate"] != null)
+							strQualities += objQuality["translate"].InnerText;
 						else
-						{
 							strQualities += objXmlQuality.InnerText;
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-						}
+
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
 					}
-					catch
+					else
 					{
+						strQualities += objXmlQuality.InnerText;
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
 					}
 					strQualities += "\n";
 				}
@@ -518,56 +490,44 @@ namespace Chummer
 				// Build a list of the Metavariant's Positive Qualities.
 				foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
 				{
-					try
+					if (GlobalOptions.Instance.Language != "en-us")
 					{
-						if (GlobalOptions.Instance.Language != "en-us")
-						{
-							XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-							if (objQuality["translate"] != null)
-								strQualities += objQuality["translate"].InnerText;
-							else
-								strQualities += objXmlQuality.InnerText;
-
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-						}
+						XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+						if (objQuality["translate"] != null)
+							strQualities += objQuality["translate"].InnerText;
 						else
-						{
 							strQualities += objXmlQuality.InnerText;
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-						}
+
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
 					}
-					catch
+					else
 					{
+						strQualities += objXmlQuality.InnerText;
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
 					}
 					strQualities += "\n";
 				}
 				// Build a list of the Metavariant's Negative Qualities.
 				foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
 				{
-					try
+					if (GlobalOptions.Instance.Language != "en-us")
 					{
-						if (GlobalOptions.Instance.Language != "en-us")
-						{
-							XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-							if (objQuality["translate"] != null)
-								strQualities += objQuality["translate"].InnerText;
-							else
-								strQualities += objXmlQuality.InnerText;
-
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-						}
+						XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+						if (objQuality["translate"] != null)
+							strQualities += objQuality["translate"].InnerText;
 						else
-						{
 							strQualities += objXmlQuality.InnerText;
-							if (objXmlQuality.Attributes["select"].InnerText != "")
-								strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-						}
+
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
 					}
-					catch
+					else
 					{
+						strQualities += objXmlQuality.InnerText;
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
 					}
 					strQualities += "\n";
 				}
@@ -1166,20 +1126,20 @@ namespace Chummer
 		/// <returns></returns>
 		public string ExpressionToString(string strIn, int intForce, int intOffset)
 		{
-			int intValue = 0;
+			int intValue = 1;
 			XmlDocument objXmlDocument = new XmlDocument();
 			XPathNavigator nav = objXmlDocument.CreateNavigator();
 			XPathExpression xprAttribute = nav.Compile(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
-			// This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
-			try
+            object xprEvaluateResult = null;
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
 			{
-				intValue = Convert.ToInt32(nav.Evaluate(xprAttribute).ToString());
+                xprEvaluateResult = nav.Evaluate(xprAttribute);
 			}
-			catch
-			{
-				intValue = 1;
-			}
-			intValue += intOffset;
+			catch(System.Xml.XPath.XPathException) { }
+            if (xprEvaluateResult != null && xprEvaluateResult.GetType() == typeof(System.Double))
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
+            intValue += intOffset;
 			if (intForce > 0)
 			{
 				if (intValue < 1)
