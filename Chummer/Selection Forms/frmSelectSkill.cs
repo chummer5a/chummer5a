@@ -165,15 +165,12 @@ namespace Chummer
 			else
 			{
 				// Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
-				foreach (Skill objKnow in _objCharacter.SkillsSection.Skills)
+				foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
 				{
-					if (objKnow.IsKnowledgeSkill)
-					{
-						ListItem objSkill = new ListItem();
-						objSkill.Value = objKnow.Name;
-						objSkill.Name = objKnow.DisplayName;
-						lstSkills.Add(objSkill);
-					}
+					ListItem objSkill = new ListItem();
+					objSkill.Value = objKnow.Name;
+					objSkill.Name = objKnow.DisplayName;
+					lstSkills.Add(objSkill);
 				}
 			}
 			SortListItem objSort = new SortListItem();
