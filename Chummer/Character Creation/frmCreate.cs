@@ -18784,12 +18784,12 @@ namespace Chummer
 		                }
 		            }
 
-		            foreach (Gear objGear in objPlugin.Gear)
+		            foreach (Gear objGear in objPlugin.Gear.Where(objGear => !objGear.IncludedInParent))
 		            {
 		                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
 		            }
 
-		            foreach (Gear objGear in objCyberware.Gear)
+		            foreach (Gear objGear in objCyberware.Gear.Where(objGear => !objGear.IncludedInParent))
 		            {
 		                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
 		            }
@@ -18819,7 +18819,7 @@ namespace Chummer
 					strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
 				}
 
-				foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => !objMod.TotalAvail.StartsWith("+")))
+				foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => !objMod.TotalAvail.StartsWith("+") && !objMod.IncludedInArmor))
 				{
 					if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 					{
@@ -18841,7 +18841,7 @@ namespace Chummer
 					}
 				}
 
-                foreach (Gear objGear in objArmor.Gear)
+                foreach (Gear objGear in objArmor.Gear.Where(objGear => !objGear.IncludedInParent))
                 {
                     CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
                 }
@@ -18852,7 +18852,7 @@ namespace Chummer
 			{
 				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 				{
-					if ((GetAvailInt(objWeapon.TotalAvail) <= 24) && ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)))
+					if ((GetAvailInt(objWeapon.TotalAvail) <= 24) && GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
 					{
 						blnRestrictedGearUsed = true;
 					}
@@ -18868,31 +18868,31 @@ namespace Chummer
 					intRestrictedCount++;
 					strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
 				}
-				foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+				foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon))
 				{
 					if (!objAccessory.TotalAvail.StartsWith("+"))
 					{
 						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 						{
-							if ((GetAvailInt(objAccessory.TotalAvail) <= 24) && ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)) && !objAccessory.IncludedInWeapon)
+							if ((GetAvailInt(objAccessory.TotalAvail) <= 24) && (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability))
 							{
 								blnRestrictedGearUsed = true;
 							}
-							else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
+							else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
 							{
 								intRestrictedCount++;
 								strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
 							}
 						}
 
-						else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
+						else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
 						{
 							intRestrictedCount++;
 							strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
 						}
 					}
 
-					foreach (Gear objGear in objAccessory.Gear)
+					foreach (Gear objGear in objAccessory.Gear.Where(objGear => !objGear.IncludedInParent))
 					{
                         CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
                     }
@@ -18919,17 +18919,17 @@ namespace Chummer
 					intRestrictedCount++;
 					strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
 				}
-				foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+				foreach (VehicleMod objVehicleMod in objVehicle.Mods.Where((objVehicleMod => !objVehicleMod.IncludedInVehicle)))
 				{
 					if (!objVehicleMod.TotalAvail.StartsWith("+"))
 					{
 						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 						{
-							if ((GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicleMod.TotalAvail) <= 24) && !objVehicleMod.IncludedInVehicle)
+							if ((GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicleMod.TotalAvail) <= 24))
 							{
 								blnRestrictedGearUsed = true;
 							}
-							else if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability && !objVehicleMod.IncludedInVehicle)
+							else if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability)
 							{
 								intRestrictedCount++;
 								strAvailItems += "\n\t\t" + objVehicleMod.DisplayNameShort;
@@ -18946,13 +18946,13 @@ namespace Chummer
 								intRestrictedCount++;
 								strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
 							}
-							foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+							foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories.Where((objAccessory => !objAccessory.IncludedInWeapon)))
 							{
 								if (!objAccessory.TotalAvail.StartsWith("+"))
 								{
 									if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 									{
-										if ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objAccessory.TotalAvail) <= 24) && !objAccessory.IncludedInWeapon)
+										if ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objAccessory.TotalAvail) <= 24))
 										{
 											blnRestrictedGearUsed = true;
 										}
@@ -19255,7 +19255,7 @@ namespace Chummer
                 intRestrictedCount++;
                 strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
             }
-            foreach (Gear objChild in objGear.Children)
+            foreach (Gear objChild in objGear.Children.Where(objChild => !objChild.IncludedInParent))
             {
                 if (!objChild.TotalAvail().StartsWith("+"))
                 {
