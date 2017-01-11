@@ -634,9 +634,9 @@
 				</div>
 
 				<div class="block" id="LimitsBlock">
-					<table width="100%" cellspacing="0" cellpadding="0" class="tableborder">
+					<table width="100%" cellspacing="0" cellpadding="0">
 						<tr>
-							<td width="100%">
+							<td width="100%" class="tableborder">
 								<table width="100%" cellspacing="0" cellpadding="0" border="0">
 									<tr>
 										<td width="25%" style="text-align:center;" valign="top">
@@ -1565,10 +1565,10 @@
                       <td class="rowsummary" colspan="3">
                         AI PROGRAMS AND ADVANCED PROGRAMS<span
 												class="rowsummarybutton"
-												onClick="showhide(this,'ProgramBlock');"
+												onClick="showhide(this,'AIProgramBlock');"
 												colspan="1">Show: YES</span>
                         <span class="rowsummarybutton"
-												onClick="zalomit(this,'ProgramBlock');"
+												onClick="zalomit(this,'AIProgramBlock');"
 												colspan="1">Page Break: NO</span>
                       </td>
                     </tr>
