@@ -3366,6 +3366,10 @@
 			<key>String_ActionComplex</key>
 			<text>Complex</text>
 		</string>
+		<string>
+			<key>String_ActionInterrupt</key>
+			<text>Interrupt (-5 Initiative)</text>
+		</string>
     <string>
       <key>String_NotSupported</key>
       <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>

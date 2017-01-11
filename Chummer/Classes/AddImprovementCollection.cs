@@ -2402,6 +2402,9 @@ namespace Chummer.Classes
 				frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
 				Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
+				int intLevels = 0;
+				if (bonusNode["val"] != null)
+					intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
 				if (objNode.OuterXml.Contains("limittopowers"))
 					frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
 				frmPickPower.ShowDialog();
@@ -2447,78 +2450,12 @@ namespace Chummer.Classes
 
 				if (!blnHasPower)
 				{
-					Log.Info("Adding Power " + SelectedValue);
-					// Get the Power information
 					_objCharacter.Powers.Add(objPower);
-					Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
-
-					bool blnLevels = false;
-					if (objXmlPower["levels"] != null)
-						blnLevels = (objXmlPower["levels"].InnerText == "yes");
-					objPower.LevelsEnabled = blnLevels;
-					objPower.Name = objXmlPower["name"].InnerText;
-					objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-					objPower.Source = objXmlPower["source"].InnerText;
-					objPower.Page = objXmlPower["page"].InnerText;
-					objPower.BonusSource = SourceName;
-					if (strSelection != string.Empty)
-						objPower.Extra = strSelection;
-					if (objXmlPower["doublecost"] != null)
-						objPower.DoubleCost = false;
-
-					if (objXmlPower["levels"].InnerText == "no")
-					{
-						if (objPower.Name.StartsWith("Improved Reflexes"))
-						{
-							if (objPower.Name.EndsWith("1"))
-							{
-								if (_intRating >= 6)
-									objPower.FreePoints = 1.5M;
-								else
-									objPower.FreePoints = 0;
-							}
-							else if (objPower.Name.EndsWith("2"))
-							{
-								if (_intRating >= 10)
-									objPower.FreePoints = 2.5M;
-								else if (_intRating >= 4)
-									objPower.FreePoints = 1.0M;
-								else
-									objPower.FreePoints = 0;
-							}
-							else
-							{
-								if (_intRating >= 14)
-									objPower.FreePoints = 3.5M;
-								else if (_intRating >= 8)
-									objPower.FreePoints = 2.0M;
-								else if (_intRating >= 4)
-									objPower.FreePoints = 1.0M;
-								else
-									objPower.FreePoints = 0;
-							}
-						}
-					}
-					else
-					{
-						decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-						decLevels = Math.Floor(decLevels / objPower.PointsPerLevel);
-						if (objPower.Rating < _intRating)
-							objPower.Rating = objPower.FreeLevels;
-					}
-
-					if (objXmlPower.InnerXml.Contains("bonus"))
-					{
-						objPower.Bonus = objXmlPower["bonus"];
-						Log.Info("Calling CreateImprovements");
-						if (
-							!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
-								Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-						{
-							_objCharacter.Powers.Remove(objPower);
-						}
-					}
 				}
+
+				Log.Info("blnHasPower = " + blnHasPower);
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPower, strSelection, 0, intLevels);
 			}
 		}
 

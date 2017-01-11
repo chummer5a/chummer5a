@@ -30,15 +30,13 @@
 			this.components = new System.ComponentModel.Container();
 			this.lblPowerName = new System.Windows.Forms.Label();
 			this.cmdDelete = new System.Windows.Forms.Button();
-			this.lblRating = new System.Windows.Forms.Label();
 			this.nudRating = new System.Windows.Forms.NumericUpDown();
-			this.lblX = new System.Windows.Forms.Label();
 			this.lblPowerPoints = new System.Windows.Forms.Label();
 			this.chkDiscountedAdeptWay = new System.Windows.Forms.CheckBox();
 			this.chkDiscountedGeas = new System.Windows.Forms.CheckBox();
-			this.lblDiscountLabel = new System.Windows.Forms.Label();
 			this.imgNotes = new System.Windows.Forms.PictureBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.lblActivation = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
 			this.SuspendLayout();
@@ -66,21 +64,10 @@
 			this.cmdDelete.UseVisualStyleBackColor = true;
 			this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
 			// 
-			// lblRating
-			// 
-			this.lblRating.AutoSize = true;
-			this.lblRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblRating.Location = new System.Drawing.Point(272, 5);
-			this.lblRating.Name = "lblRating";
-			this.lblRating.Size = new System.Drawing.Size(73, 13);
-			this.lblRating.TabIndex = 1;
-			this.lblRating.Tag = "Label_Power_PowerRating";
-			this.lblRating.Text = "Power Rating:";
-			// 
 			// nudRating
 			// 
 			this.nudRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.nudRating.Location = new System.Drawing.Point(351, 2);
+			this.nudRating.Location = new System.Drawing.Point(378, 3);
 			this.nudRating.Maximum = new decimal(new int[] {
             6,
             0,
@@ -99,46 +86,36 @@
             0,
             0,
             0});
-			this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
-			// 
-			// lblX
-			// 
-			this.lblX.AutoSize = true;
-			this.lblX.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblX.Location = new System.Drawing.Point(394, 5);
-			this.lblX.Name = "lblX";
-			this.lblX.Size = new System.Drawing.Size(12, 13);
-			this.lblX.TabIndex = 3;
-			this.lblX.Text = "x";
+			this.nudRating.ValueChanged += new System.EventHandler(this.RequestCharacterUpdate);
 			// 
 			// lblPowerPoints
 			// 
 			this.lblPowerPoints.AutoSize = true;
 			this.lblPowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblPowerPoints.Location = new System.Drawing.Point(415, 5);
+			this.lblPowerPoints.Location = new System.Drawing.Point(502, 6);
 			this.lblPowerPoints.Name = "lblPowerPoints";
-			this.lblPowerPoints.Size = new System.Drawing.Size(92, 13);
+			this.lblPowerPoints.Size = new System.Drawing.Size(19, 13);
 			this.lblPowerPoints.TabIndex = 4;
-			this.lblPowerPoints.Text = "0.25 / level = 0.25";
+			this.lblPowerPoints.Text = "[0]";
 			// 
 			// chkDiscountedAdeptWay
 			// 
 			this.chkDiscountedAdeptWay.AutoSize = true;
 			this.chkDiscountedAdeptWay.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.chkDiscountedAdeptWay.Location = new System.Drawing.Point(608, 3);
+			this.chkDiscountedAdeptWay.Location = new System.Drawing.Point(608, 4);
 			this.chkDiscountedAdeptWay.Name = "chkDiscountedAdeptWay";
 			this.chkDiscountedAdeptWay.Size = new System.Drawing.Size(77, 17);
 			this.chkDiscountedAdeptWay.TabIndex = 6;
 			this.chkDiscountedAdeptWay.Tag = "Checkbox_Power_AdeptWay";
 			this.chkDiscountedAdeptWay.Text = "Adept Way";
 			this.chkDiscountedAdeptWay.UseVisualStyleBackColor = true;
-			this.chkDiscountedAdeptWay.CheckedChanged += new System.EventHandler(this.chkDiscounted_CheckedChanged);
+			this.chkDiscountedAdeptWay.CheckStateChanged += new System.EventHandler(this.RequestCharacterUpdate);
 			// 
 			// chkDiscountedGeas
 			// 
 			this.chkDiscountedGeas.AutoSize = true;
 			this.chkDiscountedGeas.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.chkDiscountedGeas.Location = new System.Drawing.Point(693, 3);
+			this.chkDiscountedGeas.Location = new System.Drawing.Point(693, 4);
 			this.chkDiscountedGeas.Name = "chkDiscountedGeas";
 			this.chkDiscountedGeas.Size = new System.Drawing.Size(51, 17);
 			this.chkDiscountedGeas.TabIndex = 7;
@@ -146,18 +123,7 @@
 			this.chkDiscountedGeas.Text = "Geas";
 			this.chkDiscountedGeas.UseVisualStyleBackColor = true;
 			this.chkDiscountedGeas.Visible = false;
-			this.chkDiscountedGeas.CheckedChanged += new System.EventHandler(this.chkDiscountedGeas_CheckedChanged);
-			// 
-			// lblDiscountLabel
-			// 
-			this.lblDiscountLabel.AutoSize = true;
-			this.lblDiscountLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblDiscountLabel.Location = new System.Drawing.Point(527, 5);
-			this.lblDiscountLabel.Name = "lblDiscountLabel";
-			this.lblDiscountLabel.Size = new System.Drawing.Size(74, 13);
-			this.lblDiscountLabel.TabIndex = 5;
-			this.lblDiscountLabel.Tag = "Label_Power_DiscountedBy";
-			this.lblDiscountLabel.Text = "Discounted by";
+			this.chkDiscountedGeas.CheckStateChanged += new System.EventHandler(this.RequestCharacterUpdate);
 			// 
 			// imgNotes
 			// 
@@ -179,19 +145,27 @@
 			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.tipTooltip.ToolTipTitle = "Chummer Help";
 			// 
+			// lblActivation
+			// 
+			this.lblActivation.AutoSize = true;
+			this.lblActivation.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblActivation.Location = new System.Drawing.Point(326, 6);
+			this.lblActivation.Name = "lblActivation";
+			this.lblActivation.Size = new System.Drawing.Size(46, 13);
+			this.lblActivation.TabIndex = 12;
+			this.lblActivation.Text = "Interrupt";
+			// 
 			// PowerControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.lblActivation);
 			this.Controls.Add(this.imgNotes);
-			this.Controls.Add(this.lblDiscountLabel);
 			this.Controls.Add(this.chkDiscountedGeas);
 			this.Controls.Add(this.chkDiscountedAdeptWay);
 			this.Controls.Add(this.lblPowerPoints);
-			this.Controls.Add(this.lblX);
 			this.Controls.Add(this.lblPowerName);
 			this.Controls.Add(this.cmdDelete);
-			this.Controls.Add(this.lblRating);
 			this.Controls.Add(this.nudRating);
 			this.Name = "PowerControl";
 			this.Size = new System.Drawing.Size(829, 23);
@@ -206,15 +180,12 @@
 
         private System.Windows.Forms.Label lblPowerName;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Label lblRating;
-        private System.Windows.Forms.Label lblX;
         private System.Windows.Forms.Label lblPowerPoints;
 		private System.Windows.Forms.CheckBox chkDiscountedAdeptWay;
 		private System.Windows.Forms.CheckBox chkDiscountedGeas;
-		private System.Windows.Forms.Label lblDiscountLabel;
 		private System.Windows.Forms.PictureBox imgNotes;
 		private System.Windows.Forms.ToolTip tipTooltip;
         public System.Windows.Forms.NumericUpDown nudRating;
-
-    }
+		private System.Windows.Forms.Label lblActivation;
+	}
 }

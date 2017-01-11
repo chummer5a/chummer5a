@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Powers;
+using Chummer.Skills;
 using Chummer.UI.Shared;
 
 namespace Chummer.UI.Skills
@@ -15,16 +18,15 @@ namespace Chummer.UI.Skills
 		public event PropertyChangedEventHandler ChildPropertyChanged; 
 
 		private BindingListDisplay<Power> _powers;
-
 		public PowersTabUserControl()
 		{
 			InitializeComponent();
-
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 		}
 
 		public void MissingDatabindingsWorkaround()
 		{
+			//TODO: Databind this
 			CalculatePowerPoints();
 		}
 
@@ -69,7 +71,7 @@ namespace Chummer.UI.Skills
 
 			//Visible = false;
 			//this.SuspendLayout();
-			MakeSkillDisplays();
+			MakePowerDisplays();
 
 			parts.TaskEnd("MakeSkillDisplay()");
 
@@ -81,7 +83,7 @@ namespace Chummer.UI.Skills
 
 			parts.TaskEnd("GenerateSortList()");
 
-			/*
+			
 			cboDisplayFilter.DataSource = _dropDownList;
 			cboDisplayFilter.ValueMember = "Item2";
 			cboDisplayFilter.DisplayMember = "Item1";
@@ -96,7 +98,7 @@ namespace Chummer.UI.Skills
 			cboSort.SelectedIndex = 0;
 			cboSort.MaxDropDownItems = _sortList.Count;
 
-			parts.TaskEnd("_sort databind");*/
+			parts.TaskEnd("_sort databind");
 
 			_powers.ChildPropertyChanged += ChildPropertyChanged;
 
@@ -117,24 +119,12 @@ namespace Chummer.UI.Skills
 		{
 			List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
 			{
-				/*new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
-					new SkillSorter(SkillsSection.CompareSkills)),
+				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+					new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
 				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortRating"),
-					new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
-					new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
-					new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
-					new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
-					new SkillSorter((x, y) => x.Attribute.CompareTo(y.Attribute))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortGroupName"),
-					new SkillSorter((x, y) => y.SkillGroup.CompareTo(x.SkillGroup))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortGroupRating"),
-					new SkillSortBySkillGroup()),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
-					new SkillSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),*/
+					new PowerSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+				//new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+				//	new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
 			};
 
 			return ret;
@@ -145,17 +135,17 @@ namespace Chummer.UI.Skills
 			List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
 			{
 				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_Search"), null),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
+				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), power => true),
 				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
-					skill => skill.Rating > 0),
+					power => power.Rating > 0),
 				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
-					skill => skill.Rating == 0)
+					power => power.Rating == 0)
 			};
 			//TODO: TRANSLATIONS
 
 			ret.AddRange(
 				from XmlNode objNode 
-				in XmlManager.Instance.Load("powers.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
+				in XmlManager.Instance.Load("powers.xml").SelectNodes("/chummer/categories/category")
 				let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
 				select new Tuple<string, Predicate<Power>>(
 					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
@@ -164,7 +154,7 @@ namespace Chummer.UI.Skills
 			return ret;
 		}
 
-		private void MakeSkillDisplays()
+		private void MakePowerDisplays()
 		{
 			Stopwatch sw = Stopwatch.StartNew();
 
@@ -217,6 +207,14 @@ namespace Chummer.UI.Skills
 			_powers.Sort(selectedItem.Item2);
 		}
 
+		private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+		{
+			if (_searchMode)
+			{
+				_powers.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+			}
+		}
+
 		private void cmdAddPower_Click(object sender, EventArgs e)
 		{
 			frmSelectPower frmPickPower = new frmSelectPower(ObjCharacter);
@@ -235,45 +233,47 @@ namespace Chummer.UI.Skills
 			objPower.Create(objXmlPower, ObjCharacter.ObjImprovementManager);
 
 			ObjCharacter.Powers.Add(objPower);
-			CalculatePowerPoints();
 			if (frmPickPower.AddAgain)
 				cmdAddPower_Click(sender, e);
 		}
-
-
 
 		/// <summary>
 		/// Calculate the number of Adept Power Points used.
 		/// </summary>
 		private void CalculatePowerPoints()
 		{
-			decimal decPowerPoints = 0;
+			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
+		}
 
-			foreach (Power objPower in ObjCharacter.Powers)
+		private int PowerPointsTotal
+		{
+			get
 			{
-				decPowerPoints += objPower.PowerPoints;
-			}
+				int intMAG = 0;
+				if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
+				{
+					// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+					intMAG = ObjCharacter.MAGAdept;
+				}
+				else
+				{
+					// The character is just an Adept, so use the full value.
+					intMAG = ObjCharacter.MAG.TotalValue;
+				}
 
-			int intMAG = 0;
-			if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
+				// Add any Power Point Improvements to MAG.
+				intMAG += ObjCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
+
+				return intMAG;
+			}
+		}
+
+		private decimal PowerPointsRemaining
+		{
+			get
 			{
-				// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-				intMAG = ObjCharacter.MAGAdept;
+				return PowerPointsTotal - ObjCharacter.Powers.Sum(objPower => objPower.PowerPoints);
 			}
-			else
-			{
-				// The character is just an Adept, so use the full value.
-				intMAG = ObjCharacter.MAG.TotalValue;
-			}
-
-			// Add any Power Point Improvements to MAG.
-			intMAG += ObjCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
-
-			string strRemain = (intMAG - decPowerPoints).ToString();
-			while (strRemain.EndsWith("0") && strRemain.Length > 4)
-				strRemain = strRemain.Substring(0, strRemain.Length - 1);
-
-			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
 		}
 	}
 }

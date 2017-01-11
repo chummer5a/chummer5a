@@ -132,6 +132,7 @@
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
+    <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
     <Compile Include="Backend\Skills\Skill.core.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>

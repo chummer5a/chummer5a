@@ -30,8 +30,9 @@ namespace Chummer
     public partial class PowerControl : UserControl
     {
 		private Power _objPower;
+	    private Form _parent;
 
-        // Events.
+	    // Events.
         public event PowerRatingChangedHandler PowerRatingChanged;
         public event DeletePowerHandler DeletePower;
 
@@ -53,9 +54,14 @@ namespace Chummer
 					DataSourceUpdateMode.OnPropertyChanged);
 				
 			}
-			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.FullName), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.PowerPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblActivation.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayAction), false, DataSourceUpdateMode.OnPropertyChanged);
+			chkDiscountedAdeptWay.DataBindings.Add("Visible", PowerObject, nameof(PowerObject.AdeptWayDiscountEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 			chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false, DataSourceUpdateMode.OnPropertyChanged);
 			chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, DataSourceUpdateMode.OnPropertyChanged);
+
+			tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
 			MoveControls();
         }
 
@@ -64,40 +70,10 @@ namespace Chummer
 			this.Width = cmdDelete.Left + cmdDelete.Width;
         }
 
-		private void nudRating_ValueChanged(object sender, EventArgs e)
-		{
-			// Raise the PowerRatingChanged Event when the NumericUpDown's Value changes.
-			// The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
-
-			_objPower.Rating = nudRating.Value;
-			try
-			{
-				PowerRatingChanged(this);
-			}
-			catch { }
-			UpdatePointsPerLevel();
-		}
-
 		private void cmdDelete_Click(object sender, EventArgs e)
 		{
-			// Raise the DeletePower Event when the user has confirmed their desire to delete the Power.
-			// The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
-			DeletePower(this);
-		}
-
-		private void chkDiscounted_CheckedChanged(object sender, EventArgs e)
-		{
-			_objPower.DiscountedAdeptWay = chkDiscountedAdeptWay.Checked;
-			UpdatePointsPerLevel();
-		}
-
-		private void chkDiscountedGeas_CheckedChanged(object sender, EventArgs e)
-		{
-			// Raise the PowerRatingChanged Event when the user has changed the Geas discounted status.
-			// The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
-			_objPower.DiscountedGeas = chkDiscountedGeas.Checked;
-			PowerRatingChanged(this);
-			UpdatePointsPerLevel();
+			PowerObject.CharacterObject.Powers.Remove(PowerObject);
+			RequestCharacterUpdate();
 		}
 
 		private void imgNotes_Click(object sender, EventArgs e)
@@ -129,11 +105,6 @@ namespace Chummer
 			set
 			{
 				_objPower = value;
-
-				string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
-				if (_objPower.Notes != string.Empty)
-					strTooltip += "\n\n" + _objPower.Notes;
-				//tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 			}
 		}
 
@@ -149,9 +120,6 @@ namespace Chummer
             set
             {
 				_objPower.Name = value;
-				lblPowerName.Text = _objPower.FullName;
-
-				RefreshTooltip();
             }
         }
 
@@ -167,7 +135,6 @@ namespace Chummer
             set
             {
 				_objPower.Extra = value;
-				lblPowerName.Text = _objPower.FullName;
             }
         }
 
@@ -188,232 +155,71 @@ namespace Chummer
                    value = Convert.ToInt32(nudRating.Maximum);
                 }
                 nudRating.Value = value;
-                UpdatePointsPerLevel();
+	            RequestCharacterUpdate();
             }
         }
 
-        /// <summary>
-        /// Is the Power level enabled?
-        /// </summary>
-        public bool LevelEnabled
-        {
-            get
-            {
-                return nudRating.Enabled;
-            }
-            set
-            {
-				_objPower.LevelsEnabled = value;
-                nudRating.Enabled = value;
-                UpdatePointsPerLevel();
-            }
-        }
-
-        /// <summary>
-        /// The number of Power Points this Power costs per level.
-        /// </summary>
-        public decimal PointsPerLevel
-        {
-            get
-            {
-				return _objPower.CalculatedPointsPerLevel;
-            }
-            set
-            {
-				_objPower.PointsPerLevel = value;
-                UpdatePointsPerLevel();
-            }
-        }
-
-        /// <summary>
-        /// Power Point discount for an Adept Way.
-        /// </summary>
-        public decimal AdeptWayDiscount
-        {
-            get
-            {
-                return _objPower.AdeptWayDiscount;
-            }
-            set
-            {
-                _objPower.AdeptWayDiscount = value;
-                UpdatePointsPerLevel();
-            }
-        }
-
-        /// <summary>
-        /// The Power's total cost in Power Points.
-        /// </summary>
-        public decimal PowerPoints
-        {
-            get
-            {
-				return _objPower.PowerPoints;
-            }
-        }
-
-		/// <summary>
-		/// Maximum number of levels allowed.
-		/// </summary>
-		public int MaxLevels
-		{
-			get
-			{
-				return Convert.ToInt32(nudRating.Maximum);
-			}
-			set
-			{
-				_objPower.MaxLevels = value;
-				nudRating.Maximum = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Power Cost is discounted by 25% for Adept Way.
-		/// </summary>
-		public bool DiscountedByAdeptWay
-		{
-			get
-			{
-				return _objPower.DiscountedAdeptWay;
-			}
-			set
-			{
-				_objPower.DiscountedAdeptWay = value;
-				chkDiscountedAdeptWay.Checked = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Power Cost is discounted by 25% for Geas.
-		/// </summary>
-		public bool DiscountedByGeas
-		{
-			get
-			{
-				return _objPower.DiscountedGeas;
-			}
-			set
-			{
-				_objPower.DiscountedGeas = value;
-				chkDiscountedGeas.Checked = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Discounted by Adept Way CheckBox is enabled.
-		/// </summary>
-		public bool DiscountAdeptWayEnabled
-		{
-			get
-			{
-				return chkDiscountedAdeptWay.Enabled;
-			}
-			set
-			{
-				chkDiscountedAdeptWay.Enabled = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Discounted by Geas CheckBox is enabled.
-		/// </summary>
-		public bool DiscountGeasEnabled
-		{
-			get
-			{
-				return chkDiscountedGeas.Enabled;
-			}
-			set
-			{
-				chkDiscountedGeas.Enabled = value;
-			}
-		}
 		#endregion
 
 		#region Methods
-		/// <summary>
-        /// Update the Power Points display for the Control.
-        /// </summary>
-        public void UpdatePointsPerLevel()
-        {
-            string strCalculated = _objPower.CalculatedPointsPerLevel.ToString();
-            string strPoints = _objPower.PowerPoints.ToString();
-
-            while (strCalculated.EndsWith("0") && strCalculated.Length > 4)
-                strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);
-
-            while (strPoints.EndsWith("0") && strPoints.Length > 4)
-                strPoints = strPoints.Substring(0, strPoints.Length - 1);
-
-            lblPowerPoints.Text = String.Format("{0} / {1} = {2}", strCalculated, LanguageManager.Instance.GetString("Label_Power_Level"), strPoints);
-			if (_objPower.FreeLevels > 0)
+		private void RequestCharacterUpdate(object sender = null, EventArgs e = null)
+		{
+			if (_objPower.CharacterObject.Created)
 			{
-				lblPowerPoints.Text += string.Format(" ({0})", _objPower.PowerPoints);
+				frmCareer parent = ParentForm as frmCareer;
+				parent.UpdateCharacterInfo();
 			}
-        }
-
-		/// <summary>
-		/// Refresh the maximum level for the Power based on the character's MAG CharacterAttribute.
-		/// </summary>
-		/// <param name="intMAG">MAG value.</param>
-		public void RefreshMaximum(int intMAG)
-		{
-			if (_objPower.MaxLevels > 0)
-				return;
-
-			nudRating.Maximum = intMAG;
+			else
+			{
+				frmCreate parent = ParentForm as frmCreate;
+				parent.UpdateCharacterInfo();
+			}
 		}
-
-        /// <summary>
-		/// Refresh the tooltip for the control.
-		/// </summary>
-		public void RefreshTooltip()
+		private void lblPowerName_Click(object sender, EventArgs e)
 		{
-			string strTooltip = _objPower.CharacterObject.Options.LanguageBookLong(_objPower.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + _objPower.Page;
-			//if (_objPower.DoubledPoints > 0)
-			//	strTooltip += "\n" + LanguageManager.Instance.GetString("Tip_Power_DoublePoints").Replace("{0}", _objPower.DoubledPoints.ToString());
-			tipTooltip.SetToolTip(lblPowerName, strTooltip);
+			string strBook = _objPower.Source + " " + _objPower.Page;
+			CommonFunctions objCommon = new CommonFunctions();
+			objCommon.OpenPDF(strBook);
 		}
 
 		private void MoveControls()
-		{
-			if (lblPowerName.Font.Size < 8.25f)
-			{
-				for (float i = 8.25f; i >= lblPowerName.Font.Size; i -= 0.25f)
-					lblRating.Left -= 1;
-			}
+	    {
+		    while (true)
+		    {
+			    if (lblPowerName.Font.Size < 8.25f)
+			    {
+				    for (float i = 8.25f; i >= lblPowerName.Font.Size; i -= 0.25f)
+						lblActivation.Left -= 1;
+			    }
 
-			nudRating.Left = lblRating.Left + lblRating.Width + 6;
-			lblX.Left = nudRating.Left + nudRating.Width + 6;
-			lblPowerPoints.Left = lblX.Left + lblX.Width + 6;
-			lblDiscountLabel.Left = lblPowerPoints.Left + lblPowerPoints.Width + 26;
-			chkDiscountedAdeptWay.Left = lblDiscountLabel.Left + lblDiscountLabel.Width + 6;
-			chkDiscountedGeas.Left = chkDiscountedAdeptWay.Left + chkDiscountedAdeptWay.Width + 6;
-			imgNotes.Left = chkDiscountedGeas.Left + chkDiscountedGeas.Width + 6;
-			cmdDelete.Left = imgNotes.Left + imgNotes.Width + 6;
+			    nudRating.Left = lblActivation.Left + lblActivation.Width + 6;
+			    lblPowerPoints.Left = nudRating.Left + nudRating.Width + 6;
+			    chkDiscountedAdeptWay.Left = lblPowerPoints.Left + lblPowerPoints.Width + 6;
+			    if (chkDiscountedGeas.Visible)
+			    {
+				    chkDiscountedGeas.Left = chkDiscountedAdeptWay.Left + chkDiscountedAdeptWay.Width + 6;
+					imgNotes.Left = chkDiscountedGeas.Left + chkDiscountedGeas.Width + 6;
+				}
+			    else
+				{
+					imgNotes.Left = chkDiscountedAdeptWay.Left + chkDiscountedAdeptWay.Width + 6;
+				}
+			    cmdDelete.Left = imgNotes.Left + imgNotes.Width + 6;
 
-			if (cmdDelete.Left + cmdDelete.Width > this.Width)
-			{
-				lblPowerName.Font = new Font(lblPowerName.Font.FontFamily.Name, lblPowerName.Font.Size - 0.25f);
-				lblRating.Font = lblPowerName.Font;
-				nudRating.Font = lblPowerName.Font;
-				lblX.Font = lblPowerName.Font;
-				lblPowerPoints.Font = lblPowerName.Font;
-				lblDiscountLabel.Font = lblPowerName.Font;
-				chkDiscountedAdeptWay.Font = lblPowerName.Font;
-				chkDiscountedGeas.Font = lblPowerName.Font;
-				cmdDelete.Font = lblPowerName.Font;
-				MoveControls();
-			}
-		}
-		#endregion
+			    if (cmdDelete.Left + cmdDelete.Width > this.Width)
+			    {
+				    lblPowerName.Font = new Font(lblPowerName.Font.FontFamily.Name, lblPowerName.Font.Size - 0.25f);
+				    nudRating.Font = lblPowerName.Font;
+				    lblPowerPoints.Font = lblPowerName.Font;
+				    chkDiscountedAdeptWay.Font = lblPowerName.Font;
+				    chkDiscountedGeas.Font = lblPowerName.Font;
+				    cmdDelete.Font = lblPowerName.Font;
+				    continue;
+			    }
+			    break;
+		    }
+	    }
 
-        private void lblPowerName_Click(object sender, EventArgs e)
-        {
-            string strBook = _objPower.Source + " " + _objPower.Page;
-            CommonFunctions objCommon = new CommonFunctions();
-            objCommon.OpenPDF(strBook);
-        }
-    }
+	    #endregion
+	}
 }

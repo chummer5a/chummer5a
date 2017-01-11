@@ -34,6 +34,10 @@
 			this.lblPowerPoints = new System.Windows.Forms.Label();
 			this.lblPowerPointsLabel = new System.Windows.Forms.Label();
 			this.pnlPowers = new System.Windows.Forms.Panel();
+			this.lblRating = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.lblDiscountLabel = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// cboSort
@@ -71,6 +75,7 @@
 			this.cboDisplayFilter.Size = new System.Drawing.Size(201, 21);
 			this.cboDisplayFilter.TabIndex = 5;
 			this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
+			this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
 			// 
 			// lblPowerPoints
 			// 
@@ -96,15 +101,62 @@
 			this.pnlPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.pnlPowers.Location = new System.Drawing.Point(6, 31);
+			this.pnlPowers.Location = new System.Drawing.Point(6, 47);
 			this.pnlPowers.Name = "pnlPowers";
-			this.pnlPowers.Size = new System.Drawing.Size(821, 577);
+			this.pnlPowers.Size = new System.Drawing.Size(821, 561);
 			this.pnlPowers.TabIndex = 10;
+			// 
+			// lblRating
+			// 
+			this.lblRating.AutoSize = true;
+			this.lblRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblRating.Location = new System.Drawing.Point(378, 31);
+			this.lblRating.Name = "lblRating";
+			this.lblRating.Size = new System.Drawing.Size(40, 13);
+			this.lblRating.TabIndex = 2;
+			this.lblRating.Tag = "Label_Rating";
+			this.lblRating.Text = "Rating:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(424, 31);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(24, 13);
+			this.label1.TabIndex = 11;
+			this.label1.Text = "PP:";
+			// 
+			// lblDiscountLabel
+			// 
+			this.lblDiscountLabel.AutoSize = true;
+			this.lblDiscountLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblDiscountLabel.Location = new System.Drawing.Point(454, 31);
+			this.lblDiscountLabel.Name = "lblDiscountLabel";
+			this.lblDiscountLabel.Size = new System.Drawing.Size(74, 13);
+			this.lblDiscountLabel.TabIndex = 12;
+			this.lblDiscountLabel.Tag = "Label_Power_DiscountedBy";
+			this.lblDiscountLabel.Text = "Discounted by";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(319, 31);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(39, 13);
+			this.label2.TabIndex = 13;
+			this.label2.Tag = "Label_Action";
+			this.label2.Text = "Action:";
 			// 
 			// PowersTabUserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.lblDiscountLabel);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.lblRating);
 			this.Controls.Add(this.pnlPowers);
 			this.Controls.Add(this.lblPowerPoints);
 			this.Controls.Add(this.lblPowerPointsLabel);
@@ -127,5 +179,9 @@
 		private System.Windows.Forms.Label lblPowerPoints;
 		private System.Windows.Forms.Label lblPowerPointsLabel;
 		private System.Windows.Forms.Panel pnlPowers;
+		private System.Windows.Forms.Label lblRating;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label lblDiscountLabel;
+		private System.Windows.Forms.Label label2;
 	}
 }
