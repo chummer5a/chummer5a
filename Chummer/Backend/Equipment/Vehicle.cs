@@ -212,10 +212,10 @@ namespace Chummer.Backend.Equipment
 						if (objXmlVehicleMod.Attributes["select"] != null)
 							objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
 
-						objMod.Create(objXmlMod, objModNode, intRating);
+						objMod.Create(objXmlMod, objModNode, intRating, this);
 						objMod.IncludedInVehicle = true;
 
-						_lstVehicleMods.Add(objMod);
+                        _lstVehicleMods.Add(objMod);
 						objModNode.ForeColor = SystemColors.GrayText;
 						objModNode.ContextMenuStrip = cmsVehicle;
 
@@ -562,7 +562,8 @@ namespace Chummer.Backend.Equipment
 				foreach (XmlNode nodChild in nodChildren)
 				{
 					VehicleMod objMod = new VehicleMod(_objCharacter);
-					objMod.Load(nodChild, blnCopy);
+					objMod.Load(nodChild, this, blnCopy);
+				    objMod.Parent = this;
 					_lstVehicleMods.Add(objMod);
 				}
 			}
@@ -1495,11 +1496,6 @@ namespace Chummer.Backend.Equipment
 					// Do not include the price of Mods that are part of the base configureation.
 					if (!objMod.IncludedInVehicle)
 					{
-						objMod.VehicleCost = Convert.ToInt32(_strCost);
-						objMod.Body = _intBody;
-						objMod.Speed = _intSpeed;
-						objMod.Accel = _intAccel;
-
 						intCost += objMod.TotalCost;
 					}
 					else

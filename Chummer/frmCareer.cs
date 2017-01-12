@@ -5743,7 +5743,7 @@ namespace Chummer
 						XmlDocument objVehiclesDoc = XmlManager.Instance.Load("vehicles.xml");
 						XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
 						TreeNode objTreeNode = new TreeNode();
-						objRetrofit.Create(objXmlNode, objTreeNode, 0);
+						objRetrofit.Create(objXmlNode, objTreeNode, 0, objFoundVehicle);
 						objRetrofit.Cost = intCost.ToString();
 						objFoundVehicle.Mods.Add(objRetrofit);
 						treVehicles.SelectedNode.Parent.Nodes.Add(objTreeNode);
@@ -9101,10 +9101,9 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			VehicleMod objMod = new VehicleMod(_objCharacter);
-			objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating, frmPickVehicleMod.Markup);
-
-			// Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
-			if (objMod.Name.StartsWith("Armor"))
+			objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating, objSelectedVehicle, frmPickVehicleMod.Markup);
+            // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
+            if (objMod.Name.StartsWith("Armor"))
 			{
 				if (objMod.Rating > objSelectedVehicle.MaxArmor)
 				{

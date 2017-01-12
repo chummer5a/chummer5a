@@ -43,12 +43,6 @@ namespace Chummer.Backend.Equipment
 		private bool _blnDiscountCost = false;
 	    private bool _blnDowngrade = false;
 
-		// Variables used to calculate the Mod's cost from the Vehicle.
-		private int _intVehicleCost = 0;
-		private int _intBody = 0;
-		private int _intSpeed = 0;
-		private int _intAccel = 0;
-
 		private readonly Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -63,7 +57,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objXmlMod">XmlNode to create the object from.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="intRating">Selected Rating for the Gear.</param>
-		public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, int intMarkup = 0)
+		public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, Vehicle objParent, int intMarkup = 0)
 		{
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -208,7 +202,7 @@ namespace Chummer.Backend.Equipment
 		/// Load the VehicleMod from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode, bool blnCopy = false)
+		public void Load(XmlNode objNode, Vehicle objVehicle, bool blnCopy = false)
 		{
             if (blnCopy)
             {
@@ -670,55 +664,6 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		// Properties used to calculate the Mod's cost from the Vehicle.
-		public int VehicleCost
-		{
-			get
-			{
-				return _intVehicleCost;
-			}
-			set
-			{
-				_intVehicleCost = value;
-			}
-		}
-
-		public int Body
-		{
-			get
-			{
-				return _intBody;
-			}
-			set
-			{
-				_intBody = value;
-			}
-		}
-
-		public int Speed
-		{
-			get
-			{
-				return _intSpeed;
-			}
-			set
-			{
-				_intSpeed = value;
-			}
-		}
-
-		public int Accel
-		{
-			get
-			{
-				return _intAccel;
-			}
-			set
-			{
-				_intAccel = value;
-			}
-		}
-
 		/// <summary>
 		/// Notes.
 		/// </summary>
@@ -804,6 +749,11 @@ namespace Chummer.Backend.Equipment
             }
 
         }
+
+        /// <summary>
+        /// Vehicle that the Mod is attached to. 
+        /// </summary>
+	    public Vehicle Parent { internal get; set; }
         #endregion
 
         #region Complex Properties
@@ -924,14 +874,14 @@ namespace Chummer.Backend.Equipment
 					strCostExpression = (strValues[Convert.ToInt32(_intRating) - 1]);
 				}
 				strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-				strCost = strCost.Replace("Vehicle Cost", _intVehicleCost.ToString());
+				strCost = strCost.Replace("Vehicle Cost", Parent.OwnCost.ToString());
 				// If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-				if (_intBody > 0)
-					strCost = strCost.Replace("Body", _intBody.ToString());
+				if (Parent.Body > 0)
+					strCost = strCost.Replace("Body", Parent.Body.ToString());
 				else
 					strCost = strCost.Replace("Body", "0.5");
-				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Acceleration", _intAccel.ToString());
+				strCost = strCost.Replace("Speed", Parent.Speed.ToString());
+				strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
 				intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 
