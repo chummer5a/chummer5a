@@ -163,7 +163,7 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					VehicleMod objTemp = new VehicleMod(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, 1);
+					objTemp.Create(objXmlGear, objTempNode, 1, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;

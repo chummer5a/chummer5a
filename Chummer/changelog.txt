@@ -40,6 +40,7 @@ Application Changes:
 - Fixed a crash when creating a piece of cyberware at a rating above its maximum or below its minimum.
 - Fixed some validation issues when moving a character to career mode if they own items that have built-in accessories or mods that exceed the availability limit. 
 - Fixed the behaviour of the Knowledge Skill custom Improvement type to properly load existing knowledge skills. 
+- Changed the VehicleMod class to properly have a Parent Vehicle for modding purposes. In practical terms, this prevents an issue with Drone Attribute modifications not having their minimum rating set to Attribute +1.
 
 Data Changes:
 

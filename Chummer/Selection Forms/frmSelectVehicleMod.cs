@@ -777,20 +777,26 @@ namespace Chummer
 
 				// Update the Avail Test Label.
 				lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
-
-				// If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
-				if (objXmlMod["rating"].InnerText == "qty")
+			    int intMinRating = 1;
+			    if (objXmlMod["minrating"]?.InnerText.Length > 0)
+			    {
+			        string strMinRating = ReplaceStrings(objXmlMod["minrating"]?.InnerText);
+                    XPathExpression xprRating = nav.Compile(strMinRating);
+                    intMinRating = Convert.ToInt32(nav.Evaluate(xprRating).ToString());
+                }
+                // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
+                if (objXmlMod["rating"].InnerText == "qty")
 				{
 					nudRating.Enabled = true;
 					nudRating.Maximum = 20;
-					nudRating.Minimum = 1;
+					nudRating.Minimum = intMinRating;
 					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
 				}
 				//Used for the Armor modifications.
 				else if (objXmlMod["rating"].InnerText.ToLower() == "body")
 				{
 					nudRating.Maximum = _objVehicle.Body;
-					nudRating.Minimum = 1;
+					nudRating.Minimum = intMinRating;
 					nudRating.Enabled = true;
 					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Body");
 				}
@@ -798,16 +804,16 @@ namespace Chummer
 				else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
 				{
 					nudRating.Maximum = _objVehicle.TotalSeats;
-					nudRating.Minimum = 1;
+					nudRating.Minimum = intMinRating;
 					nudRating.Enabled = true;
 					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
 				}
-				else 
+				else
 				{
-					if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
+				    if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
 					{
 						nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
-						nudRating.Minimum = 1;
+						nudRating.Minimum = intMinRating;
 						nudRating.Enabled = true;
 						lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
 					}
