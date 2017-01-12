@@ -285,40 +285,26 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstMod.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstMod.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstMod.SelectedIndex + 1 < lstMod.Items.Count)
+                {
+                    lstMod.SelectedIndex++;
+                }
+                else if (lstMod.Items.Count > 0)
+                {
+                    lstMod.SelectedIndex = 0;
+                }
+            }
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstMod.SelectedIndex--;
-					if (lstMod.SelectedIndex == -1)
-						lstMod.SelectedIndex = lstMod.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstMod.SelectedIndex = lstMod.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstMod.SelectedIndex - 1 >= 0)
+                {
+                    lstMod.SelectedIndex--;
+                }
+                else if (lstMod.Items.Count > 0)
+                {
+                    lstMod.SelectedIndex = lstMod.Items.Count - 1;
+                }
+            }
 		}
 
 		private void txtSearch_KeyUp(object sender, KeyEventArgs e)
@@ -700,7 +686,7 @@ namespace Chummer
 					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString()));
 					lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
 				}
-				catch
+				catch (System.Xml.XPath.XPathException)
 				{
 					lblAvail.Text = objXmlMod["avail"].InnerText;
 				}
@@ -836,48 +822,34 @@ namespace Chummer
 				XPathExpression xprSlots = nav.Compile(strSlots);
 				lblSlots.Text = nav.Evaluate(xprSlots).ToString();
 
-				if (arrCategories.Contains(objXmlMod["category"].InnerText))
-				{
-					lblVehicleCapacityLabel.Visible = true;
-					lblVehicleCapacity.Visible = true;
-					lblVehicleCapacity.Text = GetRemainingModCapacity(objXmlMod["category"].InnerText, Convert.ToInt32(lblSlots.Text));
-					tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.Instance.GetString("Tip_RemainingVehicleModCapacity"));
-				}
-				else
-				{
-					lblVehicleCapacityLabel.Visible = false;
-					lblVehicleCapacity.Visible = false;
-				}
-				
+                if (objXmlMod["category"].InnerText != null)
+                {
+                    if (arrCategories.Contains(objXmlMod["category"].InnerText))
+                    {
+                        lblVehicleCapacityLabel.Visible = true;
+                        lblVehicleCapacity.Visible = true;
+                        lblVehicleCapacity.Text = GetRemainingModCapacity(objXmlMod["category"].InnerText, Convert.ToInt32(lblSlots.Text));
+                        tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.Instance.GetString("Tip_RemainingVehicleModCapacity"));
+                    }
+                    else
+                    {
+                        lblVehicleCapacityLabel.Visible = false;
+                        lblVehicleCapacity.Visible = false;
+                    }
 
-				try
-				{
-					if (objXmlMod["category"].InnerText == "Weapon Mod")
-						lblCategory.Text = LanguageManager.Instance.GetString("String_WeaponModification");
-					else
-					{
-						// Translate the Category if possible.
-						if (GlobalOptions.Instance.Language != "en-us")
-						{
-							XmlNode objXmlCategory = _objXmlDocument.SelectSingleNode("/chummer/modcategories/category[. = \"" + objXmlMod["category"].InnerText + "\"]");
-							if (objXmlCategory != null)
-							{
-								if (objXmlCategory.Attributes["translate"] != null)
-									lblCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
-								else
-									lblCategory.Text = objXmlMod["category"].InnerText;
-							}
-							else
-								lblCategory.Text = objXmlMod["category"].InnerText;
-						}
-						else
-							lblCategory.Text = objXmlMod["category"].InnerText;
-					}
-				}
-				catch
-				{
-					lblCategory.Text = LanguageManager.Instance.GetString("String_WeaponModification");
-				}
+                    lblCategory.Text = objXmlMod["category"].InnerText;
+                    if (objXmlMod["category"].InnerText == "Weapon Mod")
+                        lblCategory.Text = LanguageManager.Instance.GetString("String_WeaponModification");
+                    // Translate the Category if possible.
+                    else if (GlobalOptions.Instance.Language != "en-us")
+                    {
+                        XmlNode objXmlCategory = _objXmlDocument.SelectSingleNode("/chummer/modcategories/category[. = \"" + objXmlMod["category"].InnerText + "\"]");
+                        if (objXmlCategory != null && objXmlCategory.Attributes["translate"] != null)
+                        {
+                            lblCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
+                        }
+                    }
+                }
 
 				if (objXmlMod["limit"] != null)
 				{

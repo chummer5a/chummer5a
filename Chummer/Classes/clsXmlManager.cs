@@ -137,14 +137,11 @@ namespace Chummer
 				blnLoadFile = true;
 				_lstXmlDocuments.Add(objReference);
 			}
-			else
-			{
-				// The file was found in the List, so check the last write time.
-				if (datDate != objReference.FileDate)
-				{
-					// The last write time does not match, so it must be reloaded.
-					blnLoadFile = true;
-				}
+            // The file was found in the List, so check the last write time.
+            else if (datDate != objReference.FileDate)
+            {
+				// The last write time does not match, so it must be reloaded.
+				blnLoadFile = true;
 			}
 
 			// Create a new document that everything will be merged into.

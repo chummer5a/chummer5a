@@ -11,7 +11,7 @@ namespace Chummer.UI.Skills
 {
 	[DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
 	public partial class SkillControl2 : UserControl
-	{
+    {
 		private readonly Skill _skill;
 		private readonly Font _normal;
 		private readonly Font _italic;
@@ -285,31 +285,25 @@ namespace Chummer.UI.Skills
 
 		private void tsSkillLabelNotes_Click(object sender, EventArgs e)
 		{
-			try
-			{
-				frmNotes frmItemNotes = new frmNotes();
-				frmItemNotes.Notes = _skill.Notes;
-				frmItemNotes.ShowDialog(this);
+            frmNotes frmItemNotes = new frmNotes();
+            frmItemNotes.Notes = _skill.Notes;
+            frmItemNotes.ShowDialog(this);
 
-				if (frmItemNotes.DialogResult == DialogResult.OK)
-				{
-					_skill.Notes = frmItemNotes.Notes;
-					_skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
-					tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
-				}
-				if (_skill.Notes != string.Empty)
-				{
-					lblName.ForeColor = Color.SaddleBrown;
-				}
-				else
-				{
-					lblName.ForeColor = Color.Black;
-				}
-			}
-			catch
-			{
-			}
-		}
+            if (frmItemNotes.DialogResult == DialogResult.OK)
+            {
+                _skill.Notes = frmItemNotes.Notes;
+                _skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
+                tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
+            }
+            if (_skill.Notes != string.Empty)
+            {
+                lblName.ForeColor = Color.SaddleBrown;
+            }
+            else
+            {
+                lblName.ForeColor = Color.Black;
+            }
+        }
 
 		private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{

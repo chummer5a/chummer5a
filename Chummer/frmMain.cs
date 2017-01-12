@@ -119,26 +119,20 @@ namespace Chummer
 			}
 
 			// Attempt to cache the XML files that are used the most.
-			try
-			{
-				Timekeeper.Start("cache_load");
-				XmlManager.Instance.Load("armor.xml");
-				XmlManager.Instance.Load("bioware.xml");
-				XmlManager.Instance.Load("books.xml");
-				XmlManager.Instance.Load("cyberware.xml");
-				XmlManager.Instance.Load("gear.xml");
-				XmlManager.Instance.Load("lifestyles.xml");
-				XmlManager.Instance.Load("metatypes.xml");
-				XmlManager.Instance.Load("qualities.xml");
-				XmlManager.Instance.Load("ranges.xml");
-				XmlManager.Instance.Load("skills.xml");
-				XmlManager.Instance.Load("vehicles.xml");
-				XmlManager.Instance.Load("weapons.xml");
-				Timekeeper.Finish("cache_load");
-			}
-			catch
-			{
-			}
+			Timekeeper.Start("cache_load");
+			XmlManager.Instance.Load("armor.xml");
+			XmlManager.Instance.Load("bioware.xml");
+			XmlManager.Instance.Load("books.xml");
+			XmlManager.Instance.Load("cyberware.xml");
+			XmlManager.Instance.Load("gear.xml");
+			XmlManager.Instance.Load("lifestyles.xml");
+			XmlManager.Instance.Load("metatypes.xml");
+			XmlManager.Instance.Load("qualities.xml");
+			XmlManager.Instance.Load("ranges.xml");
+			XmlManager.Instance.Load("skills.xml");
+			XmlManager.Instance.Load("vehicles.xml");
+			XmlManager.Instance.Load("weapons.xml");
+			Timekeeper.Finish("cache_load");
 
 			frmCharacterRoster frmCharacter = new frmCharacterRoster();
 			frmCharacter.MdiParent = this;
@@ -274,18 +268,15 @@ namespace Chummer
                     return;
 
 			// Add the Unarmed Attack Weapon to the character.
-			try
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-				XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-				TreeNode objDummy = new TreeNode();
-				Weapon objWeapon = new Weapon(objCharacter);
-				objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
-				objCharacter.Weapons.Add(objWeapon);
-			}
-			catch
-			{
-			}
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            if (objXmlWeapon != null)
+            {
+                TreeNode objDummy = new TreeNode();
+                Weapon objWeapon = new Weapon(objCharacter);
+                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objCharacter.Weapons.Add(objWeapon);
+            }
 
 			frmCareer frmNewCharacter = new frmCareer(objCharacter);
 			frmNewCharacter.MdiParent = this;
@@ -622,21 +613,18 @@ namespace Chummer
                 { return; }
             }
 
-			// Add the Unarmed Attack Weapon to the character.
-			try
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-				XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-				TreeNode objDummy = new TreeNode();
-				Weapon objWeapon = new Weapon(objCharacter);
-				objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
-				objCharacter.Weapons.Add(objWeapon);
-			}
-			catch
-			{
-			}
+            // Add the Unarmed Attack Weapon to the character.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            if (objXmlWeapon != null)
+            {
+                TreeNode objDummy = new TreeNode();
+                Weapon objWeapon = new Weapon(objCharacter);
+                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objCharacter.Weapons.Add(objWeapon);
+            }
 
-			frmCreate frmNewCharacter = new frmCreate(objCharacter);
+            frmCreate frmNewCharacter = new frmCreate(objCharacter);
 			frmNewCharacter.MdiParent = this;
 			frmNewCharacter.WindowState = FormWindowState.Maximized;
 			frmNewCharacter.Show();

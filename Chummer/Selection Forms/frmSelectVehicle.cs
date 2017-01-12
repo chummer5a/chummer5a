@@ -164,15 +164,16 @@ namespace Chummer
 				else
 					objItem.Name = objXmlVehicle["name"].InnerText;
 
-				try
-				{
-					objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText).Name + "]";
-					lstVehicles.Add(objItem);
-				}
-				catch
-				{
-				}
-			}
+                if (objXmlVehicle["category"] != null)
+                {
+                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText);
+                    if (objFoundItem != null)
+                    {
+                        objItem.Name += " [" + objFoundItem.Name + "]";
+                    }
+                }
+                lstVehicles.Add(objItem);
+            }
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
 			lstVehicle.DataSource = null;
@@ -222,40 +223,26 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstVehicle.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstVehicle.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstVehicle.SelectedIndex + 1 < lstVehicle.Items.Count)
+                {
+                    lstVehicle.SelectedIndex++;
+                }
+                else if (lstVehicle.Items.Count > 0)
+                {
+                    lstVehicle.SelectedIndex = 0;
+                }
+            }
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstVehicle.SelectedIndex--;
-					if (lstVehicle.SelectedIndex == -1)
-						lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstVehicle.SelectedIndex - 1 >= 0)
+                {
+                    lstVehicle.SelectedIndex--;
+                }
+                else if (lstVehicle.Items.Count > 0)
+                {
+                    lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
+                }
+            }
 		}
 
 		private void txtSearch_KeyUp(object sender, KeyEventArgs e)

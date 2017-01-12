@@ -220,11 +220,11 @@ namespace Chummer
 		{
 			get
 			{
-				try
+				if (cboChoice1.SelectedValue != null)
 				{
 					return cboChoice1.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
 					return "";
 				}
@@ -238,11 +238,11 @@ namespace Chummer
 		{
 			get
 			{
-				try
-				{
+                if (cboChoice2.SelectedValue != null)
+                {
 					return cboChoice2.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
 					return "";
 				}

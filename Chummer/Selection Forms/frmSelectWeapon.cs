@@ -177,55 +177,48 @@ namespace Chummer
 
 			int intItemCost = 0;
             double dblCost = 0;
-            if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
+            if (objXmlWeapon["cost"] != null)
             {
-                int intMin = 0;
-                int intMax = 0;
-                string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                if (strCost.Contains("-"))
+                if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
                 {
-                    string[] strValues = strCost.Split('-');
-                    intMin = Convert.ToInt32(strValues[0]);
-                    intMax = Convert.ToInt32(strValues[1]);
+                    int intMin = 0;
+                    int intMax = 0;
+                    string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    if (intMax == 0)
+                    {
+                        intMax = 1000000;
+                        lblWeaponCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                    }
+                    else
+                        lblWeaponCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+
+                    intItemCost = intMin;
                 }
                 else
-                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                {
+                    objXmlWeapon.TryGetDoubleFieldQuickly("cost", ref dblCost);
+                    dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                    if (chkBlackMarketDiscount.Checked)
+                    {
+                        dblCost = dblCost * 0.90;
+                    }
+                    lblWeaponCost.Text = $"{dblCost:###,###,##0¥}";
+                    intItemCost = Convert.ToInt32(Math.Ceiling(dblCost));
 
-                if (intMax == 0)
-                {
-                    intMax = 1000000;
-                    lblWeaponCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
-                }
-                else
-                    lblWeaponCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
-
-                intItemCost = intMin;
-            }
-            else
-            {
-                try
-                {
-                    dblCost = Convert.ToDouble(objXmlWeapon["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-                }
-                catch { }
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-                if (chkBlackMarketDiscount.Checked)
-                {
-                    dblCost = dblCost * 0.90;
-                }
-                lblWeaponCost.Text = $"{dblCost:###,###,##0¥}";
-                try
-                {
-                    intItemCost = Convert.ToInt32(dblCost);
-                }
-                catch
-                {
-                }
-
-                if (chkFreeItem.Checked)
-                {
-                    lblWeaponCost.Text = $"{0:###,###,##0¥}";
-                    intItemCost = 0;
+                    if (chkFreeItem.Checked)
+                    {
+                        lblWeaponCost.Text = $"{0:###,###,##0¥}";
+                        intItemCost = 0;
+                    }
                 }
             }
             
@@ -297,66 +290,40 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstWeapon.SelectedIndex++;
-				} 
-				catch
-				{
-					try
-					{
-						lstWeapon.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-                try
+                if (lstWeapon.SelectedIndex + 1 < lstWeapon.Items.Count)
+                {
+                    lstWeapon.SelectedIndex++;
+                }
+                else if (lstWeapon.Items.Count > 0)
+                {
+                    lstWeapon.SelectedIndex = 0;
+                }
+                if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index + 1)
                 {
                     dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
                 }
-                catch
+                else if (dgvWeapons.Rows.Count > 0)
                 {
-                    try 
-                    {
-                        dgvWeapons.Rows[0].Selected = true;
-                    }
-                    catch
-                    {
-                    }
+                    dgvWeapons.Rows[0].Selected = true;
                 }
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstWeapon.SelectedIndex--;
-					if (lstWeapon.SelectedIndex == -1)
-						lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-                try
+                if (lstWeapon.SelectedIndex - 1 >= 0)
+                {
+                    lstWeapon.SelectedIndex--;
+                }
+                else if (lstWeapon.Items.Count > 0)
+                {
+                    lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
+                }
+                if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index - 1)
                 {
                     dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
                 }
-                catch
+                else if (dgvWeapons.Rows.Count > 0)
                 {
-                    try
-                    {
-                        dgvWeapons.Rows[0].Selected = true;
-                    }
-                    catch
-                    {
-                    }
+                    dgvWeapons.Rows[0].Selected = true;
                 }
             }
 		}

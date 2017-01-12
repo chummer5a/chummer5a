@@ -3059,7 +3059,7 @@ namespace Chummer
             set
             {
                 _strName = value;
-                CharacterNameChanged(this);
+                CharacterNameChanged?.Invoke(this);
             }
         }
 
@@ -3549,7 +3549,7 @@ namespace Chummer
             set
             {
                 _strAlias = value;
-                CharacterNameChanged(this);
+                CharacterNameChanged?.Invoke(this);
             }
         }
 
@@ -4174,7 +4174,7 @@ namespace Chummer
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                 if (blnOldValue != value)
-                    MAGEnabledChanged(this);
+                    MAGEnabledChanged?.Invoke(this);
             }
         }
 
@@ -4374,7 +4374,7 @@ namespace Chummer
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                 if (blnOldValue != value)
-                    RESEnabledChanged(this);
+                    RESEnabledChanged?.Invoke(this);
             }
         }
 
@@ -4394,7 +4394,7 @@ namespace Chummer
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                 if (blnOldValue != value)
-                    DEPEnabledChanged(this);
+                    DEPEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6462,7 +6462,7 @@ namespace Chummer
                 bool blnOldValue = _blnAdeptEnabled;
                 _blnAdeptEnabled = value;
                 if (blnOldValue != value)
-                    AdeptTabEnabledChanged(this);
+                    AdeptTabEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6480,7 +6480,7 @@ namespace Chummer
                 bool blnOldValue = _blnMagicianEnabled;
                 _blnMagicianEnabled = value;
                 if (blnOldValue != value)
-                    MagicianTabEnabledChanged(this);
+                    MagicianTabEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6498,7 +6498,7 @@ namespace Chummer
                 bool blnOldValue = _blnTechnomancerEnabled;
                 _blnTechnomancerEnabled = value;
                 if (blnOldValue != value)
-                    TechnomancerTabEnabledChanged(this);
+                    TechnomancerTabEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6516,7 +6516,7 @@ namespace Chummer
                 bool blnOldValue = _blnAdvancedProgramsEnabled;
                 _blnAdvancedProgramsEnabled = value;
                 if (blnOldValue != value)
-                    AdvancedProgramsTabEnabledChanged(this);
+                    AdvancedProgramsTabEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6534,7 +6534,7 @@ namespace Chummer
                 bool blnOldValue = _blnCyberwareDisabled;
                 _blnCyberwareDisabled = value;
                 if (blnOldValue != value)
-                    CyberwareTabDisabledChanged(this);
+                    CyberwareTabDisabledChanged?.Invoke(this);
             }
         }
 
@@ -6552,7 +6552,7 @@ namespace Chummer
                 bool blnOldValue = _blnInitiationEnabled;
                 _blnInitiationEnabled = value;
                 if (blnOldValue != value)
-                    InitiationTabEnabledChanged(this);
+                    InitiationTabEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6570,7 +6570,7 @@ namespace Chummer
                 bool blnOldValue = _blnCritterEnabled;
                 _blnCritterEnabled = value;
                 if (blnOldValue != value)
-                    CritterTabEnabledChanged(this);
+                    CritterTabEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6588,7 +6588,7 @@ namespace Chummer
                 bool blnOldValue = _blnBlackMarketDiscount;
 				_blnBlackMarketDiscount = value;
                 if (blnOldValue != value)
-                    BlackMarketEnabledChanged(this);
+                    BlackMarketEnabledChanged?.Invoke(this);
             }
         }
 
@@ -6621,7 +6621,7 @@ namespace Chummer
                 bool blnOldValue = _blnFriendsInHighPlaces;
                 _blnFriendsInHighPlaces = value;
                 if (blnOldValue != value)
-                    FriendsInHighPlacesChanged(this);
+                    FriendsInHighPlacesChanged?.Invoke(this);
             }
         }
 
@@ -6639,7 +6639,7 @@ namespace Chummer
                 bool blnOldValue = _blnExCon;
                 _blnExCon = value;
                 if (blnOldValue != value)
-                    ExConChanged(this);
+                    ExConChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -6656,7 +6656,7 @@ namespace Chummer
 				int intOldValue = _intTrustFund;
 				_intTrustFund = value;
                 if (intOldValue != value)
-                    TrustFundChanged(this);
+                    TrustFundChanged?.Invoke(this);
             }
         }
 
@@ -6674,7 +6674,7 @@ namespace Chummer
                 bool blnOldValue = _blnRestrictedGear;
                 _blnRestrictedGear = value;
                 if (blnOldValue != value)
-                    RestrictedGearChanged(this);
+                    RestrictedGearChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -6691,7 +6691,7 @@ namespace Chummer
                 bool blnOldValue = _blnOverclocker;
                 _blnOverclocker = value;
                 if (blnOldValue != value)
-                    OverclockerChanged(this);
+                    OverclockerChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -6708,7 +6708,7 @@ namespace Chummer
                 bool blnOldValue = _blnMadeMan;
                 _blnMadeMan = value;
                 if (blnOldValue != value)
-                    MadeManChanged(this);
+                    MadeManChanged?.Invoke(this);
             }
         }
 
@@ -6726,7 +6726,7 @@ namespace Chummer
                 bool blnOldValue = _blnLightningReflexes;
                 _blnLightningReflexes = value;
                 if (blnOldValue != value)
-                    LightningReflexesChanged(this);
+                    LightningReflexesChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -6743,7 +6743,7 @@ namespace Chummer
                 bool blnOldValue = _blnFame;
                 _blnFame = value;
                 if (blnOldValue != value)
-                    FameChanged(this);
+                    FameChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -6760,7 +6760,7 @@ namespace Chummer
                 bool blnOldValue = _blnBornRich;
                 _blnBornRich = value;
                 if (blnOldValue != value)
-                    BornRichChanged(this);
+                    BornRichChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -6777,7 +6777,7 @@ namespace Chummer
                 bool blnOldValue = _blnErased;
                 _blnErased = value;
                 if (blnOldValue != value)
-                    ErasedChanged(this);
+                    ErasedChanged?.Invoke(this);
             }
         }
         /// <summary>

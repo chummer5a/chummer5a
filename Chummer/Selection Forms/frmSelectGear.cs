@@ -404,15 +404,17 @@ namespace Chummer
 					else
 						objItem.Name = objXmlGear["name"].InnerText;
 
-					try
-					{
-						objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlGear["category"].InnerText).Name + "]";
-						lstGears.Add(objItem);
-					}
-					catch
-					{
-					}
-				}
+                    if (objXmlGear["category"] != null)
+                    {
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlGear["category"].InnerText);
+
+                        if (objFoundItem != null)
+                        {
+                            objItem.Name += " [" + objFoundItem.Name + "]";
+                        }
+                    }
+                    lstGears.Add(objItem);
+                }
 			}
 			SortListItem objSort = new SortListItem();
 			lstGears.Sort(objSort.Compare);
@@ -463,39 +465,25 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstGear.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstGear.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
+                if (lstGear.SelectedIndex + 1 < lstGear.Items.Count)
+                {
+                    lstGear.SelectedIndex++;
+                }
+                else if (lstGear.Items.Count > 0)
+                {
+                    lstGear.SelectedIndex = 0;
+                }
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstGear.SelectedIndex--;
-					if (lstGear.SelectedIndex == -1)
-						lstGear.SelectedIndex = lstGear.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstGear.SelectedIndex = lstGear.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
+                if (lstGear.SelectedIndex - 1 >= 0)
+                {
+                    lstGear.SelectedIndex--;
+                }
+                else if (lstGear.Items.Count > 0)
+                {
+                    lstGear.SelectedIndex = lstGear.Items.Count - 1;
+                }
 			}
 		}
 
@@ -864,7 +852,7 @@ namespace Chummer
 					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
 					lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier).ToString() + strAvail;
 				}
-				catch
+				catch (System.Xml.XPath.XPathException)
 				{
 					lblAvail.Text = objXmlGear["avail"].InnerText;
 				}
@@ -880,8 +868,7 @@ namespace Chummer
 					try
 					{
 						XPathExpression xprCost = nav.Compile(objXmlGear["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
+						double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
 						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
 					    if (chkBlackMarketDiscount.Checked)
 					        dblCost *= 0.9;
@@ -890,15 +877,13 @@ namespace Chummer
 						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
 						intItemCost = Convert.ToInt32(dblCost);
 					}
-					catch
+					catch (System.Xml.XPath.XPathException)
 					{
 						lblCost.Text = objXmlGear["cost"].InnerText;
-						try
+                        int intTemp;
+						if (int.TryParse(objXmlGear["cost"].InnerText, out intTemp))
 						{
-							intItemCost = Convert.ToInt32(objXmlGear["cost"].InnerText);
-						}
-						catch
-						{
+							intItemCost = intTemp;
 						}
 					}
 
@@ -991,7 +976,7 @@ namespace Chummer
 
 				if (_objCapacityStyle == CapacityStyle.Standard)
 				{
-					try
+					if (objXmlGear[strCapacityField] != null)
 					{
 						if (objXmlGear[strCapacityField].InnerText.Contains("/["))
 						{
@@ -999,91 +984,80 @@ namespace Chummer
 							string strFirstHalf = objXmlGear[strCapacityField].InnerText.Substring(0, intPos);
 							string strSecondHalf = objXmlGear[strCapacityField].InnerText.Substring(intPos + 1, objXmlGear[strCapacityField].InnerText.Length - intPos - 1);
 
-							try
-							{
-								blnSquareBrackets = strFirstHalf.Contains('[');
-								strCapacity = strFirstHalf;
-								if (blnSquareBrackets)
-									strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							}
-							catch
-							{
-							}
+							blnSquareBrackets = strFirstHalf.Contains('[');
+							strCapacity = strFirstHalf;
+							if (blnSquareBrackets && strCapacity.Length > 2)
+								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
 
-							try
-							{
-								if (objXmlGear[strCapacityField].InnerText == "[*]")
-									lblCapacity.Text = "*";
-								else
-								{
-									if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
-									{
-										string[] strValues = objXmlGear[strCapacityField].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-										lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
-									}
-									else
-										lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
-								}
-								if (blnSquareBrackets)
-									lblCapacity.Text = "[" + lblCapacity.Text + "]";
-							}
-							catch
-							{
-								lblCapacity.Text = "0";
-							}
-							lblCapacity.Text += "/" + strSecondHalf;
+                            if (objXmlGear[strCapacityField].InnerText == "[*]")
+                                lblCapacity.Text = "*";
+                            else
+                            {
+                                if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
+                                {
+                                    string[] strValues = objXmlGear[strCapacityField].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                                    if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+                                        lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                                    else
+                                        lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
+                                }
+                                else
+                                    lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
+                            }
+                            if (blnSquareBrackets)
+                                lblCapacity.Text = "[" + lblCapacity.Text + "]";
+
+                            lblCapacity.Text += "/" + strSecondHalf;
 						}
 						else
 						{
-							try
-							{
-								blnSquareBrackets = objXmlGear[strCapacityField].InnerText.Contains('[');
-								strCapacity = objXmlGear[strCapacityField].InnerText;
-								if (blnSquareBrackets)
-									strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							}
-							catch
-							{
-							}
+							blnSquareBrackets = objXmlGear[strCapacityField].InnerText.Contains('[');
+							strCapacity = objXmlGear[strCapacityField].InnerText;
+                            if (blnSquareBrackets && strCapacity.Length > 2)
+                                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
 
-							try
+							if (objXmlGear[strCapacityField].InnerText == "[*]")
+								lblCapacity.Text = "*";
+							else
 							{
-								if (objXmlGear[strCapacityField].InnerText == "[*]")
-									lblCapacity.Text = "*";
+								if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
+								{
+									string[] strValues = objXmlGear[strCapacityField].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                                    if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+                                        lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                                    else
+                                        lblCapacity.Text = "0";
+                                }
 								else
 								{
-									if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
+                                    string strCalculatedCapacity = "";
+                                    try
+                                    {
+                                        strCalculatedCapacity = nav.Evaluate(xprCapacity).ToString();
+                                    }
+                                    catch (System.Xml.XPath.XPathException)
+                                    {
+                                        lblCapacity.Text = "0";
+                                    }
+                                    if (strCalculatedCapacity.Contains('.'))
 									{
-										string[] strValues = objXmlGear[strCapacityField].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-										lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
+										double dblCalculatedCapacity = Convert.ToDouble(strCalculatedCapacity, GlobalOptions.Instance.CultureInfo);
+										int intCalculatedCapacity = Convert.ToInt32(Math.Floor(dblCalculatedCapacity));
+										if (intCalculatedCapacity < 1)
+											intCalculatedCapacity = 1;
+										lblCapacity.Text = intCalculatedCapacity.ToString();
 									}
-									else
-									{
-										string strCalculatedCapacity = nav.Evaluate(xprCapacity).ToString();
-										if (strCalculatedCapacity.Contains('.'))
-										{
-											decimal decCalculatedCapacity = Convert.ToDecimal(strCalculatedCapacity, GlobalOptions.Instance.CultureInfo);
-											int intCalculatedCapacity = Convert.ToInt32(Math.Floor(decCalculatedCapacity));
-											if (intCalculatedCapacity < 1)
-												intCalculatedCapacity = 1;
-											lblCapacity.Text = intCalculatedCapacity.ToString();
-										}
-										else
-											lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
-									}
+									else if (!string.IsNullOrEmpty(strCalculatedCapacity))
+										lblCapacity.Text = strCalculatedCapacity;
 								}
-								if (blnSquareBrackets)
-									lblCapacity.Text = "[" + lblCapacity.Text + "]";
 							}
-							catch
-							{
-								lblCapacity.Text = "0";
-							}
+							if (blnSquareBrackets)
+								lblCapacity.Text = "[" + lblCapacity.Text + "]";
 						}
 					}
-					catch
+					else
 					{
 						lblCapacity.Text = "0";
 					}
@@ -1102,11 +1076,11 @@ namespace Chummer
 				if (Convert.ToInt32(objXmlGear["rating"].InnerText) > 0)
 				{
 					nudRating.Maximum = Convert.ToInt32(objXmlGear["rating"].InnerText);
-					try
+					if (objXmlGear["minrating"] != null)
 					{
 						nudRating.Minimum = Convert.ToInt32(objXmlGear["minrating"].InnerText);
 					}
-					catch
+					else
 					{
 						nudRating.Minimum = 1;
 					}

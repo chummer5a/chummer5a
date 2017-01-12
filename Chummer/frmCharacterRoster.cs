@@ -89,17 +89,15 @@ namespace Chummer
 		{
 			TreeNode objNode = new TreeNode();
 			XmlDocument objXmlSource = new XmlDocument();
-			bool blnLoaded = true;
-			//If we run into any problems loading the character cache, fail out early. 
+			// If we run into any problems loading the character cache, fail out early. 
 			try
 			{
 				objXmlSource.Load(strFile);
 			}
-			catch
+			catch (Exception)
 			{
-				blnLoaded = false;
-			}
-			if (!blnLoaded) return;
+                return;
+            }
 			CharacterCache objCache = new CharacterCache();
 			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
 			if (objXmlSourceNode != null)

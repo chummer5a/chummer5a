@@ -158,16 +158,11 @@ namespace Chummer
 		{
 			get
 			{
-				try
+				if (cboSpec.SelectedValue != null && cboSpec.SelectedValue.ToString() != "Custom")
 				{
-					string strReturn = cboSpec.SelectedValue.ToString();
-					if (cboSpec.SelectedValue.ToString() == "Custom")
-					{
-						strReturn = cboSpec.Text;
-					}
-					return strReturn;
+					return cboSpec.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
 					return cboSpec.Text;
 				}

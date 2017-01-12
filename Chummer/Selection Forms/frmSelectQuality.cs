@@ -219,39 +219,25 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstQualities.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstQualities.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
+                if (lstQualities.SelectedIndex + 1 < lstQualities.Items.Count)
+                {
+                    lstQualities.SelectedIndex++;
+                }
+                else if (lstQualities.Items.Count > 0)
+                {
+                    lstQualities.SelectedIndex = 0;
+                }
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstQualities.SelectedIndex--;
-					if (lstQualities.SelectedIndex == -1)
-						lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
+                if (lstQualities.SelectedIndex - 1 >= 0)
+                {
+                    lstQualities.SelectedIndex--;
+                }
+                else if (lstQualities.Items.Count > 0)
+                {
+                    lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
+                }
 			}
 		}
 
@@ -363,7 +349,7 @@ namespace Chummer
 			    {
 			        objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
 			    }
-			    catch
+			    catch (System.Xml.XPath.XPathException)
 			    {
 			        return;
 			    }
@@ -392,16 +378,16 @@ namespace Chummer
                             else
                                 objItem.Name = objXmlQuality["name"].InnerText;
 
-                             try
-                             {
-                                 objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText).Name + "]";
-                            
-                                 lstQuality.Add(objItem);
-                            
-                             }
-                             catch
-                             {
-                             }
+                            if (objXmlQuality["category"] != null)
+                            {
+                                ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText);
+                                if (objFoundItem != null)
+                                {
+                                    objItem.Name += " [" + objFoundItem.Name + "]";
+                                }
+                            }
+
+                            lstQuality.Add(objItem);
                         }
                     }
 				}

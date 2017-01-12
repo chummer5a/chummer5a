@@ -237,17 +237,13 @@ namespace Chummer
 						foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
 						{
 							TreeNode objChild = new TreeNode();
-							try
+							if (objXmlSkill["name"] != null)
 							{
 								XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + objXmlSkill["name"].InnerText + "\"]");
-								if (objNode["translate"] != null)
+								if (objNode != null && objNode["translate"] != null)
 									objChild.Text = objNode["translate"].InnerText;
 								else
 									objChild.Text = objXmlSkill["name"].InnerText;
-							}
-							catch
-							{
-								objChild.Text = objXmlSkill["name"].InnerText;
 							}
 							objChild.Text += " " + objXmlSkill["rating"].InnerText;
 

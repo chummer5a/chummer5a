@@ -1862,8 +1862,15 @@ namespace Chummer.Backend.Equipment
 						XPathNavigator nav = objXmlDocument.CreateNavigator();
 						string strCost = "";
 						strCost = strCostExpression.Replace("Gear Cost", _objParent.CalculatedCost.ToString());
-						XPathExpression xprCost = nav.Compile(strCost);
-						intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                        try
+                        {
+                            XPathExpression xprCost = nav.Compile(strCost);
+                            intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                        }
+                        catch (System.Xml.XPath.XPathException)
+                        {
+                            return Convert.ToInt32(Cost);
+                        }
 					}
 					else
 						intReturn = 0;
@@ -1896,8 +1903,15 @@ namespace Chummer.Backend.Equipment
                         XPathNavigator nav = objXmlDocument.CreateNavigator();
                         string strCost = "";
                         strCost = strCostExpression.Replace("Children Cost", intTotalChildrenCost.ToString());
-                        XPathExpression xprCost = nav.Compile(strCost);
-                        intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                        try
+                        {
+                            XPathExpression xprCost = nav.Compile(strCost);
+                            intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                        }
+                        catch (System.Xml.XPath.XPathException)
+                        {
+                            return Convert.ToInt32(Cost);
+                        }
                     }
                     else
                         intReturn = 0;
@@ -1912,10 +1926,18 @@ namespace Chummer.Backend.Equipment
 					string strCost = "0";
 
 					strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost.ToString());
-					XPathExpression xprCost = nav.Compile(strCost);
-					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
-					intReturn = Convert.ToInt32(dblCost);
+                    double dblCost = 0.0;
+                    try
+                    {
+					    XPathExpression xprCost = nav.Compile(strCost);
+					    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+					    dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+                    }
+                    catch (System.Xml.XPath.XPathException)
+                    {
+                        return Convert.ToInt32(Cost);
+                    }
+                    intReturn = Convert.ToInt32(dblCost);
 				}
 				else if (_strCost.Contains("Rating") || _strCost3.Contains("Rating") || _strCost6.Contains("Rating") || _strCost10.Contains("Rating") || _strCost.Contains("*") || _strCost3.Contains("*") || _strCost6.Contains("*") || _strCost10.Contains("*"))
 				{
@@ -1939,10 +1961,18 @@ namespace Chummer.Backend.Equipment
 					}
 
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-					XPathExpression xprCost = nav.Compile(strCost);
-					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
-					intReturn = Convert.ToInt32(dblCost);
+                    double dblCost = 0;
+                    try
+                    {
+					    XPathExpression xprCost = nav.Compile(strCost);
+					    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+					    dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+                    }
+                    catch (System.Xml.XPath.XPathException)
+                    {
+                        return Convert.ToInt32(Cost);
+                    }
+                    intReturn = Convert.ToInt32(dblCost);
 				}
 				else
 				{

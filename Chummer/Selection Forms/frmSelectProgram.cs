@@ -136,26 +136,18 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-			try
+			if (trePrograms.SelectedNode != null && trePrograms.SelectedNode.Level > 0)
 			{
-				if (trePrograms.SelectedNode.Level > 0)
-					AcceptForm();
-			}
-			catch
-			{
+				AcceptForm();
 			}
         }
 
         private void trePrograms_DoubleClick(object sender, EventArgs e)
         {
-			try
-			{
-				if (trePrograms.SelectedNode.Level > 0)
-					AcceptForm();
-			}
-			catch
-			{
-			}
+            if (trePrograms.SelectedNode != null && trePrograms.SelectedNode.Level > 0)
+            {
+                AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -242,26 +234,20 @@ namespace Chummer
 			}
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
+                if (trePrograms.SelectedNode != null)
+                {
 					trePrograms.SelectedNode = trePrograms.SelectedNode.NextVisibleNode;
 					if (trePrograms.SelectedNode == null)
 						trePrograms.SelectedNode = trePrograms.Nodes[0];
 				}
-				catch
-				{
-				}
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
+                if (trePrograms.SelectedNode != null)
+                {
 					trePrograms.SelectedNode = trePrograms.SelectedNode.PrevVisibleNode;
-					if (trePrograms.SelectedNode == null)
+					if (trePrograms.SelectedNode == null && trePrograms.Nodes.Count > 0)
 						trePrograms.SelectedNode = trePrograms.Nodes[trePrograms.Nodes.Count - 1].LastNode;
-				}
-				catch
-				{
 				}
 			}
 		}

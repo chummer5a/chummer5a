@@ -175,40 +175,26 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstPowers.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstPowers.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstPowers.SelectedIndex + 1 < lstPowers.Items.Count)
+                {
+                    lstPowers.SelectedIndex++;
+                }
+                else if (lstPowers.Items.Count > 0)
+                {
+                    lstPowers.SelectedIndex = 0;
+                }
+            }
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstPowers.SelectedIndex--;
-					if (lstPowers.SelectedIndex == -1)
-						lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstPowers.SelectedIndex - 1 >= 0)
+                {
+                    lstPowers.SelectedIndex--;
+                }
+                else if (lstPowers.Items.Count > 0)
+                {
+                    lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                }
+            }
 		}
 
 		private void txtSearch_KeyUp(object sender, KeyEventArgs e)

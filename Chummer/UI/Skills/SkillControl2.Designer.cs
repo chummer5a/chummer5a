@@ -21,7 +21,8 @@ namespace Chummer.UI.Skills
 			{
 				components.Dispose();
 			}
-			base.Dispose(disposing);
+            _italic.Dispose();
+            base.Dispose(disposing);
 		}
 
 		#region Component Designer generated code

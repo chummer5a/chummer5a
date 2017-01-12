@@ -51,12 +51,9 @@ namespace Chummer
 
 		private void cmdDelete_Click(object sender, EventArgs e)
 		{
-			try
+			if (treCharacters.SelectedNode != null)
 			{
 				treCharacters.SelectedNode.Remove();
-			}
-			catch
-			{
 			}
 		}
 

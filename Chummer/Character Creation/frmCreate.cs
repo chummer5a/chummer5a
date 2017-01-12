@@ -21794,15 +21794,13 @@ namespace Chummer
         /// </summary>
         private void RefreshPasteStatus()
         {
-            if (treLifestyles.SelectedNode == null)
-                return;
             bool blnPasteEnabled = false;
             bool blnCopyEnabled = false;
 
             if (tabCharacterTabs.SelectedTab == tabStreetGear)
             {
                 // Lifestyle Tab.
-                if (tabStreetGearTabs.SelectedTab == tabLifestyle)
+                if (tabStreetGearTabs.SelectedTab == tabLifestyle && treLifestyles.SelectedNode != null)
                 {
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Lifestyle)
                         blnPasteEnabled = true;
@@ -21818,7 +21816,7 @@ namespace Chummer
                 }
 
                 // Armor Tab.
-                if (tabStreetGearTabs.SelectedTab == tabArmor)
+                if (tabStreetGearTabs.SelectedTab == tabArmor && treArmor.SelectedNode != null)
                 {
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Armor)
                         blnPasteEnabled = true;
@@ -21853,7 +21851,7 @@ namespace Chummer
                 }
 
                 // Weapons Tab.
-                if (tabStreetGearTabs.SelectedTab == tabWeapons)
+                if (tabStreetGearTabs.SelectedTab == tabWeapons && treWeapons.SelectedNode != null)
                 {
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Weapon)
                         blnPasteEnabled = true;
@@ -21927,7 +21925,7 @@ namespace Chummer
                 }
 
                 // Gear Tab.
-                if (tabStreetGearTabs.SelectedTab == tabGear)
+                if (tabStreetGearTabs.SelectedTab == tabGear && treGear.SelectedNode != null)
                 {
                     if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Gear || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Commlink || GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.OperatingSystem)
                         blnPasteEnabled = true;
@@ -21939,7 +21937,7 @@ namespace Chummer
             }
 
             // Vehicles Tab.
-            if (tabCharacterTabs.SelectedTab == tabVehicles)
+            if (tabCharacterTabs.SelectedTab == tabVehicles && treVehicles.SelectedNode != null)
             {
                 if (GlobalOptions.Instance.ClipboardContentType == ClipboardContentType.Vehicle)
                     blnPasteEnabled = true;

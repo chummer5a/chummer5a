@@ -500,11 +500,11 @@ namespace Chummer
 		{
 			get
 			{
-				try
+				if (cboAmmo.SelectedValue != null)
 				{
 					return cboAmmo.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
 					return cboAmmo.Text;
 				}

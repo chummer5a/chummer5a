@@ -434,7 +434,7 @@ namespace Chummer
 				SortByName objSort = new SortByName();
 				lstNodes.Sort(objSort.Compare);
 			}
-			catch
+			catch (System.ArgumentException)
 			{
 			}
 			foreach (TreeNode objNode in lstNodes)

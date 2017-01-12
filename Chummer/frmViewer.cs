@@ -67,55 +67,43 @@ namespace Chummer
 				}
 			}
 
-			try
-			{
-				// Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
-					string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-					string languageDirectoryPath = Path.Combine(Application.StartupPath, "sheets", GlobalOptions.Instance.Language);
+            // Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
+            if (GlobalOptions.Instance.Language != "en-us")
+            {
+                XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
+                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
+                string languageDirectoryPath = Path.Combine(Application.StartupPath, "sheets", GlobalOptions.Instance.Language);
 
-					foreach (string strFile in Directory.GetFiles(languageDirectoryPath))
-					{
-						// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-						if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-						{
-							string strFileName = Path.GetFileNameWithoutExtension(strFile);
-							ListItem objItem = new ListItem();
-							objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
-							objItem.Name = strLanguage + ": " + strFileName;
-							lstFiles.Add(objItem);
-						}
-					}
-				}
-			}
-			catch
-			{
-			}
+                foreach (string strFile in Directory.GetFiles(languageDirectoryPath))
+                {
+                    // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                    if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+                    {
+                        string strFileName = Path.GetFileNameWithoutExtension(strFile);
+                        ListItem objItem = new ListItem();
+                        objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
+                        objItem.Name = strLanguage + ": " + strFileName;
+                        lstFiles.Add(objItem);
+                    }
+                }
+            }
 
-			try
-			{
-				// Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-				string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
-				foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
-				{
-					// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-					if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-					{
-						string strFileName = Path.GetFileNameWithoutExtension(strFile);
-						ListItem objItem = new ListItem();
-						objItem.Value = Path.Combine("omae", strFileName);
-						objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
-						lstFiles.Add(objItem);
-					}
-				}
-			}
-			catch
-			{
-			}
+            // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
+            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+            foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
+            {
+                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+                {
+                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
+                    ListItem objItem = new ListItem();
+                    objItem.Value = Path.Combine("omae", strFileName);
+                    objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
+                    lstFiles.Add(objItem);
+                }
+            }
 
-			cboXSLT.ValueMember = "Value";
+            cboXSLT.ValueMember = "Value";
 			cboXSLT.DisplayMember = "Name";
 			cboXSLT.DataSource = lstFiles;
 
@@ -182,10 +170,10 @@ namespace Chummer
 
 		private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			// Remove the mugshots directory when the form closes.
-			try
+            // Remove the mugshots directory when the form closes.
+            string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+            try
 			{
-				string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
                 Directory.Delete(mugshotsDirectoryPath, true);
 			}
 			catch

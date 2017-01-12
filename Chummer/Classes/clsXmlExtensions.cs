@@ -414,5 +414,23 @@ namespace Chummer
             }
             return false;
         }
+
+        /// <summary>
+        /// Like TryGetField for doubles, but taking advantage of double.TryParse... boo, no TryParse interface! :(
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetDoubleFieldQuickly(this XmlNode node, String field, ref double read)
+        {
+            if (node[field] != null)
+            {
+                double dblTmp;
+                if (double.TryParse(node[field].InnerText, out dblTmp))
+                {
+                    read = dblTmp;
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

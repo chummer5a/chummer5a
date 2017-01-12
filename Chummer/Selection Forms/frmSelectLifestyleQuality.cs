@@ -219,38 +219,24 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Down)
             {
-                try
+                if (lstLifestyleQualities.SelectedIndex + 1 < lstLifestyleQualities.Items.Count)
                 {
                     lstLifestyleQualities.SelectedIndex++;
                 }
-                catch
+                else if (lstLifestyleQualities.Items.Count > 0)
                 {
-                    try
-                    {
-                        lstLifestyleQualities.SelectedIndex = 0;
-                    }
-                    catch
-                    {
-                    }
+                    lstLifestyleQualities.SelectedIndex = 0;
                 }
             }
             if (e.KeyCode == Keys.Up)
             {
-                try
+                if (lstLifestyleQualities.SelectedIndex - 1 >= 0)
                 {
                     lstLifestyleQualities.SelectedIndex--;
-                    if (lstLifestyleQualities.SelectedIndex == -1)
-                        lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
                 }
-                catch
+                else if (lstLifestyleQualities.Items.Count > 0)
                 {
-                    try
-                    {
-                        lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
-                    }
-                    catch
-                    {
-                    }
+                    lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
                 }
             }
         }
@@ -348,16 +334,17 @@ namespace Chummer
                             objItem.Value = objXmlQuality["name"].InnerText;
                             objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
 
-                            try
+                            if (objXmlQuality["category"] != null)
                             {
-                                objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"]?.InnerText).Name + "]";
+                                ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText);
 
-                                lstLifestyleQuality.Add(objItem);
+                                if (objFoundItem != null)
+                                {
+                                    objItem.Name += " [" + objFoundItem.Name + "]";
+                                }
+                            }
 
-                            }
-                            catch
-                            {
-                            }
+                            lstLifestyleQuality.Add(objItem);
                         }
                     }
                 }
@@ -365,7 +352,7 @@ namespace Chummer
             else
             {
                 XmlDocument objXmlMetatypeDocument = new XmlDocument();
-                if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
+                if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Protosapients")
                     objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
 
                 string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";

@@ -903,227 +903,191 @@ namespace Chummer
 				string strAvail = "";
 				string strAvailExpr = objXmlCyberware["avail"].InnerText;
 				XPathExpression xprAvail;
-				if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
-				{
-					strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-					// Remove the trailing character if it is "F" or "R".
-					strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-				}
-				try
-				{
-					if (strAvailExpr.Contains("MinRating"))
-					{
-						XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
-						if (xmlMinRatingNode != null)
-						{
-							switch (xmlMinRatingNode.InnerText)
-							{
-								case "MinimumAGI":
-									if (_objVehicle != null)
-									{
-										strAvailExpr = strAvailExpr.Replace("MinRating", 
-											_objVehicle.Pilot.ToString());
-									}
-									else
-									{
-										strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
-									}
-									break;
-								case "MinimumSTR":
-									if (_objVehicle != null)
-									{
-										strAvailExpr = strAvailExpr.Replace("MinRating",
-											_objVehicle.TotalBody.ToString());
-									}
-									else
-									{
-										strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
-									}
-									break;
-								default:
-									strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
-									break;
-							}
-						}
-					}
-					strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString());
-
-					string strPrefix = "";
-					if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
-					{
-						strPrefix = strAvailExpr.Substring(0, 1);
-						strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length-1);
-					}
-					xprAvail = nav.Compile(strAvailExpr);
-					int intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
-					// Avail cannot go below 0.
-					if (intAvail < 0)
-						intAvail = 0;
-					lblAvail.Text = strPrefix + intAvail.ToString() + strAvail;
-				}
-				catch
-				{
-					if (objXmlCyberware["avail"].InnerText.StartsWith("FixedValues"))
-					{
-						string[] strValues = objXmlCyberware["avail"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                        strAvail = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                if (objXmlCyberware["avail"] != null)
+                {
+                    if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                    {
+                        strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                    }
+                    else if (objXmlCyberware["avail"].InnerText.StartsWith("FixedValues"))
+                    {
+                        string[] strValues = objXmlCyberware["avail"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                        if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+                            strAvail = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                        string strAvailSuffix = "";
                         if (strAvail.EndsWith("F") || strAvail.EndsWith("R"))
                         {
-                            string strAvailSuffix = strAvail.Substring(strAvail.Length - 1, 1);
+                            strAvailSuffix = strAvail.Substring(strAvail.Length - 1, 1);
                             strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                            int intAvail = Convert.ToInt32(strAvail) + _intAvailModifier;
-                            lblAvail.Text = intAvail.ToString() + strAvailSuffix;
                         }
-                        else
+                        int intAvail = Convert.ToInt32(strAvail) + _intAvailModifier;
+                        lblAvail.Text = intAvail.ToString();
+                    }
+                    else
+                    {
+                        if (strAvailExpr.Contains("MinRating"))
                         {
-                            int intAvail = Convert.ToInt32(strAvail) + _intAvailModifier;
-                            lblAvail.Text = intAvail.ToString();
+                            XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
+                            if (xmlMinRatingNode != null)
+                            {
+                                switch (xmlMinRatingNode.InnerText)
+                                {
+                                    case "MinimumAGI":
+                                        if (_objVehicle != null)
+                                        {
+                                            strAvailExpr = strAvailExpr.Replace("MinRating",
+                                                _objVehicle.Pilot.ToString());
+                                        }
+                                        else
+                                        {
+                                            strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+                                        }
+                                        break;
+                                    case "MinimumSTR":
+                                        if (_objVehicle != null)
+                                        {
+                                            strAvailExpr = strAvailExpr.Replace("MinRating",
+                                                _objVehicle.TotalBody.ToString());
+                                        }
+                                        else
+                                        {
+                                            strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+                                        }
+                                        break;
+                                    default:
+                                        strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+                                        break;
+                                }
+                            }
                         }
-					}
-					else
-					{
-						if (strAvailExpr.StartsWith("+") && strAvailExpr.Contains("Rating"))
-						{
-							strAvailExpr = objXmlCyberware["avail"].InnerText.Substring(1, objXmlCyberware["avail"].InnerText.Length - 1);
-							
-							if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
-							{
-								strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-								// Remove the trailing character if it is "F" or "R".
-								strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-							}
+                        strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString());
 
-							xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
-							int intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
-							// Avail cannot go below 0;
-							if (intAvail < 0)
-								intAvail = 0;
-							lblAvail.Text = "+" + intAvail.ToString() + strAvail;
-						}
-						else
-							lblAvail.Text = objXmlCyberware["avail"].InnerText;
-					}
-				}
+                        string strPrefix = "";
+                        if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
+                        {
+                            strPrefix = strAvailExpr.Substring(0, 1);
+                            strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                        }
+                        int intAvail = -1;
+                        try
+                        {
+                            xprAvail = nav.Compile(strAvailExpr);
+                            intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
+                            // Avail cannot go below 0.
+                            if (intAvail < 0)
+                                intAvail = 0;
+                            lblAvail.Text = strPrefix + intAvail.ToString() + strAvail;
+                        }
+                        catch (System.Xml.XPath.XPathException)
+                        {
+                            lblAvail.Text = objXmlCyberware["avail"].InnerText;
+                        }
+                    }
+                }
 				lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
-				// Cost.
-				// Check for a Variable Cost.
-				int intItemCost = 0;
-				if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
-				{
-					int intMin = 0;
-					int intMax = 0;
-					string strCost = objXmlCyberware["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-					if (strCost.Contains("-"))
-					{
-						string[] strValues = strCost.Split('-');
-						intMin = Convert.ToInt32(strValues[0]);
-						intMax = Convert.ToInt32(strValues[1]);
-					}
-					else
-						intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                // Cost.
+                int intItemCost = 0;
+                if (chkFree.Checked)
+                {
+                    lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
+                    intItemCost = 0;
+                }
+                else if (objXmlCyberware["cost"] != null)
+                {
+                    // Check for a Variable Cost.
+                    if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
+                    {
+                        int intMin = 0;
+                        int intMax = 0;
+                        string strCost = objXmlCyberware["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
+                        if (strCost.Contains("-"))
+                        {
+                            string[] strValues = strCost.Split('-');
+                            intMin = Convert.ToInt32(strValues[0]);
+                            intMax = Convert.ToInt32(strValues[1]);
+                        }
+                        else
+                            intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-					if (intMax == 0)
-					{
-						intMax = 1000000;
-						lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
-					}
-					else
-						lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+                        if (intMax == 0)
+                        {
+                            intMax = 1000000;
+                            lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                        }
+                        else
+                            lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
 
-					intItemCost = intMin;
-				}
-				else
-				{
-					try
-					{
-						if (objXmlCyberware["cost"].InnerText.Contains("MinRating"))
-						{
-							XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
-							if (xmlMinRatingNode != null)
-							{
-								switch (xmlMinRatingNode.InnerText)
-								{
-									case "MinimumAGI":
-										if (_objVehicle != null)
-										{
-											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
-												_objVehicle.Pilot.ToString());
-										}
-										else
-										{
-											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
-										}
-										break;
-									case "MinimumSTR":
-										if (_objVehicle != null)
-										{
-											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
-												_objVehicle.TotalBody.ToString());
-										}
-										else
-										{
-											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
-										}
-										break;
-								}
-							}
-						}
-						XPathExpression xprCost = nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-						double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo)*_dblCostMultiplier*
-						           dblGenetechCostModifier);
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-						intItemCost = Convert.ToInt32(dblCost);
-						lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
-						
-					}
-					catch
-					{
-						if (objXmlCyberware["cost"].InnerText.StartsWith("FixedValues"))
-						{
-							string[] strValues = objXmlCyberware["cost"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-							int intCost = Convert.ToInt32((Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier * dblGenetechCostModifier));
-							lblCost.Text = String.Format("{0:###,###,##0¥}", intCost);
-							intItemCost = intCost;
-						}
-						else
-						{
-							try
-							{
-								lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(Convert.ToDouble(objXmlCyberware["cost"].InnerText, GlobalOptions.Instance.CultureInfo) * dblGenetechCostModifier));
-								intItemCost = Convert.ToInt32(Convert.ToDouble(objXmlCyberware["cost"].InnerText, GlobalOptions.Instance.CultureInfo) * dblGenetechCostModifier);
-							}
-							catch
-							{
-								lblCost.Text = String.Format("{0:###,###,##0¥}", objXmlCyberware["cost"].InnerText);
-								try
-								{
-									intItemCost = Convert.ToInt32(objXmlCyberware["cost"].InnerText);
-								}
-								catch
-								{
-								}
-							}
-						}
-					}
-				}
+                        intItemCost = intMin;
+                    }
+                    if (objXmlCyberware["cost"].InnerText.StartsWith("FixedValues"))
+                    {
+                        string[] strValues = objXmlCyberware["cost"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                        if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+                        {
+                            intItemCost = Convert.ToInt32((Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier * dblGenetechCostModifier));
+                            if (chkBlackMarketDiscount.Checked)
+                            {
+                                intItemCost -= Convert.ToInt32(intItemCost * 0.10);
+                            }
+                            lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+                        }
+                    }
+                    else
+                    {
+                        if (objXmlCyberware["cost"].InnerText.Contains("MinRating"))
+                        {
+                            XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
+                            if (xmlMinRatingNode != null)
+                            {
+                                switch (xmlMinRatingNode.InnerText)
+                                {
+                                    case "MinimumAGI":
+                                        if (_objVehicle != null)
+                                        {
+                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
+                                                _objVehicle.Pilot.ToString());
+                                        }
+                                        else
+                                        {
+                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
+                                        }
+                                        break;
+                                    case "MinimumSTR":
+                                        if (_objVehicle != null)
+                                        {
+                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
+                                                _objVehicle.TotalBody.ToString());
+                                        }
+                                        else
+                                        {
+                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        XPathExpression xprCost = nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
+                        double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier *
+                                    dblGenetechCostModifier);
+                        dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                        intItemCost = Convert.ToInt32(dblCost);
 
-				if (chkBlackMarketDiscount.Checked)
-				{
-					double dblDiscount = 0;
-					dblDiscount = intItemCost - (intItemCost * 0.90);
-					intItemCost -= Convert.ToInt32(dblDiscount);
-					lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
-				}
+                        if (chkBlackMarketDiscount.Checked)
+                        {
+                            intItemCost -= Convert.ToInt32(intItemCost * 0.10);
+                        }
 
-				if (chkFree.Checked)
-				{
-					lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
-					intItemCost = 0;
-				}
+                        lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+                    }
+                }
+                else
+                    lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
 
-				// Test required to find the item.
-				lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
+                // Test required to find the item.
+                lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
 
 				// Essence.
 				double dblESS = 0.0;
@@ -1167,7 +1131,7 @@ namespace Chummer
 						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 					xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
 
-					try
+					if (objXmlCyberware["capacity"] != null)
 					{
 						if (objXmlCyberware["capacity"].InnerText == "[*]")
 							lblCapacity.Text = "*";
@@ -1175,8 +1139,9 @@ namespace Chummer
 						{
 							if (objXmlCyberware["capacity"].InnerText.StartsWith("FixedValues"))
 							{
-								string[] strValues = objXmlCyberware["capacity"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-								lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
+								string[] strValues = objXmlCyberware["capacity"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                                if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+								    lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
 							}
 							else
 								lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
@@ -1184,7 +1149,7 @@ namespace Chummer
 						if (blnSquareBrackets)
 							lblCapacity.Text = "[" + lblCapacity.Text + "]";
 					}
-					catch
+					else
 					{
 						lblCapacity.Text = "0";
 					}

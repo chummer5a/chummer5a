@@ -439,13 +439,9 @@ namespace Chummer
 						}
 					}
 				}
-				try
+				if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0)
 				{
-					if (treSpells.SelectedNode.Level > 0)
-						AcceptForm();
-				}
-				catch
-				{
+                    AcceptForm();
 				}
 			}
 		}
@@ -579,26 +575,20 @@ namespace Chummer
 			}
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
+                if (treSpells.SelectedNode != null)
+                {
 					treSpells.SelectedNode = treSpells.SelectedNode.NextVisibleNode;
 					if (treSpells.SelectedNode == null)
 						treSpells.SelectedNode = treSpells.Nodes[0];
 				}
-				catch
-				{
-				}
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
+                if (treSpells.SelectedNode != null)
+                {
 					treSpells.SelectedNode = treSpells.SelectedNode.PrevVisibleNode;
-					if (treSpells.SelectedNode == null)
+					if (treSpells.SelectedNode == null && treSpells.Nodes.Count > 0)
 						treSpells.SelectedNode = treSpells.Nodes[treSpells.Nodes.Count - 1].LastNode;
-				}
-				catch
-				{
 				}
 			}
 		}
