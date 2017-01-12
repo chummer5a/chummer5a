@@ -94,9 +94,9 @@
 			this.lblPowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblPowerPoints.Location = new System.Drawing.Point(502, 6);
 			this.lblPowerPoints.Name = "lblPowerPoints";
-			this.lblPowerPoints.Size = new System.Drawing.Size(19, 13);
+			this.lblPowerPoints.Size = new System.Drawing.Size(40, 13);
 			this.lblPowerPoints.TabIndex = 4;
-			this.lblPowerPoints.Text = "[0]";
+			this.lblPowerPoints.Text = "[00.00]";
 			// 
 			// chkDiscountedAdeptWay
 			// 

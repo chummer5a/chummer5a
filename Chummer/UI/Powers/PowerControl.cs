@@ -156,6 +156,7 @@ namespace Chummer
                 }
                 nudRating.Value = value;
 	            RequestCharacterUpdate();
+				MoveControls();
             }
         }
 

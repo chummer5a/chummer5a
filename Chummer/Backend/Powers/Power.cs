@@ -28,6 +28,7 @@ namespace Chummer
 		private bool _blnDiscountedAdeptWay = false;
 		private bool _blnDiscountedGeas = false;
 		private XmlNode _nodBonus;
+		private XmlNode _nodAdeptWayRequirements;
 		private string _strNotes = "";
 		private bool _blnDoubleCost = true;
 		private bool _blnFree = false;
@@ -76,6 +77,10 @@ namespace Chummer
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
 				objWriter.WriteElementString("bonus", "");
+			if (_nodAdeptWayRequirements != null)
+				objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXml + "</adeptwayrequires>");
+			else
+				objWriter.WriteElementString("adeptwayrequires", "");
 			objWriter.WriteStartElement("enhancements");
 			foreach (Enhancement objEnhancement in _lstEnhancements)
 			{
@@ -105,6 +110,7 @@ namespace Chummer
 			objNode.TryGetField("doublecost", out _blnDoubleCost);
 			objNode.TryGetField("notes", out _strNotes);
 			_nodBonus = objNode["bonus"];
+			_nodAdeptWayRequirements = objNode["adeptwayrequires"];
 			if (objNode.InnerXml.Contains("enhancements"))
 			{
 				XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
@@ -166,6 +172,7 @@ namespace Chummer
 			objNode.TryGetField("doublecost", out _blnDoubleCost);
 			objNode.TryGetField("notes", out _strNotes);
 			_nodBonus = objNode["bonus"];
+			_nodAdeptWayRequirements = objNode["adeptwayrequires"];
 			if (objNode.InnerXml.Contains("enhancements"))
 			{
 				XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
@@ -346,15 +353,6 @@ namespace Chummer
 			{
 				_strPointsPerLevel = value.ToString();
 			}
-		}
-
-		/// <summary>
-		/// Whether the Power can receive a discount from an Adept Way. 
-		/// TODO: Implement quality-specific checking for this.
-		/// </summary>
-		public bool AdeptWayDiscountEnabled
-		{
-			get { return AdeptWayDiscount > 0; }
 		}
 
 		/// <summary>
@@ -752,6 +750,45 @@ namespace Chummer
 					}
 				}
 				return intReturn;
+			}
+		}
+
+		/// <summary>
+		/// Whether the power can be discounted due to presence of an Adept Way. 
+		/// </summary>
+		public bool AdeptWayDiscountEnabled
+		{
+			get
+			{
+				bool blnReturn = false;
+				if (AdeptWayDiscount == 0)
+				{
+					return blnReturn;
+				}
+				if (_nodAdeptWayRequirements != null)
+				{
+					XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements.SelectNodes("required/oneof/quality");
+					foreach (XmlNode objNode in objXmlRequiredList)
+					{
+						if (objNode.Attributes["extra"] != null)
+						{
+							blnReturn = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
+							if (blnReturn)
+							break;
+						}
+						else
+						{
+							blnReturn = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText); 
+							if (blnReturn)
+								break;
+						}
+					}
+				}
+				if (blnReturn == false && DiscountedAdeptWay)
+				{
+					DiscountedAdeptWay = false;
+				}
+				return blnReturn;
 			}
 		}
 
