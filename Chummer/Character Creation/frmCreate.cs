@@ -20405,11 +20405,9 @@ namespace Chummer
                             VehicleMod objMod = new VehicleMod(_objCharacter);
 
                             int intRating = 0;
-                            if (objXmlMod["rating"] != null)
-                                intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
+                            objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
                             int intMarkup = 0;
-                            if (objXmlMod["markup"] != null)
-                                intRating = Convert.ToInt32(objXmlMod["markup"].InnerText);
+                            objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
 
                             XmlNode objXmlModNode = objXmlVehicleDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
                             objMod.Create(objXmlModNode, objModNode, intRating, objVehicle, intMarkup);

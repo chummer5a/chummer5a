@@ -59,6 +59,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="intRating">Selected Rating for the Gear.</param>
 		public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, Vehicle objParent, int intMarkup = 0)
 		{
+            Parent = objParent;
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);

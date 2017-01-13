@@ -1621,22 +1621,26 @@ namespace Chummer.Backend.Equipment
 				}
 				else if (_strCost.StartsWith("Parent Cost"))
 				{
+                    if (_objParent != null)
+                    {
+                        XmlDocument objXmlDocument = new XmlDocument();
+                        XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					XmlDocument objXmlDocument = new XmlDocument();
-					XPathNavigator nav = objXmlDocument.CreateNavigator();
+                        string strCostExpression = _strCost;
+                        string strCost = "0";
 
-					string strCostExpression = _strCost;
-					string strCost = "0";
-
-					strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost.ToString());
-					if (strCost.Contains("Rating"))
-					{
-						strCost = strCost.Replace("Rating", _objParent.Rating.ToString());
-					}
-					XPathExpression xprCost = nav.Compile(strCost);
-					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
-					intCost = Convert.ToInt32(dblCost);
+                        strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost.ToString());
+                        if (strCost.Contains("Rating"))
+                        {
+                            strCost = strCost.Replace("Rating", _objParent.Rating.ToString());
+                        }
+                        XPathExpression xprCost = nav.Compile(strCost);
+                        // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+                        intCost = Convert.ToInt32(dblCost);
+                    }
+                    else
+                        intCost = 0;
 				}
 				else
 				{

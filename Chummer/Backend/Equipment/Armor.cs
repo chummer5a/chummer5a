@@ -141,7 +141,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-			if (objXmlArmorNode["bonus"] != null)
+			if (objXmlArmorNode["bonus"] != null && !blnSkipCost)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Armor, _guiID.ToString(), objXmlArmorNode["bonus"], false, 1, DisplayNameShort))
@@ -1233,7 +1233,7 @@ namespace Chummer.Backend.Equipment
 						XPathExpression xprCapacity = nav.Compile(strCapacity);
 
 						strCapacity = nav.Evaluate(xprCapacity).ToString();
-						strCapacity = Math.Ceiling(Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString();
+						strCapacity = Math.Ceiling(Convert.ToDouble(strCapacity) + Convert.ToDouble(strReturn)).ToString();
 						strReturn = strCapacity;
 					}
 				}

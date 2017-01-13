@@ -435,7 +435,7 @@ namespace Chummer
 					Gear objTemp = new Gear(objCharacter);
 					List<Weapon> lstWeapons = new List<Weapon>();
 					List<TreeNode> lstNodes = new List<TreeNode>();
-					objTemp.Create(objXmlGear, objCharacter, objTempNode, 1, lstWeapons, lstNodes, "Blades");
+					objTemp.Create(objXmlGear, objCharacter, objTempNode, 1, lstWeapons, lstNodes);
 					try
 					{
 						int objValue = objTemp.TotalCost;

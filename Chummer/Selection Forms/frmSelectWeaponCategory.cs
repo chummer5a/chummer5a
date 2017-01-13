@@ -92,8 +92,9 @@ namespace Chummer
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = lstCategory;
 
-			// Select the first Skill in the list.
-			cboCategory.SelectedIndex = 0;
+            // Select the first Skill in the list.
+            if (cboCategory.Items.Count > 0)
+                cboCategory.SelectedIndex = 0;
 
 			if (cboCategory.Items.Count == 1)
 				cmdOK_Click(sender, e);

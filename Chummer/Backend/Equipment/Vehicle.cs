@@ -204,7 +204,7 @@ namespace Chummer.Backend.Equipment
 					{
 						TreeNode objModNode = new TreeNode();
 						VehicleMod objMod = new VehicleMod(_objCharacter);
-						int intRating = 0;
+                        int intRating = 0;
 
 						if (objXmlVehicleMod.Attributes["rating"] != null)
 							intRating = Convert.ToInt32(objXmlVehicleMod.Attributes["rating"].InnerText);

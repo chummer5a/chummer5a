@@ -395,8 +395,7 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
-			if (objXmlGear.InnerXml.Contains("<weaponbonus>"))
-				_nodWeaponBonus = objXmlGear["weaponbonus"];
+			_nodWeaponBonus = objXmlGear["weaponbonus"];
 			objNode.Text = DisplayName;
 		}
 

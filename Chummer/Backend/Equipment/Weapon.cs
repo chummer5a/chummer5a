@@ -143,7 +143,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 else
-                    _intCost = Convert.ToInt32(objXmlWeapon["cost"].InnerText);
+                {
+                    int.TryParse(objXmlWeapon["cost"].InnerText, out _intCost);
+                }
             }
 
             if (objXmlWeapon["cyberware"]?.InnerText == "yes")
