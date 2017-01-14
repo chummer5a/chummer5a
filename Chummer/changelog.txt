@@ -41,6 +41,7 @@ Application Changes:
 - Fixed some validation issues when moving a character to career mode if they own items that have built-in accessories or mods that exceed the availability limit. 
 - Fixed the behaviour of the Knowledge Skill custom Improvement type to properly load existing knowledge skills. 
 - Changed the VehicleMod class to properly have a Parent Vehicle for modding purposes. In practical terms, this prevents an issue with Drone Attribute modifications not having their minimum rating set to Attribute +1.
+- Fixed the behaviour of the SelectSkill improvement to allow filtering based on multiple categories. Properly filters the behaviour of the Improved Ability power to not show Magical Active skills. 
 - Brought all projects to the same, .NET 4.5.2 target sku.
 - Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
 - Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.

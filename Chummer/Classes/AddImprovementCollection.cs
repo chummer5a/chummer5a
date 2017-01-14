@@ -329,6 +329,8 @@ namespace Chummer.Classes
 				frmPickSkill.OnlySkillGroup = bonusNode.Attributes["skillgroup"].InnerText;
 			else if (bonusNode.OuterXml.Contains("skillcategory"))
 				frmPickSkill.OnlyCategory = bonusNode.Attributes["skillcategory"].InnerText;
+			else if (bonusNode.OuterXml.Contains("skillcategories"))
+				frmPickSkill.LimitToCategories = bonusNode["skillcategories"];
 			else if (bonusNode.OuterXml.Contains("excludecategory"))
 				frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
 			else if (bonusNode.OuterXml.Contains("limittoskill"))

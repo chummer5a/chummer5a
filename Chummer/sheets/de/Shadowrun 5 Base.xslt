@@ -549,8 +549,8 @@
 				<div class="block" id="LimitsBlock">
 					<table width="100%" cellspacing="0" cellpadding="0" border="0">
 						<tr>
-							<td width="100%">
-								<table width="100%" cellspacing="0" cellpadding="0" border="0" class="tableborder">
+							<td width="100%" class="tableborder">
+								<table width="100%" cellspacing="0" cellpadding="0" border="0">
 									<tr>
 										<td width="25%" style="text-align:center;" valign="top">
 											<strong>Körperliches Limit: <xsl:value-of
@@ -1317,8 +1317,8 @@
                     <tr>
                       <td class="rowsummary" colspan="3">
                         KI Programme und fortgeschrittene Programme
-                        <span class="rowsummarybutton" onClick="showhide(this,'ProgramBlock');" colspan="1">Zeigen: Ja</span>
-                        <span class="rowsummarybutton" onClick="zalomit(this,'ProgramBlock');" colspan="1">Seitenumbruch: Nein</span>
+                        <span class="rowsummarybutton" onClick="showhide(this,'AIProgramBlock');" colspan="1">Zeigen: Ja</span>
+                        <span class="rowsummarybutton" onClick="zalomit(this,'AIProgramBlock');" colspan="1">Seitenumbruch: Nein</span>
                       </td>
                     </tr>
                   </table>

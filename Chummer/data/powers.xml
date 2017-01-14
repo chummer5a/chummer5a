@@ -145,6 +145,12 @@
         <selectskill>
           <val>Rating</val>
           <applytorating>yes</applytorating>
+					<skillcategories>
+						<category>Combat Active</category>
+						<category>Technical Active</category>
+						<category>Social Active</category>
+						<category>Vehicle Active</category>
+					</skillcategories>
         </selectskill>
       </bonus>
       <source>SR5</source>
