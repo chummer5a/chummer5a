@@ -46,7 +46,7 @@
 			this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboSort.FormattingEnabled = true;
 			this.cboSort.IntegralHeight = false;
-			this.cboSort.Location = new System.Drawing.Point(392, 3);
+			this.cboSort.Location = new System.Drawing.Point(487, 3);
 			this.cboSort.Name = "cboSort";
 			this.cboSort.Size = new System.Drawing.Size(133, 21);
 			this.cboSort.TabIndex = 7;
@@ -55,9 +55,9 @@
 			// cmdAddPower
 			// 
 			this.cmdAddPower.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.cmdAddPower.Location = new System.Drawing.Point(738, 2);
+			this.cmdAddPower.Location = new System.Drawing.Point(392, 3);
 			this.cmdAddPower.Name = "cmdAddPower";
-			this.cmdAddPower.Size = new System.Drawing.Size(89, 23);
+			this.cmdAddPower.Size = new System.Drawing.Size(89, 21);
 			this.cmdAddPower.TabIndex = 6;
 			this.cmdAddPower.Tag = "Button_AddPower";
 			this.cmdAddPower.Text = "Add Power";
@@ -70,7 +70,7 @@
 			this.cboDisplayFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboDisplayFilter.FormattingEnabled = true;
 			this.cboDisplayFilter.IntegralHeight = false;
-			this.cboDisplayFilter.Location = new System.Drawing.Point(531, 3);
+			this.cboDisplayFilter.Location = new System.Drawing.Point(626, 3);
 			this.cboDisplayFilter.Name = "cboDisplayFilter";
 			this.cboDisplayFilter.Size = new System.Drawing.Size(201, 21);
 			this.cboDisplayFilter.TabIndex = 5;
@@ -80,7 +80,7 @@
 			// lblPowerPoints
 			// 
 			this.lblPowerPoints.AutoSize = true;
-			this.lblPowerPoints.Location = new System.Drawing.Point(81, 6);
+			this.lblPowerPoints.Location = new System.Drawing.Point(81, 30);
 			this.lblPowerPoints.Name = "lblPowerPoints";
 			this.lblPowerPoints.Size = new System.Drawing.Size(76, 13);
 			this.lblPowerPoints.TabIndex = 9;
@@ -89,7 +89,7 @@
 			// lblPowerPointsLabel
 			// 
 			this.lblPowerPointsLabel.AutoSize = true;
-			this.lblPowerPointsLabel.Location = new System.Drawing.Point(3, 6);
+			this.lblPowerPointsLabel.Location = new System.Drawing.Point(3, 30);
 			this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
 			this.lblPowerPointsLabel.Size = new System.Drawing.Size(72, 13);
 			this.lblPowerPointsLabel.TabIndex = 8;
@@ -110,7 +110,7 @@
 			// 
 			this.lblRating.AutoSize = true;
 			this.lblRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblRating.Location = new System.Drawing.Point(378, 31);
+			this.lblRating.Location = new System.Drawing.Point(330, 30);
 			this.lblRating.Name = "lblRating";
 			this.lblRating.Size = new System.Drawing.Size(40, 13);
 			this.lblRating.TabIndex = 2;
@@ -121,17 +121,17 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(424, 31);
+			this.label1.Location = new System.Drawing.Point(376, 30);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(24, 13);
+			this.label1.Size = new System.Drawing.Size(72, 13);
 			this.label1.TabIndex = 11;
-			this.label1.Text = "PP:";
+			this.label1.Text = "Power Points:";
 			// 
 			// lblDiscountLabel
 			// 
 			this.lblDiscountLabel.AutoSize = true;
 			this.lblDiscountLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblDiscountLabel.Location = new System.Drawing.Point(454, 31);
+			this.lblDiscountLabel.Location = new System.Drawing.Point(454, 30);
 			this.lblDiscountLabel.Name = "lblDiscountLabel";
 			this.lblDiscountLabel.Size = new System.Drawing.Size(74, 13);
 			this.lblDiscountLabel.TabIndex = 12;
@@ -142,7 +142,7 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(319, 31);
+			this.label2.Location = new System.Drawing.Point(285, 30);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(39, 13);
 			this.label2.TabIndex = 13;

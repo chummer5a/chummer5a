@@ -341,7 +341,8 @@ namespace Chummer
 				if (_strPointsPerLevel.StartsWith("FixedValues"))
 				{
 					string[] strValues = _strPointsPerLevel.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					decReturn = Convert.ToDecimal(strValues[(int) (Convert.ToDecimal(_intRating) - 1)]);
+					int intMax = Math.Max(Convert.ToInt32(Math.Min(_intRating - 1, strValues.Length)), 0);
+					decReturn += Convert.ToDecimal(strValues[intMax]);
 				}
 				else
 				{
@@ -366,7 +367,11 @@ namespace Chummer
 				if (_strAdeptWayDiscount.StartsWith("FixedValues"))
 				{
 					string[] strValues = _strAdeptWayDiscount.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					decReturn = Convert.ToDecimal(strValues[(int)(Convert.ToDecimal(_intRating) - 1)]);
+					int intMax = Math.Max(Convert.ToInt32(Math.Min(_intRating - 1, strValues.Length)) - 1, 0);
+					for (int i = 0; i < intMax; i++)
+					{
+						decReturn += Convert.ToDecimal(strValues[i]);
+					}
 				}
 				else
 				{
@@ -445,13 +450,29 @@ namespace Chummer
 		{
 			get
 			{
-				if (_blnFree)
-					return 0;
+				decimal decReturn = 0;
+				if (_blnFree || Rating == 0)
+					return decReturn;
 				else
 				{
-					decimal decReturn = (Rating - FreeLevels) * PointsPerLevel;
-					decReturn -= Discount;
+					if (_strPointsPerLevel.StartsWith("FixedValues"))
+					{
+						string strPoints = _strPointsPerLevel;
+						if (AdeptWayDiscountEnabled)
+						{
+							strPoints = _strAdeptWayDiscount;
+						}
 
+						string[] strValues = strPoints.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+						int intMax = Math.Max(Convert.ToInt32(Math.Min(_intRating - 1, strValues.Length)), 0);
+
+						decReturn += Convert.ToDecimal(strValues[intMax]);
+					}
+					else
+					{
+						decReturn = (Rating - FreeLevels) * PointsPerLevel;
+						decReturn -= Discount;
+					}
 					return Math.Max(decReturn, 0);
 				}
 			}
@@ -715,7 +736,7 @@ namespace Chummer
 			get
 			{
 				int intReturn = MaxLevels;
-				if (LevelsEnabled)
+				if (LevelsEnabled && MaxLevels == 0)
 				{
 					intReturn = Math.Max(MaxLevels, _objCharacter.MAG.TotalValue);
 				}

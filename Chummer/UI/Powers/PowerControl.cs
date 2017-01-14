@@ -30,12 +30,10 @@ namespace Chummer
     public partial class PowerControl : UserControl
     {
 		private Power _objPower;
-	    private Form _parent;
 
 	    // Events.
         public event PowerRatingChangedHandler PowerRatingChanged;
         public event DeletePowerHandler DeletePower;
-
 
 		#region Control Events
 		public PowerControl(Power objPower)
@@ -165,15 +163,16 @@ namespace Chummer
 		#region Methods
 		private void RequestCharacterUpdate(object sender = null, EventArgs e = null)
 		{
+		if (ParentForm != null)
 			if (_objPower.CharacterObject.Created)
 			{
 				frmCareer parent = ParentForm as frmCareer;
-				parent.UpdateCharacterInfo();
+				parent?.UpdateCharacterInfo();
 			}
 			else
 			{
 				frmCreate parent = ParentForm as frmCreate;
-				parent.UpdateCharacterInfo();
+				parent?.UpdateCharacterInfo();
 			}
 		}
 		private void lblPowerName_Click(object sender, EventArgs e)

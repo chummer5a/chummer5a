@@ -67,7 +67,7 @@
 			// nudRating
 			// 
 			this.nudRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.nudRating.Location = new System.Drawing.Point(378, 3);
+			this.nudRating.Location = new System.Drawing.Point(332, 2);
 			this.nudRating.Maximum = new decimal(new int[] {
             6,
             0,
@@ -92,7 +92,7 @@
 			// 
 			this.lblPowerPoints.AutoSize = true;
 			this.lblPowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblPowerPoints.Location = new System.Drawing.Point(502, 6);
+			this.lblPowerPoints.Location = new System.Drawing.Point(378, 5);
 			this.lblPowerPoints.Name = "lblPowerPoints";
 			this.lblPowerPoints.Size = new System.Drawing.Size(40, 13);
 			this.lblPowerPoints.TabIndex = 4;
@@ -149,7 +149,7 @@
 			// 
 			this.lblActivation.AutoSize = true;
 			this.lblActivation.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblActivation.Location = new System.Drawing.Point(326, 6);
+			this.lblActivation.Location = new System.Drawing.Point(280, 6);
 			this.lblActivation.Name = "lblActivation";
 			this.lblActivation.Size = new System.Drawing.Size(46, 13);
 			this.lblActivation.TabIndex = 12;

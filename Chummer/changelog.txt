@@ -13,6 +13,13 @@ Data Changes:
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
 - Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
 
+New Strings:
+
+- String_PowerFilterAll
+- Power_SortAction
+- String_PowerFilterRatingAboveZero
+- String_PowerFilterRatingZero
+
 Build 188
 
 Application Changes: 

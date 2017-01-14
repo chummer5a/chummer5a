@@ -28,6 +28,7 @@ namespace Chummer.UI.Skills
 		{
 			//TODO: Databind this
 			CalculatePowerPoints();
+			ValidateVisibility();
 		}
 
 		private bool _loadCalled = false;
@@ -123,6 +124,8 @@ namespace Chummer.UI.Skills
 					new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
 				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortRating"),
 					new PowerSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Power_SortAction"),
+					new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
 				//new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
 				//	new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
 			};
@@ -135,10 +138,10 @@ namespace Chummer.UI.Skills
 			List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
 			{
 				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_Search"), null),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), power => true),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
+				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterAll"), power => true),
+				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingAboveZero"),
 					power => power.Rating > 0),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
+				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingZero"),
 					power => power.Rating == 0)
 			};
 			//TODO: TRANSLATIONS
@@ -231,8 +234,8 @@ namespace Chummer.UI.Skills
 
 			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
 			objPower.Create(objXmlPower, ObjCharacter.ObjImprovementManager);
-
 			ObjCharacter.Powers.Add(objPower);
+			MissingDatabindingsWorkaround();
 			if (frmPickPower.AddAgain)
 				cmdAddPower_Click(sender, e);
 		}
@@ -243,6 +246,7 @@ namespace Chummer.UI.Skills
 		private void CalculatePowerPoints()
 		{
 			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
+			ValidateVisibility();
 		}
 
 		private int PowerPointsTotal
@@ -274,6 +278,12 @@ namespace Chummer.UI.Skills
 			{
 				return PowerPointsTotal - ObjCharacter.Powers.Sum(objPower => objPower.PowerPoints);
 			}
+		}
+
+		private void ValidateVisibility()
+		{
+			lblDiscountLabel.Visible = _character.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
+			lblRating.Visible = _character.Powers.Any(objPower => objPower.LevelsEnabled);
 		}
 	}
 }

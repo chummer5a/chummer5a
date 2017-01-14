@@ -318,7 +318,8 @@
 			<name>Improved Reflexes</name>
 			<points>FixedValues(1.5,2.5,3.5)</points>
 			<adeptway>FixedValues(.75,1.25,1.75)</adeptway>
-			<levels>3</levels>
+			<levels>true</levels>
+			<maxlevels>3</maxlevels>
 			<limit>1</limit>
 			<doublecost>no</doublecost>
 			<bonus>

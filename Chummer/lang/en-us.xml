@@ -2635,6 +2635,22 @@
 			<text>Firewall</text>
 		</string>
 		<string>
+			<key>String_PowerFilterAll</key>
+			<text>Show All Powers</text>
+		</string>
+		<string>
+			<key>Power_SortAction</key>
+			<text>Action</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingAboveZero</key>
+			<text>Show Active Powers Rating &gt; 0</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingZero</key>
+			<text>Show Powers Rating = 0</text>
+		</string>
+		<string>
 			<key>String_SkillFilterAll</key>
 			<text>Show All Active Skills</text>
 		</string>
