@@ -33,6 +33,7 @@ namespace Chummer
 		private string _strIncludeSkillGroup = "";
 		private string _strExcludeSkillGroup = "";
 		private string _strLimitToSkill = "";
+		private string _strLimitToCategories = "";
 		private string _strForceSkill = "";
 		private bool _blnKnowledgeSkill = false;
 
@@ -40,7 +41,6 @@ namespace Chummer
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly Character _objCharacter;
-	    private string _strLimitToCategories;
 
 	    #region Control Events
         public frmSelectSkill(Character objCharacter)
