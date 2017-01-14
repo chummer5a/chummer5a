@@ -4,17 +4,6 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="adapsin" minOccurs="0" maxOccurs="1" />
-				<xs:element name="addattribute" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-							<xs:element name="min" type="xs:string" minOccurs="1" maxOccurs="1" />
-							<xs:element name="max" type="xs:string" minOccurs="1" maxOccurs="1" />
-							<xs:element name="aug" type="xs:string" minOccurs="1" maxOccurs="1" />
-							<xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
 				<xs:element name="addcontact" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
@@ -84,6 +73,17 @@
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="min" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="aug" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="enabletab" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
