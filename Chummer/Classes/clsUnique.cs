@@ -2764,6 +2764,8 @@ namespace Chummer
 			objWriter.WriteElementString("damage", DisplayDamage);
 			objWriter.WriteElementString("duration", DisplayDuration);
 			objWriter.WriteElementString("dv", DisplayDV);
+		    objWriter.WriteElementString("alchemy", Alchemical.ToString());
+		    objWriter.WriteElementString("dicepool", DicePool.ToString());
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
