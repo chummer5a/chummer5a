@@ -40,8 +40,9 @@ namespace Chummer
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly Character _objCharacter;
+	    private string _strLimitToCategories;
 
-		#region Control Events
+	    #region Control Events
         public frmSelectSkill(Character objCharacter)
         {
             InitializeComponent();
@@ -67,6 +68,8 @@ namespace Chummer
 				{
 					if (_strIncludeCategory != "")
 						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[category = \"" + _strIncludeCategory + "\" and not(exotic)]");
+					else if (_strLimitToCategories != "")
+						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[category = " + _strLimitToCategories + "]");
 					else if (_strExcludeCategory != "")
 					{
 						string[] strExcludes = _strExcludeCategory.Split(',');
@@ -208,12 +211,27 @@ namespace Chummer
             {
                 _strIncludeCategory = value;
             }
-        }
+		}
 
-        /// <summary>
+	    /// <summary>
+	    /// Only Skills from the selected Categories should be in the list.
+	    /// </summary>
+	    public XmlNode LimitToCategories
+	    {
+		    set
+		    {
+				_strLimitToCategories = String.Join(" or category = ",
+						  value.SelectNodes("category")
+								.Cast<XmlNode>()
+								.Select(n => "\"" + n.InnerText + "\""));
+			}
+		    
+	    }
+
+		/// <summary>
 		/// Only Skills not in the selected Category should be in the list.
 		/// </summary>
-        public string ExcludeCategory
+		public string ExcludeCategory
         {
             set
             {
@@ -299,5 +317,6 @@ namespace Chummer
 		}
 		#endregion
     
-public  Character objCharacter { get; set; }}
+public  Character objCharacter { get; set; }
+    }
 }
