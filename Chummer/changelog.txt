@@ -73,6 +73,7 @@ Data Changes:
 - Added an improvement for the Intimidation limit bonus for Voice Warper.
 - Master Debater and Empathic Listener now have their effects represented in skill dice pool tooltips.
 - Cybereyes and cyberears now come standard with Image Link and Sound Link respectively.
+- Validated critters.xml against XSD style template, fixed an issue that caused sprites to not load. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 
