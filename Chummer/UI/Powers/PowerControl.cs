@@ -43,7 +43,7 @@ namespace Chummer
 			this.PowerObject = objPower;
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+			nudRating.DataBindings.Add("Visible", PowerObject, nameof(PowerObject.LevelsEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 			if (PowerObject.LevelsEnabled)
 			{
 				nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
