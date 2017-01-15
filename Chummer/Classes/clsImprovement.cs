@@ -223,24 +223,24 @@ namespace Chummer
             AIProgram
         }
 
-		private string _strImprovedName = "";
-        private string _strSourceName = "";
+		private string _strImprovedName = string.Empty;
+        private string _strSourceName = string.Empty;
 		private int _intMin = 0;
 		private int _intMax = 0;
         private int _intAug = 0;
         private int _intAugMax = 0;
         private int _intVal = 0;
         private int _intRating = 1;
-		private string _strExclude = "";
-		private string _strUniqueName = "";
-        private string _strTarget = "";
+		private string _strExclude = string.Empty;
+		private string _strUniqueName = string.Empty;
+        private string _strTarget = string.Empty;
         private ImprovementType _objImprovementType;
         private ImprovementSource _objImprovementSource;
 		private bool _blnCustom = false;
-		private string _strCustomName = "";
-		private string _strCustomId = "";
-		private string _strCustomGroup = "";
-		private string _strNotes = "";
+		private string _strCustomName = string.Empty;
+		private string _strCustomId = string.Empty;
+		private string _strCustomGroup = string.Empty;
+		private string _strNotes = string.Empty;
 		private bool _blnAddToRating = false;
 		private bool _blnEnabled = true;
 		private int _intOrder = 0;
@@ -280,7 +280,7 @@ namespace Chummer
 			Log.Enter("Save");
 
 			objWriter.WriteStartElement("improvement");
-			if (_strUniqueName != "")
+			if (!string.IsNullOrEmpty(_strUniqueName))
 				objWriter.WriteElementString("unique", _strUniqueName);
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("improvedname", _strImprovedName);
@@ -546,10 +546,10 @@ namespace Chummer
 		private readonly Character _objCharacter;
 		
 		// String that will be used to limit the selection in Pick forms.
-		private string _strLimitSelection = "";
+		private string _strLimitSelection = string.Empty;
 
-		private string _strSelectedValue = "";
-		private string _strForcedValue = "";
+		private string _strSelectedValue = string.Empty;
+		private string _strForcedValue = string.Empty;
 		private readonly List<Improvement> _lstTransaction = new List<Improvement>();
 
 		public ImprovementManager(Character objCharacter)
@@ -629,7 +629,7 @@ namespace Chummer
 
 					if (blnAllowed)
 					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == objImprovementType)
+						if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == objImprovementType)
 						{
 							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 							bool blnFound = false;
@@ -695,7 +695,7 @@ namespace Chummer
 
 					if (blnAllowed)
 					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == objImprovementType)
+						if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == objImprovementType)
 						{
 							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 							bool blnFound = false;
@@ -827,29 +827,27 @@ namespace Chummer
             Log.Enter("CreateImprovements");
 			Log.Info("objImprovementSource = " + objImprovementSource.ToString());
 			Log.Info("strSourceName = " + strSourceName);
-			Log.Info("nodBonus = " + nodBonus.OuterXml.ToString());
+			Log.Info("nodBonus = " + nodBonus?.OuterXml);
 			Log.Info("blnConcatSelectedValue = " + blnConcatSelectedValue.ToString());
 			Log.Info("intRating = " + intRating.ToString());
 			Log.Info("strFriendlyName = " + strFriendlyName);
 			Log.Info("intRating = " + intRating.ToString());
 
-            bool blnSuccess = true;
-
             /*try
             {*/
                 if (nodBonus == null)
                 {
-                    _strForcedValue = "";
-                    _strLimitSelection = "";
+                    _strForcedValue = string.Empty;
+                    _strLimitSelection = string.Empty;
                     Log.Exit("CreateImprovements");
                     return true;
                 }
 
-                string strUnique = "";
-                if (nodBonus.Attributes["unique"] != null)
+                string strUnique = string.Empty;
+                if (nodBonus.Attributes?["unique"] != null)
                     strUnique = nodBonus.Attributes["unique"].InnerText;
 
-                _strSelectedValue = "";
+                _strSelectedValue = string.Empty;
 
 				Log.Info(
 					"_strForcedValue = " + _strForcedValue);
@@ -857,7 +855,7 @@ namespace Chummer
 					"_strLimitSelection = " + _strLimitSelection);
 
                 // If no friendly name was provided, use the one from SourceName.
-                if (strFriendlyName == "")
+                if (string.IsNullOrEmpty(strFriendlyName))
                     strFriendlyName = strSourceName;
 
                 if (nodBonus.HasChildNodes)
@@ -870,7 +868,7 @@ namespace Chummer
 
 					if (_objCharacter != null)
 					{
-						if (_strForcedValue != "")
+						if (!string.IsNullOrEmpty(_strForcedValue))
 						{
 							LimitSelection = _strForcedValue;
 						}
@@ -883,7 +881,7 @@ namespace Chummer
 					Log.Info("_strForcedValue = " + SelectedValue);
 					Log.Info("_strLimitSelection = " + LimitSelection);
 
-				    if (LimitSelection != "")
+				    if (!string.IsNullOrEmpty(LimitSelection))
 				    {
                         _strSelectedValue = LimitSelection;
 				    }
@@ -901,8 +899,8 @@ namespace Chummer
 				        {
 
 				            Rollback();
-				            ForcedValue = "";
-				            LimitSelection = "";
+				            ForcedValue = string.Empty;
+				            LimitSelection = string.Empty;
 				            Log.Exit("CreateImprovements");
 				            return false;
 				        }
@@ -933,9 +931,8 @@ namespace Chummer
                 // Check to see what bonuses the node grants.
 				foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
-					blnSuccess = ProcessBonus(objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
-						strFriendlyName, bonusNode, strUnique);
-					if (blnSuccess == false)
+					if (!ProcessBonus(objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
+                        strFriendlyName, bonusNode, strUnique))
 					{
 						Rollback();
 						return false;
@@ -948,8 +945,8 @@ namespace Chummer
 				Commit();
 				Log.Info("Returned from Commit");
 				// Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-				_strForcedValue = "";
-				_strLimitSelection = "";
+				_strForcedValue = string.Empty;
+				_strLimitSelection = string.Empty;
 			/*}
 			catch (Exception ex)
 			{
@@ -962,7 +959,7 @@ namespace Chummer
 				throw;
 			}*/
 			Log.Exit("CreateImprovements");
-			return blnSuccess;
+			return true;
 
 		}
 		private bool ProcessBonus(Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
@@ -1431,23 +1428,24 @@ namespace Chummer
 			Log.Exit("RemoveImprovements");
         }
 
-		/// <summary>
-		/// Create a new Improvement and add it to the Character.
-		/// </summary>
-		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
-		/// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
-		/// <param name="strSourceName">Name of the item that grants this Improvement.</param>
-		/// <param name="objImprovementType">Type of object the Improvement applies to.</param>
-		/// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
-		/// <param name="intValue">Set a Value for the Improvement.</param>
-		/// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
-		/// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
-		/// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
-		/// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
-		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
-		/// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-		/// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
-		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
+        /// <summary>
+        /// Create a new Improvement and add it to the Character.
+        /// </summary>
+        /// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
+        /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
+        /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
+        /// <param name="intValue">Set a Value for the Improvement.</param>
+        /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
+        /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
+        /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
+        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
 			string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
 			int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
 			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "")

@@ -14,8 +14,8 @@ namespace Chummer.Backend.Equipment
 	public class Vehicle
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strCategory = "";
+		private string _strName = string.Empty;
+		private string _strCategory = string.Empty;
 		private int _intHandling = 0;
 		private int _intOffroadHandling = 0;
 		private int _intAccel = 0;
@@ -27,11 +27,11 @@ namespace Chummer.Backend.Equipment
 		private int _intArmor = 0;
 		private int _intSensor = 0;
 		private int _intSeats = 0;
-		private string _strAvail = "";
-		private string _strCost = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strVehicleName = "";
+		private string _strAvail = string.Empty;
+		private string _strCost = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+		private string _strVehicleName = string.Empty;
 		private int _intAddSlots = 0;
 		private int _intDroneModSlots = 0;
 		private int _intAddPowertrainModSlots = 0;
@@ -44,10 +44,10 @@ namespace Chummer.Backend.Equipment
 		private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
 		private List<Gear> _lstGear = new List<Gear>();
 		private List<Weapon> _lstWeapons = new List<Weapon>();
-		private string _strNotes = "";
-		private string _strAltName = "";
-		private string _strAltCategory = "";
-		private string _strAltPage = "";
+		private string _strNotes = string.Empty;
+		private string _strAltName = string.Empty;
+		private string _strAltCategory = string.Empty;
+		private string _strAltPage = string.Empty;
 		private List<string> _lstLocations = new List<string>();
 		private bool _blnDealerConnectionDiscount = false;
 		private bool _blnBlackMarketDiscount = false;
@@ -83,12 +83,13 @@ namespace Chummer.Backend.Equipment
                 //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
                 if (objXmlVehicle["handling"].InnerText.Contains('/'))
                 {
-                    _intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText.Split('/')[0]);
-                    _intOffroadHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText.Split('/')[1]);
+                    string[] strHandlingArray = objXmlVehicle["handling"].InnerText.Split('/');
+                    int.TryParse(strHandlingArray[0], out _intHandling);
+                    int.TryParse(strHandlingArray[1], out _intOffroadHandling);
                 }
                 else
                 {
-                    _intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText);
+                    int.TryParse(objXmlVehicle["handling"].InnerText, out _intHandling);
                     _intOffroadHandling = _intHandling;
                 }
             }
@@ -96,12 +97,13 @@ namespace Chummer.Backend.Equipment
             {
                 if (objXmlVehicle["accel"].InnerText.Contains('/'))
                 {
-                    _intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText.Split('/')[0]);
-                    _intOffroadAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText.Split('/')[1]);
+                    string[] strAccelArray = objXmlVehicle["accel"].InnerText.Split('/');
+                    int.TryParse(strAccelArray[0], out _intAccel);
+                    int.TryParse(strAccelArray[1], out _intOffroadAccel);
                 }
                 else
                 {
-                    _intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText);
+                    int.TryParse(objXmlVehicle["accel"].InnerText, out _intAccel);
                     _intOffroadAccel = _intAccel;
                 }
             }
@@ -109,12 +111,13 @@ namespace Chummer.Backend.Equipment
             {
                 if (objXmlVehicle["speed"].InnerText.Contains('/'))
                 {
-                    _intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText.Split('/')[0]);
-                    _intOffroadSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText.Split('/')[1]);
+                    string[] strSpeedArray = objXmlVehicle["speed"].InnerText.Split('/');
+                    int.TryParse(strSpeedArray[0], out _intSpeed);
+                    int.TryParse(strSpeedArray[1], out _intOffroadSpeed);
                 }
                 else
                 {
-                    _intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText);
+                    int.TryParse(objXmlVehicle["speed"].InnerText, out _intSpeed);
                     _intOffroadSpeed = _intSpeed;
                 }
             }
@@ -137,18 +140,17 @@ namespace Chummer.Backend.Equipment
                 // Check for a Variable Cost.
                 if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
                 {
-                    int intMin = 0;
+                    int intMin;
                     int intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlVehicle["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    string strCost = objXmlVehicle["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        int.TryParse(strValues[0], out intMin);
+                        int.TryParse(strValues[1], out intMax);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        int.TryParse(strCost.Replace("+", string.Empty), out intMin);
 
                     if (intMin != 0 || intMax != 0)
                     {
@@ -206,8 +208,8 @@ namespace Chummer.Backend.Equipment
 						VehicleMod objMod = new VehicleMod(_objCharacter);
                         int intRating = 0;
 
-						if (objXmlVehicleMod.Attributes["rating"] != null)
-							intRating = Convert.ToInt32(objXmlVehicleMod.Attributes["rating"].InnerText);
+                        if (objXmlVehicleMod.Attributes["rating"] != null)
+                            int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
 
 						if (objXmlVehicleMod.Attributes["select"] != null)
 							objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
@@ -223,8 +225,9 @@ namespace Chummer.Backend.Equipment
 						objNode.Expand();
 					}
 				}
-				if (objXmlVehicle.SelectSingleNode("mods/addslots") != null)
-					_intAddSlots = Convert.ToInt32(objXmlVehicle.SelectSingleNode("mods/addslots").InnerText);
+			    XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
+                if (objAddSlotsNode != null)
+                    int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
 			}
 
 			// If there is any Gear that comes with the Vehicle, add them.
@@ -242,7 +245,7 @@ namespace Chummer.Backend.Equipment
 						Gear objGear = new Gear(_objCharacter);
 						int intRating = 0;
 						int intQty = 1;
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 
 						if (objXmlVehicleGear.Attributes["rating"] != null)
 							intRating = Convert.ToInt32(objXmlVehicleGear.Attributes["rating"].InnerText);
@@ -256,8 +259,6 @@ namespace Chummer.Backend.Equipment
 
 						if (objXmlVehicleGear.Attributes["select"] != null)
 							strForceValue = objXmlVehicleGear.Attributes["select"].InnerText;
-						else
-							strForceValue = "";
 
 						List<Weapon> objWeapons = new List<Weapon>();
 						List<TreeNode> objWeaponNodes = new List<TreeNode>();
@@ -354,8 +355,8 @@ namespace Chummer.Backend.Equipment
                             objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
                             string strExtraMount = "None";
                             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
-                                strMount = objXmlAccessory["extramount"].InnerText;      
-                            objMod.Create(objXmlAccessoryNode, objModNode, new string[] { strMount, strExtraMount },intRating, cmsVehicleGear, false, blnCreateChildren);
+                                strMount = objXmlAccessory["extramount"].InnerText;
+                            objMod.Create(objXmlAccessoryNode, objModNode, new Tuple<string, string>(strMount, strExtraMount), intRating, cmsVehicleGear, false, blnCreateChildren);
 
                             objMod.Cost = "0";
 							objModNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
@@ -631,9 +632,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteStartElement("vehicle");
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("category", DisplayCategory);
-			objWriter.WriteElementString("handling", TotalHandling.ToString());
-			objWriter.WriteElementString("accel", TotalAccel.ToString());
-			objWriter.WriteElementString("speed", TotalSpeed.ToString());
+			objWriter.WriteElementString("handling", TotalHandling);
+			objWriter.WriteElementString("accel", TotalAccel);
+			objWriter.WriteElementString("speed", TotalSpeed);
 			objWriter.WriteElementString("pilot", Pilot.ToString());
 			objWriter.WriteElementString("body", TotalBody.ToString());
 			objWriter.WriteElementString("armor", TotalArmor.ToString());
@@ -715,11 +716,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strCategory;
-				if (_strAltCategory != string.Empty)
-					strReturn = _strAltCategory;
+				if (!string.IsNullOrEmpty(_strAltCategory))
+					return _strAltCategory;
 
-				return strReturn;
+				return _strCategory;
 			}
 		}
 
@@ -1001,7 +1001,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (this.IsDrone)
+				if (IsDrone)
                     return 6;
 				else
 				    return 12;
@@ -1086,11 +1086,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -1244,11 +1243,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+				if (!string.IsNullOrEmpty(_strAltName))
+					return _strAltName;
 
-				return strReturn;
+				return _strName;
 			}
 		}
 
@@ -1261,7 +1259,7 @@ namespace Chummer.Backend.Equipment
 			{
 				string strReturn = DisplayNameShort;
 
-				if (_strVehicleName != "")
+				if (!string.IsNullOrEmpty(_strVehicleName))
 				{
 					strReturn += " (\"" + _strVehicleName + "\")";
 				}
@@ -2025,7 +2023,7 @@ namespace Chummer.Backend.Equipment
         public bool OverR5Capacity(string strCheckCapacity = "")
 		{
 			string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
-			return strCheckCapacity != "" && arrCategories.Contains(strCheckCapacity)
+			return !string.IsNullOrEmpty(strCheckCapacity) && arrCategories.Contains(strCheckCapacity)
 				? arrCategories.Any(strCategory => CalcCategoryUsed(strCheckCapacity) > CalcCategoryAvail(strCheckCapacity))
 				: arrCategories.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
 		}
@@ -2264,17 +2262,18 @@ namespace Chummer.Backend.Equipment
 			return _lstVehicleMods.Any(objMod => objMod.Name == "Modular Electronics");
 		}
 
-		/// <summary>
-		/// Locate a piece of Gear.
-		/// </summary>
-		/// <param name="strName">Name of the Gear to find.</param>
-		/// <param name="lstGear">List of Gear to search.</param>
-		private Gear FindGearByName(string strName, List<Gear> lstGear, string strExtra = "")
+        /// <summary>
+        /// Locate a piece of Gear.
+        /// </summary>
+        /// <param name="strName">Name of the Gear to find.</param>
+        /// <param name="lstGear">List of Gear to search.</param>
+        /// <param name="strExtra">Extra conditions for Gear to find.</param>
+        private Gear FindGearByName(string strName, List<Gear> lstGear, string strExtra = "")
 		{
 			Gear objReturn = new Gear(_objCharacter);
 			foreach (Gear objGear in lstGear)
 			{
-				if (objGear.Name == strName && (strExtra == "" || strExtra == objGear.Extra))
+				if (objGear.Name == strName && (string.IsNullOrEmpty(strExtra) || strExtra == objGear.Extra))
 					objReturn = objGear;
 				else
 				{
@@ -2282,7 +2281,7 @@ namespace Chummer.Backend.Equipment
 						objReturn = FindGearByName(strName, objGear.Children, strExtra);
 				}
 
-				if (objReturn.InternalId != Guid.Empty.ToString() && objReturn.Name != "")
+				if (objReturn.InternalId != Guid.Empty.ToString() && !string.IsNullOrEmpty(objReturn.Name))
 					return objReturn;
 			}
 

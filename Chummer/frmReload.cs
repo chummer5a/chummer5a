@@ -50,20 +50,20 @@ namespace Chummer
 				objAmmo.Name += " x" + objGear.Quantity.ToString();
 				if (objGear.Parent != null)
 				{
-					if (objGear.Parent.DisplayNameShort != string.Empty)
+					if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort))
 					{
 						objAmmo.Name += " (" + objGear.Parent.DisplayNameShort;
-						if (objGear.Parent.Location != string.Empty)
+						if (!string.IsNullOrEmpty(objGear.Parent.Location))
 							objAmmo.Name += " @ " + objGear.Parent.Location;
 						objAmmo.Name += ")";
 					}
 				}
-				if (objGear.Location != string.Empty)
+				if (!string.IsNullOrEmpty(objGear.Location))
 					objAmmo.Name += " (" + objGear.Location + ")";
 				// Retrieve the plugin information if it has any.
 				if (objGear.Children.Count > 0)
 				{
-					string strPlugins = "";
+					string strPlugins = string.Empty;
 					foreach (Gear objChild in objGear.Children)
 					{
 						strPlugins += objChild.DisplayNameShort + ", ";
@@ -90,7 +90,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -171,16 +171,16 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
 		{
 			int intWidth = Math.Max(lblAmmoLabel.Width, lblTypeLabel.Width);
 			cboAmmo.Left = lblAmmoLabel.Left + intWidth + 6;
-			cboAmmo.Width = this.Width - cboAmmo.Left - 19;
+			cboAmmo.Width = Width - cboAmmo.Left - 19;
 			cboType.Left = lblTypeLabel.Left + intWidth + 6;
-			cboType.Width = this.Width - cboType.Left - 19;
+			cboType.Width = Width - cboType.Left - 19;
 		}
 		#endregion
 	}

@@ -26,9 +26,9 @@ namespace Chummer
 {
 	public partial class frmSelectCritterPower : Form
 	{
-		private string _strSelectedPower = "";
+		private string _strSelectedPower = string.Empty;
 		private int _intSelectedRating = 0;
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 		private double _dblPowerPoints = 0.0;
 		private bool _blnAddAgain = false;
 
@@ -49,10 +49,10 @@ namespace Chummer
 
 		private void frmSelectCritterPower_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			_objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
@@ -206,7 +206,7 @@ namespace Chummer
                 }
             }
             // Select the first Category in the list.
-            if (_strSelectCategory == "")
+            if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else if (cboCategory.Items.Contains(_strSelectCategory))
 			{
@@ -224,14 +224,14 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			lblPowerPoints.Visible = false;
 			lblPowerPointsLabel.Visible = false;
-			if (trePowers.SelectedNode.Tag.ToString() != "")
+			if (!string.IsNullOrEmpty(trePowers.SelectedNode.Tag.ToString()))
 			{
 				XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + trePowers.SelectedNode.Tag + "\"]");
                 if (objXmlPower != null)
@@ -250,7 +250,7 @@ namespace Chummer
                                 lblCritterPowerType.Text = LanguageManager.Instance.GetString("String_SpellTypePhysical");
                                 break;
                             default:
-                                lblCritterPowerType.Text = "";
+                                lblCritterPowerType.Text = string.Empty;
                                 break;
                         }
                     }
@@ -312,8 +312,8 @@ namespace Chummer
                         }
                     }
 
-                    string strBook = "";
-                    string strPage = "";
+                    string strBook = string.Empty;
+                    string strPage = string.Empty;
                     if (objXmlPower["source"] != null)
                         strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
                     if (objXmlPower["page"] != null)
@@ -506,7 +506,7 @@ namespace Chummer
 				_dblPowerPoints = Convert.ToDouble(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
 			}
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

@@ -10,13 +10,13 @@ namespace Chummer.Skills
 {
 	public class SkillsSection : INotifyPropertyChanged
 	{
-		public event CollegeEducationChangedHandler CollegeEducationChanged;
-		public event JackOfAllTradesChangedHandler JackOfAllTradesChanged;
-		public event LinguistChangedHandler LinguistChanged;
-		public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
-		public event TechSchoolChangedHandler TechSchoolChanged;
-		public event UncouthChangedHandler UncouthChanged;
-		public event UneducatedChangedHandler UneducatedChanged;
+		public Action<object> CollegeEducationChanged;
+		public Action<object> JackOfAllTradesChanged;
+		public Action<object> LinguistChanged;
+		public Action<object> SchoolOfHardKnocksChanged;
+		public Action<object> TechSchoolChanged;
+		public Action<object> UncouthChanged;
+		public Action<object> UneducatedChanged;
 		
 		private readonly Character _character;
 		private bool _blnUneducated;
@@ -209,19 +209,18 @@ namespace Chummer.Skills
 			//Workaround for probably breaking compability between earlier beta builds
 			if (skillNode["skillptsmax"] == null)
 			{
-				
 				skillNode = skillNode.OwnerDocument["character"];
 			}
 
 			SkillPointsMaximum = Convert.ToInt32(skillNode["skillptsmax"].InnerText);
 			SkillGroupPointsMaximum = Convert.ToInt32(skillNode["skillgrpsmax"].InnerText);
-			skillNode.TryGetField("uneducated", out _blnUneducated);
-			skillNode.TryGetField("uncouth", out _blnUncouth);
-			skillNode.TryGetField("schoolofhardknocks", out _blnSchoolOfHardKnocks);
-			skillNode.TryGetField("collegeeducation", out _blnCollegeEducation);
-			skillNode.TryGetField("jackofalltrades", out _blnJackOfAllTrades);
-			skillNode.TryGetField("techschool", out _blnTechSchool);
-			skillNode.TryGetField("linguist", out _blnLinguist);
+			skillNode.TryGetBoolFieldQuickly("uneducated", ref _blnUneducated);
+			skillNode.TryGetBoolFieldQuickly("uncouth", ref _blnUncouth);
+			skillNode.TryGetBoolFieldQuickly("schoolofhardknocks", ref _blnSchoolOfHardKnocks);
+			skillNode.TryGetBoolFieldQuickly("collegeeducation", ref _blnCollegeEducation);
+			skillNode.TryGetBoolFieldQuickly("jackofalltrades", ref _blnJackOfAllTrades);
+			skillNode.TryGetBoolFieldQuickly("techschool", ref _blnTechSchool);
+			skillNode.TryGetBoolFieldQuickly("linguist", ref _blnLinguist);
 
 			Timekeeper.Finish("load_char_skills");
 		}
@@ -550,25 +549,27 @@ namespace Chummer.Skills
 		}
 		public static int CompareSkills(Skill rhs, Skill lhs)
 		{
-			if (rhs is ExoticSkill)
+			if (rhs != null && rhs.IsExoticSkill)
 			{
-				if (lhs is ExoticSkill)
+				if (lhs != null && lhs.IsExoticSkill)
 				{
-					return ((rhs as ExoticSkill).Specific ?? "").CompareTo((lhs as ExoticSkill).Specific ?? "");
+					return ((rhs as ExoticSkill).Specific ?? string.Empty).CompareTo((lhs as ExoticSkill).Specific ?? string.Empty);
 				}
 				else
 				{
 					return 1;
 				}
 			}
-			else if (lhs is ExoticSkill)
+			else if (lhs != null && lhs.IsExoticSkill)
 			{
 				return -1;
 			}
-			else
+			else if (rhs != null && lhs != null)
 			{
-				return rhs.DisplayName.CompareTo(lhs.DisplayName);
+			    return rhs.DisplayName.CompareTo(lhs.DisplayName);
 			}
+			else
+			    return 0;
 		}
 
 		public static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
@@ -586,8 +587,8 @@ namespace Chummer.Skills
 			foreach (XmlNode objXmlSkill in objXmlSkillList)
 			{
 				ListItem objSkill = new ListItem();
-				objSkill.Value = objXmlSkill["name"].InnerText;
-				objSkill.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+				objSkill.Value = objXmlSkill["name"]?.InnerText;
+				objSkill.Name = objXmlSkill["translate"]?.InnerText ?? objSkill.Value;
 				lstSkillOrder.Add(objSkill);
 			}
 			SortListItem objSort = new SortListItem();
@@ -612,7 +613,7 @@ namespace Chummer.Skills
 			switch (filter)
 			{
 				case FilterOptions.All:
-					return "";
+					return string.Empty;
 				case FilterOptions.NonSpecial:
 					return " and not(category = 'Magical Active') and not(category = 'Resonance Active')";
 				case FilterOptions.Magician:

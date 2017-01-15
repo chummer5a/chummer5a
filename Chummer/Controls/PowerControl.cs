@@ -20,11 +20,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-// PowerRatingChanged Event Handler.
-public delegate void PowerRatingChangedHandler(Object sender);
-// DeletePower Event Handler;
-public delegate void DeletePowerHandler(Object sender);
-
 namespace Chummer
 {
     public partial class PowerControl : UserControl
@@ -33,8 +28,8 @@ namespace Chummer
 		private CommonFunctions functions = new CommonFunctions();
 
         // Events.
-        public event PowerRatingChangedHandler PowerRatingChanged;
-        public event DeletePowerHandler DeletePower;
+        public Action<object> PowerRatingChanged;
+        public Action<object> DeletePower;
 
 
 		#region Control Events
@@ -47,7 +42,7 @@ namespace Chummer
 
 		private void PowerControl_Load(object sender, EventArgs e)
 		{
-			this.Width = cmdDelete.Left + cmdDelete.Width;
+			Width = cmdDelete.Left + cmdDelete.Width;
 
 			decimal actualRating = _objPower.Rating - _objPower.FreeLevels;
 			decimal newRating = actualRating + _objPower.FreeLevels;
@@ -113,7 +108,7 @@ namespace Chummer
 				_objPower.Notes = frmPowerNotes.Notes;
 
 			string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
-			if (_objPower.Notes != string.Empty)
+			if (!string.IsNullOrEmpty(_objPower.Notes))
 				strTooltip += "\n\n" + _objPower.Notes;
 			tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 		}
@@ -134,7 +129,7 @@ namespace Chummer
 				_objPower = value;
 
 				string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
-				if (_objPower.Notes != string.Empty)
+				if (!string.IsNullOrEmpty(_objPower.Notes))
 					strTooltip += "\n\n" + _objPower.Notes;
 				tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 			}
@@ -411,7 +406,7 @@ namespace Chummer
 			imgNotes.Left = chkDiscountedGeas.Left + chkDiscountedGeas.Width + 6;
 			cmdDelete.Left = imgNotes.Left + imgNotes.Width + 6;
 
-			if (cmdDelete.Left + cmdDelete.Width > this.Width)
+			if (cmdDelete.Left + cmdDelete.Width > Width)
 			{
 				lblPowerName.Font = new Font(lblPowerName.Font.FontFamily.Name, lblPowerName.Font.Size - 0.25f);
 				lblRating.Font = lblPowerName.Font;

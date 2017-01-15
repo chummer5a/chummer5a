@@ -26,14 +26,14 @@ namespace Chummer
 {
 	public partial class frmSelectVehicle : Form
 	{
-		private string _strSelectedVehicle = "";
+		private string _strSelectedVehicle = string.Empty;
 		private bool _blnUsedVehicle = false;
-		private string _strUsedAvail = "";
+		private string _strUsedAvail = string.Empty;
 		private int _intUsedCost = 0;
 		private int _intMarkup = 0;
 
 		private bool _blnAddAgain = false;
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
@@ -55,10 +55,10 @@ namespace Chummer
 
 		private void frmSelectVehicle_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Vehicle information.
@@ -86,7 +86,7 @@ namespace Chummer
 			cboCategory.DataSource = _lstCategory;
 
 			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
@@ -131,18 +131,18 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstVehicle.Text != "")
+			if (!string.IsNullOrEmpty(lstVehicle.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
-			if (txtSearch.Text == "")
+			if (string.IsNullOrEmpty(txtSearch.Text))
 			{
 				cboCategory_SelectedIndexChanged(sender, e);
 				return;
@@ -184,8 +184,7 @@ namespace Chummer
 
 		private void lstVehicle_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstVehicle.Text != "")
-				AcceptForm();
+			cmdOK_Click(sender, e);
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -348,7 +347,7 @@ namespace Chummer
 		/// </summary>
 		private void UpdateSelectedVehicle()
 		{
-			if (lstVehicle.Text == "")
+			if (string.IsNullOrEmpty(lstVehicle.Text))
 				return;
 
 			double dblCostModifier = 1.0;
@@ -370,7 +369,7 @@ namespace Chummer
 
 			if (chkUsedVehicle.Checked)
 			{
-				string strSuffix = "";
+				string strSuffix = string.Empty;
 				string strAvail = objXmlVehicle["avail"].InnerText;
 				if (strAvail.Contains("R") || strAvail.Contains("F"))
 				{
@@ -391,7 +390,7 @@ namespace Chummer
             if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
             {
                 lblVehicleCost.Text = objXmlVehicle["cost"].InnerText;
-                lblTest.Text = "";
+                lblTest.Text = string.Empty;
             }
             else
             {
@@ -450,7 +449,7 @@ namespace Chummer
 			_strSelectedVehicle = objXmlVehicle["name"].InnerText;
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

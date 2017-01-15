@@ -32,7 +32,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
 		public void Create(XmlNode objXmlGear, Character objCharacter, TreeNode objNode, int intRating, bool blnAddImprovements = true, bool blnCreateChildren = true)
 		{
-            base.Create(objXmlGear, objCharacter, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), "", false, false, blnAddImprovements, blnCreateChildren);
+            base.Create(objXmlGear, objCharacter, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), string.Empty, false, false, blnAddImprovements, blnCreateChildren);
 
             objXmlGear.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating);
             objXmlGear.TryGetInt32FieldQuickly("attack", ref _intAttack);

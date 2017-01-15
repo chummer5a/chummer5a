@@ -41,7 +41,7 @@ namespace Chummer
 			catch
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_History_FileNotFound"), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				this.Close();
+				Close();
                 return;
 			}
             txtRevisionHistory.SelectionStart = 0;

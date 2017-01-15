@@ -8,10 +8,10 @@ namespace Chummer.UI.Skills
 {
 	public partial class KnowledgeSkillControl : UserControl
 	{
-		private readonly KnowledgeSkill skill;
+		private readonly KnowledgeSkill _skill;
 		public KnowledgeSkillControl(KnowledgeSkill skill)
 		{
-			this.skill = skill;
+			_skill = skill;
 			InitializeComponent();
 
 			//Display
@@ -122,19 +122,19 @@ namespace Chummer.UI.Skills
 			frmCareer parent = ParentForm as frmCareer;
 			if (parent != null)
 			{
-				int upgradeKarmaCost = skill.UpgradeKarmaCost();
+				int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
 				if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring = "";
-                if (skill.Karma == 0)
+                string confirmstring = string.Empty;
+                if (_skill.Karma == 0)
                 {
                     confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
-                        skill.DisplayName, skill.Rating + 1, skill.CharacterObject.Options.KarmaNewKnowledgeSkill, this.cboType.GetItemText(this.cboType.SelectedItem));
+                        _skill.DisplayName, _skill.Rating + 1, _skill.CharacterObject.Options.KarmaNewKnowledgeSkill, cboType.GetItemText(cboType.SelectedItem));
                 }
                 else
                 {
                     confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
-                       skill.DisplayName, skill.Rating + 1, upgradeKarmaCost, this.cboType.GetItemText(this.cboType.SelectedItem));
+                       _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
                 }
 
 				if (!parent.ConfirmKarmaExpense(confirmstring))
@@ -142,7 +142,7 @@ namespace Chummer.UI.Skills
 			}
 			cboType.Enabled = false;
 
-			skill.Upgrade();
+			_skill.Upgrade();
 		}
 
 		private void btnAddSpec_Click(object sender, EventArgs e)
@@ -151,23 +151,23 @@ namespace Chummer.UI.Skills
 			if (parrent != null)
 			{
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-						skill.CharacterObject.Options.KarmaSpecialization);
+						_skill.CharacterObject.Options.KarmaSpecialization);
 
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
 
-			frmSelectSpec selectForm = new frmSelectSpec(skill);
+			frmSelectSpec selectForm = new frmSelectSpec(_skill);
 			selectForm.Mode = "Knowledge";
 			selectForm.ShowDialog();
 
 			if (selectForm.DialogResult != DialogResult.OK) return;
 
-			skill.AddSpecialization(selectForm.SelectedItem);
+			_skill.AddSpecialization(selectForm.SelectedItem);
 
 			//TODO turn this into a databinding, but i don't care enough right now
 			lblSpec.Text = string.Join(", ",
-					(from specialization in skill.Specializations
+					(from specialization in _skill.Specializations
 					 select specialization.Name));
 
 			parrent?.UpdateCharacterInfo();

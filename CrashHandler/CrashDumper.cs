@@ -281,7 +281,7 @@ namespace CrashHandler
 			subContent.Headers.ContentDisposition =   
 				ContentDispositionHeaderValue.Parse($"form-data; name=\"files[]\"; filename=\"{Attributes["visible-crash-id"]}.zip.aes256\"");
 						
-			//subContent.Headers.ContentDisposition.FileName = ""
+			//subContent.Headers.ContentDisposition.FileName = string.Empty
 
 			MultipartFormDataContent content = new MultipartFormDataContent {subContent};
 			HttpResponseMessage responce = client.PostAsync(@"https://mixtape.moe/upload.php", content).Result;

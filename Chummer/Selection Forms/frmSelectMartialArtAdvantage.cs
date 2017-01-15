@@ -26,10 +26,10 @@ namespace Chummer
 {
 	public partial class frmSelectMartialArtAdvantage : Form
 	{
-		private string _strSelectedAdvantage = "";
+		private string _strSelectedAdvantage = string.Empty;
 
 		private bool _blnAddAgain = false;
-		private string _strMartialArt = "";
+		private string _strMartialArt = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
@@ -44,10 +44,10 @@ namespace Chummer
 
 		private void frmSelectMartialArtAdvantage_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			List<ListItem> lstAdvantage = new List<ListItem>();
@@ -94,20 +94,19 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstAdvantages.Text != "")
+			if (!string.IsNullOrEmpty(lstAdvantages.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstAdvantages_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstAdvantages.Text != "")
-				AcceptForm();
-		}
+            cmdOK_Click(sender, e);
+        }
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
@@ -159,7 +158,7 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			_strSelectedAdvantage = lstAdvantages.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 	}

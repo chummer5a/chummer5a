@@ -33,8 +33,8 @@ namespace Chummer
 		/// </summary>
 		private class LanguageString
 		{
-			private string _strKey = "";
-			private string _strText = "";
+			private string _strKey = string.Empty;
+			private string _strText = string.Empty;
 
 			/// <summary>
 			/// String's unique Key.
@@ -67,8 +67,8 @@ namespace Chummer
 			}
 		}
 
-		static private readonly bool _blnDebug = false;
-		static private string _strLanguage = "";
+		private static readonly bool _blnDebug = false;
+		private static string _strLanguage = string.Empty;
 		static readonly LanguageManager _objInstance = new LanguageManager();
 		static private readonly Dictionary<string, string> _objDictionary = new Dictionary<string, string>();
 		static bool _blnLoaded = false;
@@ -174,8 +174,8 @@ namespace Chummer
 		public void Load(string strLanguage, object objObject)
 		{
 			// _strLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
-			string strFilePath = "";
-			if (strLanguage != "en-us" && _strLanguage == "")
+			string strFilePath = string.Empty;
+			if (strLanguage != "en-us" && string.IsNullOrEmpty(_strLanguage))
 			{
 				_strLanguage = strLanguage;
 				XmlDocument objLanguageDocument = new XmlDocument();
@@ -441,7 +441,7 @@ namespace Chummer
 				lstLanguage.Add(objString);
 			}
 
-			string strMessage = "";
+			string strMessage = string.Empty;
 			// Check for strings that are in the English file but not in the selected language file.
 			foreach (LanguageString objString in lstEnglish)
 			{
@@ -458,7 +458,7 @@ namespace Chummer
 			}
 
 			// Display the message.
-			if (strMessage != "")
+			if (!string.IsNullOrEmpty(strMessage))
 				MessageBox.Show(strMessage, "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			else
 				MessageBox.Show("Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -470,22 +470,18 @@ namespace Chummer
 		/// <param name="strExtra">Extra string to translate.</param>
 		public string TranslateExtra(string strExtra)
 		{
-			string strReturn = "";
+			string strReturn = string.Empty;
 
 			// Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-			if (_strLanguage != "en-us" && strExtra.Trim() != "")
+			if (_strLanguage != "en-us" && !string.IsNullOrEmpty(strExtra.Trim()))
 			{
-				XmlDocument objXmlDocument = new XmlDocument();
-
-				// Look in Weapon Categories.
-				objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
 				if (objNode != null)
 				{
-					if (objNode.Attributes["translate"] != null)
+					if (objNode.Attributes?["translate"] != null)
 					{
-						strReturn = objNode.Attributes["translate"].InnerText;
-						return strReturn;
+						return objNode.Attributes["translate"].InnerText;
 					}
 				}
 
@@ -495,8 +491,7 @@ namespace Chummer
 				{
 					if (objNode["translate"] != null)
 					{
-						strReturn = objNode["translate"].InnerText;
-						return strReturn;
+						return objNode["translate"].InnerText;
 					}
 				}
 
@@ -507,8 +502,7 @@ namespace Chummer
 				{
 					if (objNode["translate"] != null)
 					{
-						strReturn = objNode["translate"].InnerText;
-						return strReturn;
+						return objNode["translate"].InnerText;
 					}
 				}
 
@@ -517,10 +511,9 @@ namespace Chummer
 				{
 					if (objXMLNode.InnerText == strExtra)
 					{ 
-						if (objXMLNode.Attributes["translate"] != null)
+						if (objXMLNode.Attributes?["translate"] != null)
 						{
-							strReturn = objXMLNode.Attributes["translate"].InnerText;
-							return strReturn;
+							return objXMLNode.Attributes["translate"].InnerText;
 						}
 					}
 				}
@@ -528,10 +521,9 @@ namespace Chummer
 				objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
 				if (objNode != null)
 				{
-					if (objNode.Attributes["translate"] != null)
+					if (objNode.Attributes?["translate"] != null)
 					{
-						strReturn = objNode.Attributes["translate"].InnerText;
-						return strReturn;
+						return objNode.Attributes["translate"].InnerText;
 					}
 				}
 
@@ -540,10 +532,9 @@ namespace Chummer
 				objNode = objXmlDocument.SelectSingleNode("/chummer/licenses/license[. = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
 				if (objNode != null)
 				{
-					if (objNode.Attributes["translate"] != null)
+					if (objNode.Attributes?["translate"] != null)
 					{
-						strReturn = objNode.Attributes["translate"].InnerText;
-						return strReturn;
+						return objNode.Attributes["translate"].InnerText;
 					}
 				}
 
@@ -554,8 +545,7 @@ namespace Chummer
 				{
 					if (objNode["translate"] != null)
 					{
-						strReturn = objNode["translate"].InnerText;
-						return strReturn;
+						return objNode["translate"].InnerText;
 					}
 				}
 				objNode = objXmlDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
@@ -563,8 +553,7 @@ namespace Chummer
 				{
 					if (objNode["translate"] != null)
 					{
-						strReturn = objNode["translate"].InnerText;
-						return strReturn;
+						return objNode["translate"].InnerText;
 					}
 				}
 
@@ -575,8 +564,7 @@ namespace Chummer
 				{
 					if (objNode["translate"] != null)
 					{
-						strReturn = objNode["translate"].InnerText;
-						return strReturn;
+						return objNode["translate"].InnerText;
 					}
 				}
 				objNode = objXmlDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
@@ -584,8 +572,7 @@ namespace Chummer
 				{
 					if (objNode["translate"] != null)
 					{
-						strReturn = objNode["translate"].InnerText;
-						return strReturn;
+						return objNode["translate"].InnerText;
 					}
 				}
 
@@ -629,7 +616,7 @@ namespace Chummer
 			}
 
 			// If no translation could be found, just use whatever we were passed.
-			if (strReturn == "" || strReturn.Contains("Error finding string for key - "))
+			if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("Error finding string for key - "))
 				strReturn = strExtra;
 
 			return strReturn;

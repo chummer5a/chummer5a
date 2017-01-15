@@ -25,8 +25,8 @@ namespace Chummer
 {
 	public partial class frmSelectSkillCategory : Form
 	{
-		private string _strSelectedCategory = "";
-		private string _strForceCategory = "";
+		private string _strSelectedCategory = string.Empty;
+		private string _strForceCategory = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -44,7 +44,7 @@ namespace Chummer
 			// Build the list of Skill Categories found in the Skills file.
 			XmlNodeList objXmlCategoryList;
 			List<ListItem> lstCategory = new List<ListItem>();
-			if (_strForceCategory != "")
+			if (!string.IsNullOrEmpty(_strForceCategory))
 			{
 				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]");
 			}
@@ -83,7 +83,7 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			_strSelectedCategory = cboCategory.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 

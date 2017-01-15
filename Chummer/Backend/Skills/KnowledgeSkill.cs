@@ -68,7 +68,7 @@ namespace Chummer.Skills
 		{
 			AttributeObject = character.GetAttribute("LOG");
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
-			_type = "";
+			_type = string.Empty;
 			SuggestedSpecializations = new List<ListItem>();
 		}
 

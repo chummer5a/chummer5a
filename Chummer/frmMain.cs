@@ -49,7 +49,7 @@ namespace Chummer
 			Version version = Assembly.GetExecutingAssembly().GetName().Version;
 			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 
-			this.Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
+			Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
 
 #if DEBUG
 	        Text += " DEBUG BUILD";
@@ -89,7 +89,7 @@ namespace Chummer
 				{
 					File.Delete("Chummer.exe.old");
 				}
-				catch
+				catch (System.IO.IOException)
 				{
 				}
 			}
@@ -109,7 +109,7 @@ namespace Chummer
 			}
 
 			// ToolStrip Items.
-			foreach (ToolStrip objToolStrip in this.Controls.OfType<ToolStrip>())
+			foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
 			{
 				foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
 				{
@@ -157,15 +157,9 @@ namespace Chummer
 			frmCharacter.Show();
 		}
 
-		public sealed override string Text
-		{
-			get { return base.Text; }
-			set { base.Text = value; }
-		}
-
 		private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
         private void dashboardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -327,37 +321,37 @@ namespace Chummer
 		private void frmMain_MdiChildActivate(object sender, EventArgs e)
 		{
 			// If there are no child forms, hide the tab control.
-			if (this.ActiveMdiChild == null)
+			if (ActiveMdiChild == null)
 				tabForms.Visible = false;
 			else
 			{
-				this.ActiveMdiChild.WindowState = FormWindowState.Maximized;
+				ActiveMdiChild.WindowState = FormWindowState.Maximized;
 
 				// If this is a new child form and does not have a tab page, create one.
-				if (this.ActiveMdiChild.Tag == null)
+				if (ActiveMdiChild.Tag == null)
 				{
 					TabPage tp = new TabPage();
 					// Add a tab page.
-					tp.Tag = this.ActiveMdiChild;
+					tp.Tag = ActiveMdiChild;
 					tp.Parent = tabForms;
                     
-					if (this.ActiveMdiChild.GetType() == typeof(frmCareer))
+					if (ActiveMdiChild.GetType() == typeof(frmCareer))
 					{
-						tp.Text = ((frmCareer)this.ActiveMdiChild).CharacterName;
+						tp.Text = ((frmCareer)ActiveMdiChild).CharacterName;
 					}
-                    else if (this.ActiveMdiChild.GetType() == typeof(frmCreate))
+                    else if (ActiveMdiChild.GetType() == typeof(frmCreate))
                     {
-                        tp.Text = ((frmCreate)this.ActiveMdiChild).CharacterName;
+                        tp.Text = ((frmCreate)ActiveMdiChild).CharacterName;
                     }
-                    else if (this.ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
+                    else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
                     {
                         tp.Text = LanguageManager.Instance.GetString("String_CharacterRoster");
                     }
 
                     tabForms.SelectedTab = tp;
 
-					this.ActiveMdiChild.Tag = tp;
-					this.ActiveMdiChild.FormClosed += ActiveMdiChild_FormClosed;
+					ActiveMdiChild.Tag = tp;
+					ActiveMdiChild.FormClosed += ActiveMdiChild_FormClosed;
 				}
 
 				// Don't show the tab control if there is only one window open.
@@ -392,7 +386,7 @@ namespace Chummer
             if (objCharacter != null)
             {
                 string strTitle = objCharacter.Name;
-                if (objCharacter.Alias.Trim() != string.Empty)
+                if (!string.IsNullOrEmpty(objCharacter.Alias.Trim()))
                 {
                     strTitle = objCharacter.Alias;
                 }
@@ -472,7 +466,7 @@ namespace Chummer
 		private void toolStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
 		{
 			// ToolStrip Items.
-			foreach (ToolStrip objToolStrip in this.Controls.OfType<ToolStrip>())
+			foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
 			{
 				foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
 				{
@@ -485,7 +479,7 @@ namespace Chummer
 		private void toolStrip_ItemRemoved(object sender, ToolStripItemEventArgs e)
 		{
 			// ToolStrip Items.
-			foreach (ToolStrip objToolStrip in this.Controls.OfType<ToolStrip>())
+			foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
 			{
 				foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
 				{
@@ -499,20 +493,20 @@ namespace Chummer
 		{
 			if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0)
 			{
-				this.Size = new Size(1191, 752);
+				Size = new Size(1191, 752);
 			}
 			else
 			{
-				this.WindowState = Properties.Settings.Default.WindowState;
+				WindowState = Properties.Settings.Default.WindowState;
 
-				if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
+				if (WindowState == FormWindowState.Minimized) WindowState = FormWindowState.Normal;
 
-				this.Location = Properties.Settings.Default.Location;
-				this.Size = Properties.Settings.Default.Size;
+				Location = Properties.Settings.Default.Location;
+				Size = Properties.Settings.Default.Size;
 			}
 
 			if (GlobalOptions.Instance.StartupFullscreen)
-				this.WindowState = FormWindowState.Maximized;
+				WindowState = FormWindowState.Maximized;
 
 			mnuToolsOmae.Visible = GlobalOptions.Instance.OmaeEnabled;
 
@@ -677,11 +671,11 @@ namespace Chummer
                 XmlDocument objXmlDocument = new XmlDocument();
                 objXmlDocument.Load(strFileName);
                 XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-                if (objXmlCharacter["appversion"].InnerText != string.Empty)
+                if (!string.IsNullOrEmpty(objXmlCharacter?["appversion"]?.InnerText))
                 {
-                    Version verSavedVersion = new Version();
-                    Version verCorrectedVersion = new Version();
-                    var strVersion = objXmlCharacter["appversion"].InnerText;
+                    Version verSavedVersion;
+                    Version verCorrectedVersion;
+                    string strVersion = objXmlCharacter["appversion"].InnerText;
                     if (strVersion.StartsWith("0."))
                     {
                         strVersion = strVersion.Substring(2);
@@ -693,7 +687,7 @@ namespace Chummer
                     {
                         File.WriteAllText(strFileName, Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));
                     }
-                }               
+                }
 
                 Timekeeper.Start("load_file");
 				blnLoaded = objCharacter.Load();
@@ -703,11 +697,11 @@ namespace Chummer
 					return;
 
 				// If a new name is given, set the character's name to match (used in cloning).
-				if (strNewName != "")
+				if (!string.IsNullOrEmpty(strNewName))
 					objCharacter.Name = strNewName;
 				// Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
 				if (blnClearFileName)
-					objCharacter.FileName = "";
+					objCharacter.FileName = string.Empty;
 
 				// Show the character form.
 				if (!objCharacter.Created)
@@ -1004,16 +998,16 @@ namespace Chummer
 
 		private void frmMain_Closing(object sender, FormClosingEventArgs e)
 		{
-			Properties.Settings.Default.WindowState = this.WindowState;
-			if (this.WindowState == FormWindowState.Normal)
+			Properties.Settings.Default.WindowState = WindowState;
+			if (WindowState == FormWindowState.Normal)
 			{
-				Properties.Settings.Default.Location = this.Location;
-				Properties.Settings.Default.Size = this.Size;
+				Properties.Settings.Default.Location = Location;
+				Properties.Settings.Default.Size = Size;
 			}
 			else
 			{
-				Properties.Settings.Default.Location = this.RestoreBounds.Location;
-				Properties.Settings.Default.Size = this.RestoreBounds.Size;
+				Properties.Settings.Default.Location = RestoreBounds.Location;
+				Properties.Settings.Default.Size = RestoreBounds.Size;
 			}
 
 			Properties.Settings.Default.Save();

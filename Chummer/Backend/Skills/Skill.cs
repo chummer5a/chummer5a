@@ -212,7 +212,7 @@ namespace Chummer.Skills
 
 			if (n.TryCheckValue("knowledge", "True"))
 			{
-				Skills.KnowledgeSkill kno = new KnowledgeSkill(character);
+				KnowledgeSkill kno = new KnowledgeSkill(character);
 				kno.WriteableName = n["name"].InnerText;
 				kno.Base = baseRating;
 				kno.Karma = karmaRating;
@@ -234,14 +234,14 @@ namespace Chummer.Skills
 				}
 
 
-				skill = Skill.FromData(data, character);
+				skill = FromData(data, character);
 				skill._base = baseRating;
 				skill._karma = karmaRating;
 
 				ExoticSkill exoticSkill = skill as ExoticSkill;
 				if (exoticSkill != null)
 				{
-					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? "";
+					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
 					//don't need to do more load then.
 					
 					exoticSkill.Specific = name;
@@ -430,7 +430,7 @@ namespace Chummer.Skills
                 if (Name.Contains("Flight"))
                 {
                     string strFlyString = CharacterObject.Fly;
-                    if (strFlyString == "" || strFlyString == "0" || strFlyString.Contains("Special"))
+                    if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains("Special"))
                         return false;
                 }
 				//TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
@@ -528,7 +528,7 @@ namespace Chummer.Skills
 			{
 				if (LearnedRating == 0)
 				{
-					return ""; //Unleveled skills cannot have a specialization;
+					return string.Empty; //Unleveled skills cannot have a specialization;
 				}
 
 				if (Specializations.Count > 0)
@@ -536,7 +536,7 @@ namespace Chummer.Skills
 					return Specializations[0].DisplayName;
 				}
 
-				return "";
+				return string.Empty;
 			}
 			set
 			{
@@ -598,14 +598,14 @@ namespace Chummer.Skills
 							first = false;
 
 							s.Append(" (Base (");
-							s.Append(LearnedRating);
+							s.Append(LearnedRating.ToString());
 							s.Append(")");
 						}
 
 						s.Append(" + ");
 						s.Append(GetName(source));
 						s.Append(" (");
-						s.Append(source.Value);
+						s.Append(source.Value.ToString());
 						s.Append(")");
 					}
 					if (!first) s.Append(")");
@@ -832,8 +832,8 @@ namespace Chummer.Skills
 			get
 			{
 				//v-- hack i guess
-				string strReturn = "";
-				string middle = "";
+				string strReturn = string.Empty;
+				string middle = string.Empty;
 				if (!string.IsNullOrWhiteSpace(SkillGroup))
 				{
 					middle = $"{SkillGroup} {LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}\n";

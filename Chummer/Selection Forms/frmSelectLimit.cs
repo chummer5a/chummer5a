@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmSelectLimit : Form
     {
-        private string _strReturnValue = "";
+        private string _strReturnValue = string.Empty;
 
 		private List<ListItem> _lstLimits = new List<ListItem>();
 
@@ -61,7 +61,7 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
         {
 			_strReturnValue = cboLimit.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void frmSelectLimit_Load(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void frmSelectLimit_Shown(object sender, EventArgs e)

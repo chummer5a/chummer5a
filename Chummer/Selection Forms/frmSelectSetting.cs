@@ -68,13 +68,13 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			_strSettingsFile = cboSetting.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 

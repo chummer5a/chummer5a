@@ -24,7 +24,7 @@ namespace Chummer
 {
     public partial class frmSelectAttribute : Form
     {
-        private string _strReturnValue = "";
+        private string _strReturnValue = string.Empty;
 
 		private List<ListItem> _lstAttributes = new List<ListItem>();
 
@@ -80,7 +80,7 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
         {
 			_strReturnValue = cboAttribute.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void frmSelectAttribute_Load(object sender, EventArgs e)
@@ -91,7 +91,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void frmSelectAttribute_Shown(object sender, EventArgs e)

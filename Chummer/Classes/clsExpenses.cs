@@ -94,7 +94,7 @@ namespace Chummer
 		private NuyenExpenseType _objNuyenExpenseType;
 		private string _strObjectId;
 		private int _intQty = 0;
-		private string _strExtra = "";
+		private string _strExtra = string.Empty;
 
 		#region Helper Methods
 		/// <summary>
@@ -104,7 +104,7 @@ namespace Chummer
 		public KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
 		{
 			KarmaExpenseType result;
-			return KarmaExpenseType.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
+			return Enum.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace Chummer
 		public NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
 		{
 			NuyenExpenseType result;
-			return NuyenExpenseType.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
+			return Enum.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
 		}
 		#endregion
 
@@ -267,7 +267,7 @@ namespace Chummer
 		private Guid _guiID = new Guid();
 		private DateTime _datDate = new DateTime();
 		private int _intAmount = 0;
-		private string _strReason = "";
+		private string _strReason = string.Empty;
 		private ExpenseType _objExpenseType;
 		private bool _blnRefund = false;
 		private ExpenseUndo _objUndo;

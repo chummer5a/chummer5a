@@ -52,7 +52,7 @@ namespace Chummer
                     return true;
                 }
             }
-            catch (System.Xml.XPath.XPathException ex)
+            catch (XPathException ex)
             {
                 Log.Exception(ex);
             }
@@ -69,7 +69,7 @@ namespace Chummer
 
 		public static bool IsRunningInVisualStudio()
 		{
-			return System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv";
+			return Process.GetCurrentProcess().ProcessName == "devenv";
 		}
 
 		public static Version GitVersion()

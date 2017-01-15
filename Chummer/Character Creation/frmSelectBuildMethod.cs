@@ -80,7 +80,7 @@ namespace Chummer
 			XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
 
             // Populate the Gameplay Options list.
-            string strDefault = "";
+            string strDefault = string.Empty;
             XmlNodeList objXmlGameplayOptionList = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption");
 			
 			foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
@@ -136,13 +136,13 @@ namespace Chummer
 			_objCharacter.GameplayOptionQualityLimit = intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             _objCharacter.MaximumAvailability = Convert.ToInt32(nudMaxAvail.Value);
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -205,7 +205,7 @@ namespace Chummer
 
         private void frmSelectBuildMethod_Load(object sender, EventArgs e)
         {
-            this.Height = cmdOK.Bottom + 40;
+            Height = cmdOK.Bottom + 40;
             cboBuildMethod_SelectedIndexChanged(this, e);
         }
         #endregion

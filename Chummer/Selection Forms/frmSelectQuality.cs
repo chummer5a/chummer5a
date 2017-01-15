@@ -31,16 +31,16 @@ namespace Chummer
 	{
         public int buildPos = 0;
         public int buildNeg = 0;
-		private string _strSelectedQuality = "";
+		private string _strSelectedQuality = string.Empty;
 		private bool _blnAddAgain = false;
 		private readonly Character _objCharacter;
-		private string _strIgnoreQuality = "";
+		private string _strIgnoreQuality = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
 		private List<ListItem> _lstCategory = new List<ListItem>();
 
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 
 		private readonly XmlDocument _objMetatypeDocument = new XmlDocument();
 		private readonly XmlDocument _objCritterDocument = new XmlDocument();
@@ -62,10 +62,10 @@ namespace Chummer
 		{
 			_objXmlDocument = XmlManager.Instance.Load("qualities.xml");
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Quality information.
@@ -93,7 +93,7 @@ namespace Chummer
 			cboCategory.DataSource = _lstCategory;
 
 			// Select the first Category in the list.
-            if (_strSelectCategory == "")
+            if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
@@ -113,7 +113,7 @@ namespace Chummer
 
 		private void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstQualities.Text == "")
+			if (string.IsNullOrEmpty(lstQualities.Text))
 				return;
 
 			XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstQualities.SelectedValue + "\"]");
@@ -177,7 +177,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstQualities_DoubleClick(object sender, EventArgs e)
@@ -316,7 +316,7 @@ namespace Chummer
             lstQualities.DataSource = null;
             XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
-            if (txtSearch.Text.Trim() != "")
+            if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
 			{
 				// Treat everything as being uppercase so the search is case-insensitive.
 				string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
@@ -349,7 +349,7 @@ namespace Chummer
 			    {
 			        objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
 			    }
-			    catch (System.Xml.XPath.XPathException)
+			    catch (XPathException)
 			    {
 			        return;
 			    }
@@ -481,7 +481,7 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (lstQualities.Text == "")
+			if (string.IsNullOrEmpty(lstQualities.Text))
 				return;
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
             switch (lstQualities.SelectedValue.ToString())
@@ -505,7 +505,7 @@ namespace Chummer
 
 			if (!RequirementMet(objNode, true))
 				return;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		/// <summary>
@@ -561,7 +561,7 @@ namespace Chummer
 			if (objXmlQuality.InnerXml.Contains("forbidden"))
 			{
 				bool blnRequirementForbidden = false;
-				string strForbidden = "";
+				string strForbidden = string.Empty;
 
 				// Loop through the oneof requirements.
 				XmlNodeList objXmlForbiddenList = objXmlQuality.SelectNodes("forbidden/oneof");
@@ -660,7 +660,7 @@ namespace Chummer
 
 			if (objXmlQuality.InnerXml.Contains("required"))
 			{
-				string strRequirement = "";
+				string strRequirement = string.Empty;
 				bool blnRequirementMet = true;
 
 				// Loop through the oneof requirements.

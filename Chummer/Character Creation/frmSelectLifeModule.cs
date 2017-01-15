@@ -119,18 +119,18 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void MoveControls()
@@ -169,11 +169,11 @@ namespace Chummer
                 cmdOK.Enabled = blnSelectAble;
                 cmdOKAdd.Enabled = blnSelectAble;
 
-                lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : "";
-                lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : "") +
-                                    " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : "");
+                lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : string.Empty;
+                lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : string.Empty) +
+                                    " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : string.Empty);
 
-                lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : "";
+                lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : string.Empty;
             }
             else
 	        {
@@ -323,7 +323,7 @@ namespace Chummer
 		    String working = "[";
 		    bool before = false;
 
-			///chummer/modules/module//name[contains(., "C")]/..["" = ""]
+			///chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
 			/// /chummer/modules/module//name[contains(., "can")]/..[id]
 
 			//if (!String.IsNullOrWhiteSpace(_strSearch))
@@ -333,7 +333,7 @@ namespace Chummer
 			//}
 			if (!String.IsNullOrWhiteSpace(_strWorkStage))
 		    {
-				working += String.Format("{0}stage = \"{1}\"", before ? " and " : "", _strWorkStage);
+				working += String.Format("{0}stage = \"{1}\"", before ? " and " : string.Empty, _strWorkStage);
 				before = true;
 		    }
 			if (before)

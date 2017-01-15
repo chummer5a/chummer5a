@@ -465,7 +465,7 @@ namespace Chummer.Skills
 			if (!CanUpgradeCareer) return;
 
 			int price = UpgradeKarmaCost();
-            string strSkillType = "";
+            string strSkillType = string.Empty;
             if (IsKnowledgeSkill)
             {
                 strSkillType = "String_ExpenseKnowledgeSkill";

@@ -28,13 +28,13 @@ namespace Chummer
 {
     public partial class frmSelectWeapon : Form
     {
-		private string _strSelectedWeapon = "";
+		private string _strSelectedWeapon = string.Empty;
 		private int _intMarkup = 0;
 
 		private bool _blnAddAgain = false;
 	    private bool _blnBlackMarketDiscount = false;
 		private string[] _strLimitToCategories = new string[0];
-        private static string _strSelectCategory = "";
+        private static string _strSelectCategory = string.Empty;
 		private readonly Character _objCharacter;
 	    private XmlNodeList objXmlCategoryList;
         private XmlDocument _objXmlDocument = new XmlDocument();
@@ -55,9 +55,9 @@ namespace Chummer
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in this.Controls.OfType<Label>().Where(objLabel => objLabel.Text.StartsWith("[")))
+			foreach (Label objLabel in Controls.OfType<Label>().Where(objLabel => objLabel.Text.StartsWith("[")))
 			{
-				objLabel.Text = "";
+				objLabel.Text = string.Empty;
 			}
 
         	// Load the Weapon information.
@@ -111,7 +111,7 @@ namespace Chummer
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
 			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
@@ -156,7 +156,7 @@ namespace Chummer
 
         private void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
-			if (lstWeapon.Text == "")
+			if (string.IsNullOrEmpty(lstWeapon.Text))
 				return;
 
             // Retireve the information for the selected Weapon.
@@ -232,7 +232,7 @@ namespace Chummer
 			lblSource.Text = strBook + " " + strPage;
 
 			// Build a list of included Accessories and Modifications that come with the weapon.
-            string strAccessories = "";
+            string strAccessories = string.Empty;
 			XmlNodeList objXmlNodeList = objXmlWeapon.SelectNodes("accessories/accessory");
 			foreach (XmlNode objXmlAccessory in objXmlNodeList)
 			{
@@ -241,20 +241,20 @@ namespace Chummer
 					? objXmlItem["translate"].InnerText + "\n"
 					: objXmlItem["name"].InnerText + "\n";
 			}
-	        lblIncludedAccessories.Text = strAccessories == "" ? LanguageManager.Instance.GetString("String_None") : strAccessories;
+	        lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.Instance.GetString("String_None") : strAccessories;
 
             tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstWeapon.Text != "" || dgvWeapons.Visible)
+			if (!string.IsNullOrEmpty(lstWeapon.Text) || dgvWeapons.Visible)
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -266,8 +266,7 @@ namespace Chummer
 
 		private void lstWeapon_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstWeapon.Text != "")
-				AcceptForm();
+			cmdOK_Click(sender, e);
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -434,10 +433,10 @@ namespace Chummer
                     _strSelectedWeapon = objNode["name"].InnerText;
                     _intMarkup = Convert.ToInt32(nudMarkup.Value);
 
-                    this.DialogResult = DialogResult.OK;
+                    DialogResult = DialogResult.OK;
                 }
             }
-			else if (lstWeapon.Text != "")
+			else if (!string.IsNullOrEmpty(lstWeapon.Text))
 			{
 				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
 				_strSelectCategory = objNode["category"].InnerText;
@@ -445,7 +444,7 @@ namespace Chummer
 				_intMarkup = Convert.ToInt32(nudMarkup.Value);
 				_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
 		}
 
@@ -584,7 +583,7 @@ namespace Chummer
                     string strAmmo = objWeapon.Ammo;
                     string strMode = objWeapon.Mode;
                     string strReach = objWeapon.TotalReach.ToString();
-                    string strAccessories = "";
+                    string strAccessories = string.Empty;
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
                         if (strAccessories.Length > 0)
@@ -628,12 +627,12 @@ namespace Chummer
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            if (txtSearch.Text == "")
+            if (string.IsNullOrEmpty(txtSearch.Text))
             {
                 cboCategory_SelectedIndexChanged(sender, e);
                 return;
             }
-            string strCategoryLimit = "";
+            string strCategoryLimit = string.Empty;
             if (_strLimitToCategories.Length > 0)
             {
                 strCategoryLimit += "category = \"" + _strLimitToCategories[0] + "\"";
@@ -693,7 +692,7 @@ namespace Chummer
                         string strAmmo = objWeapon.Ammo;
                         string strMode = objWeapon.Mode;
                         string strReach = objWeapon.TotalReach.ToString();
-                        string strAccessories = "";
+                        string strAccessories = string.Empty;
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
                             if (strAccessories.Length > 0)
@@ -709,12 +708,12 @@ namespace Chummer
                             objWeapon.DisplayCategory == "Exotic Melee Weapons" ||
                             objWeapon.DisplayCategory == "Unarmed")
                         {
-                            strAmmo = "";
-                            strMode = "";
+                            strAmmo = string.Empty;
+                            strMode = string.Empty;
                         }
                         else
                         {
-                            strReach = "";
+                            strReach = string.Empty;
                         }
 
                         tabWeapons.Rows.Add(strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo,
@@ -767,8 +766,7 @@ namespace Chummer
 
         private void dgvWeapons_DoubleClick(object sender, EventArgs e)
         {
-            if (lstWeapon.Text != "" || dgvWeapons.Visible)
-                AcceptForm();
+            cmdOK_Click(sender, e);
         }
 		
 		private void lblSource_Click(object sender, EventArgs e)

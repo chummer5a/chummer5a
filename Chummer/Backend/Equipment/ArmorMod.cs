@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -33,26 +34,26 @@ namespace Chummer.Backend.Equipment
 	public class ArmorMod
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strCategory = "";
+		private string _strName = string.Empty;
+		private string _strCategory = string.Empty;
 		private string _strArmorCapacity = "[0]";
 		private int _intA = 0;
 		private int _intMaxRating = 0;
 		private int _intRating = 0;
-		private string _strAvail = "";
-		private string _strCost = "";
-		private string _strSource = "";
-		private string _strPage = "";
+		private string _strAvail = string.Empty;
+		private string _strCost = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
 		private bool _blnIncludedInArmor = false;
 		private bool _blnEquipped = true;
-		private string _strExtra = "";
+		private string _strExtra = string.Empty;
 		private Guid _guiWeaponID = new Guid();
 		private XmlNode _nodBonus;
 		private readonly Character _objCharacter;
-		private string _strNotes = "";
-		private string _strAltName = "";
-		private string _strAltCategory = "";
-		private string _strAltPage = "";
+		private string _strNotes = string.Empty;
+		private string _strAltName = string.Empty;
+		private string _strAltCategory = string.Empty;
+		private string _strAltPage = string.Empty;
 		private bool _blnDiscountCost = false;
 		private Armor _objParent;
 
@@ -151,7 +152,7 @@ namespace Chummer.Backend.Equipment
 					_guiID = Guid.Empty;
 					return;
 				}
-				if (objImprovementManager.SelectedValue != "")
+				if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
 				{
 					_strExtra = objImprovementManager.SelectedValue;
 					objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
@@ -202,7 +203,7 @@ namespace Chummer.Backend.Equipment
 			if (_nodBonus != null)
 				objWriter.WriteRaw(_nodBonus.OuterXml);
 			else
-				objWriter.WriteElementString("bonus", "");
+				objWriter.WriteElementString("bonus", string.Empty);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
@@ -363,11 +364,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+				if (!string.IsNullOrEmpty(_strAltName))
+					return _strAltName;
 
-				return strReturn;
+				return _strName;
 			}
 		}
 
@@ -382,7 +382,7 @@ namespace Chummer.Backend.Equipment
 
 				if (_intRating > 0)
 					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
-				if (_strExtra != "")
+				if (!string.IsNullOrEmpty(_strExtra))
 					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				return strReturn;
 			}
@@ -395,11 +395,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strCategory;
-				if (_strAltCategory != string.Empty)
-					strReturn = _strAltCategory;
+				if (!string.IsNullOrEmpty(_strAltCategory))
+					return _strAltCategory;
 
-				return strReturn;
+				return _strCategory;
 			}
 		}
 
@@ -506,7 +505,7 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strCost = "";
+					string strCost = string.Empty;
 					string strCostExpression = _strCost;
 
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
@@ -547,11 +546,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -662,8 +660,8 @@ namespace Chummer.Backend.Equipment
 				if (_strAvail.Contains("+"))
 					return _strAvail;
 
-				string strCalculated = "";
-				string strReturn = "";
+				string strCalculated = string.Empty;
+				string strReturn = string.Empty;
 
 				if (_strAvail.Contains("Rating"))
 				{
@@ -671,7 +669,7 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strAvail = "";
+					string strAvail = string.Empty;
 					string strAvailExpr = _strAvail;
 
 					if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
@@ -686,18 +684,16 @@ namespace Chummer.Backend.Equipment
 				else
 				{
 					// Just a straight cost, so return the value.
-					string strAvail = "";
 					if (_strAvail.Contains("F") || _strAvail.Contains("R"))
 					{
-						strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
-						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + strAvail;
+						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
 					}
 					else
 						strCalculated = Convert.ToInt32(_strAvail).ToString();
 				}
 
 				int intAvail = 0;
-				string strAvailText = "";
+				string strAvailText = string.Empty;
 				if (strCalculated.Contains("F") || strCalculated.Contains("R"))
 				{
 					strAvailText = strCalculated.Substring(strCalculated.Length - 1);
@@ -725,10 +721,10 @@ namespace Chummer.Backend.Equipment
 			{
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				if (_strArmorCapacity == "")
+				if (string.IsNullOrEmpty(_strArmorCapacity))
 					return "0";
 				string strCapacity = _strArmorCapacity;
-				strCapacity = strCapacity.Replace("Capacity", this._objParent.ArmorCapacity);
+				strCapacity = strCapacity.Replace("Capacity", _objParent.ArmorCapacity);
 				strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
 				if (strCapacity.StartsWith("FixedValues"))
 				{
@@ -741,16 +737,16 @@ namespace Chummer.Backend.Equipment
 				XPathExpression xprCapacity = nav.Compile(strCapacity);
 
 				decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				//Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number. 
 				if (decCapacity > 0)
 				{
-					strReturn = Math.Ceiling(decCapacity).ToString();
+					strReturn = Math.Ceiling(decCapacity).ToString(CultureInfo.CurrentCulture);
 				}
 				else
 				{
-					strReturn = Math.Floor(decCapacity).ToString();
+					strReturn = Math.Floor(decCapacity).ToString(CultureInfo.CurrentCulture);
 				}
 				if (blnSquareBrackets)
 					strReturn = "[" + strReturn + "]";

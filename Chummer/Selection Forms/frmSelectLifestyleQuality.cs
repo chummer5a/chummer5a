@@ -31,11 +31,11 @@ namespace Chummer
     {
         public int buildPos = 0;
         public int buildNeg = 0;
-        private string _strSelectedQuality = "";
+        private string _strSelectedQuality = string.Empty;
         private bool _blnAddAgain = false;
         private readonly Character _objCharacter;
-        private string _strIgnoreQuality = "";
-        private string _strSelectedLifestyle = "";
+        private string _strIgnoreQuality = string.Empty;
+        private string _strSelectedLifestyle = string.Empty;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -43,7 +43,7 @@ namespace Chummer
         private List<string> _lstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
         private string[] _strLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
-        private static string _strSelectCategory = "";
+        private static string _strSelectCategory = string.Empty;
 
         private readonly XmlDocument _objMetatypeDocument = new XmlDocument();
         private readonly XmlDocument _objCritterDocument = new XmlDocument();
@@ -64,10 +64,10 @@ namespace Chummer
 
         private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in this.Controls.OfType<Label>())
+            foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = "";
+                    objLabel.Text = string.Empty;
             }
 
             // Load the Quality information.
@@ -95,7 +95,7 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (_strSelectCategory == "")
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
                 cboCategory.SelectedValue = _strSelectCategory;
@@ -117,7 +117,7 @@ namespace Chummer
 
         private void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstLifestyleQualities.Text == "")
+            if (string.IsNullOrEmpty(lstLifestyleQualities.Text))
                 return;
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
@@ -186,7 +186,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void lstLifestyleQualities_DoubleClick(object sender, EventArgs e)
@@ -313,7 +313,7 @@ namespace Chummer
         private void BuildQualityList()
         {
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
-            if (txtSearch.Text.Trim() != "")
+            if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
                 string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
@@ -392,7 +392,7 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (lstLifestyleQualities.Text == "")
+            if (string.IsNullOrEmpty(lstLifestyleQualities.Text))
                 return;
             _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
@@ -401,7 +401,7 @@ namespace Chummer
 
             if (!RequirementMet(objNode, true))
                 return;
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace Chummer
             if (objXmlQuality.InnerXml.Contains("forbidden"))
             {
                 bool blnRequirementForbidden = false;
-                string strForbidden = "";
+                string strForbidden = string.Empty;
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlForbiddenList = objXmlQuality.SelectNodes("forbidden/oneof");
@@ -542,7 +542,7 @@ namespace Chummer
 
             if (objXmlQuality.InnerXml.Contains("required"))
             {
-                string strRequirement = "";
+                string strRequirement = string.Empty;
                 bool blnRequirementMet = true;
 
                 // Loop through the oneof requirements.

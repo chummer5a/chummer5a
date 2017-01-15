@@ -24,7 +24,7 @@ namespace Chummer
 {
 	public partial class frmSelectSide : Form
 	{
-		private string _strSelectedSide = "";
+		private string _strSelectedSide = string.Empty;
 
 		#region Control Events
 		public frmSelectSide()
@@ -53,7 +53,7 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			_strSelectedSide = cboSide.Text;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void frmSelectSide_Load(object sender, EventArgs e)

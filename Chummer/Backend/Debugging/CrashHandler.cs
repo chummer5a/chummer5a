@@ -58,7 +58,7 @@ namespace Chummer.Backend.Debugging
                         if (!cv.GetValueNames().Contains("ProductId"))
                         {
                             //On 32 bit builds? get 64 bit registry
-                            cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                            cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
                         attributes.Add("machine-id", cv.GetValue("ProductId").ToString());

@@ -26,7 +26,7 @@ namespace Chummer
 {
 	public partial class frmSelectMentorSpirit : Form
 	{
-		private string _strSelectedMentor = "";
+		private string _strSelectedMentor = string.Empty;
 
 		private XmlNode _nodBonus;
 		private XmlNode _nodChoice1Bonus;
@@ -49,12 +49,12 @@ namespace Chummer
 		private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
 		{
 			if (_strXmlFile == "paragons.xml")
-				this.Text = LanguageManager.Instance.GetString("Title_SelectMentorSpirit_Paragon");
+				Text = LanguageManager.Instance.GetString("Title_SelectMentorSpirit_Paragon");
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Mentor information.
@@ -94,7 +94,7 @@ namespace Chummer
 
 		private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstMentor.Text == "")
+			if (string.IsNullOrEmpty(lstMentor.Text))
 				return;
 
 			// Get the information for the selected Mentor.
@@ -226,7 +226,7 @@ namespace Chummer
 				}
 				else
 				{
-					return "";
+					return string.Empty;
 				}
 			}
 		}
@@ -244,7 +244,7 @@ namespace Chummer
 				}
 				else
 				{
-					return "";
+					return string.Empty;
 				}
 			}
 		}
@@ -289,7 +289,7 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (lstMentor.Text != "")
+			if (!string.IsNullOrEmpty(lstMentor.Text))
 			{
 				_strSelectedMentor = lstMentor.SelectedValue.ToString();
 
@@ -311,7 +311,7 @@ namespace Chummer
 						_nodChoice2Bonus = objChoice.SelectSingleNode("bonus");
 				}
 
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
 		}
 		#endregion

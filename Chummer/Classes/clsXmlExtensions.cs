@@ -32,7 +32,6 @@ namespace Chummer
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
 	    public delegate bool TryParseFunction<T>(String input, out T result);
-
 	    
 
         /// <summary>
@@ -96,10 +95,8 @@ namespace Chummer
 
 	        try
             {
-	            
 		        read = (T) Convert.ChangeType(fieldValue, typeof (T));
 	            return true;
-
             }
             catch (Exception)
             {
@@ -116,7 +113,6 @@ namespace Chummer
                 String errorMsg = String.Format("Tried to read missing field \"{0}\"", field);
 #endif
                 Log.Error(errorMsg);
-                
                 //Finaly, we have to assign an out parameter something, so default
                 //null or 0 most likeley
                 read = onError;
@@ -137,7 +133,7 @@ namespace Chummer
 		/// <param name="field"></param>
 		/// <param name="parser"></param>
 		/// <param name="read"></param>
-		/// <param name="onerror"></param>
+		/// <param name="onError"></param>
 		/// <returns></returns>
 		public static bool TryGetField<T>(this XmlNode node, String field, TryParseFunction<T> parser, out T read,
 			T onError = default(T))
@@ -156,8 +152,6 @@ namespace Chummer
 
 			read = onError;
 			return false;
-
-
 		}
 
 		//T needed for debug info (so not)
@@ -182,7 +176,6 @@ namespace Chummer
 #endif
 			    Log.Error(errorMsg);
 			    //Assign something
-			    
 			    return false;
 		    }
 
@@ -240,10 +233,12 @@ namespace Chummer
                 return false;
 
             XmlNodeList objXmlNodeList = objXmlOperationNode.SelectNodes("*");
-            bool boolInvert = false;
-            string strOperationType = "==";
-            bool boolOperationChildNodeResult = false;
-            bool boolSubNodeResult = false;
+            if (objXmlNodeList == null)
+                return false;
+            bool boolInvert;
+            string strOperationType;
+            bool boolOperationChildNodeResult;
+            bool boolSubNodeResult;
             foreach (XmlNode objXmlOperationChildNode in objXmlNodeList)
             {
                 boolInvert = false;
@@ -270,10 +265,9 @@ namespace Chummer
                     {
                         // default is "any", replace with switch() if more check modes are necessary
                         boolOperationChildNodeResult = false;
-                        if (objXmlOperationChildNode.Attributes["checktype"]?.InnerText == "all")
+                        if (objXmlOperationChildNode.Attributes?["checktype"]?.InnerText == "all")
                             boolOperationChildNodeResult = true;
 
-                        boolSubNodeResult = boolInvert;
                         foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
                         {
                             boolSubNodeResult = boolInvert;
@@ -285,8 +279,8 @@ namespace Chummer
                             else
                             {
                                 strOperationType = "==";
-                                if (objXmlOperationChildNode.Attributes["operation"] != null)
-                                    strOperationType = objXmlOperationChildNode.Attributes["operation"].InnerText;
+                                if (objXmlOperationChildNode.Attributes?["operation"] != null)
+                                    strOperationType = objXmlOperationChildNode.Attributes?["operation"].InnerText;
                                 // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
                                 switch (strOperationType)
                                 {
@@ -308,7 +302,7 @@ namespace Chummer
                                         break;
                                     case "greaterthan":
                                     case ">":
-                                        boolSubNodeResult = (System.Convert.ToInt32(objXmlTargetNode.InnerText) > Convert.ToInt32(objXmlOperationChildNode.InnerText)) != boolInvert;
+                                        boolSubNodeResult = (Convert.ToInt32(objXmlTargetNode.InnerText) > Convert.ToInt32(objXmlOperationChildNode.InnerText)) != boolInvert;
                                         break;
                                     case "greaterthanequals":
                                     case ">=":
@@ -340,7 +334,7 @@ namespace Chummer
                 }
                 if (boolIsOrNode && boolOperationChildNodeResult)
                     return true;
-                else if (!boolIsOrNode && !boolOperationChildNodeResult)
+                if (!boolIsOrNode && !boolOperationChildNodeResult)
                     return false;
             }
 

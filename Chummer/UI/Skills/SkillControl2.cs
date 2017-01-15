@@ -19,7 +19,7 @@ namespace Chummer.UI.Skills
 
 		public SkillControl2(Skill skill)
 		{
-			this._skill = skill;
+			_skill = skill;
 			InitializeComponent();
 
 			DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -295,7 +295,7 @@ namespace Chummer.UI.Skills
                 _skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
                 tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
             }
-            if (_skill.Notes != string.Empty)
+            if (!string.IsNullOrEmpty(_skill.Notes))
             {
                 lblName.ForeColor = Color.SaddleBrown;
             }

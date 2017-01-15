@@ -132,7 +132,7 @@ namespace Chummer.UI.Shared
 				? VisibleElements()
 				: _contentList.Count;
 
-			int top = this.VerticalScroll.Value/_contentList[0].Control.Height;
+			int top = VerticalScroll.Value/_contentList[0].Control.Height;
 
 			LoadRange(top, top + toload);
 		}

@@ -28,9 +28,9 @@ namespace Chummer
 {
 	public partial class frmSelectPACKSKit : Form
 	{
-		private string _strSelectedKit = "";
+		private string _strSelectedKit = string.Empty;
 		private bool _blnAddAgain = false;
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 		private readonly Character _objCharacter;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -47,10 +47,10 @@ namespace Chummer
 
 		private void frmSelectPACKSKit_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the PACKS information.
@@ -78,7 +78,7 @@ namespace Chummer
 			cboCategory.DataSource = _lstCategory;
 
 			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
@@ -122,7 +122,7 @@ namespace Chummer
 
 		private void lstKits_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstKits.Text == "")
+			if (string.IsNullOrEmpty(lstKits.Text))
 				return;
 
 			treContents.Nodes.Clear();
@@ -685,20 +685,19 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstKits.Text != "")
+			if (!string.IsNullOrEmpty(lstKits.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstKits_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstKits.Text != "")
-				AcceptForm();
-		}
+            cmdOK_Click(sender, e);
+        }
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
@@ -708,7 +707,7 @@ namespace Chummer
 
 		private void cmdDelete_Click(object sender, EventArgs e)
 		{
-			if (lstKits.Text == string.Empty)
+			if (string.IsNullOrEmpty(lstKits.Text))
 				return;
 
 			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_DeletePACKSKit").Replace("{0}", lstKits.Text), LanguageManager.Instance.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
@@ -814,7 +813,7 @@ namespace Chummer
 		{
 			_strSelectedKit = lstKits.SelectedValue.ToString();
 			_strSelectCategory = cboCategory.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void WriteGear(XmlDocument objXmlItemDocument, XmlNode objXmlGear, TreeNode objParent)

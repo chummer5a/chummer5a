@@ -61,12 +61,12 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (cboXSLT.Text == string.Empty)
+			if (string.IsNullOrEmpty(cboXSLT.Text))
 				return;
 
 			if (cboXSLT.Text == "Export JSON")
@@ -93,13 +93,13 @@ namespace Chummer
 
 			File.WriteAllText(SaveFileDialog1.FileName, json, Encoding.UTF8);
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void ExportNormal()
 		{
 // Look for the file extension information.
-			string strLine = "";
+			string strLine;
 			string strExtension = "xml";
 			string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
 			StreamReader objFile = new StreamReader(exportSheetPath);
@@ -110,13 +110,13 @@ namespace Chummer
 			}
 			objFile.Close();
 
-			string strSaveFile = "";
+			string strSaveFile = string.Empty;
 			SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
 			SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsHtml");
 			SaveFileDialog1.ShowDialog();
 			strSaveFile = SaveFileDialog1.FileName;
 
-			if (strSaveFile == "")
+			if (string.IsNullOrEmpty(strSaveFile))
 				return;
 
 			XslCompiledTransform objXSLTransform = new XslCompiledTransform();
@@ -136,7 +136,7 @@ namespace Chummer
 			StreamReader objReader = new StreamReader(objStream);
 			File.WriteAllText(strSaveFile, objReader.ReadToEnd()); // Change this to a proper path.
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		#endregion

@@ -26,12 +26,12 @@ namespace Chummer
 {
     public partial class frmSelectPower : Form
     {
-        private string _strSelectedPower = "";
+        private string _strSelectedPower = string.Empty;
         private bool _blnLevels = false;
         private decimal _decPointsPerLevel = 0;
         private decimal _decAdeptWayDiscount = 0;
 		private int _intMaxLevels = 0;
-		private string _strLimitToPowers = "";
+		private string _strLimitToPowers = string.Empty;
 
 		private bool _blnAddAgain = false;
 
@@ -50,10 +50,10 @@ namespace Chummer
 
         private void frmSelectPower_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
         	List<ListItem> lstPower = new List<ListItem>();
@@ -63,22 +63,21 @@ namespace Chummer
 
 			// Populate the Powers list.
 			XmlNodeList objXmlPowerList;
-			
-				if (_strLimitToPowers != "")
-				{
-					string strFilter = "(";
-					string[] strValue = _strLimitToPowers.Split(',');
-					foreach (string strPower in strValue)
-						strFilter += "name = \"" + strPower.Trim() + "\" or ";
-					// Remove the trailing " or ".
-					strFilter = strFilter.Substring(0, strFilter.Length - 4);
-					strFilter += ")";
-					objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
-				}
-				else
-				{
-					objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
-				}
+			if (!string.IsNullOrEmpty(_strLimitToPowers))
+			{
+				string strFilter = "(";
+				string[] strValue = _strLimitToPowers.Split(',');
+				foreach (string strPower in strValue)
+					strFilter += "name = \"" + strPower.Trim() + "\" or ";
+				// Remove the trailing " or ".
+				strFilter = strFilter.Substring(0, strFilter.Length - 4);
+				strFilter += ")";
+				objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
+			}
+			else
+			{
+				objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
+			}
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
 				ListItem objItem = new ListItem();
@@ -99,14 +98,13 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (lstPowers.Text != "")
+            if (!string.IsNullOrEmpty(lstPowers.Text))
                 AcceptForm();
         }
 
         private void lstPowers_DoubleClick(object sender, EventArgs e)
         {
-            if (lstPowers.Text != "")
-                AcceptForm();
+            cmdOK_Click(sender, e);
         }
 
 		private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
@@ -135,7 +133,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -147,7 +145,7 @@ namespace Chummer
 		private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
 			XmlNodeList objXmlPowerList;
-			if (txtSearch.Text == "")
+			if (string.IsNullOrEmpty(txtSearch.Text))
 				objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
 			else
 				objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
@@ -292,7 +290,7 @@ namespace Chummer
 			// Make sure the character meets the Quality requirements if any.
 			if (objXmlPower.InnerXml.Contains("<required>"))
 			{
-				string strRequirement = "";
+				string strRequirement = string.Empty;
 				bool blnRequirementMet = true;
 
 				// Quality requirements.
@@ -359,7 +357,7 @@ namespace Chummer
             _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
 			
             _strSelectedPower = lstPowers.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
 		private void MoveControls()

@@ -15,13 +15,13 @@ namespace Translator.Properties
 		{
 			get
 			{
-				return Settings.defaultInstance;
+				return defaultInstance;
 			}
 		}
 
 		static Settings()
 		{
-			Settings.defaultInstance = (Settings)SettingsBase.Synchronized(new Settings());
+			defaultInstance = (Settings)Synchronized(new Settings());
 		}
 
 		public Settings()

@@ -51,8 +51,8 @@ namespace Chummer
 			
 		}
 
-		private string _strValue = "";
-		private string _strName = "";
+		private string _strValue = string.Empty;
+		private string _strName = string.Empty;
 
 		/// <summary>
 		/// Value.
@@ -139,8 +139,6 @@ namespace Chummer
 
 		public ListViewColumnSorter()
 		{
-			_intColumnToSort = 0;
-			_objOrderOfSort = SortOrder.None;
 			_objObjectCompare = new CaseInsensitiveComparer();
 		}
 

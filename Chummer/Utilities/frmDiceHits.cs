@@ -38,7 +38,7 @@ namespace Chummer
 			lblDice.Text = LanguageManager.Instance.GetString("String_DiceHits_HitsOn") + " " + _intDice.ToString() + "D6: ";
 			nudDiceResult.Maximum = _intDice;
 			nudDiceResult.Minimum = 0;
-			lblResult.Text = "";
+			lblResult.Text = string.Empty;
 			MoveControls();
 		}
 
@@ -71,7 +71,7 @@ namespace Chummer
 		{
 			set
 			{
-				this.Text = value;
+				Text = value;
 			}
 		}
 

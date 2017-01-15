@@ -40,7 +40,7 @@ namespace Chummer
 
 		private void cmdTest_Click(object sender, EventArgs e)
 		{
-			txtOutput.Text = "";
+			txtOutput.Text = string.Empty;
 			switch (cboTest.Text)
 			{
 				case "armor.xml":
@@ -296,7 +296,7 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					WeaponAccessory objTemp = new WeaponAccessory(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, new string[] { "" , "" }, 0, null);
+					objTemp.Create(objXmlGear, objTempNode, new Tuple<string, string>("" , string.Empty), 0, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;
@@ -488,7 +488,7 @@ namespace Chummer
 
 		private void TestCyberware(string strFile)
 		{
-			string strPrefix = "";
+			string strPrefix = string.Empty;
 			Improvement.ImprovementSource objSource = new Improvement.ImprovementSource();
 			if (strFile == "bioware.xml")
 			{
@@ -706,7 +706,7 @@ namespace Chummer
 
 					_objCharacter.Metatype = objXmlMetatype["name"].InnerText;
 					_objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerText;
-					_objCharacter.Metavariant = "";
+					_objCharacter.Metavariant = string.Empty;
 					_objCharacter.MetatypeBP = 400;
 
 					if (objXmlMetatype["movement"] != null)
@@ -726,7 +726,7 @@ namespace Chummer
 						List<Weapon> objWeapons = new List<Weapon>();
 						List<TreeNode> objWeaponNodes = new List<TreeNode>();
 						Quality objQuality = new Quality(_objCharacter);
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlQualityItem.Attributes["select"] != null)
 							strForceValue = objXmlQualityItem.Attributes["select"].InnerText;
 						QualitySource objSource = new QualitySource();
@@ -743,7 +743,7 @@ namespace Chummer
 						List<Weapon> objWeapons = new List<Weapon>();
 						List<TreeNode> objWeaponNodes = new List<TreeNode>();
 						Quality objQuality = new Quality(_objCharacter);
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlQualityItem.Attributes["select"] != null)
 							strForceValue = objXmlQualityItem.Attributes["select"].InnerText;
 						QualitySource objSource = new QualitySource();
@@ -776,7 +776,7 @@ namespace Chummer
 						XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
 						TreeNode objNode = new TreeNode();
 						CritterPower objPower = new CritterPower(_objCharacter);
-						string strForcedValue = "";
+						string strForcedValue = string.Empty;
 						int intRating = 0;
 
 						if (objXmlPower.Attributes["rating"] != null)
@@ -888,7 +888,7 @@ namespace Chummer
 						int intRating = 0;
 						if (objXmlComplexForm.Attributes["rating"] != null)
 							intRating = Convert.ToInt32(ExpressionToString(objXmlComplexForm.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlComplexForm.Attributes["select"] != null)
 							strForceValue = objXmlComplexForm.Attributes["select"].InnerText;
                         XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
@@ -905,7 +905,7 @@ namespace Chummer
 						int intRating = 0;
 						if (objXmlGear.Attributes["rating"] != null)
 							intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlGear.Attributes["select"] != null)
 							strForceValue = objXmlGear.Attributes["select"].InnerText;
 						XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
@@ -944,18 +944,17 @@ namespace Chummer
 		/// <returns></returns>
 		public string ExpressionToString(string strIn, int intForce, int intOffset)
 		{
-			int intValue = 0;
+			int intValue = 1;
 			XmlDocument objXmlDocument = new XmlDocument();
 			XPathNavigator nav = objXmlDocument.CreateNavigator();
 			XPathExpression xprAttribute = nav.Compile(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
 			// This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
 			try
 			{
-				intValue = Convert.ToInt32(nav.Evaluate(xprAttribute).ToString());
+			    int.TryParse(nav.Evaluate(xprAttribute).ToString(), out intValue);
 			}
-			catch
+			catch (XPathException)
 			{
-				intValue = 1;
 			}
 			intValue += intOffset;
 			if (intForce > 0)

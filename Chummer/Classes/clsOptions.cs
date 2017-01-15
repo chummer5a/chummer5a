@@ -25,9 +25,6 @@ using System.Windows.Forms;
  using Chummer.Backend.Equipment;
  using Microsoft.Win32;
 
-// MRUChanged Event Handler.
-public delegate void MRUChangedHandler();
-
 namespace Chummer
 {
 	public enum ClipboardContentType
@@ -46,8 +43,8 @@ namespace Chummer
 
 	public class SourcebookInfo
 	{
-		string _strCode = "";
-		string _strPath = "";
+		string _strCode = string.Empty;
+		string _strPath = string.Empty;
 		int _intOffset = 0;
 
 		#region Properties
@@ -97,11 +94,12 @@ namespace Chummer
 		static readonly GlobalOptions _objInstance = new GlobalOptions();
 		static readonly CultureInfo _objCultureInfo = CultureInfo.InvariantCulture;
 
-		public event MRUChangedHandler MRUChanged;
+		public Action MRUChanged;
 
 		private frmMain _frmMainForm;
+        private static readonly RegistryKey _objBaseChummerKey;
 
-		private static bool _blnAutomaticUpdate = false;
+        private static bool _blnAutomaticUpdate = false;
 		private static bool _blnLocalisedUpdatesOnly = false;
 		private static bool _blnStartupFullscreen = false;
 		private static bool _blnSingleDiceRoller = true;
@@ -117,21 +115,21 @@ namespace Chummer
 
 		// Omae Information.
 		private static bool _omaeEnabled = false;
-		private static string _strOmaeUserName = "";
-		private static string _strOmaePassword = "";
+		private static string _strOmaeUserName = string.Empty;
+		private static string _strOmaePassword = string.Empty;
 		private static bool _blnOmaeAutoLogin = false;
 
 		private XmlDocument _objXmlClipboard = new XmlDocument();
 		private ClipboardContentType _objClipboardContentType = new ClipboardContentType();
 
-		public static GradeList CyberwareGrades = new GradeList();
-		public static GradeList BiowareGrades = new GradeList();
+		public static readonly GradeList CyberwareGrades = new GradeList();
+		public static readonly GradeList BiowareGrades = new GradeList();
 
-		// PDF information.
-		public static string _strPDFAppPath = "";
-        public static string _strPDFParameters = "";
-		public static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
-        public static bool _blnUseLogging = false;
+        // PDF information.
+        private static string _strPDFAppPath = string.Empty;
+        private static string _strPDFParameters = string.Empty;
+        private static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
+        private static bool _blnUseLogging = false;
 		private static string _strCharacterRosterPath;
 
         #region Constructor and Instance
@@ -140,7 +138,7 @@ namespace Chummer
         /// </summary>
         private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
         {
-            object objRegistryResult = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue(strBoolName);
+            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 bool blnTemp;
@@ -154,7 +152,7 @@ namespace Chummer
         /// </summary>
         private static void LoadStringFromRegistry(ref string strStorage, string strBoolName)
         {
-            object objRegistryResult = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue(strBoolName);
+            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 strStorage = objRegistryResult.ToString();
@@ -165,7 +163,11 @@ namespace Chummer
 		{
 			if (Utils.IsRunningInVisualStudio()) return;
 
-			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+		    if (_objBaseChummerKey == null)
+		        return;
+
+            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
 			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
@@ -235,7 +237,7 @@ namespace Chummer
 				if (objXmlBook["code"] != null)
 				{
 					SourcebookInfo objSource = new SourcebookInfo();
-                    string strTemp = "";
+                    string strTemp = string.Empty;
                     LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText);
                     if (!string.IsNullOrEmpty(strTemp))
                     {
@@ -254,7 +256,6 @@ namespace Chummer
 			BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
 		}
 
-		
 
 		/// <summary>
 		/// Global instance of the GlobalOptions.
@@ -640,14 +641,13 @@ namespace Chummer
 			if (strFiles.Count > 10)
 				strFiles.RemoveRange(10, strFiles.Count - 10);
 
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			int i = 0;
 			foreach (string strItem in strFiles)
 			{
 				i++;
-				objRegistry.SetValue("mru" + i.ToString(), strItem);
+                _objBaseChummerKey.SetValue("mru" + i.ToString(), strItem);
 			}
-			MRUChanged();
+			MRUChanged?.Invoke();
 		}
 
 		/// <summary>
@@ -667,24 +667,23 @@ namespace Chummer
 				}
 			}
 
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			int i = 0;
 			foreach (string strItem in strFiles)
 			{
 				i++;
-				objRegistry.SetValue("mru" + i.ToString(), strItem);
+                _objBaseChummerKey.SetValue("mru" + i.ToString(), strItem);
 			}
 			if (strFiles.Count < 10)
 			{
 				for (i = strFiles.Count + 1; i <= 10; i++)
 				{
-					if (objRegistry.GetValue("mru" + i.ToString()) != null)
+					if (_objBaseChummerKey.GetValue("mru" + i.ToString()) != null)
 					{
-						objRegistry.DeleteValue("mru" + i.ToString());
+                        _objBaseChummerKey.DeleteValue("mru" + i.ToString());
 					}
 				}
 			}
-			MRUChanged();
+			MRUChanged?.Invoke();
 		}
 
 		/// <summary>
@@ -692,14 +691,13 @@ namespace Chummer
 		/// </summary>
 		public List<string> ReadMRUList()
 		{
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			List<string> lstFiles = new List<string>();
 
 			for (int i = 1; i <= 10; i++)
 			{
-				if ((objRegistry.GetValue("mru" + i.ToString())) != null)
+				if (_objBaseChummerKey.GetValue("mru" + i.ToString()) != null)
 				{
-					lstFiles.Add(objRegistry.GetValue("mru" + i.ToString()).ToString());
+					lstFiles.Add(_objBaseChummerKey.GetValue("mru" + i.ToString()).ToString());
 				}
 			}
 
@@ -723,14 +721,13 @@ namespace Chummer
 			if (strFiles.Count > 10)
 				strFiles.RemoveRange(10, strFiles.Count - 10);
 
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			int i = 0;
 			foreach (string strItem in strFiles)
 			{
 				i++;
-				objRegistry.SetValue("stickymru" + i.ToString(), strItem);
+                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), strItem);
 			}
-			MRUChanged();
+			MRUChanged?.Invoke();
 		}
 
 		/// <summary>
@@ -750,24 +747,23 @@ namespace Chummer
 				}
 			}
 
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			int i = 0;
 			foreach (string strItem in strFiles)
 			{
 				i++;
-				objRegistry.SetValue("stickymru" + i.ToString(), strItem);
+                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), strItem);
 			}
 			if (strFiles.Count < 10)
 			{
 				for (i = strFiles.Count + 1; i <= 10; i++)
 				{
-                    if (objRegistry.GetValue("stickymru" + i.ToString()) != null)
+                    if (_objBaseChummerKey.GetValue("stickymru" + i.ToString()) != null)
                     {
-						objRegistry.DeleteValue("stickymru" + i.ToString());
+                        _objBaseChummerKey.DeleteValue("stickymru" + i.ToString());
 					}
 				}
 			}
-			MRUChanged();
+			MRUChanged?.Invoke();
 		}
 
 		/// <summary>
@@ -775,14 +771,13 @@ namespace Chummer
 		/// </summary>
 		public List<string> ReadStickyMRUList()
 		{
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			List<string> lstFiles = new List<string>();
 
 			for (int i = 1; i <= 10; i++)
 			{
-				if ((objRegistry.GetValue("stickymru" + i.ToString())) != null)
+				if (_objBaseChummerKey.GetValue("stickymru" + i.ToString()) != null)
 				{
-					lstFiles.Add(objRegistry.GetValue("stickymru" + i.ToString()).ToString());
+					lstFiles.Add(_objBaseChummerKey.GetValue("stickymru" + i.ToString()).ToString());
 				}
 			}
 

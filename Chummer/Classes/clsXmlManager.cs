@@ -33,7 +33,7 @@ namespace Chummer
 		private class XmlReference
 		{
 			private DateTime _datDate = new DateTime();
-			private string _strFileName = "";
+			private string _strFileName = string.Empty;
 			private XmlDocument _objXmlDocument = new XmlDocument();
 
 			/// <summary>

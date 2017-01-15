@@ -111,7 +111,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -151,7 +151,7 @@ namespace Chummer
 			strDamage += cboDVType.SelectedValue.ToString();
 
 			// Create the AP value.
-			string strAP = "";
+			string strAP = string.Empty;
 			if (nudAP.Value == 0)
 				strAP = "0";
 			else if (nudAP.Value > 0)
@@ -179,7 +179,7 @@ namespace Chummer
 			_objWeapon.Source = objPower["source"].InnerText;
 			_objWeapon.Page = objPower["page"].InnerText;
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 

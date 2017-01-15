@@ -53,16 +53,16 @@ namespace Chummer
 		/// </summary>
 		public class TransportWrapper
 		{
-			private Control control;
+			private Control _control;
 
 			public TransportWrapper(Control control)
 			{
-				this.control = control;
+				_control = control;
 			}
 
 			public Control Control
 			{
-				get { return control; }
+				get { return _control; }
 			}
 		}
 
@@ -196,7 +196,7 @@ namespace Chummer
 		{
 			// Armor Ratings.
 			lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-			string strArmorToolTip = "";
+			string strArmorToolTip = string.Empty;
 			strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
 			if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
 				strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
@@ -253,7 +253,7 @@ namespace Chummer
 			else
 			{
 				lblATTAug.Text = string.Format("{0}", objAttribute.Value);
-				tipTooltip.SetToolTip(lblATTAug, "");
+				tipTooltip.SetToolTip(lblATTAug, string.Empty);
 			}
 		}
 
@@ -267,7 +267,7 @@ namespace Chummer
 		/// <param name="tipTooltip"></param>
 		protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, ToolTip tipTooltip)
 		{
-			lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
+			lblPhysical.Text = _objCharacter.LimitPhysical;
 			string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
 			strPhysical = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit).Aggregate(strPhysical, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
 			tipTooltip.SetToolTip(lblPhysical, strPhysical);
@@ -377,7 +377,7 @@ namespace Chummer
 				objNode.Text = objPower.DisplayName;
 				objNode.Tag = objPower.InternalId;
 				objNode.ContextMenuStrip = cmsCritterPowers;
-				if (objPower.Notes != string.Empty)
+				if (!string.IsNullOrEmpty(objPower.Notes))
 					objNode.ForeColor = Color.SaddleBrown;
 				objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
 
@@ -424,7 +424,7 @@ namespace Chummer
 					objNode.Tag = objQuality.InternalId;
 					objNode.ContextMenuStrip = cmsQuality;
 
-					if (objQuality.Notes != string.Empty)
+					if (!string.IsNullOrEmpty(objQuality.Notes))
 						objNode.ForeColor = Color.SaddleBrown;
 					else
 					{
@@ -545,7 +545,7 @@ namespace Chummer
                 return false;
             }
 
-            byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots.ElementAt(intCurrentMugshotIndexInList));
+            byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots[intCurrentMugshotIndexInList]);
             MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
             objImageStream.Write(bytImage, 0, bytImage.Length);
             Image imgMugshot = Image.FromStream(objImageStream, true);

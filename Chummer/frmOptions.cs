@@ -68,7 +68,7 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
 		{
 			// Make sure the current Setting has a name.
-			if (txtSettingName.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtSettingName.Text.Trim()))
             {
                 MessageBox.Show("You must give your Settings a name.", "Chummer Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
@@ -346,7 +346,7 @@ namespace Chummer
             cmdPDFTest.Enabled = true;
 
             _skipRefresh = true;
-            txtPDFLocation.Text = "";
+            txtPDFLocation.Text = string.Empty;
             nudPDFOffset.Value = 0;
             _skipRefresh = false;
 
@@ -389,7 +389,7 @@ namespace Chummer
 
         private void cmdPDFTest_Click(object sender, EventArgs e)
         {
-            if (txtPDFLocation.Text == string.Empty)
+            if (string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
 
             SaveRegistrySettings();
@@ -698,7 +698,7 @@ namespace Chummer
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.Instance.SingleDiceRoller = chkSingleDiceRoller.Checked;
-            if (cboXSLT.SelectedValue == null || cboXSLT.SelectedValue.ToString() == "")
+            if (cboXSLT.SelectedValue == null || string.IsNullOrEmpty(cboXSLT.SelectedValue.ToString()))
             {
                 cboXSLT.SelectedValue = "Shadowrun 5";
             }
@@ -882,7 +882,7 @@ namespace Chummer
 	        foreach (XmlNode objXmlNode in objXmlNodeList)
 	        {
 				ListItem objLimbCount = new ListItem();
-		        string strExclude = "";
+		        string strExclude = string.Empty;
 		        if (objXmlNode["exclude"] != null)
 		        {
 			        strExclude = objXmlNode["exclude"].InnerText;
@@ -1187,7 +1187,7 @@ namespace Chummer
 			string strFilePath = "Insert local file here";
 			System.Collections.Specialized.NameValueCollection Data	= new System.Collections.Specialized.NameValueCollection();
 			XmlDocument objDoc = new XmlDocument();
-			String line = "";
+			String line = string.Empty;
             using (StreamReader sr = new StreamReader(strFilePath))
 			{
 				line = sr.ReadToEnd();

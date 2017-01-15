@@ -9,11 +9,11 @@ namespace Chummer.Backend.Equipment
 	public class LifestyleQuality
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strExtra = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strNotes = "";
+		private string _strName = string.Empty;
+		private string _strExtra = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+		private string _strNotes = string.Empty;
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
 		private int _intLP = 0;
@@ -23,8 +23,8 @@ namespace Chummer.Backend.Equipment
 		private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
 		private readonly Character _objCharacter;
-		private string _strAltName = "";
-		private string _strAltPage = "";
+		private string _strAltName = string.Empty;
+		private string _strAltPage = string.Empty;
 
 		#region Helper Methods
 		/// <summary>
@@ -119,7 +119,7 @@ namespace Chummer.Backend.Equipment
 					_guiID = Guid.Empty;
 					return;
 				}
-				if (objImprovementManager.SelectedValue != "")
+				if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
 				{
 					_strExtra = objImprovementManager.SelectedValue;
 					//objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
@@ -156,7 +156,7 @@ namespace Chummer.Backend.Equipment
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
-				objWriter.WriteElementString("bonus", "");
+				objWriter.WriteElementString("bonus", string.Empty);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 			_objCharacter.SourceProcess(_strSource);
@@ -298,11 +298,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -377,11 +376,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+				if (!string.IsNullOrEmpty(_strAltName))
+					return _strAltName;
 
-				return strReturn;
+				return _strName;
 			}
 		}
 
@@ -394,7 +392,7 @@ namespace Chummer.Backend.Equipment
 			{
 				string strReturn = DisplayNameShort;
 
-				if (_strExtra != "")
+				if (!string.IsNullOrEmpty(_strExtra))
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.

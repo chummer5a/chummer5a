@@ -349,7 +349,7 @@ namespace Chummer
 			int intMax = Math.Max(lblThreshold.Width, lblGremlins.Width);
 			nudThreshold.Left = lblThreshold.Left + intMax + 6;
 			nudGremlins.Left = lblGremlins.Left + intMax + 6;
-			this.Width = cmdReroll.Left + cmdReroll.Width + 16;
+			Width = cmdReroll.Left + cmdReroll.Width + 16;
 		}
 		#endregion
 	}

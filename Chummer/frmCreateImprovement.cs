@@ -28,7 +28,7 @@ namespace Chummer
 	{
 		private readonly Character _objCharacter;
 		private XmlDocument _objDocument = new XmlDocument();
-		private string _strSelect = "";
+		private string _strSelect = string.Empty;
 		private Improvement _objEditImprovement;
 
 		#region Control Events
@@ -97,7 +97,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
@@ -119,9 +119,9 @@ namespace Chummer
 
             lblSelect.Visible = false;
 			txtSelect.Visible = false;
-			txtSelect.Text = "";
+			txtSelect.Text = string.Empty;
 			cmdChangeSelection.Visible = false;
-			_strSelect = "";
+			_strSelect = string.Empty;
 
 			foreach (XmlNode objNode in objFetchNode.SelectNodes("fields/field"))
 			{
@@ -295,14 +295,14 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			// Make sure a value has been selected if necessary.
-			if (txtSelect.Visible && txtSelect.Text == string.Empty)
+			if (txtSelect.Visible && string.IsNullOrEmpty(txtSelect.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectItem"), LanguageManager.Instance.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			// Make sure a value has been provided for the name.
-			if (txtName.Text == string.Empty)
+			if (string.IsNullOrEmpty(txtName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementName"), LanguageManager.Instance.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 				txtName.Focus();
@@ -320,7 +320,7 @@ namespace Chummer
 			// <whatever element>
 			objWriter.WriteStartElement(objFetchNode["internal"].InnerText);
 
-			string strRating = "";
+			string strRating = string.Empty;
 			if (chkApplyToRating.Checked)
 				strRating = "<applytorating>yes</applytorating>";
 
@@ -364,7 +364,7 @@ namespace Chummer
 			objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
 
 			// If an Improvement was passed in, remove it from the character.
-			string strNotes = "";
+			string strNotes = string.Empty;
 			int intOrder = 0;
 			if (_objEditImprovement != null)
 			{
@@ -387,13 +387,12 @@ namespace Chummer
 				}
 			}
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
 		{
-			int intWidth = 0;
-			intWidth = Math.Max(lblImprovementType.Width, lblName.Width);
+			int intWidth = Math.Max(lblImprovementType.Width, lblName.Width);
 			intWidth = Math.Max(intWidth, lblSelect.Width);
 			intWidth = Math.Max(intWidth, lblVal.Width);
 			intWidth = Math.Max(intWidth, lblMin.Width);

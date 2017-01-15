@@ -57,7 +57,7 @@ namespace Chummer
                 //Sort the list (Crude way, but have to do)
                 for (int i = 0; i < modules.Count; i++)
                 {
-                    String stageName = "";
+                    String stageName = string.Empty;
                     if (i <= 4)
                     {
                         stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
@@ -95,7 +95,7 @@ namespace Chummer
                 return story.ToString();
             }
 
-            return "";
+            return string.Empty;
 		}
 
 		private void Write(StringBuilder story, string innerText, int levels)
@@ -152,7 +152,7 @@ namespace Chummer
 		public string Macro(string innerText)
 		{
             if (string.IsNullOrEmpty(innerText))
-                return "";
+                return string.Empty;
 			String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
 			String macroName, macroPool;
 			if (endString.Contains("_"))
@@ -169,27 +169,21 @@ namespace Chummer
 			//$DOLLAR is defined elsewhere to prevent recursive calling
 			if (macroName == "street")
 			{
-				if (_objCharacter.Alias != "")
+				if (!string.IsNullOrEmpty(_objCharacter.Alias))
 				{
 					return _objCharacter.Alias;
 				}
-				else
-				{
-					return "Alias ";
-				}
+				return "Alias ";
 			}
-			else if(macroName == "real")
+			if(macroName == "real")
 			{
-				if (_objCharacter.Name != "")
+				if (!string.IsNullOrEmpty(_objCharacter.Name))
 				{
 					return _objCharacter.Name;
 				}
-				else
-				{
-					return "Unnamed John Doe ";
-				}
+				return "Unnamed John Doe ";
 			}
-			else if (macroName == "year")
+			if (macroName == "year")
 			{
 				int year;
 				if (int.TryParse(_objCharacter.Age, out year))
@@ -199,15 +193,9 @@ namespace Chummer
 					{
 						return (2075 + age - year).ToString();
 					}
-					else
-					{
-						return (2075 - year).ToString();
-					}
+					return (2075 - year).ToString();
 				}
-				else
-				{
-					return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
-				}
+				return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
 			}
 
 			//Did not meet predefined macros, check user defined
@@ -223,7 +211,7 @@ namespace Chummer
                 {
                     if (userMacro.FirstChild != null)
                     {
-                        String selected = "";
+                        String selected = string.Empty;
                         //Allready defined, no need to do anything fancy
                         if (persistenceDictionary.ContainsKey(macroPool))
                         {

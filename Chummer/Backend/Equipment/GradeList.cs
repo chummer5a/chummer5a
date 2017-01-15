@@ -53,7 +53,7 @@ namespace Chummer.Backend.Equipment
 		#region Enumeration Methods
 		public IEnumerator<Grade> GetEnumerator()
 		{
-			return this._lstGrades.GetEnumerator();
+			return _lstGrades.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

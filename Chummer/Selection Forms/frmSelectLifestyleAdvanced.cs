@@ -52,10 +52,10 @@ namespace Chummer
         private void frmSelectAdvancedLifestyle_Load(object sender, EventArgs e)
         {
             _blnSkipRefresh = true;
-            foreach (Label objLabel in this.Controls.OfType<Label>())
+            foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = "";
+                    objLabel.Text = string.Empty;
             }
 
 			foreach (TreeNode objNode in treLifestyleQualities.Nodes)
@@ -179,7 +179,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (txtLifestyleName.Text == "")
+            if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.Instance.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -189,7 +189,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void chkTrustFund_Changed(object sender, EventArgs e)
@@ -440,7 +440,7 @@ namespace Chummer
 						System.Diagnostics.Debugger.Break();
 					}
 			}
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         /// <summary>
@@ -653,7 +653,7 @@ namespace Chummer
                 SortByName objSort = new SortByName();
                 lstNodes.Sort(objSort.Compare);
             }
-            catch (System.ArgumentException)
+            catch (ArgumentException)
             {
             }
             foreach (TreeNode objNode in lstNodes)
@@ -754,8 +754,8 @@ namespace Chummer
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
-            lblQualitySource.Text = "";
-            lblQualityLp.Text = "";
+            lblQualitySource.Text = string.Empty;
+            lblQualityLp.Text = string.Empty;
             tipTooltip.SetToolTip(lblQualitySource, null);
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0)
             {

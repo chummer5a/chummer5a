@@ -39,9 +39,9 @@ namespace Chummer
 		private bool _blnSilentCheck;
 		private bool _blnDownloaded = false;
 		private bool _blnUnBlocked = false;
-		private string strDownloadFile = "";
-		private string strLatestVersion = "";
-		private string strTempPath = "";
+		private string strDownloadFile = string.Empty;
+		private string strLatestVersion = string.Empty;
+		private string strTempPath = string.Empty;
         private readonly string strAppPath = Application.StartupPath;
 		private readonly GlobalOptions _objGlobalOptions = GlobalOptions.Instance;
 		public frmUpdate()
@@ -99,14 +99,14 @@ namespace Chummer
 						MessageBox.Show(LanguageManager.Instance.GetString("Message_Update_MultipleInstances"),
 							LanguageManager.Instance.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					Log.Info("frmUpdate_Load");
-					this.Close();
+					Close();
 				}
 			}
 			else
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Warning_Update_CouldNotConnect"), "Chummer5",
 						MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
+				Close();
 				Log.Exit("frmUpdate_Load");
 			}
 			Log.Exit("frmUpdate_Load");

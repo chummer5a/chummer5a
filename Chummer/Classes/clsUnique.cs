@@ -49,7 +49,7 @@ namespace Chummer
 		private int _intAugModifier = 0;
         private int _intBase = 0;
         private int _intKarma = 0;
-		private string _strAbbrev = "";
+		private string _strAbbrev = string.Empty;
 		public Character _objCharacter;
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -285,7 +285,7 @@ namespace Chummer
 				{
 					if (objImprovement.Enabled && !objImprovement.Custom)
 					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+						if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
 						{
 							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 							bool blnFound = false;
@@ -374,7 +374,7 @@ namespace Chummer
 				{
 					if (objImprovement.Enabled && objImprovement.Custom)
 					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+						if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
 						{
 							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 							bool blnFound = false;
@@ -433,7 +433,7 @@ namespace Chummer
 				{
 					if (objImprovement.Enabled)
 					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base")
+						if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base")
 						{
 							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 							bool blnFound = false;
@@ -533,7 +533,7 @@ namespace Chummer
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
+                        if (objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot))
                             return true;
                     }
                 }
@@ -797,9 +797,9 @@ namespace Chummer
 		/// </summary>
 		public string ToolTip()
 		{
-			string strReturn = "";
+			string strReturn = string.Empty;
 			strReturn += _strAbbrev + " (" + Value.ToString() + ")";
-			string strModifier = "";
+			string strModifier = string.Empty;
 
 			List<string> lstUniqueName = new List<string>();
 			List<string[,]> lstUniquePair = new List<string[,]>();
@@ -807,7 +807,7 @@ namespace Chummer
 			{
 				if (objImprovement.Enabled && !objImprovement.Custom)
 				{
-					if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+					if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
 					{
 						// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 						bool blnFound = false;
@@ -864,7 +864,7 @@ namespace Chummer
 			else if (lstUniqueName.Contains("precedence1"))
 			{
 				// Retrieve all of the items that are precedence1 and nothing else.
-				strModifier = "";
+				strModifier = string.Empty;
 				foreach (string[,] strValues in lstUniquePair)
 				{
 					if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
@@ -898,7 +898,7 @@ namespace Chummer
 			{
 				if (objImprovement.Enabled && objImprovement.Custom)
 				{
-					if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+					if (!string.IsNullOrEmpty(objImprovement.UniqueName) && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
 					{
 						// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
 						bool blnFound = false;
@@ -1077,7 +1077,7 @@ namespace Chummer
 	/// Reason a quality is not valid
 	/// </summary>
 	[Flags]
-	public enum QualityFailureReason : uint
+	public enum QualityFailureReason : int
 	{
 		Allowed = 0x0,
 		LimitExceeded =  0x1,
@@ -1093,13 +1093,13 @@ namespace Chummer
 	public class Quality
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-        public string _strMetagenetic = "";
-		private string _strExtra = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strMutant = "";
-		private string _strNotes = "";
+		private string _strName = string.Empty;
+        public string _strMetagenetic = string.Empty;
+		private string _strExtra = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+		private string _strMutant = string.Empty;
+		private string _strNotes = string.Empty;
 		private bool _blnImplemented = true;
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
@@ -1110,8 +1110,8 @@ namespace Chummer
 		private XmlNode _nodBonus;
 		private XmlNode _nodDiscounts;
 		private readonly Character _objCharacter;
-		private string _strAltName = "";
-		private string _strAltPage = "";
+		private string _strAltName = string.Empty;
+		private string _strAltPage = string.Empty;
 		private Guid _guiWeaponID = new Guid();
 	    private Guid _qualiyGuid = new Guid();
 		private string _stage;
@@ -1334,7 +1334,7 @@ namespace Chummer
 					_guiID = Guid.Empty;
 					return;
 				}
-				if (objImprovementManager.SelectedValue != "")
+				if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
 				{
 					_strExtra = objImprovementManager.SelectedValue;
 					objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
@@ -1364,19 +1364,19 @@ namespace Chummer
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
 			if (_strMetagenetic != null)
 			{
-				objWriter.WriteElementString("metagenetic", _strMetagenetic.ToString());
+				objWriter.WriteElementString("metagenetic", _strMetagenetic);
 			}
 			objWriter.WriteElementString("print", _blnPrint.ToString());
 			objWriter.WriteElementString("qualitytype", _objQualityType.ToString());
 			objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
-			if (_strMutant != "")
+			if (!string.IsNullOrEmpty(_strMutant))
 				objWriter.WriteElementString("mutant", _strMutant);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
-				objWriter.WriteElementString("bonus", "");
+				objWriter.WriteElementString("bonus", string.Empty);
 			if (_guiWeaponID != Guid.Empty)
 				objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
 			objWriter.WriteElementString("notes", _strNotes);
@@ -1561,11 +1561,10 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -1651,11 +1650,10 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+				if (!string.IsNullOrEmpty(_strAltName))
+					return _strAltName;
 
-				return strReturn;
+				return _strName;
 			}
 		}
 
@@ -1668,7 +1666,7 @@ namespace Chummer
 			{
 				string strReturn = DisplayNameShort;
 
-				if (_strExtra != "")
+				if (!string.IsNullOrEmpty(_strExtra))
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
@@ -2112,15 +2110,15 @@ namespace Chummer
 	/// </summary>
 	public class Spirit
 	{
-		private string _strName = "";
-		private string _strCritterName = "";
+		private string _strName = string.Empty;
+		private string _strCritterName = string.Empty;
 		private int _intServicesOwed = 0;
 		private SpiritType _objEntityType = SpiritType.Spirit;
 		private bool _blnBound = true;
 		private int _intForce = 1;
-		private string _strFileName = "";
-		private string _strRelativeName = "";
-		private string _strNotes = "";
+		private string _strFileName = string.Empty;
+		private string _strRelativeName = string.Empty;
+		private string _strNotes = string.Empty;
 		private readonly Character _objCharacter;
 
 		#region Helper Methods
@@ -2318,8 +2316,8 @@ namespace Chummer
 		private void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
 		{
 			XmlNode objXmlPowerNode;
-			string strSource = "";
-			string strPage = "";
+			string strSource = string.Empty;
+			string strPage = string.Empty;
 			objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name=\"" + strPowerName + "\"]");
 			if (objXmlPowerNode == null)
 				objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
@@ -2492,24 +2490,24 @@ namespace Chummer
 	public class Spell
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strDescriptors = "";
-		private string _strCategory = "";
-		private string _strType = "";
-		private string _strRange = "";
-		private string _strDamage = "";
-		private string _strDuration = "";
-		private string _strDV = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strExtra = "";
+		private string _strName = string.Empty;
+		private string _strDescriptors = string.Empty;
+		private string _strCategory = string.Empty;
+		private string _strType = string.Empty;
+		private string _strRange = string.Empty;
+		private string _strDamage = string.Empty;
+		private string _strDuration = string.Empty;
+		private string _strDV = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+		private string _strExtra = string.Empty;
 		private bool _blnLimited = false;
 		private bool _blnExtended = false;
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 		private readonly Character _objCharacter;
-		private string _strAltName = "";
-		private string _strAltCategory = "";
-		private string _strAltPage = "";
+		private string _strAltName = string.Empty;
+		private string _strAltCategory = string.Empty;
+		private string _strAltPage = string.Empty;
         private bool _blnAlchemical = false;
         private int _intGrade = 0;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
@@ -2531,40 +2529,75 @@ namespace Chummer
 		/// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
         public void Create(XmlNode objXmlSpellNode, Character objCharacter, TreeNode objNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
 		{
-			_strName = objXmlSpellNode["name"].InnerText;
-			_strDescriptors = objXmlSpellNode["descriptor"].InnerText;
-			_strCategory = objXmlSpellNode["category"].InnerText;
-			_strType = objXmlSpellNode["type"].InnerText;
-			_strRange = objXmlSpellNode["range"].InnerText;
-			_strDamage = objXmlSpellNode["damage"].InnerText;
-			_strDuration = objXmlSpellNode["duration"].InnerText;
-			_strDV = objXmlSpellNode["dv"].InnerText;
+            objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
+            _blnExtended = blnExtended;
+            if (GlobalOptions.Instance.Language != "en-us")
+            {
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
+                XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
+                if (objSpellNode != null)
+                {
+                    objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                }
+
+                objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+                if (objSpellNode != null)
+                {
+                    if (objSpellNode.Attributes["translate"] != null)
+                        _strAltCategory = objSpellNode.Attributes["translate"].InnerText;
+                }
+            }
+
+            ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
+            objImprovementManager.ForcedValue = strForcedValue;
+            if (objXmlSpellNode["bonus"] != null)
+            {
+                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                {
+                    _strExtra = objImprovementManager.SelectedValue;
+                }
+            }
+		    
+            objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
+            objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
+            objXmlSpellNode.TryGetStringFieldQuickly("range", ref _strRange);
+            objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
 			_blnLimited = blnLimited;
-			_blnExtended = blnExtended;
             _blnAlchemical = blnAlchemical;
-            _strSource = objXmlSpellNode["source"].InnerText;
-			_strPage = objXmlSpellNode["page"].InnerText;
+            objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
 
-            string strDV = _strDV;
             if (_blnLimited && _strDV.StartsWith("F"))
             {
+                string strDV = _strDV;
                 int intPos = 0;
                 if (strDV.Contains("-"))
                 {
-                    intPos = strDV.IndexOf("-") + 1;
+                    intPos = strDV.IndexOf('-') + 1;
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                     strDV = strDV.Substring(0, intPos);
-                    int intAfter = Convert.ToInt32(strAfter);
+                    int intAfter;
+                    int.TryParse(strAfter, out intAfter);
                     intAfter += 2;
                     strDV += intAfter.ToString();
                 }
                 else if (strDV.Contains("+"))
                 {
-                    intPos = strDV.IndexOf("+");
+                    intPos = strDV.IndexOf('+');
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                     strDV = strDV.Substring(0, intPos);
-                    int intAfter = Convert.ToInt32(strAfter);
+                    int intAfter;
+                    int.TryParse(strAfter, out intAfter);
                     intAfter -= 2;
                     if (intAfter > 0)
                         strDV += "+" + intAfter.ToString();
@@ -2575,44 +2608,8 @@ namespace Chummer
                 {
                     strDV += "-2";
                 }
+                _strDV = strDV;
             }
-            _strDV = strDV;
-
-			ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-			objImprovementManager.ForcedValue = strForcedValue;
-
-			if (GlobalOptions.Instance.Language != "en-us")
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
-				XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
-				if (objSpellNode != null)
-				{
-					if (objSpellNode["translate"] != null)
-						_strAltName = objSpellNode["translate"].InnerText;
-					if (objSpellNode["altpage"] != null)
-						_strAltPage = objSpellNode["altpage"].InnerText;
-				}
-
-				objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objSpellNode != null)
-				{
-					if (objSpellNode.Attributes["translate"] != null)
-						_strAltCategory = objSpellNode.Attributes["translate"].InnerText;
-				}
-			}
-
-			if (objXmlSpellNode["bonus"] != null)
-			{
-				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
-				{
-					_guiID = Guid.Empty;
-					return;
-				}
-				if (objImprovementManager.SelectedValue != "")
-				{
-					_strExtra = objImprovementManager.SelectedValue;
-				}
-			}
 
 			//TreeNode objNode = new TreeNode();
 			objNode.Text = DisplayName;
@@ -2792,7 +2789,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 				bool blnExtendedFound = false;
 
 				string[] strDescriptorsIn = _strDescriptors.Split(',');
@@ -2895,7 +2892,7 @@ namespace Chummer
 					strReturn += LanguageManager.Instance.GetString("String_DescExtendedArea") + ", ";
 
 				// Remove the trailing comma.
-				if (strReturn != string.Empty)
+				if (!string.IsNullOrEmpty(strReturn))
 					strReturn = strReturn.Substring(0, strReturn.Length - 2);
 
 				return strReturn;
@@ -2909,11 +2906,10 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strCategory;
-				if (_strAltCategory != string.Empty)
-					strReturn = _strAltCategory;
+				if (!string.IsNullOrEmpty(_strAltCategory))
+					return _strAltCategory;
 
-				return strReturn;
+				return _strCategory;
 			}
 		}
 
@@ -2954,7 +2950,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				switch (_strType)
 				{
@@ -2977,7 +2973,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strDV.Replace("/", "÷");
+				string strReturn = _strDV.Replace('/', '÷');
 				strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_SpellForce"));
 				strReturn = strReturn.Replace("Overflow damage", LanguageManager.Instance.GetString("String_SpellOverflowDamage"));
 				strReturn = strReturn.Replace("Damage Value", LanguageManager.Instance.GetString("String_SpellDamageValue"));
@@ -2991,13 +2987,13 @@ namespace Chummer
                 //    int intPos = strReturn.IndexOf(')') + 1;
                 //    string strAfter = strReturn.Substring(intPos, strReturn.Length - intPos);
                 //    strReturn = strReturn.Remove(intPos, strReturn.Length - intPos);
-                //    if (strAfter == string.Empty)
+                //    if (string.IsNullOrEmpty(strAfter))
                 //        strAfter = "+2";
                 //    else
                 //    {
                 //        int intValue = Convert.ToInt32(strAfter) + 2;
                 //        if (intValue == 0)
-                //            strAfter = "";
+                //            strAfter = string.Empty;
                 //        else if (intValue > 0)
                 //            strAfter = "+" + intValue.ToString();
                 //        else
@@ -3006,7 +3002,7 @@ namespace Chummer
                 //    strReturn += strAfter;
                 //}
 
-				return strReturn;
+                return strReturn;
 			}
 		}
 
@@ -3042,7 +3038,7 @@ namespace Chummer
                     {
                         xprResult = nav.Evaluate(xprDV);
                     }
-                    catch (System.Xml.XPath.XPathException)
+                    catch (XPathException)
                     {
                         xprResult = null;
                     }
@@ -3121,7 +3117,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				switch (_strDamage)
 				{
@@ -3132,7 +3128,7 @@ namespace Chummer
 						strReturn = LanguageManager.Instance.GetString("String_DamageStun");
 						break;
 					default:
-						strReturn = "";
+						strReturn = string.Empty;
 						break;
 				}
 
@@ -3162,7 +3158,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				switch (_strDuration)
 				{
@@ -3218,11 +3214,10 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -3313,7 +3308,7 @@ namespace Chummer
 			get
 			{
 				string strReturn = _strName;
-				if (_strAltName != string.Empty)
+				if (!string.IsNullOrEmpty(_strAltName))
 					strReturn = _strAltName;
 
 				if (_blnExtended)
@@ -3338,7 +3333,7 @@ namespace Chummer
 					strReturn += " (" + LanguageManager.Instance.GetString("String_SpellLimited") + ")";
                 if (_blnAlchemical)
                     strReturn += " (" + LanguageManager.Instance.GetString("String_SpellAlchemical") + ")";
-                if (_strExtra != "")
+                if (!string.IsNullOrEmpty(_strExtra))
 				{
 					// Attempt to retrieve the CharacterAttribute name.
 					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
@@ -3404,7 +3399,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
@@ -3455,7 +3450,7 @@ namespace Chummer
 	public class Focus
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
+		private string _strName = string.Empty;
 		private Guid _guiGearId = new Guid();
 		private int _intRating = 0;
 
@@ -3676,7 +3671,7 @@ namespace Chummer
 				{
 					// Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
 					string strFocusName = objFocus.Name;
-					int intPosition = strFocusName.IndexOf("(");
+					int intPosition = strFocusName.IndexOf('(');
 					if (intPosition > -1)
 						strFocusName = strFocusName.Substring(0, intPosition - 1);
 					int intKarmaMultiplier = 0;
@@ -3747,12 +3742,12 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 				foreach (Gear objGear in _lstGear)
 					strReturn += objGear.DisplayName + ", ";
 
 				// Remove the trailing comma.
-				if (strReturn != string.Empty)
+				if (!string.IsNullOrEmpty(strReturn))
 					strReturn = strReturn.Substring(0, strReturn.Length - 2);
 
 				return strReturn;
@@ -3782,14 +3777,14 @@ namespace Chummer
 	public class Metamagic
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strSource = "";
-		private string _strPage = "";
+		private string _strName = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
 		private bool _blnPaidWithKarma = false;
         private int _intGrade = 0;
 		private XmlNode _nodBonus;
 		private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Metamagic;
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 
 		private readonly Character _objCharacter;
 
@@ -3828,7 +3823,7 @@ namespace Chummer
 					_guiID = Guid.Empty;
 					return;
 				}
-				if (objImprovementManager.SelectedValue != "")
+				if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
 					_strName += " (" + objImprovementManager.SelectedValue + ")";
 			}
 
@@ -3857,7 +3852,7 @@ namespace Chummer
 			if (_nodBonus != null)
 				objWriter.WriteRaw(_nodBonus.OuterXml);
 			else
-				objWriter.WriteElementString("bonus", "");
+				objWriter.WriteElementString("bonus", string.Empty);
 			objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
@@ -3971,8 +3966,8 @@ namespace Chummer
 				// Get the translated name if applicable.
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
-					string strXmlFile = "";
-					string strXPath = "";
+					string strXmlFile = string.Empty;
+					string strXPath = string.Empty;
 					if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
 					{
 						strXmlFile = "metamagic.xml";
@@ -4050,8 +4045,8 @@ namespace Chummer
 				// Get the translated name if applicable.
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
-					string strXmlFile = "";
-					string strXPath = "";
+					string strXmlFile = string.Empty;
+					string strXPath = string.Empty;
 					if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
 					{
 						strXmlFile = "metamagic.xml";
@@ -4117,13 +4112,13 @@ namespace Chummer
     public class Art
     {
         private Guid _guiID = new Guid();
-        private string _strName = "";
-        private string _strSource = "";
-        private string _strPage = "";
+        private string _strName = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
         private XmlNode _nodBonus;
         private int _intGrade = 0;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Art;
-        private string _strNotes = "";
+        private string _strNotes = string.Empty;
 
         private readonly Character _objCharacter;
 
@@ -4156,7 +4151,7 @@ namespace Chummer
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (objImprovementManager.SelectedValue != "")
+                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
                     _strName += " (" + objImprovementManager.SelectedValue + ")";
             }
 
@@ -4179,7 +4174,7 @@ namespace Chummer
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
-                objWriter.WriteElementString("bonus", "");
+                objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -4401,13 +4396,13 @@ namespace Chummer
     public class Enhancement
     {
         private Guid _guiID = new Guid();
-        private string _strName = "";
-        private string _strSource = "";
-        private string _strPage = "";
+        private string _strName = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
         private XmlNode _nodBonus;
         private int _intGrade = 0;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
-        private string _strNotes = "";
+        private string _strNotes = string.Empty;
         private Power _objParent;
 
         private readonly Character _objCharacter;
@@ -4441,7 +4436,7 @@ namespace Chummer
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (objImprovementManager.SelectedValue != "")
+                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
                     _strName += " (" + objImprovementManager.SelectedValue + ")";
             }
 
@@ -4464,7 +4459,7 @@ namespace Chummer
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
-                objWriter.WriteElementString("bonus", "");
+                objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -4701,10 +4696,10 @@ namespace Chummer
 	public class Power
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strExtra = "";
-		private string _strSource = "";
-		private string _strPage = "";
+		private string _strName = string.Empty;
+		private string _strExtra = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
 		private decimal _decPointsPerLevel = 0;
 		private int _intRating = 1;
 		private bool _blnLevelsEnabled = false;
@@ -4712,12 +4707,12 @@ namespace Chummer
 		private bool _blnDiscountedAdeptWay = false;
 		private bool _blnDiscountedGeas = false;
 		private XmlNode _nodBonus;
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 		private bool _blnDoubleCost = true;
         private bool _blnFree = false;
         private int _intFreeLevels = 0;
         private decimal _decAdeptWayDiscount = 0;
-        private string _strBonusSource = "";
+        private string _strBonusSource = string.Empty;
         private decimal _decFreePoints = 0;
         private List<Enhancement> _lstEnhancements = new List<Enhancement>();
 
@@ -4758,7 +4753,7 @@ namespace Chummer
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
-				objWriter.WriteElementString("bonus", "");
+				objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in _lstEnhancements)
             {
@@ -4786,8 +4781,8 @@ namespace Chummer
             else
             {
                 string strPowerName = _strName;
-                if (strPowerName.Contains("("))
-                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
+                if (strPowerName.Contains('('))
+                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                 if (objXmlPower != null && objXmlPower["adeptway"] != null)
@@ -4946,7 +4941,7 @@ namespace Chummer
 			{
 				string strReturn = DisplayNameShort;
 				
-				if (_strExtra != "")
+				if (!string.IsNullOrEmpty(_strExtra))
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
@@ -5323,16 +5318,16 @@ namespace Chummer
 	public class ComplexForm
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-        private string _strTarget = "";
-        private string _strDuration = "";
-        private string _strFV = "";
-        private string _strSource = "";
-		private string _strPage = "";
-        private string _strNotes = "";
-        private string _strExtra = "";
-		private string _strAltName = "";
-		private string _strAltPage = "";
+		private string _strName = string.Empty;
+        private string _strTarget = string.Empty;
+        private string _strDuration = string.Empty;
+        private string _strFV = string.Empty;
+        private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+        private string _strNotes = string.Empty;
+        private string _strExtra = string.Empty;
+		private string _strAltName = string.Empty;
+		private string _strAltPage = string.Empty;
 		private readonly Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -5480,7 +5475,7 @@ namespace Chummer
 			get
 			{
 				string strReturn = _strName;
-                if (_strExtra != "")
+                if (!string.IsNullOrEmpty(_strExtra))
                     strReturn += " (" + _strExtra + ")";
 				// Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
@@ -5621,14 +5616,14 @@ namespace Chummer
 	public class AIProgram
     {
         private Guid _guiID = new Guid();
-        private string _strName = "";
-        private string _strRequiresProgram = "";
-        private string _strSource = "";
-        private string _strPage = "";
-        private string _strNotes = "";
-        private string _strExtra = "";
-        private string _strAltName = "";
-        private string _strAltPage = "";
+        private string _strName = string.Empty;
+        private string _strRequiresProgram = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
+        private string _strNotes = string.Empty;
+        private string _strExtra = string.Empty;
+        private string _strAltName = string.Empty;
+        private string _strAltPage = string.Empty;
         private bool _boolIsAdvancedProgram = false;
         private bool _boolCanDelete = true;
         private readonly Character _objCharacter;
@@ -5719,7 +5714,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("aiprogram");
             objWriter.WriteElementString("name", DisplayNameShort);
-            if (_strRequiresProgram == "" || _strRequiresProgram == LanguageManager.Instance.GetString("String_None"))
+            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.Instance.GetString("String_None"))
                 objWriter.WriteElementString("requiresprogram", LanguageManager.Instance.GetString("String_None")); 
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram);
@@ -5781,7 +5776,7 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (_strExtra != "")
+                if (!string.IsNullOrEmpty(_strExtra))
                     strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
@@ -5941,13 +5936,13 @@ namespace Chummer
     /// </summary>
     public class MartialArt
 	{
-		private string _strName = "";
-		private string _strSource = "";
-		private string _strPage = "";
+		private string _strName = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
 		private int _intRating = 1;
 		private Guid _guiID = new Guid();
 		private List<MartialArtAdvantage> _lstAdvantages = new List<MartialArtAdvantage>();
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 		private Character _objCharacter;
         private bool _blnIsQuality;
 
@@ -6221,10 +6216,10 @@ namespace Chummer
 	public class MartialArtAdvantage
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strNotes = "";
-        private string _strSource = "";
-        private string _strPage = "";
+		private string _strName = string.Empty;
+		private string _strNotes = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
 		private Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -6422,10 +6417,10 @@ namespace Chummer
     public class MartialArtManeuver
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strNotes = "";
+		private string _strName = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+		private string _strNotes = string.Empty;
 		private readonly Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -6635,10 +6630,10 @@ namespace Chummer
     public class LimitModifier
     {
         private Guid _guiID = new Guid();
-        private string _strName = "";
-        private string _strNotes = "";
-        private string _strLimit = "";
-        private string _strCondition = "";
+        private string _strName = string.Empty;
+        private string _strNotes = string.Empty;
+        private string _strLimit = string.Empty;
+        private string _strCondition = string.Empty;
         private int _intBonus = 0;
         private Character _objCharacter;
 
@@ -6853,14 +6848,14 @@ namespace Chummer
         {
             get
             {
-                string strBonus = "";
+                string strBonus = string.Empty;
                 if (_intBonus > 0)
                     strBonus = "+" + _intBonus.ToString();
                 else
                     strBonus = _intBonus.ToString();
 
                 string strReturn = DisplayNameShort + " [" + strBonus + "]";
-                if (_strCondition != "")
+                if (!string.IsNullOrEmpty(_strCondition))
                     strReturn += " (" + _strCondition + ")";
                 return strReturn;
             }
@@ -6883,19 +6878,19 @@ namespace Chummer
 	/// </summary>
 	public class Contact
 	{
-		private string _strName = "";
-        private string _strRole = "";
-        private string _strLocation = "";
+		private string _strName = string.Empty;
+        private string _strRole = string.Empty;
+        private string _strLocation = string.Empty;
 	    private string _strUnique;
 
         private int _intConnection = 1;
 		private int _intLoyalty = 1;
 		
-		private string _strGroupName = "";
+		private string _strGroupName = string.Empty;
 		private ContactType _objContactType = ContactType.Contact;
-		private string _strFileName = "";
-		private string _strRelativeName = "";
-		private string _strNotes = "";
+		private string _strFileName = string.Empty;
+		private string _strRelativeName = string.Empty;
+		private string _strNotes = string.Empty;
 		private Color _objColour;
 		private bool _blnFree = false;
         private bool _blnIsGroup = false;
@@ -6954,7 +6949,7 @@ namespace Chummer
 			objWriter.WriteElementString("family",_blnFamily.ToString());
 			objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
 
-			if (ReadOnly) objWriter.WriteElementString("readonly", "");
+			if (ReadOnly) objWriter.WriteElementString("readonly", string.Empty);
 
 			if (_strUnique != null)
 		    {
@@ -7008,9 +7003,9 @@ namespace Chummer
             if (IsGroup == false)
 				objWriter.WriteElementString("connection", _intConnection.ToString());
 			else
-                objWriter.WriteElementString("connection", "Group(" + _intConnection + ")");
+                objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
 			objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
-			objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType));
+			objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType.ToString()));
 			objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
 			objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
 			objWriter.WriteElementString("family", _blnFamily.ToString());
@@ -7310,19 +7305,19 @@ namespace Chummer
 	public class CritterPower
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strCategory = "";
-		private string _strType = "";
-		private string _strAction = "";
-		private string _strRange = "";
-		private string _strDuration = "";
-		private string _strExtra = "";
-		private string _strSource = "";
-		private string _strPage = "";
+		private string _strName = string.Empty;
+		private string _strCategory = string.Empty;
+		private string _strType = string.Empty;
+		private string _strAction = string.Empty;
+		private string _strRange = string.Empty;
+		private string _strDuration = string.Empty;
+		private string _strExtra = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
 	    private int _intKarma = 0;
 		private double _dblPowerPoints = 0.0;
 		private XmlNode _nodBonus;
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 		private readonly Character _objCharacter;
 		private bool _blnCountTowardsLimit = true;
 	    private int _intRating;
@@ -7343,41 +7338,41 @@ namespace Chummer
 		/// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
 		public void Create(XmlNode objXmlPowerNode, Character objCharacter, TreeNode objNode, int intRating = 0, string strForcedValue = "")
 		{
-			_strName = objXmlPowerNode["name"].InnerText;
-			_strCategory = objXmlPowerNode["category"].InnerText;
-			_strType = objXmlPowerNode["type"].InnerText;
-			_strAction = objXmlPowerNode["action"].InnerText;
-			_strRange = objXmlPowerNode["range"].InnerText;
-			_strDuration = objXmlPowerNode["duration"].InnerText;
-			_strSource = objXmlPowerNode["source"].InnerText;
-			_strPage = objXmlPowerNode["page"].InnerText;
-		    _intRating = intRating;
-		    objXmlPowerNode.TryGetField("karma", out _intKarma);
-			_nodBonus = objXmlPowerNode["bonus"];
+            objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName);
+            _intRating = intRating;
+            _nodBonus = objXmlPowerNode["bonus"];
+            // If the piece grants a bonus, pass the information to the Improvement Manager.
+            if (_nodBonus != null)
+            {
+                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
+                objImprovementManager.ForcedValue = strForcedValue;
+                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                {
+                    _strExtra = objImprovementManager.SelectedValue;
+                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                }
+                else if (intRating != 0)
+                    _strExtra = intRating.ToString();
+            }
+            else if (intRating != 0)
+                _strExtra = intRating.ToString();
+            objXmlPowerNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlPowerNode.TryGetStringFieldQuickly("type", ref _strType);
+            objXmlPowerNode.TryGetStringFieldQuickly("action", ref _strAction);
+            objXmlPowerNode.TryGetStringFieldQuickly("range", ref _strRange);
+            objXmlPowerNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objXmlPowerNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlPowerNode.TryGetStringFieldQuickly("page", ref _strPage);
+		    objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
 			// Create the TreeNode for the new item.
 			objNode.Text = DisplayName;
 			objNode.Tag = _guiID.ToString();
-
-			if (intRating != 0)
-				_strExtra = intRating.ToString();
-
-			// If the piece grants a bonus, pass the information to the Improvement Manager.
-			if (objXmlPowerNode.InnerXml.Contains("<bonus>"))
-			{
-				ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-				objImprovementManager.ForcedValue = strForcedValue;
-				if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
-				{
-					_guiID = Guid.Empty;
-					return;
-				}
-				if (objImprovementManager.SelectedValue != "")
-				{
-					_strExtra = objImprovementManager.SelectedValue;
-					objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
-				}
-			}
 		}
 
 		/// <summary>
@@ -7404,7 +7399,7 @@ namespace Chummer
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
-				objWriter.WriteElementString("bonus", "");
+				objWriter.WriteElementString("bonus", string.Empty);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 			_objCharacter.SourceProcess(_strSource);
@@ -7416,20 +7411,20 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strExtra = objNode["extra"].InnerText;
-			_strCategory = objNode["category"].InnerText;
-			_strType = objNode["type"].InnerText;
-			_strAction = objNode["action"].InnerText;
-			_strRange = objNode["range"].InnerText;
-			_strDuration = objNode["duration"].InnerText;
-			_strSource = objNode["source"].InnerText;
-			_strPage = objNode["page"].InnerText;
-		    objNode.TryGetField("points", out _dblPowerPoints);
-		    objNode.TryGetField("counttowardslimit", out _blnCountTowardsLimit);
+		    objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetStringFieldQuickly("type", ref _strType);
+            objNode.TryGetStringFieldQuickly("action", ref _strAction);
+            objNode.TryGetStringFieldQuickly("range", ref _strRange);
+            objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+		    objNode.TryGetDoubleFieldQuickly("points", ref _dblPowerPoints);
+		    objNode.TryGetBoolFieldQuickly("counttowardslimit", ref _blnCountTowardsLimit);
 			_nodBonus = objNode["bonus"];
-            objNode.TryGetField("notes", out _strNotes);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 		}
 
 		/// <summary>
@@ -7540,7 +7535,7 @@ namespace Chummer
 			get
 			{
 				string strReturn = DisplayNameShort;
-				if (_strExtra != "")
+				if (!string.IsNullOrEmpty(_strExtra))
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
@@ -7685,7 +7680,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				switch (_strType)
 				{
@@ -7696,7 +7691,7 @@ namespace Chummer
 						strReturn = LanguageManager.Instance.GetString("String_SpellTypePhysical");
 						break;
 					default:
-						strReturn = "";
+						strReturn = string.Empty;
 						break;
 				}
 
@@ -7726,7 +7721,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				switch (_strAction)
 				{
@@ -7808,7 +7803,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = "";
+				string strReturn = string.Empty;
 
 				switch (_strDuration)
 				{
@@ -7900,7 +7895,7 @@ namespace Chummer
         private bool _blnSchooling = false;
 		private bool _blnTechnomancer = false;
 		private int _intGrade = 0;
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 
 		private readonly CharacterOptions _objOptions;
 
@@ -8140,7 +8135,7 @@ namespace Chummer
 		private Guid _guiID = new Guid();
 		private int _intYear = 2072;
 		private int _intWeek = 1;
-		private string _strNotes = "";
+		private string _strNotes = string.Empty;
 
 		#region Constructor, Save, Load, and Print Methods
 		public CalendarWeek()
@@ -8411,8 +8406,8 @@ namespace Chummer
 
 	public class MentorSpirit
 	{
-		private string _strName = "";
-		private string _strAdvantages = "";
+		private string _strName = string.Empty;
+		private string _strAdvantages = string.Empty;
 
 		#region Properties
 		/// <summary>

@@ -15,10 +15,11 @@ namespace Chummer
 		private readonly Character _character;
 		private string _strFileName = "default.xml";
 		private string _strName = "Default Settings";
-		private string _strImageFolder = "";
+		private string _strImageFolder = string.Empty;
+        private readonly RegistryKey _objBaseChummerKey;
 
-		// Settings.
-		private bool _blnAllow2ndMaxAttribute;
+        // Settings.
+        private bool _blnAllow2ndMaxAttribute;
 		private bool _blnAllowAttributePointsOnExceptional;
 		private bool _blnAllowBiowareSuites;
 		private bool _blnAllowCustomTransgenics;
@@ -104,8 +105,8 @@ namespace Chummer
 		private bool _automaticBackstory = true;
 		
 		private readonly XmlDocument _objBookDoc = new XmlDocument();
-		private string _strBookXPath = "";
-		private string _strExcludeLimbSlot = "";
+		private string _strBookXPath = string.Empty;
+		private string _strExcludeLimbSlot = string.Empty;
 
 		// BP variables.
 		private int _intBPActiveSkill = 4;
@@ -184,8 +185,9 @@ namespace Chummer
 		public CharacterOptions(Character character)
 		{
 			_character = character;
-			// Create the settings directory if it does not exist.
-			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+		    _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+            // Create the settings directory if it does not exist.
+            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
 			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
@@ -227,7 +229,7 @@ namespace Chummer
 			// <recentimagefolder />
 			if (!String.IsNullOrEmpty(_strImageFolder))
 			{
-				objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
+				objWriter.WriteElementString("recentimagefolder", _strImageFolder);
 			}
 			// <confirmdelete />
 			objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString());
@@ -570,7 +572,7 @@ namespace Chummer
                 {
                     objXmlDocument.Load(strFilePath);
                 }
-                catch (System.NotSupportedException)
+                catch (NotSupportedException)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -592,7 +594,7 @@ namespace Chummer
 			
 			XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
 			// Setting name.
-			_strName = objXmlDocument.SelectSingleNode("/settings/name").InnerText;
+			_strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
 			// Most recent image folder location used.
 			objXmlNode.TryGetStringFieldQuickly("recentimagefolder", ref _strImageFolder);
 			// Confirm delete.
@@ -853,30 +855,30 @@ namespace Chummer
         /// <summary>
         /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
+        private void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
         {
-            object objRegistryResult  = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue(strBoolName);
+            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 bool blnTemp;
                 if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
                     blnStorage = blnTemp;
-                Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue(strBoolName);
+                _objBaseChummerKey.DeleteValue(strBoolName);
             }
         }
 
         /// <summary>
         /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private static void LoadInt32FromRegistry(ref int intStorage, string strBoolName)
+        private void LoadInt32FromRegistry(ref int intStorage, string strBoolName)
         {
-            object objRegistryResult = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue(strBoolName);
+            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 int intTemp;
                 if (int.TryParse(objRegistryResult.ToString(), out intTemp))
                     intStorage = intTemp;
-                Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue(strBoolName);
+                _objBaseChummerKey.DeleteValue(strBoolName);
             }
         }
 
@@ -884,7 +886,9 @@ namespace Chummer
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
         private void LoadFromRegistry()
-		{
+        {
+            if (_objBaseChummerKey == null)
+                return;
             // Confirm delete.
             LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete");
 
@@ -972,8 +976,8 @@ namespace Chummer
             LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption");
 
 			// Retrieve the sourcebooks that are in the Registry.
-			string strBookList = "";
-            object objBooksKeyValue = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("books");
+			string strBookList;
+            object objBooksKeyValue = _objBaseChummerKey.GetValue("books");
             if (objBooksKeyValue != null)
 			{
 				strBookList = objBooksKeyValue.ToString();
@@ -982,13 +986,11 @@ namespace Chummer
 			{
 				// We were unable to get the Registry key which means the book options have not been saved yet, so create the default values.
 				strBookList = "Shadowrun 5th Edition";
-				RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-				objRegistry.SetValue("books", strBookList);
+                _objBaseChummerKey.SetValue("books", strBookList);
 			}
 			string[] strBooks = strBookList.Split(',');
 
-			XmlDocument objXmlDocument = new XmlDocument();
-			objXmlDocument = XmlManager.Instance.Load("books.xml");
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
 
 			foreach (string strBookCode in strBooks)
 			{
@@ -999,8 +1001,8 @@ namespace Chummer
 				}
 			}
 
-			// Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-			Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("books");
+            // Delete the Registry keys ones the values have been retrieve since they will no longer be used.
+            _objBaseChummerKey.DeleteValue("books");
 		}
 
 		/// <summary>
@@ -1010,12 +1012,9 @@ namespace Chummer
 		public string BookFromCode(string strCode)
 		{
             if (string.IsNullOrWhiteSpace(strCode))
-                return "";
-            string strReturn = "";
+                return string.Empty;
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			strReturn = objXmlBook?["name"]?.InnerText;
-
-			return strReturn;
+			return objXmlBook?["name"]?.InnerText ?? string.Empty;
 		}
 
 		/// <summary>
@@ -1091,30 +1090,29 @@ namespace Chummer
 		/// </summary>
 		public string BookXPath()
 		{
-			if (_strBookXPath != "")
-				return _strBookXPath;
+		    if (string.IsNullOrEmpty(_strBookXPath))
+		    {
+                string strPath = "(";
 
-			string strPath = "(";
+                foreach (string strBook in _lstBooks)
+                {
+                    if (!string.IsNullOrEmpty(strBook))
+                        strPath += "source = \"" + strBook + "\" or ";
+                }
+                strPath = strPath.Substring(0, strPath.Length - 4) + ")";
 
-			foreach (string strBook in _lstBooks)
-			{
-				if (strBook != "")
-					strPath += "source = \"" + strBook + "\" or ";
-			}
-			strPath = strPath.Substring(0, strPath.Length - 4) + ")";
+                if (GlobalOptions.Instance.MissionsOnly)
+                {
+                    strPath += " and not(nomission)";
+                }
 
-			if (GlobalOptions.Instance.MissionsOnly)
-			{
-				strPath += " and not(nomission)";
-			}
-
-			if (!GlobalOptions.Instance.Dronemods)
-			{
-				strPath += " and not(optionaldrone)";
-			}
-			_strBookXPath = strPath;
-			
-			return strPath;
+                if (!GlobalOptions.Instance.Dronemods)
+                {
+                    strPath += " and not(optionaldrone)";
+                }
+                _strBookXPath = strPath;
+            }
+			return _strBookXPath;
 		}
 
 		public List<string> BookLinq()

@@ -9,7 +9,7 @@ namespace Chummer.Backend.Equipment
 	public class Grade
 	{
 		private string _strName = "Standard";
-		private string _strAltName = "";
+		private string _strAltName = string.Empty;
 		private decimal _decEss = 1.0m;
 		private double _dblCost = 1.0;
 		private int _intAvail = 0;
@@ -57,10 +57,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strAltName != string.Empty)
+				if (!string.IsNullOrEmpty(_strAltName))
 					return _strAltName;
-				else
-					return _strName;
+
+				return _strName;
 			}
 		}
 

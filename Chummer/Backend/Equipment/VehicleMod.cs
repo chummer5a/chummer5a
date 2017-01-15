@@ -12,18 +12,18 @@ namespace Chummer.Backend.Equipment
 	public class VehicleMod
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strCategory = "";
-		private string _strLimit = "";
+		private string _strName = string.Empty;
+		private string _strCategory = string.Empty;
+		private string _strLimit = string.Empty;
 		private string _strSlots = "0";
 		private int _intRating = 0;
 		private string _strMaxRating = "0";
-		private string _strCost = "";
+		private string _strCost = string.Empty;
         private int _intMarkup = 0;
-		private string _strAvail = "";
+		private string _strAvail = string.Empty;
 		private XmlNode _nodBonus;
-		private string _strSource = "";
-		private string _strPage = "";
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle = false;
 		private bool _blnInstalled = true;
 		private int _intResponse = 0;
@@ -32,14 +32,14 @@ namespace Chummer.Backend.Equipment
 		private int _intSignal = 0;
 		private int _intPilot = 0;
 		private List<Weapon> _lstVehicleWeapons = new List<Weapon>();
-		private string _strNotes = "";
-		private string _strSubsystems = "";
+		private string _strNotes = string.Empty;
+		private string _strSubsystems = string.Empty;
 		private List<Cyberware> _lstCyberware = new List<Cyberware>();
-		private string _strAltName = "";
-		private string _strAltCategory = "";
-		private string _strAltPage = "";
-		private string _strExtra = "";
-		private string _strWeaponMountCategories = "";
+		private string _strAltName = string.Empty;
+		private string _strAltCategory = string.Empty;
+		private string _strAltPage = string.Empty;
+		private string _strExtra = string.Empty;
+		private string _strWeaponMountCategories = string.Empty;
 		private bool _blnDiscountCost = false;
 	    private bool _blnDowngrade = false;
 
@@ -80,7 +80,7 @@ namespace Chummer.Backend.Equipment
 			// Add Subsytem information if applicable.
 			if (objXmlMod.InnerXml.Contains("subsystems"))
 			{
-				string strSubsystem = "";
+				string strSubsystem = string.Empty;
 				foreach (XmlNode objXmlSubsystem in objXmlMod.SelectNodes("subsystems/subsystem"))
 				{
 					strSubsystem += objXmlSubsystem.InnerText + ",";
@@ -94,7 +94,7 @@ namespace Chummer.Backend.Equipment
 			{
 				if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
 				{
-					int intMin = 0;
+					int intMin;
 					int intMax = 0;
                     char[] chrParentheses = { '(', ')' };
 					string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
@@ -211,7 +211,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                _guiID = Guid.Parse(objNode["guid"].InnerText);
+                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -236,8 +236,7 @@ namespace Chummer.Backend.Equipment
 
 			if (objNode.InnerXml.Contains("<weapons>"))
 			{
-				XmlNodeList nodChildren = objNode.SelectNodes("weapons/weapon");
-				foreach (XmlNode nodChild in nodChildren)
+				foreach (XmlNode nodChild in objNode.SelectNodes("weapons/weapon"))
 				{
 					Weapon objWeapon = new Weapon(_objCharacter);
 					objWeapon.Load(nodChild, blnCopy);
@@ -246,8 +245,7 @@ namespace Chummer.Backend.Equipment
 			}
 			if (objNode.InnerXml.Contains("<cyberwares>"))
 			{
-				XmlNodeList nodChildren = objNode.SelectNodes("cyberwares/cyberware");
-				foreach (XmlNode nodChild in nodChildren)
+				foreach (XmlNode nodChild in objNode.SelectNodes("cyberwares/cyberware"))
 				{
 					Cyberware objCyberware = new Cyberware(_objCharacter);
 					objCyberware.Load(nodChild, blnCopy);
@@ -364,11 +362,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strCategory;
-				if (_strAltCategory != string.Empty)
-					strReturn = _strAltCategory;
+				if (!string.IsNullOrEmpty(_strAltCategory))
+					return _strAltCategory;
 
-				return strReturn;
+				return _strCategory;
 			}
 		}
 
@@ -608,11 +605,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -687,10 +683,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strSubsystems == "")
-					return false;
-				else
-					return true;
+			    return !string.IsNullOrEmpty(_strSubsystems);
 			}
 		}
 
@@ -769,14 +762,15 @@ namespace Chummer.Backend.Equipment
 				if (_strAvail.StartsWith("+"))
 					return _strAvail;
 
-				string strCalculated = "";
-				string strReturn = "";
+				string strCalculated = string.Empty;
+				string strReturn = string.Empty;
 
 				// Reordered to process fixed value strings
 				if (_strAvail.StartsWith("FixedValues"))
 				{
-					string[] strValues = _strAvail.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					_strAvail = strValues[Convert.ToInt32(_intRating) - 1];
+					string[] strValues = _strAvail.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+					    _strAvail = strValues[_intRating - 1];
 				}
 
 				if (_strAvail.Contains("Rating"))
@@ -785,7 +779,7 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strAvail = "";
+					string strAvail = string.Empty;
 					string strAvailExpr = _strAvail;
 
 					if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
@@ -800,18 +794,16 @@ namespace Chummer.Backend.Equipment
 				else
 				{
 					// Just a straight cost, so return the value.
-					string strAvail = "";
 					if (_strAvail.Contains("F") || _strAvail.Contains("R"))
 					{
-						strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
-						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + strAvail;
+						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
 					}
 					else
 						strCalculated = Convert.ToInt32(_strAvail).ToString();
 				}
 
-				int intAvail = 0;
-				string strAvailText = "";
+				int intAvail;
+				string strAvailText = string.Empty;
 				if (strCalculated.Contains("F") || strCalculated.Contains("R"))
 				{
 					strAvailText = strCalculated.Substring(strCalculated.Length - 1);
@@ -860,14 +852,12 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intReturn = 0;
-
-				// If the cost is determined by the Rating, evaluate the expression.
+			    // If the cost is determined by the Rating, evaluate the expression.
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-				string strCost = "";
-				string strCostExpression = "";
+				string strCost = string.Empty;
+				string strCostExpression = string.Empty;
 				strCostExpression = _strCost;
 				if (_strCost.StartsWith("FixedValues"))
 				{
@@ -884,7 +874,7 @@ namespace Chummer.Backend.Equipment
 				strCost = strCost.Replace("Speed", Parent.Speed.ToString());
 				strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
-				intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+				int intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
@@ -935,11 +925,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+				if (!string.IsNullOrEmpty(_strAltName))
+					return _strAltName;
 
-				return strReturn;
+				return _strName;
 			}
 		}
 
@@ -952,7 +941,7 @@ namespace Chummer.Backend.Equipment
 			{
 				string strReturn = DisplayNameShort;
 
-				if (_strExtra != "")
+				if (!string.IsNullOrEmpty(_strExtra))
 					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 				if (_intRating > 0)
 					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";

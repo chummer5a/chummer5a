@@ -10,18 +10,17 @@ namespace Chummer.Skills
 { 
 	class ExoticSkill : Skill
 	{
-		private static TranslatedField<string> _specificTranslator = new TranslatedField<string>();
+		private static readonly TranslatedField<string> _specificTranslator = new TranslatedField<string>();
 		private string _specific;
 		private string _translated;
 
 		static ExoticSkill()
 		{
-			XmlNodeList exotic = 
-				 XmlManager.Instance.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon");
+			XmlNodeList exotic = XmlManager.Instance.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon");
 
-			var elem = exotic.OfType<XmlNode>()
+            var elem = exotic?.OfType<XmlNode>()
 				.Select(
-					x => new Tuple<string, string>(x["name"].InnerText, x.Attributes["translate"]?.InnerText ?? x["name"].InnerText));
+					x => new Tuple<string, string>(x["name"]?.InnerText, x.Attributes?["translate"]?.InnerText ?? x["name"].InnerText));
 
 			_specificTranslator.AddRange(elem);
 		}
@@ -29,18 +28,20 @@ namespace Chummer.Skills
 
 		public ExoticSkill(Character character, XmlNode node) : base(character, node)
 		{
-			
 		}
 
 		public void Load(XmlNode node)
 		{
-			_specific = node["specific"].InnerText;
+			_specific = node["specific"]?.InnerText;
 			_translated = node["translated"]?.InnerText;
 		}
 
 		public override bool AllowDelete
 		{
-			get { return !CharacterObject.Created; }
+		    get
+		    {
+		        return !CharacterObject.Created;
+		    }
 		}
 
 		public override int CurrentSpCost()
@@ -59,7 +60,10 @@ namespace Chummer.Skills
 
 		public override bool IsExoticSkill
 		{
-			get { return true; }
+		    get
+		    {
+		        return true;
+		    }
 		}
 
 		/// <summary>
@@ -70,11 +74,14 @@ namespace Chummer.Skills
 		{
 			writer.WriteElementString("specific", _specific);
 
-			if(_translated != null) writer.WriteElementString("translated", _translated);
+			if(!string.IsNullOrEmpty(_translated)) writer.WriteElementString("translated", _translated);
 		}
 
 		public string Specific {
-			get { return _specificTranslator.Read(_specific, ref _translated); }
+		    get
+		    {
+		        return _specificTranslator.Read(_specific, ref _translated);
+		    }
 			set
 			{
 				_specificTranslator.Write(value, ref _specific, ref _translated);
@@ -84,7 +91,10 @@ namespace Chummer.Skills
 
 		public override string DisplaySpecialization
 		{
-			get { return Specific; }
+		    get
+		    {
+		        return Specific;
+		    }
 		}
 	}
 }

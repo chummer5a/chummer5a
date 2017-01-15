@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmSelectCyberware : Form
     {
-		private string _strSelectedCyberware = "";
+		private string _strSelectedCyberware = string.Empty;
 		private Grade _objSelectedGrade;
 		private int _intSelectedRating = 0;
 		private readonly Character _objCharacter;
@@ -46,9 +46,9 @@ namespace Chummer
 		private double _dblTransgenicsBiowareCostModifier = 1.0;
 		private bool _blnCareer = false;
 
-		private string _strSetGrade = "";
+		private string _strSetGrade = string.Empty;
 		private bool _blnShowOnlySubsystems = false;
-		private string _strSubsystems = "";
+		private string _strSubsystems = string.Empty;
 		private int _intMaximumCapacity = -1;
 		private bool _blnLockGrade = false;
 
@@ -58,8 +58,8 @@ namespace Chummer
 		private bool _blnAllowModularPlugins = false;
         private bool _blnShowOnlyLimbs = false;
 	    private bool _blnBlackMarketDiscount = false;
-		private static string _strSelectCategory = "";
-		private static string _strSelectedGrade = "";
+		private static string _strSelectCategory = string.Empty;
+		private static string _strSelectedGrade = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private XmlDocument _objMetatypeDocument = new XmlDocument();
@@ -93,12 +93,12 @@ namespace Chummer
         {
 			// Update the window title if needed.
 			if (_strNode == "bioware")
-				this.Text = LanguageManager.Instance.GetString("Title_SelectCyberware_Bioware");
+				Text = LanguageManager.Instance.GetString("Title_SelectCyberware_Bioware");
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
         	// Load the Cyberware information.
@@ -167,9 +167,9 @@ namespace Chummer
 			// Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
 			PopulateGrades();
 
-			if (_strSetGrade == "")
+			if (string.IsNullOrEmpty(_strSetGrade))
 			{
-				if (_strSelectedGrade == "")
+				if (string.IsNullOrEmpty(_strSelectedGrade))
 					cboGrade.SelectedIndex = 0;
 				else
 					cboGrade.SelectedValue = _strSelectedGrade;
@@ -181,7 +181,7 @@ namespace Chummer
 				cboGrade.SelectedIndex = 0;
 
 			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else if (cboCategory.Items.Contains(_strSelectCategory))
 			{
@@ -284,7 +284,7 @@ namespace Chummer
 
 		private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstCyberware.Text == "")
+			if (string.IsNullOrEmpty(lstCyberware.Text))
 				return;
 
 			if ((cboCategory.SelectedValue.ToString().Contains("Genetech:") && _dblTransgenicsBiowareCostModifier != 1.0) || _blnCareer)
@@ -443,13 +443,13 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstCyberware.Text != "")
+			if (!string.IsNullOrEmpty(lstCyberware.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lblCategory_Click(object sender, EventArgs e)
@@ -459,7 +459,7 @@ namespace Chummer
 
 		private void lstCyberware_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstCyberware.Text != "")
+			if (!string.IsNullOrEmpty(lstCyberware.Text))
 				AcceptForm();
 		}
 
@@ -471,24 +471,24 @@ namespace Chummer
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
-			if (txtSearch.Text == "")
+			if (string.IsNullOrEmpty(txtSearch.Text))
 			{
 				cboCategory_SelectedIndexChanged(sender, e);
 				return;
 			}
 
 			List<ListItem> lstCyberwares = new List<ListItem>();
-			string strCategoryFilter = "";
+			string strCategoryFilter = string.Empty;
 
 			foreach (ListItem objAllowedCategory in _lstCategory)
 			{
-				if (objAllowedCategory.Value != "")
+				if (!string.IsNullOrEmpty(objAllowedCategory.Value))
 					strCategoryFilter += "category = \"" + objAllowedCategory.Value + "\" or ";
 			}
 			
 			// Treat everything as being uppercase so the search is case-insensitive.
 			string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-			if (strCategoryFilter != "")
+			if (!string.IsNullOrEmpty(strCategoryFilter))
 				strSearch += " and (" + strCategoryFilter + ")";
 			// Remove the trailing " or ";
 			strSearch = strSearch.Substring(0, strSearch.Length - 4) + ")";
@@ -854,7 +854,7 @@ namespace Chummer
         /// </summary>
         private void UpdateCyberwareInfo()
         {
-			if (lstCyberware.Text != "")
+			if (!string.IsNullOrEmpty(lstCyberware.Text))
 			{
 				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
 				string strSelectCategory = objNode["category"].InnerText;
@@ -900,7 +900,7 @@ namespace Chummer
 
 				// Avail.
 				// If avail contains "F" or "R", remove it from the string so we can use the expression.
-				string strAvail = "";
+				string strAvail = string.Empty;
 				string strAvailExpr = objXmlCyberware["avail"].InnerText;
 				XPathExpression xprAvail;
                 if (objXmlCyberware["avail"] != null)
@@ -916,7 +916,7 @@ namespace Chummer
                         string[] strValues = objXmlCyberware["avail"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
                         if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                             strAvail = strValues[Convert.ToInt32(nudRating.Value) - 1];
-                        string strAvailSuffix = "";
+                        string strAvailSuffix = string.Empty;
                         if (strAvail.EndsWith("F") || strAvail.EndsWith("R"))
                         {
                             strAvailSuffix = strAvail.Substring(strAvail.Length - 1, 1);
@@ -964,7 +964,7 @@ namespace Chummer
                         }
                         strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString());
 
-                        string strPrefix = "";
+                        string strPrefix = string.Empty;
                         if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
                         {
                             strPrefix = strAvailExpr.Substring(0, 1);
@@ -980,7 +980,7 @@ namespace Chummer
                                 intAvail = 0;
                             lblAvail.Text = strPrefix + intAvail.ToString() + strAvail;
                         }
-                        catch (System.Xml.XPath.XPathException)
+                        catch (XPathException)
                         {
                             lblAvail.Text = objXmlCyberware["avail"].InnerText;
                         }
@@ -1201,7 +1201,7 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (lstCyberware.Text != "")
+			if (!string.IsNullOrEmpty(lstCyberware.Text))
 			{
 				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
 				_strSelectCategory = objNode["category"].InnerText;
@@ -1236,7 +1236,7 @@ namespace Chummer
 			XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
 			if (!RequirementMet(objCyberwareNode, true))
 				return;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		/// <summary>
@@ -1253,7 +1253,7 @@ namespace Chummer
 			if (objXmlCyberware.InnerXml.Contains("forbidden"))
 			{
 				bool blnRequirementForbidden = false;
-				string strForbidden = "";
+				string strForbidden = string.Empty;
 
 				// Loop through the oneof requirements.
 				XmlNodeList objXmlForbiddenList = objXmlCyberware.SelectNodes("forbidden/oneof");
@@ -1300,7 +1300,7 @@ namespace Chummer
 
 			if (objXmlCyberware.InnerXml.Contains("required"))
 			{
-				string strRequirement = "";
+				string strRequirement = string.Empty;
 				bool blnRequirementMet = true;
 
 				// Loop through the oneof requirements.

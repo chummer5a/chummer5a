@@ -29,24 +29,24 @@ namespace Chummer
 	public partial class frmSelectVehicleMod : Form
 	{
 		private Vehicle _objVehicle;
-		private string _strSelectedMod = "";
+		private string _strSelectedMod = string.Empty;
 		private int _intSelectedRating = 0;
 		private int _intWeaponCost = 0;
 		private int _intTotalWeaponCost = 0;
 		private int _intModMultiplier = 1;
 		private string _strInputFile = "vehicles";
 		private int _intMarkup = 0;
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 
-		string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
-		private string _strAllowedCategories = "";
+	    readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+		private string _strAllowedCategories = string.Empty;
 		private bool _blnAddAgain = false;
 
 		private XmlNodeList objXmlCategoryList;
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
 		private bool _blnBlackMarketDiscount;
-		private string _strLimitToCategories;
+		private string _strLimitToCategories = string.Empty;
 		private List<ListItem> _lstCategory = new List<ListItem>();
         private List<VehicleMod> _lstMods;
 
@@ -129,7 +129,7 @@ namespace Chummer
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
 			if (_strInputFile == "weapons")
-				this.Text = LanguageManager.Instance.GetString("Title_SelectVehicleMod_Weapon");
+				Text = LanguageManager.Instance.GetString("Title_SelectVehicleMod_Weapon");
 		}
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
@@ -239,7 +239,7 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstMod.Text != "")
+			if (!string.IsNullOrEmpty(lstMod.Text))
 				AcceptForm();
 		}
 
@@ -250,14 +250,13 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			_strSelectCategory = "";
-			this.DialogResult = DialogResult.Cancel;
+			_strSelectCategory = string.Empty;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstMod_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstMod.Text != "")
-				AcceptForm();
+			cmdOK_Click(sender, e);
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -515,15 +514,15 @@ namespace Chummer
 		{
 
 			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Update the list of Mods based on the selected Category.
@@ -538,7 +537,7 @@ namespace Chummer
             XmlNode objXmlVehicleNode = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _objVehicle.Name + "\"]");
 
             // Retrieve the list of Mods for the selected Category.
-            if (txtSearch.Text == "")
+            if (string.IsNullOrEmpty(txtSearch.Text))
 				objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category != \"Special\"]");
 			else
 				objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category != \"Special\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
@@ -637,7 +636,7 @@ namespace Chummer
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 			_strSelectCategory = cboCategory.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		/// <summary>
@@ -645,7 +644,7 @@ namespace Chummer
 		/// </summary>
 		private void UpdateGearInfo()
 		{
-			if (lstMod.Text != "")
+			if (!string.IsNullOrEmpty(lstMod.Text))
 			{
 				// Retireve the information for the selected Mod.
 				// Filtering is also done on the Category in case there are non-unique names across categories.
@@ -657,8 +656,8 @@ namespace Chummer
 
 				// Avail.
 				// If avail contains "F" or "R", remove it from the string so we can use the expression.
-				string strAvail = "";
-				string strAvailExpr = "";
+				string strAvail = string.Empty;
+				string strAvailExpr = string.Empty;
                 if (objXmlMod["avail"].InnerText.StartsWith("FixedValues"))
 				{
 					int intRating = Convert.ToInt32(nudRating.Value - 1);
@@ -686,7 +685,7 @@ namespace Chummer
 					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString()));
 					lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
 				}
-				catch (System.Xml.XPath.XPathException)
+				catch (XPathException)
 				{
 					lblAvail.Text = objXmlMod["avail"].InnerText;
 				}
@@ -720,7 +719,7 @@ namespace Chummer
 				}
 				else
 				{
-					string strCost = "";
+					string strCost = string.Empty;
                     if (chkFreeItem.Checked)
                         strCost = "0";
                     else
@@ -814,7 +813,7 @@ namespace Chummer
 
 				// Slots.
 
-				string strSlots = "";
+				string strSlots = string.Empty;
 				if (objXmlMod["slots"].InnerText.StartsWith("FixedValues"))
 				{
 					string[] strValues = objXmlMod["slots"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
@@ -830,7 +829,7 @@ namespace Chummer
 
                 if (objXmlMod["category"].InnerText != null)
                 {
-                    if (arrCategories.Contains(objXmlMod["category"].InnerText))
+                    if (_arrCategories.Contains(objXmlMod["category"].InnerText))
                     {
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
@@ -877,7 +876,7 @@ namespace Chummer
 						lblLimit.Text = " (" + objXmlMod["limit"].InnerText + ")";
 				}
 				else
-					lblLimit.Text = "";
+					lblLimit.Text = string.Empty;
 
 				string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText);
 				string strPage = objXmlMod["page"].InnerText;
@@ -906,7 +905,7 @@ namespace Chummer
 				case "Cosmetic":
 					return _objVehicle.CosmeticModSlotsUsed(intModSlots);
 				default:
-					return "";
+					return string.Empty;
 			}
 		}
 

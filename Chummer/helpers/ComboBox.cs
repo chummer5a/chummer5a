@@ -28,7 +28,7 @@ namespace Chummer.helpers
     {
         public bool IsInitalized(bool isLoading)
         {
-            return (isLoading || this.SelectedValue == null || string.IsNullOrEmpty(this.SelectedValue.ToString()));
+            return (isLoading || SelectedValue == null || string.IsNullOrEmpty(SelectedValue.ToString()));
         }
     }
 }

@@ -499,6 +499,11 @@ namespace Chummer.Skills
 			return Id.GetHashCode();
 		}
 
+	    public override bool Equals(object obj)
+	    {
+            return this == obj;
+        }
+
 		public IEnumerable<Skill> GetEnumerable() //Databinding shits itself if this implements IEnumerable
 		{
 			return _affectedSkills;

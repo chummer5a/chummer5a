@@ -4873,7 +4873,7 @@ namespace Chummer
             this.tabCharacterTabs.SelectedIndex = 0;
             this.tabCharacterTabs.Size = new System.Drawing.Size(866, 612);
             this.tabCharacterTabs.TabIndex = 33;
-            this.tabCharacterTabs.Tag = "";
+            this.tabCharacterTabs.Tag = string.Empty;
             this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
             // 
             // tabCommon
@@ -6096,7 +6096,7 @@ namespace Chummer
             treeNode84.Tag = "Node_SelectedMartialArts";
             treeNode84.Text = "Selected Martial Arts";
             treeNode85.Name = "nodQualities";
-            treeNode85.Tag = "";
+            treeNode85.Tag = string.Empty;
             treeNode85.Text = "Selected Qualities";
             this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode84,
@@ -7456,7 +7456,7 @@ namespace Chummer
             this.lblAIProgramsRequires.Name = "lblAIProgramsRequires";
             this.lblAIProgramsRequires.Size = new System.Drawing.Size(39, 13);
             this.lblAIProgramsRequires.TabIndex = 149;
-            this.lblAIProgramsRequires.Tag = "";
+            this.lblAIProgramsRequires.Tag = string.Empty;
             this.lblAIProgramsRequires.Text = "[None]";
             // 
             // lblAIProgramsRequiresLabel
@@ -7769,7 +7769,7 @@ namespace Chummer
             this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
             this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
             this.lblCyberlimbSTRLabel.TabIndex = 218;
-            this.lblCyberlimbSTRLabel.Tag = "";
+            this.lblCyberlimbSTRLabel.Tag = string.Empty;
             this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
             this.lblCyberlimbSTRLabel.Visible = false;
             // 
@@ -7780,7 +7780,7 @@ namespace Chummer
             this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
             this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
             this.lblCyberlimbAGILabel.TabIndex = 217;
-            this.lblCyberlimbAGILabel.Tag = "";
+            this.lblCyberlimbAGILabel.Tag = string.Empty;
             this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
             this.lblCyberlimbAGILabel.Visible = false;
             // 
@@ -10134,7 +10134,7 @@ namespace Chummer
             this.lblGearOverclocker.Name = "lblGearOverclocker";
             this.lblGearOverclocker.Size = new System.Drawing.Size(75, 13);
             this.lblGearOverclocker.TabIndex = 204;
-            this.lblGearOverclocker.Tag = "";
+            this.lblGearOverclocker.Tag = string.Empty;
             this.lblGearOverclocker.Text = "Overclocker:";
             // 
             // tabGearMatrixCM
@@ -13146,7 +13146,7 @@ namespace Chummer
             this.lblNumMugshots.Name = "lblNumMugshots";
             this.lblNumMugshots.Size = new System.Drawing.Size(21, 13);
             this.lblNumMugshots.TabIndex = 96;
-            this.lblNumMugshots.Tag = "";
+            this.lblNumMugshots.Tag = string.Empty;
             this.lblNumMugshots.Text = "/ 0";
             // 
             // nudMugshotIndex
@@ -14139,7 +14139,7 @@ namespace Chummer
             this.tsImprovementRenameLocation});
             this.cmsImprovementLocation.Name = "cmsImprovementLocation";
             this.cmsImprovementLocation.Size = new System.Drawing.Size(167, 26);
-            this.cmsImprovementLocation.Tag = "";
+            this.cmsImprovementLocation.Tag = string.Empty;
             this.cmsImprovementLocation.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsImprovementRenameLocation
