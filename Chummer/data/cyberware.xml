@@ -814,6 +814,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -842,6 +843,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -869,6 +871,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -896,6 +899,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -923,6 +927,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -950,6 +955,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -977,6 +983,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1004,6 +1011,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1032,6 +1040,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1060,6 +1069,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1087,6 +1097,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1114,6 +1125,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1141,6 +1153,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1168,6 +1181,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1195,6 +1209,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -1222,6 +1237,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Headware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -2224,7 +2240,7 @@
 			<name>Small LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.05</ess>
-			<capacity>1</capacity>
+			<capacity>[1]</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
 			<source>CF</source>
@@ -2235,7 +2251,7 @@
 			<name>Medium LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.1</ess>
-			<capacity>2</capacity>
+			<capacity>[2]</capacity>
 			<avail>4</avail>
 			<cost>500</cost>
 			<source>CF</source>
@@ -2794,6 +2810,7 @@
 			<allowsubsystems>
 				<category>Bodyware</category>
 				<category>Headware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -2856,6 +2873,7 @@
 			</bonus>
 			<allowsubsystems>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -2883,6 +2901,7 @@
 			<allowsubsystems>
 				<category>Headware</category>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
@@ -2906,6 +2925,7 @@
 			<allowsubsystems>
 				<category>Headware</category>
 				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
