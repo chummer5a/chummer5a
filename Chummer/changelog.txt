@@ -48,6 +48,7 @@ Application Changes:
 - Made a massive optimization sweep after subjecting code to static code analysis.
 - Updated the program's icon with 128x128 and 256x256 versions.
 - Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
+- Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
 
 Data Changes:
 
@@ -99,6 +100,7 @@ New Strings:
 - Label_Handedness
 - Label_MugshotDimensions
 - Label_InitiativeDice
+- Checkbox_Option_PrioritySpellsAsAdeptPowers
 
 Changed Strings: 
 

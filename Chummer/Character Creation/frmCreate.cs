@@ -14157,13 +14157,6 @@ namespace Chummer
             lblAttributesBP.Text = String.Format("{0} " + strPoints, primaryCost.ToString());
             lblSpecialAttributesBP.Text = String.Format("{0} " + strPoints, specialCost.ToString());
 
-
-            if (nudMysticAdeptMAGMagician.Value > 0)
-            {
-                intAttributePointsUsed = Convert.ToInt32(nudMysticAdeptMAGMagician.Value) * 5;
-                intKarmaPointsRemain -= intAttributePointsUsed;
-            }
-
             // ------------------------------------------------------------------------------
             // Include the BP used by Martial Arts.
             int intMartialArtsPoints = 0;
@@ -14229,6 +14222,19 @@ namespace Chummer
                     foreach (TreeNode nodSpell in nodCategory.Nodes)
                     {
                         intSpellCount++;
+                    }
+                }
+
+                if (nudMysticAdeptMAGMagician.Value > 0)
+                {
+                    if (_objOptions.PrioritySpellsAsAdeptPowers)
+                    {
+                        intSpellCount += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
+                    }
+                    else
+                    {
+                        intAttributePointsUsed = Convert.ToInt32(nudMysticAdeptMAGMagician.Value) * 5;
+                        intKarmaPointsRemain -= intAttributePointsUsed;
                     }
                 }
 

@@ -272,6 +272,7 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2762,6 +2763,7 @@
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
             this.tabHouseRules.Controls.Add(this.chkFreeMartialArtSpecialization);
             this.tabHouseRules.Controls.Add(this.chkMysAdPp);
             this.tabHouseRules.Controls.Add(this.chkAlternateMetatypeAttributeKarma);
@@ -2880,7 +2882,7 @@
             // chkUseTotalValueForFreeKnowledge
             // 
             this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
-            this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(364, 95);
+            this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(366, 95);
             this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
             this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(269, 17);
             this.chkUseTotalValueForFreeKnowledge.TabIndex = 23;
@@ -3211,6 +3213,17 @@
             this.tipTooltip.AutoPopDelay = 15000;
             this.tipTooltip.InitialDelay = 500;
             this.tipTooltip.ReshowDelay = 100;
+            // 
+            // chkPrioritySpellsAsAdeptPowers
+            // 
+            this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
+            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(8, 325);
+            this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
+            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(313, 17);
+            this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
+            this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
+            this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending free spells from Magic Priority as power points";
+            this.chkPrioritySpellsAsAdeptPowers.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -3554,5 +3567,6 @@
         private System.Windows.Forms.Label lblKarmaNewAIProgram;
 		private System.Windows.Forms.CheckBox chkFreeMartialArtSpecialization;
         private System.Windows.Forms.CheckBox chkDronemodsMaximumPilot;
+        private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
     }
 }

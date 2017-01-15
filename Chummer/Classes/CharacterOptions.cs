@@ -180,9 +180,10 @@ namespace Chummer
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
 		private bool _blnFreeMartialArtSpecialization;
+	    private bool _blnPrioritySpellsAsAdeptPowers;
 
-		#region Initialization, Save, and Load Methods
-		public CharacterOptions(Character character)
+        #region Initialization, Save, and Load Methods
+        public CharacterOptions(Character character)
 		{
 			_character = character;
 		    _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
@@ -404,8 +405,10 @@ namespace Chummer
 			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
 			// <freemartialartspecialization />
 			objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
-			// <usecalculatedpublicawareness />
-			objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
+            // <priorityspellsasadeptpowers />
+            objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
+            // <usecalculatedpublicawareness />
+            objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
 			// <bpcost>
 			objWriter.WriteStartElement("bpcost");
 			// <bpattribute />
@@ -700,8 +703,10 @@ namespace Chummer
 
 			// Grant a free specialization when taking a martial art.
 			objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
-			// Allow more than 35 BP in Negative Qualities.
-			objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
+            // Can spend spells from Magic priority as power points
+            objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
+            // Allow more than 35 BP in Negative Qualities.
+            objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
 			objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesLimit);
 			// Whether or not Restricted items have their cost multiplied.
@@ -3343,10 +3348,25 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// 
+        /// <summary>
+		/// Whether Spells from Magic Priority can also be spent on power points. 
 		/// </summary>
-		public string RecentImageFolder
+		public bool PrioritySpellsAsAdeptPowers
+        {
+            get
+            {
+                return _blnPrioritySpellsAsAdeptPowers;
+            }
+            set
+            {
+                _blnPrioritySpellsAsAdeptPowers = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string RecentImageFolder
 		{
 			get
 			{
