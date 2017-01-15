@@ -70,6 +70,8 @@ Data Changes:
 - Master Debater and Empathic Listener now have their effects represented in skill dice pool tooltips.
 - Cybereyes and cyberears now come standard with Image Link and Sound Link respectively.
 - Validated critters.xml against XSD style template, fixed an issue that caused sprites to not load. 
+- Fixed the ability for cyberlimbs to install Cosmetic Cyberware.
+- Fixed missing Capacity values for LED Tattoos.
 
 Custom Content Additions:
 
