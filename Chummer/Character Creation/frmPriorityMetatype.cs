@@ -654,8 +654,7 @@ namespace Chummer
 						{
                             intOldSelectedIndex = cboSkill2.SelectedIndex;
                             intOldDataSourceSize = cboSkill2.Items.Count;
-                            if (cboSkill2.BindingContext == null)
-							    cboSkill2.BindingContext = new BindingContext();
+							cboSkill2.BindingContext = new BindingContext();
 							cboSkill2.ValueMember = "Value";
 							cboSkill2.DisplayMember = "Name";
 							cboSkill2.DataSource = lstSkills;

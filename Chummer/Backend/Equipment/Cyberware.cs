@@ -1370,7 +1370,8 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strCapacity.Contains("/["))
+                string strReturn = "0";
+                if (!string.IsNullOrEmpty(_strCapacity) && _strCapacity.Contains("/["))
 				{
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -1378,16 +1379,13 @@ namespace Chummer.Backend.Equipment
 					int intPos = _strCapacity.IndexOf("/[");
 					string strFirstHalf = _strCapacity.Substring(0, intPos);
 					string strSecondHalf = _strCapacity.Substring(intPos + 1, _strCapacity.Length - intPos - 1);
-					bool blnSquareBrackets = false;
-					string strCapacity = string.Empty;
+					bool blnSquareBrackets = strFirstHalf.Contains('['); ;
+					string strCapacity = strFirstHalf;
 
-					blnSquareBrackets = strFirstHalf.Contains('[');
-					strCapacity = strFirstHalf;
 					if (blnSquareBrackets && strCapacity.Length > 2)
 						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-					string strReturn = string.Empty;
 					if (_strCapacity == "[*]")
 						strReturn = "*";
 					else
@@ -1424,7 +1422,6 @@ namespace Chummer.Backend.Equipment
 					}
 
 					strReturn += "/" + strSecondHalf;
-					return strReturn;
 				}
 				else if (_strCapacity.Contains("Rating"))
 				{
@@ -1439,26 +1436,26 @@ namespace Chummer.Backend.Equipment
 						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-					string strReturn = nav.Evaluate(xprCapacity).ToString();
+					strReturn = nav.Evaluate(xprCapacity).ToString();
 					if (blnSquareBrackets)
 						strReturn = "[" + strReturn + "]";
-					
-					return strReturn;
 				}
 				else
 				{
 					if (_strCapacity.StartsWith("FixedValues"))
 					{
-						string[] strValues = _strCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-						return strValues[_intRating - 1];
+						string[] strValues = _strCapacity.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                        if (strValues.Length >= _intRating)
+                            strReturn = strValues[_intRating - 1];
 					}
 					else
 					{
-						// Just a straight Capacity, so return the value.
-						return _strCapacity;
+                        // Just a straight Capacity, so return the value.
+                        strReturn = _strCapacity;
 					}
 				}
-			}
+                return strReturn;
+            }
 		}
 
 		/// <summary>
