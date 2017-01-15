@@ -70,8 +70,20 @@ namespace Chummer
 
 		private void cmdDelete_Click(object sender, EventArgs e)
 		{
+			//Cache the parentform prior to deletion, otherwise the relationship is broken.
+			Form frmParent = ParentForm;
 			PowerObject.CharacterObject.Powers.Remove(PowerObject);
-			RequestCharacterUpdate();
+			
+			if (_objPower.CharacterObject.Created)
+			{
+				frmCareer parent = frmParent as frmCareer;
+				parent.UpdateCharacterInfo();
+			}
+			else
+			{
+				frmCreate parent = frmParent as frmCreate;
+				parent.UpdateCharacterInfo();
+			}
 		}
 
 		private void imgNotes_Click(object sender, EventArgs e)
@@ -136,43 +148,21 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Power level.
-        /// </summary>
-        public int PowerLevel
-        {
-            get
-            {
-                return Convert.ToInt32(nudRating.Value);
-            }
-            set
-            {
-				_objPower.Rating = value;
-                if (_objPower.Rating > nudRating.Maximum) 
-                {
-                   value = Convert.ToInt32(nudRating.Maximum);
-                }
-                nudRating.Value = value;
-	            RequestCharacterUpdate();
-				MoveControls();
-            }
-        }
-
 		#endregion
 
 		#region Methods
-		private void RequestCharacterUpdate(object sender = null, EventArgs e = null)
+		public void RequestCharacterUpdate(object sender = null, EventArgs e = null)
 		{
-		if (ParentForm != null)
+			if (ParentForm != null)
 			if (_objPower.CharacterObject.Created)
 			{
 				frmCareer parent = ParentForm as frmCareer;
-				parent?.UpdateCharacterInfo();
+				parent.UpdateCharacterInfo();
 			}
 			else
 			{
 				frmCreate parent = ParentForm as frmCreate;
-				parent?.UpdateCharacterInfo();
+				parent.UpdateCharacterInfo();
 			}
 		}
 		private void lblPowerName_Click(object sender, EventArgs e)
@@ -220,6 +210,6 @@ namespace Chummer
 		    }
 	    }
 
-	    #endregion
+		#endregion
 	}
 }
