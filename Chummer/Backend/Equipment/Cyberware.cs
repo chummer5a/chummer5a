@@ -1454,6 +1454,8 @@ namespace Chummer.Backend.Equipment
                         strReturn = _strCapacity;
 					}
 				}
+                if (string.IsNullOrEmpty(strReturn))
+			        strReturn = "0";
                 return strReturn;
             }
 		}

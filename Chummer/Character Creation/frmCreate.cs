@@ -16484,7 +16484,7 @@ namespace Chummer
         /// </summary>
         private bool PickCyberware(Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware)
         {
-            Cyberware objSelectedCyberware = new Cyberware(_objCharacter);
+            Cyberware objSelectedCyberware = null;
             int intNode = 0;
             if (objSource == Improvement.ImprovementSource.Bioware)
                 intNode = 1;
@@ -16569,13 +16569,13 @@ namespace Chummer
                     frmPickCyberware.ShowOnlySubsystems = false;
                     frmPickCyberware.ShowOnlyLimbs = true;
                 }
+
+                frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
+                frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
             }
 
             if (objSource == Improvement.ImprovementSource.Bioware)
                 frmPickCyberware.WindowMode = frmSelectCyberware.Mode.Bioware;
-
-            frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
-	        frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
             frmPickCyberware.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.

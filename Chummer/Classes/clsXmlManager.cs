@@ -347,12 +347,12 @@ namespace Chummer
 				objDoc = objReference.XmlContent;
 			}
 
-			// A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
-			// (which we don't want and also results in multiple copies of each custom item).
-			XmlDocument objReturnDocument = objDoc.CloneNode(true) as XmlDocument;
+            // A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
+            // (which we don't want and also results in multiple copies of each custom item).
+            XmlDocument objReturnDocument = objDoc;
 
-			// Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-			if (strFileName != "improvements.xml")
+            // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+            if (strFileName != "improvements.xml")
 			{
 				strPath = Path.Combine(Application.StartupPath, "data");
 				foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
