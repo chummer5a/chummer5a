@@ -28,6 +28,8 @@ namespace Chummer
     {
         private string _strSelectedPower = "";
 		private string _strLimitToPowers;
+	    private double _dblLimitToRating;
+	    private double _dblPointsPerLevel = 0.25;
 
 		private bool _blnAddAgain = false;
 
@@ -77,10 +79,33 @@ namespace Chummer
 				}
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlPower["name"].InnerText;
-				objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-				lstPower.Add(objItem);
+				bool blnAdd = true;
+				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText);
+				if (objXmlPower["limit"] != null)
+				{
+					if (_objCharacter.Powers.Count(power => power.Name == objXmlPower["name"].InnerText) >=
+					    Convert.ToInt32(objXmlPower["limit"].InnerText))
+					{
+						blnAdd = false;
+					}
+				}
+				if (objXmlPower["extrapointcost"]?.InnerText != null && blnAdd)
+				{
+					//If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
+					if (_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.Rating > 0))
+						dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText);
+				}
+				if (_dblLimitToRating > 0 && blnAdd)
+				{
+					blnAdd = dblPoints <= _dblLimitToRating;
+				}
+				if (blnAdd)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlPower["name"].InnerText;
+					objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+					lstPower.Add(objItem);
+				}
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
@@ -148,10 +173,20 @@ namespace Chummer
 			List<ListItem> lstPower = new List<ListItem>();
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlPower["name"].InnerText;
-				objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-				lstPower.Add(objItem);
+				bool blnAdd = true;
+				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText);
+				dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText);
+				if (_dblLimitToRating > 0)
+				{
+					blnAdd = dblPoints <= _dblLimitToRating;
+				}
+				if (blnAdd)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlPower["name"].InnerText;
+					objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+					lstPower.Add(objItem);
+				}
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
@@ -233,7 +268,7 @@ namespace Chummer
 
 
 		/// <summary>
-		/// Only the provided Skills should be shown in the list.
+		/// Only the provided Powers should be shown in the list.
 		/// </summary>
 		public string LimitToPowers
 		{
@@ -242,7 +277,31 @@ namespace Chummer
 				_strLimitToPowers = value;
 			}
 		}
-		#endregion
+
+		/// <summary>
+		/// Limit the selections based on the Rating of an external source, where 1 Rating = 0.25 PP.
+		/// </summary>
+	    public int LimitToRating 
+		{
+			set { _dblLimitToRating = value * PointsPerLevel; } 
+		}
+
+	    /// <summary>
+	    /// Value of the PP per level if using LimitToRating. Defaults to 0.25.
+	    /// </summary>
+	    public double PointsPerLevel
+	    {
+		    set
+		    {
+			    _dblPointsPerLevel = value;
+		    }
+		    get
+		    {
+			    return _dblPointsPerLevel;
+		    }
+	    }
+
+	    #endregion
 
 		#region Methods
 		/// <summary>

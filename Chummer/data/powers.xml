@@ -112,7 +112,7 @@
 				</required>
 			</adeptwayrequires>
 			<levels>false</levels>
-			<limit>no</limit>
+			<limit>100</limit>
 			<bonus>
 				<weaponcategorydv>
 					<selectskill skillcategory="Combat Active">
@@ -316,8 +316,9 @@
 		<power>
 			<id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
 			<name>Improved Reflexes</name>
-			<points>FixedValues(1.5,2.5,3.5)</points>
-			<adeptway>FixedValues(.75,1.25,1.75)</adeptway>
+			<points>1</points>
+			<extrapointcost>0.5</extrapointcost>
+			<adeptway>0</adeptway>
 			<levels>true</levels>
 			<maxlevels>3</maxlevels>
 			<limit>1</limit>
@@ -327,60 +328,6 @@
 				<specificattribute>
 					<name>REA</name>
 					<val>Rating</val>
-				</specificattribute>
-			</bonus>
-			<source>SR5</source>
-			<page>310</page>
-		</power>
-		<power>
-			<id>96d01fd7-abe8-495c-960e-a250d8e2dec0</id>
-			<name>Improved Reflexes 1</name>
-			<points>1.5</points>
-			<adeptway>.75</adeptway>
-			<levels>false</levels>
-			<limit>1</limit>
-			<doublecost>no</doublecost>
-			<bonus>
-				<initiativepass precedence="0">1</initiativepass>
-				<specificattribute>
-					<name>REA</name>
-					<val>1</val>
-				</specificattribute>
-			</bonus>
-			<source>SR5</source>
-			<page>310</page>
-		</power>
-		<power>
-			<id>60eb2147-c131-4f2f-a3cf-d210453533ef</id>
-			<name>Improved Reflexes 2</name>
-			<points>2.5</points>
-			<adeptway>.75</adeptway>
-			<levels>false</levels>
-			<limit>1</limit>
-			<doublecost>no</doublecost>
-			<bonus>
-				<initiativepass precedence="0">2</initiativepass>
-				<specificattribute>
-					<name>REA</name>
-					<val>2</val>
-				</specificattribute>
-			</bonus>
-			<source>SR5</source>
-			<page>310</page>
-		</power>
-		<power>
-			<id>669f249e-49fe-4870-89ba-475cfb027dfc</id>
-			<name>Improved Reflexes 3</name>
-			<points>3.5</points>
-			<adeptway>.75</adeptway>
-			<levels>false</levels>
-			<limit>1</limit>
-			<doublecost>no</doublecost>
-			<bonus>
-				<initiativepass precedence="0">3</initiativepass>
-				<specificattribute>
-					<name>REA</name>
-					<val>3</val>
 				</specificattribute>
 			</bonus>
 			<source>SR5</source>

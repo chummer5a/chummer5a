@@ -48,7 +48,7 @@ namespace Chummer
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudRating.DataBindings.Add("Maximum", PowerObject, nameof(PowerObject.TotalMaximumLevels), false,
 					DataSourceUpdateMode.OnPropertyChanged);
-				nudRating.DataBindings.Add("Value", PowerObject, nameof(PowerObject.Rating), false,
+				nudRating.DataBindings.Add("Value", PowerObject, nameof(PowerObject.TotalRating), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				
 			}

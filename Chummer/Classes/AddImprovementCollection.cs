@@ -2384,7 +2384,7 @@ namespace Chummer.Classes
 
 				Log.Info("blnHasPower = " + blnHasPower);
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPower, strSelection, 0, intLevels);
+				CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, strSelection, 0, intLevels);
 			}
 		}
 
@@ -2403,8 +2403,12 @@ namespace Chummer.Classes
 				Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
 				int intLevels = 0;
-				if (bonusNode["val"] != null)
-					intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
+				if (objNode["val"] != null)
+					intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
+				if (objNode["pointsperlevel"] != null)
+					frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText);
+				if (objNode["limit"] != null)
+					frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating",_intRating.ToString()));
 				if (objNode.OuterXml.Contains("limittopowers"))
 					frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
 				frmPickPower.ShowDialog();
@@ -2412,50 +2416,52 @@ namespace Chummer.Classes
 				// Make sure the dialogue window was not canceled.
 				if (frmPickPower.DialogResult == DialogResult.Cancel)
 				{
-					throw new AbortedException();
+					Rollback();
 				}
-
-				SelectedValue = frmPickPower.SelectedPower;
-				if (_blnConcatSelectedValue)
-					SourceName += " (" + SelectedValue + ")";
-
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-				XmlNode objXmlPower =
-					objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
-				string strSelection = "";
-
-				// If no, add the power and mark it free or give it free levels
-				Power objPower = new Power(_objCharacter);
-				objPower.Create(objXmlPower, _manager);
-				
-				bool blnHasPower = false;
-				foreach (Power power in _objCharacter.Powers)
+				else
 				{
-					if (power.Name == objXmlPower["name"].InnerText)
+					SelectedValue = frmPickPower.SelectedPower;
+					if (_blnConcatSelectedValue)
+						SourceName += " (" + SelectedValue + ")";
+
+					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+					XmlNode objXmlPower =
+						objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
+					string strSelection = "";
+
+					// If no, add the power and mark it free or give it free levels
+					Power objPower = new Power(_objCharacter);
+					objPower.Create(objXmlPower, _manager);
+
+					bool blnHasPower = false;
+					foreach (Power power in _objCharacter.Powers)
 					{
-						if (power.Extra != "" && power.Extra == strSelection)
+						if (power.Name == objXmlPower["name"].InnerText)
 						{
-							blnHasPower = true;
-							objPower = power;
-						}
-						else if (power.Extra == "")
-						{
-							blnHasPower = true;
-							objPower = power;
+							if (power.Extra != "" && power.Extra == strSelection)
+							{
+								blnHasPower = true;
+								objPower = power;
+							}
+							else if (power.Extra == "")
+							{
+								blnHasPower = true;
+								objPower = power;
+							}
 						}
 					}
+
+					Log.Info("blnHasPower = " + blnHasPower);
+
+					if (!blnHasPower)
+					{
+						_objCharacter.Powers.Add(objPower);
+					}
+
+					Log.Info("blnHasPower = " + blnHasPower);
+					Log.Info("Calling CreateImprovement");
+					CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, strSelection, 0, intLevels);
 				}
-
-				Log.Info("blnHasPower = " + blnHasPower);
-
-				if (!blnHasPower)
-				{
-					_objCharacter.Powers.Add(objPower);
-				}
-
-				Log.Info("blnHasPower = " + blnHasPower);
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPower, strSelection, 0, intLevels);
 			}
 		}
 

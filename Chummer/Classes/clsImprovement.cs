@@ -177,8 +177,10 @@ namespace Chummer
 			Ambidextrous,
 	        UnarmedReach,
 			SkillSpecialization,
-			NativeLanguageLimit
-		}
+			NativeLanguageLimit,
+	        AdeptPowerFreeLevels,
+	        AdeptPowerFreePoints
+        }
 
         public enum ImprovementSource
         {

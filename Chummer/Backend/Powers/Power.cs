@@ -22,7 +22,8 @@ namespace Chummer
 		private string _strPage = "";
 		private string _strPointsPerLevel = "0";
 		private string _strAction = "";
-		private decimal _intRating = 1;
+		private int _intRating = 1;
+		private decimal _decExtraPointCost;
 		private bool _blnLevelsEnabled = false;
 		private int _intMaxLevel = 0;
 		private bool _blnDiscountedAdeptWay = false;
@@ -30,7 +31,6 @@ namespace Chummer
 		private XmlNode _nodBonus;
 		private XmlNode _nodAdeptWayRequirements;
 		private string _strNotes = "";
-		private bool _blnDoubleCost = true;
 		private bool _blnFree = false;
 		private int _intFreeLevels = 0;
 		private string _strAdeptWayDiscount = "0";
@@ -62,6 +62,7 @@ namespace Chummer
 			objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
 			objWriter.WriteElementString("action", _strAction);
 			objWriter.WriteElementString("rating", _intRating.ToString());
+			objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString());
 			objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
 			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString());
 			objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
@@ -72,7 +73,6 @@ namespace Chummer
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("free", _blnFree.ToString());
 			objWriter.WriteElementString("freelevels", _intFreeLevels.ToString());
-			objWriter.WriteElementString("doublecost", _blnDoubleCost.ToString());
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
@@ -104,10 +104,10 @@ namespace Chummer
 			objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
 			objNode.TryGetField("bonussource", out _strBonusSource);
 			objNode.TryGetField("freepoints", out _decFreePoints);
+			objNode.TryGetField("extrapointcost", out _decExtraPointCost);
 			objNode.TryGetField("action", out _strAction);
 			objNode.TryGetField("source", out _strSource);
 			objNode.TryGetField("page", out _strPage);
-			objNode.TryGetField("doublecost", out _blnDoubleCost);
 			objNode.TryGetField("notes", out _strNotes);
 			_nodBonus = objNode["bonus"];
 			_nodAdeptWayRequirements = objNode["adeptwayrequires"];
@@ -167,9 +167,9 @@ namespace Chummer
 			objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
 			objNode.TryGetField("bonussource", out _strBonusSource);
 			objNode.TryGetField("freepoints", out _decFreePoints);
+			objNode.TryGetField("extrapointcost", out _decExtraPointCost);
 			objNode.TryGetField("source", out _strSource);
 			objNode.TryGetField("page", out _strPage);
-			objNode.TryGetField("doublecost", out _blnDoubleCost);
 			objNode.TryGetField("notes", out _strNotes);
 			_nodBonus = objNode["bonus"];
 			_nodAdeptWayRequirements = objNode["adeptwayrequires"];
@@ -338,22 +338,23 @@ namespace Chummer
 			get
 			{
 				decimal decReturn = 0;
-				if (_strPointsPerLevel.StartsWith("FixedValues"))
-				{
-					string[] strValues = _strPointsPerLevel.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					int intMax = Math.Max(Convert.ToInt32(Math.Min(_intRating - 1, strValues.Length)), 0);
-					decReturn += Convert.ToDecimal(strValues[intMax]);
-				}
-				else
-				{
 					decReturn = Convert.ToDecimal(_strPointsPerLevel);
-				}
 				return decReturn;
 			}
 			set
 			{
 				_strPointsPerLevel = value.ToString();
 			}
+		}
+
+		/// <summary>
+		/// An additional cost on top of the power's PointsPerLevel. 
+		/// Example: Improved Reflexes is properly speaking Rating + 0.5, but the math for that gets weird. 
+		/// </summary>
+		public decimal ExtraPointCost
+		{
+			get { return _decExtraPointCost; }
+			set { _decExtraPointCost = value; }
 		}
 
 		/// <summary>
@@ -364,19 +365,7 @@ namespace Chummer
 			get
 			{
 				decimal decReturn = 0;
-				if (_strAdeptWayDiscount.StartsWith("FixedValues"))
-				{
-					string[] strValues = _strAdeptWayDiscount.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					int intMax = Math.Max(Convert.ToInt32(Math.Min(_intRating - 1, strValues.Length)) - 1, 0);
-					for (int i = 0; i < intMax; i++)
-					{
-						decReturn += Convert.ToDecimal(strValues[i]);
-					}
-				}
-				else
-				{
-					decReturn = Convert.ToDecimal(_strAdeptWayDiscount);
-				}
+				decReturn = Convert.ToDecimal(_strAdeptWayDiscount);
 				return decReturn;
 			}
 			set
@@ -401,15 +390,16 @@ namespace Chummer
 		/// </summary>
 		private decimal Discount
 		{
-			get {
-				return _blnDiscountedAdeptWay ? AdeptWayDiscount : _decFreePoints;
+			get 
+			{
+				return _blnDiscountedAdeptWay ? AdeptWayDiscount : 0;
 			}
 		}
 
 		/// <summary>
 		/// The current Rating of the Power.
 		/// </summary>
-		public decimal Rating
+		public int Rating
 		{
 			get
 			{
@@ -422,6 +412,15 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// The current Rating of the Power, including any Free Levels. 
+		/// </summary>
+		public int TotalRating
+		{
+			get { return _intRating + FreeLevels; }
+			set { _intRating = value - FreeLevels; }
+		}
+
+		/// <summary>
 		/// Free levels of the power.
 		/// </summary>
 		public int FreeLevels
@@ -429,15 +428,32 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
+				decimal decExtraCost = FreePoints;
+				//The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
+				if (Rating == 0 && ExtraPointCost > 0)
 				{
-					if (objImprovement.ImprovedName == _strName)
+					decExtraCost -= (PointsPerLevel + ExtraPointCost);
+					if (decExtraCost >= 0)
 					{
-						if (objImprovement.UniqueName == _strExtra)
-						{
-							intReturn += objImprovement.Rating;
-						}
+						intReturn += 1;
 					}
+					for (decimal i = decExtraCost; (i - 1 >= 0); i--)
+					{
+						intReturn += 1;
+					}
+				}
+				//Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+				else
+				{
+					for (decimal i = decExtraCost; (i - 1 >= 0); i--)
+					{
+						intReturn += 1;
+					}
+
+				}
+				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == _strName && objImprovement.UniqueName == _strExtra))
+				{
+					intReturn += objImprovement.Rating;
 				}
 				return intReturn;
 			}
@@ -455,24 +471,9 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					if (_strPointsPerLevel.StartsWith("FixedValues"))
-					{
-						string strPoints = _strPointsPerLevel;
-						if (AdeptWayDiscountEnabled)
-						{
-							strPoints = _strAdeptWayDiscount;
-						}
-
-						string[] strValues = strPoints.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-						int intMax = Math.Max(Convert.ToInt32(Math.Min(_intRating - 1, strValues.Length)), 0);
-
-						decReturn += Convert.ToDecimal(strValues[intMax]);
-					}
-					else
-					{
-						decReturn = (Rating - FreeLevels) * PointsPerLevel;
-						decReturn -= Discount;
-					}
+					decReturn = Rating * PointsPerLevel;
+					decReturn += ExtraPointCost;
+					decReturn -= Discount;
 					return Math.Max(decReturn, 0);
 				}
 			}
@@ -494,17 +495,17 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Bonus source.
+		/// Free Power Points that apply to the Power. Calculated as Improvement Rating * 0.25.
+		/// Typically used for Qi Foci. 
 		/// </summary>
 		public decimal FreePoints
 		{
 			get
 			{
-				return _decFreePoints;
-			}
-			set
-			{
-				_decFreePoints = value;
+				decimal decReturn = 0;
+				int intRating = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == _strName && objImprovement.UniqueName == _strExtra).Sum(objImprovement => objImprovement.Rating);
+				decReturn = (decimal) (intRating * 0.25);
+				return decReturn;
 			}
 		}
 
@@ -636,21 +637,6 @@ namespace Chummer
 			set
 			{
 				_strNotes = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Power Point cost is doubled when an CharacterAttribute exceeds its Metatype Maximum.
-		/// </summary>
-		public bool DoubleCost
-		{
-			get
-			{
-				return _blnDoubleCost;
-			}
-			set
-			{
-				_blnDoubleCost = value;
 			}
 		}
 

@@ -5733,6 +5733,8 @@
 				<selectpowers>
 					<selectpower>
 						<val>Rating</val>
+						<limit>Rating</limit>
+						<pointsperlevel>0.25</pointsperlevel>
 					</selectpower>
 				</selectpowers>
 			</bonus>
