@@ -72,6 +72,8 @@ Data Changes:
 - Validated critters.xml against XSD style template, fixed an issue that caused sprites to not load. 
 - Fixed the ability for cyberlimbs to install Cosmetic Cyberware.
 - Fixed missing Capacity values for LED Tattoos.
+- Fixed an incorrect book and page reference for the Great Mother mentor spirit.
+- Fixed page references for the AI metatype and variants. 
 
 Custom Content Additions:
 

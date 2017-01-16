@@ -1821,7 +1821,7 @@
 			</bonus>
 			<movement>Special</movement>
 			<source>DT</source>
-			<page>88</page>
+			<page>135</page>
 			<metavariants>
 				<metavariant>
 					<name>E-Ghost</name>
@@ -2011,7 +2011,7 @@
 						</enableattribute>
 					</bonus>
 					<source>DT</source>
-					<page>88</page>
+					<page>161</page>
 				</metavariant>
 				<metavariant>
 					<name>Xenosapient</name>
@@ -2201,7 +2201,7 @@
 						</enableattribute>
 					</bonus>
 					<source>DT</source>
-					<page>88</page>
+					<page>135</page>
 				</metavariant>
 				<metavariant>
 					<name>Protosapient</name>
@@ -2392,7 +2392,7 @@
 						</enabletab>
 					</bonus>
 					<source>DT</source>
-					<page>88</page>
+					<page>135</page>
 				</metavariant>
 			</metavariants>
 		</metatype>		
