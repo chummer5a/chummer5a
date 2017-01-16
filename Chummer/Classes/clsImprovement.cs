@@ -968,7 +968,6 @@ namespace Chummer
 		{
             if (bonusNode == null)
                 return false;
-			
 			//As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
 			//So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
 			//getting a different parameter injected
@@ -984,7 +983,7 @@ namespace Chummer
                 {
                     info.Invoke(container, new object[] {bonusNode});
                 }
-                catch (TargetInvocationException ex) when (ex.InnerException.GetType() == typeof(AbortedException))
+                catch (TargetInvocationException ex) when (ex.InnerException?.GetType() == typeof(AbortedException))
                 {
                     Rollback();
                     return false;
@@ -997,15 +996,11 @@ namespace Chummer
 			}
 			else
 			{
-				if (bonusNode.OuterXml != "<selecttext />")
-				{
-					Utils.BreakIfDebug();
-					Log.Warning(new object[]
-					{"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
-				}
+                Utils.BreakIfDebug();
+                Log.Warning(new object[]
+                {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
                 return false;
             }
-			
 			return true;
 		}
 
@@ -1016,7 +1011,6 @@ namespace Chummer
 
 			return allMethods.ToDictionary(x => x.Name.ToUpperInvariant());
 		});
-		
 
 		/// <summary>
 		/// Remove all of the Improvements for an XML Node.

@@ -96,7 +96,13 @@ namespace Chummer.Classes
 			//	set list[top] active
 		}
 
-		public void enableattribute(XmlNode bonusNode)
+        // Dummy Method for SelectText
+	    public void selecttext(XmlNode bonusNode)
+	    {
+            Log.Info("selecttext: " + SelectedValue);
+        }
+
+	    public void enableattribute(XmlNode bonusNode)
 		{
 			Log.Info("enableattribute");
 			if (bonusNode["name"].InnerText == "MAG")
