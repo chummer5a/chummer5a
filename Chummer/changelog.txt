@@ -49,6 +49,7 @@ Application Changes:
 - Updated the program's icon with 128x128 and 256x256 versions.
 - Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
 - Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
+- Reduced load time for characters by about 25%.
 
 Data Changes:
 

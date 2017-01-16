@@ -32,7 +32,7 @@ namespace Chummer
 		/// </summary>
 		private class XmlReference
 		{
-			private DateTime _datDate = new DateTime();
+			private DateTime _datDate;
 			private string _strFileName = string.Empty;
 			private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -81,9 +81,8 @@ namespace Chummer
 				}
 			}
 		}
-		
 		static readonly XmlManager _objInstance = new XmlManager();
-		static private readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
+		private static readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
 
 		#region Constructor and Instance
 		static XmlManager()
@@ -119,7 +118,7 @@ namespace Chummer
 
 			// Look to see if this XmlDocument is already loaded.
 			bool blnFound = false;
-			XmlReference objReference = new XmlReference();
+			XmlReference objReference = null;
 			foreach (XmlReference objCurrentReference in _lstXmlDocuments)
 			{
 				if (objCurrentReference.FileName == strFileName)
@@ -133,8 +132,9 @@ namespace Chummer
 			bool blnLoadFile = false;
 			if (!blnFound)
 			{
-				// The file was not found in the reference list, so it must be loaded.
-				blnLoadFile = true;
+                // The file was not found in the reference list, so it must be loaded.
+                objReference = new XmlReference();
+                blnLoadFile = true;
 				_lstXmlDocuments.Add(objReference);
 			}
             // The file was found in the List, so check the last write time.
@@ -161,8 +161,7 @@ namespace Chummer
 				foreach (XmlNode objNode in objList)
 				{
 					// Append the entire child node to the new document.
-					XmlNode objImported = objDoc.ImportNode(objNode, true);
-					objDoc.DocumentElement.AppendChild(objImported);
+					objDoc.DocumentElement.AppendChild(objDoc.ImportNode(objNode, true));
 				}
 
 				// Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
@@ -350,8 +349,7 @@ namespace Chummer
 
 			// A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
 			// (which we don't want and also results in multiple copies of each custom item).
-			XmlDocument objReturnDocument = new XmlDocument();
-			objReturnDocument.LoadXml(objDoc.OuterXml);
+			XmlDocument objReturnDocument = objDoc.CloneNode(true) as XmlDocument;
 
 			// Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
 			if (strFileName != "improvements.xml")
@@ -422,11 +420,10 @@ namespace Chummer
 				string strFileName = Path.GetFileName(strFile);
 
 				// Do not bother to check custom files.
-				if (!strFileName.StartsWith("custom") && !strFile.StartsWith("override") && !strFile.Contains("packs.xml") && !strFile.Contains("ranges.xml"))
+				if (!string.IsNullOrEmpty(strFileName) && !strFileName.StartsWith("custom") && !strFile.StartsWith("override") && !strFile.Contains("packs.xml") && !strFile.Contains("ranges.xml"))
 				{
 					// Load the current English file.
-					XmlDocument objEnglishDoc = new XmlDocument();
-					objEnglishDoc = Load(strFileName);
+					XmlDocument objEnglishDoc = Load(strFileName);
 					XmlNode objEnglishRoot = objEnglishDoc.SelectSingleNode("/chummer");
 
 					// First pass: make sure the document exists.
@@ -510,7 +507,7 @@ namespace Chummer
 												else
 												{
 													blnAltPage = true;
-													if (objNode.Attributes["translate"] != null)
+													if (objNode.Attributes?["translate"] != null)
 														blnTranslate = true;
 												}
 
@@ -603,7 +600,7 @@ namespace Chummer
 														if (objTranslate != null)
 														{
 															// Item exists, so make sure it has its translate attribute populated.
-															if (objTranslate.Attributes["translate"] == null)
+															if (objTranslate.Attributes?["translate"] == null)
 															{
 																// <result>
 																objWriter.WriteStartElement("martialarts");
@@ -635,7 +632,7 @@ namespace Chummer
 										{
 											//Ignore this node, as it's a comment node.
 										}
-										else if (objChild.InnerText != null)
+										else if (!string.IsNullOrEmpty(objChild.InnerText))
 										{
 											// The item does not have a name which means it should have a translate CharacterAttribute instead.
 											XmlNode objNode =
@@ -643,7 +640,7 @@ namespace Chummer
 											if (objNode != null)
 											{
 												// Make sure the translate attribute is populated.
-												if (objNode.Attributes["translate"] == null)
+												if (objNode.Attributes?["translate"] == null)
 												{
 													// <result>
 													objWriter.WriteStartElement(objChild.Name);
