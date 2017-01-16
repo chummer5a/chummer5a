@@ -14691,7 +14691,11 @@ namespace Chummer
 
 					//Update Build Summary for Spells.
 					int intSpellCount = treSpells.Nodes.Cast<TreeNode>().SelectMany(nodCategory => nodCategory.Nodes.Cast<TreeNode>()).Count();
-	                lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
+                    if (nudMysticAdeptMAGMagician.Value > 0 && _objOptions.PrioritySpellsAsAdeptPowers)
+                    {
+                        intSpellCount += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
+                    }
+                    lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
 				}
 
                 // If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).

@@ -6723,6 +6723,10 @@ Do you want to continue?</text>
 			<text>Allow Martial Arts to grant a free specialisation in a skill</text>
 		</string>
 		<string>
+			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
+			<text>Allow spending of free spells from Magic Priority as power points</text>
+		</string>
+		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
 			<text>Enforce Capacity limits</text>
 		</string>

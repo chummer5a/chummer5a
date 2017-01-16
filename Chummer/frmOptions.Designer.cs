@@ -239,6 +239,7 @@
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
             this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
             this.chkMysAdPp = new System.Windows.Forms.CheckBox();
             this.chkAlternateMetatypeAttributeKarma = new System.Windows.Forms.CheckBox();
@@ -272,7 +273,6 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2800,6 +2800,18 @@
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
             // 
+            // chkPrioritySpellsAsAdeptPowers
+            // 
+            this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
+            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(8, 325);
+            this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
+            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(325, 17);
+            this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
+            this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
+            this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending of free spells from Magic Priority as power points";
+            this.chkPrioritySpellsAsAdeptPowers.UseVisualStyleBackColor = true;
+            this.chkPrioritySpellsAsAdeptPowers.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // chkFreeMartialArtSpecialization
             // 
             this.chkFreeMartialArtSpecialization.AutoSize = true;
@@ -3213,17 +3225,6 @@
             this.tipTooltip.AutoPopDelay = 15000;
             this.tipTooltip.InitialDelay = 500;
             this.tipTooltip.ReshowDelay = 100;
-            // 
-            // chkPrioritySpellsAsAdeptPowers
-            // 
-            this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
-            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(8, 325);
-            this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
-            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(313, 17);
-            this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
-            this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
-            this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending free spells from Magic Priority as power points";
-            this.chkPrioritySpellsAsAdeptPowers.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
