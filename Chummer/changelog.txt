@@ -80,6 +80,8 @@ Data Changes:
 - Validated critters.xml against XSD style template, fixed an issue that caused sprites to not load. 
 - Fixed the ability for cyberlimbs to install Cosmetic Cyberware.
 - Fixed missing Capacity values for LED Tattoos.
+- Fixed an incorrect book and page reference for the Great Mother mentor spirit.
+- Fixed page references for the AI metatype and variants. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 
