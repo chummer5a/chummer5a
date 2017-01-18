@@ -429,8 +429,12 @@ namespace Chummer
 			{
 				int intReturn = 0;
 				decimal decExtraCost = FreePoints;
+				/*if (!LevelsEnabled)
+				{
+				
+				}
 				//The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
-				if (Rating == 0 && ExtraPointCost > 0)
+				else*/ if (Rating == 0 && ExtraPointCost > 0)
 				{
 					decExtraCost -= (PointsPerLevel + ExtraPointCost);
 					if (decExtraCost >= 0)
@@ -451,10 +455,7 @@ namespace Chummer
 					}
 
 				}
-				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == _strName && objImprovement.UniqueName == _strExtra))
-				{
-					intReturn += objImprovement.Rating;
-				}
+				intReturn += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == _strName && objImprovement.UniqueName == _strExtra).Sum(objImprovement => objImprovement.Rating);
 				return intReturn;
 			}
 		}
@@ -471,7 +472,7 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					decReturn = Math.Min(Rating - FreeLevels, 0) * PointsPerLevel;
+					decReturn = Math.Max(Rating - FreeLevels, 0) * PointsPerLevel;
 					decReturn += ExtraPointCost;
 					decReturn -= Discount;
 					return Math.Max(decReturn, 0);
