@@ -2355,36 +2355,21 @@ namespace Chummer.Classes
 
 				// Check if the character already has this power
 				Log.Info("strSelection = " + strSelection);
-				bool blnHasPower = false;
-				Power objPower = new Power(_objCharacter);
+				Power objNewPower = new Power(_objCharacter);
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 				XmlNode objXmlPower =
 					objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerNameLimit + "\"]");
-				objPower.Create(objXmlPower, _manager);
-				strSelection = objPower.Extra;
-				foreach (Power power in _objCharacter.Powers.Where(power => power.Name == strPowerNameLimit))
-				{
-					if (power.Extra != "" && power.Extra == strSelection)
-					{
-						blnHasPower = true;
-						objPower = power;
-						break;
-					}
-					else if (power.Extra == "")
-					{
-						blnHasPower = true;
-						objPower = power;
-						break;
-					}
-				}
+				objNewPower.Create(objXmlPower, _manager);
+
+				bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 				if (!blnHasPower)
 				{
-					_objCharacter.Powers.Add(objPower);
+					_objCharacter.Powers.Add(objNewPower);
 				}
 
 				Log.Info("blnHasPower = " + blnHasPower);
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, strSelection, 0, intLevels);
+				CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
 			}
 		}
 
@@ -2416,6 +2401,7 @@ namespace Chummer.Classes
 				// Make sure the dialogue window was not canceled.
 				if (frmPickPower.DialogResult == DialogResult.Cancel)
 				{
+					//TODO: Rollback is unimplemented.
 					Rollback();
 				}
 				else
@@ -2427,40 +2413,23 @@ namespace Chummer.Classes
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 					XmlNode objXmlPower =
 						objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
-					string strSelection = "";
 
 					// If no, add the power and mark it free or give it free levels
-					Power objPower = new Power(_objCharacter);
-					objPower.Create(objXmlPower, _manager);
+					Power objNewPower = new Power(_objCharacter);
+					objNewPower.Create(objXmlPower, _manager);
 
-					bool blnHasPower = false;
-					foreach (Power power in _objCharacter.Powers)
-					{
-						if (power.Name == objXmlPower["name"].InnerText)
-						{
-							if (power.Extra != "" && power.Extra == strSelection)
-							{
-								blnHasPower = true;
-								objPower = power;
-							}
-							else if (power.Extra == "")
-							{
-								blnHasPower = true;
-								objPower = power;
-							}
-						}
-					}
+					bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 
 					Log.Info("blnHasPower = " + blnHasPower);
 
 					if (!blnHasPower)
 					{
-						_objCharacter.Powers.Add(objPower);
+						_objCharacter.Powers.Add(objNewPower);
 					}
 
 					Log.Info("blnHasPower = " + blnHasPower);
 					Log.Info("Calling CreateImprovement");
-					CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, strSelection, 0, intLevels);
+					CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
 				}
 			}
 		}

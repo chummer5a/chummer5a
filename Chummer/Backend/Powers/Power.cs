@@ -471,7 +471,7 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					decReturn = Rating * PointsPerLevel;
+					decReturn = Math.Min(Rating - FreeLevels, 0) * PointsPerLevel;
 					decReturn += ExtraPointCost;
 					decReturn -= Discount;
 					return Math.Max(decReturn, 0);

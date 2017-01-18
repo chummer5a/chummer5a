@@ -18049,15 +18049,11 @@ namespace Chummer
                                 _objImprovementManager.ForcedValue = objSelectedFocus.Extra;
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
 
-                            foreach (Power objPower in _objCharacter.Powers)
+                            foreach (Power objPower in _objCharacter.Powers.Where(objPower => objFocus.GearId == objPower.BonusSource))
                             {
-                                if (objFocus.GearId == objPower.BonusSource)
-                                {
-                                    objSelectedFocus.Extra = objPower.Name;
-                                    break;
-                                }
+	                            objSelectedFocus.Extra = objPower.Name;
+	                            break;
                             }
-							
                             _objController.PopulateFocusList(treFoci);
                         }
                     }
