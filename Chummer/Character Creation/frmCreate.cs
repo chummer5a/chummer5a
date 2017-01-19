@@ -375,14 +375,16 @@ namespace Chummer
 
 			SortListItem objSortHand = new SortListItem();
 			lstHandedness.Sort(objSortHand.Compare);
-			cboHandedness.ValueMember = "Value";
+            cboHandedness.BeginUpdate();
+            cboHandedness.ValueMember = "Value";
 			cboHandedness.DisplayMember = "Name";
 			cboHandedness.DataSource = lstHandedness;
 
 	        cboHandedness.SelectedValue = _objCharacter.PrimaryArm;
+            cboHandedness.EndUpdate();
 
-			// Check for Special Attributes.
-			lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
+            // Check for Special Attributes.
+            lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
             lblMAGAug.Enabled = _objCharacter.MAGEnabled;
             if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
             {
@@ -447,9 +449,11 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstTraditions.Sort(objSort.Compare);
+            cboTradition.BeginUpdate();
             cboTradition.ValueMember = "Value";
             cboTradition.DisplayMember = "Name";
             cboTradition.DataSource = lstTraditions;
+            cboTradition.EndUpdate();
 
             // Populate the Magician Custom Drain Options list.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -470,9 +474,11 @@ namespace Chummer
             }
             SortListItem objDrainSort = new SortListItem();
             lstDrainAttributes.Sort(objDrainSort.Compare);
+            cboDrain.BeginUpdate();
             cboDrain.ValueMember = "Value";
             cboDrain.DisplayMember = "Name";
             cboDrain.DataSource = lstDrainAttributes;
+            cboDrain.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Combat.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -494,9 +500,11 @@ namespace Chummer
             SortListItem objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritCombat.BeginUpdate();
             cboSpiritCombat.ValueMember = "Value";
             cboSpiritCombat.DisplayMember = "Name";
             cboSpiritCombat.DataSource = lstSpirit;
+            cboSpiritCombat.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Detection.
             lstSpirit = new List<ListItem>();
@@ -517,9 +525,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritDetection.BeginUpdate();
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstSpirit;
+            cboSpiritDetection.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Health.
             lstSpirit = new List<ListItem>();
@@ -540,9 +550,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritHealth.BeginUpdate();
             cboSpiritHealth.ValueMember = "Value";
             cboSpiritHealth.DisplayMember = "Name";
             cboSpiritHealth.DataSource = lstSpirit;
+            cboSpiritHealth.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Illusion.
             lstSpirit = new List<ListItem>();
@@ -563,9 +575,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritIllusion.BeginUpdate();
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstSpirit;
+            cboSpiritIllusion.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Manipulation.
             lstSpirit = new List<ListItem>();
@@ -586,9 +600,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritManipulation.BeginUpdate();
             cboSpiritManipulation.ValueMember = "Value";
             cboSpiritManipulation.DisplayMember = "Name";
             cboSpiritManipulation.DataSource = lstSpirit;
+            cboSpiritManipulation.EndUpdate();
 
             // Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
             // to UpdateCharacterInformation();
@@ -1015,9 +1031,11 @@ namespace Chummer
                 objItem.Name = objGrade.DisplayName;
                 lstCyberwareGrades.Add(objItem);
             }
+            cboCyberwareGrade.BeginUpdate();
             cboCyberwareGrade.ValueMember = "Value";
             cboCyberwareGrade.DisplayMember = "Name";
             cboCyberwareGrade.DataSource = lstCyberwareGrades;
+            cboCyberwareGrade.EndUpdate();
 
             _blnLoading = false;
 
@@ -16161,12 +16179,16 @@ namespace Chummer
                 lblGearSource.Text = strBook + " " + strPage;
                 tipTooltip.SetToolTip(lblGearSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
 
+                cboGearAttack.BeginUpdate();
+                cboGearSleaze.BeginUpdate();
+                cboGearDataProcessing.BeginUpdate();
+                cboGearFirewall.BeginUpdate();
                 if (objGear.GetType() == typeof(Commlink))
                 {
                     Commlink objCommlink = (Commlink)objGear;
 					List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-					cboGearAttack.BindingContext = new BindingContext();
+                    cboGearAttack.BindingContext = new BindingContext();
 					cboGearAttack.ValueMember = "Value";
 					cboGearAttack.DisplayMember = "Name";
 					cboGearAttack.DataSource = objASDF;
@@ -16226,6 +16248,10 @@ namespace Chummer
                     lblGearDataProcessingLabel.Visible = false;
                     lblGearFirewallLabel.Visible = false;
                 }
+                cboGearAttack.EndUpdate();
+                cboGearSleaze.EndUpdate();
+                cboGearDataProcessing.EndUpdate();
+                cboGearFirewall.EndUpdate();
 
                 if (objGear.MaxRating > 0)
                 {
@@ -17592,7 +17618,11 @@ namespace Chummer
 
                         if (objGear.GetType() == typeof(Commlink))
                         {
-							Commlink objCommlink = (Commlink)objGear;
+                            cboVehicleGearAttack.BeginUpdate();
+                            cboVehicleGearSleaze.BeginUpdate();
+                            cboVehicleGearDataProcessing.BeginUpdate();
+                            cboVehicleGearFirewall.BeginUpdate();
+                            Commlink objCommlink = (Commlink)objGear;
 							List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 							cboVehicleGearAttack.BindingContext = new BindingContext();
 							cboVehicleGearAttack.ValueMember = "Value";
@@ -17624,7 +17654,11 @@ namespace Chummer
 								chkVehicleHomeNode.Visible = true;
 								chkVehicleHomeNode.Checked = objCommlink.HomeNode;
 							}
-						}
+                            cboVehicleGearAttack.EndUpdate();
+                            cboVehicleGearSleaze.EndUpdate();
+                            cboVehicleGearDataProcessing.EndUpdate();
+                            cboVehicleGearFirewall.EndUpdate();
+                        }
                     }
                     else
                     {
@@ -17728,7 +17762,11 @@ namespace Chummer
 						Commlink objCommlink = (Commlink)objGear;
 						List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-						cboVehicleGearAttack.BindingContext = new BindingContext();
+                        cboVehicleGearAttack.BeginUpdate();
+                        cboVehicleGearSleaze.BeginUpdate();
+                        cboVehicleGearDataProcessing.BeginUpdate();
+                        cboVehicleGearFirewall.BeginUpdate();
+                        cboVehicleGearAttack.BindingContext = new BindingContext();
 						cboVehicleGearAttack.ValueMember = "Value";
 						cboVehicleGearAttack.DisplayMember = "Name";
 						cboVehicleGearAttack.DataSource = objASDF;
@@ -17755,7 +17793,11 @@ namespace Chummer
 							chkVehicleHomeNode.Visible = true;
 							chkVehicleHomeNode.Checked = objCommlink.HomeNode;
 						}
-					}
+                        cboVehicleGearAttack.EndUpdate();
+                        cboVehicleGearSleaze.EndUpdate();
+                        cboVehicleGearDataProcessing.EndUpdate();
+                        cboVehicleGearFirewall.EndUpdate();
+                    }
                 }
                 else
                 {
@@ -17956,7 +17998,11 @@ namespace Chummer
 						Commlink objCommlink = (Commlink)objGear;
 						List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-						cboVehicleGearAttack.BindingContext = new BindingContext();
+                        cboVehicleGearAttack.BeginUpdate();
+                        cboVehicleGearSleaze.BeginUpdate();
+                        cboVehicleGearDataProcessing.BeginUpdate();
+                        cboVehicleGearFirewall.BeginUpdate();
+                        cboVehicleGearAttack.BindingContext = new BindingContext();
 						cboVehicleGearAttack.ValueMember = "Value";
 						cboVehicleGearAttack.DisplayMember = "Name";
 						cboVehicleGearAttack.DataSource = objASDF;
@@ -17983,7 +18029,11 @@ namespace Chummer
 							chkVehicleHomeNode.Visible = true;
 							chkVehicleHomeNode.Checked = objCommlink.HomeNode;
 						}
-					}
+                        cboVehicleGearAttack.EndUpdate();
+                        cboVehicleGearSleaze.EndUpdate();
+                        cboVehicleGearDataProcessing.EndUpdate();
+                        cboVehicleGearFirewall.EndUpdate();
+                    }
                 }
                 else
                 {
@@ -18199,95 +18249,102 @@ namespace Chummer
 				}
 				else
 				{
-					
-						Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
-						Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+					Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
+					Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
 
-						if (objGear.MaxRating > 0)
+					if (objGear.MaxRating > 0)
+					{
+						_blnSkipRefresh = true;
+						lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+						nudVehicleRating.Minimum = 1;
+						nudVehicleRating.Maximum = objGear.MaxRating;
+						nudVehicleRating.Value = objGear.Rating;
+						nudVehicleRating.Enabled = true;
+						_blnSkipRefresh = false;
+					}
+					else
+					{
+						_blnSkipRefresh = true;
+						lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+						nudVehicleRating.Minimum = 0;
+						nudVehicleRating.Maximum = 0;
+						nudVehicleRating.Enabled = false;
+						_blnSkipRefresh = false;
+					}
+
+					lblVehicleName.Text = objGear.DisplayNameShort;
+					lblVehicleCategory.Text = objGear.DisplayCategory;
+					lblVehicleAvail.Text = objGear.TotalAvail(true);
+					lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+					lblVehicleHandling.Text = string.Empty;
+					lblVehicleAccel.Text = string.Empty;
+					lblVehicleSpeed.Text = string.Empty;
+					lblVehicleDevice.Text = string.Empty;
+					lblVehiclePilot.Text = string.Empty;
+					lblVehicleBody.Text = string.Empty;
+					lblVehicleArmor.Text = string.Empty;
+					lblVehicleSensor.Text = string.Empty;
+					lblVehiclePowertrainLabel.Visible = false;
+					lblVehiclePowertrain.Text = string.Empty;
+					lblVehicleCosmeticLabel.Visible = false;
+					lblVehicleCosmetic.Text = string.Empty;
+					lblVehicleElectromagneticLabel.Visible = false;
+					lblVehicleElectromagnetic.Text = string.Empty;
+					lblVehicleBodymodLabel.Visible = false;
+					lblVehicleBodymod.Text = string.Empty;
+					lblVehicleWeaponsmodLabel.Visible = false;
+					lblVehicleWeaponsmod.Text = string.Empty;
+					lblVehicleProtectionLabel.Visible = false;
+					lblVehicleProtection.Text = string.Empty;
+					lblVehicleDroneModSlotsLabel.Visible = false;
+					lblVehicleDroneModSlots.Text = string.Empty;
+					lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+					string strBook = _objOptions.LanguageBookShort(objGear.Source);
+					string strPage = objGear.Page;
+					lblVehicleSource.Text = strBook + " " + strPage;
+					tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+
+					if (objGear.GetType() == typeof(Commlink))
+					{
+						Commlink objCommlink = (Commlink)objGear;
+						List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+
+                        cboVehicleGearAttack.BeginUpdate();
+                        cboVehicleGearSleaze.BeginUpdate();
+                        cboVehicleGearDataProcessing.BeginUpdate();
+                        cboVehicleGearFirewall.BeginUpdate();
+                        cboVehicleGearAttack.BindingContext = new BindingContext();
+						cboVehicleGearAttack.ValueMember = "Value";
+						cboVehicleGearAttack.DisplayMember = "Name";
+						cboVehicleGearAttack.DataSource = objASDF;
+						cboVehicleGearAttack.SelectedIndex = 0;
+						cboVehicleGearAttack.Visible = true;
+						cboVehicleGearSleaze.BindingContext = new BindingContext();
+						cboVehicleGearSleaze.ValueMember = "Value";
+						cboVehicleGearSleaze.DisplayMember = "Name";
+						cboVehicleGearSleaze.DataSource = objASDF;
+						cboVehicleGearSleaze.SelectedIndex = 1;
+						cboVehicleGearDataProcessing.BindingContext = new BindingContext();
+						cboVehicleGearDataProcessing.ValueMember = "Value";
+						cboVehicleGearDataProcessing.DisplayMember = "Name";
+						cboVehicleGearDataProcessing.DataSource = objASDF;
+						cboVehicleGearDataProcessing.SelectedIndex = 2;
+						cboVehicleGearFirewall.BindingContext = new BindingContext();
+						cboVehicleGearFirewall.ValueMember = "Value";
+						cboVehicleGearFirewall.DisplayMember = "Name";
+						cboVehicleGearFirewall.DataSource = objASDF;
+						cboVehicleGearFirewall.SelectedIndex = 3;
+
+						if (_objCharacter.Metatype == "A.I.")
 						{
-							_blnSkipRefresh = true;
-							lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
-							nudVehicleRating.Minimum = 1;
-							nudVehicleRating.Maximum = objGear.MaxRating;
-							nudVehicleRating.Value = objGear.Rating;
-							nudVehicleRating.Enabled = true;
-							_blnSkipRefresh = false;
+							chkVehicleHomeNode.Visible = true;
+							chkVehicleHomeNode.Checked = objCommlink.HomeNode;
 						}
-						else
-						{
-							_blnSkipRefresh = true;
-							lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
-							nudVehicleRating.Minimum = 0;
-							nudVehicleRating.Maximum = 0;
-							nudVehicleRating.Enabled = false;
-							_blnSkipRefresh = false;
-						}
-
-						lblVehicleName.Text = objGear.DisplayNameShort;
-						lblVehicleCategory.Text = objGear.DisplayCategory;
-						lblVehicleAvail.Text = objGear.TotalAvail(true);
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
-						lblVehicleHandling.Text = string.Empty;
-						lblVehicleAccel.Text = string.Empty;
-						lblVehicleSpeed.Text = string.Empty;
-						lblVehicleDevice.Text = string.Empty;
-						lblVehiclePilot.Text = string.Empty;
-						lblVehicleBody.Text = string.Empty;
-						lblVehicleArmor.Text = string.Empty;
-						lblVehicleSensor.Text = string.Empty;
-						lblVehiclePowertrainLabel.Visible = false;
-						lblVehiclePowertrain.Text = string.Empty;
-						lblVehicleCosmeticLabel.Visible = false;
-						lblVehicleCosmetic.Text = string.Empty;
-						lblVehicleElectromagneticLabel.Visible = false;
-						lblVehicleElectromagnetic.Text = string.Empty;
-						lblVehicleBodymodLabel.Visible = false;
-						lblVehicleBodymod.Text = string.Empty;
-						lblVehicleWeaponsmodLabel.Visible = false;
-						lblVehicleWeaponsmod.Text = string.Empty;
-						lblVehicleProtectionLabel.Visible = false;
-						lblVehicleProtection.Text = string.Empty;
-						lblVehicleDroneModSlotsLabel.Visible = false;
-						lblVehicleDroneModSlots.Text = string.Empty;
-						lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
-						string strBook = _objOptions.LanguageBookShort(objGear.Source);
-						string strPage = objGear.Page;
-						lblVehicleSource.Text = strBook + " " + strPage;
-						tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
-
-						if (objGear.GetType() == typeof(Commlink))
-						{
-							Commlink objCommlink = (Commlink)objGear;
-							List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
-
-							cboVehicleGearAttack.BindingContext = new BindingContext();
-							cboVehicleGearAttack.ValueMember = "Value";
-							cboVehicleGearAttack.DisplayMember = "Name";
-							cboVehicleGearAttack.DataSource = objASDF;
-							cboVehicleGearAttack.SelectedIndex = 0;
-							cboVehicleGearAttack.Visible = true;
-							cboVehicleGearSleaze.BindingContext = new BindingContext();
-							cboVehicleGearSleaze.ValueMember = "Value";
-							cboVehicleGearSleaze.DisplayMember = "Name";
-							cboVehicleGearSleaze.DataSource = objASDF;
-							cboVehicleGearSleaze.SelectedIndex = 1;
-							cboVehicleGearDataProcessing.BindingContext = new BindingContext();
-							cboVehicleGearDataProcessing.ValueMember = "Value";
-							cboVehicleGearDataProcessing.DisplayMember = "Name";
-							cboVehicleGearDataProcessing.DataSource = objASDF;
-							cboVehicleGearDataProcessing.SelectedIndex = 2;
-							cboVehicleGearFirewall.BindingContext = new BindingContext();
-							cboVehicleGearFirewall.ValueMember = "Value";
-							cboVehicleGearFirewall.DisplayMember = "Name";
-							cboVehicleGearFirewall.DataSource = objASDF;
-							cboVehicleGearFirewall.SelectedIndex = 3;
-
-							if (_objCharacter.Metatype == "A.I.")
-							{
-								chkVehicleHomeNode.Visible = true;
-								chkVehicleHomeNode.Checked = objCommlink.HomeNode;
-							}
-						}
+                        cboVehicleGearAttack.EndUpdate();
+                        cboVehicleGearSleaze.EndUpdate();
+                        cboVehicleGearDataProcessing.EndUpdate();
+                        cboVehicleGearFirewall.EndUpdate();
+                    }
 				}
             }
             else if (treVehicles.SelectedNode.Level > 5)
@@ -18353,7 +18410,11 @@ namespace Chummer
                 {
 					Commlink objCommlink = (Commlink)objGear;
 					List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
-					cboVehicleGearAttack.BindingContext = new BindingContext();
+                    cboVehicleGearAttack.BeginUpdate();
+                    cboVehicleGearSleaze.BeginUpdate();
+                    cboVehicleGearDataProcessing.BeginUpdate();
+                    cboVehicleGearFirewall.BeginUpdate();
+                    cboVehicleGearAttack.BindingContext = new BindingContext();
 					cboVehicleGearAttack.ValueMember = "Value";
 					cboVehicleGearAttack.DisplayMember = "Name";
 					cboVehicleGearAttack.DataSource = objASDF;
@@ -18380,7 +18441,11 @@ namespace Chummer
 						chkVehicleHomeNode.Visible = true;
 						chkVehicleHomeNode.Checked = objCommlink.HomeNode;
 					}
-				}
+                    cboVehicleGearAttack.EndUpdate();
+                    cboVehicleGearSleaze.EndUpdate();
+                    cboVehicleGearDataProcessing.EndUpdate();
+                    cboVehicleGearFirewall.EndUpdate();
+                }
 			}
         }
 
@@ -18413,10 +18478,12 @@ namespace Chummer
                 if (blnAddItem)
                     lstCyberwareGrades.Add(objItem);
             }
+            cboCyberwareGrade.BeginUpdate();
             //cboCyberwareGrade.DataSource = null;
             cboCyberwareGrade.ValueMember = "Value";
             cboCyberwareGrade.DisplayMember = "Name";
             cboCyberwareGrade.DataSource = lstCyberwareGrades;
+            cboCyberwareGrade.EndUpdate();
         }
 
 		/// <summary>

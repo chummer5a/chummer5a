@@ -196,7 +196,8 @@ namespace Chummer
 
 			SortListItem objSort = new SortListItem();
 			_lstCategory.Sort(objSort.Compare);
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
@@ -218,8 +219,9 @@ namespace Chummer
             {
                 cboCategory.SelectedIndex = 0;
             }
+            cboCategory.EndUpdate();
 
-			Height = cmdOK.Bottom + 40;
+            Height = cmdOK.Bottom + 40;
 			lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
 
 			// Add Possession and Inhabitation to the list of Critter Tradition variations.
@@ -250,10 +252,12 @@ namespace Chummer
 
 			SortListItem objSortPossession = new SortListItem();
 			lstMethods.Sort(objSortPossession.Compare);
-			cboPossessionMethod.ValueMember = "Value";
+            cboPossessionMethod.BeginUpdate();
+            cboPossessionMethod.ValueMember = "Value";
 			cboPossessionMethod.DisplayMember = "Name";
 			cboPossessionMethod.DataSource = lstMethods;
 			cboPossessionMethod.SelectedIndex = cboPossessionMethod.FindStringExact(objPossession.Name);
+            cboPossessionMethod.EndUpdate();
             PopulateMetatypes();
         }
 		#endregion
@@ -313,13 +317,15 @@ namespace Chummer
 					lstMetavariants.Add(objMetavariant);
 				}
 
-				cboMetavariant.ValueMember = "Value";
+                cboMetavariant.BeginUpdate();
+                cboMetavariant.ValueMember = "Value";
 				cboMetavariant.DisplayMember = "Name";
 				cboMetavariant.DataSource = lstMetavariants;
 
 				// Select the None item.
 				cboMetavariant.SelectedIndex = 0;
-				lblBP.Text = objXmlMetatype["karma"].InnerText;
+                cboMetavariant.EndUpdate();
+                lblBP.Text = objXmlMetatype["karma"].InnerText;
 
 				// If the Metatype has Force enabled, show the Force NUD.
 				if (objXmlMetatype["forcecreature"] != null || objXmlMetatype["essmax"].InnerText.Contains("D6"))
@@ -400,10 +406,12 @@ namespace Chummer
 				objNone.Name = LanguageManager.Instance.GetString("String_None");
 				lstMetavariants.Add(objNone);
 
-				cboMetavariant.ValueMember = "Value";
+                cboMetavariant.BeginUpdate();
+                cboMetavariant.ValueMember = "Value";
 				cboMetavariant.DisplayMember = "Name";
 				cboMetavariant.DataSource = lstMetavariants;
-			}
+                cboMetavariant.EndUpdate();
+            }
         }
 
         private void lstMetatypes_DoubleClick(object sender, EventArgs e)
@@ -1175,13 +1183,15 @@ namespace Chummer
             }
 			SortListItem objSort = new SortListItem();
 			lstMetatype.Sort(objSort.Compare);
-			lstMetatypes.DataSource = null;
+            lstMetatypes.BeginUpdate();
+            lstMetatypes.DataSource = null;
 			lstMetatypes.ValueMember = "Value";
 			lstMetatypes.DisplayMember = "Name";
 			lstMetatypes.DataSource = lstMetatype;
 			lstMetatypes.SelectedIndex = -1;
+            lstMetatypes.EndUpdate();
 
-			if (cboCategory.SelectedValue.ToString().EndsWith("Spirits"))
+            if (cboCategory.SelectedValue.ToString().EndsWith("Spirits"))
 			{
 				chkBloodSpirit.Visible = true;
 				chkPossessionBased.Visible = true;

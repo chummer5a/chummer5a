@@ -188,10 +188,12 @@ namespace Chummer
             }
 		    SortListItem objSort = new SortListItem();
 		    _lstCategory.Sort(objSort.Compare);
-		    cboCategory.DataSource = null;
+            cboCategory.BeginUpdate();
+            cboCategory.DataSource = null;
 		    cboCategory.ValueMember = "Value";
 		    cboCategory.DisplayMember = "Name";
 		    cboCategory.DataSource = _lstCategory;
+            cboCategory.EndUpdate();
 
             if (blnIsDrake)
             {

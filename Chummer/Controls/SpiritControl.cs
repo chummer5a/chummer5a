@@ -504,13 +504,15 @@ namespace Chummer
 				lstCritters.Add(objItem);
 			}
 
-			cboSpiritName.DisplayMember = "Name";
+            cboSpiritName.BeginUpdate();
+            cboSpiritName.DisplayMember = "Name";
 			cboSpiritName.ValueMember = "Value";
 			cboSpiritName.DataSource = lstCritters;
 
 			// Set the control back to its original value.
 			cboSpiritName.SelectedValue = strCurrentValue;
-		}
+            cboSpiritName.EndUpdate();
+        }
 
 		/// <summary>
 		/// Create a Critter, put them into Career Mode, link them, and open the newly-created Critter.

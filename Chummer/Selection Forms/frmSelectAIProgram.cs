@@ -95,10 +95,12 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
+            cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
+            cboCategory.EndUpdate();
 
             // Select the first Category in the list.
             cboCategory.SelectedIndex = 0;
@@ -325,10 +327,12 @@ namespace Chummer
 
             SortListItem objSort = new SortListItem();
             lstPrograms.Sort(objSort.Compare);
+            lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;
             lstAIPrograms.ValueMember = "Value";
             lstAIPrograms.DisplayMember = "Name";
             lstAIPrograms.DataSource = lstPrograms;
+            lstAIPrograms.EndUpdate();
         }
 
         /// <summary>

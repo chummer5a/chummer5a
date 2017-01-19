@@ -68,15 +68,16 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerText;
 				lstCategory.Add(objItem);
 			}
-
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = lstCategory;
 
 			// Select the first Skill in the list.
 			cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-			if (cboCategory.Items.Count == 1)
+            if (cboCategory.Items.Count == 1)
 				cmdOK_Click(sender, e);
 		}
 

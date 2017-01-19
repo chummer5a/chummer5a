@@ -17,10 +17,13 @@ namespace Chummer.UI.Skills
 			//Display
 			lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
 
-			cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
-			cboType.DisplayMember = nameof(ListItem.Name);
+            cboType.BeginUpdate();
+            cboSkill.BeginUpdate();
+            cboSpec.BeginUpdate();
+            cboType.DisplayMember = nameof(ListItem.Name);
 			cboType.ValueMember = nameof(ListItem.Value);
-			cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
+            cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
+            cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
 
 			if (skill.CharacterObject.Created)
@@ -67,19 +70,19 @@ namespace Chummer.UI.Skills
 				{
 					chkKarma.Visible = false;
 				}
-				
-				cboSkill.DataSource = skill.KnowledgeSkillCatagories;
+
 				cboSkill.DisplayMember = nameof(ListItem.Name);
 				cboSkill.ValueMember = nameof(ListItem.Value);
-				cboSkill.SelectedIndex = -1;
+                cboSkill.DataSource = skill.KnowledgeSkillCatagories;
+                cboSkill.SelectedIndex = -1;
 				cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
-				
+
 				//dropdown/spec
-				cboSpec.DataSource = skill.CGLSpecializations;
 				cboSpec.DisplayMember = nameof(ListItem.Name);
 				cboSpec.ValueMember = nameof(ListItem.Value);
-				cboSpec.SelectedIndex = -1;
-				
+                cboSpec.DataSource = skill.CGLSpecializations;
+                cboSpec.SelectedIndex = -1;
+
 				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
 				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -88,10 +91,10 @@ namespace Chummer.UI.Skills
 					if (args.PropertyName == nameof(Skill.CGLSpecializations))
 					{
 						cboSpec.DataSource = null;
-						cboSpec.DataSource = skill.CGLSpecializations;
 						cboSpec.DisplayMember = nameof(ListItem.Name);
 						cboSpec.ValueMember = nameof(ListItem.Value);
-						cboSpec.MaxDropDownItems = Math.Max(1, skill.CGLSpecializations.Count);
+                        cboSpec.DataSource = skill.CGLSpecializations;
+                        cboSpec.MaxDropDownItems = Math.Max(1, skill.CGLSpecializations.Count);
 					}
 				};
 			}
@@ -115,7 +118,10 @@ namespace Chummer.UI.Skills
 			{
 				cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill); };
 			}
-		}
+            cboType.EndUpdate();
+            cboSkill.EndUpdate();
+            cboSpec.EndUpdate();
+        }
 
 		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{

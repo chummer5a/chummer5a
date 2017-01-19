@@ -579,10 +579,11 @@ namespace Chummer
 
 			SortListItem objContactSort = new SortListItem();
 			lstCategories.Sort(objContactSort.Compare);
-			cboContactRole.DataSource = lstCategories;
+            cboContactRole.BeginUpdate();
 			cboContactRole.ValueMember = "Value";
 			cboContactRole.DisplayMember = "Name";
-			chkGroup.Checked = _objContact.IsGroup;
+            cboContactRole.DataSource = lstCategories;
+            chkGroup.Checked = _objContact.IsGroup;
 			chkFree.Checked = _objContact.Free;
 			if (_objContact.MadeMan)
 			{
@@ -591,8 +592,9 @@ namespace Chummer
 
 			if (!string.IsNullOrEmpty(_strContactRole))
 				cboContactRole.Text = _strContactRole;
+            cboContactRole.EndUpdate();
 
-			_loading = false;
+            _loading = false;
 		}
 
 	    private void MoveControls()

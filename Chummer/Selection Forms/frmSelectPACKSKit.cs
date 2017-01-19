@@ -73,7 +73,8 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
@@ -85,7 +86,8 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
-		}
+            cboCategory.EndUpdate();
+        }
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -106,12 +108,14 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstKit.Sort(objSort.Compare);
-			lstKits.DataSource = null;
+            lstKits.BeginUpdate();
+            lstKits.DataSource = null;
 			lstKits.ValueMember = "Value";
 			lstKits.DisplayMember = "Name";
 			lstKits.DataSource = lstKit;
+            lstKits.EndUpdate();
 
-			if (lstKits.Items.Count == 0)
+            if (lstKits.Items.Count == 0)
 				treContents.Nodes.Clear();
 
 			if (cboCategory.SelectedValue.ToString() == "Custom")

@@ -167,10 +167,12 @@ namespace Chummer
 
 			SortListItem objSort = new SortListItem();
 			lstAccessories.Sort(objSort.Compare);
-			lstAccessory.ValueMember = "Value";
+            lstAccessory.BeginUpdate();
+            lstAccessory.ValueMember = "Value";
 			lstAccessory.DisplayMember = "Name";
 			lstAccessory.DataSource = lstAccessories;
-		}
+            lstAccessory.EndUpdate();
+        }
 
 		private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
 		{

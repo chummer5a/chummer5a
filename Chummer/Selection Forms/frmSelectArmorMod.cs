@@ -100,10 +100,12 @@ namespace Chummer
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 			SortListItem objSort = new SortListItem();
 			lstMods.Sort(objSort.Compare);
-			lstMod.ValueMember = "Value";
+            lstMod.BeginUpdate();
+            lstMod.ValueMember = "Value";
 			lstMod.DisplayMember = "Name";
 			lstMod.DataSource = lstMods;
-		}
+            lstMod.EndUpdate();
+        }
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
 		{

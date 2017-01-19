@@ -81,10 +81,12 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstOption.Sort(objSort.Compare);
-			lstOptions.ValueMember = "Value";
+            lstOptions.BeginUpdate();
+            lstOptions.ValueMember = "Value";
 			lstOptions.DisplayMember = "Name";
 			lstOptions.DataSource = lstOption;
-		}
+            lstOptions.EndUpdate();
+        }
 
 		private void lstOptions_SelectedIndexChanged(object sender, EventArgs e)
 		{

@@ -63,11 +63,13 @@ namespace Chummer
 			lstMethod.Add(itmLarge);
 			lstMethod.Add(itmReallyLarge);
 
-			cboMethod.ValueMember = "Value";
+            cboMethod.BeginUpdate();
+            cboMethod.ValueMember = "Value";
 			cboMethod.DisplayMember = "Name";
 			cboMethod.DataSource = lstMethod;
 			cboMethod.SelectedIndex = 0;
-		}
+            cboMethod.EndUpdate();
+        }
 
 		private void cmdRollDice_Click(object sender, EventArgs e)
 		{

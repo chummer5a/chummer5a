@@ -82,10 +82,11 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
-			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 			// Select the first Category in the list.
 			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
@@ -94,6 +95,7 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
             if (chkBrowse.Checked)
                 LoadGrid();
@@ -166,10 +168,12 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstArmors.Sort(objSort.Compare);
-			lstArmor.DataSource = null;
+            lstArmor.BeginUpdate();
+            lstArmor.DataSource = null;
 			lstArmor.ValueMember = "Value";
 			lstArmor.DisplayMember = "Name";
 			lstArmor.DataSource = lstArmors;
+            lstArmor.EndUpdate();
 
             if (chkBrowse.Checked)
                 LoadGrid();
@@ -229,11 +233,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstArmors.Sort(objSort.Compare);
-			lstArmor.DataSource = null;
+            lstArmor.BeginUpdate();
+            lstArmor.DataSource = null;
 			lstArmor.ValueMember = "Value";
 			lstArmor.DisplayMember = "Name";
 			lstArmor.DataSource = lstArmors;
-		}
+            lstArmor.EndUpdate();
+        }
 
 		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
 		{
@@ -396,10 +402,12 @@ namespace Chummer
                 }
                 SortListItem objSort = new SortListItem();
                 lstArmors.Sort(objSort.Compare);
+                lstArmor.BeginUpdate();
                 lstArmor.DataSource = null;
                 lstArmor.ValueMember = "Value";
                 lstArmor.DisplayMember = "Name";
                 lstArmor.DataSource = lstArmors;
+                lstArmor.EndUpdate();
             }
         }
 

@@ -88,7 +88,8 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
@@ -100,8 +101,9 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-				lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+            lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
 
             BuildQualityList();
         }
@@ -267,9 +269,11 @@ namespace Chummer
 		{
 			set
 			{
-				cboCategory.DataSource = null;
+                cboCategory.BeginUpdate();
+                cboCategory.DataSource = null;
 				cboCategory.Items.Add(value);
-			}
+                cboCategory.EndUpdate();
+            }
 		}
 
 		/// <summary>
@@ -313,7 +317,6 @@ namespace Chummer
 		private void BuildQualityList()
 		{
 			List<ListItem> lstQuality = new List<ListItem>();
-            lstQualities.DataSource = null;
             XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
             if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
@@ -470,11 +473,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstQuality.Sort(objSort.Compare);
-			lstQualities.DataSource = null;
+            lstQualities.BeginUpdate();
+            lstQualities.DataSource = null;
 			lstQualities.ValueMember = "Value";
 			lstQualities.DisplayMember = "Name";
 			lstQualities.DataSource = lstQuality;
-		}
+            lstQualities.EndUpdate();
+        }
 
 		/// <summary>
 		/// Accept the selected item and close the form.

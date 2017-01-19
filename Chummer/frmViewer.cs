@@ -112,7 +112,8 @@ namespace Chummer
 		        }
 		    }
 
-		    cboXSLT.ValueMember = "Value";
+            cboXSLT.BeginUpdate();
+            cboXSLT.ValueMember = "Value";
 			cboXSLT.DisplayMember = "Name";
 			cboXSLT.DataSource = lstFiles;
 
@@ -120,7 +121,8 @@ namespace Chummer
 			// If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
 			if (string.IsNullOrEmpty(cboXSLT.Text))
 				cboXSLT.SelectedValue = "Shadowrun 5";
-			GenerateOutput();
+            cboXSLT.EndUpdate();
+            GenerateOutput();
 			_blnLoading = false;
 		}
 

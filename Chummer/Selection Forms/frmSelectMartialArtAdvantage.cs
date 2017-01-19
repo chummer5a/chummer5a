@@ -86,11 +86,13 @@ namespace Chummer
             }
 			SortListItem objSort = new SortListItem();
 			lstAdvantage.Sort(objSort.Compare);
-			lstAdvantages.DataSource = null;
+            lstAdvantages.BeginUpdate();
+            lstAdvantages.DataSource = null;
 			lstAdvantages.ValueMember = "Value";
 			lstAdvantages.DisplayMember = "Name";
 			lstAdvantages.DataSource = lstAdvantage;
-		}
+            lstAdvantages.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{

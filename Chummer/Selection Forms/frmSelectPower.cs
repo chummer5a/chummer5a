@@ -90,10 +90,12 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
-			lstPowers.DataSource = null;
+            lstPowers.BeginUpdate();
+            lstPowers.DataSource = null;
 			lstPowers.ValueMember = "Value";
 			lstPowers.DisplayMember = "Name";
 			lstPowers.DataSource = lstPower;
+            lstPowers.EndUpdate();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -163,11 +165,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
-			lstPowers.DataSource = null;
+            lstPowers.BeginUpdate();
+            lstPowers.DataSource = null;
 			lstPowers.ValueMember = "Value";
 			lstPowers.DisplayMember = "Name";
 			lstPowers.DataSource = lstPower;
-		}
+            lstPowers.EndUpdate();
+        }
 
 		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
 		{

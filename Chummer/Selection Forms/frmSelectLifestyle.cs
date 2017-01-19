@@ -85,7 +85,8 @@ namespace Chummer
 				lstLifestyle.Add(objItem);
 				}
 			}
-			cboLifestyle.ValueMember = "Value";
+            cboLifestyle.BeginUpdate();
+            cboLifestyle.ValueMember = "Value";
 			cboLifestyle.DisplayMember = "Name";
 			cboLifestyle.DataSource = lstLifestyle;
 
@@ -95,11 +96,11 @@ namespace Chummer
 			}
 			if (cboLifestyle.SelectedIndex == -1)
 				cboLifestyle.SelectedIndex = 0;
+            cboLifestyle.EndUpdate();
 
-            
 
-			// Fill the Options list.
-			foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+            // Fill the Options list.
+            foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
 			{
 				TreeNode nodOption = new TreeNode();
 

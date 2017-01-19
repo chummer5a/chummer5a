@@ -120,11 +120,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			_lstCategory.Sort(objSort.Compare);
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
+            cboCategory.EndUpdate();
 
-			BuildModList();
+            BuildModList();
 
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -226,11 +228,13 @@ namespace Chummer
 					lstMods.Add(objItem);
             NextItem:;
 			}
-			lstMod.DataSource = null;
+            lstMod.BeginUpdate();
+            lstMod.DataSource = null;
 			lstMod.ValueMember = "Value";
 			lstMod.DisplayMember = "Name";
 			lstMod.DataSource = lstMods;
-		}
+            lstMod.EndUpdate();
+        }
 
 		private void nudRating_ValueChanged(object sender, EventArgs e)
 		{
@@ -620,11 +624,13 @@ namespace Chummer
                 }
 			SortListItem objSort = new SortListItem();
 			lstMods.Sort(objSort.Compare);
-			lstMod.DataSource = null;
+            lstMod.BeginUpdate();
+            lstMod.DataSource = null;
 			lstMod.ValueMember = "Value";
 			lstMod.DisplayMember = "Name";
 			lstMod.DataSource = lstMods;
-		}
+            lstMod.EndUpdate();
+        }
 		
 		/// <summary>
 		/// Accept the selected item and close the form.

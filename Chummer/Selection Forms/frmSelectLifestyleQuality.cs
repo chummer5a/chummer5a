@@ -90,6 +90,7 @@ namespace Chummer
                     objItem.Name = objXmlCategory.InnerXml;
                 _lstCategory.Add(objItem);
             }
+            cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
@@ -102,6 +103,7 @@ namespace Chummer
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.Created)
@@ -267,8 +269,10 @@ namespace Chummer
         {
             set
             {
+                cboCategory.BeginUpdate();
                 cboCategory.DataSource = null;
                 cboCategory.Items.Add(value);
+                cboCategory.EndUpdate();
             }
         }
 
@@ -381,10 +385,12 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstLifestyleQuality.Sort(objSort.Compare);
+            lstLifestyleQualities.BeginUpdate();
             lstLifestyleQualities.DataSource = null;
             lstLifestyleQualities.ValueMember = "Value";
             lstLifestyleQualities.DisplayMember = "Name";
             lstLifestyleQualities.DataSource = lstLifestyleQuality;
+            lstLifestyleQualities.EndUpdate();
         }
 
         /// <summary>

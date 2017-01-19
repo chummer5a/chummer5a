@@ -41,8 +41,6 @@ namespace Chummer.UI.Skills
 			_attributeActive = skill.AttributeObject;
 			_attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
 			Skill_PropertyChanged(null, null);  //if null it updates all
-			
-			
 			_normal = btnAttribute.Font;
 			_italic = new Font(_normal, FontStyle.Italic);
 			if (skill.CharacterObject.Created)
@@ -76,7 +74,6 @@ namespace Chummer.UI.Skills
 			else
 			{
 				lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
-				
 				//Up down boxes
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -85,7 +82,6 @@ namespace Chummer.UI.Skills
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
 					DataSourceUpdateMode.OnPropertyChanged);
-				
 				if (skill.CharacterObject.BuildMethod.HaveSkillPoints())
 				{
 					chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
@@ -97,12 +93,11 @@ namespace Chummer.UI.Skills
 					chkKarma.Visible = false;
 				}
 
-				
-				if (skill.IsExoticSkill)
+                cboSpec.BeginUpdate();
+                if (skill.IsExoticSkill)
 				{
 					cboSpec.Enabled = false;
 					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
 				}
 				else
 				{
@@ -115,9 +110,9 @@ namespace Chummer.UI.Skills
 					cboSpec.SelectedIndex = -1;
 
 					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
 				}
-			}
+                cboSpec.EndUpdate();
+            }
 
 			//Delete button
 			if (skill.AllowDelete)
@@ -241,11 +236,13 @@ namespace Chummer.UI.Skills
 			List<ListItem> list =  new[] {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"}.Select(
 				x => new ListItem(x, LanguageManager.Instance.GetString($"String_Attribute{x}Short"))).ToList();
 
-			cboSelectAttribute.ValueMember = "Value";
+            cboSelectAttribute.BeginUpdate();
+            cboSelectAttribute.ValueMember = "Value";
 			cboSelectAttribute.DisplayMember = "Name";
 			cboSelectAttribute.DataSource = list;
 			cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
-		}
+            cboSelectAttribute.EndUpdate();
+        }
 
 		private void btnAttribute_Click(object sender, EventArgs e)
 		{

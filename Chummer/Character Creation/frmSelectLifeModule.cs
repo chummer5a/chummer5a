@@ -203,7 +203,8 @@ namespace Chummer
 
 		private void chkLimitList_Click(object sender, EventArgs e)
 		{
-			lblStage.Visible = chkLimitList.Checked;
+            cboStage.BeginUpdate();
+            lblStage.Visible = chkLimitList.Checked;
 			cboStage.Visible = !chkLimitList.Checked;
 
 			if (cboStage.Visible)
@@ -278,8 +279,8 @@ namespace Chummer
 				_strWorkStage = _strDefaultStageName;
 				BuildTree(GetSelectString());
 			}
-
-		}
+            cboStage.EndUpdate();
+        }
 
 		private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
 		{

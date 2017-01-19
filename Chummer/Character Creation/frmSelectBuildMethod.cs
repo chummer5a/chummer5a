@@ -66,11 +66,13 @@ namespace Chummer
 	        lstBuildMethod.Add(objPriority);
             lstBuildMethod.Add(objKarma);
             lstBuildMethod.Add(objSumtoTen);
-            cboBuildMethod.DataSource = lstBuildMethod;
+            cboBuildMethod.BeginUpdate();
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
+            cboBuildMethod.DataSource = lstBuildMethod;
 
             cboBuildMethod.SelectedValue = _objOptions.BuildMethod;
+            cboBuildMethod.EndUpdate();
             nudKarma.Value = _objOptions.BuildPoints;
             nudMaxAvail.Value = _objOptions.Availability;
 	        

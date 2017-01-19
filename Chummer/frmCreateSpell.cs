@@ -65,7 +65,11 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboType.BeginUpdate();
+            cboRange.BeginUpdate();
+            cboDuration.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = lstCategory;
 			cboCategory.SelectedIndex = 0;
@@ -119,8 +123,12 @@ namespace Chummer
 			cboDuration.DataSource = lstDurations;
 			cboDuration.SelectedIndex = 0;
 			_blnLoading = false;
+            cboCategory.EndUpdate();
+            cboType.EndUpdate();
+            cboRange.EndUpdate();
+            cboDuration.EndUpdate();
 
-			CalculateDrain();
+            CalculateDrain();
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)

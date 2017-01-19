@@ -68,11 +68,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstManeuver.Sort(objSort.Compare);
-			lstManeuvers.DataSource = null;
+            lstManeuvers.BeginUpdate();
+            lstManeuvers.DataSource = null;
 			lstManeuvers.ValueMember = "Value";
 			lstManeuvers.DisplayMember = "Name";
 			lstManeuvers.DataSource = lstManeuver;
-		}
+            lstManeuvers.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{

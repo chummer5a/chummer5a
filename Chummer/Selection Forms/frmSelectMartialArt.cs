@@ -78,7 +78,8 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstMartialArt.Sort(objSort.Compare);
-			lstMartialArts.DataSource = null;
+            lstMartialArts.BeginUpdate();
+            lstMartialArts.DataSource = null;
 			lstMartialArts.ValueMember = "Value";
 			lstMartialArts.DisplayMember = "Name";
 			lstMartialArts.DataSource = lstMartialArt;
@@ -88,7 +89,8 @@ namespace Chummer
 				lstMartialArts.SelectedIndex = 0;
 				AcceptForm();
 			}
-		}
+            lstMartialArts.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{

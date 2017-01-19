@@ -100,8 +100,13 @@ namespace Chummer.UI.Skills
 			_sortKnowledgeList = GenerateKnowledgeSortList();
 
 			parts.TaskEnd("GenerateSortList()");
-			
-			cboDisplayFilter.DataSource = _dropDownList;
+
+            cboDisplayFilter.BeginUpdate();
+            cboDisplayFilterKnowledge.BeginUpdate();
+            cboSort.BeginUpdate();
+            cboSortKnowledge.BeginUpdate();
+
+            cboDisplayFilter.DataSource = _dropDownList;
 			cboDisplayFilter.ValueMember = "Item2";
 			cboDisplayFilter.DisplayMember = "Item1";
 			cboDisplayFilter.SelectedIndex = 0;
@@ -126,7 +131,12 @@ namespace Chummer.UI.Skills
 			cboSortKnowledge.SelectedIndex = 0;
 			cboSortKnowledge.MaxDropDownItems = _sortKnowledgeList.Count;
 
-			parts.TaskEnd("_sort databind");
+            cboDisplayFilter.EndUpdate();
+            cboDisplayFilterKnowledge.EndUpdate();
+            cboSort.EndUpdate();
+            cboSortKnowledge.EndUpdate();
+
+            parts.TaskEnd("_sort databind");
 
 			_skills.ChildPropertyChanged += ChildPropertyChanged;
 			_groups.ChildPropertyChanged += ChildPropertyChanged;

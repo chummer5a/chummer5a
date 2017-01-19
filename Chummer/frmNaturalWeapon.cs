@@ -92,22 +92,28 @@ namespace Chummer
 			objDVStun.Name = LanguageManager.Instance.GetString("String_DamageStun");
 			lstDVType.Add(objDVStun);
 
-			// Bind the Lists to the ComboBoxes.
-			cboSkill.ValueMember = "Value";
+            // Bind the Lists to the ComboBoxes.
+            cboSkill.BeginUpdate();
+            cboSkill.ValueMember = "Value";
 			cboSkill.DisplayMember = "Name";
 			cboSkill.DataSource = lstSkills;
 			cboSkill.SelectedIndex = 0;
+            cboSkill.EndUpdate();
 
-			cboDVBase.ValueMember = "Value";
+            cboDVBase.BeginUpdate();
+            cboDVBase.ValueMember = "Value";
 			cboDVBase.DisplayMember = "Name";
 			cboDVBase.DataSource = lstDVBase;
 			cboDVBase.SelectedIndex = 0;
+            cboDVBase.EndUpdate();
 
-			cboDVType.ValueMember = "Value";
+            cboDVType.BeginUpdate();
+            cboDVType.ValueMember = "Value";
 			cboDVType.DisplayMember = "Name";
 			cboDVType.DataSource = lstDVType;
 			cboDVType.SelectedIndex = 0;
-		}
+            cboDVType.EndUpdate();
+        }
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{

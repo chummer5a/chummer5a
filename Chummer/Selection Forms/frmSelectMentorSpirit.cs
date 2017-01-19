@@ -76,10 +76,12 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstMentors.Sort(objSort.Compare);
+            lstMentor.BeginUpdate();
             lstMentor.DataSource = null;
             lstMentor.ValueMember = "Value";
             lstMentor.DisplayMember = "Name";
             lstMentor.DataSource = lstMentors;
+            lstMentor.EndUpdate();
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -109,7 +111,9 @@ namespace Chummer
 			else
 				lblDisadvantage.Text = objXmlMentor["disadvantage"].InnerText;
 
-			cboChoice1.DataSource = null;
+            cboChoice1.BeginUpdate();
+            cboChoice2.BeginUpdate();
+            cboChoice1.DataSource = null;
 			cboChoice2.DataSource = null;
 
 			// If the Mentor offers a choice of bonuses, build the list and let the user select one.
@@ -179,8 +183,10 @@ namespace Chummer
 				lblChoice2.Visible = false;
 				cboChoice2.Visible = false;
 			}
+            cboChoice1.EndUpdate();
+            cboChoice2.EndUpdate();
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText);
 			string strPage = objXmlMentor["page"].InnerText;
 			if (objXmlMentor["altpage"] != null)
 				strPage = objXmlMentor["altpage"].InnerText;

@@ -850,9 +850,11 @@ namespace Chummer
 			lstBuildMethod.Add(objPriority);
             lstBuildMethod.Add(objKarma);
 			lstBuildMethod.Add(objSumtoTen);
-			cboBuildMethod.DataSource = lstBuildMethod;
+            cboBuildMethod.BeginUpdate();
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
+            cboBuildMethod.DataSource = lstBuildMethod;
+            cboBuildMethod.EndUpdate();
         }
 
         private void PopulateEssenceDecimalsList()
@@ -870,9 +872,11 @@ namespace Chummer
             lstDecimals.Add(objTwo);
             lstDecimals.Add(objFour);
 
+            cboEssenceDecimals.BeginUpdate();
             cboEssenceDecimals.ValueMember = "Value";
             cboEssenceDecimals.DisplayMember = "Name";
             cboEssenceDecimals.DataSource = lstDecimals;
+            cboEssenceDecimals.EndUpdate();
         }
 
         private void PopulateLimbCountList()
@@ -897,10 +901,12 @@ namespace Chummer
 				lstLimbCount.Add(objLimbCount);
 	        }
 
+            cboLimbCount.BeginUpdate();
             cboLimbCount.ValueMember = "Value";
             cboLimbCount.DisplayMember = "Name";
             cboLimbCount.DataSource = lstLimbCount;
-		}
+            cboLimbCount.EndUpdate();
+        }
 
 		private void PopulatePDFParameters()
 		{
@@ -923,11 +929,13 @@ namespace Chummer
 				}
 			}
 
-			cboPDFParameters.ValueMember = "Value";
+            cboPDFParameters.BeginUpdate();
+            cboPDFParameters.ValueMember = "Value";
 			cboPDFParameters.DisplayMember = "Name";
 			cboPDFParameters.DataSource = lstPdfParameters;
 			cboPDFParameters.SelectedIndex = intIndex;
-		}
+            cboPDFParameters.EndUpdate();
+        }
 
 		private void SetToolTips()
         {
@@ -975,9 +983,11 @@ namespace Chummer
                 lstSettings.Add(objItem);
             }
 
+            cboSetting.BeginUpdate();
             cboSetting.ValueMember = "Value";
             cboSetting.DisplayMember = "Name";
             cboSetting.DataSource = lstSettings;
+            cboSetting.EndUpdate();
         }
 
         private void PopulateLanguageList()
@@ -1016,9 +1026,11 @@ namespace Chummer
             SortListItem objSort = new SortListItem();
             lstLanguages.Sort(objSort.Compare);
 
+            cboLanguage.BeginUpdate();
             cboLanguage.ValueMember = "Value";
             cboLanguage.DisplayMember = "Name";
             cboLanguage.DataSource = lstLanguages;
+            cboLanguage.EndUpdate();
         }
 
         private void PopulateGlobalOptions()
@@ -1137,9 +1149,11 @@ namespace Chummer
             lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
             lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
 
+            cboXSLT.BeginUpdate();
             cboXSLT.ValueMember = "Value";
             cboXSLT.DisplayMember = "Name";
             cboXSLT.DataSource = lstFiles;
+            cboXSLT.EndUpdate();
         }
 
         private void SetDefaultValueForSettingsList()

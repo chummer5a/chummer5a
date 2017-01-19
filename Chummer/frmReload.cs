@@ -76,15 +76,19 @@ namespace Chummer
 				lstAmmo.Add(objAmmo);
 			}
 
-			// Populate the lists.
-			cboAmmo.DataSource = lstAmmo;
+            // Populate the lists.
+            cboAmmo.BeginUpdate();
 			cboAmmo.ValueMember = "Value";
 			cboAmmo.DisplayMember = "Name";
+            cboAmmo.DataSource = lstAmmo;
+            cboAmmo.EndUpdate();
 
-			cboType.DataSource = _lstCount;
+            cboType.BeginUpdate();
+            cboType.DataSource = _lstCount;
+            cboType.EndUpdate();
 
-			// If there's only 1 value in each list, the character doesn't have a choice, so just accept it.
-			if (cboAmmo.Items.Count == 1 && cboType.Items.Count == 1)
+            // If there's only 1 value in each list, the character doesn't have a choice, so just accept it.
+            if (cboAmmo.Items.Count == 1 && cboType.Items.Count == 1)
 				AcceptForm();
 		}
 

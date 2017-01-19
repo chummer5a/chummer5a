@@ -279,10 +279,12 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstArts.Sort(objSort.Compare);
+            lstArt.BeginUpdate();
             lstArt.DataSource = null;
             lstArt.ValueMember = "Value";
             lstArt.DisplayMember = "Name";
             lstArt.DataSource = lstArts;
+            lstArt.EndUpdate();
         }
 
         /// <summary>

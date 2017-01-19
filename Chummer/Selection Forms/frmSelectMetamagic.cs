@@ -224,11 +224,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstMetamagics.Sort(objSort.Compare);
-			lstMetamagic.DataSource = null;
+            lstMetamagic.BeginUpdate();
+            lstMetamagic.DataSource = null;
 			lstMetamagic.ValueMember = "Value";
 			lstMetamagic.DisplayMember = "Name";
 			lstMetamagic.DataSource = lstMetamagics;
-		}
+            lstMetamagic.EndUpdate();
+        }
 
 		/// <summary>
 		/// Accept the selected item and close the form.

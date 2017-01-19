@@ -158,7 +158,8 @@ namespace Chummer
 					_lstCategory.Add(objItem);
 				}
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
@@ -190,8 +191,9 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-			lblESSDiscountLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
+            lblESSDiscountLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
 			lblESSDiscountPercentLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
 			nudESSDiscount.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
 
@@ -276,10 +278,12 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
-			lstCyberware.DataSource = null;
+            lstCyberware.BeginUpdate();
+            lstCyberware.DataSource = null;
 			lstCyberware.ValueMember = "Value";
 			lstCyberware.DisplayMember = "Name";
 			lstCyberware.DataSource = lstCyberwares;
+            lstCyberware.EndUpdate();
         }
 
 		private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -516,11 +520,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
-			lstCyberware.DataSource = null;
+            lstCyberware.BeginUpdate();
+            lstCyberware.DataSource = null;
 			lstCyberware.ValueMember = "Value";
 			lstCyberware.DisplayMember = "Name";
 			lstCyberware.DataSource = lstCyberwares;
-		}
+            lstCyberware.EndUpdate();
+        }
 
 		private void chkFree_CheckedChanged(object sender, EventArgs e)
 		{
@@ -1679,11 +1685,13 @@ namespace Chummer
 				if (blnAddItem)
 					_lstGrade.Add(objItem);
 			}
-			cboGrade.DataSource = null;
+            cboGrade.BeginUpdate();
+            cboGrade.DataSource = null;
 			cboGrade.ValueMember = "Value";
 			cboGrade.DisplayMember = "Name";
 			cboGrade.DataSource = _lstGrade;
-		}
+            cboGrade.EndUpdate();
+        }
 
 		private void MoveControls()
 		{

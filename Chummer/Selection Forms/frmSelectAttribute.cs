@@ -72,9 +72,11 @@ namespace Chummer
 			_lstAttributes.Add(objWIL);
 			_lstAttributes.Add(objEDG);
 
-			cboAttribute.ValueMember = "Value";
+            cboAttribute.BeginUpdate();
+            cboAttribute.ValueMember = "Value";
 			cboAttribute.DisplayMember = "Name";
 			cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -159,10 +161,12 @@ namespace Chummer
 			objMAG.Value = "MAG";
 			objMAG.Name = LanguageManager.Instance.GetString("String_AttributeMAGShort");
 			_lstAttributes.Add(objMAG);
-			cboAttribute.DataSource = null;
-			cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.BeginUpdate();
+            cboAttribute.DataSource = null;
 			cboAttribute.ValueMember = "Value";
 			cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
         }
 
         /// <summary>
@@ -174,10 +178,12 @@ namespace Chummer
 			objRES.Value = "RES";
 			objRES.Name = LanguageManager.Instance.GetString("String_AttributeRESShort");
 			_lstAttributes.Add(objRES);
-			cboAttribute.DataSource = null;
-			cboAttribute.DataSource = _lstAttributes;
-			cboAttribute.ValueMember = "Value";
-			cboAttribute.DisplayMember = "Name";
+            cboAttribute.BeginUpdate();
+            cboAttribute.DataSource = null;
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
         }
 
         /// <summary>
@@ -189,10 +195,12 @@ namespace Chummer
             objDEP.Value = "DEP";
             objDEP.Name = LanguageManager.Instance.GetString("String_AttributeDEPShort");
             _lstAttributes.Add(objDEP);
+            cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
-            cboAttribute.DataSource = _lstAttributes;
             cboAttribute.ValueMember = "Value";
             cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
         }
 
         /// <summary>
@@ -206,11 +214,13 @@ namespace Chummer
 			objItem.Value = strValue;
 			objItem.Name = strValue;
 			lstItems.Add(objItem);
-			cboAttribute.DataSource = null;
+            cboAttribute.BeginUpdate();
+            cboAttribute.DataSource = null;
 			cboAttribute.ValueMember = "Value";
 			cboAttribute.DisplayMember = "Name";
 			cboAttribute.DataSource = lstItems;
-		}
+            cboAttribute.EndUpdate();
+        }
 
 		/// <summary>
 		/// Limit the list to a few Attributes.
@@ -226,11 +236,13 @@ namespace Chummer
 				objItem.Name = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
 				_lstAttributes.Add(objItem);
 			}
-			cboAttribute.DataSource = null;
-			cboAttribute.DataSource = _lstAttributes;
-			cboAttribute.ValueMember = "Value";
-			cboAttribute.DisplayMember = "Name";
-		}
+            cboAttribute.BeginUpdate();
+            cboAttribute.DataSource = null;
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
+        }
 
 		/// <summary>
 		/// Exclude the list of Attributes.
@@ -249,11 +261,13 @@ namespace Chummer
 					}
 				}
 			}
-			cboAttribute.DataSource = null;
-			cboAttribute.DataSource = _lstAttributes;
-			cboAttribute.ValueMember = "Value";
-			cboAttribute.DisplayMember = "Name";
-		}
+            cboAttribute.BeginUpdate();
+            cboAttribute.DataSource = null;
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
+        }
 		#endregion
     }
 }

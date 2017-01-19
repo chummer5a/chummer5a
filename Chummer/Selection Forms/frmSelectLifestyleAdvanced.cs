@@ -145,7 +145,8 @@ namespace Chummer
 					_objLifestyle.FreeGrids.Add(objQuality);
 				}
 			}
-			cboBaseLifestyle.ValueMember = "Value";
+            cboBaseLifestyle.BeginUpdate();
+            cboBaseLifestyle.ValueMember = "Value";
             cboBaseLifestyle.DisplayMember = "Name";
             cboBaseLifestyle.DataSource = lstLifestyles;
 
@@ -173,6 +174,7 @@ namespace Chummer
             objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
             lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
 
+            cboBaseLifestyle.EndUpdate();
             _blnSkipRefresh = false;
             CalculateValues();
         }

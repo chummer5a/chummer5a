@@ -91,9 +91,11 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstGroups.Sort(objSort.Compare);
-			cboSkillGroup.ValueMember = "Value";
+            cboSkillGroup.BeginUpdate();
+            cboSkillGroup.ValueMember = "Value";
 			cboSkillGroup.DisplayMember = "Name";
 			cboSkillGroup.DataSource = lstGroups;
+            cboSkillGroup.EndUpdate();
 
             // Select the first Skill in the list.
             cboSkillGroup.SelectedIndex = 0;

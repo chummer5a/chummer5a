@@ -315,14 +315,16 @@ namespace Chummer
 
 			SortListItem objSortHand = new SortListItem();
 			lstHandedness.Sort(objSortHand.Compare);
-			cboHandedness.ValueMember = "Value";
+            cboHandedness.BeginUpdate();
+            cboHandedness.ValueMember = "Value";
 			cboHandedness.DisplayMember = "Name";
 			cboHandedness.DataSource = lstHandedness;
 
 			cboHandedness.SelectedValue = _objCharacter.PrimaryArm;
+            cboHandedness.EndUpdate();
 
-			// Populate the Magician Traditions list.
-			objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+            // Populate the Magician Traditions list.
+            objXmlDocument = XmlManager.Instance.Load("traditions.xml");
 			List<ListItem> lstTraditions = new List<ListItem>();
 			ListItem objBlank = new ListItem();
 			objBlank.Value = string.Empty;
@@ -340,9 +342,11 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstTraditions.Sort(objSort.Compare);
-			cboTradition.ValueMember = "Value";
+            cboTradition.BeginUpdate();
+            cboTradition.ValueMember = "Value";
 			cboTradition.DisplayMember = "Name";
 			cboTradition.DataSource = lstTraditions;
+            cboTradition.EndUpdate();
 
             // Populate the Magician Custom Drain Options list.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -363,9 +367,11 @@ namespace Chummer
             }
             SortListItem objDrainSort = new SortListItem();
             lstDrainAttributes.Sort(objDrainSort.Compare);
+            cboDrain.BeginUpdate();
             cboDrain.ValueMember = "Value";
             cboDrain.DisplayMember = "Name";
             cboDrain.DataSource = lstDrainAttributes;
+            cboDrain.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Combat.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -387,9 +393,11 @@ namespace Chummer
             SortListItem objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritCombat.BeginUpdate();
             cboSpiritCombat.ValueMember = "Value";
             cboSpiritCombat.DisplayMember = "Name";
             cboSpiritCombat.DataSource = lstSpirit;
+            cboSpiritCombat.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Detection.
             lstSpirit = new List<ListItem>();
@@ -410,9 +418,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritDetection.BeginUpdate();
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstSpirit;
+            cboSpiritDetection.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Health.
             lstSpirit = new List<ListItem>();
@@ -433,9 +443,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritHealth.BeginUpdate();
             cboSpiritHealth.ValueMember = "Value";
             cboSpiritHealth.DisplayMember = "Name";
             cboSpiritHealth.DataSource = lstSpirit;
+            cboSpiritHealth.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Illusion.
             lstSpirit = new List<ListItem>();
@@ -456,9 +468,11 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritIllusion.BeginUpdate();
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstSpirit;
+            cboSpiritIllusion.EndUpdate();
 
             // Populate the Magician Custom Spirits lists - Manipulation.
             lstSpirit = new List<ListItem>();
@@ -479,12 +493,14 @@ namespace Chummer
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            cboSpiritManipulation.BeginUpdate();
             cboSpiritManipulation.ValueMember = "Value";
             cboSpiritManipulation.DisplayMember = "Name";
             cboSpiritManipulation.DataSource = lstSpirit;
+            cboSpiritManipulation.EndUpdate();
 
             // Populate the Technomancer Streams list.
-			objXmlDocument = XmlManager.Instance.Load("streams.xml");
+            objXmlDocument = XmlManager.Instance.Load("streams.xml");
 			List<ListItem> lstStreams = new List<ListItem>();
 			lstStreams.Add(objBlank);
 			foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + _objOptions.BookXPath() + "]"))
@@ -498,13 +514,15 @@ namespace Chummer
 				lstStreams.Add(objItem);
 			}
 			lstStreams.Sort(objSort.Compare);
-			cboStream.ValueMember = "Value";
+            cboStream.BeginUpdate();
+            cboStream.ValueMember = "Value";
 			cboStream.DisplayMember = "Name";
 			cboStream.DataSource = lstStreams;
+            cboStream.EndUpdate();
 
-			// Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
-			// to UpdateCharacterInformation();
-			MetatypeSelected();
+            // Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
+            // to UpdateCharacterInformation();
+            MetatypeSelected();
 
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
 			int intCharacterMAG = _objCharacter.MAG.TotalValue;
@@ -21146,6 +21164,10 @@ namespace Chummer
 
                 if (objGear != null)
                 {
+                    cboCyberwareGearAttack.BeginUpdate();
+                    cboCyberwareGearSleaze.BeginUpdate();
+                    cboCyberwareGearDataProcessing.BeginUpdate();
+                    cboCyberwareGearFirewall.BeginUpdate();
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
@@ -21209,6 +21231,10 @@ namespace Chummer
                         lblGearDataProcessingLabel.Visible = false;
                         lblGearFirewallLabel.Visible = false;
                     }
+                    cboCyberwareGearAttack.EndUpdate();
+                    cboCyberwareGearSleaze.EndUpdate();
+                    cboCyberwareGearDataProcessing.EndUpdate();
+                    cboCyberwareGearFirewall.EndUpdate();
 
                     _blnSkipRefresh = true;
                     lblCyberwareName.Text = objGear.DisplayNameShort;
@@ -21474,14 +21500,16 @@ namespace Chummer
 					}
 					_blnSkipRefresh = true;
 					objWeapon.ActiveAmmoSlot = intCurrentSlot;
-					cboWeaponAmmo.Enabled = true;
+                    cboWeaponAmmo.BeginUpdate();
+                    cboWeaponAmmo.Enabled = true;
 					cboWeaponAmmo.ValueMember = "Value";
 					cboWeaponAmmo.DisplayMember = "Name";
 					cboWeaponAmmo.DataSource = lstAmmo;
 					cboWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
 					if (cboWeaponAmmo.SelectedIndex == -1)
 						cboWeaponAmmo.SelectedIndex = 0;
-					_blnSkipRefresh = false;
+                    cboWeaponAmmo.EndUpdate();
+                    _blnSkipRefresh = false;
 				}
 				else
 				{
@@ -21629,16 +21657,18 @@ namespace Chummer
 					chkIncludedInWeapon.Enabled = false;
 					chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 					objWeapon.ActiveAmmoSlot = intCurrentSlot;
-					cboWeaponAmmo.Enabled = true;
+                    cboWeaponAmmo.BeginUpdate();
+                    cboWeaponAmmo.Enabled = true;
 					cboWeaponAmmo.ValueMember = "Value";
 					cboWeaponAmmo.DisplayMember = "Name";
 					cboWeaponAmmo.DataSource = lstAmmo;
 					cboWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
 					if (cboWeaponAmmo.SelectedIndex == -1)
 						cboWeaponAmmo.SelectedIndex = 0;
+                    cboWeaponAmmo.EndUpdate();
 
-					// Show the Weapon Ranges.
-					lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
+                    // Show the Weapon Ranges.
+                    lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 					lblWeaponRangeShort.Text = objWeapon.RangeShort;
 					lblWeaponRangeMedium.Text = objWeapon.RangeMedium;
 					lblWeaponRangeLong.Text = objWeapon.RangeLong;
@@ -21745,6 +21775,10 @@ namespace Chummer
                             chkIncludedInWeapon.Checked = false;
                             _blnSkipRefresh = true;
 
+                            cboWeaponGearAttack.BeginUpdate();
+                            cboWeaponGearSleaze.BeginUpdate();
+                            cboWeaponGearDataProcessing.BeginUpdate();
+                            cboWeaponGearFirewall.BeginUpdate();
                             if (objGear.GetType() == typeof(Commlink))
                             {
                                 Commlink objCommlink = (Commlink)objGear;
@@ -21798,6 +21832,10 @@ namespace Chummer
                                 lblWeaponSleazeLabel.Visible = false;
                                 cboWeaponGearSleaze.Visible = false;
                             }
+                            cboWeaponGearAttack.EndUpdate();
+                            cboWeaponGearSleaze.EndUpdate();
+                            cboWeaponGearDataProcessing.EndUpdate();
+                            cboWeaponGearFirewall.EndUpdate();
                         }
                     }
 
@@ -22057,6 +22095,11 @@ namespace Chummer
                     }
                     _blnSkipRefresh = false;
 
+                    cboGearOverclocker.BeginUpdate();
+                    cboGearAttack.BeginUpdate();
+                    cboGearSleaze.BeginUpdate();
+                    cboGearDataProcessing.BeginUpdate();
+                    cboGearFirewall.BeginUpdate();
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
@@ -22156,6 +22199,11 @@ namespace Chummer
                         lblGearDataProcessingLabel.Visible = false;
                         lblGearFirewallLabel.Visible = false;
                     }
+                    cboGearOverclocker.EndUpdate();
+                    cboGearAttack.EndUpdate();
+                    cboGearSleaze.EndUpdate();
+                    cboGearDataProcessing.EndUpdate();
+                    cboGearFirewall.EndUpdate();
 
                     if (objGear.MaxRating > 0)
                         lblGearRating.Text = objGear.Rating.ToString();
@@ -23775,14 +23823,16 @@ namespace Chummer
 							}
 							_blnSkipRefresh = true;
 							objWeapon.ActiveAmmoSlot = intCurrentSlot;
-							cboVehicleWeaponAmmo.Enabled = true;
+                            cboVehicleWeaponAmmo.BeginUpdate();
+                            cboVehicleWeaponAmmo.Enabled = true;
 							cboVehicleWeaponAmmo.ValueMember = "Value";
 							cboVehicleWeaponAmmo.DisplayMember = "Name";
 							cboVehicleWeaponAmmo.DataSource = lstAmmo;
 							cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
 							if (cboVehicleWeaponAmmo.SelectedIndex == -1)
 								cboVehicleWeaponAmmo.SelectedIndex = 0;
-							_blnSkipRefresh = false;
+                            cboVehicleWeaponAmmo.EndUpdate();
+                            _blnSkipRefresh = false;
 						}
 
 						lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
@@ -23976,14 +24026,16 @@ namespace Chummer
 							}
 							_blnSkipRefresh = true;
 							objWeapon.ActiveAmmoSlot = intCurrentSlot;
-							cboVehicleWeaponAmmo.Enabled = true;
+                            cboVehicleWeaponAmmo.BeginUpdate();
+                            cboVehicleWeaponAmmo.Enabled = true;
 							cboVehicleWeaponAmmo.ValueMember = "Value";
 							cboVehicleWeaponAmmo.DisplayMember = "Name";
 							cboVehicleWeaponAmmo.DataSource = lstAmmo;
 							cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
 							if (cboVehicleWeaponAmmo.SelectedIndex == -1)
 								cboVehicleWeaponAmmo.SelectedIndex = 0;
-							_blnSkipRefresh = false;
+                            cboVehicleWeaponAmmo.EndUpdate();
+                            _blnSkipRefresh = false;
 						}
 
 						lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
@@ -24207,137 +24259,139 @@ namespace Chummer
 					}
 					else
 					{
-							// If it's none of these, it must be an Underbarrel Weapon.
-							Vehicle objCurrentVehicle = new Vehicle(_objCharacter);
-							objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objCurrentVehicle);
+						// If it's none of these, it must be an Underbarrel Weapon.
+						Vehicle objCurrentVehicle = new Vehicle(_objCharacter);
+						objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objCurrentVehicle);
 
-							lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
-							lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory;
-							lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage();
-							lblVehicleWeaponAP.Text = objWeapon.TotalAP;
-							lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-							lblVehicleWeaponMode.Text = objWeapon.CalculatedMode;
-							if (objWeapon.WeaponType == "Ranged")
-							{
-								cmdFireVehicleWeapon.Enabled = true;
-								cmdReloadVehicleWeapon.Enabled = true;
-								lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
+						lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
+						lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory;
+						lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage();
+						lblVehicleWeaponAP.Text = objWeapon.TotalAP;
+						lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo();
+						lblVehicleWeaponMode.Text = objWeapon.CalculatedMode;
+						if (objWeapon.WeaponType == "Ranged")
+						{
+							cmdFireVehicleWeapon.Enabled = true;
+							cmdReloadVehicleWeapon.Enabled = true;
+							lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
-								cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode("SS") || objWeapon.AllowMode("SA");
-								cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode("BF");
-								cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode("FA");
-								cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode("FA");
-								cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode("FA");
-								if (cmsVehicleAmmoFullBurst.Enabled)
-									cmsVehicleAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
-								if (cmsVehicleAmmoSuppressiveFire.Enabled)
-									cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
-							}
-
-							List<ListItem> lstAmmo = new List<ListItem>();
-							int intCurrentSlot = objWeapon.ActiveAmmoSlot;
-							for (int i = 1; i <= objWeapon.AmmoSlots; i++)
-							{
-								Gear objVehicleGear = new Gear(_objCharacter);
-								ListItem objAmmo = new ListItem();
-								objWeapon.ActiveAmmoSlot = i;
-								objVehicleGear = _objFunctions.FindGear(objWeapon.AmmoLoaded, objCurrentVehicle.Gear);
-								objAmmo.Value = i.ToString();
-
-								string strPlugins = string.Empty;
-								foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-								{
-									foreach (Gear objCurrentAmmo in objVehicle.Gear)
-									{
-										if (objCurrentAmmo.InternalId == objWeapon.AmmoLoaded)
-										{
-											foreach (Gear objChild in objCurrentAmmo.Children)
-											{
-												strPlugins += objChild.DisplayNameShort + ", ";
-											}
-										}
-									}
-								}
-								// Remove the trailing comma.
-								if (!string.IsNullOrEmpty(strPlugins))
-									strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
-
-								if (objVehicleGear == null)
-								{
-									if (objWeapon.AmmoRemaining == 0)
-										objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
-									else
-										objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_ExternalSource");
-								}
-								else
-									objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
-
-								if (!string.IsNullOrEmpty(strPlugins))
-									objAmmo.Name += " [" + strPlugins + "]";
-								lstAmmo.Add(objAmmo);
-							}
-							_blnSkipRefresh = true;
-							objWeapon.ActiveAmmoSlot = intCurrentSlot;
-							cboVehicleWeaponAmmo.Enabled = true;
-							cboVehicleWeaponAmmo.ValueMember = "Value";
-							cboVehicleWeaponAmmo.DisplayMember = "Name";
-							cboVehicleWeaponAmmo.DataSource = lstAmmo;
-							cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
-							if (cboVehicleWeaponAmmo.SelectedIndex == -1)
-								cboVehicleWeaponAmmo.SelectedIndex = 0;
-							_blnSkipRefresh = false;
-
-							lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
-							lblVehicleWeaponRangeMedium.Text = objWeapon.RangeMedium;
-							lblVehicleWeaponRangeLong.Text = objWeapon.RangeLong;
-							lblVehicleWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
-
-							lblVehicleName.Text = objWeapon.DisplayNameShort;
-							lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
-							lblVehicleAvail.Text = objWeapon.TotalAvail;
-							lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
-							lblVehicleHandling.Text = string.Empty;
-							lblVehicleAccel.Text = string.Empty;
-							lblVehicleSpeed.Text = string.Empty;
-							lblVehicleDevice.Text = string.Empty;
-							lblVehiclePilot.Text = string.Empty;
-							lblVehicleBody.Text = string.Empty;
-							lblVehicleArmor.Text = string.Empty;
-							lblVehicleSensor.Text = string.Empty;
-							lblVehicleSlots.Text = string.Empty;
-							string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
-							string strPage = objWeapon.Page;
-							lblVehicleSource.Text = strBook + " " + strPage;
-							_blnSkipRefresh = true;
-							chkVehicleWeaponAccessoryInstalled.Enabled = true;
-							chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
-							_blnSkipRefresh = false;
-							tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
-
-							// Determine the Dice Pool size.
-							int intPilot = objCurrentVehicle.Pilot;
-							int intAutosoft = 0;
-							bool blnAutosoftFound = false;
-							foreach (Gear objAutosoft in objCurrentVehicle.Gear)
-							{
-								if (objAutosoft.Category.StartsWith("Autosofts") && objAutosoft.Name == "Targeting")
-								{
-									if (!blnAutosoftFound)
-									{
-										if (objAutosoft.Rating > intAutosoft)
-											intAutosoft = objAutosoft.Rating;
-										if (objAutosoft.Extra == objWeapon.DisplayCategory)
-										{
-											intAutosoft = objAutosoft.Rating;
-											blnAutosoftFound = true;
-										}
-									}
-								}
-							}
-							if (intAutosoft == 0)
-								intPilot -= 1;
-							lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
+							cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode("SS") || objWeapon.AllowMode("SA");
+							cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode("BF");
+							cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode("FA");
+							cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode("FA");
+							cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode("FA");
+							if (cmsVehicleAmmoFullBurst.Enabled)
+								cmsVehicleAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
+							if (cmsVehicleAmmoSuppressiveFire.Enabled)
+								cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
 						}
+
+						List<ListItem> lstAmmo = new List<ListItem>();
+						int intCurrentSlot = objWeapon.ActiveAmmoSlot;
+						for (int i = 1; i <= objWeapon.AmmoSlots; i++)
+						{
+							Gear objVehicleGear = new Gear(_objCharacter);
+							ListItem objAmmo = new ListItem();
+							objWeapon.ActiveAmmoSlot = i;
+							objVehicleGear = _objFunctions.FindGear(objWeapon.AmmoLoaded, objCurrentVehicle.Gear);
+							objAmmo.Value = i.ToString();
+
+							string strPlugins = string.Empty;
+							foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+							{
+								foreach (Gear objCurrentAmmo in objVehicle.Gear)
+								{
+									if (objCurrentAmmo.InternalId == objWeapon.AmmoLoaded)
+									{
+										foreach (Gear objChild in objCurrentAmmo.Children)
+										{
+											strPlugins += objChild.DisplayNameShort + ", ";
+										}
+									}
+								}
+							}
+							// Remove the trailing comma.
+							if (!string.IsNullOrEmpty(strPlugins))
+								strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
+
+							if (objVehicleGear == null)
+							{
+								if (objWeapon.AmmoRemaining == 0)
+									objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
+								else
+									objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_ExternalSource");
+							}
+							else
+								objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
+
+							if (!string.IsNullOrEmpty(strPlugins))
+								objAmmo.Name += " [" + strPlugins + "]";
+							lstAmmo.Add(objAmmo);
+						}
+						_blnSkipRefresh = true;
+						objWeapon.ActiveAmmoSlot = intCurrentSlot;
+                        cboVehicleWeaponAmmo.BeginUpdate();
+                        cboVehicleWeaponAmmo.Enabled = true;
+						cboVehicleWeaponAmmo.ValueMember = "Value";
+						cboVehicleWeaponAmmo.DisplayMember = "Name";
+						cboVehicleWeaponAmmo.DataSource = lstAmmo;
+						cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
+						if (cboVehicleWeaponAmmo.SelectedIndex == -1)
+							cboVehicleWeaponAmmo.SelectedIndex = 0;
+                        cboVehicleWeaponAmmo.EndUpdate();
+                        _blnSkipRefresh = false;
+
+						lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
+						lblVehicleWeaponRangeMedium.Text = objWeapon.RangeMedium;
+						lblVehicleWeaponRangeLong.Text = objWeapon.RangeLong;
+						lblVehicleWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
+
+						lblVehicleName.Text = objWeapon.DisplayNameShort;
+						lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
+						lblVehicleAvail.Text = objWeapon.TotalAvail;
+						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
+						lblVehicleHandling.Text = string.Empty;
+						lblVehicleAccel.Text = string.Empty;
+						lblVehicleSpeed.Text = string.Empty;
+						lblVehicleDevice.Text = string.Empty;
+						lblVehiclePilot.Text = string.Empty;
+						lblVehicleBody.Text = string.Empty;
+						lblVehicleArmor.Text = string.Empty;
+						lblVehicleSensor.Text = string.Empty;
+						lblVehicleSlots.Text = string.Empty;
+						string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
+						string strPage = objWeapon.Page;
+						lblVehicleSource.Text = strBook + " " + strPage;
+						_blnSkipRefresh = true;
+						chkVehicleWeaponAccessoryInstalled.Enabled = true;
+						chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
+						_blnSkipRefresh = false;
+						tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+
+						// Determine the Dice Pool size.
+						int intPilot = objCurrentVehicle.Pilot;
+						int intAutosoft = 0;
+						bool blnAutosoftFound = false;
+						foreach (Gear objAutosoft in objCurrentVehicle.Gear)
+						{
+							if (objAutosoft.Category.StartsWith("Autosofts") && objAutosoft.Name == "Targeting")
+							{
+								if (!blnAutosoftFound)
+								{
+									if (objAutosoft.Rating > intAutosoft)
+										intAutosoft = objAutosoft.Rating;
+									if (objAutosoft.Extra == objWeapon.DisplayCategory)
+									{
+										intAutosoft = objAutosoft.Rating;
+										blnAutosoftFound = true;
+									}
+								}
+							}
+						}
+						if (intAutosoft == 0)
+							intPilot -= 1;
+						lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
+					}
 				}
 			}
 			else if (treVehicles.SelectedNode.Level == 5)

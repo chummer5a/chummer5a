@@ -45,10 +45,12 @@ namespace Chummer
 			lstSides.Add(objLeft);
 			lstSides.Add(objRight);
 
-			cboSide.DataSource = lstSides;
+            cboSide.BeginUpdate();
 			cboSide.ValueMember = "Value";
 			cboSide.DisplayMember = "Name";
-		}
+            cboSide.DataSource = lstSides;
+            cboSide.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{

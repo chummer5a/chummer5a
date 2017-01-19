@@ -105,11 +105,13 @@ namespace Chummer
 			objItem.Value = strValue;
 			objItem.Name = strValue;
 			lstItems.Add(objItem);
-			cboPower.DataSource = null;
+            cboPower.BeginUpdate();
+            cboPower.DataSource = null;
 			cboPower.ValueMember = "Value";
 			cboPower.DisplayMember = "Name";
 			cboPower.DataSource = lstItems;
-		}
+            cboPower.EndUpdate();
+        }
 
 		/// <summary>
 		/// Limit the list to a few Powers.
@@ -127,11 +129,13 @@ namespace Chummer
 				}
 				_lstPowers.Add(new KeyValuePair<string, KeyValuePair<string, string>>(strName, lstObject));
 			}
-			cboPower.DataSource = null;
-			cboPower.DataSource = _lstPowers;
+            cboPower.BeginUpdate();
+            cboPower.DataSource = null;
 			cboPower.ValueMember = "Value";
 			cboPower.DisplayMember = "Name";
-		}
+            cboPower.DataSource = _lstPowers;
+            cboPower.EndUpdate();
+        }
 		#endregion
     }
 }

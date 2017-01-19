@@ -178,14 +178,16 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstSkills.Sort(objSort.Compare);
-			cboSkill.ValueMember = "Value";
+            cboSkill.BeginUpdate();
+            cboSkill.ValueMember = "Value";
 			cboSkill.DisplayMember = "Name";
 			cboSkill.DataSource = lstSkills;
 
             // Select the first Skill in the list.
             cboSkill.SelectedIndex = 0;
+            cboSkill.EndUpdate();
 
-			if (cboSkill.Items.Count == 1)
+            if (cboSkill.Items.Count == 1)
 				cmdOK_Click(sender, e);
         }
 

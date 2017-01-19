@@ -139,7 +139,9 @@ namespace Chummer
                 EdgeUses.Blitz, 
                 EdgeUses.DeadManTrigger
             };
+            cboEdgeUse.BeginUpdate();
             cboEdgeUse.DataSource = edge;
+            cboEdgeUse.EndUpdate();
             EdgeUse = EdgeUses.None;
         }
 

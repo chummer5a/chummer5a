@@ -194,7 +194,8 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			_lstCategory.Sort(objSort.Compare);
-			cboCategory.DataSource = null;
+            cboCategory.BeginUpdate();
+            cboCategory.DataSource = null;
 			cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
@@ -209,8 +210,9 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-			if (!string.IsNullOrEmpty(_strSelectedGear))
+            if (!string.IsNullOrEmpty(_strSelectedGear))
 				lstGear.SelectedValue = _strSelectedGear;
 			else
 				txtSearch.Text = DefaultSearchText;
@@ -256,13 +258,15 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstGears.Sort(objSort.Compare);
-			lstGear.DataSource = null;
+            lstGear.BeginUpdate();
+            lstGear.DataSource = null;
 			lstGear.ValueMember = "Value";
 			lstGear.DisplayMember = "Name";
 			lstGear.DataSource = lstGears;
+            lstGear.EndUpdate();
 
-			// Show the Do It Yourself CheckBox if the Commlink Upgrade category is selected.
-			if (cboCategory.SelectedValue.ToString() == "Commlink Upgrade")
+            // Show the Do It Yourself CheckBox if the Commlink Upgrade category is selected.
+            if (cboCategory.SelectedValue.ToString() == "Commlink Upgrade")
 				chkDoItYourself.Visible = true;
 			else
 			{
@@ -418,11 +422,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstGears.Sort(objSort.Compare);
-			lstGear.DataSource = null;
+            lstGear.BeginUpdate();
+            lstGear.DataSource = null;
 			lstGear.ValueMember = "Value";
 			lstGear.DisplayMember = "Name";
 			lstGear.DataSource = lstGears;
-		}
+            lstGear.EndUpdate();
+        }
 
 		private void lstGear_DoubleClick(object sender, EventArgs e)
 		{
@@ -1114,11 +1120,13 @@ namespace Chummer
 				objItem.Name = strCategory;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.DataSource = null;
+            cboCategory.BeginUpdate();
+            cboCategory.DataSource = null;
 			cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
-		}
+            cboCategory.EndUpdate();
+        }
 
 		/// <summary>
 		/// Accept the selected item and close the form.

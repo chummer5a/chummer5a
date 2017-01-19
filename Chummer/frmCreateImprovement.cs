@@ -60,7 +60,8 @@ namespace Chummer
 
 			SortListItem objSort = new SortListItem();
 			lstTypes.Sort(objSort.Compare);
-			cboImprovemetType.ValueMember = "Value";
+            cboImprovemetType.BeginUpdate();
+            cboImprovemetType.ValueMember = "Value";
 			cboImprovemetType.DisplayMember = "Name";
 			cboImprovemetType.DataSource = lstTypes;
 
@@ -88,7 +89,8 @@ namespace Chummer
 				if (txtSelect.Visible)
 					txtSelect.Text = _objEditImprovement.ImprovedName;
 			}
-		}
+            cboImprovemetType.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{

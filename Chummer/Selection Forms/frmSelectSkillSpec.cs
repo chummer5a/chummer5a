@@ -76,13 +76,14 @@ namespace Chummer
 					}
 				}
 			}
-			// Populate the lists.
-			cboSpec.DataSource = lstItems;
+            // Populate the lists.
+            cboSpec.BeginUpdate();
 			cboSpec.ValueMember = "Value";
 			cboSpec.DisplayMember = "Name";
+            cboSpec.DataSource = lstItems;
 
-			// If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-			if (cboSpec.Items.Count == 1 && AllowAutoSelect)
+            // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
+            if (cboSpec.Items.Count == 1 && AllowAutoSelect)
 				AcceptForm();
 
 			if (!string.IsNullOrEmpty(_strForceItem))
@@ -105,7 +106,8 @@ namespace Chummer
 					AcceptForm();
 				}
 			}
-		}
+            cboSpec.EndUpdate();
+        }
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{

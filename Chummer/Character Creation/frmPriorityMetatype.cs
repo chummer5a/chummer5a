@@ -298,29 +298,39 @@ namespace Chummer
                     switch (objXmlPriorityCategory.InnerText)
                     {
                         case "Heritage":
+                            cboHeritage.BeginUpdate();
                             cboHeritage.ValueMember = "Value";
                             cboHeritage.DisplayMember = "Name";
                             cboHeritage.DataSource = lstItems;
+                            cboHeritage.EndUpdate();
                             break;
                         case "Talent":
+                            cboTalent.BeginUpdate();
                             cboTalent.ValueMember = "Value";
                             cboTalent.DisplayMember = "Name";
                             cboTalent.DataSource = lstItems;
+                            cboTalent.EndUpdate();
                             break;
                         case "Attributes":
+                            cboAttributes.BeginUpdate();
                             cboAttributes.ValueMember = "Value";
                             cboAttributes.DisplayMember = "Name";
                             cboAttributes.DataSource = lstItems;
+                            cboAttributes.EndUpdate();
                             break;
                         case "Skills":
+                            cboSkills.BeginUpdate();
                             cboSkills.ValueMember = "Value";
                             cboSkills.DisplayMember = "Name";
                             cboSkills.DataSource = lstItems;
+                            cboSkills.EndUpdate();
                             break;
                         case "Resources":
+                            cboResources.BeginUpdate();
                             cboResources.ValueMember = "Value";
                             cboResources.DisplayMember = "Name";
                             cboResources.DataSource = lstItems;
+                            cboResources.EndUpdate();
                             break;
                         default:
                             break;
@@ -424,10 +434,12 @@ namespace Chummer
 
 			SortListItem objSortPossession = new SortListItem();
 			lstMethods.Sort(objSortPossession.Compare);
-			cboPossessionMethod.ValueMember = "Value";
+            cboPossessionMethod.BeginUpdate();
+            cboPossessionMethod.ValueMember = "Value";
 			cboPossessionMethod.DisplayMember = "Name";
 			cboPossessionMethod.DataSource = lstMethods;
 			cboPossessionMethod.SelectedIndex = cboPossessionMethod.FindStringExact(objPossession.Name);
+            cboPossessionMethod.EndUpdate();
         }
 		#endregion
 
@@ -498,13 +510,15 @@ namespace Chummer
 					lstMetavariants.Add(objMetavariant);
 				}
 
-				cboMetavariant.ValueMember = "Value";
+                cboMetavariant.BeginUpdate();
+                cboMetavariant.ValueMember = "Value";
 				cboMetavariant.DisplayMember = "Name";
 				cboMetavariant.DataSource = lstMetavariants;
 
 				// Select the None item.
 				cboMetavariant.SelectedIndex = 0;
-				
+                cboMetavariant.EndUpdate();
+
                 // Set the special attributes label.
                 XmlNodeList objXmlMetatypeList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
                 lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
@@ -542,10 +556,12 @@ namespace Chummer
 				objNone.Name = LanguageManager.Instance.GetString("String_None");
 				lstMetavariants.Add(objNone);
 
-				cboMetavariant.ValueMember = "Value";
+                cboMetavariant.BeginUpdate();
+                cboMetavariant.ValueMember = "Value";
 				cboMetavariant.DisplayMember = "Name";
 				cboMetavariant.DataSource = lstMetavariants;
-			}
+                cboMetavariant.EndUpdate();
+            }
             PopulateTalents();
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
@@ -565,7 +581,9 @@ namespace Chummer
 
         private void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-			if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
+            cboSkill1.BeginUpdate();
+            cboSkill2.BeginUpdate();
+            if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
 			{
 				XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
 				XmlNode objTalentsNode =
@@ -649,12 +667,13 @@ namespace Chummer
                             cboSkill1.SelectedIndex = intOldSelectedIndex;
                             _blnInitializing = blnOldInitializing;
                         }
+                        cboSkill1.EndUpdate();
 
                         if (strSkillCount == "2")
 						{
                             intOldSelectedIndex = cboSkill2.SelectedIndex;
                             intOldDataSourceSize = cboSkill2.Items.Count;
-							cboSkill2.BindingContext = new BindingContext();
+                            cboSkill2.BindingContext = new BindingContext();
 							cboSkill2.ValueMember = "Value";
 							cboSkill2.DisplayMember = "Name";
 							cboSkill2.DataSource = lstSkills;
@@ -672,7 +691,7 @@ namespace Chummer
                                 else
                                     cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
                             }
-						}
+                        }
 						lblMetatypeSkillSelection.Visible = true;
                     }
 					else
@@ -690,7 +709,9 @@ namespace Chummer
 				cboSkill1.Visible = false;
 				cboSkill2.Visible = false;
 			}
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            cboSkill1.EndUpdate();
+            cboSkill2.EndUpdate();
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
 				SumtoTen();
 			}
@@ -1940,6 +1961,7 @@ namespace Chummer
             lstTalent.Sort(objSort.Compare);
             int intOldSelectedIndex = cboTalents.SelectedIndex;
             int intOldDataSourceSize = cboTalents.Items.Count;
+            cboTalents.BeginUpdate();
             cboTalents.DataSource = null;
             cboTalents.ValueMember = "Value";
             cboTalents.DisplayMember = "Name";
@@ -1951,6 +1973,7 @@ namespace Chummer
                 cboTalents.SelectedIndex = intOldSelectedIndex;
                 _blnInitializing = blnOldInitializing;
             }
+            cboTalents.EndUpdate();
         }
 
         /// <summary>
@@ -1984,6 +2007,7 @@ namespace Chummer
 			lstMetatype.Sort(objSort.Compare);
             int intOldSelectedIndex = lstMetatypes.SelectedIndex;
             int intOldDataSourceSize = lstMetatypes.Items.Count;
+            lstMetatypes.BeginUpdate();
             lstMetatypes.DataSource = null;
 			lstMetatypes.ValueMember = "Value";
 			lstMetatypes.DisplayMember = "Name";
@@ -1996,6 +2020,7 @@ namespace Chummer
             }
             else
                 lstMetatypes.SelectedIndex = 0;
+            lstMetatypes.EndUpdate();
             _blnInitializing = blnOldInitializing;
 
             if (cboCategory.SelectedValue.ToString().EndsWith("Spirits"))
@@ -2088,6 +2113,7 @@ namespace Chummer
 
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
+            cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
@@ -2101,6 +2127,7 @@ namespace Chummer
             {
                 cboCategory.SelectedIndex = 0;
             }
+            cboCategory.EndUpdate();
 
             Height = cmdOK.Bottom + 40;
             lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;

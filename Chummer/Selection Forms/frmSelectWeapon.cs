@@ -104,7 +104,8 @@ namespace Chummer
 				}
 			}
 
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
@@ -118,6 +119,7 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
             if (chkBrowse.Checked)
                 LoadGrid();
@@ -145,10 +147,12 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstWeapons.Sort(objSort.Compare);
-			lstWeapon.DataSource = null;
+            lstWeapon.BeginUpdate();
+            lstWeapon.DataSource = null;
 			lstWeapon.ValueMember = "Value";
 			lstWeapon.DisplayMember = "Name";
 			lstWeapon.DataSource = lstWeapons;
+            lstWeapon.EndUpdate();
 
             if (chkBrowse.Checked)
                 LoadGrid();
@@ -757,10 +761,12 @@ namespace Chummer
                 }
                 SortListItem objSort = new SortListItem();
                 lstWeapons.Sort(objSort.Compare);
+                lstWeapon.BeginUpdate();
                 lstWeapon.DataSource = null;
                 lstWeapon.ValueMember = "Value";
                 lstWeapon.DisplayMember = "Name";
                 lstWeapon.DataSource = lstWeapons;
+                lstWeapon.EndUpdate();
             }
         }
 

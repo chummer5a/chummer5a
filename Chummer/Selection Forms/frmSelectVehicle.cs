@@ -81,7 +81,8 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
@@ -93,8 +94,9 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -118,11 +120,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
-			lstVehicle.DataSource = null;
+            lstVehicle.BeginUpdate();
+            lstVehicle.DataSource = null;
 			lstVehicle.ValueMember = "Value";
 			lstVehicle.DisplayMember = "Name";
 			lstVehicle.DataSource = lstVehicles;
-		}
+            lstVehicle.EndUpdate();
+        }
 
 		private void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -176,11 +180,13 @@ namespace Chummer
             }
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
-			lstVehicle.DataSource = null;
+            lstVehicle.BeginUpdate();
+            lstVehicle.DataSource = null;
 			lstVehicle.ValueMember = "Value";
 			lstVehicle.DisplayMember = "Name";
 			lstVehicle.DataSource = lstVehicles;
-		}
+            lstVehicle.EndUpdate();
+        }
 
 		private void lstVehicle_DoubleClick(object sender, EventArgs e)
 		{
