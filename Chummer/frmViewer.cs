@@ -24,6 +24,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
 using System.ComponentModel;
+ using SelectPdf;
 
 namespace Chummer
 {
@@ -308,14 +309,35 @@ namespace Chummer
 			int intWidth = cmdPrint.Width;
 			cmdPrint.AutoSize = false;
 			cmdPrint.Width = intWidth + 20;
-		}
-		#endregion
+        }
 
-		#region Properties
-		/// <summary>
-		/// Character's XmlDocument.
-		/// </summary>
-		public XmlDocument CharacterXML
+        private void cmdSavePDF_Click(object sender, EventArgs e)
+        {
+            // Save the generated output as PDF.
+            string strSaveFile = "";
+            SaveFileDialog1.Filter = "PDF|*.pdf";
+            SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsPdf");
+            SaveFileDialog1.ShowDialog();
+            strSaveFile = SaveFileDialog1.FileName;
+
+            if (strSaveFile == "")
+                return;
+            var converter = new HtmlToPdf();
+            converter.Options.MarginBottom = 10;
+            converter.Options.MarginTop = 10;
+            converter.Options.MarginLeft = 10;
+            converter.Options.MarginRight = 10;
+            PdfDocument doc = converter.ConvertHtmlString(webBrowser1.DocumentText);
+            doc.Save(strSaveFile);
+            doc.Close();
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Character's XmlDocument.
+        /// </summary>
+        public XmlDocument CharacterXML
 		{
 			set
 			{
@@ -363,5 +385,5 @@ namespace Chummer
 					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
 			}
 		}
-	}
+    }
 }
