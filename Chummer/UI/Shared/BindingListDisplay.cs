@@ -26,11 +26,8 @@ namespace Chummer.UI.Shared
 		private int _offScreenChunkSize = 1;
 		private bool _allRendered;
 		private bool _resetAtIdle;
-		
 		private Predicate<TType> _visibleFilter = x => true;
 		private IComparer<TType> _comparison;
-
-		
 
 		public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadFast = false, bool loadVisibleOnly = true)
 		{
@@ -58,13 +55,14 @@ namespace Chummer.UI.Shared
 			Application.Idle += ApplicationOnIdle;
 		}
 
-		private void LoadRange(int min, int max)
+		private void LoadRange(int min, int max, bool blnSuspend = true)
 		{
 			min = Math.Max(0, min);
 			max = Math.Min(_displayIndex.Count, max);
 			if (_rendered.FirstMatching(false, min) > max) return;
 
-			pnlDisplay.SuspendLayout();
+            if (blnSuspend)
+			    pnlDisplay.SuspendLayout();
 
 			for (int i = min; i < max; i++)
 			{
@@ -73,13 +71,12 @@ namespace Chummer.UI.Shared
 				ControlWithMetaData item = _contentList[_displayIndex[i]];
 
 				item.Control.Location = new Point(0, i * _contentList[0].Control.Height);
-				item.Control.Visible = true;
-				
-				_rendered[i] = true;
-
+			    item.Control.Visible = true;
+                _rendered[i] = true;
 			}
 
-			pnlDisplay.ResumeLayout();
+            if (blnSuspend)
+                pnlDisplay.ResumeLayout();
 		}
 
 		private bool UnrenderedInRange(int min, int max)
@@ -99,18 +96,18 @@ namespace Chummer.UI.Shared
 			pnlDisplay.SuspendLayout();
 			SetupContentList();
 			ComptuteDisplayIndex();
-			LoadScreenContent();
+			LoadScreenContent(false);
 			BindingListDisplay_SizeChanged(null, null);
 			pnlDisplay.ResumeLayout();
 		}
 
 		private void SetupContentList()
 		{
-			_contentList = _contents.Select(item => new ControlWithMetaData(item, this)).ToList();
+            _contentList = _contents.Select(item => new ControlWithMetaData(item, this)).ToList();
 			_indexComparer = new IndexComparer(_contents);
 			if (_comparison == null) _comparison = _indexComparer;
 			_contents.ListChanged += ContentsChanged;
-		}
+        }
 
 		private void ComptuteDisplayIndex()
 		{
@@ -124,7 +121,7 @@ namespace Chummer.UI.Shared
 			_rendered = new BitArray(_displayIndex.Count);
 		}
 
-		private void LoadScreenContent()
+		private void LoadScreenContent(bool blnSuspendLayoutInLoadRange = true)
 		{
 			if (_contentList.Count == 0) return;
 
@@ -134,7 +131,7 @@ namespace Chummer.UI.Shared
 
 			int top = VerticalScroll.Value/_contentList[0].Control.Height;
 
-			LoadRange(top, top + toload);
+			LoadRange(top, top + toload, blnSuspendLayoutInLoadRange);
 		}
 
 		private int VisibleElements()
@@ -153,7 +150,6 @@ namespace Chummer.UI.Shared
 			ComptuteDisplayIndex();
 		}
 
-		
 		private void ApplicationOnIdle(object sender, EventArgs eventArgs)
 		{
 			TimeSpan maxDelay =TimeSpan.FromSeconds(0.1f);
@@ -275,19 +271,25 @@ namespace Chummer.UI.Shared
 		{
 			public TType Item { get; }
 
-			public Control Control => _control ?? (_control = CreateControl());
+			public Control Control { get; }
 
-			public bool ControlCreated => _control != null;
-
-			public bool Visible => (_visible ?? (_visible = _parrent._visibleFilter(Item))).Value;
-
-			private readonly BindingListDisplay<TType> _parrent;
-			private Control _control;
-			private bool? _visible;
-
-			public ControlWithMetaData(TType item, BindingListDisplay<TType> parrent)
+			public bool Visible
 			{
-				_parrent = parrent;
+			    get
+			    {
+			        if (_visible == null)
+			            _visible = _parent._visibleFilter(Item);
+
+                    return _visible.Value;
+			    }
+			}
+
+		    private readonly BindingListDisplay<TType> _parent;
+		    private bool? _visible;
+
+			public ControlWithMetaData(TType item, BindingListDisplay<TType> parent)
+			{
+				_parent = parent;
 				Item = item;
 
 				INotifyPropertyChanged prop = item as INotifyPropertyChanged;
@@ -295,12 +297,14 @@ namespace Chummer.UI.Shared
 				{
 					prop.PropertyChanged += item_ChangedEvent;
 				}
+
+			    Control = CreateControl();
 			}
 
 			private void item_ChangedEvent(object sender, PropertyChangedEventArgs e)
 			{
 				bool changes = false;
-				if (_visible != null && _visible.Value != _parrent._visibleFilter(Item))
+				if (_visible != null && _visible.Value != _parent._visibleFilter(Item))
 				{
 					changes = true;
 					_visible = !_visible;
@@ -308,18 +312,18 @@ namespace Chummer.UI.Shared
 				//TODO: Add this back in, but it is spamming updates like crazy right now and not updating right
 				//else if (_visible != null && _visible.Value)
 				//{
-				//	int displayIndex = _parrent._displayIndex.FindIndex(x => _parrent._contentList[x] == this);
+				//	int displayIndex = _parent._displayIndex.FindIndex(x => _parent._contentList[x] == this);
 
 				//	if (displayIndex > 0)
 				//	{
-				//		if(_parrent._comparison.Compare(Item, _parrent._contentList[_parrent._displayIndex[displayIndex - 1]].Item) > 0)
+				//		if(_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex - 1]].Item) > 0)
 				//		{
 				//			changes = true;
 				//		}
 				//	}
-				//	if(_parrent._displayIndex.Count - 1 > displayIndex)
+				//	if(_parent._displayIndex.Count - 1 > displayIndex)
 				//	{
-				//		if (_parrent._comparison.Compare(Item, _parrent._contentList[_parrent._displayIndex[displayIndex + 1]].Item) < 0)
+				//		if (_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex + 1]].Item) < 0)
 				//		{
 				//			changes = true;
 				//		}
@@ -329,38 +333,34 @@ namespace Chummer.UI.Shared
 
 				if (changes)
 				{
-					_parrent._resetAtIdle = true;
+					_parent._resetAtIdle = true;
 				}
 
-				_parrent.ChildPropertyChanged?.Invoke(sender, e);
+				_parent.ChildPropertyChanged?.Invoke(sender, e);
 
 			}
 
 			private Control CreateControl()
 			{
-				Control control = _parrent._createFunc(Item);
+				Control control = _parent._createFunc(Item);
 				control.Visible = false;
-				control.Width = _parrent.pnlDisplay.Width;
-				_parrent.pnlDisplay.Controls.Add(control);
-				return control;
+                control.Width = _parent.pnlDisplay.Width;
+				_parent.pnlDisplay.Controls.Add(control);
+                return control;
 			}
 
 			public void Reset()
 			{
 				_visible = null;
-				if (ControlCreated)
-				{
-					Control.Visible = false;
-					Control.Location = new Point(0, 0);
-					Control.Width = _parrent.pnlDisplay.Width;
-				}
-			}
+                Control.Location = new Point(0, 0);
+			    Control.Visible = false;
+                Control.Width = _parent.pnlDisplay.Width;
+            }
 
 			public void Cleanup()
 			{
-				if(ControlCreated)
-					_parrent.pnlDisplay.Controls.Remove(Control);
-			}
+                _parent.pnlDisplay.Controls.Remove(Control);
+            }
 		}
 
 		private class IndexComparer : IComparer<TType>
@@ -402,7 +402,5 @@ namespace Chummer.UI.Shared
 				_index = source.Select((x, y) => new {x, y}).ToDictionary(x => x.x, x => x.y);
 			}
 		}
-
-		
 	}
 }
