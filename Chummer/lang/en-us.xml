@@ -7889,9 +7889,13 @@ Do you want to continue?</text>
 			<key>Button_Viewer_SaveAsHtml</key>
 			<text>Save as HTML</text>
 		</string>
+    <string>
+      <key>Button_Viewer_SaveAsPdf</key>
+      <text>Save as PDF</text>
+    </string>
 		<string>
 			<key>Button_Viewer_SaveAsXml</key>
-			<text>Save XML</text>
+			<text>Save as XML</text>
 		</string>
 		<string>
 			<key>Label_Viewer_CharacterSheet</key>
