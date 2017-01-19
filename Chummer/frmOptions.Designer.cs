@@ -102,6 +102,7 @@
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
+            this.chkLiveCustomData = new System.Windows.Forms.CheckBox();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.lblPDFLocation = new System.Windows.Forms.Label();
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
@@ -109,7 +110,6 @@
             this.lblPDFOffset = new System.Windows.Forms.Label();
             this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
             this.cmdPDFTest = new System.Windows.Forms.Button();
-            this.cboPDFParameters = new Chummer.helpers.ComboBox();
             this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
             this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
             this.chkLifeModule = new System.Windows.Forms.CheckBox();
@@ -273,6 +273,7 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.cboPDFParameters = new Chummer.helpers.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1066,6 +1067,7 @@
             // tabGlobal
             // 
             this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+            this.tabGlobal.Controls.Add(this.chkLiveCustomData);
             this.tabGlobal.Controls.Add(this.grpSelectedSourcebook);
             this.tabGlobal.Controls.Add(this.cboPDFParameters);
             this.tabGlobal.Controls.Add(this.chkPreferNightlyBuilds);
@@ -1093,6 +1095,18 @@
             this.tabGlobal.TabIndex = 0;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
+            // 
+            // chkLiveCustomData
+            // 
+            this.chkLiveCustomData.AutoSize = true;
+            this.chkLiveCustomData.Location = new System.Drawing.Point(9, 130);
+            this.chkLiveCustomData.Name = "chkLiveCustomData";
+            this.chkLiveCustomData.Size = new System.Drawing.Size(307, 17);
+            this.chkLiveCustomData.TabIndex = 28;
+            this.chkLiveCustomData.Tag = "Checkbox_Options_Live_CustomData";
+            this.chkLiveCustomData.Text = "Allow Live Custom Data Updates from customdata Directory";
+            this.chkLiveCustomData.UseVisualStyleBackColor = true;
+            this.chkLiveCustomData.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // grpSelectedSourcebook
             // 
@@ -1174,16 +1188,6 @@
             this.cmdPDFTest.Text = "Test - Open to Page 5";
             this.cmdPDFTest.UseVisualStyleBackColor = true;
             this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
-            // 
-            // cboPDFParameters
-            // 
-            this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
-            this.cboPDFParameters.Name = "cboPDFParameters";
-            this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
-            this.cboPDFParameters.TabIndex = 26;
-            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPreferNightlyBuilds
             // 
@@ -3226,6 +3230,16 @@
             this.tipTooltip.InitialDelay = 500;
             this.tipTooltip.ReshowDelay = 100;
             // 
+            // cboPDFParameters
+            // 
+            this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboPDFParameters.FormattingEnabled = true;
+            this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
+            this.cboPDFParameters.Name = "cboPDFParameters";
+            this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
+            this.cboPDFParameters.TabIndex = 26;
+            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -3569,5 +3583,6 @@
 		private System.Windows.Forms.CheckBox chkFreeMartialArtSpecialization;
         private System.Windows.Forms.CheckBox chkDronemodsMaximumPilot;
         private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
+        private System.Windows.Forms.CheckBox chkLiveCustomData;
     }
 }

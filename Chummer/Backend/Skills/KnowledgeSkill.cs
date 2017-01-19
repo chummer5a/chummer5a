@@ -365,11 +365,13 @@ namespace Chummer.Skills
 
 		public void Load(XmlNode node)
 		{
-			node.TryGetField("name", out _name);
-			node.TryGetField(GlobalOptions.Instance.Language, out _translated);
+		    if (node == null)
+		        return;
+			node.TryGetStringFieldQuickly("name", ref _name);
+			node.TryGetStringFieldQuickly(GlobalOptions.Instance.Language, ref _translated);
 
 			LoadSuggestedSpecializations(_name);
-			Type = node["type"].InnerText;
+			Type = node["type"]?.InnerText;
 		}
 
         public override bool IsKnowledgeSkill

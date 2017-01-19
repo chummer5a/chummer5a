@@ -174,10 +174,10 @@ namespace Chummer.Skills
 			XmlElement element = n["guid"];
 			if (element != null) skill.Id = Guid.Parse(element.InnerText);
 
-			n.TryGetField("karma", out skill._karma);
-			n.TryGetField("base", out skill._base);
-			n.TryGetField("buywithkarma", out skill._buyWithKarma);
-			n.TryGetField("notes", out skill._strNotes);
+			n.TryGetInt32FieldQuickly("karma", ref skill._karma);
+			n.TryGetInt32FieldQuickly("base", ref skill._base);
+			n.TryGetBoolFieldQuickly("buywithkarma", ref skill._buyWithKarma);
+			n.TryGetStringFieldQuickly("notes", ref skill._strNotes);
 
 			foreach (XmlNode spec in n.SelectNodes("specs/spec"))
 			{
@@ -210,7 +210,9 @@ namespace Chummer.Skills
 			int fullRating = int.Parse(n["rating"].InnerText);
 			int karmaRating = fullRating - baseRating;  //Not reading karma directly as career only increases rating
 
-			if (n.TryCheckValue("knowledge", "True"))
+		    bool blnTemp = false;
+
+			if (n.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
 			{
 				KnowledgeSkill kno = new KnowledgeSkill(character);
 				kno.WriteableName = n["name"].InnerText;
@@ -243,12 +245,11 @@ namespace Chummer.Skills
 				{
 					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
 					//don't need to do more load then.
-					
 					exoticSkill.Specific = name;
 					return skill;
 				}
 
-				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
+			    n.TryGetBoolFieldQuickly("buywithkarma", ref skill._buyWithKarma);
 			}
 
 			var v = from XmlNode node

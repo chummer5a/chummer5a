@@ -80,28 +80,30 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnAerodynamic">Whether or not Weapons should be created as Aerodynamic.</param>
 		public void Create(XmlNode objXmlGear, Character objCharacter, TreeNode objNode, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", bool blnHacked = false, bool blnInherent = false, bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
 		{
-			_strName = objXmlGear["name"].InnerText;
-			_strCategory = objXmlGear["category"].InnerText;
-			_strAvail = objXmlGear["avail"].InnerText;
-			objXmlGear.TryGetField("avail3", out _strAvail3, string.Empty);
-			objXmlGear.TryGetField("avail6", out _strAvail6, string.Empty);
-			objXmlGear.TryGetField("avail10", out _strAvail10, string.Empty);
-			objXmlGear.TryGetField("capacity", out _strCapacity, string.Empty);
-			objXmlGear.TryGetField("armorcapacity", out _strArmorCapacity, string.Empty);
-			objXmlGear.TryGetField("costfor", out _intCostFor, 1);
-			objXmlGear.TryGetField("costfor", out _intQty, 1);
-			objXmlGear.TryGetField("cost", out _strCost, string.Empty);
-			objXmlGear.TryGetField("cost3", out _strCost3, string.Empty);
-			objXmlGear.TryGetField("cost6", out _strCost6, string.Empty);
-			objXmlGear.TryGetField("cost10", out _strCost10, string.Empty);
+		    if (objXmlGear == null)
+		        return;
+            objXmlGear.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlGear.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlGear.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objXmlGear.TryGetStringFieldQuickly("avail3", ref _strAvail3);
+			objXmlGear.TryGetStringFieldQuickly("avail6", ref _strAvail6);
+			objXmlGear.TryGetStringFieldQuickly("avail10", ref _strAvail10);
+			objXmlGear.TryGetStringFieldQuickly("capacity", ref _strCapacity);
+			objXmlGear.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
+			objXmlGear.TryGetInt32FieldQuickly("costfor", ref _intCostFor);
+            _intQty = _intCostFor;
+			objXmlGear.TryGetStringFieldQuickly("cost", ref _strCost);
+			objXmlGear.TryGetStringFieldQuickly("cost3", ref _strCost3);
+			objXmlGear.TryGetStringFieldQuickly("cost6", ref _strCost6);
+			objXmlGear.TryGetStringFieldQuickly("cost10", ref _strCost10);
 			_nodBonus = objXmlGear["bonus"];
-			_intMaxRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
-			objXmlGear.TryGetField("minrating", out _intMinRating);
+            objXmlGear.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlGear.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
 			_intRating = intRating;
-			_strSource = objXmlGear["source"].InnerText;
-			_strPage = objXmlGear["page"].InnerText;
-			objXmlGear.TryGetField("childcostmultiplier", out _intChildCostMultiplier, 1);
-			objXmlGear.TryGetField("childavailmodifier", out _intChildAvailModifier, 0);
+            objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlGear.TryGetStringFieldQuickly("page", ref _strPage);
+			objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
+			objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -109,10 +111,8 @@ namespace Chummer.Backend.Equipment
 				XmlNode objGearNode = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strName + "\"]");
 				if (objGearNode != null)
 				{
-					if (objGearNode["translate"] != null)
-						_strAltName = objGearNode["translate"].InnerText;
-					if (objGearNode["altpage"] != null)
-						_strAltPage = objGearNode["altpage"].InnerText;
+                    objGearNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objGearNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				if (_strAltName.StartsWith("Stacked Focus"))
@@ -121,7 +121,7 @@ namespace Chummer.Backend.Equipment
 				objGearNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
 				if (objGearNode != null)
 				{
-					if (objGearNode.Attributes["translate"] != null)
+					if (objGearNode.Attributes?["translate"] != null)
 						_strAltCategory = objGearNode.Attributes["translate"].InnerText;
 				}
 
@@ -130,7 +130,7 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// Check for a Custom name
-			if (objXmlGear["name"].InnerText == "Custom Item")
+			if (_strName == "Custom Item")
 			{
 				frmSelectText frmPickText = new frmSelectText();
 				frmPickText.PreventXPathErrors = true;
@@ -143,15 +143,14 @@ namespace Chummer.Backend.Equipment
 					_strName = frmPickText.SelectedValue;
 				}
 			}
-            
 			// Check for a Variable Cost.
-			if (objXmlGear["cost"] != null)
+			if (!string.IsNullOrEmpty(_strCost))
 			{
-				if (objXmlGear["cost"].InnerText.StartsWith("Variable"))
+				if (_strCost.StartsWith("Variable"))
 				{
 					int intMin = 0;
 					int intMax = 0;
-					string strCost = objXmlGear["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+					string strCost = _strCost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
 					if (strCost.Contains("-"))
 					{
 						string[] strValues = strCost.Split('-');
@@ -253,7 +252,7 @@ namespace Chummer.Backend.Equipment
 						_strName += " (" + LanguageManager.Instance.GetString("Checkbox_Aerodynamic") + ")";
 						objNode.Text = DisplayName;
 					}
-						
+
 					objWeaponNodes.Add(objGearWeaponNode);
 					objWeapons.Add(objGearWeapon);
 

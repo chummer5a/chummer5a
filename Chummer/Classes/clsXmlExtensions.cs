@@ -347,9 +347,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, String field, ref String read)
         {
-            if (node[field] != null)
+            XmlElement objField = node[field];
+            if (objField != null)
             {
-                read = node[field].InnerText;
+                read = objField.InnerText;
                 return true;
             }
             return false;
@@ -361,10 +362,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XmlNode node, String field, ref int read)
         {
-            if (node[field] != null)
+            XmlElement objField = node[field];
+            if (objField != null)
             {
                 int intTmp;
-                if (int.TryParse(node[field].InnerText, out intTmp))
+                if (int.TryParse(objField.InnerText, out intTmp))
                 {
                     read = intTmp;
                     return true;
@@ -379,10 +381,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XmlNode node, String field, ref bool read)
         {
-            if (node[field] != null)
+            XmlElement objField = node[field];
+            if (objField != null)
             {
                 bool blnTmp;
-                if (bool.TryParse(node[field].InnerText, out blnTmp))
+                if (bool.TryParse(objField.InnerText, out blnTmp))
                 {
                     read = blnTmp;
                     return true;
@@ -397,10 +400,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XmlNode node, String field, ref decimal read)
         {
-            if (node[field] != null)
+            XmlElement objField = node[field];
+            if (objField != null)
             {
                 decimal decTmp;
-                if (decimal.TryParse(node[field].InnerText, out decTmp))
+                if (decimal.TryParse(objField.InnerText, out decTmp))
                 {
                     read = decTmp;
                     return true;
@@ -415,10 +419,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, String field, ref double read)
         {
-            if (node[field] != null)
+            XmlElement objField = node[field];
+            if (objField != null)
             {
                 double dblTmp;
-                if (double.TryParse(node[field].InnerText, out dblTmp))
+                if (double.TryParse(objField.InnerText, out dblTmp))
                 {
                     read = dblTmp;
                     return true;

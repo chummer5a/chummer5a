@@ -75,6 +75,23 @@ namespace Chummer
                 return;
             }
 
+            if (blnDirty)
+            {
+                string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
+                string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+                switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    case DialogResult.Yes:
+                        break;
+                    default:
+                        return;
+                }
+                Utils.RestartApplication("Message_Options_CloseForms");
+            }
+
+            DialogResult = DialogResult.OK;
+
             SaveRegistrySettings();
             BuildBooksList();
 
@@ -187,23 +204,6 @@ namespace Chummer
 
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
-
-			if (blnDirty)
-			{
-				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
-				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
-
-				switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-				{
-					case DialogResult.Yes:
-						break;
-					default:
-						return;
-				}
-				Utils.RestartApplication("Message_Options_CloseForms");
-			}
-
-			DialogResult = DialogResult.OK;
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -696,6 +696,7 @@ namespace Chummer
 	    private void SaveGlobalOptions()
 	    {
             GlobalOptions.Instance.AutomaticUpdate = chkAutomaticUpdate.Checked;
+            GlobalOptions.Instance.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.Instance.UseLogging = chkUseLogging.Checked;
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
@@ -727,6 +728,7 @@ namespace Chummer
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
+            objRegistry.SetValue("livecustomdata", chkLiveCustomData.Checked.ToString());
             objRegistry.SetValue("uselogging", chkUseLogging.Checked.ToString());
             objRegistry.SetValue("language", cboLanguage.SelectedValue.ToString());
             objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked.ToString());
@@ -1022,6 +1024,7 @@ namespace Chummer
         private void PopulateGlobalOptions()
         {
             chkAutomaticUpdate.Checked = GlobalOptions.Instance.AutomaticUpdate;
+            chkLiveCustomData.Checked = GlobalOptions.Instance.LiveCustomData;
             chkUseLogging.Checked = GlobalOptions.Instance.UseLogging;
             chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
 	        chkOmaeEnabled.Checked = GlobalOptions.Instance.OmaeEnabled;

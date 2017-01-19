@@ -1929,11 +1929,12 @@ namespace Chummer
 			conflictingQualities = new List<Quality>();
 			reason = QualityFailureReason.Allowed;
 			//If limit are not present or no, check if same quality exists
-			if (!objXmlQuality.TryCheckValue("limit", "no"))
+		    string strTemp = string.Empty;
+			if (!(objXmlQuality.TryGetStringFieldQuickly("limit", ref strTemp) && strTemp == "no"))
 			{
 				foreach (Quality objQuality in objCharacter.Qualities)
 				{
-					if (objQuality.QualityId == objXmlQuality["id"].InnerText)
+					if (objQuality.QualityId == objXmlQuality["id"]?.InnerText)
 					{
 						reason |= QualityFailureReason.LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
 						//So instead of changing it, |= adds rhs to list of reasons on lhs, if it is not present
@@ -2170,15 +2171,18 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_strName = objNode["name"].InnerText;
-			objNode.TryGetField("crittername", out _strCritterName);
-			_intServicesOwed = Convert.ToInt32(objNode["services"].InnerText);
-			objNode.TryGetField("force", out _intForce);
-			objNode.TryGetField("bound", out _blnBound);
-			_objEntityType = ConvertToSpiritType(objNode["type"].InnerText);
-			objNode.TryGetField("file", out _strFileName);
-			objNode.TryGetField("relative", out _strRelativeName);
-			objNode.TryGetField("notes", out _strNotes);
+            if (objNode == null)
+                return;
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
+            objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
+            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
+			objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
+            if (objNode["type"] != null)
+			    _objEntityType = ConvertToSpiritType(objNode["type"].InnerText);
+			objNode.TryGetStringFieldQuickly("file", ref _strFileName);
+			objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 		}
 
 		/// <summary>
@@ -2220,8 +2224,8 @@ namespace Chummer
 				objWriter.WriteStartElement("spiritattributes");
 				foreach (string Attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"})
 				{
-					String strInner;
-					if (objXmlCritterNode.TryGetField(Attribute, out strInner))
+					String strInner = string.Empty;
+					if (objXmlCritterNode.TryGetStringFieldQuickly(Attribute, ref strInner))
 					{
 						//Here is some black magic (used way too many places)
 						//To calculate the int value of a string
@@ -2293,12 +2297,12 @@ namespace Chummer
 				}
 
 				//Page in book for reference
-				String source;
-				String page;
+				String source = string.Empty;
+				String page = string.Empty;
 
-				if (objXmlCritterNode.TryGetField("source", out source))
+				if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref source))
 					objWriter.WriteElementString("source", source);
-				if (objXmlCritterNode.TryGetField("page", out page))
+				if (objXmlCritterNode.TryGetStringFieldQuickly("page", ref page))
 					objWriter.WriteElementString("page", page);
 			}
 
@@ -2315,16 +2319,15 @@ namespace Chummer
 
 		private void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
 		{
-			XmlNode objXmlPowerNode;
 			string strSource = string.Empty;
 			string strPage = string.Empty;
-			objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name=\"" + strPowerName + "\"]");
+			XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name=\"" + strPowerName + "\"]");
 			if (objXmlPowerNode == null)
 				objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
 			if (objXmlPowerNode != null)
 			{
-				objXmlPowerNode.TryGetField("source", out strSource);
-				objXmlPowerNode.TryGetField("page", out strPage);
+				objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
+				objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
 			}
 
 			objWriter.WriteStartElement("power");

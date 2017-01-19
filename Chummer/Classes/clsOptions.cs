@@ -100,7 +100,8 @@ namespace Chummer
         private static readonly RegistryKey _objBaseChummerKey;
 
         private static bool _blnAutomaticUpdate = false;
-		private static bool _blnLocalisedUpdatesOnly = false;
+	    private static bool _blnLiveCustomData = false;
+        private static bool _blnLocalisedUpdatesOnly = false;
 		private static bool _blnStartupFullscreen = false;
 		private static bool _blnSingleDiceRoller = true;
 		private static string _strLanguage = "en-us";
@@ -174,6 +175,8 @@ namespace Chummer
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
+            LoadBoolFromRegistry(ref _blnLiveCustomData, "livecustomdata");
+
             LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
 
             LoadBoolFromRegistry(ref _omaeEnabled, "omaeenabled");
@@ -231,8 +234,7 @@ namespace Chummer
 
 			// Retrieve the SourcebookInfo objects.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
-			XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book");
-			foreach (XmlNode objXmlBook in objXmlBookList)
+			foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/chummer/books/book"))
 			{
 				if (objXmlBook["code"] != null)
 				{
@@ -285,7 +287,22 @@ namespace Chummer
 			}
 		}
 
-		public bool LifeModuleEnabled
+        /// <summary>
+		/// Whether or not live updates from the customdata directory are allowed.
+		/// </summary>
+		public bool LiveCustomData
+        {
+            get
+            {
+                return _blnLiveCustomData;
+            }
+            set
+            {
+                _blnLiveCustomData = value;
+            }
+        }
+
+        public bool LifeModuleEnabled
 		{
 			get { return _lifeModuleEnabled; }
 			set { _lifeModuleEnabled = value; }

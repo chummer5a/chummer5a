@@ -244,14 +244,14 @@ namespace Chummer.Skills
 
 		internal static SkillGroup Load(Character character, XmlNode saved)
 		{
+		    if (saved == null)
+		        return null;
 			Guid g;
 			saved.TryGetField("id", Guid.TryParse, out g);
-			SkillGroup group = new SkillGroup(character, saved["name"].InnerText, g);
+			SkillGroup group = new SkillGroup(character, saved["name"]?.InnerText, g);
 
-			saved.TryGetField("karma", out group._skillFromKarma);
-			saved.TryGetField("base", out group._skillFromSp);
-			
-
+			saved.TryGetInt32FieldQuickly("karma", ref group._skillFromKarma);
+			saved.TryGetInt32FieldQuickly("base", ref group._skillFromSp);
 
 			return group;
 		}

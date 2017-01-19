@@ -190,7 +190,7 @@ namespace Chummer
                         {
                             // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
                             // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                            if (objNode["key"] != null && _objDictionary[objNode["key"].InnerText] != null)
+                            if (objNode["text"] != null && objNode["key"] != null && _objDictionary.ContainsKey(objNode["key"].InnerText))
                             {
                                 _objDictionary[objNode["key"].InnerText] = objNode["text"].InnerText;
                             }

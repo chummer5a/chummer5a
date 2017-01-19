@@ -1258,10 +1258,11 @@ namespace Chummer.Classes
 		{
 			Log.Info("addcontact");
 
-			int loyalty, connection;
+			int loyalty = 1;
+            int connection = 1;
 
-			bonusNode.TryGetField("loyalty", out loyalty, 1);
-			bonusNode.TryGetField("connection", out connection, 1);
+			bonusNode.TryGetInt32FieldQuickly("loyalty", ref loyalty);
+			bonusNode.TryGetInt32FieldQuickly("connection", ref connection);
 			bool group = bonusNode["group"] != null;
 			bool free = bonusNode["free"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
@@ -1333,11 +1334,10 @@ namespace Chummer.Classes
 		public void attributelevel(XmlNode bonusNode)
 		{
 			Log.Info(new object[] { "attributelevel", bonusNode.OuterXml });
-			String strAttrib;
-			int value;
-			bonusNode.TryGetField("val", out value, 1);
-
-			if (bonusNode.TryGetField("name", out strAttrib))
+			String strAttrib = string.Empty;
+			int value = 1;
+			bonusNode.TryGetInt32FieldQuickly("val", ref value);
+			if (bonusNode.TryGetStringFieldQuickly("name", ref strAttrib))
 			{
 				CreateImprovement(strAttrib, _objImprovementSource, SourceName,
 					Improvement.ImprovementType.Attributelevel, string.Empty, value);
@@ -1351,15 +1351,13 @@ namespace Chummer.Classes
 		public void skilllevel(XmlNode bonusNode)
 		{
 			Log.Info(new object[] { "skilllevel", bonusNode.OuterXml });
-			String strSkill;
-			int value;
-			bonusNode.TryGetField("val", out value, 1);
-			if (bonusNode.TryGetField("name", out strSkill))
+			String strSkill = string.Empty;
+			int value = 1;
+			bonusNode.TryGetInt32FieldQuickly("val", ref value);
+			if (bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
 			{
 				CreateImprovement(strSkill, _objImprovementSource, SourceName,
 					Improvement.ImprovementType.SkillLevel, string.Empty, value);
-
-
 			}
 			else
 			{
@@ -1432,9 +1430,8 @@ namespace Chummer.Classes
 
 			KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
 
-			bool knowsoft = bonusNode.TryCheckValue("require", "skilljack");
-
-			if (knowsoft)
+            string strTemp = string.Empty;
+			if (bonusNode.TryGetStringFieldQuickly("require", ref strTemp) && strTemp == "skilljack")
 			{
 				_objCharacter.SkillsSection.KnowsoftSkills.Add(skill);
 				if (_objCharacter.SkillsoftAccess)
@@ -1471,10 +1468,10 @@ namespace Chummer.Classes
 		public void skillgrouplevel(XmlNode bonusNode)
 		{
 			Log.Info(new object[] { "skillgrouplevel", bonusNode.OuterXml });
-			String strSkillGroup;
-			int value;
-			if (bonusNode.TryGetField("name", out strSkillGroup) &&
-				bonusNode.TryGetField("val", out value))
+			String strSkillGroup = String.Empty;
+			int value = 0;
+			if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup) &&
+				bonusNode.TryGetInt32FieldQuickly("val", ref value))
 			{
 				CreateImprovement(strSkillGroup, _objImprovementSource, SourceName,
 					Improvement.ImprovementType.SkillGroupLevel, string.Empty, value);

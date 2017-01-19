@@ -118,19 +118,40 @@ namespace Chummer
 				}
 			}
 
-			// Attempt to cache the XML files that are used the most.
-			Timekeeper.Start("cache_load");
+            // Attempt to cache all XML files that are used the most.
+		    Timekeeper.Start("cache_load");
 			XmlManager.Instance.Load("armor.xml");
 			XmlManager.Instance.Load("bioware.xml");
 			XmlManager.Instance.Load("books.xml");
-			XmlManager.Instance.Load("cyberware.xml");
-			XmlManager.Instance.Load("gear.xml");
-			XmlManager.Instance.Load("lifestyles.xml");
-			XmlManager.Instance.Load("metatypes.xml");
-			XmlManager.Instance.Load("qualities.xml");
+            XmlManager.Instance.Load("complexforms.xml");
+            XmlManager.Instance.Load("contacts.xml");
+            XmlManager.Instance.Load("critters.xml");
+            XmlManager.Instance.Load("critterpowers.xml");
+            XmlManager.Instance.Load("cyberware.xml");
+            XmlManager.Instance.Load("drugcomponents.xml");
+            XmlManager.Instance.Load("echoes.xml");
+            XmlManager.Instance.Load("gameplayoptions.xml");
+            XmlManager.Instance.Load("gear.xml");
+            XmlManager.Instance.Load("improvements.xml");
+            XmlManager.Instance.Load("licenses.xml");
+            XmlManager.Instance.Load("lifemodules.xml");
+            XmlManager.Instance.Load("lifestyles.xml");
+            XmlManager.Instance.Load("martialarts.xml");
+            XmlManager.Instance.Load("mentors.xml");
+            XmlManager.Instance.Load("metamagic.xml");
+            XmlManager.Instance.Load("metatypes.xml");
+            XmlManager.Instance.Load("options.xml");
+            XmlManager.Instance.Load("packs.xml");
+            XmlManager.Instance.Load("powers.xml");
+            XmlManager.Instance.Load("priorities.xml");
+            XmlManager.Instance.Load("programs.xml");
+            XmlManager.Instance.Load("qualities.xml");
 			XmlManager.Instance.Load("ranges.xml");
 			XmlManager.Instance.Load("skills.xml");
-			XmlManager.Instance.Load("vehicles.xml");
+            XmlManager.Instance.Load("spells.xml");
+            XmlManager.Instance.Load("spiritpowers.xml");
+            XmlManager.Instance.Load("traditions.xml");
+            XmlManager.Instance.Load("vehicles.xml");
 			XmlManager.Instance.Load("weapons.xml");
 			Timekeeper.Finish("cache_load");
 
@@ -186,10 +207,9 @@ namespace Chummer
 			// Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
 			if (_frmUpdate == null)
 			{
-				frmUpdate frmUpdate = new frmUpdate();
-				_frmUpdate = frmUpdate;
+				_frmUpdate = new frmUpdate();
 				_frmUpdate.Show();
-		}
+		    }
 			else
 			{
 				_frmUpdate.Focus();
@@ -320,10 +340,8 @@ namespace Chummer
 
 		private void frmMain_MdiChildActivate(object sender, EventArgs e)
 		{
-			// If there are no child forms, hide the tab control.
-			if (ActiveMdiChild == null)
-				tabForms.Visible = false;
-			else
+            // If there are no child forms, hide the tab control.
+            if (ActiveMdiChild != null)
 			{
 				ActiveMdiChild.WindowState = FormWindowState.Maximized;
 
@@ -353,22 +371,25 @@ namespace Chummer
 					ActiveMdiChild.Tag = tp;
 					ActiveMdiChild.FormClosed += ActiveMdiChild_FormClosed;
 				}
-
-				// Don't show the tab control if there is only one window open.
-				if (tabForms.TabCount <= 1)
-					tabForms.Visible = false;
-				else
-					tabForms.Visible = true;
 			}
-		}
+            // Don't show the tab control if there is only one window open.
+            if (tabForms.TabCount > 1)
+                tabForms.Visible = true;
+            else
+                tabForms.Visible = false;
+        }
 
 		private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			(sender as Form).FormClosed -= ActiveMdiChild_FormClosed;
-			(sender as Form).Dispose();
-			((sender as Form).Tag as TabPage).Dispose();
-			
-			// Don't show the tab control if there is only one window open.
+		    Form objForm = sender as Form;
+		    if (objForm != null)
+		    {
+                objForm.FormClosed -= ActiveMdiChild_FormClosed;
+                objForm.Dispose();
+		        (objForm.Tag as TabPage)?.Dispose();
+		    }
+
+		    // Don't show the tab control if there is only one window open.
 			if (tabForms.TabCount <= 1)
 				tabForms.Visible = false;
 		}
@@ -376,28 +397,30 @@ namespace Chummer
 		private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tabForms.SelectedTab != null && tabForms.SelectedTab.Tag != null)
-				(tabForms.SelectedTab.Tag as Form).Select();
+				(tabForms.SelectedTab.Tag as Form)?.Select();
 		}
 
 		private void objCharacter_CharacterNameChanged(Object sender)
 		{
-			// Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-			Character objCharacter = (Character)sender;
-            if (objCharacter != null)
-            {
-                string strTitle = objCharacter.Name;
-                if (!string.IsNullOrEmpty(objCharacter.Alias.Trim()))
-                {
-                    strTitle = objCharacter.Alias;
-                }
-                else
-                {
-                    strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
-                }
+            // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
+		    if (tabForms.SelectedTab != null)
+		    {
+		        Character objCharacter = sender as Character;
+		        if (objCharacter != null)
+		        {
+		            string strTitle = objCharacter.Name;
+		            if (!string.IsNullOrEmpty(objCharacter.Alias.Trim()))
+		            {
+		                strTitle = objCharacter.Alias.Trim();
+		            }
+		            else if (string.IsNullOrEmpty(strTitle))
+                    {
+		                strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
+		            }
 
-                if (tabForms.SelectedTab != null)
-                    tabForms.SelectedTab.Text = strTitle;
-            }
+		            tabForms.SelectedTab.Text = strTitle;
+		        }
+		    }
 		}
 
 		private void mnuToolsDiceRoller_Click(object sender, EventArgs e)
@@ -407,9 +430,8 @@ namespace Chummer
 				// Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
 				if (_frmRoller == null)
 				{
-					frmDiceRoller frmRoller = new frmDiceRoller(this);
-					_frmRoller = frmRoller;
-					frmRoller.Show();
+					_frmRoller = new frmDiceRoller(this);
+                    _frmRoller.Show();
 				}
 				else
 				{
@@ -429,9 +451,8 @@ namespace Chummer
 			// Only a single instance of Omae can be open, so either find the current instance and focus on it, or create a new one.
 			if (_frmOmae == null)
 			{
-				frmOmae frmOmaeOnline = new frmOmae(this);
-				_frmOmae = frmOmaeOnline;
-				frmOmaeOnline.Show();
+				_frmOmae = new frmOmae(this);
+                _frmOmae.Show();
 			}
 			else
 			{
@@ -510,10 +531,10 @@ namespace Chummer
 
 			mnuToolsOmae.Visible = GlobalOptions.Instance.OmaeEnabled;
 
-            if (GlobalOptions.Instance.UseLogging)
-            {
-				CommonFunctions objFunctions = new CommonFunctions();
-            }
+    //        if (GlobalOptions.Instance.UseLogging)
+    //        {
+				//CommonFunctions objFunctions = new CommonFunctions();
+    //        }
 		}
 
 		private void frmMain_DragDrop(object sender, DragEventArgs e)
@@ -681,7 +702,7 @@ namespace Chummer
                         strVersion = strVersion.Substring(2);
                     }
                     Version.TryParse(strVersion, out verSavedVersion);
-                    Version.TryParse("5.188.34", out verCorrectedVersion);               
+                    Version.TryParse("5.188.34", out verCorrectedVersion);
                     int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
                     if (intResult == -1)
                     {
@@ -706,19 +727,23 @@ namespace Chummer
 				// Show the character form.
 				if (!objCharacter.Created)
 				{
-					frmCreate frmCharacter = new frmCreate(objCharacter);
-					frmCharacter.MdiParent = this;
-					frmCharacter.WindowState = FormWindowState.Maximized;
-					frmCharacter.Loading = true;
-					frmCharacter.Show();
+				    frmCreate frmCharacter = new frmCreate(objCharacter)
+				    {
+				        MdiParent = this,
+				        WindowState = FormWindowState.Maximized,
+				        Loading = true
+				    };
+				    frmCharacter.Show();
 				}
 				else
 				{
-					frmCareer frmCharacter = new frmCareer(objCharacter);
-					frmCharacter.MdiParent = this;
-					frmCharacter.WindowState = FormWindowState.Maximized;
-					frmCharacter.Loading = true;
-					frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
+				    frmCareer frmCharacter = new frmCareer(objCharacter)
+				    {
+				        MdiParent = this,
+				        WindowState = FormWindowState.Maximized,
+				        Loading = true
+				    };
+				    frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
 					frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;
 					frmCharacter.Show();
 				}
@@ -926,9 +951,8 @@ namespace Chummer
 			{
 				if (_frmRoller == null)
 				{
-					frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice);
-					_frmRoller = frmRoller;
-					frmRoller.Show();
+					_frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice);
+                    _frmRoller.Show();
 				}
 				else
 				{

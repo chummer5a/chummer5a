@@ -1139,7 +1139,7 @@ namespace Chummer
 		    objXmlCharacter.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
 		   
 		    objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
-		    objXmlCharacter.TryGetField("prototypetranshuman", out _decPrototypeTranshuman);
+		    objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
 		    objXmlCharacter.TryGetBoolFieldQuickly("blackmarket", ref _blnBlackMarketDiscount);
 		    objXmlCharacter.TryGetBoolFieldQuickly("excon", ref _blnExCon);
 		    objXmlCharacter.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
@@ -2051,14 +2051,15 @@ namespace Chummer
 	            }
 
 				//Spirit form, default to materialization unless field with other data persists
-				string strSpiritForm;
-				objXmlTradition.TryGetField("spiritform", out strSpiritForm, "Materialization");
+				string strSpiritForm = "Materialization";
+				objXmlTradition.TryGetStringFieldQuickly("spiritform", ref strSpiritForm);
 				objWriter.WriteElementString("spiritform", strSpiritForm);
 
 				//Rulebook reference
-				string strSource, strPage;
-				objXmlTradition.TryGetField("source", out strSource);
-				objXmlTradition.TryGetField("page", out strPage);
+                string strSource = string.Empty;
+                string strPage = string.Empty;
+				objXmlTradition.TryGetStringFieldQuickly("source", ref strSource);
+				objXmlTradition.TryGetStringFieldQuickly("page", ref strPage);
 
 				objWriter.WriteElementString("source", strSource);
 				objWriter.WriteElementString("page", strPage);
@@ -6071,17 +6072,19 @@ namespace Chummer
 				XmlDocument objXmlDocument = new XmlDocument();
 	            objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 	            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-	                
-                objXmlNode.TryGetField("movement", out strReturn);
-				objXmlNode.TryGetField("run", out _strRun);
-				objXmlNode.TryGetField("walk", out _strWalk);
-				objXmlNode.TryGetField("sprint", out _strSprint);
-				if (strReturn == "Special")
-						{
-							return "Special";
-						}
+                if (objXmlNode != null)
+                {
+                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
+                    objXmlNode.TryGetStringFieldQuickly("run", ref _strRun);
+                    objXmlNode.TryGetStringFieldQuickly("walk", ref _strWalk);
+                    objXmlNode.TryGetStringFieldQuickly("sprint", ref _strSprint);
+                    if (strReturn == "Special")
+                    {
+                        return "Special";
+                    }
+                }
 
-	            return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground",true);
+                return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground",true);
             }
             set
             {
@@ -6283,16 +6286,17 @@ namespace Chummer
 				}
 
                 string strReturn = string.Empty;
-                XmlDocument objXmlDocument = new XmlDocument();
-				objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+                XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 				XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-
-				objXmlNode.TryGetField("movement", out strReturn);
-				if (strReturn == "Special")
-				{
-					return "Special";
-				}
-	            return CalculatedMovement(Improvement.ImprovementType.SwimPercent, "Swim");
+                if (objXmlNode != null)
+                {
+                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
+                    if (strReturn == "Special")
+                    {
+                        return "Special";
+                    }
+                }
+                return CalculatedMovement(Improvement.ImprovementType.SwimPercent, "Swim");
             }
         }
 
@@ -6310,17 +6314,18 @@ namespace Chummer
 				}
 
 				string strReturn = string.Empty;
-				XmlDocument objXmlDocument = new XmlDocument();
-				objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+				XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 				XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+                if (objXmlNode != null)
+                {
+                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
+                    if (strReturn == "Special")
+                    {
+                        return "Special";
+                    }
+                }
 
-				objXmlNode.TryGetField("movement", out strReturn);
-				if (strReturn == "Special")
-				{
-					return "Special";
-				}
-
-				return CalculatedMovement(Improvement.ImprovementType.FlyPercent, "Fly");
+                return CalculatedMovement(Improvement.ImprovementType.FlyPercent, "Fly");
             }
         }
 

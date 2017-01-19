@@ -6223,6 +6223,10 @@ Do you want to continue?</text>
 			<text>Automatic Updates</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_Live_CustomData</key>
+			<text>Allow Live Data Updates from customdata Directory</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_UseLogging</key>
 			<text>Use Debug Logging</text>
 		</string>

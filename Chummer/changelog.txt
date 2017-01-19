@@ -50,6 +50,8 @@ Application Changes:
 - Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
 - Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
 - Reduced load time for characters by about 25%.
+- Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
+- Fixed a bug where cancelling the option saving confirmation message would still save options.
 
 Data Changes:
 
@@ -104,6 +106,7 @@ New Strings:
 - Label_MugshotDimensions
 - Label_InitiativeDice
 - Checkbox_Option_PrioritySpellsAsAdeptPowers
+- Checkbox_Options_Live_CustomData
 
 Changed Strings: 
 

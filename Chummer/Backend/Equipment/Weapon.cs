@@ -425,7 +425,7 @@ namespace Chummer.Backend.Equipment
 				_strRange = "Holdouts";
 			}
 			objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
-			objNode.TryGetField("rangemultiply", out _dblRangeMultiplier);
+			objNode.TryGetDoubleFieldQuickly("rangemultiply", ref _dblRangeMultiplier);
 			objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 			objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
