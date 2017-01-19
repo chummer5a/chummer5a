@@ -1162,7 +1162,7 @@ namespace Chummer
 
 			string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			strReturn = objXmlBook["altcode"]?.InnerText ?? strCode;
+			strReturn = objXmlBook?["altcode"]?.InnerText ?? strCode;
 			return strReturn;
 		}
 
