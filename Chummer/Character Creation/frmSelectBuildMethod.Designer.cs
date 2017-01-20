@@ -32,7 +32,7 @@
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.chkIgnoreRules = new System.Windows.Forms.CheckBox();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTip1 = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.cmdCancel = new System.Windows.Forms.Button();
 			this.cboBuildMethod = new System.Windows.Forms.ComboBox();
 			this.lblMaxAvail = new System.Windows.Forms.Label();
@@ -269,7 +269,7 @@
         private System.Windows.Forms.NumericUpDown nudKarma;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.CheckBox chkIgnoreRules;
-        private System.Windows.Forms.ToolTip toolTip1;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip toolTip1;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ComboBox cboBuildMethod;
         private System.Windows.Forms.Label lblMaxAvail;

@@ -22,11 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using Octokit;
-using System.Collections.Specialized;
- using System.Diagnostics;
  using System.Net;
-﻿using System.Runtime.Remoting.Channels;
  using Application = System.Windows.Forms.Application;
 
 namespace Chummer

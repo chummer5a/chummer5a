@@ -32,7 +32,7 @@ namespace Chummer
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.pnlMetatypes = new System.Windows.Forms.Panel();
 			this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
 			this.cboPossessionMethod = new System.Windows.Forms.ComboBox();
@@ -506,7 +506,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Panel pnlMetatypes;
         private System.Windows.Forms.CheckBox chkBloodSpirit;
         private System.Windows.Forms.ComboBox cboPossessionMethod;

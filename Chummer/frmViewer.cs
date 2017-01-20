@@ -24,7 +24,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
 using System.ComponentModel;
- using SelectPdf;
+ using PdfSharp.Pdf;
 
 namespace Chummer
 {
@@ -310,8 +310,6 @@ namespace Chummer
 			cmdPrint.AutoSize = false;
 			cmdPrint.Width = intWidth + 20;
 			cmdSaveHTML.Left = cmdPrint.Right + 6;
-			cmdSaveXML.Left = cmdSaveHTML.Right + 6;
-			cmdSavePDF.Left = cmdSaveXML.Right + 6;
 		}
 
         private void cmdSavePDF_Click(object sender, EventArgs e)
@@ -323,16 +321,10 @@ namespace Chummer
             SaveFileDialog1.ShowDialog();
             strSaveFile = SaveFileDialog1.FileName;
 
-            if (strSaveFile == "")
-                return;
-            var converter = new HtmlToPdf();
-            converter.Options.MarginBottom = 10;
-            converter.Options.MarginTop = 10;
-            converter.Options.MarginLeft = 10;
-            converter.Options.MarginRight = 10;
-            PdfDocument doc = converter.ConvertHtmlString(webBrowser1.DocumentText);
-            doc.Save(strSaveFile);
-            doc.Close();
+			if (strSaveFile == "")
+				return;
+			PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
+			objpdf.Save(strSaveFile);
         }
         #endregion
 

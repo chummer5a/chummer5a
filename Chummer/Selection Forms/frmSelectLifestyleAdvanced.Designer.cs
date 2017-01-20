@@ -49,7 +49,7 @@
 			this.lblSourceLabel = new System.Windows.Forms.Label();
 			this.nudRoommates = new System.Windows.Forms.NumericUpDown();
 			this.lblRoommates = new System.Windows.Forms.Label();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.cboBaseLifestyle = new System.Windows.Forms.ComboBox();
 			this.Label_SelectAdvancedLifestyle_Base_Lifestyle = new System.Windows.Forms.Label();
 			this.nudSecurity = new System.Windows.Forms.NumericUpDown();
@@ -550,7 +550,7 @@
 		private System.Windows.Forms.Label lblSourceLabel;
 		private System.Windows.Forms.NumericUpDown nudRoommates;
 		private System.Windows.Forms.Label lblRoommates;
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.ComboBox cboBaseLifestyle;
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Base_Lifestyle;
         private System.Windows.Forms.NumericUpDown nudSecurity;
