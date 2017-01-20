@@ -7187,7 +7187,7 @@ namespace Chummer
 				{
 					strReturn += "Unknown book! ";
 				}
-				strReturn += " (" + objXmlBook?["code"]?.InnerText + ")";
+				strReturn += $" ({objXmlBook?["code"]?.InnerText ?? strBook})";
 			}
 			return strReturn;
 		}

@@ -315,7 +315,10 @@ namespace Chummer
 			int intWidth = cmdPrint.Width;
 			cmdPrint.AutoSize = false;
 			cmdPrint.Width = intWidth + 20;
-        }
+			cmdSaveHTML.Left = cmdPrint.Right + 6;
+			cmdSaveXML.Left = cmdSaveHTML.Right + 6;
+			cmdSavePDF.Left = cmdSaveXML.Right + 6;
+		}
 
         private void cmdSavePDF_Click(object sender, EventArgs e)
         {
