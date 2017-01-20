@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.helpers;
+using TheArtOfDev.HtmlRenderer.WinForms;
 using TreeView = Chummer.helpers.TreeView;
 
 namespace Chummer
@@ -12,7 +14,7 @@ namespace Chummer
 	public partial class frmCharacterRoster : Form
 	{
 		List<CharacterCache> lstCharacterCache = new List<CharacterCache>();
-		ToolTip tipTooltip = new ToolTip();
+		HtmlToolTip tipTooltip = new HtmlToolTip();
 
 		public frmCharacterRoster()
 		{

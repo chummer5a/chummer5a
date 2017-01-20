@@ -1692,7 +1692,7 @@ namespace Chummer
 			objStream.Close();
 
 			frmExport frmExportCharacter = new frmExport();
-			frmExportCharacter.CharacterXML = objCharacterXML;
+			frmExportCharacter.CharacterXml = objCharacterXML;
 			frmExportCharacter.ShowDialog(this);
 		}
 

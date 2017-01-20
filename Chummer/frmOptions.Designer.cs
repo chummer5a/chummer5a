@@ -272,8 +272,7 @@
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.cboPDFParameters = new Chummer.helpers.ComboBox();
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -3537,7 +3536,7 @@
         private System.Windows.Forms.CheckBox chkCyberlegMovement;
         private System.Windows.Forms.CheckBox chkDontDoubleQualityPurchases;
         private System.Windows.Forms.CheckBox chkStrictSkillGroups;
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAllowInitiation;
         private System.Windows.Forms.CheckBox chkFreeKarmaContacts;
         private System.Windows.Forms.CheckBox chkFreeKarmaKnowledge;

@@ -69,7 +69,7 @@ namespace Chummer
             this.tssNuyenRemaining = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.lblSignalLabel = new System.Windows.Forms.Label();
             this.lblResponseLabel = new System.Windows.Forms.Label();
             this.lblFirewallLabel = new System.Windows.Forms.Label();
@@ -11182,7 +11182,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetatypeLabel;
         private System.Windows.Forms.Label lblMetatype;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.TabControl tabCharacterTabs;
         private System.Windows.Forms.TabPage tabCommon;
         private System.Windows.Forms.TabPage tabMagician;

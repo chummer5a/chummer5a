@@ -50,7 +50,7 @@
             this.cboCategory = new System.Windows.Forms.ComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
@@ -386,7 +386,7 @@
 		private System.Windows.Forms.ComboBox cboCategory;
 		private System.Windows.Forms.Label lblPowerPoints;
 		private System.Windows.Forms.Label lblPowerPointsLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Label lblKarma;
         private System.Windows.Forms.Label lblKarmaLabel;

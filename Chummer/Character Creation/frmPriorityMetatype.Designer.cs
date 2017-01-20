@@ -81,7 +81,7 @@
 			this.cboTalents = new System.Windows.Forms.ComboBox();
 			this.lblSpecial = new System.Windows.Forms.Label();
 			this.lblSpecialAttributes = new System.Windows.Forms.Label();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.pnlPriorities.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
 			this.pnlMetatypes.SuspendLayout();
@@ -763,7 +763,7 @@
         internal System.Windows.Forms.ListBox lstMetatypes;
 
         private System.Windows.Forms.Panel pnlMetatypes;
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         internal System.Windows.Forms.Label lblSpecial;
         internal System.Windows.Forms.Label lblSpecialAttributes;
         private System.Windows.Forms.ComboBox cboTalents;

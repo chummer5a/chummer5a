@@ -21,8 +21,8 @@ namespace Chummer.UI.Skills
 			{
 				components.Dispose();
 			}
-            _italic.Dispose();
-            base.Dispose(disposing);
+			_italic.Dispose();
+			base.Dispose(disposing);
 		}
 
 		#region Component Designer generated code
@@ -48,7 +48,7 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease = new System.Windows.Forms.Button();
             this.lblCareerSpec = new System.Windows.Forms.Label();
             this.btnAddSpec = new System.Windows.Forms.Button();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
             this.cmsSkillLabel.SuspendLayout();
@@ -280,7 +280,7 @@ namespace Chummer.UI.Skills
 		private System.Windows.Forms.Button btnCareerIncrease;
 		private System.Windows.Forms.Label lblCareerSpec;
 		private System.Windows.Forms.Button btnAddSpec;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.Button btnAttribute;
 		private System.Windows.Forms.ComboBox cboSelectAttribute;
 		private ContextMenuStrip cmsSkillLabel;

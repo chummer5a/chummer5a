@@ -44,6 +44,7 @@ Application Changes:
 - Fixed the behaviour of the SelectSkill improvement to allow filtering based on multiple categories. Properly filters the behaviour of the Improved Ability power to not show Magical Active skills. 
 - Added a proof-of-concept Print-to-PDF functionality into the Print window. TODO: Progress bar for saving, configurable options for margins and such. 
 - Fixed an error that caused missing custom books to not show their code if the book was not found. 
+- Increased functionality for the Export Window; there is now a window shown that contains the exported text. You can copy this text directly into wherever you need to export it, rather than saving the file and exporting. 
 - Brought all projects to the same, .NET 4.5.2 target sku.
 - Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
 - Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
@@ -88,6 +89,8 @@ Data Changes:
 - Fixed missing Capacity values for LED Tattoos.
 - Fixed an incorrect book and page reference for the Great Mother mentor spirit.
 - Fixed page references for the AI metatype and variants. 
+- Added an additional Export method for the JSON format; this is intended to support integration with the Roll20 character sheet created by Darkxryo on Reddit's /r/Shadowrun. For further details, please see this link: https://www.reddit.com/r/Shadowrun/comments/5ok5qe/roll20_charactersheet_chummer_import
+- Added support for using HTML in tooltips.  Currently only supported on labels, so not accessible by most user content yet. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 

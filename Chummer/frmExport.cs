@@ -17,11 +17,14 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.IO;
+ using System.Collections.Generic;
+ using System.IO;
+ using System.Linq;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+ using Amazon.Runtime.Internal.Transform;
  using Newtonsoft.Json;
  using Formatting = Newtonsoft.Json.Formatting;
 
@@ -30,6 +33,8 @@ namespace Chummer
 	public partial class frmExport : Form
 	{
 		private XmlDocument _objCharacterXML = new XmlDocument();
+		private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
+		private bool _blnSelected = false;
 
 		#region Control Events
 		public frmExport()
@@ -71,35 +76,60 @@ namespace Chummer
 
 			if (cboXSLT.Text == "Export JSON")
 			{
-				ExportJSON();
+				ExportJson();
 			}
 			else
 			{
 				ExportNormal();
-
 			}
 		}
 
-		private void ExportJSON()
+		private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			string json = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
-			SaveFileDialog1.AddExtension = true;
-			SaveFileDialog1.DefaultExt = "json";
-			SaveFileDialog1.Title = "Save JSON as";
-			SaveFileDialog1.ShowDialog();
-
-			if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
+			if (cboXSLT.Text == string.Empty)
 				return;
 
-			File.WriteAllText(SaveFileDialog1.FileName, json, Encoding.UTF8);
+			if (_dictCache.ContainsKey(cboXSLT.Text))
+			{
+				rtbText.Text = _dictCache.First(objPair => objPair.Key == cboXSLT.Text).Value;
+			}
 
-			DialogResult = DialogResult.OK;
+			if (cboXSLT.Text == "Export JSON")
+			{
+				GenerateJson();
+			}
+			else
+			{
+				GenerateXml();
+			}
 		}
 
+		private void rtbText_Leave(object sender, EventArgs e)
+		{
+			_blnSelected = false;
+		}
+
+		private void rtbText_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (!_blnSelected && this.rtbText.SelectionLength == 0)
+			{
+				_blnSelected = true;
+				this.rtbText.SelectAll();
+			}
+		}
+
+		#endregion
+
+		#region Methods
+		private void MoveControls()
+		{
+			cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
+		}
+		#region XML
 		private void ExportNormal()
 		{
-// Look for the file extension information.
-			string strLine;
+			// Look for the file extension information.
+			string strLine = "";
 			string strExtension = "xml";
 			string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
 			StreamReader objFile = new StreamReader(exportSheetPath);
@@ -118,6 +148,15 @@ namespace Chummer
 
 			if (string.IsNullOrEmpty(strSaveFile))
 				return;
+			
+			File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
+
+			this.DialogResult = DialogResult.OK;
+		}
+
+		private void GenerateXml()
+		{
+			string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
 
 			XslCompiledTransform objXSLTransform = new XslCompiledTransform();
 			objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
@@ -134,25 +173,48 @@ namespace Chummer
 
 			// Read in the resulting code and pass it to the browser.
 			StreamReader objReader = new StreamReader(objStream);
-			File.WriteAllText(strSaveFile, objReader.ReadToEnd()); // Change this to a proper path.
+			rtbText.Text = objReader.ReadToEnd();
 
-			DialogResult = DialogResult.OK;
+			if (!_dictCache.ContainsKey(cboXSLT.Text))
+			{
+				_dictCache.Add(new KeyValuePair<string, string>(cboXSLT.Text, rtbText.Text));
+			}
 		}
-
 		#endregion
-
-		#region Methods
-		private void MoveControls()
+		#region JSON
+		private void GenerateJson()
 		{
-			cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
+			string json = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
+			rtbText.Text = json;
+
+			if (!_dictCache.ContainsKey(cboXSLT.Text))
+			{
+				_dictCache.Add(new KeyValuePair<string, string>(cboXSLT.Text, rtbText.Text));
+			}
 		}
+
+		private void ExportJson()
+		{
+			SaveFileDialog1.AddExtension = true;
+			SaveFileDialog1.DefaultExt = "json";
+			SaveFileDialog1.Title = "Save JSON as";
+			SaveFileDialog1.ShowDialog();
+
+			if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
+				return;
+
+			File.WriteAllText(SaveFileDialog1.FileName, rtbText.Text, Encoding.UTF8);
+
+			this.DialogResult = DialogResult.OK;
+		}
+		#endregion
 		#endregion
 
 		#region Properties
 		/// <summary>
 		/// Character's XmlDocument.
 		/// </summary>
-		public XmlDocument CharacterXML
+		public XmlDocument CharacterXml
 		{
 			set
 			{
@@ -160,5 +222,6 @@ namespace Chummer
 			}
 		}
 		#endregion
+
 	}
 }

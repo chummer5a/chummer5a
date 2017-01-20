@@ -41,7 +41,7 @@
 			this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsCreateCharacter = new System.Windows.Forms.ToolStripMenuItem();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.imgNotes = new System.Windows.Forms.PictureBox();
 			this.txtCritterName = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
@@ -265,7 +265,7 @@
 		private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
 		private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
 		private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.PictureBox imgNotes;
 		private System.Windows.Forms.ToolStripMenuItem tsCreateCharacter;
 		private System.Windows.Forms.TextBox txtCritterName;
