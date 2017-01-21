@@ -634,7 +634,7 @@ namespace Chummer.Skills
 					s.Append(" + ");
 					s.Append(GetName(source));
 					s.Append(" (");
-					s.Append(source.Value);
+					s.Append(source.Value.ToString());
 					s.Append(")");
 				}
 
