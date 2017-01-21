@@ -64,6 +64,7 @@ namespace CrashHandler
 		{
 			DialogResult = DialogResult.Cancel;
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+		    Environment.Exit(-1);
 			Close();
 		}
 
