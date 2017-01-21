@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,7 +25,6 @@ namespace CrashHandler
 			InitializeComponent();
 			lblDesc.Text = _dumper.Attributes["visible-error-friendly"];
 			txtIdSelectable.Text = "Crash followup id = " + _dumper.Attributes["visible-crash-id"];
-			
 			_dumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
 		}
 
@@ -58,10 +58,12 @@ namespace CrashHandler
 		{
 			timerRefreshTextFile.Stop();
 			timerRefreshTextFile.Start();
+			lblDescriptionWarning.Visible = txtUserStory.Text.Length == 0;
 		}
 
 		private void btnNo_Click(object sender, EventArgs e)
 		{
+			//TODO: Convert to restart, collect previously loaded character files from application and relaunch?
 			DialogResult = DialogResult.Cancel;
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 		    Environment.Exit(-1);
@@ -93,7 +95,8 @@ namespace CrashHandler
 				fs = File.OpenWrite(Path.Combine(_dumper.WorkingDirectory, "userstory.txt"));
 			}
 			fs.Seek(0, SeekOrigin.Begin);
-			byte[] bytes = Encoding.UTF8.GetBytes(txtDesc.Text);
+			//byte[] bytes = Encoding.UTF8.GetBytes(txtDesc.Text);
+			byte[] bytes = Encoding.UTF8.GetBytes("");
 			fs.Write(bytes, 0, bytes.Length);
 			fs.Flush(true);
 		}
@@ -101,6 +104,30 @@ namespace CrashHandler
 		private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+		}
+
+		private void cmdSubmitIssue_Click(object sender, EventArgs e)
+		{
+			string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={0}&body={1}";
+			string strNetVersion = Assembly
+					 .GetExecutingAssembly()
+					 .GetReferencedAssemblies().First(x => x.Name == "System.Core").Version.ToString();
+			strSend = strSend.Replace("{0}",$" Issue: - PLEASE ENTER DESCRIPTION HERE");
+			string strBody = "";
+			strBody += "### Environment\n";
+			strBody += $"Crash ID: {_dumper.Attributes["visible-crash-id"]}\n";
+			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
+			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";
+			strBody += $"Runtime: {strNetVersion}\n";
+			strBody += txtUserStory.Text;
+			strBody = System.Net.WebUtility.HtmlEncode(strBody);
+			strBody = strBody.Replace(" ", "%20");
+			strBody = strBody.Replace("#", "%23");
+			strBody = strBody.Replace("\n", "%0D%0A");
+			strSend = strSend.Replace("{1}", strBody);
+
+			Process.Start(strSend);
+			btnSend_Click(sender, e);
 		}
 	}
 }
