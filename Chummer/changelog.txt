@@ -45,6 +45,7 @@ Application Changes:
 - Added a proof-of-concept Print-to-PDF functionality into the Print window. TODO: Progress bar for saving, configurable options for margins and such. 
 - Fixed an error that caused missing custom books to not show their code if the book was not found. 
 - Increased functionality for the Export Window; there is now a window shown that contains the exported text. You can copy this text directly into wherever you need to export it, rather than saving the file and exporting. 
+- Suppressed a crash if a character is printed that has an Exotic weapon but does not have the relevant skill for that weapon. 
 
 Data Changes:
 
