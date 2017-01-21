@@ -260,50 +260,46 @@ namespace Chummer.Backend.Equipment
 
 				foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
 				{
-					string strThisQuality = string.Empty;
-					string strQualityName = objQuality.DisplayName;
 					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 				    if (objNode == null)
 				        return;
+                    string strThisQuality = string.Empty;
 
-					if (objNode["translate"] != null)
+                    if (objNode["translate"] != null)
 						strThisQuality += objNode["translate"].InnerText;
 					else if (objNode["name"] != null)
                         strThisQuality += objNode["name"].InnerText;
 
 					XmlNode nodMultiplier = objNode["multiplier"];
-					if (nodMultiplier != null)
-					{
-						if (!string.IsNullOrEmpty(nodMultiplier.InnerText))
-						{
-							int intCost = Convert.ToInt32(nodMultiplier.InnerText);
-							if (intCost > 0)
-							{
-								strThisQuality += " [+" + intCost.ToString() + "%]";
-							}
-							else
-							{
-								strThisQuality += " [" + intCost.ToString() + "%]";
-							}
-						}
-					}
-					XmlNode nodCost = objNode["cost"];
-					if (nodCost != null)
-					{ 
-						if (!string.IsNullOrEmpty(nodCost.InnerText))
-						{
-							int intCost = Convert.ToInt32(nodCost.InnerText);
-							if (intCost > 0)
-							{
-								strThisQuality += " [+" + intCost.ToString() + "包";
-							}
-							else
-							{
-								strThisQuality += " [" + intCost.ToString() + "包";
-							}
-						}
-					}
-					objWriter.WriteElementString("quality", strThisQuality);
+                    XmlNode nodMultiplierBaseOnly = objNode["multiplierbaseonly"];
+                    int intMultiplier = 0;
+                    int intTmp;
+                    if (int.TryParse(nodMultiplier?.InnerText, out intTmp))
+                        intMultiplier += intTmp;
+                    if (int.TryParse(nodMultiplierBaseOnly?.InnerText, out intTmp))
+                        intMultiplier += intTmp;
+                    if (intMultiplier > 0)
+                    {
+                        strThisQuality += " [+" + intMultiplier.ToString() + "%]";
+                    }
+                    else if (intMultiplier < 0)
+                    {
+                        strThisQuality += " [" + intMultiplier.ToString() + "%]";
+                    }
+                    XmlNode nodCost = objNode["cost"];
+				    int intCost = 0;
+                    if (int.TryParse(nodCost?.InnerText, out intCost))
+				    {
+				        if (intCost > 0)
+				        {
+				            strThisQuality += " [+" + intCost.ToString() + "包";
+				        }
+				        else if (intCost < 0)
+                        {
+				            strThisQuality += " [" + intCost.ToString() + "包";
+				        }
+				    }
+				    objWriter.WriteElementString("quality", strThisQuality);
 				}
 			}
 			// Retrieve the free Grids for the Advanced Lifestyle if applicable.

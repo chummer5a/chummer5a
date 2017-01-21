@@ -57,6 +57,7 @@ Application Changes:
 - Fixed a bug where cancelling the option saving confirmation message would still save options.
 - Reduced initial load time for the skills section by about 15% (specifically, reduced the real load time of each individual skill control by about 33%, causing the overall skills section load time improvement).
 - Made minor performance improvements to the updating of drop-down boxes' lists (roughly 10-20% depending on the box).
+- Fixed a bug where Extra Secure lifestyle quality would no longer properly have its cost effects printed.
 
 Data Changes:
 
