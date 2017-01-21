@@ -64,8 +64,7 @@ namespace Chummer
 			}
 
 			// Locate the currently selected piece of Gear.
-			Gear objGear = new Gear(_objCharacter);
-			objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+			Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 
 			// Gear cannot be moved to one if its children.
 			bool blnAllowMove = true;
@@ -101,9 +100,8 @@ namespace Chummer
 			}
 			else
 			{
-				Gear objParent = new Gear(_objCharacter);
-				// Locate the Gear that the item was dropped on.
-				objParent = _objFunctions.FindGear(objDestination.Tag.ToString(), _objCharacter.Gear);
+                // Locate the Gear that the item was dropped on.
+                Gear objParent = CommonFunctions.DeepFindById(objDestination.Tag.ToString(), _objCharacter.Gear);
 
 				// Add the Gear as a child of the destination Node and clear its location.
 				objParent.Children.Add(objGear);
@@ -252,7 +250,7 @@ namespace Chummer
 		public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeView treArmor)
 		{
 			// Locate the currently selected Armor.
-			Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+			Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
 
 			_objCharacter.Armor.Remove(objArmor);
 			if (intNewIndex > _objCharacter.Armor.Count)
@@ -482,7 +480,7 @@ namespace Chummer
 			bool blnDestinationGear = true;
 			bool blnDestinationLocation = false;
 			Vehicle objTempVehicle = new Vehicle(_objCharacter);
-			Gear objDestinationGear = _objFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
+			Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
 			if (objDestinationGear == null)
 				blnDestinationGear = false;
 
@@ -503,7 +501,7 @@ namespace Chummer
 
 			// Locate the currently selected piece of Gear.
 			Vehicle objVehicle = new Vehicle(_objCharacter);
-			Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+			Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
 
 			// Gear cannot be moved to one of its children.
 			bool blnAllowMove = true;

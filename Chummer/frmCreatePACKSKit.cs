@@ -553,9 +553,9 @@ namespace Chummer
 						}
 						
 						// Underbarrel Weapon.
-						if (objWeapon.UnderbarrelWeapons.Count > 0)
+						if (objWeapon.Children.Count > 0)
 						{
-							foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+							foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
 							{
 								if (!objUnderbarrelWeapon.IncludedInWeapon)
 									objWriter.WriteElementString("underbarrel", objUnderbarrelWeapon.Name);
@@ -656,9 +656,9 @@ namespace Chummer
 								}
 
 								// Underbarrel Weapon.
-								if (objWeapon.UnderbarrelWeapons.Count > 0)
+								if (objWeapon.Children.Count > 0)
 								{
-									foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+									foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
 										objWriter.WriteElementString("underbarrel", objUnderbarrelWeapon.Name);
 								}
 

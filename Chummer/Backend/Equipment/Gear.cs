@@ -11,8 +11,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Standard Character Gear.
 	/// </summary>
-	public class Gear
-	{
+	public class Gear : INamedParentWithGuid<Gear>
+    {
 		protected Guid _guiID = new Guid();
 		protected string _strName = string.Empty;
 		protected string _strCategory = string.Empty;
@@ -1505,11 +1505,9 @@ namespace Chummer.Backend.Equipment
 			else
 			{
 				// Just a straight cost, so return the value.
-				string strAvail = string.Empty;
 				if (_strAvail.Contains("F") || _strAvail.Contains("R"))
 				{
-					strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
-					strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + strAvail;
+					strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
 				}
 				else
 					strCalculated = Convert.ToInt32(_strAvail).ToString();

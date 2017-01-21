@@ -9,8 +9,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Weapon Accessory.
 	/// </summary>
-	public class WeaponAccessory
-	{
+	public class WeaponAccessory : INamedItemWithGuid
+    {
 		private Guid _guiID = new Guid();
 		private readonly Character _objCharacter;
 		private XmlNode _nodAllowGear;

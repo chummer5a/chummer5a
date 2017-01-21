@@ -11,8 +11,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// A Weapon.
 	/// </summary>
-	public class Weapon
-	{
+	public class Weapon : INamedParentWithGuid<Weapon>
+    {
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
@@ -482,8 +482,7 @@ namespace Chummer.Backend.Equipment
 		public void Print(XmlTextWriter objWriter)
 		{
 			// Find the piece of Gear that created this item if applicable.
-			CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
-			Gear objGear = objFunctions.FindGearByWeaponID(_guiID.ToString(), _objCharacter.Gear);
+			Gear objGear = CommonFunctions.FindGearByWeaponID(_guiID.ToString(), _objCharacter.Gear);
 
 			objWriter.WriteStartElement("weapon");
 			objWriter.WriteElementString("name", DisplayNameShort);
@@ -582,12 +581,11 @@ namespace Chummer.Backend.Equipment
 				return string.Empty;
 			else
 			{
-				CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
-				Gear objAmmo = objFunctions.FindGear(guiAmmo.ToString(), _objCharacter.Gear);
+				Gear objAmmo = CommonFunctions.DeepFindById(guiAmmo.ToString(), _objCharacter.Gear);
 				if (objAmmo == null)
 				{
-					Vehicle objVehicle = new Vehicle(_objCharacter);
-					objAmmo = objFunctions.FindVehicleGear(guiAmmo.ToString(), _objCharacter.Vehicles, out objVehicle);
+					Vehicle objVehicle = null;
+					objAmmo = CommonFunctions.FindVehicleGear(guiAmmo.ToString(), _objCharacter.Vehicles, out objVehicle);
 				}
 
 				if (objAmmo != null)
@@ -613,7 +611,7 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Underbarrel Weapon.
 		/// </summary>
-		public List<Weapon> UnderbarrelWeapons
+		public List<Weapon> Children
 		{
 			get
 			{
@@ -1432,11 +1430,11 @@ namespace Chummer.Backend.Equipment
 			if (!string.IsNullOrEmpty(AmmoLoaded))
 			{
 				// Look for Ammo on the character.
-				Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+				Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
 				if (objGear == null)
 				{
 					Vehicle objFoundVehicle;
-					objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+					objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
 				}
 				if (objGear != null)
 				{
@@ -1678,13 +1676,12 @@ namespace Chummer.Backend.Equipment
 				// Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
 				if (!string.IsNullOrEmpty(AmmoLoaded))
 				{
-					CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
 					// Look for Ammo on the character.
-					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+					Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
 					if (objGear == null)
 					{
 						Vehicle objFoundVehicle;
-						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+						objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
 					}
 					if (objGear != null)
 					{
@@ -1982,17 +1979,16 @@ namespace Chummer.Backend.Equipment
 				}
 
 				bool blnAPReplaced = false;
-				CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
 
 				// Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
 				if (!string.IsNullOrEmpty(AmmoLoaded))
 				{
 					// Look for Ammo on the character.
-					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+					Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
 					if (objGear == null)
 					{
 						Vehicle objFoundVehicle;
-						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+						objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
 					}
 					if (objGear != null)
 					{
@@ -2172,11 +2168,11 @@ namespace Chummer.Backend.Equipment
 				// Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
 				if (!string.IsNullOrEmpty(AmmoLoaded) && AmmoLoaded != "00000000-0000-0000-0000-000000000000")
 				{
-					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+					Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
 					if (objGear == null)
 					{
 						Vehicle objFoundVehicle;
-						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+						objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
 					}
 
 					if (objGear != null)
@@ -2592,13 +2588,11 @@ namespace Chummer.Backend.Equipment
 				// Check if the Weapon has Ammunition loaded and look for any Range bonus.
 				if (!string.IsNullOrEmpty(AmmoLoaded))
 				{
-					CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
-
-					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+					Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
 					if (objGear == null)
 					{
 						Vehicle objFoundVehicle;
-						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+						objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
 					}
 
 					if (objGear != null)

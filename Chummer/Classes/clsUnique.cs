@@ -1090,7 +1090,7 @@ namespace Chummer
 	/// <summary>
 	/// A Quality.
 	/// </summary>
-	public class Quality
+	public class Quality : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -2490,7 +2490,7 @@ namespace Chummer
 	/// <summary>
 	/// A Magician Spell.
 	/// </summary>
-	public class Spell
+	public class Spell : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -3452,7 +3452,7 @@ namespace Chummer
 	/// <summary>
 	/// A Focus.
 	/// </summary>
-	public class Focus
+	public class Focus : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -3779,7 +3779,7 @@ namespace Chummer
 	/// <summary>
 	/// A Metamagic or Echo.
 	/// </summary>
-	public class Metamagic
+	public class Metamagic : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -4114,7 +4114,7 @@ namespace Chummer
     /// <summary>
     /// An Art.
     /// </summary>
-    public class Art
+    public class Art : INamedItemWithGuid
     {
         private Guid _guiID = new Guid();
         private string _strName = string.Empty;
@@ -4398,7 +4398,7 @@ namespace Chummer
     /// <summary>
     /// An Enhancement.
     /// </summary>
-    public class Enhancement
+    public class Enhancement : INamedItemWithGuid
     {
         private Guid _guiID = new Guid();
         private string _strName = string.Empty;
@@ -4698,7 +4698,7 @@ namespace Chummer
     /// <summary>
 	/// An Adept Power.
 	/// </summary>
-	public class Power
+	public class Power : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -5320,7 +5320,7 @@ namespace Chummer
 	/// <summary>
 	/// A Technomancer Program or Complex Form.
 	/// </summary>
-	public class ComplexForm
+	public class ComplexForm : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -5618,7 +5618,7 @@ namespace Chummer
     /// <summary>
 	/// An AI Program or Advanced Program.
 	/// </summary>
-	public class AIProgram
+	public class AIProgram : INamedItemWithGuid
     {
         private Guid _guiID = new Guid();
         private string _strName = string.Empty;
@@ -5939,7 +5939,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Art.
     /// </summary>
-    public class MartialArt
+    public class MartialArt : INamedItemWithGuid
 	{
 		private string _strName = string.Empty;
 		private string _strSource = string.Empty;
@@ -5973,7 +5973,7 @@ namespace Chummer
 			if (objXmlArtNode["bonus"] != null)
 			{
 				ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-				objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArt, InternalID,
+				objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArt, InternalId,
 					objXmlArtNode["bonus"], false, 1, DisplayNameShort);
 			}
 
@@ -5989,7 +5989,7 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("martialart");
 			objWriter.WriteElementString("name", _strName);
-			objWriter.WriteElementString("guid", InternalID);
+			objWriter.WriteElementString("guid", InternalId);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("rating", _intRating.ToString());
@@ -6072,7 +6072,7 @@ namespace Chummer
 			}
 		}
 
-		public string InternalID
+		public string InternalId
 		{
 			get { return _guiID.ToString(); }
 		}
@@ -6218,7 +6218,7 @@ namespace Chummer
 	/// <summary>
 	/// A Martial Arts Advantage.
 	/// </summary>
-	public class MartialArtAdvantage
+	public class MartialArtAdvantage : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -6419,7 +6419,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Art Maneuver.
     /// </summary>
-    public class MartialArtManeuver
+    public class MartialArtManeuver : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -6632,7 +6632,7 @@ namespace Chummer
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
-    public class LimitModifier
+    public class LimitModifier : INamedItemWithGuid
     {
         private Guid _guiID = new Guid();
         private string _strName = string.Empty;
@@ -7307,7 +7307,7 @@ namespace Chummer
 	/// <summary>
 	/// A Critter Power.
 	/// </summary>
-	public class CritterPower
+	public class CritterPower : INamedItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -7892,7 +7892,7 @@ namespace Chummer
 	/// <summary>
 	/// An Initiation Grade.
 	/// </summary>
-	public class InitiationGrade
+	public class InitiationGrade : IItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private bool _blnGroup = false;
@@ -8135,7 +8135,7 @@ namespace Chummer
 		#endregion
 	}
 
-	public class CalendarWeek
+	public class CalendarWeek : IItemWithGuid
 	{
 		private Guid _guiID = new Guid();
 		private int _intYear = 2072;

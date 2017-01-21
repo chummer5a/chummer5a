@@ -8,8 +8,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Lifestyle.
 	/// </summary>
-	public class Lifestyle
-	{
+	public class Lifestyle : INamedItemWithGuid
+    {
 		private Guid _guiID = new Guid();
 		private Guid _sourceID = new Guid();
 		private string _strName = string.Empty;

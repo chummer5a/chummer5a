@@ -11,8 +11,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Vehicle.
 	/// </summary>
-	public class Vehicle
-	{
+	public class Vehicle : INamedItemWithGuid
+    {
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
@@ -601,9 +601,9 @@ namespace Chummer.Backend.Equipment
 					Weapon objWeapon = new Weapon(_objCharacter);
 					objWeapon.Load(nodChild, blnCopy);
 					objWeapon.VehicleMounted = true;
-					if (objWeapon.UnderbarrelWeapons.Count > 0)
+					if (objWeapon.Children.Count > 0)
 					{
-						foreach (Weapon objUnderbarrel in objWeapon.UnderbarrelWeapons)
+						foreach (Weapon objUnderbarrel in objWeapon.Children)
 							objUnderbarrel.VehicleMounted = true;
 					}
 					_lstWeapons.Add(objWeapon);

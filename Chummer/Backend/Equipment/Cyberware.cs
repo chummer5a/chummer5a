@@ -11,8 +11,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// A piece of Cyberware.
 	/// </summary>
-	public class Cyberware
-	{
+	public class Cyberware : INamedParentWithGuid<Cyberware>
+    {
 		private Guid _sourceID = new Guid();
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
@@ -2053,8 +2053,7 @@ namespace Chummer.Backend.Equipment
 				}
                 if (_blnVehicleMounted)
                 {
-                    CommonFunctions objFunctions = new CommonFunctions();
-                    Vehicle objParentVehicle = objFunctions.FindVehicle(_objParent.InternalId, _objCharacter.Vehicles);
+                    Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
                     return Math.Min(intAttribute + intBonus, objParentVehicle.TotalBody*2);
                 }
                 else
@@ -2162,8 +2161,7 @@ namespace Chummer.Backend.Equipment
 
                 if (_blnVehicleMounted)
                 {
-                    CommonFunctions objFunctions = new CommonFunctions();
-                    Vehicle objParentVehicle = objFunctions.FindVehicle(_objParent.InternalId, _objCharacter.Vehicles);
+                    Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
                     return Math.Min(intAttribute + intBonus, objParentVehicle.Pilot*2);
                 }
                 else

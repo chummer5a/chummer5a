@@ -6,8 +6,8 @@ using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
-	public class LifestyleQuality
-	{
+	public class LifestyleQuality : INamedItemWithGuid
+    {
 		private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
 		private string _strExtra = string.Empty;
