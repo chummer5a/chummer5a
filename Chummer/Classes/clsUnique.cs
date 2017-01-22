@@ -2278,9 +2278,11 @@ namespace Chummer
 					objWriter.WriteStartElement("skills");
 					foreach (XmlNode objXmlSkillNode in objXmlCritterNode["skills"].ChildNodes)
 					{
-						String attrName = objXmlSkillNode.Attributes["attr"].Value;
-						int attr = attributes.ContainsKey(attrName) ? attributes[attrName] : _intForce;
-						int dicepool = attr + _intForce;
+						string attrName = objXmlSkillNode.Attributes?["attr"]?.Value;
+						int attr;
+					    if (!attributes.TryGetValue(attrName, out attr))
+					        attr = _intForce;
+                        int dicepool = attr + _intForce;
 
 						objWriter.WriteStartElement("skill");
 						objWriter.WriteElementString("name", objXmlSkillNode.InnerText);

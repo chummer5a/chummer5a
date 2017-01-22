@@ -22,7 +22,6 @@ using System.Diagnostics;
  using System.Text;
  using System.Windows.Forms;
  using System.Drawing;
- using System.Linq;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -113,6 +112,34 @@ namespace Chummer
                     {
                         objNeedle = DeepFindById(strGuid, objLoop.Children);
                         if (!string.IsNullOrEmpty(objNeedle?.Name))
+                            return objNeedle;
+                    }
+                }
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
+        /// Locate an object (Needle) within a list and its children (Haystack) based on a predicate.
+        /// </summary>
+        /// <param name="objPredicate">Predicate of the Needle to Find.</param>
+        /// <param name="lstHaystack">Haystack to search.</param>
+        public static T DeepFindByPredicate<T>(List<T> lstHaystack, Predicate<T> objPredicate) where T : IHasChildren<T>
+        {
+            if (objPredicate != null)
+            {
+                T objNeedle = default(T);
+                foreach (T objLoop in lstHaystack)
+                {
+                    if (objPredicate(objLoop))
+                    {
+                        return objLoop;
+                    }
+                    if (objLoop.Children.Count > 0)
+                    {
+                        objNeedle = DeepFindByPredicate(lstHaystack, objPredicate);
+                        if (objNeedle != null)
                             return objNeedle;
                     }
                 }
@@ -781,13 +808,17 @@ namespace Chummer
 		            if (objMod.WeaponID != Guid.Empty.ToString())
 		            {
 		                // Remove the Weapon from the Character.
-		                foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objMod.WeaponID))
+		                foreach (Weapon objWeapon in _objCharacter.Weapons)
 		                {
-		                    _objCharacter.Weapons.Remove(objWeapon);
-		                    // Remove the Weapon from the TreeView.
-		                    foreach (TreeNode objWeaponNode in objWeaponNodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objMod.WeaponID))
+		                    if (objWeapon.InternalId == objMod.WeaponID)
 		                    {
-                                objWeaponNodes.Remove(objWeaponNode);
+		                        _objCharacter.Weapons.Remove(objWeapon);
+		                        // Remove the Weapon from the TreeView.
+		                        foreach (TreeNode objWeaponNode in objWeaponNodes)
+		                        {
+                                    if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
+		                                objWeaponNodes.Remove(objWeaponNode);
+		                        }
 		                    }
 		                }
 		            }
@@ -802,13 +833,17 @@ namespace Chummer
 
 		        List<Weapon> lstRemoveWeapons = new List<Weapon>();
 		        // Remove the Weapon from the Character.
-		        foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
+		        foreach (Weapon objWeapon in _objCharacter.Weapons)
 		        {
-		            lstRemoveWeapons.Add(objWeapon);
-		            // Remove the Weapon from the TreeView.
-		            foreach (TreeNode objWeaponNode in objWeaponNodes.Cast<TreeNode>().Where(objWeaponNode => objWeaponNode.Tag.ToString() == objArmor.WeaponID))
+		            if (objWeapon.InternalId == objArmor.WeaponID)
 		            {
-                        objWeaponNodes.Remove(objWeaponNode);
+		                lstRemoveWeapons.Add(objWeapon);
+		                // Remove the Weapon from the TreeView.
+		                foreach (TreeNode objWeaponNode in objWeaponNodes)
+		                {
+                            if (objWeaponNode.Tag.ToString() == objArmor.WeaponID)
+		                        objWeaponNodes.Remove(objWeaponNode);
+		                }
 		            }
 		        }
 		        foreach (Weapon objWeapon in lstRemoveWeapons)
@@ -1260,11 +1295,15 @@ namespace Chummer
 
 			// Retrieve the sourcebook information including page offset and PDF application name.
 			bool blnFound = false;
-			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo.Where(objInfo => objInfo.Code == strBook).Where(objInfo => !string.IsNullOrEmpty(objInfo.Path)))
+			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo)
 			{
-				blnFound = true;
-				uriPath = new Uri(objInfo.Path);
-				intPage += objInfo.Offset;
+			    if (objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path))
+			    {
+			        blnFound = true;
+			        uriPath = new Uri(objInfo.Path);
+			        intPage += objInfo.Offset;
+			        break;
+			    }
 			}
 
 			// If the sourcebook was not found, we can't open anything.

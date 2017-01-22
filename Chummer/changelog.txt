@@ -58,6 +58,8 @@ Application Changes:
 - Reduced initial load time for the skills section by about 15% (specifically, reduced the real load time of each individual skill control by about 33%, causing the overall skills section load time improvement).
 - Made minor performance improvements to the updating of drop-down boxes' lists (roughly 10-20% depending on the box).
 - Fixed a bug where Extra Secure lifestyle quality would no longer properly have its cost effects printed.
+- Removed uses of LinQ in most code areas because it was both slow and often caused debugging to be difficult due to anonymous function use.
+- Performed miscellaneous optimizations related to Dictionary and KeyValuePair use.
 
 Data Changes:
 

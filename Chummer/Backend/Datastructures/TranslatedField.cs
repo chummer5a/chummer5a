@@ -16,49 +16,56 @@ namespace Chummer.Datastructures
 			_back[translated] = orginal;
 		}
 
-		public void AddRange(IEnumerable<Tuple<T, T>> range)
+		public void AddRange(IEnumerable<KeyValuePair<T, T>> range)
 		{
-			foreach (Tuple<T, T> tuple in range)
+			foreach (KeyValuePair<T, T> tuple in range)
 			{
-				Add(tuple.Item1, tuple.Item2);
+				Add(tuple.Key, tuple.Value);
 			}
 		}
 
-		public T Read(T orginal, ref T translated)
+		public T Read(T original, ref T translated)
 		{
 			//TODO: should probably make sure Language don't change before restart
 			//I feel that stuff could break in other cases
 			if (GlobalOptions.Instance.Language == "en-us")
 			{
-				return orginal;
+				return original;
 			}
 			else
 			{
-				if(translated != null) return translated;
+				if (translated != null)
+                    return translated;
 
-				if (orginal != null && _translate.ContainsKey(orginal))
+			    T objTemp;
+				if (original != null && _translate.TryGetValue(original, out objTemp))
 				{
-					translated = _translate[orginal];
-					return translated;
+				    translated = objTemp;
+                    return translated;
 				}
 
-				return orginal;
+				return original;
 			}
 		}
 
-		public void Write(T value, ref T orginal, ref T translated)
+		public void Write(T value, ref T original, ref T translated)
 		{
 			if (GlobalOptions.Instance.Language == "en-us")
 			{
-				if (orginal != null && _translate.ContainsKey(orginal) && _translate[orginal] == translated)
+                T objTemp;
+                if (original != null && _translate.TryGetValue(original, out objTemp))
 				{
-					translated = _translate[value];
+				    if (objTemp == translated)
+				    {
+                        _translate.TryGetValue(value, out translated);
+				    }
 				}
-				orginal = value;
+                original = value;
 			}
 			else
 			{
-				orginal = _back.ContainsKey(value) ? _back[value] : value;
+                if (!_back.TryGetValue(value, out original))
+                    original = value;
 
 				translated = value;
 			}

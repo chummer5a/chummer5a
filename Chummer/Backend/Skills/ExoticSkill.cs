@@ -20,7 +20,7 @@ namespace Chummer.Skills
 
             var elem = exotic?.OfType<XmlNode>()
 				.Select(
-					x => new Tuple<string, string>(x["name"]?.InnerText, x.Attributes?["translate"]?.InnerText ?? x["name"].InnerText));
+					x => new KeyValuePair<string, string>(x["name"]?.InnerText, x.Attributes?["translate"]?.InnerText ?? x["name"].InnerText));
 
 			_specificTranslator.AddRange(elem);
 		}

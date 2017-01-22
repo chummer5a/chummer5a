@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Chummer.Skills;
 
@@ -41,7 +40,14 @@ namespace Chummer.UI.Skills
 				lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				lblSpec.Visible = true;
-				lblSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
+			    string strTemp = string.Empty;
+			    foreach (SkillSpecialization objLoopSpecialization in skill.Specializations)
+			    {
+			        strTemp += objLoopSpecialization.Name + ", ";
+			    }
+			    if (strTemp.Length >= 2)
+			        strTemp = strTemp.Substring(0, strTemp.Length - 2);
+                lblSpec.Text = strTemp;
 				cboSkill.Visible = false;
 				chkKarma.Visible = false;
 				cboSpec.Visible = false;
@@ -171,10 +177,15 @@ namespace Chummer.UI.Skills
 
 			_skill.AddSpecialization(selectForm.SelectedItem);
 
-			//TODO turn this into a databinding, but i don't care enough right now
-			lblSpec.Text = string.Join(", ",
-					(from specialization in _skill.Specializations
-					 select specialization.Name));
+            //TODO turn this into a databinding, but i don't care enough right now
+            string strTemp = string.Empty;
+            foreach (SkillSpecialization objLoopSpecialization in _skill.Specializations)
+            {
+                strTemp += objLoopSpecialization.Name + ", ";
+            }
+            if (strTemp.Length >= 2)
+                strTemp = strTemp.Substring(0, strTemp.Length - 2);
+            lblSpec.Text = strTemp;
 
 			parrent?.UpdateCharacterInfo();
 		}

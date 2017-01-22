@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
@@ -36,12 +35,12 @@ namespace Chummer.UI.Skills
 		private bool _loadCalled = false;
 		private bool _initialized = false;
 		private Character _character;
-		private List<Tuple<string, Predicate<Skill>>> _dropDownList;
-		private List<Tuple<string, IComparer<Skill>>>  _sortList;
+		private List<KeyValuePair<string, Predicate<Skill>>> _dropDownList;
+		private List<KeyValuePair<string, IComparer<Skill>>>  _sortList;
 		private List<SkillControl2> controls = new List<SkillControl2>();
 		private bool _searchMode;
-		private List<Tuple<string, Predicate<KnowledgeSkill>>> _dropDownKnowledgeList;
-		private List<Tuple<string, IComparer<KnowledgeSkill>>> _sortKnowledgeList;
+		private List<KeyValuePair<string, Predicate<KnowledgeSkill>>> _dropDownKnowledgeList;
+		private List<KeyValuePair<string, IComparer<KnowledgeSkill>>> _sortKnowledgeList;
 
 		public Character ObjCharacter
 		{
@@ -107,27 +106,27 @@ namespace Chummer.UI.Skills
             cboSortKnowledge.BeginUpdate();
 
             cboDisplayFilter.DataSource = _dropDownList;
-			cboDisplayFilter.ValueMember = "Item2";
-			cboDisplayFilter.DisplayMember = "Item1";
+			cboDisplayFilter.ValueMember = "Value";
+			cboDisplayFilter.DisplayMember = "Key";
 			cboDisplayFilter.SelectedIndex = 0;
 			cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
 
 			cboDisplayFilterKnowledge.DataSource = _dropDownKnowledgeList;
-			cboDisplayFilterKnowledge.ValueMember = "Item2";
-			cboDisplayFilterKnowledge.DisplayMember = "Item1";
+			cboDisplayFilterKnowledge.ValueMember = "Value";
+			cboDisplayFilterKnowledge.DisplayMember = "Key";
 			cboDisplayFilterKnowledge.SelectedIndex = 0;
 			cboDisplayFilterKnowledge.MaxDropDownItems = _dropDownKnowledgeList.Count;
 			parts.TaskEnd("_ddl databind");
 
 			cboSort.DataSource = _sortList;
-			cboSort.ValueMember = "Item2";
-			cboSort.DisplayMember = "Item1";
+			cboSort.ValueMember = "Value";
+			cboSort.DisplayMember = "Key";
 			cboSort.SelectedIndex = 0;
 			cboSort.MaxDropDownItems = _sortList.Count;
 
 			cboSortKnowledge.DataSource = _sortKnowledgeList;
-			cboSortKnowledge.ValueMember = "Item2";
-			cboSortKnowledge.DisplayMember = "Item1";
+			cboSortKnowledge.ValueMember = "Value";
+			cboSortKnowledge.DisplayMember = "Key";
 			cboSortKnowledge.SelectedIndex = 0;
 			cboSortKnowledge.MaxDropDownItems = _sortKnowledgeList.Count;
 
@@ -185,27 +184,27 @@ namespace Chummer.UI.Skills
 			}
 		}
 
-		private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
+		private List<KeyValuePair<string, IComparer<Skill>>> GenerateSortList()
 		{
-			List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
+			List<KeyValuePair<string, IComparer<Skill>>> ret = new List<KeyValuePair<string, IComparer<Skill>>>()
 			{
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
 					new SkillSorter(SkillsSection.CompareSkills)),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
 					new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
 					new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
 					new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
 					new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
 					new SkillSorter((x, y) => x.Attribute.CompareTo(y.Attribute))),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupName"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupName"),
 					new SkillSorter((x, y) => y.SkillGroup.CompareTo(x.SkillGroup))),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupRating"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupRating"),
 					new SkillSortBySkillGroup()),
-				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+				new KeyValuePair<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
 					new SkillSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
 			};
 
@@ -213,118 +212,129 @@ namespace Chummer.UI.Skills
 
 			return ret;
 		}
-		
-		private List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
+
+        static string[] strKnoAttributeStrings = { "INT", "LOG" };
+
+        private List<KeyValuePair<string, Predicate<Skill>>> GenerateDropdownFilter()
 		{
-			List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
+			List<KeyValuePair<string, Predicate<Skill>>> ret = new List<KeyValuePair<string, Predicate<Skill>>>
 			{
-				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_Search"), null),
-				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
-				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
+				new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_Search"), null),
+				new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
+				new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
 					skill => skill.Rating > 0),
-				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
+				new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
 					skill => skill.Pool > 0),
-				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
+				new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
 					skill => skill.Rating == 0),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterNoSkillGroup"),
+                new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterNoSkillGroup"),
                     skill => skill.SkillGroup.Length == 0),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterBrokenSkillGroup"),
+                new KeyValuePair<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterBrokenSkillGroup"),
                     skill => skill.Pool > 0 && (skill.SkillGroup.Length == 0 || skill.SkillGroupObject != null && skill.Rating > skill.SkillGroupObject.Rating))
             };
-			//TODO: TRANSLATIONS
+            //TODO: TRANSLATIONS
 
+		    List<KeyValuePair<string, Predicate<Skill>>> lstExtraFilters = new List<KeyValuePair<string, Predicate<Skill>>>();
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+		    XmlNodeList objXmlNodeList = objXmlDocument?.SelectNodes("/chummer/categories/category[@type = \"active\"]");
+		    if (objXmlNodeList != null)
+		    {
+		        foreach (XmlNode objLoopNode in objXmlNodeList)
+		        {
+		            string strDisplayName = objLoopNode.Attributes?["translate"]?.InnerText ?? objLoopNode.InnerText;
+		            lstExtraFilters.Add(new KeyValuePair<string, Predicate<Skill>>(
+		                $"{LanguageManager.Instance.GetString("Label_Category")} {strDisplayName}",
+		                skill => skill.SkillCategory == objLoopNode.InnerText));
+		        }
+		    }
 
+		    foreach (string strAttribute in Character.strAttributeStrings)
+            {
+                lstExtraFilters.Add(new KeyValuePair<string, Predicate<Skill>>(
+                    $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{strAttribute}Short")}",
+                    skill => skill.Attribute == strAttribute));
+            }
 
-			ret.AddRange(
-				from XmlNode objNode 
-				in XmlManager.Instance.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
-				let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
-				select new Tuple<string, Predicate<Skill>>(
-					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
-					skill => skill.SkillCategory == objNode.InnerText));
+            foreach (SkillGroup objLoopSkillGroup in _character.SkillsSection.SkillGroups)
+            {
+                lstExtraFilters.Add(new KeyValuePair<string, Predicate<Skill>>(
+                    $"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {objLoopSkillGroup.DisplayName}",
+                    skill => skill.SkillGroupObject.Equals(objLoopSkillGroup)));
+            }
 
-			ret.AddRange(
-				from string attribute
-				in new[]{"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"} //TODO: This should be somewhere in Character or CharacterAttrib i think
-				select new Tuple<string, Predicate<Skill>>(
-					$"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{attribute}Short")}",
-					skill => skill.Attribute == attribute));
-
-			ret.AddRange(
-				from SkillGroup @group
-				in _character.SkillsSection.SkillGroups
-				select new Tuple<string, Predicate<Skill>>(
-					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
-					skill => skill.SkillGroupObject == @group));
-
-			return ret;
+		    ret.AddRange(lstExtraFilters);
+            return ret;
 		}
 
-		private List<Tuple<string, IComparer<KnowledgeSkill>>> GenerateKnowledgeSortList()
+		private List<KeyValuePair<string, IComparer<KnowledgeSkill>>> GenerateKnowledgeSortList()
 		{
-			List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>()
+			List<KeyValuePair<string, IComparer<KnowledgeSkill>>> ret = new List<KeyValuePair<string, IComparer<KnowledgeSkill>>>()
 			{
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
 					new KnowledgeSkillSorter(KnowledgeSkill.CompareKnowledgeSkills)),
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
 					new KnowledgeSkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
 					new KnowledgeSkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
 					new KnowledgeSkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
 					new KnowledgeSkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
 					new KnowledgeSkillSorter((x, y) => x.Attribute.CompareTo(y.Attribute))),
-				new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+				new KeyValuePair<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
 					new KnowledgeSkillSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
 			};
-			
 			return ret;
 		}
 
-		private List<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
+		private List<KeyValuePair<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
 		{
-			List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>
+			List<KeyValuePair<string, Predicate<KnowledgeSkill>>> ret = new List<KeyValuePair<string, Predicate<KnowledgeSkill>>>
 			{
 				//TODO: Search doesn't play nice with writeable name
 				//new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_Search"), null),
 
-				new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterAll"), skill => true),
-				new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterRatingAboveZero"),
+				new KeyValuePair<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterAll"), skill => true),
+				new KeyValuePair<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterRatingAboveZero"),
 					skill => skill.Rating > 0),
-				new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterTotalRatingAboveZero"),
+				new KeyValuePair<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterTotalRatingAboveZero"),
 					skill => skill.Pool > 0),
-				new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterRatingZero"),
+				new KeyValuePair<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterRatingZero"),
 					skill => skill.Rating == 0)
 			};
-			//TODO: TRANSLATIONS
+            //TODO: TRANSLATIONS
 
+            List<KeyValuePair<string, Predicate<KnowledgeSkill>>> lstExtraFilters = new List<KeyValuePair<string, Predicate<KnowledgeSkill>>>();
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            XmlNodeList objXmlNodeList = objXmlDocument?.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]");
+            if (objXmlNodeList != null)
+            {
+                foreach (XmlNode objLoopNode in objXmlNodeList)
+                {
+                    string strDisplayName = objLoopNode.Attributes?["translate"]?.InnerText ?? objLoopNode.InnerText;
+                    lstExtraFilters.Add(new KeyValuePair<string, Predicate<KnowledgeSkill>>(
+                        $"{LanguageManager.Instance.GetString("Label_Category")} {strDisplayName}",
+                        skill => skill.SkillCategory == objLoopNode.InnerText));
+                }
+            }
 
-
-			ret.AddRange(
-				from XmlNode objNode
-				in XmlManager.Instance.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]")
-				let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
-				select new Tuple<string, Predicate<KnowledgeSkill>>(
-					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}",
-					skill => skill.SkillCategory == objNode.InnerText));
-
-			ret.AddRange(
-				from string attribute
-				in new[] { "INT", "LOG" } //TODO: This should be somewhere in Character or CharacterAttrib i think
-				select new Tuple<string, Predicate<KnowledgeSkill>>(
-					$"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{attribute}Short")}",
-					skill => skill.Attribute == attribute));
-			/*
-			ret.AddRange(
-				from SkillGroup @group
-				in _character.SkillsSection.SkillGroups
-				select new Tuple<string, Predicate<KnowledgeSkill>>(
-					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}",
-					skill => skill.SkillGroupObject == @group));
+            foreach (string strAttribute in strKnoAttributeStrings)
+            {
+                lstExtraFilters.Add(new KeyValuePair<string, Predicate<KnowledgeSkill>>(
+                    $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{strAttribute}Short")}",
+                    skill => skill.Attribute == strAttribute));
+            }
+            /*
+			foreach (SkillGroup objLoopSkillGroup in _character.SkillsSection.SkillGroups)
+            {
+                lstExtraFilters.Add(new KeyValuePair<string, Predicate<KnowledgeSkill>>(
+                    $"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {objLoopSkillGroup.DisplayName}",
+                    skill => skill.SkillGroupObject.Equals(objLoopSkillGroup)));
+            }
 			*/
-			return ret;
+            ret.AddRange(lstExtraFilters);
+            return ret;
 		}
 
 		private void MakeSkillDisplays()
@@ -373,7 +383,15 @@ namespace Chummer.UI.Skills
 
 		private void Control_CustomAttributeChanged(object sender, EventArgs e)
 		{
-			btnResetCustomDisplayAttribute.Visible = controls.Any(x => x.CustomAttributeSet);
+		    foreach (SkillControl2 objLoopControl in controls)
+		    {
+		        if (objLoopControl.CustomAttributeSet)
+		        {
+                    btnResetCustomDisplayAttribute.Visible = true;
+		            return;
+		        }
+		    }
+		    btnResetCustomDisplayAttribute.Visible = false;
 		}
 
 		private void Panel1_Resize(object sender, EventArgs e)
@@ -412,28 +430,27 @@ namespace Chummer.UI.Skills
 		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox csender = (ComboBox) sender;
-			Tuple<string, Predicate<Skill>> selectedItem = (Tuple<string, Predicate<Skill>>)csender.SelectedItem;
+            KeyValuePair<string, Predicate<Skill>> selectedItem = (KeyValuePair<string, Predicate<Skill>>)csender.SelectedItem;
 
-			if (selectedItem.Item2 == null)
+			if (selectedItem.Value == null)
 			{
 				csender.DropDownStyle = ComboBoxStyle.DropDown;
 				_searchMode = true;
-				
 			}
 			else
 			{
 				csender.DropDownStyle = ComboBoxStyle.DropDownList;
 				_searchMode = false;
-				_skills.Filter(selectedItem.Item2);
+				_skills.Filter(selectedItem.Value);
 			}
 		}
 
 		private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox csender = (ComboBox)sender;
-			Tuple<string, IComparer<Skill>> selectedItem = (Tuple<string, IComparer<Skill>>)csender.SelectedItem;
+            KeyValuePair<string, IComparer<Skill>> selectedItem = (KeyValuePair<string, IComparer<Skill>>)csender.SelectedItem;
 
-			_skills.Sort(selectedItem.Item2);
+			_skills.Sort(selectedItem.Value);
 		}
 
 		private void btnExotic_Click(object sender, EventArgs e)
@@ -491,10 +508,13 @@ namespace Chummer.UI.Skills
 
 		private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
 		{
-			foreach (SkillControl2 control2 in controls.Where(x => x.CustomAttributeSet))
-			{
-				control2.ResetSelectAttribute();
-			}
+            foreach (SkillControl2 objLoopControl in controls)
+            {
+                if (objLoopControl.CustomAttributeSet)
+                {
+                    objLoopControl.ResetSelectAttribute();
+                }
+            }
 		}
 
 		private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
@@ -508,27 +528,26 @@ namespace Chummer.UI.Skills
 		private void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox csender = (ComboBox)sender;
-			Tuple<string, IComparer<KnowledgeSkill>> selectedItem = (Tuple<string, IComparer<KnowledgeSkill>>)csender.SelectedItem;
+            KeyValuePair<string, IComparer<KnowledgeSkill>> selectedItem = (KeyValuePair<string, IComparer<KnowledgeSkill>>)csender.SelectedItem;
 
-			_knoSkills.Sort(selectedItem.Item2);
+			_knoSkills.Sort(selectedItem.Value);
 		}
 
 		private void cboDisplayFilterKnowledge_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox csender = (ComboBox)sender;
-			Tuple<string, Predicate<KnowledgeSkill>> selectedItem = (Tuple<string, Predicate<KnowledgeSkill>>)csender.SelectedItem;
+            KeyValuePair<string, Predicate<KnowledgeSkill>> selectedItem = (KeyValuePair<string, Predicate<KnowledgeSkill>>)csender.SelectedItem;
 
-			if (selectedItem.Item2 == null)
+			if (selectedItem.Value == null)
 			{
 				csender.DropDownStyle = ComboBoxStyle.DropDown;
 				_searchMode = true;
-
 			}
 			else
 			{
 				csender.DropDownStyle = ComboBoxStyle.DropDownList;
 				_searchMode = false;
-				_knoSkills.Filter(selectedItem.Item2);
+				_knoSkills.Filter(selectedItem.Value);
 			}
 		}
 

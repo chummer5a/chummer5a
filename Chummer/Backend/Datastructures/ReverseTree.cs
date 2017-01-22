@@ -47,9 +47,10 @@ namespace Chummer.Datastructures
 
 		public ReverseTree<T> Find(T key)
 		{
-            if (seachDictionary.ContainsKey(key))
+		    ReverseTree<T> treReturn;
+            if (seachDictionary.TryGetValue(key, out treReturn))
             {
-                return seachDictionary[key];
+                return treReturn;
             }
 
             return new ReverseTree<T>(key); // single tree with only key

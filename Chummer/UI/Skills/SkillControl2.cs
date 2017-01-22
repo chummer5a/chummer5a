@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Chummer.Skills;
 
@@ -223,18 +222,26 @@ namespace Chummer.UI.Skills
 
 			_skill.AddSpecialization(selectForm.SelectedItem);
 
-			//TODO turn this into a databinding, but i don't care enough right now
-			lblCareerSpec.Text = string.Join(", ",
-					(from specialization in _skill.Specializations
-					 select specialization.DisplayName));
+            //TODO turn this into a databinding, but i don't care enough right now
+            string strTemp = string.Empty;
+            foreach (SkillSpecialization objLoopSpecialization in _skill.Specializations)
+            {
+                strTemp += objLoopSpecialization.DisplayName + ", ";
+            }
+            if (strTemp.Length >= 2)
+                strTemp = strTemp.Substring(0, strTemp.Length - 2);
+            lblCareerSpec.Text = strTemp;
 
 			parrent?.UpdateCharacterInfo();
 		}
 
 		private void SetupDropdown()
 		{
-			List<ListItem> list =  new[] {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"}.Select(
-				x => new ListItem(x, LanguageManager.Instance.GetString($"String_Attribute{x}Short"))).ToList();
+            List<ListItem> list = new List<ListItem>();
+            foreach (string strAttribute in Character.strAttributeStrings)
+            {
+                list.Add(new ListItem(strAttribute, LanguageManager.Instance.GetString($"String_Attribute{strAttribute}Short")));
+            }
 
             cboSelectAttribute.BeginUpdate();
             cboSelectAttribute.ValueMember = "Value";

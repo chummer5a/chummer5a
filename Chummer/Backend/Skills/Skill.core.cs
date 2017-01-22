@@ -198,11 +198,15 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				int otherbonus = _character.Improvements.Where(x =>
-					x.Enabled &&
-					x.ImproveType == Improvement.ImprovementType.Skill &&
-					x.ImprovedName == Name).Sum(x => x.Maximum);
-									
+			    int otherbonus = 0;
+			    foreach (Improvement objImprovement in _character.Improvements)
+			    {
+			        if (objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
+			        {
+                        otherbonus += objImprovement.Maximum;
+			        }
+			    }
+
 				return (_character.Created  || _character.IgnoreRules
 					? 12
 					: (IsKnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
@@ -233,18 +237,46 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (CharacterObject.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.ReflexRecorderOptimization))
+			    bool blnHasReflexRecorderOpt = false;
+			    foreach (Improvement objImprovement in CharacterObject.Improvements)
+			    {
+			        if (objImprovement.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization)
+			        {
+                        blnHasReflexRecorderOpt = true;
+			            break;
+			        }
+			    }
+				if (!blnHasReflexRecorderOpt)
 					return -1;
 
 				Guid reflexrecorderid = Guid.Parse("17a6ba49-c21c-461b-9830-3beae8a237fc");
-				Cyberware ware = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == reflexrecorderid);
+				Cyberware objReflexRecorderOptimization = null;
+                foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+                {
+                    if (objCyberware.SourceID == reflexrecorderid)
+                    {
+                        objReflexRecorderOptimization = objCyberware;
+                        break;
+                    }
+                }
 
-				if (ware == null) return -1;
+                if (objReflexRecorderOptimization == null)
+                    return -1;
 
-				bool affected = SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) ?? false;
+			    bool affected = false;
+			    if (SkillGroupObject != null)
+			    {
+			        foreach (Skill objSkill in SkillGroupObject.GetEnumerable())
+			        {
+			            if (objSkill.Name == objReflexRecorderOptimization.Location)
+			            {
+			                affected = true;
+			                break;
+			            }
+			        }
+			    }
 
 				if (affected) return 0;
-				
 
 				return -1;
 			}
@@ -274,7 +306,13 @@ namespace Chummer.Skills
 		private int Bonus(bool AddToRating)
 		{
 			//Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-			return RelevantImprovements().Where(x => x.AddToRating == AddToRating).Sum(x => x.Value);
+		    int intReturn = 0;
+		    foreach (Improvement objImprovement in RelevantImprovements())
+		    {
+		        if (objImprovement.AddToRating == AddToRating)
+		            intReturn += objImprovement.Value;
+		    }
+		    return intReturn;
 		}
 
 		private IEnumerable<Improvement> RelevantImprovements()
@@ -350,13 +388,18 @@ namespace Chummer.Skills
 		{
 			//No rating can obv not cost anything
 			//Makes debugging easier as we often only care about value calculation
-			if (LearnedRating == 0) return 0; 
-			
+			if (LearnedRating == 0) return 0;
 
 			int cost = 0;
 			if (SkillGroupObject?.Karma > 0)
 			{
-				int groupUpper = SkillGroupObject.GetEnumerable().Min(x => x.Base + x.Karma);
+			    int groupUpper = int.MaxValue;
+			    foreach (Skill objSkill in SkillGroupObject.GetEnumerable())
+			    {
+			        int intLoop = objSkill.Base + objSkill.Karma;
+			        if (groupUpper > intLoop)
+			            groupUpper = intLoop;
+			    }
 				int groupLower = groupUpper - SkillGroupObject.Karma;
 
 				int lower = Base + FreeKarma(); //Might be an error here
@@ -379,9 +422,10 @@ namespace Chummer.Skills
 
 			cost = Math.Max(0, cost); //Don't give karma back...
 
-			foreach (SkillSpecialization objSpec in Specializations.Where(objSpec => !objSpec.Free))
+			foreach (SkillSpecialization objSpec in Specializations)
 			{
-				cost += //Spec
+                if (!objSpec.Free)
+				    cost += //Spec
 					(BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma ||
 					  _character.BuildMethod == CharacterBuildMethod.LifeModule)
 						? _character.Options.KarmaSpecialization
@@ -519,12 +563,15 @@ namespace Chummer.Skills
 		private int _cachedFreeKarma = int.MinValue;
 		protected int FreeKarma()
 		{
-			if (_cachedFreeKarma != int.MinValue) return _cachedFreeKarma;
-
-			return _cachedFreeKarma = (from improvement in CharacterObject.Improvements
-				where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
-				      && improvement.ImprovedName == _name
-				select improvement.Value).Sum(); //TODO change to ImpManager.ValueOf?
+			if (_cachedFreeKarma != int.MinValue)
+                return _cachedFreeKarma;
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            {
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel &&
+                    objImprovement.ImprovedName == _name)
+                    _cachedFreeKarma += objImprovement.Value;
+            }
+            return _cachedFreeKarma; //TODO change to ImpManager.ValueOf?
 		}
 
 		/// <summary>
@@ -535,11 +582,16 @@ namespace Chummer.Skills
 
 		protected int FreeBase()
 		{
-			if (_cachedFreeBase != int.MinValue) return _cachedFreeBase;
-			return _cachedFreeBase = (from improvement in CharacterObject.Improvements
-				where improvement.ImproveType == Improvement.ImprovementType.SkillBase
-				      && improvement.ImprovedName == _name
-				select improvement.Value).Sum();
+			if (_cachedFreeBase != int.MinValue)
+                return _cachedFreeBase;
+            _cachedFreeBase = 0;
+		    foreach (Improvement objImprovement in CharacterObject.Improvements)
+		    {
+		        if (objImprovement.ImproveType == Improvement.ImprovementType.SkillBase &&
+		            objImprovement.ImprovedName == _name)
+                    _cachedFreeBase += objImprovement.Value;
+		    }
+			return _cachedFreeBase;
 		}
 
 		/// <summary>

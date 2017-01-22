@@ -20202,7 +20202,7 @@ namespace Chummer
                             string strExtraMount = "None";
                             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                                 strMount = objXmlAccessory["extramount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, new Tuple<string,string> (strMount, strExtraMount), intRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                            objMod.Create(objXmlAccessoryNode, objModNode, new KeyValuePair<string,string> (strMount, strExtraMount), intRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                             objModNode.ContextMenuStrip = cmsWeaponAccessory;
                             objMod.Parent = objWeapon;
 
@@ -20578,7 +20578,7 @@ namespace Chummer
                                     string strExtraMount = "None";
                                     if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                                         strMount = objXmlAccessory["extramount"].InnerText;
-                                    objMod.Create(objXmlAccessoryNode, objModNode, new Tuple<string, string>(strMount, strExtraMount), intRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                                    objMod.Create(objXmlAccessoryNode, objModNode, new KeyValuePair<string, string>(strMount, strExtraMount), intRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                                     objModNode.ContextMenuStrip = cmsWeaponAccessory;
                                     objMod.Parent = objWeapon;
 

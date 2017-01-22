@@ -29,7 +29,7 @@ namespace Chummer
 	{
 		static Stopwatch time = new Stopwatch();
 		private static readonly Dictionary<String, TimeSpan> Starts = new Dictionary<string, TimeSpan>(); 
-		private static readonly Dictionary<string, Tuple<TimeSpan, int>> Statistics = new Dictionary<string, Tuple<TimeSpan, int>>();
+		private static readonly Dictionary<string, KeyValuePair<TimeSpan, int>> Statistics = new Dictionary<string, KeyValuePair<TimeSpan, int>>();
 
 		static Timekeeper ()
 		{
@@ -46,9 +46,10 @@ namespace Chummer
 
 		public static TimeSpan Elapsed(string taskname)
 		{
-			if (Starts.ContainsKey(taskname))
+		    TimeSpan objTemp;
+			if (Starts.TryGetValue(taskname, out objTemp))
 			{
-				return time.Elapsed - Starts[taskname];
+				return time.Elapsed - objTemp;
 			}
 			else
 			{
@@ -58,26 +59,26 @@ namespace Chummer
 
 		public static TimeSpan Finish(string taskname)
 		{
-			if (Starts.ContainsKey(taskname))
-			{
-				TimeSpan final = time.Elapsed - Starts[taskname];
+            TimeSpan objTemp;
+            if (Starts.TryGetValue(taskname, out objTemp))
+            {
+				TimeSpan final = time.Elapsed - objTemp;
 
 				Starts.Remove(taskname);
 				string logentry = $"Task \"{taskname}\" finished in {final}";
                 Chummer.Log.Info(logentry);
 
 				Debug.WriteLine(logentry);
-				
-				if (Statistics.ContainsKey(taskname))
+
+                KeyValuePair<TimeSpan, int> existing;
+                if (Statistics.TryGetValue(taskname, out existing))
 				{
-					Tuple<TimeSpan, int> existing = Statistics[taskname];
-					Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
+					Statistics[taskname] = new KeyValuePair<TimeSpan, int>(existing.Key + final, existing.Value + 1);
 				}
 				else
 				{
-					Statistics.Add(taskname, new Tuple<TimeSpan, int>(final, 1));
+					Statistics.Add(taskname, new KeyValuePair<TimeSpan, int>(final, 1));
 				}
-				
 				return final;
 			}
 			else
@@ -91,9 +92,9 @@ namespace Chummer
 		{
 			StringBuilder sb = new StringBuilder("Time statistics\n");
 
-			foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in Statistics)
+			foreach (KeyValuePair<string, KeyValuePair<TimeSpan, int>> keyValuePair in Statistics)
 			{
-				sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
+				sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Value}) = {keyValuePair.Value.Key}");
 			}
 
 			string strined = sb.ToString();

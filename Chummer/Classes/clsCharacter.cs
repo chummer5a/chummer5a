@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
@@ -48,7 +47,9 @@ namespace Chummer
     /// </summary>
     public class Character : INotifyPropertyChanged
     {
-	    private XmlNode oldSkillsBackup;
+        public static string[] strAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES", "DEP" };
+
+        private XmlNode oldSkillsBackup;
 	    private XmlNode oldSKillGroupBackup;
 
         private readonly ImprovementManager _objImprovementManager;
@@ -1662,12 +1663,28 @@ namespace Chummer
 			// converting from old dwarven resistance to new dwarven resistance
 			if (Metatype.ToLower().Equals("dwarf"))
             {
-                Quality objOldQuality = Qualities.Where(x => x.Name.Equals("Resistance to Pathogens and Toxins")).First();
+                Quality objOldQuality = null;
+                foreach (Quality objLoopQuality in Qualities)
+                {
+                    if (objLoopQuality.Name.Equals("Resistance to Pathogens and Toxins"))
+                    {
+                        objOldQuality = objLoopQuality;
+                        break;
+                    }
+                }
                 if (objOldQuality != null)
                 {
                     Qualities.Remove(objOldQuality);
-                    if (Qualities.Where(x => x.Name.Equals("Resistance to Pathogens/Toxins")).Any() == false &&
-                        Qualities.Where(x => x.Name.Equals("Dwarf Resistance")).Any() == false)
+                    bool blnHasNewQuality = false;
+                    foreach (Quality objLoopQuality in Qualities)
+                    {
+                        if (objLoopQuality.Name.Equals("Resistance to Pathogens/Toxins") || objLoopQuality.Name.Equals("Dwarf Resistance"))
+                        {
+                            blnHasNewQuality = true;
+                            break;
+                        }
+                    }
+                    if (blnHasNewQuality == false)
                     {
                         XmlNode objXmlDwarfQuality =
                             XmlManager.Instance.Load("qualities.xml")
@@ -2219,81 +2236,96 @@ namespace Chummer
 
             // <limitmodifiersphys>
             objWriter.WriteStartElement("limitmodifiersphys");
-            foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Physical"))
+            foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
             {
-                objLimitModifier.Print(objWriter);
+                if (objLimitModifier.Limit == "Physical")
+                    objLimitModifier.Print(objWriter);
             }
             // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
+            foreach (Improvement objImprovement in _lstImprovements)
 	        {
-		        string strName = objImprovement.UniqueName;
-		        if (objImprovement.Value > 0)
-			        strName += " [+" + objImprovement.Value.ToString() + "]";
-		        else
-			        strName += " [" + objImprovement.Value.ToString() + "]";
+	            if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
+	                objImprovement.ImprovedName == "Physical")
+	            {
+	                string strName = objImprovement.UniqueName;
+	                if (objImprovement.Value > 0)
+	                    strName += " [+" + objImprovement.Value.ToString() + "]";
+	                else
+	                    strName += " [" + objImprovement.Value.ToString() + "]";
 
-		        if (!string.IsNullOrEmpty(objImprovement.Exclude))
-			        strName += " (" + objImprovement.Exclude + ")";
+	                if (!string.IsNullOrEmpty(objImprovement.Exclude))
+	                    strName += " (" + objImprovement.Exclude + ")";
 
-		        objWriter.WriteStartElement("limitmodifier");
-		        objWriter.WriteElementString("name", strName);
-		        if (Options.PrintNotes)
-			        objWriter.WriteElementString("notes", objImprovement.Notes);
-		        objWriter.WriteEndElement();
+	                objWriter.WriteStartElement("limitmodifier");
+	                objWriter.WriteElementString("name", strName);
+	                if (Options.PrintNotes)
+	                    objWriter.WriteElementString("notes", objImprovement.Notes);
+	                objWriter.WriteEndElement();
+	            }
 	        }
 	        // </limitmodifiersphys>
             objWriter.WriteEndElement();
 
 			// <limitmodifiersment>
 			objWriter.WriteStartElement("limitmodifiersment");
-			foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Mental"))
+			foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
 			{
-				objLimitModifier.Print(objWriter);
+                if (objLimitModifier.Limit == "Mental")
+				    objLimitModifier.Print(objWriter);
 			}
 			// Populate Limit Modifiers from Improvements
-			foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
+			foreach (Improvement objImprovement in _lstImprovements)
 			{
-				string strName = objImprovement.UniqueName;
-				if (objImprovement.Value > 0)
-					strName += " [+" + objImprovement.Value.ToString() + "]";
-				else
-					strName += " [" + objImprovement.Value.ToString() + "]";
+			    if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
+			        objImprovement.ImprovedName == "Mental")
+			    {
+			        string strName = objImprovement.UniqueName;
+			        if (objImprovement.Value > 0)
+			            strName += " [+" + objImprovement.Value.ToString() + "]";
+			        else
+			            strName += " [" + objImprovement.Value.ToString() + "]";
 
-				if (!string.IsNullOrEmpty(objImprovement.Exclude))
-					strName += " (" + objImprovement.Exclude + ")";
+			        if (!string.IsNullOrEmpty(objImprovement.Exclude))
+			            strName += " (" + objImprovement.Exclude + ")";
 
-				objWriter.WriteStartElement("limitmodifier");
-				objWriter.WriteElementString("name", strName);
-				if (Options.PrintNotes)
-					objWriter.WriteElementString("notes", objImprovement.Notes);
-				objWriter.WriteEndElement();
+			        objWriter.WriteStartElement("limitmodifier");
+			        objWriter.WriteElementString("name", strName);
+			        if (Options.PrintNotes)
+			            objWriter.WriteElementString("notes", objImprovement.Notes);
+			        objWriter.WriteEndElement();
+			    }
 			}
 			// </limitmodifiersment>
 			objWriter.WriteEndElement();
 
 			// <limitmodifierssoc>
 			objWriter.WriteStartElement("limitmodifierssoc");
-			foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Social"))
+			foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
 			{
-				objLimitModifier.Print(objWriter);
+                if (objLimitModifier.Limit == "Social")
+				    objLimitModifier.Print(objWriter);
 			}
 			// Populate Limit Modifiers from Improvements
-			foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
+			foreach (Improvement objImprovement in _lstImprovements)
 			{
-				string strName = objImprovement.UniqueName;
-				if (objImprovement.Value > 0)
-					strName += " [+" + objImprovement.Value.ToString() + "]";
-				else
-					strName += " [" + objImprovement.Value.ToString() + "]";
+			    if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
+			        objImprovement.ImprovedName == "Social")
+			    {
+			        string strName = objImprovement.UniqueName;
+			        if (objImprovement.Value > 0)
+			            strName += " [+" + objImprovement.Value.ToString() + "]";
+			        else
+			            strName += " [" + objImprovement.Value.ToString() + "]";
 
-				if (!string.IsNullOrEmpty(objImprovement.Exclude))
-					strName += " (" + objImprovement.Exclude + ")";
+			        if (!string.IsNullOrEmpty(objImprovement.Exclude))
+			            strName += " (" + objImprovement.Exclude + ")";
 
-				objWriter.WriteStartElement("limitmodifier");
-				objWriter.WriteElementString("name", strName);
-				if (Options.PrintNotes)
-					objWriter.WriteElementString("notes", objImprovement.Notes);
-				objWriter.WriteEndElement();
+			        objWriter.WriteStartElement("limitmodifier");
+			        objWriter.WriteElementString("name", strName);
+			        if (Options.PrintNotes)
+			            objWriter.WriteElementString("notes", objImprovement.Notes);
+			        objWriter.WriteEndElement();
+			    }
 			}
 			// </limitmodifierssoc>
 			objWriter.WriteEndElement();
@@ -5495,21 +5527,24 @@ namespace Chummer
 					}
 				}
 
-				foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")) && objArmor.Equipped))
-				{
-					if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
-					{
-						foreach (ArmorMod objMod in objArmor.ArmorMods)
-						{
-							if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
-							{
-								intStacking += Convert.ToInt32(objArmor.TotalArmor);
-							}
-						}
-					}
-				}
+                if (blnCustomFit)
+                {
+                    foreach (Armor objArmor in _lstArmor)
+                    {
+                        if (objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing" && (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")))
+                        {
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            {
+                                if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
+                                {
+                                    intStacking += Convert.ToInt32(objArmor.TotalArmor);
+                                }
+                            }
+                        }
+                    }
+                }
 
-				// Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
+                // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
 				int intClothing = 0;
                 foreach (Armor objArmor in _lstArmor)
                 {
@@ -5534,8 +5569,6 @@ namespace Chummer
             get
             {
                 int intHighest = 0;
-                int intArmor = 0;
-                string strHighest;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 foreach (Armor objArmor in _lstArmor)
@@ -5543,41 +5576,64 @@ namespace Chummer
                     if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
                     {
                         intHighest = objArmor.TotalArmor;
-                        strHighest = objArmor.Name;
                     }
                 }
-                intArmor = intHighest;
+                int intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
-                int intStacking = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
+                int intStacking = 0;
+                foreach (Armor objArmor in _lstArmor)
+                {
+                    if (objArmor.Equipped && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.ArmorValue.StartsWith("+"))
+                    {
+                        intStacking += objArmor.TotalArmor;
+                    }
+                }
 
-	            // Run through the list of Armor currently worn again and look at High-Fashion Armor Clothing items that start with "+" since they stack with eachother.
+                // Run through the list of Armor currently worn again and look at High-Fashion Armor Clothing items that start with "+" since they stack with eachother.
                 int intFashionClothing = 0;
                 int intFashionClothingStack = 0;
                 string strFashionClothing = string.Empty;
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing"))
+                foreach (Armor objArmor in _lstArmor)
                 {
-	                //Find the highest fancy suit armour value.
-	                if (!objArmor.ArmorValue.StartsWith("+") && objArmor.TotalArmor > intFashionClothing)
-	                {
-		                foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => objMod.Name != "Custom Fit (Stack)"))
-		                {
-			                intFashionClothing = objArmor.TotalArmor;
-			                strFashionClothing = objArmor.Name;
-		                }
-	                }
-	                //Find the fancy suits that stack with other fancy suits.
-	                else if (objArmor.ArmorOverrideValue.StartsWith("+"))
-	                {
-		                intFashionClothingStack += objArmor.ArmorMods.Where(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strFashionClothing).Sum(objMod => Convert.ToInt32(objArmor.TotalArmor));
-	                }
+                    if (objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing")
+                    {
+                        //Find the highest fancy suit armour value.
+                        if (objArmor.TotalArmor > intFashionClothing && !objArmor.ArmorValue.StartsWith("+"))
+                        {
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            {
+                                if (objMod.Name != "Custom Fit (Stack)")
+                                {
+                                    intFashionClothing = objArmor.TotalArmor;
+                                    strFashionClothing = objArmor.Name;
+                                }
+                            }
+                        }
+                        //Find the fancy suits that stack with other fancy suits.
+                        else if (objArmor.ArmorOverrideValue.StartsWith("+"))
+                        {
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            {
+                                if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strFashionClothing)
+                                {
+                                    intFashionClothingStack += objArmor.TotalArmor;
+                                }
+                            }
+                        }
+                    }
                 }
                 intFashionClothing += intFashionClothingStack;
                 // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
-                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Equipped && objArmor.Category == "Clothing").Sum(objArmor => objArmor.TotalArmor);
-
-	            int[] intArmorMax = new[] { intClothing, intArmor, intFashionClothing };
-                intArmor = intArmorMax.Max();
+                int intClothing = 0;
+                foreach (Armor objArmor in _lstArmor)
+                {
+                    if (objArmor.Equipped && objArmor.Category == "Clothing" && objArmor.ArmorValue.StartsWith("+"))
+                    {
+                        intClothing += objArmor.TotalArmor;
+                    }
+                }
+                intArmor = Math.Max(intArmor, Math.Max(intClothing, intFashionClothing));
 
                 // Add any Armor modifiers.
                 intArmor += _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
@@ -5593,7 +5649,7 @@ namespace Chummer
         {
             get
 			{
-				string strHighest= string.Empty;
+				string strHighest = string.Empty;
 				bool blnCustomFit = false;
 				int intHighest = 0;
 				int intTotalA = 0;
@@ -5608,22 +5664,25 @@ namespace Chummer
 						strHighest = objArmor.Name;
 					}
 				}
-				foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")) && objArmor.Equipped))
+				foreach (Armor objArmor in _lstArmor)
 				{
-					if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
-					{
-							foreach (ArmorMod objMod in objArmor.ArmorMods)
-							{
-								if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
-								{
-									intTotalA += Convert.ToInt32(objArmor.TotalArmor);
-								}
-							}
-					}
-					else
-					{
-						intTotalA += objArmor.TotalArmor;
-					}
+				    if (objArmor.Equipped && (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")))
+				    {
+				        if (blnCustomFit && objArmor.Category == "High-Fashion Armor Clothing")
+				        {
+				            foreach (ArmorMod objMod in objArmor.ArmorMods)
+				            {
+				                if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
+				                {
+				                    intTotalA += objArmor.TotalArmor;
+				                }
+				            }
+				        }
+				        else
+				        {
+				            intTotalA += objArmor.TotalArmor;
+				        }
+				    }
 				}
 
 	            // calculate armor encumberance
@@ -6226,10 +6285,13 @@ namespace Chummer
 			{
 				int intLegs = 0;
 				int intAGI = 0;
-				foreach (Cyberware objCyber in _lstCyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
+				foreach (Cyberware objCyber in _lstCyberware)
 				{
-					intLegs += objCyber.LimbSlotCount;
-					intAGI = intAGI > 0 ? Math.Min(intAGI, objCyber.TotalAgility) : objCyber.TotalAgility;
+				    if (objCyber.LimbSlot == "leg")
+				    {
+				        intLegs += objCyber.LimbSlotCount;
+				        intAGI = intAGI > 0 ? Math.Min(intAGI, objCyber.TotalAgility) : objCyber.TotalAgility;
+				    }
 				}
 				if (intLegs == 2)
 				{
@@ -7356,10 +7418,20 @@ namespace Chummer
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
 		internal void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
 		{
-			if (_lstTransaction.Any(x => skillRelated.Any(y => y == x.ImproveType)))
-			{
-				ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
-			}
+		    if (ImprovementEvent != null)
+		    {
+		        foreach (Improvement objImprovement in _lstTransaction)
+		        {
+		            foreach (Improvement.ImprovementType objImprovementType in skillRelated)
+		            {
+		                if (objImprovementType == objImprovement.ImproveType)
+		                {
+                            ImprovementEvent.Invoke(_lstTransaction, improvementManager);
+		                    return;
+		                }
+		            }
+		        }
+		    }
 		}
 	}
 }

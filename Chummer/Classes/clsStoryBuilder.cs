@@ -200,65 +200,58 @@ namespace Chummer
 
 			//Did not meet predefined macros, check user defined
 			
-			String searchString = "/chummer/storybuilder/macros/" + macroName;
+			string searchString = "/chummer/storybuilder/macros/" + macroName;
             XmlDocument objXmlLifeModulesDocument = XmlManager.Instance.Load("lifemodules.xml");
 
-            if (objXmlLifeModulesDocument != null)
-            {
-                XmlNode userMacro = objXmlLifeModulesDocument.SelectSingleNode(searchString);
+		    XmlNode userMacro = objXmlLifeModulesDocument?.SelectSingleNode(searchString);
 
-                if (userMacro != null)
-                {
-                    if (userMacro.FirstChild != null)
-                    {
-                        String selected = string.Empty;
-                        //Allready defined, no need to do anything fancy
-                        if (persistenceDictionary.ContainsKey(macroPool))
-                        {
-                            selected = persistenceDictionary[macroPool];
-                        }
-                        else if (userMacro.FirstChild.Name == "random")
-                        {
-                            //Any node not named 
-                            XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-                            if (possible.Count > 0)
-                                selected = possible[random.Next(possible.Count)].Name;
-                        }
-                        else if (userMacro.FirstChild.Name == "persistent")
-                        {
-                            //Any node not named 
-                            XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-                            if (possible.Count > 0)
-                            {
-                                selected = possible[random.Next(possible.Count)].Name;
-                                persistenceDictionary.Add(macroPool, selected);
-                            }
-                        }
-                        else
-                        {
-                            return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
-                        }
+		    if (userMacro == null) return $"(Unknown Macro  $DOLLAR{innerText.Substring(1)} )";
+		    if (userMacro.FirstChild != null)
+		    {
+		        string selected;
+		        //Allready defined, no need to do anything fancy
+		        if (!persistenceDictionary.TryGetValue(macroPool, out selected))
+		        {
+		            if (userMacro.FirstChild.Name == "random")
+		            {
+		                //Any node not named 
+		                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+		                if (possible?.Count > 0)
+		                    selected = possible[random.Next(possible.Count)].Name;
+		            }
+		            else if (userMacro.FirstChild.Name == "persistent")
+		            {
+		                //Any node not named 
+		                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+		                if (possible?.Count > 0)
+		                {
+		                    selected = possible[random.Next(possible.Count)].Name;
+		                    persistenceDictionary.Add(macroPool, selected);
+		                }
+		            }
+		            else
+		            {
+		                return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
+		            }
+		        }
 
-                        if (!string.IsNullOrEmpty(selected) && userMacro.FirstChild[selected] != null)
-                        {
-                            return userMacro.FirstChild[selected].InnerText;
-                        }
-                        else if (userMacro.FirstChild["default"] != null)
-                        {
-                            return userMacro.FirstChild["default"].InnerText;
-                        }
-                        else
-                        {
-                            return String.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
-                        }
-                    }
-                    else
-                    {
-                        return userMacro.InnerText;
-                    }
-                }
-            }
-			return String.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));
+		        if (!string.IsNullOrEmpty(selected) && userMacro.FirstChild[selected] != null)
+		        {
+		            return userMacro.FirstChild[selected].InnerText;
+		        }
+		        else if (userMacro.FirstChild["default"] != null)
+		        {
+		            return userMacro.FirstChild["default"].InnerText;
+		        }
+		        else
+		        {
+		            return $"(Unknown key {macroPool} in  $DOLLAR{macroName} )";
+		        }
+		    }
+		    else
+		    {
+		        return userMacro.InnerText;
+		    }
 		}
 	}
 }

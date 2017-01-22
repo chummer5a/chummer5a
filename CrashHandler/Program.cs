@@ -46,19 +46,17 @@ namespace CrashHandler
 		{ 
 			if (args.Length == 0) return;
 
-			if (_functions.ContainsKey(args[0]))
+		    Action<string[]> objArgAction;
+			if (_functions.TryGetValue(args[0], out objArgAction))
 			{
-				_functions[args[0]](args.Skip(1).ToArray());
+                objArgAction(args.Skip(1).ToArray());
 			}
-			
 
 
 
 			//Application.EnableVisualStyles();
 			//Application.SetCompatibleTextRenderingDefault(false);
 			//Application.Run(new frmCrashReporter());
-
-
 		}
 	}
 }
