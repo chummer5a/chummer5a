@@ -563,7 +563,7 @@ namespace Chummer.Backend.Equipment
 			//objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
 
 			objWriter.WriteElementString("dicepool", DicePool);
-			objWriter.WriteElementString("skill", Skill.Name);
+			objWriter.WriteElementString("skill", Skill?.Name);
 
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);

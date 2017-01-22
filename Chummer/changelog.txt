@@ -1,4 +1,34 @@
-﻿Build 190
+Build 191
+
+Application Changes:
+
+- Brought all projects to the same, .NET 4.5.2 target sku.
+- Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
+- Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
+- Made a massive optimization sweep after subjecting code to static code analysis.
+- Updated the program's icon with 128x128 and 256x256 versions.
+- Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
+- Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
+- Reduced load time for characters by about 25%.
+- Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
+- Fixed a bug where cancelling the option saving confirmation message would still save options.
+- Reduced initial load time for the skills section by about 15% (specifically, reduced the real load time of each individual skill control by about 33%, causing the overall skills section load time improvement).
+- Made minor performance improvements to the updating of drop-down boxes' lists (roughly 10-20% depending on the box).
+- Fixed a bug where Extra Secure lifestyle quality would no longer properly have its cost effects printed.
+- Removed uses of LinQ in most code areas because it was both slow and often caused debugging to be difficult due to anonymous function use.
+- Performed miscellaneous optimizations related to Dictionary and KeyValuePair use.
+
+Data Changes:
+
+- Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
+- Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
+
+New Strings: 
+
+- Checkbox_Option_PrioritySpellsAsAdeptPowers
+- Checkbox_Options_Live_CustomData
+
+Build 190
 
 Application Changes:
 
@@ -45,21 +75,6 @@ Application Changes:
 - Added a proof-of-concept Print-to-PDF functionality into the Print window. TODO: Progress bar for saving, configurable options for margins and such. 
 - Fixed an error that caused missing custom books to not show their code if the book was not found. 
 - Increased functionality for the Export Window; there is now a window shown that contains the exported text. You can copy this text directly into wherever you need to export it, rather than saving the file and exporting. 
-- Brought all projects to the same, .NET 4.5.2 target sku.
-- Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
-- Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
-- Made a massive optimization sweep after subjecting code to static code analysis.
-- Updated the program's icon with 128x128 and 256x256 versions.
-- Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
-- Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
-- Reduced load time for characters by about 25%.
-- Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
-- Fixed a bug where cancelling the option saving confirmation message would still save options.
-- Reduced initial load time for the skills section by about 15% (specifically, reduced the real load time of each individual skill control by about 33%, causing the overall skills section load time improvement).
-- Made minor performance improvements to the updating of drop-down boxes' lists (roughly 10-20% depending on the box).
-- Fixed a bug where Extra Secure lifestyle quality would no longer properly have its cost effects printed.
-- Removed uses of LinQ in most code areas because it was both slow and often caused debugging to be difficult due to anonymous function use.
-- Performed miscellaneous optimizations related to Dictionary and KeyValuePair use.
 
 Data Changes:
 
@@ -94,8 +109,6 @@ Data Changes:
 - Fixed page references for the AI metatype and variants. 
 - Added an additional Export method for the JSON format; this is intended to support integration with the Roll20 character sheet created by Darkxryo on Reddit's /r/Shadowrun. For further details, please see this link: https://www.reddit.com/r/Shadowrun/comments/5ok5qe/roll20_charactersheet_chummer_import
 - Added support for using HTML in tooltips.  Currently only supported on labels, so not accessible by most user content yet. 
-- Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
-- Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 
 Custom Content Additions:
 
@@ -5558,4 +5571,3 @@ Build 32
 - added support for Armor Modifications
 - added support for Cyberweapons
 - added support for Weapon Accessories
-
