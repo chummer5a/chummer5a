@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +19,7 @@ namespace CrashHandler
 
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
+		private string _strDefaultUserStory = "";
 
 		public frmCrashReporter(CrashDumper dumper)
 		{
@@ -26,6 +28,7 @@ namespace CrashHandler
 			lblDesc.Text = _dumper.Attributes["visible-error-friendly"];
 			txtIdSelectable.Text = "Crash followup id = " + _dumper.Attributes["visible-crash-id"];
 			_dumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
+			_strDefaultUserStory = Md5Hash(txtUserStory.Text);
 		}
 
 		private void frmCrashReporter_Load(object sender, EventArgs e)
@@ -95,8 +98,11 @@ namespace CrashHandler
 				fs = File.OpenWrite(Path.Combine(_dumper.WorkingDirectory, "userstory.txt"));
 			}
 			fs.Seek(0, SeekOrigin.Begin);
-			//byte[] bytes = Encoding.UTF8.GetBytes(txtDesc.Text);
 			byte[] bytes = Encoding.UTF8.GetBytes("");
+			if (Md5Hash(txtUserStory.Text) != _strDefaultUserStory)
+			{
+				bytes = Encoding.UTF8.GetBytes(txtUserStory.Text);
+			}
 			fs.Write(bytes, 0, bytes.Length);
 			fs.Flush(true);
 		}
@@ -125,6 +131,18 @@ namespace CrashHandler
 
 			Process.Start(strSend);
 			btnSend_Click(sender, e);
+		}
+		private static string Md5Hash(string input)
+		{
+			StringBuilder hash = new StringBuilder();
+			MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
+			byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(input));
+
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				hash.Append(bytes[i].ToString("x2"));
+			}
+			return hash.ToString();
 		}
 	}
 }

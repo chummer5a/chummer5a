@@ -42,7 +42,6 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.txtIdSelectable = new System.Windows.Forms.TextBox();
 			this.lblDesc = new System.Windows.Forms.Label();
-			this.tabDevInfo = new System.Windows.Forms.TabPage();
 			this.yabUserStory = new System.Windows.Forms.TabPage();
 			this.txtUserStory = new System.Windows.Forms.TextBox();
 			this.cmdSubmitIssue = new System.Windows.Forms.Button();
@@ -102,7 +101,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabUserStory.Controls.Add(this.tabGeneral);
-			this.tabUserStory.Controls.Add(this.tabDevInfo);
 			this.tabUserStory.Controls.Add(this.yabUserStory);
 			this.tabUserStory.Location = new System.Drawing.Point(7, 12);
 			this.tabUserStory.Name = "tabUserStory";
@@ -162,7 +160,7 @@
 			// 
 			this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
 			this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.txtIdSelectable.Location = new System.Drawing.Point(11, 170);
+			this.txtIdSelectable.Location = new System.Drawing.Point(11, 176);
 			this.txtIdSelectable.Name = "txtIdSelectable";
 			this.txtIdSelectable.ReadOnly = true;
 			this.txtIdSelectable.Size = new System.Drawing.Size(423, 13);
@@ -172,24 +170,13 @@
 			// 
 			// lblDesc
 			// 
-			this.lblDesc.AutoSize = true;
 			this.lblDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblDesc.Location = new System.Drawing.Point(8, 189);
+			this.lblDesc.Location = new System.Drawing.Point(6, 195);
 			this.lblDesc.Margin = new System.Windows.Forms.Padding(3);
 			this.lblDesc.Name = "lblDesc";
-			this.lblDesc.Size = new System.Drawing.Size(53, 17);
+			this.lblDesc.Size = new System.Drawing.Size(507, 47);
 			this.lblDesc.TabIndex = 16;
 			this.lblDesc.Text = "[DESC]";
-			// 
-			// tabDevInfo
-			// 
-			this.tabDevInfo.BackColor = System.Drawing.SystemColors.Control;
-			this.tabDevInfo.Location = new System.Drawing.Point(4, 22);
-			this.tabDevInfo.Name = "tabDevInfo";
-			this.tabDevInfo.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDevInfo.Size = new System.Drawing.Size(519, 248);
-			this.tabDevInfo.TabIndex = 1;
-			this.tabDevInfo.Text = "Developer Information";
 			// 
 			// yabUserStory
 			// 
@@ -276,7 +263,6 @@
 		private System.Windows.Forms.Timer timerRefreshTextFile;
 		private System.Windows.Forms.TabControl tabUserStory;
 		private System.Windows.Forms.TabPage tabGeneral;
-		private System.Windows.Forms.TabPage tabDevInfo;
 		private System.Windows.Forms.Button cmdSubmitIssue;
 		private System.Windows.Forms.Label lblDescriptionWarning;
 		private System.Windows.Forms.TabPage yabUserStory;
