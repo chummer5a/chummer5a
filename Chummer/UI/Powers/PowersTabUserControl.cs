@@ -283,7 +283,6 @@ namespace Chummer.UI.Skills
 		private void ValidateVisibility()
 		{
 			lblDiscountLabel.Visible = _character.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
-			lblRating.Visible = _character.Powers.Any(objPower => objPower.LevelsEnabled);
 		}
 	}
 }

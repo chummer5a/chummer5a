@@ -34,7 +34,7 @@
 			this.lblPowerPoints = new System.Windows.Forms.Label();
 			this.lblPowerPointsLabel = new System.Windows.Forms.Label();
 			this.pnlPowers = new System.Windows.Forms.Panel();
-			this.lblRating = new System.Windows.Forms.Label();
+			this.lblLevels = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblDiscountLabel = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -106,16 +106,16 @@
 			this.pnlPowers.Size = new System.Drawing.Size(821, 561);
 			this.pnlPowers.TabIndex = 10;
 			// 
-			// lblRating
+			// lblLevels
 			// 
-			this.lblRating.AutoSize = true;
-			this.lblRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblRating.Location = new System.Drawing.Point(330, 30);
-			this.lblRating.Name = "lblRating";
-			this.lblRating.Size = new System.Drawing.Size(40, 13);
-			this.lblRating.TabIndex = 2;
-			this.lblRating.Tag = "Label_Rating";
-			this.lblRating.Text = "Rating:";
+			this.lblLevels.AutoSize = true;
+			this.lblLevels.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblLevels.Location = new System.Drawing.Point(330, 30);
+			this.lblLevels.Name = "lblLevels";
+			this.lblLevels.Size = new System.Drawing.Size(41, 13);
+			this.lblLevels.TabIndex = 2;
+			this.lblLevels.Tag = "Label_PowerLevels";
+			this.lblLevels.Text = "Levels:";
 			// 
 			// label1
 			// 
@@ -156,7 +156,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.lblDiscountLabel);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.lblRating);
+			this.Controls.Add(this.lblLevels);
 			this.Controls.Add(this.pnlPowers);
 			this.Controls.Add(this.lblPowerPoints);
 			this.Controls.Add(this.lblPowerPointsLabel);
@@ -179,7 +179,7 @@
 		private System.Windows.Forms.Label lblPowerPoints;
 		private System.Windows.Forms.Label lblPowerPointsLabel;
 		private System.Windows.Forms.Panel pnlPowers;
-		private System.Windows.Forms.Label lblRating;
+		private System.Windows.Forms.Label lblLevels;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label lblDiscountLabel;
 		private System.Windows.Forms.Label label2;

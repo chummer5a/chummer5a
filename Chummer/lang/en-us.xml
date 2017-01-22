@@ -3794,6 +3794,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Power Points:</text>
 		</string>
 		<string>
+			<key>Label_PowerLevels</key>
+			<text>Levels:</text>
+		</string>
+		<string>
 			<key>Button_AddPower</key>
 			<text>&amp;Add Power</text>
 		</string>
