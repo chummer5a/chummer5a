@@ -2,6 +2,8 @@ Build 191
 
 Application Changes:
 
+- Fixed an issue with Restricted Gear not correctly applying to weapons with attachments. 
+- Fixed an issue with the Sensor (Drone) vehicle modification that caused a crash.
 - Brought all projects to the same, .NET 4.5.2 target sku.
 - Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
 - Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
@@ -75,6 +77,7 @@ Application Changes:
 - Added a proof-of-concept Print-to-PDF functionality into the Print window. TODO: Progress bar for saving, configurable options for margins and such. 
 - Fixed an error that caused missing custom books to not show their code if the book was not found. 
 - Increased functionality for the Export Window; there is now a window shown that contains the exported text. You can copy this text directly into wherever you need to export it, rather than saving the file and exporting. 
+- Suppressed a crash if a character is printed that has an Exotic weapon but does not have the relevant skill for that weapon. 
 
 Data Changes:
 
@@ -128,8 +131,6 @@ New Strings:
 - Label_Handedness
 - Label_MugshotDimensions
 - Label_InitiativeDice
-- Checkbox_Option_PrioritySpellsAsAdeptPowers
-- Checkbox_Options_Live_CustomData
 
 Changed Strings: 
 

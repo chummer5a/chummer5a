@@ -951,8 +951,9 @@ namespace Chummer
             strInput = strInput.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString());
             strInput = strInput.Replace("Acceleration", _objVehicle.Accel.ToString());
             strInput = strInput.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString());
+			strInput = strInput.Replace("Sensor", _objVehicle.BaseSensor.ToString());
 
-            return strInput;
+			return strInput;
 		}
 		#endregion
 
