@@ -19619,10 +19619,10 @@ namespace Chummer
 		                    }
 		                }
 
-		                else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
+		                else if (GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)
 		                {
 		                    intRestrictedCount++;
-		                    strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
+		                    strAvailItems += "\n\t\t" + objPlugin.DisplayNameShort;
 		                }
 		            }
 
@@ -19641,7 +19641,6 @@ namespace Chummer
 		    // Armor Availability.
 			foreach (Armor objArmor in _objCharacter.Armor)
 			{
-
 				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
 				{
 					if ((GetAvailInt(objArmor.TotalAvail) <= 24) && ((GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)))
@@ -19727,7 +19726,7 @@ namespace Chummer
 							}
 						}
 
-						else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+						else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
 						{
 							intRestrictedCount++;
 							strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
