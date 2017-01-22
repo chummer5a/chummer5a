@@ -3,6 +3,7 @@ Build 191
 Application Changes: 
 
 - Fixed an issue with Restricted Gear not correctly applying to weapons with attachments. 
+- Fixed an issue with the Sensor (Drone) vehicle modification that caused a crash.
 
 Build 190
 
