@@ -4,6 +4,12 @@ Application Changes:
 
 - Fixed an issue with Restricted Gear not correctly applying to weapons with attachments. 
 - Fixed an issue with the Sensor (Drone) vehicle modification that caused a crash.
+- Removed the controls for creating Stacked Foci, as their rules aren't currently in SR5. 
+
+Data Changes: 
+
+- Removed incorrect (per RAW) Distinctive Style qualities for the Dwarf metavariants.
+- Applied missing lifestyle cost increases for the Dwarf metavariants. 
 
 Build 190
 

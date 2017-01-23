@@ -544,6 +544,9 @@
 					<depmin>0</depmin>
 					<depmax>0</depmax>
 					<depaug>0</depaug>
+					<bonus>
+						<lifestylecost>20</lifestylecost>
+					</bonus>
 					<qualities>
 						<positive>
 							<quality>Arcane Arrester</quality>
@@ -554,7 +557,7 @@
 						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>54</page>
+					<page>89</page>
 				</metavariant>
 				<metavariant>
 					<name>Hanuman</name>
@@ -601,21 +604,22 @@
 					<essaug>6</essaug>
 					<depmin>0</depmin>
 					<depmax>0</depmax>
-					<depaug>0</depaug>	
+					<depaug>0</depaug>
+					<bonus>
+						<lifestylecost>20</lifestylecost>
+					</bonus>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
-							<quality select="AGI">Metagenetic Improvement</quality>
 							<quality>Monkey Paws</quality>
 							<quality>Functional Tail (Prehensile)</quality>
 						</positive>
 						<negative>
-							<quality>Distinctive Style</quality>
 							<quality>Unusual Hair</quality>
 						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>55</page>
+					<page>89</page>
 				</metavariant>
 				<metavariant>
 					<name>Koborokuru</name>
@@ -662,7 +666,10 @@
 					<essaug>6</essaug>
 					<depmin>0</depmin>
 					<depmax>0</depmax>
-					<depaug>0</depaug>	
+					<depaug>0</depaug>
+					<bonus>
+						<lifestylecost>20</lifestylecost>
+					</bonus>	
 					<qualities>
 						<positive>
 							<quality>Celerity</quality>
@@ -670,12 +677,11 @@
 							<quality>Thermographic Vision</quality>
 						</positive>
 						<negative>
-							<quality>Distinctive Style</quality>
 							<quality>Unusual Hair</quality>
 						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>53</page>
+					<page>90</page>
 				</metavariant>
 				<metavariant>
 					<name>Menehune</name>
@@ -729,12 +735,9 @@
 							<quality>Thermographic Vision</quality>
 							<quality>Underwater Vision</quality>
 						</positive>
-						<negative>
-							<quality>Distinctive Style</quality>
-						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>54</page>
+					<page>90</page>
 				</metavariant>
 			</metavariants>	  
 		</metatype>
