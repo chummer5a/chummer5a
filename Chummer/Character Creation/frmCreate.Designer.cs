@@ -574,7 +574,7 @@ namespace Chummer
 			this.cmdAddLifestyle = new SplitButton();
 			this.lblLifestyleQualities = new System.Windows.Forms.Label();
 			this.lblLifestyleQualitiesLabel = new System.Windows.Forms.Label();
-			this.lblLifestyleComforts = new System.Windows.Forms.Label();
+			this.lblBaseLifestyle = new System.Windows.Forms.Label();
 			this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
 			this.lblLifestyleStartingNuyenLabel = new System.Windows.Forms.Label();
 			this.lblLifestyleStartingNuyen = new System.Windows.Forms.Label();
@@ -6739,7 +6739,7 @@ namespace Chummer
 			this.tabLifestyle.Controls.Add(this.cmdAddLifestyle);
 			this.tabLifestyle.Controls.Add(this.lblLifestyleQualities);
 			this.tabLifestyle.Controls.Add(this.lblLifestyleQualitiesLabel);
-			this.tabLifestyle.Controls.Add(this.lblLifestyleComforts);
+			this.tabLifestyle.Controls.Add(this.lblBaseLifestyle);
 			this.tabLifestyle.Controls.Add(this.lblLifestyleComfortsLabel);
 			this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyenLabel);
 			this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyen);
@@ -6792,14 +6792,14 @@ namespace Chummer
 			this.lblLifestyleQualitiesLabel.Tag = "Label_LifestyleQualities";
 			this.lblLifestyleQualitiesLabel.Text = "Qualities:";
 			// 
-			// lblLifestyleComforts
+			// lblBaseLifestyle
 			// 
-			this.lblLifestyleComforts.AutoSize = true;
-			this.lblLifestyleComforts.Location = new System.Drawing.Point(361, 128);
-			this.lblLifestyleComforts.Name = "lblLifestyleComforts";
-			this.lblLifestyleComforts.Size = new System.Drawing.Size(19, 13);
-			this.lblLifestyleComforts.TabIndex = 93;
-			this.lblLifestyleComforts.Text = "[0]";
+			this.lblBaseLifestyle.AutoSize = true;
+			this.lblBaseLifestyle.Location = new System.Drawing.Point(361, 128);
+			this.lblBaseLifestyle.Name = "lblBaseLifestyle";
+			this.lblBaseLifestyle.Size = new System.Drawing.Size(19, 13);
+			this.lblBaseLifestyle.TabIndex = 93;
+			this.lblBaseLifestyle.Text = "[0]";
 			// 
 			// lblLifestyleComfortsLabel
 			// 
@@ -11477,7 +11477,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblLifestyleStartingNuyen;
         private System.Windows.Forms.ToolStripProgressBar pgbProgress;
         private System.Windows.Forms.CheckBox chkCharacterCreated;
-        private System.Windows.Forms.Label lblLifestyleComforts;
+        private System.Windows.Forms.Label lblBaseLifestyle;
         private System.Windows.Forms.Label lblLifestyleComfortsLabel;
         private System.Windows.Forms.Label lblLifestyleQualities;
         private System.Windows.Forms.Label lblLifestyleQualitiesLabel;

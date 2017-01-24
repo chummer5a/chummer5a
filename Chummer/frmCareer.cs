@@ -23864,7 +23864,7 @@ namespace Chummer
 				lblLifestyleMonths.Text = "";
 				lblLifestyleSource.Text = "";
 				tipTooltip.SetToolTip(lblLifestyleSource, null);
-				lblLifestyleComforts.Text = "";
+				lblBaseLifestyle.Text = "";
 				lblLifestyleQualities.Text = "";
 				cmdIncreaseLifestyleMonths.Enabled = false;
 				cmdDecreaseLifestyleMonths.Enabled = false;
@@ -23878,12 +23878,6 @@ namespace Chummer
                 Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
                 if (objLifestyle == null)
                     return;
-
-                decimal decMultiplier = 1.0m;
-                decimal decModifier = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
-                if (objLifestyle.StyleType == LifestyleType.Standard)
-                    decModifier += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
-                decMultiplier = 1.0m + Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
 
                 lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
                 lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo).ToString();
@@ -23901,59 +23895,30 @@ namespace Chummer
 
                 if (objLifestyle.BaseLifestyle != "")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                    string strBaseLifestyle = "";
                     string strQualities = "";
 
                     lblLifestyleQualities.Text = "";
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-                    if (objNode["translate"] != null)
-                        strBaseLifestyle = objNode["translate"].InnerText;
-                    else
-                        strBaseLifestyle = objNode["name"].InnerText;
 
                     foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
                     {
                         if (strQualities.Length > 0)
                             strQualities += ", ";
-						string strQualityName = objQuality.DisplayName;
-						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-						XmlNode nodMultiplier = objNode["multiplier"];
-						if (objNode["translate"] != null)
+						strQualities += objQuality.DisplayName;
+						
+						if (objQuality.Multiplier > 0)
 						{
-							strQualities += objNode["translate"].InnerText;
-						}
-						else
-						{
-							strQualities += objNode["name"].InnerText;
-						}
-						if (objQuality.Extra.Length > 0)
-						{
-							strQualities += " (" + objQuality.Extra + ")";
-						}
-						if (nodMultiplier != null)
-                        {
-							string strMultiplier = nodMultiplier.InnerText;
-							int intCost = Convert.ToInt32(strMultiplier);
-                            if (intCost > 0)
-                            {
-								strQualities += " [+" + intCost.ToString() + "%]";
-                            }
-                            else
-                            {
-								strQualities += " [" + intCost.ToString() + "%]";
-                            }
+							strQualities += $" [+{objQuality.Multiplier}%]";
                         }
-                        else
-                        {
-                            if (objNode["cost"] != null)
-                            {
-                                string strCost = objNode["cost"].InnerText;
-                                if (objNode["translate"] != null)
-									strQualities += " [" + strCost + "¥]";
-                            }
-                        }
-                    }
+                        else if (objQuality.Multiplier < 0)
+	                    {
+		                    strQualities += $" [-{objQuality.Multiplier}%]";
+						}
+
+	                    if (objQuality.Cost > 0)
+	                    {
+							strQualities += $" [+{objQuality.Cost}¥]";
+						}
+					}
 
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
@@ -23978,7 +23943,12 @@ namespace Chummer
 						strQualities += objQuality.DisplayName;
 					}
 
-					lblLifestyleComforts.Text = strBaseLifestyle;
+	                if (strQualities.EndsWith(", "))
+	                {
+		                strQualities = strQualities.Substring(0, strQualities.Length - 2);
+	                }
+
+					lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
                     lblLifestyleQualities.Text += strQualities;
 
                     cmdIncreaseLifestyleMonths.Enabled = true;
@@ -23986,7 +23956,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblLifestyleComforts.Text = "Error in lifestyle;\nplease edit to fix.";
+                    lblBaseLifestyle.Text = "Error in lifestyle;\nplease edit to fix.";
                     lblLifestyleQualities.Text = "";
                 }
 
@@ -25991,9 +25961,9 @@ namespace Chummer
 
 			intWidth = lblLifestyleComfortsLabel.Width;
 
-			lblLifestyleComforts.Left = lblLifestyleComfortsLabel.Left + intWidth + 6;
+			lblBaseLifestyle.Left = lblLifestyleComfortsLabel.Left + intWidth + 6;
 
-			lblLifestyleQualitiesLabel.Left = lblLifestyleComforts.Left + 132;
+			lblLifestyleQualitiesLabel.Left = lblBaseLifestyle.Left + 132;
 			lblLifestyleQualities.Left = lblLifestyleQualitiesLabel.Left + 14;
 			lblLifestyleQualities.Width = tabLifestyle.Width - lblLifestyleQualities.Left - 10;
 

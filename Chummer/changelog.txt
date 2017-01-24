@@ -5,11 +5,15 @@ Application Changes:
 - Fixed an issue with Restricted Gear not correctly applying to weapons with attachments. 
 - Fixed an issue with the Sensor (Drone) vehicle modification that caused a crash.
 - Removed the controls for creating Stacked Foci, as their rules aren't currently in SR5. 
+- Refactored some Lifestyle calculations and properties to not read from XML; created a shim to save these values into the lifestyle and assosicated qualities during the load process for old characters.
+- Removed the ability to add Roommates to a lifestyle that's allocated as a Trust Fund lifestyle. This will not affect existing characters. 
+- Added reminder text to the LP and Cost labels for Lifestyle qualities to indicate whether a quality is Free from something or other (Usually just the Free checkbox)
 
 Data Changes: 
 
 - Removed incorrect (per RAW) Distinctive Style qualities for the Dwarf metavariants.
 - Applied missing lifestyle cost increases for the Dwarf metavariants. 
+- Fixed a crash when selecting the Pirate Captain and Urban Brawler Life Modules. 
 
 Build 190
 

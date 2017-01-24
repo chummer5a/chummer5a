@@ -309,7 +309,7 @@ namespace Chummer
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.ToString().Replace("0.0.", string.Empty);
-
+		Version _verSavedVersion = new Version();
 		// Events.
 		public event HomeNodeChangedHandler HomeNodeChanged;
 		public event AdeptTabEnabledChangedHandler AdeptTabEnabledChanged;
@@ -1021,18 +1021,17 @@ namespace Chummer
             //Check to see if the character was created in a version of Chummer later than the currently installed one.
             if (objXmlCharacter["appversion"].InnerText != string.Empty)
             {
-                Version verSavedVersion = new Version();
                 var strVersion = objXmlCharacter["appversion"].InnerText;
                 if (strVersion.StartsWith("0."))
                 {
                     strVersion = strVersion.Substring(2);
                 }
-                Version.TryParse(strVersion, out verSavedVersion);
+                Version.TryParse(strVersion, out _verSavedVersion);
                 Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
-                int intResult = verCurrentversion.CompareTo(verSavedVersion);
+                int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
                 {
-                    string strMessage = LanguageManager.Instance.GetString("Message_OutdatedChummerSave").Replace("{0}", verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
+                    string strMessage = LanguageManager.Instance.GetString("Message_OutdatedChummerSave").Replace("{0}", _verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
                     DialogResult result = MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                     if (result != DialogResult.Yes)
@@ -7578,6 +7577,11 @@ namespace Chummer
             get { return _intRedlinerBonus; }
             set { _intRedlinerBonus = value; }
         }
+
+	    public Version LastSavedVersion
+	    {
+		    get { return _verSavedVersion; }
+	    }
 
 		public bool Ambidextrous { get; internal set; }
 
