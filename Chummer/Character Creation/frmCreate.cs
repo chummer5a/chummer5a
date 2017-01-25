@@ -17087,7 +17087,6 @@ namespace Chummer
                 lblLifestyleTotalCost.Text = string.Empty;
                 lblLifestyleSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblLifestyleSource, null);
-                lblLifestyleComforts.Text = string.Empty;
                 lblLifestyleQualities.Text = string.Empty;
                 nudLifestyleMonths.Enabled = false;
                 return;
@@ -17098,7 +17097,7 @@ namespace Chummer
 			nudLifestyleMonths.Enabled = true;
 
 			// Locate the selected Lifestyle.
-			Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+			Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
 			if (objLifestyle == null)
 				return;
 

@@ -209,16 +209,27 @@ namespace Chummer.Backend.Equipment
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
-				Cost = Convert.ToInt32(objLifestyleQualityNode["cost"]?.InnerText);
-				LP = Convert.ToInt32(objLifestyleQualityNode["lp"]?.InnerText);
-				AreaCost = Convert.ToInt32(objLifestyleQualityNode["area"]?.InnerText);
-				ComfortCost = Convert.ToInt32(objLifestyleQualityNode["comforts"]?.InnerText);
-				SecurityCost = Convert.ToInt32(objLifestyleQualityNode["security"]?.InnerText);
-				AreaMinimum = Convert.ToInt32(objLifestyleQualityNode["areaminimum"]?.InnerText);
-				ComfortMinimum = Convert.ToInt32(objLifestyleQualityNode["comfortsminimum"]?.InnerText);
-				SecurityMinimum = Convert.ToInt32(objLifestyleQualityNode["securityminimum"]?.InnerText);
-				Multiplier = Convert.ToInt32(objLifestyleQualityNode["multiplier"]?.InnerText);
-				BaseMultiplier = Convert.ToInt32(objLifestyleQualityNode["multiplierbaseonly"]?.InnerText);
+			    int intTemp = 0;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("cost", ref intTemp))
+                    Cost = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
+			        LP = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("area", ref intTemp))
+                    AreaCost = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comforts", ref intTemp))
+                    ComfortCost = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
+                    SecurityCost = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areaminimum", ref intTemp))
+                    AreaMinimum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsminimum", ref intTemp))
+                    ComfortMinimum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securityminimum", ref intTemp))
+                    SecurityMinimum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
+                    Multiplier = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
+                    BaseMultiplier = intTemp;
 			}
 		}
 
