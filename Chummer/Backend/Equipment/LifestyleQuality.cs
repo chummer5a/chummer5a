@@ -25,6 +25,7 @@ namespace Chummer.Backend.Equipment
 		private readonly Character _objCharacter;
 		private string _strAltName = string.Empty;
 		private string _strAltPage = string.Empty;
+		private bool _blnFree;
 
 		#region Helper Methods
 		/// <summary>
@@ -102,7 +103,7 @@ namespace Chummer.Backend.Equipment
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/LifestyleQuality[name = \"" + _strName + "\"]");
+				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
 				if (objLifestyleQualityNode != null)
 				{
                     objXmlLifestyleQuality.TryGetStringFieldQuickly("translate", ref _strAltName);
@@ -195,6 +196,30 @@ namespace Chummer.Backend.Equipment
                     objLifestyleQualityNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
+			LegacyShim();
+		}
+
+		/// <summary>
+		/// Performs actions based on the character's last loaded AppVersion attribute. 
+		/// </summary>
+		private void LegacyShim()
+		{
+			//Unstored Cost and LP values prior to 5.190.2 nightlies.
+			if (_objCharacter.LastSavedVersion <= Version.Parse("5.190.0"))
+			{
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+				Cost = Convert.ToInt32(objLifestyleQualityNode["cost"]?.InnerText);
+				LP = Convert.ToInt32(objLifestyleQualityNode["lp"]?.InnerText);
+				AreaCost = Convert.ToInt32(objLifestyleQualityNode["area"]?.InnerText);
+				ComfortCost = Convert.ToInt32(objLifestyleQualityNode["comforts"]?.InnerText);
+				SecurityCost = Convert.ToInt32(objLifestyleQualityNode["security"]?.InnerText);
+				AreaMinimum = Convert.ToInt32(objLifestyleQualityNode["areaminimum"]?.InnerText);
+				ComfortMinimum = Convert.ToInt32(objLifestyleQualityNode["comfortsminimum"]?.InnerText);
+				SecurityMinimum = Convert.ToInt32(objLifestyleQualityNode["securityminimum"]?.InnerText);
+				Multiplier = Convert.ToInt32(objLifestyleQualityNode["multiplier"]?.InnerText);
+				BaseMultiplier = Convert.ToInt32(objLifestyleQualityNode["multiplierbaseonly"]?.InnerText);
+			}
 		}
 
 		/// <summary>
@@ -216,11 +241,7 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
 					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
-					if (objNode != null)
-					{
-						if (objNode.Attributes["translate"] != null)
-							strLifestyleQualityType = objNode.Attributes["translate"].InnerText;
-					}
+						strLifestyleQualityType = objNode?.Attributes["translate"]?.InnerText;
 				}
 				objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
 				objWriter.WriteElementString("lifestylequalitytype_english", _objLifestyleQualityType.ToString());
@@ -361,7 +382,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return _intLP;
+				return Free ? 0 : _intLP;
 			}
 			set
 			{
@@ -431,6 +452,70 @@ namespace Chummer.Backend.Equipment
 				_strNotes = value;
 			}
 		}
+
+		/// <summary>
+		/// Nuyen cost of the Quality.
+		/// </summary>
+		public int Cost
+		{
+			get { return Free ? 0 : _intCost; }
+			set { _intCost = value; }
+		}
+
+		/// <summary>
+		/// Does the Quality have a Nuyen or LP cost?
+		/// </summary>
+		public bool Free
+		{
+			get { return _blnFree; }
+			set { _blnFree = value; }
+		}
+
+		/// <summary>
+		/// Minimum level of Comfort that's necessary for the Quality to not cost Nuyen.
+		/// </summary>
+		public int ComfortMinimum { get; set; }
+
+		/// <summary>
+		/// Comfort LP Cost/Benefit of the Quality.
+		/// </summary>
+		public int ComfortCost { get; set; }
+
+		/// <summary>
+		/// Security LP Cost/Benefit of the Quality.
+		/// </summary>
+		public int SecurityCost { get; set; }
+		
+		/// <summary>
+		/// Minimum level of Security that's necessary for the Quality to not cost Nuyen.
+		/// </summary>
+		public int SecurityMinimum { get; set; }
+		
+		/// <summary>
+		/// Percentage by which the quality increases the overall Lifestyle Cost.
+		/// </summary>
+		public int Multiplier { get; set; }
+
+		/// <summary>
+		/// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+		/// </summary>
+		public int BaseMultiplier { get; set; }
+
+		/// <summary>
+		/// Category of the Quality. 
+		/// </summary>
+		public string Category { get; set; }
+
+		/// <summary>
+		/// Area/Neighborhood LP Cost/Benefit of the Quality.
+		/// </summary>
+		public int AreaCost { get; set; }
+
+		/// <summary>
+		/// Minimum level of Area/Neighborhood that's necessary for the Quality to not cost Nuyen.
+		/// </summary>
+		public int AreaMinimum { get; set; }
+
 		#endregion
 	}
 }

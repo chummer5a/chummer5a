@@ -126,7 +126,7 @@ namespace Chummer
             int intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
             lblBP.Text = intBP.ToString();
             if (chkFree.Checked)
-                lblBP.Text = "0";
+                lblBP.Text = LanguageManager.Instance.GetString("Checkbox_Free");
 
             string strBook = _objCharacter.Options.LanguageBookShort(objXmlQuality["source"].InnerText);
             string strPage = objXmlQuality["page"].InnerText;
@@ -145,11 +145,19 @@ namespace Chummer
                 lblMinimumLabel.Visible = false;
             }
             if (objXmlQuality["cost"] != null)
-            {
-                lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
-                lblCost.Visible = true;
-                lblCostLabel.Visible = true;
-            } else
+			{
+				if (chkFree.Checked)
+				{
+					lblCost.Text = LanguageManager.Instance.GetString("Checkbox_Free");
+				}
+				else
+				{
+					lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
+				}
+				lblCost.Visible = true;
+				lblCostLabel.Visible = true;
+			} 
+			else
             {
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;

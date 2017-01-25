@@ -255,51 +255,9 @@ namespace Chummer.Backend.Equipment
 			// Retrieve the Qualities for the Advanced Lifestyle if applicable.
 			if (_lstLifestyleQualities.Count > 0)
 			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-				XmlNode objNode;
-
 				foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
 				{
-					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-				    if (objNode == null)
-				        return;
-                    string strThisQuality = string.Empty;
-
-                    if (objNode["translate"] != null)
-						strThisQuality += objNode["translate"].InnerText;
-					else if (objNode["name"] != null)
-                        strThisQuality += objNode["name"].InnerText;
-
-					XmlNode nodMultiplier = objNode["multiplier"];
-                    XmlNode nodMultiplierBaseOnly = objNode["multiplierbaseonly"];
-                    int intMultiplier = 0;
-                    int intTmp;
-                    if (int.TryParse(nodMultiplier?.InnerText, out intTmp))
-                        intMultiplier += intTmp;
-                    if (int.TryParse(nodMultiplierBaseOnly?.InnerText, out intTmp))
-                        intMultiplier += intTmp;
-                    if (intMultiplier > 0)
-                    {
-                        strThisQuality += " [+" + intMultiplier.ToString() + "%]";
-                    }
-                    else if (intMultiplier < 0)
-                    {
-                        strThisQuality += " [" + intMultiplier.ToString() + "%]";
-                    }
-                    XmlNode nodCost = objNode["cost"];
-				    int intCost = 0;
-                    if (int.TryParse(nodCost?.InnerText, out intCost))
-				    {
-				        if (intCost > 0)
-				        {
-				            strThisQuality += " [+" + intCost.ToString() + "¥]";
-				        }
-				        else if (intCost < 0)
-                        {
-				            strThisQuality += " [" + intCost.ToString() + "¥]";
-				        }
-				    }
-				    objWriter.WriteElementString("quality", strThisQuality);
+					objQuality.Print(objWriter);
 				}
 			}
 			// Retrieve the free Grids for the Advanced Lifestyle if applicable.
@@ -769,46 +727,43 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				int intReturn = 0;
+				//TODO: Should we really be returning a cached unvalidated value here?
 				if (_objType != LifestyleType.Standard)
 				{
 					intReturn = Cost;
 					return intReturn;
 				}
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				decimal decMultiplier = 1;
 				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				if (_objType == LifestyleType.Standard)
 					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
                 decimal decExtraMultiplierBaseOnly = 0;
-                double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
 				decimal decBaseCost = Cost;
                 decimal decExtraAssetCost = 0;
 				decimal decConstractCost = 0;
 				foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
 				{
-					XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 					//Add the flat cost from Qualities.
-					if (objXmlQuality["cost"] != null && !string.IsNullOrEmpty(objXmlQuality["cost"].InnerText))
+					if (!objQuality.Free)
 					{
-                        if (objXmlQuality["category"]?.InnerText == "Contracts")
-                            decConstractCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
-                        else
-                            decExtraAssetCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
-                    }
-					//Add the percentage point modifiers from Qualities.
-					if (objXmlQuality["multiplier"] != null && !string.IsNullOrEmpty(objXmlQuality["multiplier"].InnerText))
-					{
-						decMultiplier += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText);
+						if (objQuality.Cost > 0)
+						{
+							if (objQuality.Category == "Contracts")
+								decConstractCost += objQuality.Cost;
+							else
+								decExtraAssetCost += objQuality.Cost;
+						}
+						//Add the percentage point modifiers from Qualities.
+						decMultiplier += objQuality.Multiplier;
+						//Add the percentage point modifiers from Qualities.
+						decExtraMultiplierBaseOnly += objQuality.BaseMultiplier;
 					}
-                    //Add the percentage point modifiers from Qualities.
-                    if (objXmlQuality["multiplierbaseonly"] != null && !string.IsNullOrEmpty(objXmlQuality["multiplierbaseonly"].InnerText))
-                    {
-                        decExtraMultiplierBaseOnly += Convert.ToDecimal(objXmlQuality["multiplierbaseonly"].InnerText);
-                    }
-                }
+				}
 
+				decMultiplier += _intRoommates * 10;
 				decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.Instance.CultureInfo);
                 decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.Instance.CultureInfo);
 

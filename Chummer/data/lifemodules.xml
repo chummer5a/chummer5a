@@ -6969,7 +6969,7 @@
 				<addqualities>
 					<addquality>Natural Athlete</addquality>
 					<addquality>SINner (National)</addquality>
-					<addquality>Fame (Local)</addquality>
+					<addquality>Fame: Local</addquality>
 				</addqualities>
 			</bonus>
 			<story>$real fought in Urban Brawl, which, despite all appearances, is somehow not a blood sport. It did, however, teach them quite a lot of things about $URBANBRAWL .</story>
@@ -7277,7 +7277,7 @@
 				</knowledgeskilllevel>
 				<freepositivequalities>8</freepositivequalities>
 				<addqualities>
-					<addquality>Fame (Local)</addquality>
+					<addquality>Fame: Local</addquality>
 					<addquality>Linguist</addquality>
 				</addqualities>
 			</bonus>

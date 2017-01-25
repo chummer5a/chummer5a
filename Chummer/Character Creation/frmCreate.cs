@@ -17076,12 +17076,12 @@ namespace Chummer
             return frmPickGear.AddAgain;
         }
 
-        /// <summary>
-        /// Refresh the currently-selected Lifestyle.
-        /// </summary>
-        private void RefreshSelectedLifestyle()
-        {
-            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
+		/// <summary>
+		/// Refresh the currently-selected Lifestyle.
+		/// </summary>
+		private void RefreshSelectedLifestyle()
+		{
+			if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
             {
                 lblLifestyleCost.Text = string.Empty;
                 lblLifestyleTotalCost.Text = string.Empty;
@@ -17093,122 +17093,93 @@ namespace Chummer
                 return;
             }
 
-            _blnSkipRefresh = true;
+			_blnSkipRefresh = true;
+			
+			nudLifestyleMonths.Enabled = true;
 
-            nudLifestyleMonths.Enabled = true;
+			// Locate the selected Lifestyle.
+			Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+			if (objLifestyle == null)
+				return;
 
-            // Locate the selected Lifestyle.
-            Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
-            if (objLifestyle == null)
-                return;
-
-            decimal decMultiplier = 1.0m;
-            decimal decModifier = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
-            if (objLifestyle.StyleType == LifestyleType.Standard)
-                decModifier += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
-            decMultiplier = 1.0m + Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
-
-            lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
-            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo);
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + String.Format("{0:###,###,##0¥}", objLifestyle.Multiplier);
-            string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
-            string strPage = objLifestyle.Page;
-            lblLifestyleSource.Text = strBook + " " + strPage;
+			lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
+			nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo);
+			lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + String.Format("{0:###,###,##0Æ½", objLifestyle.Multiplier);
+			string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
+			string strPage = objLifestyle.Page;
+			lblLifestyleSource.Text = strBook + " " + strPage;
             tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
-            lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0¥}", objLifestyle.TotalCost);
+            lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0Æ½", objLifestyle.TotalCost);
 
-
-            // Change the Cost/Month label.
-            if (objLifestyle.StyleType == LifestyleType.Safehouse)
-                lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
+			// Change the Cost/Month label.
+			if (objLifestyle.StyleType == LifestyleType.Safehouse)
+				lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
 			else
 				lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
 
-            if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
+			if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                string strBaseLifestyle = string.Empty;
-                string strQualities = string.Empty;
+				string strQualities = string.Empty;
 
-                lblLifestyleQualities.Text = string.Empty;
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-                if (objNode["translate"] != null)
-                    strBaseLifestyle = objNode["translate"].InnerText;
-                else
-                    strBaseLifestyle = objNode["name"].InnerText;
-					
+				lblLifestyleQualities.Text = string.Empty;
+
 				foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
 				{
 					if (strQualities.Length > 0)
 						strQualities += ", ";
-					string strQualityName = objQuality.DisplayName;
-					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-					XmlNode nodMultiplier = objNode["multiplier"];
-					if (objNode["translate"] != null)
+					strQualities += objQuality.DisplayName;
+
+					if (objQuality.Multiplier > 0)
 					{
-						strQualities += objNode["translate"].InnerText;
+						strQualities += $" [+{objQuality.Multiplier}%]";
 					}
-					else
+					else if (objQuality.Multiplier < 0)
 					{
-						strQualities += objNode["name"].InnerText;
+						strQualities += $" [-{objQuality.Multiplier}%]";
 					}
-					if (objQuality.Extra.Length > 0)
+
+					if (objQuality.Cost > 0)
 					{
-						strQualities += " (" + objQuality.Extra + ")";
+						strQualities += $" [+{objQuality.Cost}¥]";
 					}
-					if (nodMultiplier != null)
-					{
-						string strMultiplier = nodMultiplier.InnerText;
-						int intCost = Convert.ToInt32(strMultiplier);
-						if (intCost > 0)
-						{
-							strQualities += " [+" + intCost.ToString() + "%]";
-						}
-						else
-						{
-							strQualities += " [" + intCost.ToString() + "%]";
-						}
-					}
-					else
-					{
-						if (objNode["cost"] != null)
-						{
-							string strCost = objNode["cost"].InnerText;
-							if (objNode["translate"] != null)
-								strQualities +=  " [" + strCost + "¥]";
-						}
-						}
-					}
+				}
 
 				foreach (Improvement objImprovement in _objCharacter.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
-                    {
-                        if (strQualities.Length > 0)
-                            strQualities += ", ";
+				{
+					if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
+					{
+						if (strQualities.Length > 0)
+							strQualities += ", ";
 
-                        if (objImprovement.Value > 0)
-                            strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
-                        else
-                            strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
-                    }
-                }
+						if (objImprovement.Value > 0)
+							strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
+						else
+							strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
+					}
+				}
 
-	            foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
-	            {
-		            if (strQualities.Length > 0)
-		            {
-			            strQualities += ", ";
+				foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+				{
+					if (strQualities.Length > 0)
+					{
+						strQualities += ", ";
 					}
 					strQualities += objQuality.DisplayName;
 				}
 
-	            lblLifestyleComforts.Text = strBaseLifestyle;
+				if (strQualities.EndsWith(", "))
+				{
+					strQualities = strQualities.Substring(0, strQualities.Length - 2);
+				}
+				
+	            lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
                 lblLifestyleQualities.Text += strQualities;
+				
+				nudLifestyleMonths.Enabled = true;
             }
             else
             {
-                lblLifestyleComforts.Text = string.Empty;
+                lblBaseLifestyle.Text = string.Empty;
                 lblLifestyleQualities.Text = string.Empty;
             }
 
@@ -21421,9 +21392,9 @@ namespace Chummer
             lblLifestyleTotalCost.Left = lblLifestyleMonthsLabel.Left + lblLifestyleMonthsLabel.Width + 6;
             lblLifestyleStartingNuyen.Left = lblLifestyleStartingNuyenLabel.Left + lblLifestyleStartingNuyenLabel.Width + 6;
 
-            lblLifestyleComforts.Left = lblLifestyleComfortsLabel.Left + intWidth + 6;
+            lblBaseLifestyle.Left = lblLifestyleComfortsLabel.Left + intWidth + 6;
 
-            lblLifestyleQualitiesLabel.Left = lblLifestyleComforts.Left + 132;
+            lblLifestyleQualitiesLabel.Left = lblBaseLifestyle.Left + 132;
             lblLifestyleQualities.Left = lblLifestyleQualitiesLabel.Left + 14;
             lblLifestyleQualities.Width = tabLifestyle.Width - lblLifestyleQualities.Left - 10;
 
