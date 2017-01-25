@@ -20,7 +20,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 ﻿using System.IO;
- using System.Net;
+﻿using System.Linq;
+﻿using System.Net;
 ﻿using System.Reflection;
 ﻿using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -91,16 +92,13 @@ namespace Chummer
 			string[] stringSeparators = { "," };
 			string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-			foreach (string line in result)
+			foreach (string line in result.Where(line => line.Contains("tag_name")))
 			{
-			    if (line.Contains("tag_name"))
-			    {
-			        string strVersion = line.Split(':')[1];
-			        strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
-			        strVersion = strVersion + ".0";
-			        Version.TryParse(strVersion, out verLatestVersion);
-			        break;
-			    }
+				string strVersion = line.Split(':')[1];
+				strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
+				strVersion = strVersion + ".0";
+				Version.TryParse(strVersion, out verLatestVersion);
+				break;
 			}
 			// Cleanup the streams and the response.
 			reader.Close();
@@ -116,7 +114,7 @@ namespace Chummer
 			int intResult = GitVersion().CompareTo(verCurrentversion);
 			return intResult;
 		}
-
+		
 		public static void RestartApplication(string strText = "Message_Options_Restart")
 		{
 			string text = LanguageManager.Instance.GetString(strText);
@@ -126,10 +124,7 @@ namespace Chummer
 				return;
 			// Get the parameters/arguments passed to program if any
 			string arguments = string.Empty;
-		    foreach (Character objCharacter in GlobalOptions.Instance.MainForm.OpenCharacters)
-		    {
-		        arguments += "\"" + objCharacter.FileName + "\" ";
-		    }
+			arguments += GlobalOptions.Instance.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
 			arguments = arguments.Trim();
 			// Restart current application, with same arguments/parameters
 			foreach (Form objForm in GlobalOptions.Instance.MainForm.MdiChildren)

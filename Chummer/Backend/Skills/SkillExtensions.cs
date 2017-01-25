@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Chummer.Skills
 {
@@ -7,12 +8,7 @@ namespace Chummer.Skills
 	{
 		public static bool HasSpecialization(this Skill skill, string specialization)
 		{
-		    foreach (SkillSpecialization objLoopSpecialization in skill.Specializations)
-		    {
-		        if (objLoopSpecialization.Name == specialization || objLoopSpecialization.DisplayName == specialization)
-		            return true;
-		    }
-			return false;
+			return skill.Specializations.Any(x => x.Name == specialization || x.DisplayName == specialization);
 		}
 
 		public static string GetDisplayName(this Skill skill)
@@ -27,43 +23,23 @@ namespace Chummer.Skills
 
 		public static int TotalCostSp(this IEnumerable<Skill> list)
 		{
-		    int intReturn = 0;
-		    foreach (Skill objLoopSkill in list)
-		    {
-		        intReturn += objLoopSkill.CurrentSpCost();
-		    }
-			return intReturn;
+			return list.Sum(skill => skill.CurrentSpCost());
 		}
 
 		public static int TotalCostKarma(this IEnumerable<Skill> list)
 		{
-            int intReturn = 0;
-            foreach (Skill objLoopSkill in list)
-            {
-                intReturn += objLoopSkill.CurrentKarmaCost();
-            }
-            return intReturn;
+			return list.Sum(skill => skill.CurrentKarmaCost());
 		}
 
 		public static int TotalCostSp(this IEnumerable<SkillGroup> list)
 		{
-            int intReturn = 0;
-            foreach (SkillGroup objLoopSkillGroup in list)
-            {
-                intReturn += objLoopSkillGroup.CurrentSpCost();
-            }
-            return intReturn;
+			return list.Sum(skill => skill.CurrentSpCost());
 		}
 
 		public static int TotalCostKarma(this IEnumerable<SkillGroup> list)
 		{
-            int intReturn = 0;
-            foreach (SkillGroup objLoopSkillGroup in list)
-            {
-                intReturn += objLoopSkillGroup.CurrentKarmaCost();
-            }
-            return intReturn;
-        }
+			return list.Sum(skill => skill.CurrentKarmaCost());
+		}
 
 	}
 }

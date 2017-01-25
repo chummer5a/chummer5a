@@ -31,12 +31,8 @@ namespace Chummer
         string Name { get; set; }
     }
 
-    public interface IHasChildren<T>
+    public interface INamedParentWithGuid<T> : INamedItemWithGuid
     {
         List<T> Children { get; }
-    }
-
-    public interface INamedParentWithGuid<T> : INamedItemWithGuid, IHasChildren<T>
-    {
     }
 }

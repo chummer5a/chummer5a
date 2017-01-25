@@ -356,7 +356,7 @@ namespace Chummer.Backend.Equipment
                             string strExtraMount = "None";
                             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                                 strMount = objXmlAccessory["extramount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, new KeyValuePair<string, string>(strMount, strExtraMount), intRating, cmsVehicleGear, false, blnCreateChildren);
+                            objMod.Create(objXmlAccessoryNode, objModNode, new Tuple<string, string>(strMount, strExtraMount), intRating, cmsVehicleGear, false, blnCreateChildren);
 
                             objMod.Cost = "0";
 							objModNode.ContextMenuStrip = cmsVehicleWeaponAccessory;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Chummer.Backend;
 
@@ -58,55 +59,51 @@ namespace Chummer.UI.Shared
 		{
 			min = Math.Max(0, min);
 			max = Math.Min(_displayIndex.Count, max);
-			if (_rendered.FirstMatching(false, min) > max)
-                return;
+			if (_rendered.FirstMatching(false, min) > max) return;
 
-		    ControlWithMetaData item;
-            for (int i = min; i < max; i++)
+            if (blnSuspend)
+			    pnlDisplay.SuspendLayout();
+
+			for (int i = min; i < max; i++)
 			{
-				if (_rendered[i])
-                    continue;
+				if (_rendered[i]) continue;
 
-				item = _contentList[_displayIndex[i]];
+				ControlWithMetaData item = _contentList[_displayIndex[i]];
 
 				item.Control.Location = new Point(0, i * _contentList[0].Control.Height);
 			    item.Control.Visible = true;
                 _rendered[i] = true;
 			}
+
+            if (blnSuspend)
+                pnlDisplay.ResumeLayout();
 		}
 
 		private bool UnrenderedInRange(int min, int max)
 		{
+			bool any = false;
+
 			for (int i = min; i < max; i++)
 			{
-			    if (_rendered[i] == false)
-			    {
-                    return false;
-                }
+				if (_rendered[i] == false) any = true;
 			}
 
-			return true;
+			return !any;
 		}
 
 		private void InitialSetup()
 		{
 			pnlDisplay.SuspendLayout();
-		    pnlDisplay.Visible = false;
-            SetupContentList();
+			SetupContentList();
 			ComptuteDisplayIndex();
 			LoadScreenContent(false);
 			BindingListDisplay_SizeChanged(null, null);
-            pnlDisplay.Visible = true;
-            pnlDisplay.ResumeLayout();
+			pnlDisplay.ResumeLayout();
 		}
 
 		private void SetupContentList()
 		{
-            _contentList.Clear();
-		    foreach (TType objLoopDisplay in _contents)
-		    {
-                _contentList.Add(new ControlWithMetaData(objLoopDisplay, this));
-            }
+            _contentList = _contents.Select(item => new ControlWithMetaData(item, this)).ToList();
 			_indexComparer = new IndexComparer(_contents);
 			if (_comparison == null) _comparison = _indexComparer;
 			_contents.ListChanged += ContentsChanged;
@@ -114,37 +111,12 @@ namespace Chummer.UI.Shared
 
 		private void ComptuteDisplayIndex()
 		{
-            Dictionary <TType, int> objTempDictionary = new Dictionary<TType, int>();
-		    List<TType> objTempList = new List<TType>();
-            ControlWithMetaData objLoopControl;
-            for (int i = 0; i < _contentList.Count; i++)
-            {
-                objLoopControl = _contentList[i];
-                if (objLoopControl.Visible)
-                {
-                    objTempDictionary.Add(objLoopControl.Item, i);
-                    objTempList.Add(objLoopControl.Item);
-                }
-            }
-            objTempList.Sort(_comparison);
-
-            _displayIndex.Clear();
-		    int intLoopIndex;
-            foreach (TType objLoopType in objTempList)
-		    {
-                if (objTempDictionary.TryGetValue(objLoopType, out intLoopIndex))
-                    _displayIndex.Add(intLoopIndex);
-            }
-
-            /*
-            _displayIndex.Clear();
-            _displayIndex =
+			_displayIndex =
 				_contentList.Select((item, index) => new { Item = item, Index = index })  //Get both index and and the item, will need it later
 					.Where(x => x.Item.Visible)  //Filter anything not visible out
 					.OrderBy(x => x.Item.Item, _comparison)  //Sort it based on the sorter to get it the order it should appear in
 					.Select(x => x.Index)  //get the index we saved earlier of real pos;
 					.ToList();
-                    */
 
 			_rendered = new BitArray(_displayIndex.Count);
 		}
@@ -174,20 +146,7 @@ namespace Chummer.UI.Shared
 			{
 				item.Reset();
 			}
-		    if (_contentList.Count == 0)
-		    {
-		        pnlDisplay.Height = Height;
-		    }
-		    else
-		    {
-		        int intVisibleControlsCount = 0;
-		        foreach (ControlWithMetaData objLoopControl in _contentList)
-		        {
-		            if (objLoopControl.Visible)
-		                intVisibleControlsCount++;
-		        }
-                pnlDisplay.Height = intVisibleControlsCount * _contentList[0].Control.Height;
-            }
+			pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
 			ComptuteDisplayIndex();
 		}
 
@@ -217,11 +176,9 @@ namespace Chummer.UI.Shared
 			end = Math.Min(end, firstUnrendered + _offScreenChunkSize);
 			Stopwatch sw = Stopwatch.StartNew();
 
-            pnlDisplay.SuspendLayout();
-            LoadRange(firstUnrendered, end);
-            pnlDisplay.ResumeLayout();
+			LoadRange(firstUnrendered, end);
 
-            sw.Stop();
+			sw.Stop();
 
 			if (sw.Elapsed > maxDelay && _offScreenChunkSize > 1)
 			{
@@ -240,18 +197,10 @@ namespace Chummer.UI.Shared
 			_visibleFilter = predicate;
 
 			ClearAllCache();
-            if (_contentList.Count == 0)
-                pnlDisplay.Height = Height;
-            else
-            {
-                int intVisibleControlsCount = 0;
-                foreach (ControlWithMetaData objLoopControl in _contentList)
-                {
-                    if (objLoopControl.Visible)
-                        intVisibleControlsCount++;
-                }
-                pnlDisplay.Height = intVisibleControlsCount * _contentList[0].Control.Height;
-            }
+		    if (_contentList.Count > 0)
+		    {
+		        pnlDisplay.Height = _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
+		    }
 			LoadScreenContent();
 		}
 
@@ -309,22 +258,10 @@ namespace Chummer.UI.Shared
 		{
 			pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
 
-			if (_contentList == null)
-                return; //In some edge case i don't know, this is done before _Load()
+			if (_contentList == null) return; //In some edge case i don't know, this is done before _Load()
 
-            if (_contentList.Count == 0)
-                pnlDisplay.Height = Height;
-            else
-            {
-                int intVisibleControlsCount = 0;
-                foreach (ControlWithMetaData objLoopControl in _contentList)
-                {
-                    if (objLoopControl.Visible)
-                        intVisibleControlsCount++;
-                }
-                pnlDisplay.Height = intVisibleControlsCount * _contentList[0].Control.Height;
-            }
-            foreach (Control control in pnlDisplay.Controls)
+			pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
+			foreach (Control control in pnlDisplay.Controls)
 			{
 				control.Width = pnlDisplay.Width - 2;
 			}
@@ -462,11 +399,7 @@ namespace Chummer.UI.Shared
 
 			public void Reset(IList<TType> source)
 			{
-                _index.Clear();
-			    for (int i = 0; i < source.Count; i++)
-			    {
-			        _index.Add(source[i], i);
-			    }
+				_index = source.Select((x, y) => new {x, y}).ToDictionary(x => x.x, x => x.y);
 			}
 		}
 	}

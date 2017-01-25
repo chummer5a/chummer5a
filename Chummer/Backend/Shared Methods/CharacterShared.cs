@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
@@ -44,16 +45,7 @@ namespace Chummer
 
 		public CharacterShared()
 		{
-		    Skill objTempSkill = null;
-		    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-		    {
-		        if (objSkill.Name == "Gunnery")
-		        {
-		            objTempSkill = objSkill;
-		            break;
-		        }
-		    }
-			_gunneryCached = new Lazy<Skill>(() => objTempSkill);
+			_gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.Skills.First(x => x.Name == "Gunnery"));
 		}
 
 
@@ -78,22 +70,20 @@ namespace Chummer
 		protected void RedlinerCheck()
 		{
 			string strSeekerImprovPrefix = "SEEKER";
-            //Get attributes affected by redliner/cyber singularity seeker
-            List<string> attributes = new List<string>();
-            List<Improvement> impr = new List<Improvement>();
-            foreach (Improvement improvement in _objCharacter.Improvements)
-		    {
-		        if (improvement.ImproveType == Improvement.ImprovementType.Seeker)
-		        {
-		            attributes.Add(improvement.ImprovedName);
-		        }
-                else if ((improvement.ImproveType == Improvement.ImprovementType.Attribute ||
-                          improvement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
-                         improvement.SourceName.Contains(strSeekerImprovPrefix))
-		        {
-                    impr.Add(improvement);
-                }
-		    }
+			//Get attributes affected by redliner/cyber singularity seeker
+			var attributes = new List<string>(
+				from improvement in _objCharacter.Improvements
+				where improvement.ImproveType == Improvement.ImprovementType.Seeker
+				select improvement.ImprovedName);
+
+			//And the improvements comming from there
+			var impr = new List<Improvement>(
+				from improvement in _objCharacter.Improvements
+				where (improvement.ImproveType == Improvement.ImprovementType.Attribute ||
+				       improvement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
+				      improvement.SourceName.Contains(strSeekerImprovPrefix)
+				//for backwards compability
+				select improvement);
 
 			//if neither contains anything, it is safe to exit
 			if (impr.Count == 0 && attributes.Count == 0)
@@ -109,16 +99,7 @@ namespace Chummer
                 count += objCyberware.CyberlimbCount;
             }
 			count = Math.Min(count/2, 2);
-		    bool blnImprovementsContainSTRorAGI = false;
-            foreach (Improvement improvement in impr)
-            {
-                if (improvement.ImprovedName == "STR" || improvement.ImprovedName == "AGI")
-                {
-                    blnImprovementsContainSTRorAGI = true;
-                    break;
-                }
-            }
-            if (blnImprovementsContainSTRorAGI)
+			if (impr.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
 			{
 				_objCharacter.RedlinerBonus = count;
 			}
@@ -129,17 +110,12 @@ namespace Chummer
 
 			for (int i = 0; i < attributes.Count; i++)
 			{
-				Improvement objImprove = null;
-                foreach (Improvement improvement in impr)
-                {
-                    if (improvement.SourceName == strSeekerImprovPrefix + "_" + attributes[i] &&
-                            improvement.Value == (attributes[i] == "BOX" ? count * -3 : count))
-                    {
-                        objImprove = improvement;
-                        break;
-                    }
-                }
-                if (objImprove != null)
+				Improvement objImprove =
+					impr.FirstOrDefault(
+						x =>
+							x.SourceName == strSeekerImprovPrefix + "_" + attributes[i] &&
+							x.Value == (attributes[i] == "BOX" ? count*-3 : count));
+				if (objImprove != null)
 				{
 					attributes.RemoveAt(i);
 					impr.Remove(objImprove);
@@ -294,35 +270,18 @@ namespace Chummer
 		{
 			lblPhysical.Text = _objCharacter.LimitPhysical;
 			string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
+			strPhysical = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit).Aggregate(strPhysical, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
+			tipTooltip.SetToolTip(lblPhysical, strPhysical);
 
 			lblMental.Text = _objCharacter.LimitMental.ToString();
 			string strMental = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
+			strMental = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit).Aggregate(strMental, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
+			tipTooltip.SetToolTip(lblMental, strMental);
 
 			lblSocial.Text = _objCharacter.LimitSocial.ToString();
 			string strSocial = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeESSShort"), _objCharacter.Essence.ToString());
-
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
-            {
-                if (objImprovement.Enabled)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit)
-                    {
-                        strPhysical += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-                    }
-                    else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
-                    {
-                        strMental += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-                    }
-                    else if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
-                    {
-                        strSocial += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-                    }
-                }
-            }
-
-            tipTooltip.SetToolTip(lblPhysical, strPhysical);
-            tipTooltip.SetToolTip(lblMental, strMental);
-            tipTooltip.SetToolTip(lblSocial, strSocial);
+			strSocial = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit).Aggregate(strSocial, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
+			tipTooltip.SetToolTip(lblSocial, strSocial);
 
 			lblAstral.Text = _objCharacter.LimitAstral.ToString();
 		}
@@ -343,11 +302,13 @@ namespace Chummer
 		{
 			int pilotRating = vehicle.Pilot;
 
-		    Gear maybeAutosoft = CommonFunctions.DeepFindByPredicate(vehicle.Gear, x => x.Name == "[Weapon] Targeting Autosoft" &&
-                    (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
-			if (maybeAutosoft != null)
+			Gear maybeAutoSoft =
+				vehicle.Gear.SelectMany(x => x.ThisAndAllChildren())
+					.FirstOrDefault(x => x.Name == "Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
+
+			if (maybeAutoSoft != null)
 			{
-				return maybeAutosoft.Rating + pilotRating;
+				return maybeAutoSoft.Rating + pilotRating;
 			}
 
 			return 0;
@@ -504,31 +465,30 @@ namespace Chummer
 		{
 			foreach (XmlNode objNode in objNodeList)
 			{
-				foreach (Quality objQuality in _objCharacter.Qualities)
+				foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Name == objNode.InnerText))
 				{
-				    if (objQuality.Name == objNode.InnerText)
-				    {
-				        switch (objQuality.Type)
-				        {
-				            case QualityType.Positive:
-				                foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
-				                {
-                                    if (nodQuality.Text == objQuality.Name)
-				                        nodQuality.Remove();
-				                }
-				                break;
-				            case QualityType.Negative:
-                                foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
-                                {
-                                    if (nodQuality.Text == objQuality.Name)
-                                        nodQuality.Remove();
-                                }
-                                break;
-				        }
-				        _objCharacter.Qualities.Remove(objQuality);
-				        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
-				        break;
-				    }
+					switch (objQuality.Type)
+					{
+						case QualityType.Positive:
+							foreach (
+								TreeNode nodQuality in
+									treQualities.Nodes[0].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text == objQuality.Name))
+							{
+								nodQuality.Remove();
+							}
+							break;
+						case QualityType.Negative:
+							foreach (
+								TreeNode nodQuality in
+									treQualities.Nodes[1].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text == objQuality.Name))
+							{
+								nodQuality.Remove();
+							}
+							break;
+					}
+					_objCharacter.Qualities.Remove(objQuality);
+					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+					break;
 				}
 			}
 		}
@@ -548,15 +508,10 @@ namespace Chummer
 			// Prompt the user to select an image to associate with this character.
 
 			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-
-		    List<string> objFirstList = new List<string>();
-            List<string> objSecondList = new List<string>();
-		    foreach (ImageCodecInfo objLoopCodec in codecs)
-		    {
-                objFirstList.Add(string.Format("{0} ({1})|{1}", objLoopCodec.CodecName, objLoopCodec.FilenameExtension));
-                objSecondList.Add(objLoopCodec.FilenameExtension);
-            }
-            openFileDialog.Filter = string.Format("All image files ({1})|{1}|{0}|All files|*", string.Join("|", objFirstList), string.Join(";", objSecondList));
+			openFileDialog.Filter = string.Format("All image files ({1})|{1}|{0}|All files|*",
+				string.Join("|",
+					codecs.Select(codec => string.Format("{0} ({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
+				string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray()));
 
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{

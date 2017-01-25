@@ -288,13 +288,17 @@ namespace Chummer.Skills
 				XmlNode knoNode = null;
 				string category = n["category"].InnerText; //if missing we have bigger problems, and a nullref is probably prefered
 				bool knoSkill;
-				if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out knoSkill))
+
+				if (SkillTypeCache != null && SkillTypeCache.ContainsKey(category))
+				{
+					knoSkill = SkillTypeCache[category]; //Simple cache, no need to be sloppy
+				}
+				else
 				{
 					knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
-                    knoSkill = knoNode?.Attributes?["type"].InnerText != "active";
-                    if (SkillTypeCache != null)
-                        SkillTypeCache[category] = knoSkill;
-                }
+					knoSkill = knoNode.Attributes["type"].InnerText != "active";
+					SkillTypeCache[category] = knoSkill;
+				}
 
 
 				if (knoSkill)

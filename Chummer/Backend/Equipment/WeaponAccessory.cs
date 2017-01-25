@@ -67,11 +67,11 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
 		/// <param name="intRating">Rating of the Weapon Accessory.</param>
-		public void Create(XmlNode objXmlAccessory, TreeNode objNode, KeyValuePair<string, string> strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlAccessory, TreeNode objNode, Tuple<string, string> strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
 		{
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
-            _strMount = strMount.Key;
-            _strExtraMount = strMount.Value;
+            _strMount = strMount.Item1;
+            _strExtraMount = strMount.Item2;
             _intRating = intRating;
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             // Check for a Variable Cost.

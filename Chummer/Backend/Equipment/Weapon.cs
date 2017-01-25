@@ -227,16 +227,16 @@ namespace Chummer.Backend.Equipment
 					{
                         if (objXmlWeaponAccessory.InnerXml.Contains("<extramount>"))
                         {
-                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new KeyValuePair<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                         }
                         else
                         {
-                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new KeyValuePair<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                         }
 					}
 					else
 					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, new KeyValuePair<string, string>("Internal" , "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
+						objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>("Internal" , "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
 					}
                     // Add any extra Gear that comes with the Weapon Accessory.
                     if (objXmlWeaponAccessory["gears"] != null && blnCreateChildren)

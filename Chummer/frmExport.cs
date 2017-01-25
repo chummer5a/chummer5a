@@ -89,10 +89,9 @@ namespace Chummer
 			if (cboXSLT.Text == string.Empty)
 				return;
 
-		    string strTemp;
-			if (_dictCache.TryGetValue(cboXSLT.Text, out strTemp))
+			if (_dictCache.ContainsKey(cboXSLT.Text))
 			{
-				rtbText.Text = strTemp;
+				rtbText.Text = _dictCache.First(objPair => objPair.Key == cboXSLT.Text).Value;
 			}
 
 			if (cboXSLT.Text == "Export JSON")

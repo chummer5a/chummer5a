@@ -449,11 +449,11 @@ namespace Chummer
 		/// <summary>
 		/// Mount that was selected in the dialogue.
 		/// </summary>
-		public KeyValuePair<string, string> SelectedMount
+		public Tuple<string, string> SelectedMount
 		{
 			get
 			{
-				return new KeyValuePair<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
+				return new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
 			}
 		}
 
