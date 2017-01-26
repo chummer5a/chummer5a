@@ -7239,6 +7239,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Micro-Drone Weapons</weaponmountcategories>
 			<avail>8R</avail>
 			<cost>400</cost>
 			<required>
