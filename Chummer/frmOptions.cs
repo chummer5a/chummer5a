@@ -113,8 +113,6 @@ namespace Chummer
             _characterOptions.DroneArmorMultiplier = Convert.ToInt32(nudDroneArmorMultiplier.Value);
             _characterOptions.DroneArmorMultiplierEnabled = chkDroneArmorMultiplier.Checked;
             nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
-            _characterOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
-            _characterOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
             _characterOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
                 if (chkKnowledgeMultiplier.Checked)
                     chkKnowledgeMultiplier.Enabled = true;
@@ -620,8 +618,6 @@ namespace Chummer
 			chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
 			chkExceedPositiveQualities.Checked = _characterOptions.ExceedPositiveQualities;
 			chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
-			chkFreeKarmaContacts.Checked = _characterOptions.FreeKarmaContacts;
-			chkFreeKarmaKnowledge.Checked = _characterOptions.FreeKarmaKnowledge;
 			chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
 			chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;
 			chkKnucks.Checked = _characterOptions.KnucksUseUnarmed;

@@ -58,16 +58,9 @@ namespace Chummer.UI.Skills
 
 				nudSkill.DataBindings.Add("Enabled", skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
 
-				if (skill.CharacterObject.BuildMethod.HaveSkillPoints() || skill.CharacterObject.Options.FreeKarmaKnowledge)
-				{
-					chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
+				chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
 						DataSourceUpdateMode.OnPropertyChanged);
-				}
-				else
-				{
-					chkKarma.Visible = false;
-				}
-				
+
 				cboSkill.DataSource = skill.KnowledgeSkillCatagories;
 				cboSkill.DisplayMember = nameof(ListItem.Name);
 				cboSkill.ValueMember = nameof(ListItem.Value);

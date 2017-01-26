@@ -4467,7 +4467,7 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<addqualities>
-					<addqiality>SINner (National)</addqiality>
+					<addqiality>In Debt V</addqiality>
 				</addqualities>
 			</bonus>
 			<!--<required>
@@ -5431,6 +5431,9 @@
 					<group>Professional</group>
 					<val>3</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (National)</addquality>
+				</addqualities>
 			</bonus>
 			<versions>
 				<version>
@@ -5651,6 +5654,9 @@
 					<group>Professional</group>
 					<val>4</val>
 				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (National)</addquality>
+				</addqualities>
 			</bonus>
 			<versions>
 				<version>

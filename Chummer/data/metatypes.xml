@@ -110,9 +110,9 @@
 					<inimin>2</inimin>
 					<inimax>12</inimax>
 					<iniaug>20</iniaug>
-					<edgmin>1</edgmin>
-					<edgmax>6</edgmax>
-					<edgaug>6</edgaug>
+					<edgmin>2</edgmin>
+					<edgmax>7</edgmax>
+					<edgaug>7</edgaug>
 					<magmin>1</magmin>
 					<magmax>6</magmax>
 					<magaug>6</magaug>
@@ -407,9 +407,9 @@
 					<inimin>2</inimin>
 					<inimax>13</inimax>
 					<iniaug>21</iniaug>
-					<edgmin>2</edgmin>
-					<edgmax>7</edgmax>
-					<edgaug>7</edgaug>
+					<edgmin>1</edgmin>
+					<edgmax>6</edgmax>
+					<edgaug>6</edgaug>
 					<magmin>1</magmin>
 					<magmax>6</magmax>
 					<magaug>6</magaug>
@@ -731,9 +731,10 @@
 					<depaug>0</depaug>		
 					<qualities>
 						<positive>
-							<quality>Resistance to Pathogens/Toxins</quality>
+							<quality>Resistance to Pathogens</quality>
 							<quality>Thermographic Vision</quality>
 							<quality>Underwater Vision</quality>
+							<quality>Webbed Digits</quality>
 						</positive>
 					</qualities>
 					<source>RF</source>
@@ -1144,6 +1145,9 @@
 					<depmax>0</depmax>
 					<depaug>0</depaug>
 					<qualities>
+						<positive>
+							<quality>Thermographic Vision</quality>
+						</positive>
 						<negative>
 							<quality>Cyclopean Eye</quality>
 						</negative>
@@ -1395,6 +1399,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<lifestylecost>100</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive>
@@ -1472,6 +1477,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<lifestylecost>150</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive>
@@ -1550,6 +1556,7 @@
 					<name>critter</name>
 				</enabletab>
 				<unlockskills name="Assensing">Name</unlockskills>
+				<lifestylecost>100</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive> 
@@ -1561,7 +1568,7 @@
 			</qualities>
 			<powers>
 				<power>Concealment</power>
-				<power>Vanishing</power>
+				<power select="Upon Death">Vanishing</power>
 			</powers>
 			<source>RF</source>
 			<page>99</page>
@@ -1623,6 +1630,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<lifestylecost>100</lifestylecost>
 			</bonus>
 			<qualities>
 				<negative>

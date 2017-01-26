@@ -297,17 +297,11 @@ namespace Chummer.Skills
 		{
 			if (HasRelatedBoost())
 			{
-				return (BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma || 
-                    (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || 
-                    CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule) 
-                    && !CharacterObject.Options.FreeKarmaKnowledge ? 0 : 1) + 1)/2;
+				return (BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1) + 1)/2;
 			}
 			else
 			{
-                return BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ||
-                    (CharacterObject.BuildMethod == CharacterBuildMethod.Karma ||
-                    CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule) 
-                    && !CharacterObject.Options.FreeKarmaKnowledge ? 0 : 1);
+                return BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1);
             }
 
 		}
