@@ -505,9 +505,9 @@
 			<capacity>[0]</capacity>
 			<avail>12R</avail>
 			<cost>20000</cost>
-			<subsystems>
-				<subsystem>Chemical Gland Modifications</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Chemical Gland Modifications</category>
+			</allowsubsystems>
 			<bonus>
 				<selecttext />
 			</bonus>
