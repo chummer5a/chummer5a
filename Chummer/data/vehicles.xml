@@ -7242,7 +7242,6 @@
 			<weaponmountcategories>Micro-Drone Weapons</weaponmountcategories>
 			<avail>8R</avail>
 			<cost>400</cost>
-			<weaponmountcategories></weaponmountcategories>
 			<required>
 				<vehicledetails>
 					<category operation="contains">Drones</category>
