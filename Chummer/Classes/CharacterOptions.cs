@@ -59,8 +59,6 @@ namespace Chummer
 		private bool _blnExtendAnyDetectionSpell;
 		private bool _blnFreeContactsMultiplierEnabled;
 	    private bool _blnDroneArmorMultiplierEnabled;
-		private bool _blnFreeKarmaContacts;
-		private bool _blnFreeKarmaKnowledge;
 		private bool _blnFreeKnowledgeMultiplierEnabled;
 		private bool _blnFreeSpiritPowerPointsMAG;
 		private bool _blnIgnoreArmorEncumbrance = true;
@@ -290,10 +288,6 @@ namespace Chummer
             objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
 			// <usetotalvalueforcontacts />
 			objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
-			// <freekarmaknowledge />
-			objWriter.WriteElementString("freekarmacontacts", _blnFreeKarmaContacts.ToString());
-			// <freekarmaknowledge />
-			objWriter.WriteElementString("freekarmaknowledge", _blnFreeKarmaKnowledge.ToString());
 			// <nosinglearmorencumbrance />
 			objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
 			// <ignorearmorencumbrance />
@@ -653,9 +647,6 @@ namespace Chummer
 			// Free Knowledge Multiplier Enabled
 			objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref _blnFreeKnowledgeMultiplierEnabled);
 			objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
-			objXmlNode.TryGetBoolFieldQuickly("freekarmacontacts", ref _blnFreeKarmaContacts);
-			// Karma Free Knowledge
-			objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledge", ref _blnFreeKarmaKnowledge);
 			// Free Knowledge uses Total Value instead of Value
 			objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref _blnUseTotalValueForFreeKnowledge);
 			// Free Contacts Multiplier
@@ -938,12 +929,6 @@ namespace Chummer
 
             // Karma Free Knowledge Multiplier Enabled
             LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled");
-
-            // Karma Free Contacts
-            LoadBoolFromRegistry(ref _blnFreeKarmaContacts, "freekarmacontacts");
-
-            // Karma Free Knowledge
-            LoadBoolFromRegistry(ref _blnFreeKarmaKnowledge, "freekarmaknowledge");
 
             // No Single Armor Encumbrance
             LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance");
@@ -1475,37 +1460,6 @@ namespace Chummer
                 _blnDroneArmorMultiplierEnabled = value;
             }
         }
-
-
-        /// <summary>
-        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-        /// </summary>
-        public bool FreeKarmaContacts
-		{
-			get
-			{
-				return _blnFreeKarmaContacts;
-			}
-			set
-			{
-				_blnFreeKarmaContacts = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		public bool FreeKarmaKnowledge
-		{
-			get
-			{
-				return _blnFreeKarmaKnowledge;
-			}
-			set
-			{
-				_blnFreeKarmaKnowledge = value;
-			}
-		}
 
 		/// <summary>
 		/// Whether or not the multiplier for Free Knowledge points are used.

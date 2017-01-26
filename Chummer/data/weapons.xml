@@ -3621,8 +3621,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>As weapon</avail>
-			<cost>As weapon</cost>
+			<avail>0</avail>
+			<cost>0</cost>
 			<allowaccessory>true</allowaccessory>
 			<useskill>Clubs</useskill>
 			<source>RG</source>
@@ -3662,8 +3662,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>As weapon</avail>
-			<cost>As weapon</cost>
+			<avail>0</avail>
+			<cost>0</cost>
 			<allowaccessory>true</allowaccessory>
 			<useskill>Clubs</useskill>
 			<source>RG</source>

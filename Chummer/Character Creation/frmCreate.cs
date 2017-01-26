@@ -14479,6 +14479,7 @@ namespace Chummer
             // Update the number of BP remaining in the StatusBar.
             tssBP.Text = _objCharacter.BuildKarma.ToString();
             tssBPRemain.Text = intKarmaPointsRemain.ToString();
+	        _objCharacter.Karma = intKarmaPointsRemain;
 
             if (_blnFreestyle)
             {
@@ -14571,20 +14572,13 @@ namespace Chummer
                 if (_objCharacter.DEPEnabled)
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
-                // Calculate Free Contacts Points. Free points = (CHA) * 2.
-	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
-	                (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) ||
-	                _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-	            {
-		            int intCHA = _objCharacter.CHA.Value;
-					if (_objOptions.UseTotalValueForFreeKnowledge)
-					{
-						intCHA = _objCharacter.CHA.TotalValue;
-					}
-					_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier;
+				// Calculate Free Contacts Points. Free points = (CHA) * 2.
+				int intCHA = _objCharacter.CHA.Value;
+				if (_objOptions.UseTotalValueForFreeKnowledge)
+				{
+					intCHA = _objCharacter.CHA.TotalValue;
 				}
-                else
-                    _objCharacter.ContactPoints = 0;
+				_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier;
 
 				UpdateSkillRelatedInfo();
 				

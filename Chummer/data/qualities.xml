@@ -7295,7 +7295,7 @@
 					</replaceattribute>
 					<replaceattribute>
 						<name>CHA</name>
-						<min>1</min>
+						<min>3</min>
 						<max>9</max>
 					</replaceattribute>
 				</replaceattributes>

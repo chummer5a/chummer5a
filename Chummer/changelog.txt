@@ -8,6 +8,10 @@ Application Changes:
 - Refactored some Lifestyle calculations and properties to not read from XML; created a shim to save these values into the lifestyle and assosicated qualities during the load process for old characters.
 - Removed the ability to add Roommates to a lifestyle that's allocated as a Trust Fund lifestyle. This will not affect existing characters. 
 - Added reminder text to the LP and Cost labels for Lifestyle qualities to indicate whether a quality is Free from something or other (Usually just the Free checkbox)
+- Per errata for Run Faster, the following changes have been made:
+	- The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu.
+	- Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed.
+- Fixed an issue with moving Changelings into career mode.
 - Brought all projects to the same, .NET 4.5.2 target sku.
 - Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
 - Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
@@ -25,7 +29,13 @@ Data Changes:
 - Fixed a crash when selecting the Pirate Captain and Urban Brawler Life Modules. 
 - Fixed the Capacity of the Directional Microphone Sensor Function to be based on Rating. 
 - Fixed the Addon Category of the Bug Promotional Pen to be Sensors, instead of Sensor Functions. 
-- Corrected the allowed subsystems for the Chemical Gland bioware. 
+- Corrected the allowed subsystems for the Chemical Gland bioware.
+- Per errata for Run Faster, the following changes have been made:
+	- The Infected: Banshee quality's CHA minimum has been set to 3, instead of 1.
+	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively.
+	- The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+	- Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+- Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons.
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 
