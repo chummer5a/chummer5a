@@ -173,6 +173,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap book_missing {
+            get {
+                object obj = ResourceManager.GetObject("book/missing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap brick_add {
             get {
                 object obj = ResourceManager.GetObject("brick_add", resourceCulture);
@@ -263,9 +273,9 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap checkbox_check {
+        internal static System.Drawing.Bitmap checkbox_checked {
             get {
-                object obj = ResourceManager.GetObject("checkbox_check", resourceCulture);
+                object obj = ResourceManager.GetObject("checkbox_checked", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -273,9 +283,9 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap checkbox_checked {
+        internal static System.Drawing.Bitmap checkbox_unchecked {
             get {
-                object obj = ResourceManager.GetObject("checkbox_checked", resourceCulture);
+                object obj = ResourceManager.GetObject("checkbox_unchecked", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

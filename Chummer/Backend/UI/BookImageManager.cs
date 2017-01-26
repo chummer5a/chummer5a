@@ -58,8 +58,8 @@ namespace Chummer.Backend.UI
 
         }
 
-        private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_check"));
-        private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
+        private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
+        private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_unchecked"));
 
         private Image GenerateImage(string bookCode, bool enabled, bool aura, int scale)
         {
@@ -287,23 +287,19 @@ namespace Chummer.Backend.UI
 
         private Bitmap GetBaseImage(string bookCode)
         {
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
-			XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + bookCode + "\"]");
-
-	        if (objXmlBook["bookimage"]?.InnerText != null)
-	        {
-		        string strTemp = objXmlBook["bookimage"]?.InnerText;
-
-				byte[] bytes = Convert.FromBase64String(strTemp);
-
+			string filePath = Path.Combine(Application.StartupPath, "images", $"{bookCode}.png");
+			
+			
+			if (File.Exists(filePath))
+			{
 				Bitmap bmp2 = null;
-				using (MemoryStream m = new MemoryStream(bytes))
+				using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read))
 				{
 					//this construct is needed if we want to Close and Dispose the MemoryStream
-					Bitmap bmpTmp = new Bitmap(m);
+					Bitmap bmpTmp = new Bitmap(fs);
 					bmp2 = new Bitmap(bmpTmp);
 					bmpTmp.Dispose();
-					m.Close();
+					fs.Close();
 				}
 
 	            Console.WriteLine($"w{bmp2.Width} h{bmp2.Height}");

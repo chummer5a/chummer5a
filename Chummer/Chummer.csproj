@@ -1399,7 +1399,7 @@
     <None Include="icons\Expand.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="icons\checkbox_check.png" />
+    <None Include="icons\checkbox_unchecked.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icons\checkbox_checked.png" />
@@ -1493,9 +1493,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="icons\server_lightning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="icons\missing_image_temp.png" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -1615,6 +1612,37 @@
     </Content>
     <EmbeddedResource Include="Collapse.png" />
     <Content Include="data\options.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="icons\missing_book.jpg" />
+    <Content Include="images\CA.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\CF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\DT.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\HS.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\HT.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\RF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\RG.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\SG.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\SR5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\SS.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Properties\Contributors.tt">
