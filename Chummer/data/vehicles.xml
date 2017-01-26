@@ -7241,6 +7241,7 @@
 			<slots>0</slots>
 			<avail>8R</avail>
 			<cost>400</cost>
+			<weaponmountcategories></weaponmountcategories>
 			<required>
 				<vehicledetails>
 					<category operation="contains">Drones</category>
@@ -7327,7 +7328,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<slots>4</slots>
-			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Sporting Rifles</weaponmountcategories>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Grenade Launchers,Sporting Rifles</weaponmountcategories>
 			<avail>12F</avail>
 			<cost>3200</cost>
 			<required>
@@ -7345,7 +7346,7 @@
 			<optionaldrone/>
 			<rating>0</rating>
 			<slots>5</slots>
-			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Grenade Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
 			<avail>16F</avail>
 			<cost>4000</cost>
 			<required>
@@ -7365,6 +7366,7 @@
 			<slots>6</slots>
 			<avail>20F</avail>
 			<cost>4800</cost>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
 			<required>
 				<vehicledetails>
 					<category operation="contains">Drones</category>
