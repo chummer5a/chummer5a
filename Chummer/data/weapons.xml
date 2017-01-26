@@ -44,6 +44,7 @@
     <category type="gun">Medium Machine Guns</category>
     <category type="gun">Heavy Machine Guns</category>
     <category type="gun">Underbarrel Weapons</category>
+    <category type="gun">Micro-Drone Weapons</category>
 		<category type="cannon">Assault Cannons</category>
 		<category type="flame">Flamethrowers</category>
 		<category type="laser">Laser Weapons</category>
