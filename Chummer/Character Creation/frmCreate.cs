@@ -15184,6 +15184,7 @@ namespace Chummer
             // Update the number of BP remaining in the StatusBar.
             tssBP.Text = _objCharacter.BuildKarma.ToString();
             tssBPRemain.Text = intKarmaPointsRemain.ToString();
+	        _objCharacter.Karma = intKarmaPointsRemain;
 
             if (_blnFreestyle)
             {

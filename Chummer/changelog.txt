@@ -11,6 +11,7 @@ Application Changes:
 - Per errata for Run Faster, the following changes have been made:
 	- The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu. 
 	- Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed. 
+- Fixed an issue with moving Changelings into career mode. 
 
 Data Changes: 
 
@@ -25,6 +26,7 @@ Data Changes:
 	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively. 
 	- The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
 	- Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+- Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons. 
 
 Build 190
 
