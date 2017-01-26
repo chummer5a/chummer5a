@@ -35,7 +35,7 @@ Data Changes:
 	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively.
 	- The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
 	- Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
-- Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons.
+- Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 
