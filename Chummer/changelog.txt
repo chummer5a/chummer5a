@@ -23,6 +23,9 @@ Data Changes:
 - Removed incorrect (per RAW) Distinctive Style qualities for the Dwarf metavariants.
 - Applied missing lifestyle cost increases for the Dwarf metavariants. 
 - Fixed a crash when selecting the Pirate Captain and Urban Brawler Life Modules. 
+- Fixed the Capacity of the Directional Microphone Sensor Function to be based on Rating. 
+- Fixed the Addon Category of the Bug Promotional Pen to be Sensors, instead of Sensor Functions. 
+- Corrected the allowed subsystems for the Chemical Gland bioware. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 

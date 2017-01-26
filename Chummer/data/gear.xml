@@ -3690,7 +3690,7 @@
 			<rating>2</rating>
 			<minrating>2</minrating>
 			<capacity>[2]</capacity>
-			<addoncategory>Sensor Functions</addoncategory>
+			<addoncategory>Sensors</addoncategory>
 			<avail>3</avail>
 			<cost>100</cost>
 			<source>CA</source>
@@ -4610,8 +4610,8 @@
 			<name>Directional Microphone</name>
 			<category>Sensor Functions</category>
 			<rating>8</rating>
-			<capacity>1/[1]</capacity>
-			<armorcapacity>1/[1]</armorcapacity>
+			<capacity>Rating/[1]</capacity>
+			<armorcapacity>Rating/[1]</armorcapacity>
 			<avail>0</avail>
 			<cost>0</cost>
 			<source>SR5</source>
@@ -4635,7 +4635,7 @@
 			<category>Sensor Functions</category>
 			<rating>8</rating>
 			<capacity>Rating/[1]</capacity>
-			<armorcapacity>1/[1]</armorcapacity>
+			<armorcapacity>Rating/[1]</armorcapacity>
 			<avail>0</avail>
 			<cost>0</cost>
 			<source>SR5</source>
@@ -4695,7 +4695,7 @@
 			<category>Sensor Functions</category>
 			<rating>8</rating>
 			<capacity>Rating/[1]</capacity>
-			<armorcapacity>1/[1]</armorcapacity>
+			<armorcapacity>Rating/[1]</armorcapacity>
 			<avail>0</avail>
 			<cost>0</cost>
 			<source>SR5</source>
