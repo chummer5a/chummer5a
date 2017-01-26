@@ -157,6 +157,7 @@ namespace Chummer
 		private decimal _decPrototypeTranshuman = 0m;
 
 		// Attributes.
+        public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
 		private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
         private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
         private CharacterAttrib _attREA = new CharacterAttrib("REA");

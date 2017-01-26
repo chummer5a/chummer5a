@@ -215,7 +215,7 @@ namespace Chummer.Skills
 
 			SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
 			newGroup.Add(skill);
-			skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => l.DisplayName.CompareTo(r.DisplayName));
+			skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => String.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal));
 			
 			return newGroup;
 		}
@@ -334,17 +334,15 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if(_cachedDisplayName != null) return _cachedDisplayName;
-				 
+				if(_cachedDisplayName != null)
+                    return _cachedDisplayName;
+
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
-					if (objNode != null)
-					{
-						if (objNode.Attributes["translate"] != null)
-							return _cachedDisplayName = objNode.Attributes["translate"].InnerText;
-					}
+				    if (objNode?.Attributes?["translate"] != null)
+				        return _cachedDisplayName = objNode.Attributes["translate"].InnerText;
 				}
 				return _cachedDisplayName = Name;
 			} 
@@ -437,8 +435,7 @@ namespace Chummer.Skills
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeLevels = int.MinValue;
 
-			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillGroupLevel
-			                            && imp.ImprovedName == _groupName))
+			if (improvements.Any(imp => imp.ImprovedName == _groupName && imp.ImproveType == Improvement.ImprovementType.SkillGroupLevel))
 			{
 				OnPropertyChanged(nameof(FreeLevels));
 				OnPropertyChanged(nameof(Base));

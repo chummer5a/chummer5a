@@ -42,7 +42,8 @@ namespace Chummer
 
 		private void PowerControl_Load(object sender, EventArgs e)
 		{
-			Width = cmdDelete.Left + cmdDelete.Width;
+            DoubleBuffered = true;
+            Width = cmdDelete.Left + cmdDelete.Width;
 
 			decimal actualRating = _objPower.Rating - _objPower.FreeLevels;
 			decimal newRating = actualRating + _objPower.FreeLevels;

@@ -21,6 +21,7 @@ namespace Chummer.UI.Skills
 		{
 			_skill = skill;
 			InitializeComponent();
+            SuspendLayout();
 
 			DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -102,14 +103,14 @@ namespace Chummer.UI.Skills
 				else
 				{
 					//dropdown/spec
-					cboSpec.DataSource = skill.CGLSpecializations;
 					cboSpec.DisplayMember = nameof(ListItem.Name);
 					cboSpec.ValueMember = nameof(ListItem.Value);
 					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
 						DataSourceUpdateMode.OnPropertyChanged);
 					cboSpec.SelectedIndex = -1;
+                    cboSpec.DataSource = skill.CGLSpecializations;
 
-					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				}
                 cboSpec.EndUpdate();
             }
@@ -122,9 +123,11 @@ namespace Chummer.UI.Skills
 
 				if (skill.CharacterObject.Created)
 				{
-					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y); 
+					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y);
 				}
 			}
+
+            ResumeLayout();
 		}
 
 		private void ContextMenu_Opening(object sender, CancelEventArgs e)
@@ -188,7 +191,7 @@ namespace Chummer.UI.Skills
 					break;
 			}
 		}
-		
+
 		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
 			frmCareer parrent = ParentForm as frmCareer;
@@ -196,7 +199,7 @@ namespace Chummer.UI.Skills
 			{
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
 					_skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
-					
+
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
@@ -224,22 +227,23 @@ namespace Chummer.UI.Skills
 			_skill.AddSpecialization(selectForm.SelectedItem);
 
 			//TODO turn this into a databinding, but i don't care enough right now
-			lblCareerSpec.Text = string.Join(", ",
-					(from specialization in _skill.Specializations
-					 select specialization.DisplayName));
+			lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName));
 
-			parrent?.UpdateCharacterInfo();
+            parrent?.UpdateCharacterInfo();
 		}
 
 		private void SetupDropdown()
 		{
-			List<ListItem> list =  new[] {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"}.Select(
-				x => new ListItem(x, LanguageManager.Instance.GetString($"String_Attribute{x}Short"))).ToList();
+            List<ListItem> lstAttributeItems = new List<ListItem>();
+		    foreach (string strLoopAttribute in Character.AttributeStrings)
+		    {
+                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.Instance.GetString($"String_Attribute{strLoopAttribute}Short")));
+            }
 
             cboSelectAttribute.BeginUpdate();
             cboSelectAttribute.ValueMember = "Value";
 			cboSelectAttribute.DisplayMember = "Name";
-			cboSelectAttribute.DataSource = list;
+			cboSelectAttribute.DataSource = lstAttributeItems;
 			cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
             cboSelectAttribute.EndUpdate();
         }

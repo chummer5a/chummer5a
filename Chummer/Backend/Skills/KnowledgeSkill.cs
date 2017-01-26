@@ -109,9 +109,10 @@ namespace Chummer.Skills
 
 		private void LoadSuggestedSpecializations(string name)
 		{
-			if (NameCategoryMap.ContainsKey(name))
+		    string strNameValue;
+			if (NameCategoryMap.TryGetValue(name, out strNameValue))
 			{
-				Type = NameCategoryMap[name];
+			    Type = strNameValue;
 				SuggestedSpecializations.Clear();
 
 				XmlNodeList list =
@@ -181,9 +182,10 @@ namespace Chummer.Skills
 			get { return _type; }
 			set
 			{
-				if (!CategoriesSkillMap.ContainsKey(value)) return;
+			    string strNewAttributeValue;
+                if (!CategoriesSkillMap.TryGetValue(value, out strNewAttributeValue)) return;
 				AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
-				AttributeObject = CharacterObject.GetAttribute(CategoriesSkillMap[value]);
+				AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
 
 				AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 				_type = value;

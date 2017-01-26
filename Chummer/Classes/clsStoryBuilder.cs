@@ -211,32 +211,31 @@ namespace Chummer
                 {
                     if (userMacro.FirstChild != null)
                     {
-                        String selected = string.Empty;
+                        string selected;
                         //Allready defined, no need to do anything fancy
-                        if (persistenceDictionary.ContainsKey(macroPool))
+                        if (!persistenceDictionary.TryGetValue(macroPool, out selected))
                         {
-                            selected = persistenceDictionary[macroPool];
-                        }
-                        else if (userMacro.FirstChild.Name == "random")
-                        {
-                            //Any node not named 
-                            XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-                            if (possible.Count > 0)
-                                selected = possible[random.Next(possible.Count)].Name;
-                        }
-                        else if (userMacro.FirstChild.Name == "persistent")
-                        {
-                            //Any node not named 
-                            XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-                            if (possible.Count > 0)
+                            if (userMacro.FirstChild.Name == "random")
                             {
-                                selected = possible[random.Next(possible.Count)].Name;
-                                persistenceDictionary.Add(macroPool, selected);
+                                //Any node not named 
+                                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+                                if (possible != null && possible.Count > 0)
+                                    selected = possible[random.Next(possible.Count)].Name;
                             }
-                        }
-                        else
-                        {
-                            return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
+                            else if (userMacro.FirstChild.Name == "persistent")
+                            {
+                                //Any node not named 
+                                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+                                if (possible != null && possible.Count > 0)
+                                {
+                                    selected = possible[random.Next(possible.Count)].Name;
+                                    persistenceDictionary.Add(macroPool, selected);
+                                }
+                            }
+                            else
+                            {
+                                return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
+                            }
                         }
 
                         if (!string.IsNullOrEmpty(selected) && userMacro.FirstChild[selected] != null)

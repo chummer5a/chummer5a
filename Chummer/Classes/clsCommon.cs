@@ -1242,12 +1242,8 @@ namespace Chummer
 			string[] strTemp = strSource.Split(' ');
             if (strTemp.Length < 2)
                 return;
-			string strBook = strTemp[0];
-            string strPage = strTemp[1];
-            Uri uriPath = null;
-			int intPage = 0;
-
-		    if (!int.TryParse(strPage, out intPage))
+			int intPage;
+		    if (!int.TryParse(strTemp[1], out intPage))
 		        return;
 
             // Make sure the page is actually a number that we can use as well as being 1 or higher.
@@ -1255,16 +1251,21 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = strTemp[0];
             if (_objCharacter != null)
 				strBook = _objCharacter.Options.BookFromAltCode(strBook);
 
-			// Retrieve the sourcebook information including page offset and PDF application name.
-			bool blnFound = false;
-			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo.Where(objInfo => objInfo.Code == strBook).Where(objInfo => !string.IsNullOrEmpty(objInfo.Path)))
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            Uri uriPath = null;
+            bool blnFound = false;
+			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo)
 			{
-				blnFound = true;
-				uriPath = new Uri(objInfo.Path);
-				intPage += objInfo.Offset;
+			    if (!string.IsNullOrEmpty(objInfo.Path) && objInfo.Code == strBook)
+			    {
+			        blnFound = true;
+			        uriPath = new Uri(objInfo.Path);
+			        intPage += objInfo.Offset;
+			    }
 			}
 
 			// If the sourcebook was not found, we can't open anything.

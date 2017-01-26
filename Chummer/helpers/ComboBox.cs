@@ -18,7 +18,6 @@
  */
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +27,7 @@ namespace Chummer.helpers
     {
         public bool IsInitalized(bool isLoading)
         {
-            return (isLoading || SelectedValue == null || string.IsNullOrEmpty(SelectedValue.ToString()));
+            return (isLoading || string.IsNullOrEmpty(SelectedValue?.ToString()));
         }
     }
 }

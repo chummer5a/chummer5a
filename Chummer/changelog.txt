@@ -11,15 +11,12 @@ Application Changes:
 - Brought all projects to the same, .NET 4.5.2 target sku.
 - Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
 - Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
-- Made a massive optimization sweep after subjecting code to static code analysis.
 - Updated the program's icon with 128x128 and 256x256 versions.
 - Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
 - Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
-- Reduced load time for characters by about 25%.
 - Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
 - Fixed a bug where cancelling the option saving confirmation message would still save options.
-- Reduced initial load time for the skills section by about 15% (specifically, reduced the real load time of each individual skill control by about 33%, causing the overall skills section load time improvement).
-- Made minor performance improvements to the updating of drop-down boxes' lists (roughly 10-20% depending on the box).
+- Made performance improvements, thanks primarily to static code analysis, mainly to the load speed of characters and the skills tab (load times reduced by ca. 10-20% depending on the screen/tab).
 
 Data Changes:
 

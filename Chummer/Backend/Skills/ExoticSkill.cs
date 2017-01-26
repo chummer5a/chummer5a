@@ -16,13 +16,24 @@ namespace Chummer.Skills
 
 		static ExoticSkill()
 		{
-			XmlNodeList exotic = XmlManager.Instance.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon");
+			XmlNodeList exotic = XmlManager.Instance.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
 
-            var elem = exotic?.OfType<XmlNode>()
-				.Select(
-					x => new Tuple<string, string>(x["name"]?.InnerText, x.Attributes?["translate"]?.InnerText ?? x["name"].InnerText));
+		    if (exotic != null)
+		    {
+		        List<Tuple<string, string>> elem = new List<Tuple<string, string>>();
 
-			_specificTranslator.AddRange(elem);
+                foreach (XmlNode objLoopNode in exotic)
+                {
+                    string strLoopName = string.Empty;
+                    if (objLoopNode.TryGetStringFieldQuickly("name", ref strLoopName))
+                    {
+                        string strLoopTranslate = objLoopNode.Attributes?["translate"]?.InnerText ?? strLoopName;
+                        elem.Add(new Tuple<string, string>(strLoopName, strLoopTranslate));
+                    }
+                }
+
+		        _specificTranslator.AddRange(elem);
+		    }
 		}
 
 
@@ -32,8 +43,8 @@ namespace Chummer.Skills
 
 		public void Load(XmlNode node)
 		{
-			_specific = node["specific"]?.InnerText;
-			_translated = node["translated"]?.InnerText;
+		    node.TryGetStringFieldQuickly("specific", ref _specific);
+            node.TryGetStringFieldQuickly("translated", ref _translated);
 		}
 
 		public override bool AllowDelete
@@ -74,7 +85,8 @@ namespace Chummer.Skills
 		{
 			writer.WriteElementString("specific", _specific);
 
-			if(!string.IsNullOrEmpty(_translated)) writer.WriteElementString("translated", _translated);
+			if (!string.IsNullOrEmpty(_translated))
+                writer.WriteElementString("translated", _translated);
 		}
 
 		public string Specific {

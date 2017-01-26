@@ -83,7 +83,8 @@ namespace Chummer
 
 		private void SpiritControl_Load(object sender, EventArgs e)
 		{
-			if (_blnCareer)
+            DoubleBuffered = true;
+            if (_blnCareer)
 				nudForce.Enabled = true;
 			Width = cmdDelete.Left + cmdDelete.Width;
 		}

@@ -81,10 +81,9 @@ namespace Chummer
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
 
-        
-
         private void ContactControl_Load(object sender, EventArgs e)
         {
+            DoubleBuffered = true;
             Width = cmdDelete.Left + cmdDelete.Width;
             LoadContactList();
         }

@@ -399,9 +399,10 @@ namespace Chummer
 		/// <param name="strKey">Key to retrieve.</param>
 		public string GetString(string strKey)
 		{
-            if (_objDictionary.ContainsKey(strKey))
+		    string strReturn;
+            if (_objDictionary.TryGetValue(strKey, out strReturn))
             {
-                return _objDictionary[strKey].Replace("\\n", "\n");
+                return strReturn.Replace("\\n", "\n");
             }
             else
             {

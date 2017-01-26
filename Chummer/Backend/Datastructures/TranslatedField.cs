@@ -36,9 +36,8 @@ namespace Chummer.Datastructures
 			{
 				if(translated != null) return translated;
 
-				if (orginal != null && _translate.ContainsKey(orginal))
+				if (orginal != null && _translate.TryGetValue(orginal, out translated))
 				{
-					translated = _translate[orginal];
 					return translated;
 				}
 
@@ -50,17 +49,22 @@ namespace Chummer.Datastructures
 		{
 			if (GlobalOptions.Instance.Language == "en-us")
 			{
-				if (orginal != null && _translate.ContainsKey(orginal) && _translate[orginal] == translated)
+				if (orginal != null && value != null)
 				{
-					translated = _translate[value];
+				    T objTmp;
+				    if (_translate.TryGetValue(orginal, out objTmp) && objTmp == translated)
+				    {
+				        _translate.TryGetValue(value, out translated);
+                    }
 				}
 				orginal = value;
 			}
 			else
-			{
-				orginal = _back.ContainsKey(value) ? _back[value] : value;
+            {
+			    if (value != null && !_back.TryGetValue(value, out orginal))
+			        orginal = value;
 
-				translated = value;
+                translated = value;
 			}
 		}
 

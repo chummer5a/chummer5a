@@ -102,7 +102,7 @@ namespace Chummer.Skills
 
 					value -= overMax; //reduce value by leftovers, later prevents it going belov 0
 				}
-					
+
 				_base = Math.Max(0, value - FreeBase());
 
 				//if old != base, base changed
@@ -199,10 +199,9 @@ namespace Chummer.Skills
 			get
 			{
 				int otherbonus = _character.Improvements.Where(x =>
-					x.Enabled &&
-					x.ImproveType == Improvement.ImprovementType.Skill &&
-					x.ImprovedName == Name).Sum(x => x.Maximum);
-									
+                    x.ImprovedName == Name &&
+                    x.Enabled &&
+					x.ImproveType == Improvement.ImprovementType.Skill).Sum(x => x.Maximum);
 				return (_character.Created  || _character.IgnoreRules
 					? 12
 					: (IsKnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
@@ -241,10 +240,7 @@ namespace Chummer.Skills
 
 				if (ware == null) return -1;
 
-				bool affected = SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) ?? false;
-
-				if (affected) return 0;
-				
+				if (SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) == true) return 0;
 
 				return -1;
 			}
@@ -350,8 +346,7 @@ namespace Chummer.Skills
 		{
 			//No rating can obv not cost anything
 			//Makes debugging easier as we often only care about value calculation
-			if (LearnedRating == 0) return 0; 
-			
+			if (LearnedRating == 0) return 0;
 
 			int cost = 0;
 			if (SkillGroupObject?.Karma > 0)
@@ -379,9 +374,10 @@ namespace Chummer.Skills
 
 			cost = Math.Max(0, cost); //Don't give karma back...
 
-			foreach (SkillSpecialization objSpec in Specializations.Where(objSpec => !objSpec.Free))
+			foreach (SkillSpecialization objSpec in Specializations)
 			{
-				cost += //Spec
+                if (!objSpec.Free)
+				    cost += //Spec
 					(BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma ||
 					  _character.BuildMethod == CharacterBuildMethod.LifeModule)
 						? _character.Options.KarmaSpecialization

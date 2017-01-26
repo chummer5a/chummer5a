@@ -89,9 +89,10 @@ namespace Chummer
 			if (cboXSLT.Text == string.Empty)
 				return;
 
-			if (_dictCache.ContainsKey(cboXSLT.Text))
+		    string strBoxText;
+			if (_dictCache.TryGetValue(cboXSLT.Text, out strBoxText))
 			{
-				rtbText.Text = _dictCache.First(objPair => objPair.Key == cboXSLT.Text).Value;
+				rtbText.Text = strBoxText;
 			}
 
 			if (cboXSLT.Text == "Export JSON")
@@ -140,11 +141,10 @@ namespace Chummer
 			}
 			objFile.Close();
 
-			string strSaveFile = string.Empty;
 			SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
 			SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsHtml");
 			SaveFileDialog1.ShowDialog();
-			strSaveFile = SaveFileDialog1.FileName;
+			string strSaveFile = SaveFileDialog1.FileName;
 
 			if (string.IsNullOrEmpty(strSaveFile))
 				return;

@@ -131,7 +131,7 @@ namespace Chummer.UI.Skills
 				int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
 				if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring = string.Empty;
+                string confirmstring;
                 if (_skill.Karma == 0)
                 {
                     confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
@@ -172,11 +172,9 @@ namespace Chummer.UI.Skills
 			_skill.AddSpecialization(selectForm.SelectedItem);
 
 			//TODO turn this into a databinding, but i don't care enough right now
-			lblSpec.Text = string.Join(", ",
-					(from specialization in _skill.Specializations
-					 select specialization.Name));
+            lblSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.Name));
 
-			parrent?.UpdateCharacterInfo();
+            parrent?.UpdateCharacterInfo();
 		}
 	}
 }

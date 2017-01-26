@@ -134,11 +134,11 @@ namespace Chummer.Skills
 			if (n["suid"] == null) return null;
 
 			Guid suid;
-			XmlDocument skills = XmlManager.Instance.Load("skills.xml");
-			if (!Guid.TryParse(n["suid"].InnerText, out suid))
-			{
-				return null;
-			}
+            if (!Guid.TryParse(n["suid"].InnerText, out suid))
+            {
+                return null;
+            }
+            XmlDocument skills = XmlManager.Instance.Load("skills.xml");
 			Skill skill;
 			if (suid != Guid.Empty)
 			{
@@ -159,7 +159,7 @@ namespace Chummer.Skills
 			}
 			else //This is ugly but i'm not sure how to make it pretty
 			{
-				if (n["forced"] != null)
+				if (n["forced"] != null && n["name"] != null)
 				{
 					skill = new KnowledgeSkill(character, n["name"].InnerText);
 				}
@@ -185,7 +185,7 @@ namespace Chummer.Skills
 			}
 			XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
 
-			if (objCategoryNode != null && objCategoryNode.Attributes?["translate"] != null)
+			if (objCategoryNode?.Attributes?["translate"] != null)
 			{
 				skill.DisplayCategory = objCategoryNode.Attributes["translate"].InnerText;
 			}
@@ -289,15 +289,12 @@ namespace Chummer.Skills
 				string category = n["category"].InnerText; //if missing we have bigger problems, and a nullref is probably prefered
 				bool knoSkill;
 
-				if (SkillTypeCache != null && SkillTypeCache.ContainsKey(category))
-				{
-					knoSkill = SkillTypeCache[category]; //Simple cache, no need to be sloppy
-				}
-				else
+				if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out knoSkill))
 				{
 					knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
-					knoSkill = knoNode.Attributes["type"].InnerText != "active";
-					SkillTypeCache[category] = knoSkill;
+					knoSkill = knoNode?.Attributes?["type"]?.InnerText != "active";
+                    if (SkillTypeCache != null)
+					    SkillTypeCache[category] = knoSkill;
 				}
 
 
@@ -306,24 +303,18 @@ namespace Chummer.Skills
 					//TODO INIT SKILL
 					if (Debugger.IsAttached) Debugger.Break();
 
-					KnowledgeSkill s2 = new KnowledgeSkill(character);
-
-					s = s2;
+					s = new KnowledgeSkill(character);
 				}
 				else
 				{
-					Skill s2 = new Skill(character, n);
 					//TODO INIT SKILL
 
-					s = s2;
+					s = new Skill(character, n);
 				}
-				if (knoNode != null)
-				{
-					if (knoNode.Attributes["translate"] != null)
-					{
-						s.DisplayCategory = knoNode.Attributes["translate"].InnerText;
-					}
-				}
+			    if (knoNode?.Attributes?["translate"] != null)
+			    {
+			        s.DisplayCategory = knoNode.Attributes["translate"].InnerText;
+			    }
 			}
 
 
@@ -726,7 +717,7 @@ namespace Chummer.Skills
                         intBasePool += 2;
                         blnHaveSpec = true;
                     }
-                    s.Append(intBasePool);
+                    s.Append(intBasePool.ToString());
 
                     if (objSwapSkillAttribute.ImprovedName == "STR" || objSwapSkillAttribute.ImprovedName == "AGI")
                     {

@@ -45,9 +45,8 @@ namespace Chummer
 
 		public CharacterShared()
 		{
-			_gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.Skills.First(x => x.Name == "Gunnery"));
+		    _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.Skills.First(x => x.Name == "Gunnery"));
 		}
-
 
 		/// <summary>
 		/// Wrapper for relocating contact forms. 
@@ -70,23 +69,25 @@ namespace Chummer
 		protected void RedlinerCheck()
 		{
 			string strSeekerImprovPrefix = "SEEKER";
-			//Get attributes affected by redliner/cyber singularity seeker
-			var attributes = new List<string>(
-				from improvement in _objCharacter.Improvements
-				where improvement.ImproveType == Improvement.ImprovementType.Seeker
-				select improvement.ImprovedName);
+		    var lstSeekerAttributes = new List<string>();
+		    var lstSeekerImprovements = new List<Improvement>();
+            //Get attributes affected by redliner/cyber singularity seeker
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+		    {
+		        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Seeker)
+		        {
+                    lstSeekerAttributes.Add(objLoopImprovement.ImprovedName);
+                }
+                else if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
+                       objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
+                      objLoopImprovement.SourceName.Contains(strSeekerImprovPrefix))
+                {
+                    lstSeekerImprovements.Add(objLoopImprovement);
+                }
+            }
 
-			//And the improvements comming from there
-			var impr = new List<Improvement>(
-				from improvement in _objCharacter.Improvements
-				where (improvement.ImproveType == Improvement.ImprovementType.Attribute ||
-				       improvement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
-				      improvement.SourceName.Contains(strSeekerImprovPrefix)
-				//for backwards compability
-				select improvement);
-
-			//if neither contains anything, it is safe to exit
-			if (impr.Count == 0 && attributes.Count == 0)
+            //if neither contains anything, it is safe to exit
+            if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
 			{
 				_objCharacter.RedlinerBonus = 0;
 				return;
@@ -99,7 +100,7 @@ namespace Chummer
                 count += objCyberware.CyberlimbCount;
             }
 			count = Math.Min(count/2, 2);
-			if (impr.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
+			if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
 			{
 				_objCharacter.RedlinerBonus = count;
 			}
@@ -108,17 +109,18 @@ namespace Chummer
 				_objCharacter.RedlinerBonus = 0;
 			}
 
-			for (int i = 0; i < attributes.Count; i++)
+			for (int i = 0; i < lstSeekerAttributes.Count; i++)
 			{
 				Improvement objImprove =
-					impr.FirstOrDefault(
+                    lstSeekerImprovements.FirstOrDefault(
 						x =>
-							x.SourceName == strSeekerImprovPrefix + "_" + attributes[i] &&
-							x.Value == (attributes[i] == "BOX" ? count*-3 : count));
+							x.SourceName == strSeekerImprovPrefix + "_" + lstSeekerAttributes[i] &&
+							x.Value == (lstSeekerAttributes[i] == "BOX" ? count*-3 : count));
 				if (objImprove != null)
 				{
-					attributes.RemoveAt(i);
-					impr.Remove(objImprove);
+                    lstSeekerAttributes.RemoveAt(i);
+                    lstSeekerImprovements.Remove(objImprove);
+				    i--;
 				}
 			}
 			//Improvement manager defines the functions we need to manipulate improvements
@@ -127,13 +129,13 @@ namespace Chummer
 			Lazy<ImprovementManager> manager = new Lazy<ImprovementManager>(() => new ImprovementManager(_objCharacter));
 
 			// Remove which qualites have been removed or which values have changed
-			foreach (Improvement improvement in impr)
+			foreach (Improvement improvement in lstSeekerImprovements)
 			{
 				manager.Value.RemoveImprovements(improvement.ImproveSource, improvement.SourceName);
 			}
 
 			// Add new improvements or old improvements with new values
-			foreach (string attribute in attributes)
+			foreach (string attribute in lstSeekerAttributes)
 			{
 				if (attribute == "BOX")
 				{
@@ -197,8 +199,7 @@ namespace Chummer
 		{
 			// Armor Ratings.
 			lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-			string strArmorToolTip = string.Empty;
-			strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
+			string strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
 			if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
 				strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 				                   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
@@ -269,19 +270,35 @@ namespace Chummer
 		protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, HtmlToolTip tipTooltip)
 		{
 			lblPhysical.Text = _objCharacter.LimitPhysical;
-			string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
-			strPhysical = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit).Aggregate(strPhysical, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
-			tipTooltip.SetToolTip(lblPhysical, strPhysical);
+            lblMental.Text = _objCharacter.LimitMental.ToString();
+            lblSocial.Text = _objCharacter.LimitSocial.ToString();
 
-			lblMental.Text = _objCharacter.LimitMental.ToString();
-			string strMental = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
-			strMental = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit).Aggregate(strMental, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
-			tipTooltip.SetToolTip(lblMental, strMental);
+            string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
+            string strMental = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
+            string strSocial = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeESSShort"), _objCharacter.Essence.ToString());
 
-			lblSocial.Text = _objCharacter.LimitSocial.ToString();
-			string strSocial = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeESSShort"), _objCharacter.Essence.ToString());
-			strSocial = _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit).Aggregate(strSocial, (current, objImprovement) => current + (" + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Value) + ")"));
-			tipTooltip.SetToolTip(lblSocial, strSocial);
+		    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+		    {
+		        if (objLoopImprovement.Enabled)
+		        {
+		            switch (objLoopImprovement.ImproveType)
+		            {
+                        case Improvement.ImprovementType.PhysicalLimit:
+		                    strPhysical += " + " + _objCharacter.GetObjectName(objLoopImprovement) + " (" + objLoopImprovement.Value.ToString() + ")";
+                            break;
+                        case Improvement.ImprovementType.MentalLimit:
+                            strMental += " + " + _objCharacter.GetObjectName(objLoopImprovement) + " (" + objLoopImprovement.Value.ToString() + ")";
+                            break;
+                        case Improvement.ImprovementType.SocialLimit:
+                            strSocial += " + " + _objCharacter.GetObjectName(objLoopImprovement) + " (" + objLoopImprovement.Value.ToString() + ")";
+                            break;
+                    }
+		        }
+		    }
+
+            tipTooltip.SetToolTip(lblPhysical, strPhysical);
+            tipTooltip.SetToolTip(lblMental, strMental);
+            tipTooltip.SetToolTip(lblSocial, strSocial);
 
 			lblAstral.Text = _objCharacter.LimitAstral.ToString();
 		}
@@ -304,7 +321,7 @@ namespace Chummer
 
 			Gear maybeAutoSoft =
 				vehicle.Gear.SelectMany(x => x.ThisAndAllChildren())
-					.FirstOrDefault(x => x.Name == "Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
+					.FirstOrDefault(x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
 
 			if (maybeAutoSoft != null)
 			{
@@ -465,30 +482,31 @@ namespace Chummer
 		{
 			foreach (XmlNode objNode in objNodeList)
 			{
-				foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Name == objNode.InnerText))
+				foreach (Quality objQuality in _objCharacter.Qualities)
 				{
-					switch (objQuality.Type)
-					{
-						case QualityType.Positive:
-							foreach (
-								TreeNode nodQuality in
-									treQualities.Nodes[0].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text == objQuality.Name))
-							{
-								nodQuality.Remove();
-							}
-							break;
-						case QualityType.Negative:
-							foreach (
-								TreeNode nodQuality in
-									treQualities.Nodes[1].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text == objQuality.Name))
-							{
-								nodQuality.Remove();
-							}
-							break;
-					}
-					_objCharacter.Qualities.Remove(objQuality);
-					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
-					break;
+				    if (objQuality.Name == objNode.InnerText)
+				    {
+				        switch (objQuality.Type)
+				        {
+				            case QualityType.Positive:
+				                foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
+				                {
+                                    if (nodQuality.Text == objQuality.Name)
+				                        nodQuality.Remove();
+				                }
+				                break;
+				            case QualityType.Negative:
+				                foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
+				                {
+                                    if (nodQuality.Text == objQuality.Name)
+                                        nodQuality.Remove();
+				                }
+				                break;
+				        }
+				        _objCharacter.Qualities.Remove(objQuality);
+				        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+				        break;
+				    }
 				}
 			}
 		}
