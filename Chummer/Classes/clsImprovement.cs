@@ -245,8 +245,6 @@ namespace Chummer
 		private bool _blnEnabled = true;
 		private int _intOrder = 0;
 
-        private CommonFunctions objFunctions = new CommonFunctions();
-
 		#region Helper Methods
 
 		/// <summary>

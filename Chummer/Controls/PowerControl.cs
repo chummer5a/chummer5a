@@ -25,7 +25,6 @@ namespace Chummer
     public partial class PowerControl : UserControl
     {
 		private Power _objPower;
-		private CommonFunctions functions = new CommonFunctions();
 
         // Events.
         public Action<object> PowerRatingChanged;
@@ -426,7 +425,7 @@ namespace Chummer
         private void lblPowerName_Click(object sender, EventArgs e)
         {
             string strBook = _objPower.Source + " " + _objPower.Page;
-            CommonFunctions objCommon = new CommonFunctions();
+            CommonFunctions objCommon = new CommonFunctions(null);
             objCommon.OpenPDF(strBook);
         }
     }

@@ -27,7 +27,6 @@ namespace Chummer
 	public partial class PetControl : UserControl
 	{
 		private Contact _objContact;
-		private CommonFunctions functions = new CommonFunctions();
 
 		// Events.
 		public Action<object> DeleteContact;

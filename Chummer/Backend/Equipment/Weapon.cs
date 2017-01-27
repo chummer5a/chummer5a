@@ -611,7 +611,7 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Underbarrel Weapon.
 		/// </summary>
-		public List<Weapon> Children
+		public List<Weapon> UnderbarrelWeapons
 		{
 			get
 			{
@@ -619,10 +619,15 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Whether or not this Weapon is an Underbarrel Weapon.
+        /// <summary>
+		/// Children as Underbarrel Weapon.
 		/// </summary>
-		public bool IsUnderbarrelWeapon
+		public List<Weapon> Children => UnderbarrelWeapons;
+
+        /// <summary>
+        /// Whether or not this Weapon is an Underbarrel Weapon.
+        /// </summary>
+        public bool IsUnderbarrelWeapon
 		{
 			get
 			{

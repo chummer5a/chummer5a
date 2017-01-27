@@ -30,12 +30,8 @@ namespace Chummer
 	public class CommonFunctions
 	{
 		#region Constructor and Instance
-		private Character _objCharacter;
+		private readonly Character _objCharacter;
 
-        public CommonFunctions()
-        {
-        }
-        
         public CommonFunctions(Character objCharacter)
 		{
 			_objCharacter = objCharacter;
@@ -100,7 +96,7 @@ namespace Chummer
         {
             if (strGuid != Guid.Empty.ToString())
             {
-                T objNeedle = default(T);
+                T objNeedle;
                 foreach (T objLoop in lstHaystack)
                 {
                     if (objLoop.InternalId == strGuid)
@@ -444,7 +440,7 @@ namespace Chummer
 		            }
 
 		            // Look within Underbarrel Weapons.
-		            objReturn = FindWeaponAccessory(strGuid, objWeapon.Children);
+		            objReturn = FindWeaponAccessory(strGuid, objWeapon.UnderbarrelWeapons);
 		            if (objReturn != null)
 		                return objReturn;
 		        }
@@ -477,9 +473,9 @@ namespace Chummer
 		                }
 		            }
 
-		            if (objWeapon.Children.Count > 0)
+		            if (objWeapon.UnderbarrelWeapons.Count > 0)
 		            {
-		                objReturn = FindWeaponGear(strGuid, objWeapon.Children, out objFoundAccessory);
+		                objReturn = FindWeaponGear(strGuid, objWeapon.UnderbarrelWeapons, out objFoundAccessory);
 
 		                if (!string.IsNullOrEmpty(objReturn?.Name))
 		                    return objReturn;
@@ -606,12 +602,12 @@ namespace Chummer
 				{
 					// Retrieve the list of Commlinks in child items.
 					List<Commlink> lstAppend = FindCharacterCommlinks(objGear.Children);
-					if (lstAppend.Count > 0)
+
+                    if (lstAppend != null)
 					{
-						// Append the entries to the current list.
-						foreach (Commlink objCommlink in lstAppend)
-							lstReturn.Add(objCommlink);
-					}
+                        // Append the entries to the current list.
+                        lstReturn.AddRange(lstAppend);
+                    }
 				}
 			}
 
@@ -886,15 +882,9 @@ namespace Chummer
 		/// </summary>
 		public bool ConfirmDelete(string strMessage)
 		{
-			if (!_objCharacter.Options.ConfirmDelete)
-				return true;
-			else
-			{
-				if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-					return false;
-				else
-					return true;
-			}
+		    return !_objCharacter.Options.ConfirmDelete ||
+		           MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Delete"),
+		               MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
 		}
 		#endregion
 
@@ -1199,9 +1189,9 @@ namespace Chummer
 			}
 
 			// Add Underbarrel Weapons.
-			if (objWeapon.Children.Count > 0)
+			if (objWeapon.UnderbarrelWeapons.Count > 0)
 			{
-				foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
+				foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
 					CreateWeaponTreeNode(objUnderbarrelWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 			}
 
@@ -1265,6 +1255,7 @@ namespace Chummer
 			        blnFound = true;
 			        uriPath = new Uri(objInfo.Path);
 			        intPage += objInfo.Offset;
+                    break;
 			    }
 			}
 
@@ -1312,7 +1303,7 @@ namespace Chummer
             for (pos = 0; pos < text.Length; pos = next)
             {
                 // Find end of line
-                int eol = text.IndexOf(Environment.NewLine, pos);
+                int eol = text.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
                 if (eol == -1)
                     next = eol = text.Length;
                 else
@@ -1352,7 +1343,7 @@ namespace Chummer
         {
             // Find last whitespace in line
             int i = max;
-            while (i >= 0 && !Char.IsWhiteSpace(text[pos + i]))
+            while (i >= 0 && !char.IsWhiteSpace(text[pos + i]))
                 i--;
 
             // If no whitespace found, break at maximum length
@@ -1360,7 +1351,7 @@ namespace Chummer
                 return max;
 
             // Find start of whitespace
-            while (i >= 0 && Char.IsWhiteSpace(text[pos + i]))
+            while (i >= 0 && char.IsWhiteSpace(text[pos + i]))
                 i--;
 
             // Return length of text before whitespace
