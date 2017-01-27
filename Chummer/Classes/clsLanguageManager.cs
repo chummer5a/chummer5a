@@ -406,8 +406,6 @@ namespace Chummer
             }
             else
             {
-                if (Debugger.IsAttached)
-                    Debugger.Break();
                 return "Error finding string for key - " + strKey;
             }
 		}
