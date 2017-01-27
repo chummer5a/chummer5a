@@ -26,14 +26,14 @@ namespace Chummer
 {
 	public partial class frmSelectVehicle : Form
 	{
-		private string _strSelectedVehicle = "";
+		private string _strSelectedVehicle = string.Empty;
 		private bool _blnUsedVehicle = false;
-		private string _strUsedAvail = "";
+		private string _strUsedAvail = string.Empty;
 		private int _intUsedCost = 0;
 		private int _intMarkup = 0;
 
 		private bool _blnAddAgain = false;
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
@@ -55,10 +55,10 @@ namespace Chummer
 
 		private void frmSelectVehicle_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Vehicle information.
@@ -81,20 +81,22 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
 			// Select the first Category in the list.
-			if (_strSelectCategory == "")
+			if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -118,11 +120,13 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
-			lstVehicle.DataSource = null;
+            lstVehicle.BeginUpdate();
+            lstVehicle.DataSource = null;
 			lstVehicle.ValueMember = "Value";
 			lstVehicle.DisplayMember = "Name";
 			lstVehicle.DataSource = lstVehicles;
-		}
+            lstVehicle.EndUpdate();
+        }
 
 		private void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -131,18 +135,18 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstVehicle.Text != "")
+			if (!string.IsNullOrEmpty(lstVehicle.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
-			if (txtSearch.Text == "")
+			if (string.IsNullOrEmpty(txtSearch.Text))
 			{
 				cboCategory_SelectedIndexChanged(sender, e);
 				return;
@@ -164,27 +168,29 @@ namespace Chummer
 				else
 					objItem.Name = objXmlVehicle["name"].InnerText;
 
-				try
-				{
-					objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText).Name + "]";
-					lstVehicles.Add(objItem);
-				}
-				catch
-				{
-				}
-			}
+                if (objXmlVehicle["category"] != null)
+                {
+                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText);
+                    if (objFoundItem != null)
+                    {
+                        objItem.Name += " [" + objFoundItem.Name + "]";
+                    }
+                }
+                lstVehicles.Add(objItem);
+            }
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
-			lstVehicle.DataSource = null;
+            lstVehicle.BeginUpdate();
+            lstVehicle.DataSource = null;
 			lstVehicle.ValueMember = "Value";
 			lstVehicle.DisplayMember = "Name";
 			lstVehicle.DataSource = lstVehicles;
-		}
+            lstVehicle.EndUpdate();
+        }
 
 		private void lstVehicle_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstVehicle.Text != "")
-				AcceptForm();
+			cmdOK_Click(sender, e);
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -222,40 +228,26 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstVehicle.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstVehicle.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstVehicle.SelectedIndex + 1 < lstVehicle.Items.Count)
+                {
+                    lstVehicle.SelectedIndex++;
+                }
+                else if (lstVehicle.Items.Count > 0)
+                {
+                    lstVehicle.SelectedIndex = 0;
+                }
+            }
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstVehicle.SelectedIndex--;
-					if (lstVehicle.SelectedIndex == -1)
-						lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-			}
+                if (lstVehicle.SelectedIndex - 1 >= 0)
+                {
+                    lstVehicle.SelectedIndex--;
+                }
+                else if (lstVehicle.Items.Count > 0)
+                {
+                    lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
+                }
+            }
 		}
 
 		private void txtSearch_KeyUp(object sender, KeyEventArgs e)
@@ -361,7 +353,7 @@ namespace Chummer
 		/// </summary>
 		private void UpdateSelectedVehicle()
 		{
-			if (lstVehicle.Text == "")
+			if (string.IsNullOrEmpty(lstVehicle.Text))
 				return;
 
 			double dblCostModifier = 1.0;
@@ -383,7 +375,7 @@ namespace Chummer
 
 			if (chkUsedVehicle.Checked)
 			{
-				string strSuffix = "";
+				string strSuffix = string.Empty;
 				string strAvail = objXmlVehicle["avail"].InnerText;
 				if (strAvail.Contains("R") || strAvail.Contains("F"))
 				{
@@ -404,7 +396,7 @@ namespace Chummer
             if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
             {
                 lblVehicleCost.Text = objXmlVehicle["cost"].InnerText;
-                lblTest.Text = "";
+                lblTest.Text = string.Empty;
             }
             else
             {
@@ -463,7 +455,7 @@ namespace Chummer
 			_strSelectedVehicle = objXmlVehicle["name"].InnerText;
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

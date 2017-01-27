@@ -223,24 +223,24 @@ namespace Chummer
             AIProgram
         }
 
-		private string _strImprovedName = "";
-        private string _strSourceName = "";
+		private string _strImprovedName = string.Empty;
+        private string _strSourceName = string.Empty;
 		private int _intMin = 0;
 		private int _intMax = 0;
         private int _intAug = 0;
         private int _intAugMax = 0;
         private int _intVal = 0;
         private int _intRating = 1;
-		private string _strExclude = "";
-		private string _strUniqueName = "";
-        private string _strTarget = "";
+		private string _strExclude = string.Empty;
+		private string _strUniqueName = string.Empty;
+        private string _strTarget = string.Empty;
         private ImprovementType _objImprovementType;
         private ImprovementSource _objImprovementSource;
 		private bool _blnCustom = false;
-		private string _strCustomName = "";
-		private string _strCustomId = "";
-		private string _strCustomGroup = "";
-		private string _strNotes = "";
+		private string _strCustomName = string.Empty;
+		private string _strCustomId = string.Empty;
+		private string _strCustomGroup = string.Empty;
+		private string _strNotes = string.Empty;
 		private bool _blnAddToRating = false;
 		private bool _blnEnabled = true;
 		private int _intOrder = 0;
@@ -280,7 +280,7 @@ namespace Chummer
 			Log.Enter("Save");
 
 			objWriter.WriteStartElement("improvement");
-			if (_strUniqueName != "")
+			if (!string.IsNullOrEmpty(_strUniqueName))
 				objWriter.WriteElementString("unique", _strUniqueName);
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("improvedname", _strImprovedName);
@@ -313,83 +313,34 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
+            if (objNode == null)
+                return;
             Log.Enter("Load");
-            
-            try
-			{
-				_strUniqueName = objNode["unique"].InnerText;
-			}
-			catch
-			{
-			}
-            try
-            {
-                _strTarget = objNode["target"].InnerText;
-            }
-            catch
-            {
-            }
-            _strImprovedName = objNode["improvedname"].InnerText;
-			_strSourceName = objNode["sourcename"].InnerText;
-			try
-			{
-				_intMin = Convert.ToInt32(objNode["min"].InnerText);
-			}
-			catch
-			{
-			}
-			_intMax = Convert.ToInt32(objNode["max"].InnerText);
-			_intAug = Convert.ToInt32(objNode["aug"].InnerText);
-			_intAugMax = Convert.ToInt32(objNode["augmax"].InnerText);
-			_intVal = Convert.ToInt32(objNode["val"].InnerText);
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_strExclude = objNode["exclude"].InnerText;
-			_objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
-			_objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
-			_blnCustom = Convert.ToBoolean(objNode["custom"].InnerText);
-			_strCustomName = objNode["customname"].InnerText;
-			try
-			{
-				_strCustomId = objNode["customid"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCustomGroup = objNode["customgroup"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnAddToRating = Convert.ToBoolean(objNode["addtorating"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnEnabled = Convert.ToBoolean(objNode["enabled"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intOrder = Convert.ToInt32(objNode["order"].InnerText);
-			}
-			catch
-			{
-			}
+
+            objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
+            objNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
+            objNode.TryGetInt32FieldQuickly("min", ref _intMin);
+            objNode.TryGetInt32FieldQuickly("max", ref _intMax);
+            objNode.TryGetInt32FieldQuickly("aug", ref _intAug);
+            objNode.TryGetInt32FieldQuickly("augmax", ref _intAugMax);
+            objNode.TryGetInt32FieldQuickly("val", ref _intVal);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
+            if (objNode["improvementttype"] != null)
+			    _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
+            if (objNode["improvementsource"] != null)
+                _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
+            objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
+            objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);
+            objNode.TryGetStringFieldQuickly("customgroup", ref _strCustomGroup);
+            objNode.TryGetBoolFieldQuickly("addtorating", ref _blnAddToRating);
+            objNode.TryGetBoolFieldQuickly("enabled", ref _blnEnabled);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
             Log.Exit("Load");
         }
@@ -595,10 +546,10 @@ namespace Chummer
 		private readonly Character _objCharacter;
 		
 		// String that will be used to limit the selection in Pick forms.
-		private string _strLimitSelection = "";
+		private string _strLimitSelection = string.Empty;
 
-		private string _strSelectedValue = "";
-		private string _strForcedValue = "";
+		private string _strSelectedValue = string.Empty;
+		private string _strForcedValue = string.Empty;
 		private readonly List<Improvement> _lstTransaction = new List<Improvement>();
 
 		public ImprovementManager(Character objCharacter)
@@ -660,117 +611,118 @@ namespace Chummer
             }
 
 			List<string> lstUniqueName = new List<string>();
-			List<string[,]> lstUniquePair = new List<string[,]>();
+			List<Tuple<string, int>> lstUniquePair = new List<Tuple<string, int>>();
 			int intValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom))
+			foreach (Improvement objImprovement in _objCharacter.Improvements)
 			{
-					bool blnAllowed = !(_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-					    objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice);
-					// Ignore items that apply to a Skill's Rating.
-					if (objImprovement.AddToRating != blnAddToRating)
-						blnAllowed = false;
-					// If an Improved Name has been passed, only retrieve values that have this Improved Name.
-					if (strImprovedName != null)
-					{
-						if (strImprovedName != objImprovement.ImprovedName)
-							blnAllowed = false;
-					}
+			    if (objImprovement.Enabled && !objImprovement.Custom)
+			    {
+			        bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+			              objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                          // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                          // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (strImprovedName == null || strImprovedName == objImprovement.ImprovedName);
 
-					if (blnAllowed)
-					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == objImprovementType)
-						{
-							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-							bool blnFound = false;
-							foreach (string strName in lstUniqueName)
-							{
-								if (strName == objImprovement.UniqueName)
-									blnFound = true;
-								break;
-							}
-							if (!blnFound)
-								lstUniqueName.Add(objImprovement.UniqueName);
+			        if (blnAllowed)
+			        {
+			            string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+			            {
+			                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+			                bool blnFound = false;
+			                foreach (string strName in lstUniqueName)
+			                {
+			                    if (strName == strUniqueName)
+			                    {
+			                        blnFound = true;
+			                        break;
+			                    }
+			                }
+			                if (!blnFound)
+			                    lstUniqueName.Add(strUniqueName);
 
-							// Add the values to the UniquePair List so we can check them later.
-							string[,] strValues = new string[,] {{objImprovement.UniqueName, objImprovement.Value.ToString()}};
-							lstUniquePair.Add(strValues);
-						}
-						else
-						{
-							if (objImprovement.ImproveType == objImprovementType)
-								intValue += objImprovement.Value;
-						}
-					}
-			}
-
-			// Run through the list of UniqueNames and pick out the highest value for each one.
-			intValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues[0, 0] == strName select Convert.ToInt32(strValues[0, 1])).Concat(new[] {-999}).Max());
-
-			if (lstUniqueName.Contains("precedence1"))
-			{
-				intValue = lstUniquePair.Where(strValues => strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1").Sum(strValues => Convert.ToInt32(strValues[0, 1]));
-				// Retrieve all of the items that are precedence1 and nothing else.
+                            // Add the values to the UniquePair List so we can check them later.
+			                lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+			            }
+                        else
+                        {
+                            intValue += objImprovement.Value;
+                        }
+                    }
+			    }
 			}
 
 			if (lstUniqueName.Contains("precedence0"))
+            {
+                // Retrieve only the highest precedence0 value.
+                // Run through the list of UniqueNames and pick out the highest value for each one.
+                int intHighest = (from strValues in lstUniquePair where strValues.Item1 == "precedence0" select strValues.Item2).Concat(new[] { -999 }).Max();
+                if (lstUniqueName.Contains("precedence-1"))
+                {
+                    intHighest += lstUniquePair.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                }
+                intValue = intHighest;
+            }
+            else if (lstUniqueName.Contains("precedence1"))
 			{
-				// Retrieve only the highest precedence0 value.
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				int intHighest = (from strValues in lstUniquePair where strValues[0, 0] == "precedence0" select Convert.ToInt32(strValues[0, 1])).Concat(new[] {-999}).Max();
-				if (lstUniqueName.Contains("precedence-1"))
-				{
-					intHighest += lstUniquePair.Where(strValues => strValues[0, 0] == "precedence-1").Sum(strValues => Convert.ToInt32(strValues[0, 1]));
-				}
-				intValue = intHighest;
+                // Retrieve all of the items that are precedence1 and nothing else.
+                intValue = lstUniquePair.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
 			}
+			else
+			{
+                // Run through the list of UniqueNames and pick out the highest value for each one.
+                intValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] { -999 }).Max());
+            }
 
 			// Factor in Custom Improvements.
-			lstUniqueName = new List<string>();
-			lstUniquePair = new List<string[,]>();
+			lstUniqueName.Clear();
+			lstUniquePair.Clear();
 			int intCustomValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.Custom))
+			foreach (Improvement objImprovement in _objCharacter.Improvements)
 			{
-					bool blnAllowed = !(_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-					    objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice);
-					// Ignore items that apply to a Skill's Rating.
-					if (objImprovement.AddToRating != blnAddToRating)
-						blnAllowed = false;
-					// If an Improved Name has been passed, only retrieve values that have this Improved Name.
-					if (strImprovedName != null)
-					{
-						if (strImprovedName != objImprovement.ImprovedName)
-							blnAllowed = false;
-					}
+			    if (objImprovement.Custom && objImprovement.Enabled)
+			    {
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                          // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                          // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (strImprovedName == null || strImprovedName == objImprovement.ImprovedName);
 
-					if (blnAllowed)
-					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == objImprovementType)
-						{
-							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-							bool blnFound = false;
-							foreach (string strName in lstUniqueName)
-							{
-								if (strName == objImprovement.UniqueName)
-									blnFound = true;
-								break;
-							}
-							if (!blnFound)
-								lstUniqueName.Add(objImprovement.UniqueName);
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            bool blnFound = false;
+                            foreach (string strName in lstUniqueName)
+                            {
+                                if (strName == strUniqueName)
+                                {
+                                    blnFound = true;
+                                    break;
+                                }
+                            }
+                            if (!blnFound)
+                                lstUniqueName.Add(strUniqueName);
 
-							// Add the values to the UniquePair List so we can check them later.
-							string[,] strValues = new string[,] {{objImprovement.UniqueName, objImprovement.Value.ToString()}};
-							lstUniquePair.Add(strValues);
-						}
-						else
-						{
-							if (objImprovement.ImproveType == objImprovementType)
-								intCustomValue += objImprovement.Value;
-						}
-					}
+                            // Add the values to the UniquePair List so we can check them later.
+                            lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                        }
+                        else
+                        {
+                            intCustomValue += objImprovement.Value;
+                        }
+                    }
+                }
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.
-			intCustomValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues[0, 0] == strName select Convert.ToInt32(strValues[0, 1])).Concat(new[] {-999}).Max());
+			intCustomValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] {-999}).Max());
 
 			//Log.Exit("ValueOf");
 
@@ -814,23 +766,27 @@ namespace Chummer
                 XPathExpression xprValue = nav.Compile(strReturn);
 
 				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-				decimal decValue = Convert.ToDecimal(nav.Evaluate(xprValue).ToString(), GlobalOptions.Instance.CultureInfo);
-				decValue = Math.Floor(decValue);
-				int intValue = Convert.ToInt32(decValue);
+				double dblValue = Convert.ToDouble(nav.Evaluate(xprValue).ToString(), GlobalOptions.Instance.CultureInfo);
+				int intValue = Convert.ToInt32(Math.Floor(dblValue));
 
                 //Log.Exit("ValueToInt");
-				return Convert.ToInt32(intValue);
+				return intValue;
 			}
 			else
 			{
                 //Log.Exit("ValueToInt");
+			    int intReturn = 0;
                 if (strValue.Contains("FixedValues"))
 				{
-					string[] strValues = strValue.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					return Convert.ToInt32(strValues[intRating - 1]);
+					string[] strValues = strValue.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+				    if (strValues.Length >= intRating)
+				        int.TryParse(strValues[intRating - 1], out intReturn);
 				}
-				else
-					return Convert.ToInt32(strValue);
+                else
+                {
+                    int.TryParse(strValue, out intReturn);
+                }
+			    return intReturn;
 			}
 		}
 
@@ -841,22 +797,11 @@ namespace Chummer
 		/// <param name="strName">Name of the XmlNode to look for.</param>
 		private bool NodeExists(XmlNode objXmlNode, string strName)
 		{
-   //         Log.Enter("NodeExists");
+            //Log.Enter("NodeExists");
 			//Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-   //         Log.Info("strName = " + strName);
+            //Log.Info("strName = " + strName);
 
-            bool blnReturn = false;
-			try
-			{
-				XmlNode objXmlTest = objXmlNode.SelectSingleNode(strName);
-				if (objXmlTest != null)
-					blnReturn = true;
-			}
-			catch
-			{
-			}
-
-			return blnReturn;
+		    return objXmlNode?.SelectSingleNode(strName) != null;
 		}
 
 		#endregion
@@ -880,29 +825,27 @@ namespace Chummer
             Log.Enter("CreateImprovements");
 			Log.Info("objImprovementSource = " + objImprovementSource.ToString());
 			Log.Info("strSourceName = " + strSourceName);
-			Log.Info("nodBonus = " + nodBonus.OuterXml.ToString());
+			Log.Info("nodBonus = " + nodBonus?.OuterXml);
 			Log.Info("blnConcatSelectedValue = " + blnConcatSelectedValue.ToString());
 			Log.Info("intRating = " + intRating.ToString());
 			Log.Info("strFriendlyName = " + strFriendlyName);
 			Log.Info("intRating = " + intRating.ToString());
 
-            bool blnSuccess = true;
-
             /*try
             {*/
                 if (nodBonus == null)
                 {
-                    _strForcedValue = "";
-                    _strLimitSelection = "";
+                    _strForcedValue = string.Empty;
+                    _strLimitSelection = string.Empty;
                     Log.Exit("CreateImprovements");
                     return true;
                 }
 
-                string strUnique = "";
-                if (nodBonus.Attributes["unique"] != null)
+                string strUnique = string.Empty;
+                if (nodBonus.Attributes?["unique"] != null)
                     strUnique = nodBonus.Attributes["unique"].InnerText;
 
-                _strSelectedValue = "";
+                _strSelectedValue = string.Empty;
 
 				Log.Info(
 					"_strForcedValue = " + _strForcedValue);
@@ -910,7 +853,7 @@ namespace Chummer
 					"_strLimitSelection = " + _strLimitSelection);
 
                 // If no friendly name was provided, use the one from SourceName.
-                if (strFriendlyName == "")
+                if (string.IsNullOrEmpty(strFriendlyName))
                     strFriendlyName = strSourceName;
 
                 if (nodBonus.HasChildNodes)
@@ -923,7 +866,7 @@ namespace Chummer
 
 					if (_objCharacter != null)
 					{
-						if (_strForcedValue != "")
+						if (!string.IsNullOrEmpty(_strForcedValue))
 						{
 							LimitSelection = _strForcedValue;
 						}
@@ -936,26 +879,25 @@ namespace Chummer
 					Log.Info("_strForcedValue = " + SelectedValue);
 					Log.Info("_strLimitSelection = " + LimitSelection);
 
-				    if (LimitSelection != "")
+				    if (!string.IsNullOrEmpty(LimitSelection))
 				    {
                         _strSelectedValue = LimitSelection;
 				    }
 				    else
-                {
-
-                    // Display the Select Text window and record the value that was entered.
-                    frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-                        .Replace("{0}", strFriendlyName);
-                    frmPickText.ShowDialog();
+                    {
+                        // Display the Select Text window and record the value that was entered.
+                        frmSelectText frmPickText = new frmSelectText();
+                        frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+                            .Replace("{0}", strFriendlyName);
+                        frmPickText.ShowDialog();
 
 				        // Make sure the dialogue window was not canceled.
 				        if (frmPickText.DialogResult == DialogResult.Cancel)
 				        {
 
 				            Rollback();
-				            ForcedValue = "";
-				            LimitSelection = "";
+				            ForcedValue = string.Empty;
+				            LimitSelection = string.Empty;
 				            Log.Exit("CreateImprovements");
 				            return false;
 				        }
@@ -986,9 +928,8 @@ namespace Chummer
                 // Check to see what bonuses the node grants.
 				foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
-					blnSuccess = ProcessBonus(objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
-						strFriendlyName, bonusNode, strUnique);
-					if (blnSuccess == false)
+					if (!ProcessBonus(objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
+                        strFriendlyName, bonusNode, strUnique))
 					{
 						Rollback();
 						return false;
@@ -1001,8 +942,8 @@ namespace Chummer
 				Commit();
 				Log.Info("Returned from Commit");
 				// Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-				_strForcedValue = "";
-				_strLimitSelection = "";
+				_strForcedValue = string.Empty;
+				_strLimitSelection = string.Empty;
 			/*}
 			catch (Exception ex)
 			{
@@ -1015,49 +956,48 @@ namespace Chummer
 				throw;
 			}*/
 			Log.Exit("CreateImprovements");
-			return blnSuccess;
+			return true;
 
 		}
 		private bool ProcessBonus(Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
 			bool blnConcatSelectedValue,
 			int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
 		{
-			try
+            if (bonusNode == null)
+                return false;
+			//As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
+			//So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+			//getting a different parameter injected
+
+			AddImprovementCollection container = new AddImprovementCollection(_objCharacter, this, objImprovementSource,
+				strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
+				strFriendlyName, intRating, ValueToInt, Rollback);
+
+			MethodInfo info;
+			if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
 			{
-				//As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
-				//So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
-				//getting a different parameter injected
+                try
+                {
+                    info.Invoke(container, new object[] {bonusNode});
+                }
+                catch (TargetInvocationException ex) when (ex.InnerException?.GetType() == typeof(AbortedException))
+                {
+                    Rollback();
+                    return false;
+                }
 
-				AddImprovementCollection container = new AddImprovementCollection(_objCharacter, this, objImprovementSource,
-					strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
-					strFriendlyName, intRating, ValueToInt, Rollback);
-
-				MethodInfo info;
-				if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
-				{
-					info.Invoke(container, new object[] {bonusNode});
-
-					strSourceName = container.SourceName;
-					_strForcedValue = container.ForcedValue;
-					_strLimitSelection = container.LimitSelection;
-					_strSelectedValue = container.SelectedValue;
-				}
-				else
-				{
-					if (bonusNode.OuterXml != "<selecttext />")
-					{
-						Utils.BreakIfDebug();
-						Log.Warning(new object[]
-						{"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
-					}
-				}
+                strSourceName = container.SourceName;
+				_strForcedValue = container.ForcedValue;
+				_strLimitSelection = container.LimitSelection;
+				_strSelectedValue = container.SelectedValue;
 			}
-			catch (TargetInvocationException ex) when (ex.InnerException.GetType() == typeof(AbortedException))
+			else
 			{
-				Rollback();
-				return false;
-			
-			}
+                Utils.BreakIfDebug();
+                Log.Warning(new object[]
+                {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+                return false;
+            }
 			return true;
 		}
 
@@ -1068,7 +1008,6 @@ namespace Chummer
 
 			return allMethods.ToDictionary(x => x.Name.ToUpperInvariant());
 		});
-		
 
 		/// <summary>
 		/// Remove all of the Improvements for an XML Node.
@@ -1098,10 +1037,18 @@ namespace Chummer
 				_objCharacter.Improvements.Remove(objImprovement);
 
                 // See if the character has anything else that is granting them the same bonus as this improvement
-                bool blnHasDuplicate = _objCharacter.Improvements.Where(x => x.SourceName != objImprovement.SourceName && 
-                                                                        x.ImproveType == objImprovement.ImproveType && 
-                                                                        x.UniqueName == objImprovement.UniqueName && 
-                                                                        x.ImprovedName == objImprovement.ImprovedName).Any();
+			    bool blnHasDuplicate = false;
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+			    {
+			        if (objLoopImprovement.UniqueName == objImprovement.UniqueName &&
+			            objLoopImprovement.ImprovedName == objImprovement.ImprovedName &&
+                        objLoopImprovement.ImproveType == objImprovement.ImproveType &&
+                        objLoopImprovement.SourceName != objImprovement.SourceName)
+			        {
+                        blnHasDuplicate = true;
+			            break;
+			        }
+			    }
 
                 switch (objImprovement.ImproveType)
                 {
@@ -1146,21 +1093,18 @@ namespace Chummer
                         // Load the power from XML.
                         // objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
                         // TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
-                        try
+                        XmlDocument objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
+                        XmlNode objXmlMentorBonus =
+                            objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
+                                                                    objImprovement.Notes +
+                                                                    "\"]");
+                        if (objXmlMentorBonus?["bonus"] != null)
                         {
-                            XmlDocument objXmlMentorDocument = new XmlDocument();
-                            objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-                            XmlNode objXmlMentorBonus =
-                                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
-                                                                      objImprovement.Notes +
-                                                                      "\"]");
                             XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
                             foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
                             {
-                                // Get the Power information
-                                XmlDocument objXmlDocument = new XmlDocument();
-                                objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
+                                if (objXmlSpecificPower["name"] == null)
+                                    continue;
                                 string strPowerName = objXmlSpecificPower["name"].InnerText;
 
                                 // Find the power (if it still exists)
@@ -1175,14 +1119,14 @@ namespace Chummer
                                 }
                             }
                         }
-                        catch
-                        {
-                        }
                         break;
                     case Improvement.ImprovementType.Attribute:
                         CharacterAttrib objChangedAttribute = null;
                         switch (objImprovement.ImprovedName)
                         {
+                            case "BOD":
+                                objChangedAttribute = _objCharacter.BOD;
+                                break;
                             case "AGI":
                                 objChangedAttribute = _objCharacter.AGI;
                                 break;
@@ -1215,10 +1159,6 @@ namespace Chummer
                                 break;
                             case "DEP":
                                 objChangedAttribute = _objCharacter.DEP;
-                                break;
-                            case "BOD":
-                            default:
-                                objChangedAttribute = _objCharacter.BOD;
                                 break;
                         }
                         if (objImprovement.Minimum > 0)
@@ -1268,8 +1208,6 @@ namespace Chummer
                                         break;
                                     case "Initiation":
                                         _objCharacter.InitiationEnabled = false;
-                                        break;
-                                    default:
                                         break;
                                 }
                             }
@@ -1427,16 +1365,12 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.ContactMadeMan:
-                        Contact MadeManContact = (from c in _objCharacter.Contacts
-                                           where c.GUID == objImprovement.ImprovedName
-                                           select c).First();
+                        Contact MadeManContact = _objCharacter.Contacts.First(c => c.GUID == objImprovement.ImprovedName);
 
                         MadeManContact.MadeMan = false;
                         break;
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = (from c in _objCharacter.Contacts
-                                           where c.GUID == objImprovement.ImprovedName
-                                           select c).First();
+                        Contact NewContact = _objCharacter.Contacts.First(c => c.GUID == objImprovement.ImprovedName);
 
                         _objCharacter.Contacts.Remove(NewContact);
                         break;
@@ -1450,10 +1384,13 @@ namespace Chummer
                         _objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
-                        foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objImprovement.ImprovedName == objQuality.InternalId))
+                        foreach (Quality objQuality in _objCharacter.Qualities)
                         {
-                            _objCharacter.Qualities.Remove(objQuality);
-                            break;
+                            if (objImprovement.ImprovedName == objQuality.InternalId)
+                            {
+                                _objCharacter.Qualities.Remove(objQuality);
+                                break;
+                            }
                         }
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
@@ -1465,13 +1402,14 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.AIProgram:
-                        foreach (AIProgram objProgram in _objCharacter.AIPrograms.Where(objProgram => objImprovement.ImprovedName == objProgram.InternalId))
+                        foreach (AIProgram objProgram in _objCharacter.AIPrograms)
                         {
-                            _objCharacter.AIPrograms.Remove(objProgram);
-                            break;
+                            if (objImprovement.ImprovedName == objProgram.InternalId)
+                            {
+                                _objCharacter.AIPrograms.Remove(objProgram);
+                                break;
+                            }
                         }
-                        break;
-                    default:
                         break;
                 }
             }
@@ -1482,23 +1420,24 @@ namespace Chummer
 			Log.Exit("RemoveImprovements");
         }
 
-		/// <summary>
-		/// Create a new Improvement and add it to the Character.
-		/// </summary>
-		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
-		/// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
-		/// <param name="strSourceName">Name of the item that grants this Improvement.</param>
-		/// <param name="objImprovementType">Type of object the Improvement applies to.</param>
-		/// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
-		/// <param name="intValue">Set a Value for the Improvement.</param>
-		/// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
-		/// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
-		/// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
-		/// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
-		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
-		/// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-		/// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
-		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
+        /// <summary>
+        /// Create a new Improvement and add it to the Character.
+        /// </summary>
+        /// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
+        /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
+        /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
+        /// <param name="intValue">Set a Value for the Improvement.</param>
+        /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
+        /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
+        /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
+        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
 			string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
 			int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
 			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "")

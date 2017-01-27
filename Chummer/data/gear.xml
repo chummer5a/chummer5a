@@ -562,9 +562,9 @@
 			<avail>(Rating)R</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 10</cost>
-			<bonus>
+			<weaponbonus>
 				<damage>1</damage>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>23</page>
 		</gear>
@@ -576,11 +576,11 @@
 			<avail>(Rating)F</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 15</cost>
-			<bonus>
+			<weaponbonus>
 				<accuracy>-1</accuracy>
 				<ap>-1</ap>
 				<damage>2</damage>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>23</page>
 		</gear>
@@ -592,11 +592,11 @@
 			<avail>Rating</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 5</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>2</ap>
 				<damage>1</damage>
 				<damagetype>S</damagetype>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -608,9 +608,9 @@
 			<avail>12F</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 100</cost>
-			<bonus>
+			<weaponbonus>
 				<accuracy>-1</accuracy>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -622,11 +622,11 @@
 			<avail>Rating</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 5</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>6</ap>
 				<damage>-2</damage>
 				<damagetype>S</damagetype>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -638,10 +638,10 @@
 			<avail>(Rating)R</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 25</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -653,10 +653,10 @@
 			<avail>6R</avail>
 			<costfor>1</costfor>
 			<cost>(Rating * 25) + 25</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>12S(e)</damagereplace>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -668,9 +668,9 @@
 			<avail>5R</avail>
 			<costfor>1</costfor>
 			<cost>15</cost>
-			<bonus>
+			<weaponbonus>
 				<damage>1</damage>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>23</page>
 		</gear>
@@ -682,11 +682,11 @@
 			<avail>9F</avail>
 			<costfor>1</costfor>
 			<cost>20</cost>
-			<bonus>
+			<weaponbonus>
 				<accuracy>-1</accuracy>
 				<ap>-1</ap>
 				<damage>2</damage>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>23</page>
 		</gear>
@@ -698,11 +698,11 @@
 			<avail>5</avail>
 			<costfor>1</costfor>
 			<cost>10</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>2</ap>
 				<damage>1</damage>
 				<damagetype>S</damagetype>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -714,9 +714,9 @@
 			<avail>12F</avail>
 			<costfor>1</costfor>
 			<cost>105</cost>
-			<bonus>
+			<weaponbonus>
 				<accuracy>-1</accuracy>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -728,11 +728,11 @@
 			<avail>2</avail>
 			<costfor>1</costfor>
 			<cost>10</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>6</ap>
 				<damage>-2</damage>
 				<damagetype>S</damagetype>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -744,10 +744,10 @@
 			<avail>6R</avail>
 			<costfor>1</costfor>
 			<cost>30</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -759,10 +759,10 @@
 			<avail>6R</avail>
 			<costfor>1</costfor>
 			<cost>50</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>12S(e)</damagereplace>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>24</page>
 		</gear>
@@ -822,10 +822,10 @@
 			<avail>10R</avail>
 			<costfor>4</costfor>
 			<cost>600</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>28</page>
 		</gear>
@@ -837,10 +837,10 @@
 			<avail>10R</avail>
 			<costfor>2</costfor>
 			<cost>650</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>28</page>
 		</gear>
@@ -863,9 +863,9 @@
 			<avail>14R</avail>
 			<costfor>10</costfor>
 			<cost>175</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-1</ap>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>55</page>
 		</gear>
@@ -877,10 +877,10 @@
 			<avail>15</avail>
 			<costfor>10</costfor>
 			<cost>160</cost>
-			<bonus>
+			<weaponbonus>
 				<ap>-5</ap>
 				<damage>-2S(e)</damage>
-			</bonus>
+			</weaponbonus>
 			<source>RG</source>
 			<page>28</page>
 		</gear>

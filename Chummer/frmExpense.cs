@@ -46,12 +46,12 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 		#endregion
 
@@ -133,7 +133,7 @@ namespace Chummer
 				if (value == ExpenseType.Nuyen)
 				{
 					lblKarma.Text = LanguageManager.Instance.GetString("Label_Expense_NuyenAmount");
-					this.Text = LanguageManager.Instance.GetString("Title_Expense_Nuyen");
+					Text = LanguageManager.Instance.GetString("Title_Expense_Nuyen");
 					chkRefund.Text = LanguageManager.Instance.GetString("Checkbox_Expense_RefundNuyen");
 					nudPercent.Visible = true;
 					lblPercent.Visible = true;
@@ -141,7 +141,7 @@ namespace Chummer
 				else
 				{
 					lblKarma.Text = LanguageManager.Instance.GetString("Label_Expense_KarmaAmount");
-					this.Text = LanguageManager.Instance.GetString("Title_Expense_Karma");
+					Text = LanguageManager.Instance.GetString("Title_Expense_Karma");
 					nudPercent.Visible = false;
 					lblPercent.Visible = false;
 				}

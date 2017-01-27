@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,33 +16,23 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmInitiative : Form
+    public interface IItemWithGuid
     {
-        #region Properties
-        /// <summary>
-        /// The initiative controler for this form
-        /// </summary>
-        public InitiativeUserControl InitUC
-        {
-            get { return ucInit; }
-        }
-        #endregion
+        string InternalId { get; }
+    }
 
-        public frmInitiative()
-        {
-            InitializeComponent();
-            CenterToParent();
-        }
+    public interface INamedItemWithGuid : IItemWithGuid
+    {
+        string Name { get; set; }
+    }
+
+    public interface INamedParentWithGuid<T> : INamedItemWithGuid
+    {
+        List<T> Children { get; }
     }
 }

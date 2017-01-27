@@ -154,7 +154,7 @@ namespace Chummer
 			this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtCharacterConcept.Size = new System.Drawing.Size(554, 176);
 			this.txtCharacterConcept.TabIndex = 2;
-			this.txtCharacterConcept.Tag = "";
+			this.txtCharacterConcept.Tag = string.Empty;
 			// 
 			// panCharacterBackground
 			// 
@@ -180,7 +180,7 @@ namespace Chummer
 			this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtCharacterBackground.Size = new System.Drawing.Size(554, 176);
 			this.txtCharacterBackground.TabIndex = 0;
-			this.txtCharacterBackground.Tag = "";
+			this.txtCharacterBackground.Tag = string.Empty;
 			// 
 			// panCharacterNotes
 			// 
@@ -206,7 +206,7 @@ namespace Chummer
 			this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtCharacterNotes.Size = new System.Drawing.Size(554, 176);
 			this.txtCharacterNotes.TabIndex = 2;
-			this.txtCharacterNotes.Tag = "";
+			this.txtCharacterNotes.Tag = string.Empty;
 			// 
 			// panGameNotes
 			// 
@@ -232,7 +232,7 @@ namespace Chummer
 			this.txtGameNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtGameNotes.Size = new System.Drawing.Size(554, 176);
 			this.txtGameNotes.TabIndex = 3;
-			this.txtGameNotes.Tag = "";
+			this.txtGameNotes.Tag = string.Empty;
 			// 
 			// lblCharacterName
 			// 

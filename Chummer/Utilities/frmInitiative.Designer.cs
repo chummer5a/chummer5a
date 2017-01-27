@@ -38,7 +38,7 @@
             this.ucInit.Name = "ucInit";
             this.ucInit.Size = new System.Drawing.Size(427, 318);
             this.ucInit.TabIndex = 0;
-            this.ucInit.Tag = "";
+            this.ucInit.Tag = string.Empty;
             // 
             // frmInitiative
             // 

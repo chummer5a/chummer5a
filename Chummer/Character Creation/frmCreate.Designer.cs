@@ -4628,7 +4628,7 @@ namespace Chummer
 			this.tabSkillUc.ObjCharacter = null;
 			this.tabSkillUc.Size = new System.Drawing.Size(838, 611);
 			this.tabSkillUc.TabIndex = 0;
-			this.tabSkillUc.Tag = "";
+			this.tabSkillUc.Tag = string.Empty;
 			// 
 			// tabLimits
 			// 
@@ -6277,7 +6277,7 @@ namespace Chummer
 			this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
 			this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
 			this.lblCyberlimbSTRLabel.TabIndex = 223;
-			this.lblCyberlimbSTRLabel.Tag = "";
+			this.lblCyberlimbSTRLabel.Tag = string.Empty;
 			this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
 			this.lblCyberlimbSTRLabel.Visible = false;
 			// 
@@ -6288,7 +6288,7 @@ namespace Chummer
 			this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
 			this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
 			this.lblCyberlimbAGILabel.TabIndex = 222;
-			this.lblCyberlimbAGILabel.Tag = "";
+			this.lblCyberlimbAGILabel.Tag = string.Empty;
 			this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
 			this.lblCyberlimbAGILabel.Visible = false;
 			// 

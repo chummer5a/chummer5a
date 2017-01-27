@@ -24,7 +24,7 @@ namespace Chummer
 {
     public partial class frmSelectText : Form
     {
-        private string _strReturnValue = "";
+        private string _strReturnValue = string.Empty;
 
 		#region Control Events
 		public frmSelectText()
@@ -37,18 +37,18 @@ namespace Chummer
         {
 			if (PreventXPathErrors && txtValue.Text.Contains('"'))
 			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_InvalidCharacters"), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			else
 			{
 				_strReturnValue = txtValue.Text;
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void frmSelectText_Shown(object sender, EventArgs e)

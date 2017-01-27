@@ -20,13 +20,14 @@ namespace Chummer.Debugging
 			StackFrame frame = trace.GetFrame(0);
 			string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
 
-			if (_map.ContainsKey(heat))
+		    int intTmp;
+			if (_map.TryGetValue(heat, out intTmp))
 			{
-				_map[heat]++;
+				_map[heat] += intTmp + 1;
 			}
 			else
 			{
-				_map[heat] = 1;
+                _map.Add(heat, 1);
 			}
 		}
 

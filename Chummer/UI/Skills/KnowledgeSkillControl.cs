@@ -8,19 +8,22 @@ namespace Chummer.UI.Skills
 {
 	public partial class KnowledgeSkillControl : UserControl
 	{
-		private readonly KnowledgeSkill skill;
+		private readonly KnowledgeSkill _skill;
 		public KnowledgeSkillControl(KnowledgeSkill skill)
 		{
-			this.skill = skill;
+			_skill = skill;
 			InitializeComponent();
 
 			//Display
 			lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
 
-			cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
-			cboType.DisplayMember = nameof(ListItem.Name);
+            cboType.BeginUpdate();
+            cboSkill.BeginUpdate();
+            cboSpec.BeginUpdate();
+            cboType.DisplayMember = nameof(ListItem.Name);
 			cboType.ValueMember = nameof(ListItem.Value);
-			cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
+            cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
+            cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
 
 			if (skill.CharacterObject.Created)
@@ -60,19 +63,18 @@ namespace Chummer.UI.Skills
 
 				chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
 						DataSourceUpdateMode.OnPropertyChanged);
-
-				cboSkill.DataSource = skill.KnowledgeSkillCatagories;
 				cboSkill.DisplayMember = nameof(ListItem.Name);
 				cboSkill.ValueMember = nameof(ListItem.Value);
-				cboSkill.SelectedIndex = -1;
+                cboSkill.DataSource = skill.KnowledgeSkillCatagories;
+                cboSkill.SelectedIndex = -1;
 				cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
-				
+
 				//dropdown/spec
-				cboSpec.DataSource = skill.CGLSpecializations;
 				cboSpec.DisplayMember = nameof(ListItem.Name);
 				cboSpec.ValueMember = nameof(ListItem.Value);
-				cboSpec.SelectedIndex = -1;
-				
+                cboSpec.DataSource = skill.CGLSpecializations;
+                cboSpec.SelectedIndex = -1;
+
 				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
 				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -81,10 +83,10 @@ namespace Chummer.UI.Skills
 					if (args.PropertyName == nameof(Skill.CGLSpecializations))
 					{
 						cboSpec.DataSource = null;
-						cboSpec.DataSource = skill.CGLSpecializations;
 						cboSpec.DisplayMember = nameof(ListItem.Name);
 						cboSpec.ValueMember = nameof(ListItem.Value);
-						cboSpec.MaxDropDownItems = Math.Max(1, skill.CGLSpecializations.Count);
+                        cboSpec.DataSource = skill.CGLSpecializations;
+                        cboSpec.MaxDropDownItems = Math.Max(1, skill.CGLSpecializations.Count);
 					}
 				};
 			}
@@ -108,26 +110,29 @@ namespace Chummer.UI.Skills
 			{
 				cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill); };
 			}
-		}
+            cboType.EndUpdate();
+            cboSkill.EndUpdate();
+            cboSpec.EndUpdate();
+        }
 
 		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
 			frmCareer parent = ParentForm as frmCareer;
 			if (parent != null)
 			{
-				int upgradeKarmaCost = skill.UpgradeKarmaCost();
+				int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
 				if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring = "";
-                if (skill.Karma == 0)
+                string confirmstring;
+                if (_skill.Karma == 0)
                 {
                     confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
-                        skill.DisplayName, skill.Rating + 1, skill.CharacterObject.Options.KarmaNewKnowledgeSkill, this.cboType.GetItemText(this.cboType.SelectedItem));
+                        _skill.DisplayName, _skill.Rating + 1, _skill.CharacterObject.Options.KarmaNewKnowledgeSkill, cboType.GetItemText(cboType.SelectedItem));
                 }
                 else
                 {
                     confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
-                       skill.DisplayName, skill.Rating + 1, upgradeKarmaCost, this.cboType.GetItemText(this.cboType.SelectedItem));
+                       _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
                 }
 
 				if (!parent.ConfirmKarmaExpense(confirmstring))
@@ -135,7 +140,7 @@ namespace Chummer.UI.Skills
 			}
 			cboType.Enabled = false;
 
-			skill.Upgrade();
+			_skill.Upgrade();
 		}
 
 		private void btnAddSpec_Click(object sender, EventArgs e)
@@ -144,26 +149,24 @@ namespace Chummer.UI.Skills
 			if (parrent != null)
 			{
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-						skill.CharacterObject.Options.KarmaSpecialization);
+						_skill.CharacterObject.Options.KarmaSpecialization);
 
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
 
-			frmSelectSpec selectForm = new frmSelectSpec(skill);
+			frmSelectSpec selectForm = new frmSelectSpec(_skill);
 			selectForm.Mode = "Knowledge";
 			selectForm.ShowDialog();
 
 			if (selectForm.DialogResult != DialogResult.OK) return;
 
-			skill.AddSpecialization(selectForm.SelectedItem);
+			_skill.AddSpecialization(selectForm.SelectedItem);
 
 			//TODO turn this into a databinding, but i don't care enough right now
-			lblSpec.Text = string.Join(", ",
-					(from specialization in skill.Specializations
-					 select specialization.Name));
+            lblSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.Name));
 
-			parrent?.UpdateCharacterInfo();
+            parrent?.UpdateCharacterInfo();
 		}
 	}
 }

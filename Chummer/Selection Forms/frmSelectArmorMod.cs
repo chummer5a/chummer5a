@@ -28,9 +28,9 @@ namespace Chummer
 {
 	public partial class frmSelectArmorMod : Form
 	{
-		private string _strSelectedArmorMod = "";
+		private string _strSelectedArmorMod = string.Empty;
 
-		private string _strAllowedCategories = "";
+		private string _strAllowedCategories = string.Empty;
 		private bool _blnAddAgain = false;
 		private int _intArmorCost = 0;
 		private int _intMarkup = 0;
@@ -55,10 +55,10 @@ namespace Chummer
 
 		private void frmSelectArmorMod_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			List<ListItem> lstMods = new List<ListItem>();
@@ -68,10 +68,10 @@ namespace Chummer
 
 			// Populate the Mods list.
 			string[] strAllowed = _strAllowedCategories.Split(',');
-			string strMount = "";
+			string strMount = string.Empty;
 			for (int i = 0; i < strAllowed.Length; i++)
 			{
-				if (strAllowed[i] != "")
+				if (!string.IsNullOrEmpty(strAllowed[i]))
 					strMount += "category = \"" + strAllowed[i] + "\"";
 				if (i < strAllowed.Length-1 || !_blnExcludeGeneralCategory)
 				{
@@ -100,10 +100,12 @@ namespace Chummer
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 			SortListItem objSort = new SortListItem();
 			lstMods.Sort(objSort.Compare);
-			lstMod.ValueMember = "Value";
+            lstMod.BeginUpdate();
+            lstMod.ValueMember = "Value";
 			lstMod.DisplayMember = "Name";
 			lstMod.DataSource = lstMods;
-		}
+            lstMod.EndUpdate();
+        }
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -112,13 +114,13 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstMod.Text != "")
+			if (!string.IsNullOrEmpty(lstMod.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void nudRating_ValueChanged(object sender, EventArgs e)
@@ -128,7 +130,7 @@ namespace Chummer
 
 		private void lstMod_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstMod.Text != "")
+			if (!string.IsNullOrEmpty(lstMod.Text))
 				AcceptForm();
 		}
 
@@ -300,8 +302,8 @@ namespace Chummer
                 }
             }
 
-			string strAvail = "";
-			string strAvailExpr = "";
+			string strAvail = string.Empty;
+			string strAvailExpr = string.Empty;
 			strAvailExpr = objXmlMod["avail"].InnerText;
 
 			XPathExpression xprAvail;
@@ -316,7 +318,7 @@ namespace Chummer
 				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
 				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
 			}
-			catch
+			catch (XPathException)
 			{
 				lblAvail.Text = objXmlMod["avail"].InnerText;
 			}
@@ -409,7 +411,7 @@ namespace Chummer
 			_strSelectedArmorMod = lstMod.SelectedValue.ToString();
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

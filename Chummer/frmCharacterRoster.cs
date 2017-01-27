@@ -21,10 +21,10 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
-			this.treCharacterList.ItemDrag += this.treCharacterList_ItemDrag;
-			this.treCharacterList.DragEnter += this.treCharacterList_DragEnter;
-			this.treCharacterList.DragDrop += this.treCharacterList_DragDrop;
-			this.treCharacterList.DragOver += this.treCharacterList_DragOver;
+			treCharacterList.ItemDrag += treCharacterList_ItemDrag;
+			treCharacterList.DragEnter += treCharacterList_DragEnter;
+			treCharacterList.DragDrop += treCharacterList_DragDrop;
+			treCharacterList.DragOver += treCharacterList_DragOver;
 			LoadCharacters();
 			MoveControls();
 		}
@@ -82,25 +82,24 @@ namespace Chummer
 			}
 			treCharacterList.ExpandAll();
 		}
-		/// <summary>
-		/// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
-		/// </summary>
-		/// <param name="strFile"></param>
-		private void CacheCharacter(string strFile, TreeNode objParentNode)
+        /// <summary>
+        /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
+        /// </summary>
+        /// <param name="strFile"></param>
+        /// <param name="objParentNode"></param>
+        private void CacheCharacter(string strFile, TreeNode objParentNode)
 		{
 			TreeNode objNode = new TreeNode();
 			XmlDocument objXmlSource = new XmlDocument();
-			bool blnLoaded = true;
-			//If we run into any problems loading the character cache, fail out early. 
+			// If we run into any problems loading the character cache, fail out early. 
 			try
 			{
 				objXmlSource.Load(strFile);
 			}
-			catch
+			catch (Exception)
 			{
-				blnLoaded = false;
-			}
-			if (!blnLoaded) return;
+                return;
+            }
 			CharacterCache objCache = new CharacterCache();
 			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
 			if (objXmlSourceNode != null)
@@ -129,7 +128,7 @@ namespace Chummer
 				else
 				{
                     int intMainMugshotIndex = 0;
-                    objXmlSourceNode.TryGetField("mainmugshotindex", out intMainMugshotIndex, 0);
+                    objXmlSourceNode.TryGetInt32FieldQuickly("mainmugshotindex", ref intMainMugshotIndex);
                     XmlNodeList objXmlMugshotsList = objXmlSourceNode.SelectNodes("mugshots/mugshot");
                     List<string> lstMugshots = (from XmlNode objXmlMugshot in objXmlMugshotsList where !string.IsNullOrWhiteSpace(objXmlMugshot.InnerText) select objXmlMugshot.InnerText).ToList();
 					if (intMainMugshotIndex >= lstMugshots.Count)
@@ -177,8 +176,7 @@ namespace Chummer
 			}
 			string strBuildMethod = LanguageManager.Instance.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
 			bool blnCreated = objCache.Created;
-			string strCreated = "";
-			strCreated = LanguageManager.Instance.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");
+			string strCreated = LanguageManager.Instance.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");
 			string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
 			return strReturn;
 		}
@@ -300,7 +298,7 @@ namespace Chummer
 		{
 			Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
 			TreeNode objNode = ((TreeView) sender).GetNodeAt(pt).Parent;
-			if (objNode.Tag != "Watch")
+			if (objNode.Tag.ToString() != "Watch")
 			{
 				objNode.BackColor = SystemColors.ControlDark;
 			}

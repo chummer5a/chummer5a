@@ -62,7 +62,7 @@ namespace Chummer
 			objBinding.Security.Mode = BasicHttpSecurityMode.None;
 			objBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
 			objBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
-			objBinding.Security.Transport.Realm = "";
+			objBinding.Security.Transport.Realm = string.Empty;
 			objBinding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
 			objBinding.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default;
 
@@ -105,7 +105,7 @@ namespace Chummer
 			objBinding.Security.Mode = BasicHttpSecurityMode.None;
 			objBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
 			objBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
-			objBinding.Security.Transport.Realm = "";
+			objBinding.Security.Transport.Realm = string.Empty;
 			objBinding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
 			objBinding.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default;
 
@@ -123,7 +123,7 @@ namespace Chummer
 		/// <param name="objStream">MemoryStream to read.</param>
 		public XmlDocument XmlDocumentFromStream(MemoryStream objStream)
 		{
-			string strXml = "";
+			string strXml = string.Empty;
 			objStream.Position = 0;
 			StreamReader objReader = new StreamReader(objStream);
 			strXml = objReader.ReadToEnd();
@@ -140,17 +140,14 @@ namespace Chummer
 		/// </summary>
 		public string Base64Encode(string data)
 		{
-			try
+			if (!string.IsNullOrEmpty(data))
 			{
 				byte[] bytEncode = new byte[data.Length];
 				bytEncode = System.Text.Encoding.UTF8.GetBytes(data);
-				string strEncodedData = Convert.ToBase64String(bytEncode);
-				return strEncodedData;
+				return Convert.ToBase64String(bytEncode);
 			}
-			catch (Exception e)
-			{
-				throw new Exception("Error in Base64Encode" + e.Message);
-			}
+
+            return null;
 		}
 
 		/// <summary>
@@ -158,7 +155,7 @@ namespace Chummer
 		/// </summary>
 		public string Base64Decode(string data)
 		{
-			try
+			if (!string.IsNullOrEmpty(data))
 			{
 				System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
 				System.Text.Decoder utf8Decode = encoder.GetDecoder();
@@ -167,13 +164,10 @@ namespace Chummer
 				int charCount = utf8Decode.GetCharCount(bytToDecode, 0, bytToDecode.Length);
 				char[] chrDecoded = new char[charCount];
 				utf8Decode.GetChars(bytToDecode, 0, bytToDecode.Length, chrDecoded, 0);
-				string strResult = new String(chrDecoded);
-				return strResult;
+				return new String(chrDecoded);
 			}
-			catch (Exception e)
-			{
-				throw new Exception("Error in Base64Decode" + e.Message);
-			}
+
+            return null;
 		}
 		#endregion
 
@@ -228,7 +222,7 @@ namespace Chummer
 		public byte[] CompressMutiple(List<string> lstFiles)
 		{
 			MemoryStream objStream = new MemoryStream();
-			Package objPackage = ZipPackage.Open(objStream, FileMode.Create, FileAccess.ReadWrite);
+			Package objPackage = Package.Open(objStream, FileMode.Create, FileAccess.ReadWrite);
 
 			foreach (string strFile in lstFiles)
 			{
@@ -249,7 +243,7 @@ namespace Chummer
 		/// <param name="strDestination">File to compress to.</param>
 		public void CompressMutipleToFile(List<string> lstFiles, string strDestination)
 		{
-			Package objPackage = ZipPackage.Open(strDestination, FileMode.Create, FileAccess.ReadWrite);
+			Package objPackage = Package.Open(strDestination, FileMode.Create, FileAccess.ReadWrite);
 
 			foreach (string strFile in lstFiles)
 			{
@@ -275,7 +269,7 @@ namespace Chummer
 			string strFilePath = Path.Combine(Application.StartupPath, "data");
 			MemoryStream objStream = new MemoryStream();
 			objStream.Write(bytBuffer, 0, bytBuffer.Length);
-			Package objPackage = ZipPackage.Open(objStream, FileMode.Open, FileAccess.Read);
+			Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
 
 			foreach (PackagePart objPart in objPackage.GetParts())
 			{
@@ -307,7 +301,7 @@ namespace Chummer
 			string strFilePath = Path.Combine(Application.StartupPath, "sheets", "omae");
 			MemoryStream objStream = new MemoryStream();
 			objStream.Write(bytBuffer, 0, bytBuffer.Length);
-			Package objPackage = ZipPackage.Open(objStream, FileMode.Open, FileAccess.Read);
+			Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
 
 			foreach (PackagePart objPart in objPackage.GetParts())
 			{
@@ -342,7 +336,7 @@ namespace Chummer
 
 			MemoryStream objStream = new MemoryStream();
 			objStream.Write(bytBuffer, 0, bytBuffer.Length);
-			Package objPackage = ZipPackage.Open(objStream, FileMode.Open, FileAccess.Read);
+			Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
 
 			foreach (PackagePart objPart in objPackage.GetParts())
 			{
@@ -388,7 +382,7 @@ namespace Chummer
 			if (!Directory.Exists(strFilePath))
 				Directory.CreateDirectory(strFilePath);
 
-			Package objPackage = ZipPackage.Open(strExtract, FileMode.Open, FileAccess.Read);
+			Package objPackage = Package.Open(strExtract, FileMode.Open, FileAccess.Read);
 
 			foreach (PackagePart objPart in objPackage.GetParts())
 			{

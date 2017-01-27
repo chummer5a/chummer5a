@@ -1,6 +1,6 @@
 Build 191
 
-Application Changes: 
+Application Changes:
 
 - Fixed an issue with Restricted Gear not correctly applying to weapons with attachments. 
 - Fixed an issue with the Sensor (Drone) vehicle modification that caused a crash.
@@ -9,24 +9,41 @@ Application Changes:
 - Removed the ability to add Roommates to a lifestyle that's allocated as a Trust Fund lifestyle. This will not affect existing characters. 
 - Added reminder text to the LP and Cost labels for Lifestyle qualities to indicate whether a quality is Free from something or other (Usually just the Free checkbox)
 - Per errata for Run Faster, the following changes have been made:
-	- The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu. 
-	- Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed. 
-- Fixed an issue with moving Changelings into career mode. 
+	- The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu.
+	- Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed.
+- Fixed an issue with moving Changelings into career mode.
+- Brought all projects to the same, .NET 4.5.2 target sku.
+- Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
+- Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
+- Updated the program's icon with 128x128 and 256x256 versions.
+- Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
+- Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
+- Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
+- Fixed a bug where cancelling the option saving confirmation message would still save options.
+- Made performance improvements, thanks primarily to static code analysis, mainly to the load speed of characters and the skills tab (load times reduced by ca. 10-20% depending on the screen/tab).
+- Fixed a crash related to loading characters with no mugshots.
 
-Data Changes: 
+Data Changes:
 
 - Removed incorrect (per RAW) Distinctive Style qualities for the Dwarf metavariants.
 - Applied missing lifestyle cost increases for the Dwarf metavariants. 
 - Fixed a crash when selecting the Pirate Captain and Urban Brawler Life Modules. 
 - Fixed the Capacity of the Directional Microphone Sensor Function to be based on Rating. 
 - Fixed the Addon Category of the Bug Promotional Pen to be Sensors, instead of Sensor Functions. 
-- Corrected the allowed subsystems for the Chemical Gland bioware. 
+- Corrected the allowed subsystems for the Chemical Gland bioware.
 - Per errata for Run Faster, the following changes have been made:
-	- The Infected: Banshee quality's CHA minimum has been set to 3, instead of 1. 
-	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively. 
+	- The Infected: Banshee quality's CHA minimum has been set to 3, instead of 1.
+	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively.
 	- The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
 	- Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
 - Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons. 
+- Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
+- Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
+
+New Strings: 
+
+- Checkbox_Option_PrioritySpellsAsAdeptPowers
+- Checkbox_Options_Live_CustomData
 
 Build 190
 
@@ -234,7 +251,7 @@ Data Changes:
 - Implemented the Latent Dracomorphosis quality from Howling Shadows. This is achieved by using the Swap Quality function in Career Mode. 
 - Added an underbarrel grenade launcher to weapons.xml, and to the Matilda drone. 
 - Added contact types, knowledge skill specializations, and critters from Hard Targets.
-- Added entries for Fab Sensor, Fab Sensor Upkeep, Infected: Sukuyan, Corps Cadavre ritual, Zombie ritual, Máquina Conversion vehicle mod, Dynamic Tension Bow, and Collapsible Traditional Bow accessory from Hard Targets.
+- Added entries for Fab Sensor, Fab Sensor Upkeep, Infected: Sukuyan, Corps Cadavre ritual, Zombie ritual, MÃ¡quina Conversion vehicle mod, Dynamic Tension Bow, and Collapsible Traditional Bow accessory from Hard Targets.
 - Added a weapon entry for Stimtouch Hosiery similar to how Grapple Gun adds a weapon entry.
 - Added extra filtering conditions to all Advanced Safety System accessories, Shock Pad, Concealed Quick-Draw Holster, Trigger Removal, and Smartgun System (both Internal and External) so that they do show up in even fewer invalid cases.
 - Added selection text fields to the following qualities: My Country Right or Wrong, Scorched, Social Stress, Disgraced, Sensei, Big Regret, Day Job, Driven, Emotional Attachment, Flashbacks, and Signature. Also added a contact selection field for Sensei.
@@ -1208,7 +1225,7 @@ Build 173:
 Application Change:
 - Dumpshock link changed to issue tracker.
 - A First-pass effort at adding a filter for Missions-restricted items has been added to the Options menu. Will be getting a later review to enable better filtering of the qualities, but for now it's just a global option.
-- Fixed a bug with life modules where Tír Tairngire wouldn't show demographics.
+- Fixed a bug with life modules where TÃ­r Tairngire wouldn't show demographics.
 - Chummer now handles essence holes automatically. Old items may need to be re-added.
 - College Education/School of Hard Knocks/Linguist and Jack of All Trades work properly for knowledge skills during character creation. Again. 
 - Most of the functionality for Infected has been implemented. Todo: Fix up the free attribute gain to not use qualities because it's ugly, and put in the data files content.
@@ -1225,7 +1242,7 @@ Data Change:
 - Rank Quality added.
 - The Debug Lifestyle has been hidden.
 - Lifemodules no longer contains a "Magical Education (Archetype)".
-- Tír is now spelled correctly a few more places.
+- TÃ­r is now spelled correctly a few more places.
 - Equipment, Weapon and Ammo PACKs from run faster added.
 	There are a couple of important caveats with this:
 	First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. 
@@ -1628,7 +1645,7 @@ Application Change:
 
 Build 5.150
 Data change:
-- Nocturna and Xapiri Thëpë quality-related crash fixed.
+- Nocturna and Xapiri ThÃ«pÃ« quality-related crash fixed.
 Application Change:
 - Lazy workaround fix for karmagen attributes not increasing properly.
 
@@ -1715,7 +1732,7 @@ Build 5.137 (beta)
 - Fixed the AP modifier for Gel Rounds.
 - Changed the Gecko Grip weapon modification to not require that the weapon have a Stock slot.
 - Added the missing Strike the Darkness and Neijia Martial Art Techniques.
-- Fixed the price of the Armanté Suit and Dress.
+- Fixed the price of the ArmantÃ© Suit and Dress.
 - Fixed a formatting problem with the skills list so that the list should now scroll properly.
 - Fixed a bug preventing leftover nuyen from being carried over after character creation.
 - Added the ability to enter notes for Martial Art Techniques which are also shown on the character sheet.
@@ -5570,4 +5587,3 @@ Build 32
 - added support for Armor Modifications
 - added support for Cyberweapons
 - added support for Weapon Accessories
-
