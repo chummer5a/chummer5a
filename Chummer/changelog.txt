@@ -21,6 +21,7 @@ Application Changes:
 - Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
 - Fixed a bug where cancelling the option saving confirmation message would still save options.
 - Made performance improvements, thanks primarily to static code analysis, mainly to the load speed of characters and the skills tab (load times reduced by ca. 10-20% depending on the screen/tab).
+- Fixed a crash related to loading characters with no mugshots.
 
 Data Changes:
 
