@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
 			{
 				frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
 				frmPickWeaponCategory.Description = LanguageManager.Instance.GetString("String_SelectWeaponCategoryAmmo");
-				if (!string.IsNullOrEmpty(strForceValue))
+				if (!string.IsNullOrEmpty(strForceValue) && !strForceValue.Equals(_strName))
 					frmPickWeaponCategory.OnlyCategory = strForceValue;
 
 				//should really go in a data file
