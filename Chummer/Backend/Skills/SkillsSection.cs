@@ -396,22 +396,7 @@ namespace Chummer.Skills
 		/// </summary>
 		public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
-		public bool HasKnowledgePoints
-		{
-		    get
-		    {
-		        if (_character.BuildMethod == CharacterBuildMethod.Priority ||
-		            (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) ||
-		            _character.BuildMethod == CharacterBuildMethod.SumtoTen)
-		        {
-		            if (_character.INT.Value + _character.LOG.Value > 0 == _character.Options.FreeKnowledgeMultiplier > 0)
-		                return true;
-		        }
-		        if (_character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills) > 0)
-		            return true;
-		        return false;
-		    }
-		}
+		public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
 	    /// <summary>
 		/// Number of free Knowledge Skill Points the character has.
@@ -421,7 +406,7 @@ namespace Chummer.Skills
 			get
 			{
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-				var fromAttributes = (_character.INT.Value + _character.LOG.Value) * _character.Options.FreeKnowledgeMultiplier;
+				int fromAttributes = (_character.INT.Value + _character.LOG.Value) * _character.Options.FreeKnowledgeMultiplier;
 
 				int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
 				return fromAttributes + val;
