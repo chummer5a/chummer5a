@@ -34,12 +34,12 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void frmSelectExoticSkill_Load(object sender, EventArgs e)
@@ -69,14 +69,17 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstSkills.Sort(objSort.Compare);
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = lstSkills;
 
 			// Select the first Skill in the list.
 			cboCategory.SelectedIndex = 0;
 
-			BuildList();
+            cboCategory.EndUpdate();
+
+            BuildList();
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -165,12 +168,14 @@ namespace Chummer
 					objItem.Name = objXmlSpecialization["name"].InnerXml;
 				lstSkillSpecialisations.Add(objItem);
 			}
-			cboSkillSpecialisations.ValueMember = "Value";
+            cboSkillSpecialisations.BeginUpdate();
+            cboSkillSpecialisations.ValueMember = "Value";
 			cboSkillSpecialisations.DisplayMember = "Name";
 			cboSkillSpecialisations.DataSource = lstSkillSpecialisations;
 
 			// Select the first Skill in the list.
 			cboSkillSpecialisations.SelectedIndex = 0;
-		}
+            cboSkillSpecialisations.EndUpdate();
+        }
 	}
 }

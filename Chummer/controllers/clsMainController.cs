@@ -28,8 +28,6 @@ namespace Chummer
 {
 	public class MainController : CharacterShared
     {
-		private Character _objCharacter;
-		private CommonFunctions _objFunctions;
 		private ImprovementManager _objImprovementManager;
 
 		public MainController(Character objCharacter)
@@ -66,8 +64,7 @@ namespace Chummer
 			}
 
 			// Locate the currently selected piece of Gear.
-			Gear objGear = new Gear(_objCharacter);
-			objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+			Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 
 			// Gear cannot be moved to one if its children.
 			bool blnAllowMove = true;
@@ -103,13 +100,12 @@ namespace Chummer
 			}
 			else
 			{
-				Gear objParent = new Gear(_objCharacter);
-				// Locate the Gear that the item was dropped on.
-				objParent = _objFunctions.FindGear(objDestination.Tag.ToString(), _objCharacter.Gear);
+                // Locate the Gear that the item was dropped on.
+                Gear objParent = CommonFunctions.DeepFindById(objDestination.Tag.ToString(), _objCharacter.Gear);
 
 				// Add the Gear as a child of the destination Node and clear its location.
 				objParent.Children.Add(objGear);
-				objGear.Location = "";
+				objGear.Location = string.Empty;
 				objGear.Parent = objParent;
 			}
 
@@ -157,7 +153,7 @@ namespace Chummer
 
 			// Change the Location on the Gear item.
 			if (objNewParent.Text == LanguageManager.Instance.GetString("Node_SelectedGear"))
-				objGear.Location = "";
+				objGear.Location = string.Empty;
 			else
 				objGear.Location = objNewParent.Text;
 
@@ -186,7 +182,7 @@ namespace Chummer
 			if (intNewIndex == 0)
 				return;
 
-			string strLocation = "";
+			string strLocation = string.Empty;
 			// Locate the currently selected Location.
 			foreach (string strCharacterLocation in _objCharacter.Locations)
 			{
@@ -254,7 +250,7 @@ namespace Chummer
 		public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeView treArmor)
 		{
 			// Locate the currently selected Armor.
-			Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+			Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
 
 			_objCharacter.Armor.Remove(objArmor);
 			if (intNewIndex > _objCharacter.Armor.Count)
@@ -272,7 +268,7 @@ namespace Chummer
 
 			// Change the Location on the Armor item.
 			if (objNewParent.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
-				objArmor.Location = "";
+				objArmor.Location = string.Empty;
 			else
 				objArmor.Location = objNewParent.Text;
 
@@ -301,7 +297,7 @@ namespace Chummer
 			if (intNewIndex == 0)
 				return;
 
-			string strLocation = "";
+			string strLocation = string.Empty;
 			// Locate the currently selected Location.
 			foreach (string strCharacterLocation in _objCharacter.ArmorBundles)
 			{
@@ -356,7 +352,7 @@ namespace Chummer
 
 			// Change the Location of the Weapon.
 			if (objNewParent.Text == LanguageManager.Instance.GetString("Node_SelectedWeapons"))
-				objWeapon.Location = "";
+				objWeapon.Location = string.Empty;
 			else
 				objWeapon.Location = objNewParent.Text;
 
@@ -385,7 +381,7 @@ namespace Chummer
 			if (intNewIndex == 0)
 				return;
 
-			string strLocation = "";
+			string strLocation = string.Empty;
 			// Locate the currently selected Location.
 			foreach (string strCharacterLocation in _objCharacter.WeaponLocations)
 			{
@@ -484,12 +480,12 @@ namespace Chummer
 			bool blnDestinationGear = true;
 			bool blnDestinationLocation = false;
 			Vehicle objTempVehicle = new Vehicle(_objCharacter);
-			Gear objDestinationGear = _objFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
+			Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
 			if (objDestinationGear == null)
 				blnDestinationGear = false;
 
 			// Determine if this is a Location in the destination Vehicle.
-			string strDestinationLocation = "";
+			string strDestinationLocation = string.Empty;
 			foreach (string strLocation in objDestinationVehicle.Locations)
 			{
 				if (strLocation == objDestination.Tag.ToString())
@@ -505,7 +501,7 @@ namespace Chummer
 
 			// Locate the currently selected piece of Gear.
 			Vehicle objVehicle = new Vehicle(_objCharacter);
-			Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+			Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
 
 			// Gear cannot be moved to one of its children.
 			bool blnAllowMove = true;
@@ -543,7 +539,7 @@ namespace Chummer
 			{
 				// Add the Gear to its new parent.
 				objDestinationGear.Children.Add(objGear);
-				objGear.Location = "";
+				objGear.Location = string.Empty;
 				objGear.Parent = objDestinationGear;
 			}
 
@@ -625,7 +621,7 @@ namespace Chummer
 			if (intNewIndex == 0)
 				return;
 
-			string strLocation = "";
+			string strLocation = string.Empty;
 			// Locate the currently selected Group.
 			foreach (string strCharacterGroup in _objCharacter.ImprovementGroups)
 			{
@@ -948,7 +944,7 @@ namespace Chummer
 							{
 								foreach (Gear objFociGear in objStack.Gear)
 								{
-									if (objFociGear.Extra != string.Empty)
+									if (!string.IsNullOrEmpty(objFociGear.Extra))
 										_objImprovementManager.ForcedValue = objFociGear.Extra;
 									_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
 								}
@@ -967,7 +963,7 @@ namespace Chummer
 		/// </summary>
 		public string CalculateFreeSpiritPowerPoints()
 		{
-			string strReturn = "";
+			string strReturn = string.Empty;
 
 			if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
 			{
@@ -1027,7 +1023,7 @@ namespace Chummer
 		/// </summary>
 		public string CalculateFreeSpritePowerPoints()
 		{
-			string strReturn = "";
+			string strReturn = string.Empty;
 
 			// Free Sprite Power Points.
 			double dblPowerPoints = 0;
@@ -1052,7 +1048,7 @@ namespace Chummer
 		public MentorSpirit MentorInformation(MentorType objMentorType)
 		{
 			MentorSpirit objReturn = new MentorSpirit();
-			string strMentorSpirit = "";
+			string strMentorSpirit = string.Empty;
 
 			Quality objMentorQuality = new Quality(_objCharacter);
 
@@ -1073,14 +1069,13 @@ namespace Chummer
 				}
 			}
 
-			if (strMentorSpirit != "")
+			if (!string.IsNullOrEmpty(strMentorSpirit))
 			{
-				string strAdvantage = "";
-				string strDisadvantage = "";
+				string strAdvantage = string.Empty;
+				string strDisadvantage = string.Empty;
 
-				XmlDocument objXmlDocument = new XmlDocument();
-				XmlNode objXmlMentor;
-				if (strMentorSpirit != "")
+				XmlDocument objXmlDocument;
+				if (!string.IsNullOrEmpty(strMentorSpirit))
 				{
 					// Load the appropriate XML document.
 					if (objMentorType == MentorType.Mentor)
@@ -1088,32 +1083,36 @@ namespace Chummer
 					else
 						objXmlDocument = XmlManager.Instance.Load("paragons.xml");
 
-					objXmlMentor = objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" + strMentorSpirit + "\"]");
+                    XmlNode objXmlMentor = objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" + strMentorSpirit + "\"]");
 
-					// Build the list of advantages gained through the Mentor Spirit.
-					if (objXmlMentor["altadvantage"] != null)
-						strAdvantage = objXmlMentor["altadvantage"].InnerText;
-					else
-						strAdvantage = objXmlMentor["advantage"].InnerText;
+				    if (objXmlMentor != null)
+				    {
+				        // Build the list of advantages gained through the Mentor Spirit.
+				        if (!objXmlMentor.TryGetStringFieldQuickly("altadvantage", ref strAdvantage))
+				        {
+				            objXmlMentor.TryGetStringFieldQuickly("advantage", ref strAdvantage);
+				        }
+                        if (!objXmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref strDisadvantage))
+                        {
+                            objXmlMentor.TryGetStringFieldQuickly("disadvantage", ref strDisadvantage);
+                        }
 
-					foreach (Improvement objImprovement in _objCharacter.Improvements)
-					{
-						if (objImprovement.SourceName == objMentorQuality.InternalId)
-						{
-							if (objImprovement.Notes != string.Empty)
-								strAdvantage += " " + LanguageManager.Instance.TranslateExtra(objImprovement.Notes) + ".";
-						}
-					}
+				        foreach (Improvement objImprovement in _objCharacter.Improvements)
+				        {
+				            if (objImprovement.SourceName == objMentorQuality.InternalId)
+				            {
+				                if (!string.IsNullOrEmpty(objImprovement.Notes))
+				                    strAdvantage += " " + LanguageManager.Instance.TranslateExtra(objImprovement.Notes) + ".";
+				            }
+				        }
 
-					// Build the list of disadvantages gained through the Mentor Spirit.
-					if (objXmlMentor["altdisadvantage"] != null)
-						strDisadvantage = objXmlMentor["altdisadvantage"].InnerText;
-					else
-						strDisadvantage = objXmlMentor["disadvantage"].InnerText;
-
-					// Populate the Mentor Spirit object.
-					objReturn.Name = strMentorSpirit;
-					objReturn.Advantages = LanguageManager.Instance.GetString("Label_SelectMentorSpirit_Advantage") + " " + strAdvantage + "\n\n" + LanguageManager.Instance.GetString("Label_SelectMetamagic_Disadvantage") + " " + strDisadvantage;
+				        // Populate the Mentor Spirit object.
+				        objReturn.Name = strMentorSpirit;
+				        objReturn.Advantages = LanguageManager.Instance.GetString("Label_SelectMentorSpirit_Advantage") + " " +
+				                               strAdvantage + "\n\n" +
+				                               LanguageManager.Instance.GetString("Label_SelectMetamagic_Disadvantage") + " " +
+				                               strDisadvantage;
+				    }
 				}
 			}
 			else
@@ -1143,7 +1142,7 @@ namespace Chummer
 
 						if (blnAddImprovement)
 						{
-							if (objGear.Extra != string.Empty)
+							if (!string.IsNullOrEmpty(objGear.Extra))
 								_objImprovementManager.ForcedValue = objGear.Extra;
 							_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
 						}
@@ -1159,7 +1158,7 @@ namespace Chummer
 								{
 									foreach (Gear objFociGear in objStack.Gear)
 									{
-										if (objFociGear.Extra != string.Empty)
+										if (!string.IsNullOrEmpty(objFociGear.Extra))
 											_objImprovementManager.ForcedValue = objFociGear.Extra;
 										_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
 									}

@@ -28,13 +28,13 @@ namespace Chummer
 {
 	public partial class frmSelectWeaponAccessory : Form
 	{
-		private string _strSelectedAccessory = "";
+		private string _strSelectedAccessory = string.Empty;
 		private int _intMarkup = 0;
 
-		private string _strAllowedMounts = "";
+		private string _strAllowedMounts = string.Empty;
 		private int _intWeaponCost = 0;
 		private int _intRating = 0;
-        private string _strCurrentWeaponName = "";
+        private string _strCurrentWeaponName = string.Empty;
 		private bool _blnAddAgain = false;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -57,10 +57,10 @@ namespace Chummer
 
 		private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
 		{
-            foreach (Label objLabel in this.Controls.OfType<Label>())
+            foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			List<ListItem> lstAccessories = new List<ListItem>();
@@ -72,10 +72,10 @@ namespace Chummer
 
             // Populate the Accessory list.
             string[] strAllowed = _strAllowedMounts.Split('/');
-			string strMount = "";
+			string strMount = string.Empty;
             foreach (string strAllowedMount in strAllowed)
 			{
-				if (strAllowedMount != "")
+				if (!string.IsNullOrEmpty(strAllowedMount))
 					strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
 			}
 			strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
@@ -89,7 +89,7 @@ namespace Chummer
 					{
 						if (strAllowed.Length > 1)
 						{
-							foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => strItem != ""))
+							foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
 							{
 								if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
 								{
@@ -104,7 +104,7 @@ namespace Chummer
                     if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["forbidden"]["weapondetails"], false))
+                        if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
                         {
                             goto NextItem;
                         }
@@ -112,7 +112,7 @@ namespace Chummer
                     if (objXmlAccessory["required"]?["weapondetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (!Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["required"]["weapondetails"], false))
+                        if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
                         {
                             goto NextItem;
                         }
@@ -167,10 +167,12 @@ namespace Chummer
 
 			SortListItem objSort = new SortListItem();
 			lstAccessories.Sort(objSort.Compare);
-			lstAccessory.ValueMember = "Value";
+            lstAccessory.BeginUpdate();
+            lstAccessory.ValueMember = "Value";
 			lstAccessory.DisplayMember = "Name";
 			lstAccessory.DataSource = lstAccessories;
-		}
+            lstAccessory.EndUpdate();
+        }
 
 		private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -179,19 +181,18 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstAccessory.Text != "")
+			if (!string.IsNullOrEmpty(lstAccessory.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstAccessory_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstAccessory.Text != "")
-				AcceptForm();
+			cmdOK_Click(sender, e);
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -285,7 +286,7 @@ namespace Chummer
 			cboMount.Items.Clear();
 			foreach (string strCurrentMount in strMounts)
 			{
-				if (strCurrentMount != "")
+				if (!string.IsNullOrEmpty(strCurrentMount))
 				{
                     foreach (string strAllowedMount in strAllowed)
                     {
@@ -325,7 +326,7 @@ namespace Chummer
             cboExtraMount.Items.Clear();
             foreach (string strCurrentMount in strExtraMounts)
             {
-                if (strCurrentMount != "")
+                if (!string.IsNullOrEmpty(strCurrentMount))
                 {
                     foreach (string strAllowedMount in strAllowed)
                     {
@@ -350,7 +351,7 @@ namespace Chummer
                 cboExtraMount.SelectedIndex += 1;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvail = "";
+            string strAvail = string.Empty;
 			string strAvailExpr = objXmlAccessory["avail"].InnerText;
 			XPathExpression xprAvail;
 			XPathNavigator nav = _objXmlDocument.CreateNavigator();
@@ -365,7 +366,7 @@ namespace Chummer
 				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
 				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
 			}
-			catch
+			catch (XPathException)
 			{
 				lblAvail.Text = objXmlAccessory["avail"].InnerText;
 			}
@@ -448,11 +449,11 @@ namespace Chummer
 		/// <summary>
 		/// Mount that was selected in the dialogue.
 		/// </summary>
-		public string[] SelectedMount
+		public Tuple<string, string> SelectedMount
 		{
 			get
 			{
-				return new string[] { cboMount.SelectedItem.ToString(), cboExtraMount.SelectedItem.ToString()};
+				return new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
 			}
 		}
 
@@ -566,7 +567,7 @@ namespace Chummer
 			_intRating = Convert.ToInt32(nudRating.Value.ToString());
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

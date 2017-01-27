@@ -21,7 +21,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-﻿using System.Runtime.InteropServices;
+ using System.Runtime;
+ using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
 ﻿using Chummer.Backend.Debugging;
@@ -37,7 +38,9 @@ namespace Chummer
 		[STAThread]
 		static void Main()
 		{
-			Stopwatch sw = Stopwatch.StartNew();
+            ProfileOptimization.SetProfileRoot(Application.StartupPath);
+            ProfileOptimization.StartProfile("chummerprofile");
+            Stopwatch sw = Stopwatch.StartNew();
 			//If debuging and launched from other place (Bootstrap), launch debugger
 			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
 			{
@@ -56,17 +59,13 @@ namespace Chummer
 			//Log exceptions that is caught. Wanting to know about this cause of performance
 	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
 			AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
-			
 
 			sw.TaskEnd("appdomain 2");
 
-	        string info =
-		        $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
-			
+	        string info = $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
 	        sw.TaskEnd("infogen");
 
-			Log.Info( info);
-			
+			Log.Info(info);
 	        sw.TaskEnd("infoprnt");
 
 			Application.EnableVisualStyles();
@@ -102,8 +101,7 @@ namespace Chummer
 				Application.Exit();
 			}
 
-			string ExceptionMap = heatmap.GenerateInfo();
-			Log.Info(ExceptionMap);
+			Log.Info(heatmap.GenerateInfo());
 		}
 
 		static ExceptionHeatMap heatmap = new ExceptionHeatMap();

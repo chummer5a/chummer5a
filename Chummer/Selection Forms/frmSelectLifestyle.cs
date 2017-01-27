@@ -51,10 +51,10 @@ namespace Chummer
 		{
 			_blnSkipRefresh = true;
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Lifestyles information.
@@ -85,7 +85,8 @@ namespace Chummer
 				lstLifestyle.Add(objItem);
 				}
 			}
-			cboLifestyle.ValueMember = "Value";
+            cboLifestyle.BeginUpdate();
+            cboLifestyle.ValueMember = "Value";
 			cboLifestyle.DisplayMember = "Name";
 			cboLifestyle.DataSource = lstLifestyle;
 
@@ -95,11 +96,11 @@ namespace Chummer
 			}
 			if (cboLifestyle.SelectedIndex == -1)
 				cboLifestyle.SelectedIndex = 0;
+            cboLifestyle.EndUpdate();
 
-            
 
-			// Fill the Options list.
-			foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+            // Fill the Options list.
+            foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
 			{
 				TreeNode nodOption = new TreeNode();
 
@@ -170,7 +171,7 @@ namespace Chummer
 			if (_objSourceLifestyle != null)
 			{
 				txtLifestyleName.Text = _objSourceLifestyle.Name;
-				if (_objSourceLifestyle.BaseLifestyle.ToString() != "")
+				if (!string.IsNullOrEmpty(_objSourceLifestyle.BaseLifestyle))
 				{
 					cboLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
 				}
@@ -195,7 +196,7 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (txtLifestyleName.Text == "")
+			if (string.IsNullOrEmpty(txtLifestyleName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.Instance.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -205,7 +206,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -328,7 +329,7 @@ namespace Chummer
 					_objLifestyle.LifestyleQualities.Add(objQuality);
 				}
 			}
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		/// <summary>
@@ -369,7 +370,7 @@ namespace Chummer
 				if (objNode.Checked)
 				{
 					XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + GetQualityName(objNode.Tag.ToString()) + "\"]");
-					if (objXmlQuality["cost"] != null && objXmlQuality["cost"].InnerText != "")
+					if (objXmlQuality["cost"] != null && !string.IsNullOrEmpty(objXmlQuality["cost"].InnerText))
 						decCost += Convert.ToDecimal(objXmlQuality["cost"].InnerText);
 				}
 			}
@@ -434,7 +435,7 @@ namespace Chummer
 				SortByName objSort = new SortByName();
 				lstNodes.Sort(objSort.Compare);
 			}
-			catch
+			catch (ArgumentException)
 			{
 			}
 			foreach (TreeNode objNode in lstNodes)

@@ -60,7 +60,7 @@
 			this.nudKarma.Name = "nudKarma";
 			this.nudKarma.Size = new System.Drawing.Size(70, 20);
 			this.nudKarma.TabIndex = 2;
-			this.nudKarma.Tag = "";
+			this.nudKarma.Tag = string.Empty;
 			this.nudKarma.Value = new decimal(new int[] {
             400,
             0,

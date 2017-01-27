@@ -31,16 +31,16 @@ namespace Chummer
 	{
         public int buildPos = 0;
         public int buildNeg = 0;
-		private string _strSelectedQuality = "";
+		private string _strSelectedQuality = string.Empty;
 		private bool _blnAddAgain = false;
 		private readonly Character _objCharacter;
-		private string _strIgnoreQuality = "";
+		private string _strIgnoreQuality = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
 		private List<ListItem> _lstCategory = new List<ListItem>();
 
-		private static string _strSelectCategory = "";
+		private static string _strSelectCategory = string.Empty;
 
 		private readonly XmlDocument _objMetatypeDocument = new XmlDocument();
 		private readonly XmlDocument _objCritterDocument = new XmlDocument();
@@ -62,10 +62,10 @@ namespace Chummer
 		{
 			_objXmlDocument = XmlManager.Instance.Load("qualities.xml");
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Quality information.
@@ -88,20 +88,22 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				_lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
 			// Select the first Category in the list.
-            if (_strSelectCategory == "")
+            if (string.IsNullOrEmpty(_strSelectCategory))
 				cboCategory.SelectedIndex = 0;
 			else
 				cboCategory.SelectedValue = _strSelectCategory;
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-				lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+            lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
 
             BuildQualityList();
         }
@@ -113,7 +115,7 @@ namespace Chummer
 
 		private void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstQualities.Text == "")
+			if (string.IsNullOrEmpty(lstQualities.Text))
 				return;
 
 			XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstQualities.SelectedValue + "\"]");
@@ -177,7 +179,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstQualities_DoubleClick(object sender, EventArgs e)
@@ -219,39 +221,25 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
-					lstQualities.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstQualities.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
+                if (lstQualities.SelectedIndex + 1 < lstQualities.Items.Count)
+                {
+                    lstQualities.SelectedIndex++;
+                }
+                else if (lstQualities.Items.Count > 0)
+                {
+                    lstQualities.SelectedIndex = 0;
+                }
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
-					lstQualities.SelectedIndex--;
-					if (lstQualities.SelectedIndex == -1)
-						lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
+                if (lstQualities.SelectedIndex - 1 >= 0)
+                {
+                    lstQualities.SelectedIndex--;
+                }
+                else if (lstQualities.Items.Count > 0)
+                {
+                    lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
+                }
 			}
 		}
 
@@ -281,9 +269,11 @@ namespace Chummer
 		{
 			set
 			{
-				cboCategory.DataSource = null;
+                cboCategory.BeginUpdate();
+                cboCategory.DataSource = null;
 				cboCategory.Items.Add(value);
-			}
+                cboCategory.EndUpdate();
+            }
 		}
 
 		/// <summary>
@@ -327,10 +317,9 @@ namespace Chummer
 		private void BuildQualityList()
 		{
 			List<ListItem> lstQuality = new List<ListItem>();
-            lstQualities.DataSource = null;
             XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
-            if (txtSearch.Text.Trim() != "")
+            if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
 			{
 				// Treat everything as being uppercase so the search is case-insensitive.
 				string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
@@ -363,7 +352,7 @@ namespace Chummer
 			    {
 			        objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
 			    }
-			    catch
+			    catch (XPathException)
 			    {
 			        return;
 			    }
@@ -392,16 +381,16 @@ namespace Chummer
                             else
                                 objItem.Name = objXmlQuality["name"].InnerText;
 
-                             try
-                             {
-                                 objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText).Name + "]";
-                            
-                                 lstQuality.Add(objItem);
-                            
-                             }
-                             catch
-                             {
-                             }
+                            if (objXmlQuality["category"] != null)
+                            {
+                                ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText);
+                                if (objFoundItem != null)
+                                {
+                                    objItem.Name += " [" + objFoundItem.Name + "]";
+                                }
+                            }
+
+                            lstQuality.Add(objItem);
                         }
                     }
 				}
@@ -484,18 +473,20 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstQuality.Sort(objSort.Compare);
-			lstQualities.DataSource = null;
+            lstQualities.BeginUpdate();
+            lstQualities.DataSource = null;
 			lstQualities.ValueMember = "Value";
 			lstQualities.DisplayMember = "Name";
 			lstQualities.DataSource = lstQuality;
-		}
+            lstQualities.EndUpdate();
+        }
 
 		/// <summary>
 		/// Accept the selected item and close the form.
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (lstQualities.Text == "")
+			if (string.IsNullOrEmpty(lstQualities.Text))
 				return;
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
             switch (lstQualities.SelectedValue.ToString())
@@ -519,7 +510,7 @@ namespace Chummer
 
 			if (!RequirementMet(objNode, true))
 				return;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		/// <summary>
@@ -575,7 +566,7 @@ namespace Chummer
 			if (objXmlQuality.InnerXml.Contains("forbidden"))
 			{
 				bool blnRequirementForbidden = false;
-				string strForbidden = "";
+				string strForbidden = string.Empty;
 
 				// Loop through the oneof requirements.
 				XmlNodeList objXmlForbiddenList = objXmlQuality.SelectNodes("forbidden/oneof");
@@ -674,7 +665,7 @@ namespace Chummer
 
 			if (objXmlQuality.InnerXml.Contains("required"))
 			{
-				string strRequirement = "";
+				string strRequirement = string.Empty;
 				bool blnRequirementMet = true;
 
 				// Loop through the oneof requirements.

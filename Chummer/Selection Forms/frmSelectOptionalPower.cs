@@ -24,8 +24,8 @@ namespace Chummer
 {
     public partial class frmSelectOptionalPower : Form
     {
-	    private string _strReturnPower = "";
-	    private string _strReturnExtra = "";
+	    private string _strReturnPower = string.Empty;
+	    private string _strReturnExtra = string.Empty;
 		private List<KeyValuePair<string, KeyValuePair<string, string>>> _lstPowers = new List<KeyValuePair<string, KeyValuePair<string, string>>>();
 
 		#region Control Events
@@ -39,7 +39,7 @@ namespace Chummer
 		{
 			_strReturnPower = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Key;
 			_strReturnExtra = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Value;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
         }
 
         private void frmSelectOptionalPower_Load(object sender, EventArgs e)
@@ -50,7 +50,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void frmSelectOptionalPower_Shown(object sender, EventArgs e)
@@ -103,11 +103,13 @@ namespace Chummer
 			objItem.Value = strValue;
 			objItem.Name = strValue;
 			lstItems.Add(objItem);
-			cboPower.DataSource = null;
+            cboPower.BeginUpdate();
+            cboPower.DataSource = null;
 			cboPower.ValueMember = "Value";
 			cboPower.DisplayMember = "Name";
 			cboPower.DataSource = lstItems;
-		}
+            cboPower.EndUpdate();
+        }
 
 		/// <summary>
 		/// Limit the list to a few Powers.
@@ -118,22 +120,20 @@ namespace Chummer
 			_lstPowers.Clear();
 			foreach (KeyValuePair<string, string> lstObject in lstValue)
 			{
-				string strName = "";
-				if (lstObject.Value != "")
+				string strName = lstObject.Key;
+                if (!string.IsNullOrEmpty(lstObject.Value))
 				{
-					strName = lstObject.Key + " (" + lstObject.Value + ")";
-				}
-				else
-				{
-					strName = lstObject.Key;
+					strName += " (" + lstObject.Value + ")";
 				}
 				_lstPowers.Add(new KeyValuePair<string, KeyValuePair<string, string>>(strName, lstObject));
 			}
-			cboPower.DataSource = null;
-			cboPower.DataSource = _lstPowers;
+            cboPower.BeginUpdate();
+            cboPower.DataSource = null;
 			cboPower.ValueMember = "Value";
 			cboPower.DisplayMember = "Name";
-		}
+            cboPower.DataSource = _lstPowers;
+            cboPower.EndUpdate();
+        }
 		#endregion
     }
 }

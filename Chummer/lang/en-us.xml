@@ -6223,6 +6223,10 @@ Do you want to continue?</text>
 			<text>Automatic Updates</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_Live_CustomData</key>
+			<text>Allow Live Data Updates from customdata Directory</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_UseLogging</key>
 			<text>Use Debug Logging</text>
 		</string>
@@ -6721,6 +6725,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Option_FreeMartialArtSpecialization</key>
 			<text>Allow Martial Arts to grant a free specialisation in a skill</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
+			<text>Allow spending of free spells from Magic Priority as power points</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>

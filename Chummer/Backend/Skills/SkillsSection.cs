@@ -10,13 +10,13 @@ namespace Chummer.Skills
 {
 	public class SkillsSection : INotifyPropertyChanged
 	{
-		public event CollegeEducationChangedHandler CollegeEducationChanged;
-		public event JackOfAllTradesChangedHandler JackOfAllTradesChanged;
-		public event LinguistChangedHandler LinguistChanged;
-		public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
-		public event TechSchoolChangedHandler TechSchoolChanged;
-		public event UncouthChangedHandler UncouthChanged;
-		public event UneducatedChangedHandler UneducatedChanged;
+		public Action<object> CollegeEducationChanged;
+		public Action<object> JackOfAllTradesChanged;
+		public Action<object> LinguistChanged;
+		public Action<object> SchoolOfHardKnocksChanged;
+		public Action<object> TechSchoolChanged;
+		public Action<object> UncouthChanged;
+		public Action<object> UneducatedChanged;
 		
 		private readonly Character _character;
 		private bool _blnUneducated;
@@ -40,11 +40,11 @@ namespace Chummer.Skills
 
 		private void CharacterOnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
 		{
-			if (improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills))
+			if (PropertyChanged != null && improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills))
 			{
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPointsRemain)));
+				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
+				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPointsRemain)));
 			}
 		}
 
@@ -101,20 +101,37 @@ namespace Chummer.Skills
 
 		internal void Load(XmlNode skillNode, bool legacy = false)
 		{
+		    if (skillNode == null)
+		        return;
 			Timekeeper.Start("load_char_skills");
 
 			if (!legacy)
 			{
 				Timekeeper.Start("load_char_skills_groups");
-				(from XmlNode node in skillNode.SelectNodes("groups/group") let @group = SkillGroup.Load(_character, node) where @group != null orderby @group.DisplayName descending select @group).ForEach(x => SkillGroups.Add(x));
-
-				Timekeeper.Finish("load_char_skills_groups");
+                List<SkillGroup> loadingSkillGroups = new List<SkillGroup>();
+                foreach (XmlNode node in skillNode.SelectNodes("groups/group"))
+                {
+                    SkillGroup skillgroup = SkillGroup.Load(_character, node);
+                    if (skillgroup != null)
+                        loadingSkillGroups.Add(skillgroup);
+                }
+                loadingSkillGroups.Sort((i1, i2) => String.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+                foreach (SkillGroup skillgroup in loadingSkillGroups)
+                {
+                    SkillGroups.Add(skillgroup);
+                }
+                Timekeeper.Finish("load_char_skills_groups");
 
 				Timekeeper.Start("load_char_skills_normal");
-				//Load skills. Because sorting a BindingList is complicated we use a temporery normal list
-				List<Skill> loadingSkills = (from XmlNode node in skillNode.SelectNodes("skills/skill") let skill = Skill.Load(_character, node) where skill != null select skill).ToList();
-
-				loadingSkills.Sort(CompareSkills);
+                //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
+                List<Skill> loadingSkills = new List<Skill>();
+                foreach (XmlNode node in skillNode.SelectNodes("skills/skill"))
+                {
+                    Skill skill = Skill.Load(_character, node);
+                    if (skill != null)
+                        loadingSkills.Add(skill);
+                }
+                loadingSkills.Sort(CompareSkills);
 
 
 				foreach (Skill skill in loadingSkills)
@@ -124,32 +141,35 @@ namespace Chummer.Skills
 				Timekeeper.Finish("load_char_skills_normal");
 
 				Timekeeper.Start("load_char_skills_kno");
-				List<KnowledgeSkill> knoSkills = (from XmlNode node in skillNode.SelectNodes("knoskills/skill") let skill = (KnowledgeSkill) Skill.Load(_character, node) where skill != null select skill).ToList();
-
-
-				foreach (KnowledgeSkill skill in knoSkills)
-				{
-					KnowledgeSkills.Add(skill);
-				}
+                foreach (XmlNode node in skillNode.SelectNodes("knoskills/skill"))
+                {
+                    KnowledgeSkill skill = Skill.Load(_character, node) as KnowledgeSkill;
+                    if (skill != null)
+                        KnowledgeSkills.Add(skill);
+                }
 				Timekeeper.Finish("load_char_skills_kno");
 
 				Timekeeper.Start("load_char_knowsoft_buffer");
 				// Knowsoft Buffer.
-				XmlNodeList objXmlKnowsoftBuffer = skillNode.SelectNodes("skilljackknowledgeskills/skill");
-				foreach (XmlNode objXmlSkill in objXmlKnowsoftBuffer)
+				foreach (XmlNode objXmlSkill in skillNode.SelectNodes("skilljackknowledgeskills/skill"))
 				{
-					string strName = objXmlSkill["name"].InnerText;
-					KnowsoftSkills.Add(new KnowledgeSkill(_character, strName));
+					string strName = string.Empty;
+                    if (objXmlSkill.TryGetStringFieldQuickly("name", ref strName))
+					    KnowsoftSkills.Add(new KnowledgeSkill(_character, strName));
 				}
 				Timekeeper.Finish("load_char_knowsoft_buffer");
 			}
 			else
 			{
-				XmlNodeList oldskills = skillNode.SelectNodes("skills/skill");
+                List<Skill> tempSkillList = new List<Skill>();
+                foreach (XmlNode node in skillNode.SelectNodes("skills/skill"))
+                {
+                    Skill skill = Skill.LegacyLoad(_character, node);
+                    if (skill != null)
+                        tempSkillList.Add(skill);
+                }
 
-				List<Skill> tempoerySkillList = (from XmlNode node in oldskills let skill = Skill.LegacyLoad(_character, node) where skill != null select skill).ToList();
-
-				List<Skill> unsoredSkills = new List<Skill>();
+                List<Skill> unsoredSkills = new List<Skill>();
 
 				//Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
 				Predicate<Skill> oldSkillFilter = skill =>
@@ -167,11 +187,10 @@ namespace Chummer.Skills
 						return false;
 					}
 
-
 					return true;
 				};
 
-				foreach (Skill skill in tempoerySkillList)
+				foreach (Skill skill in tempSkillList)
 				{
 					KnowledgeSkill knoSkill = skill as KnowledgeSkill;
 					if (knoSkill != null)
@@ -200,54 +219,67 @@ namespace Chummer.Skills
 			//remove skillgroups whose skills did not make the final cut
 			for (var i = SkillGroups.Count - 1; i >= 0; i--)
 			{
-				if (SkillGroups[i].GetEnumerable().Any(x => Skills.Contains(x)))
-					continue;
-
-				SkillGroups.RemoveAt(i);
+			    if (!SkillGroups[i].GetEnumerable().Any(x => Skills.Contains(x)))
+			    {
+                    SkillGroups.RemoveAt(i);
+			        i--;
+			    }
 			}
 
 			//Workaround for probably breaking compability between earlier beta builds
 			if (skillNode["skillptsmax"] == null)
 			{
-				
 				skillNode = skillNode.OwnerDocument["character"];
 			}
 
-			SkillPointsMaximum = Convert.ToInt32(skillNode["skillptsmax"].InnerText);
-			SkillGroupPointsMaximum = Convert.ToInt32(skillNode["skillgrpsmax"].InnerText);
-			skillNode.TryGetField("uneducated", out _blnUneducated);
-			skillNode.TryGetField("uncouth", out _blnUncouth);
-			skillNode.TryGetField("schoolofhardknocks", out _blnSchoolOfHardKnocks);
-			skillNode.TryGetField("collegeeducation", out _blnCollegeEducation);
-			skillNode.TryGetField("jackofalltrades", out _blnJackOfAllTrades);
-			skillNode.TryGetField("techschool", out _blnTechSchool);
-			skillNode.TryGetField("linguist", out _blnLinguist);
+		    int intTmp = 0;
+		    if (skillNode.TryGetInt32FieldQuickly("skillptsmax", ref intTmp))
+		        SkillPointsMaximum = intTmp;
+            if (skillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
+                SkillGroupPointsMaximum = intTmp;
+			skillNode.TryGetBoolFieldQuickly("uneducated", ref _blnUneducated);
+			skillNode.TryGetBoolFieldQuickly("uncouth", ref _blnUncouth);
+			skillNode.TryGetBoolFieldQuickly("schoolofhardknocks", ref _blnSchoolOfHardKnocks);
+			skillNode.TryGetBoolFieldQuickly("collegeeducation", ref _blnCollegeEducation);
+			skillNode.TryGetBoolFieldQuickly("jackofalltrades", ref _blnJackOfAllTrades);
+			skillNode.TryGetBoolFieldQuickly("techschool", ref _blnTechSchool);
+			skillNode.TryGetBoolFieldQuickly("linguist", ref _blnLinguist);
 
 			Timekeeper.Finish("load_char_skills");
 		}
 
 		private void UpdateUndoList(XmlNode skillNode)
 		{
-			//Hacky way of converting Expense entries to guid based skill identification
-			//specs allready did?
-			//First create dictionary mapping name=>guid
+            //Hacky way of converting Expense entries to guid based skill identification
+            //specs allready did?
+            //First create dictionary mapping name=>guid
+            Dictionary<string, Guid> dicGroups = new Dictionary<string, Guid>();
+            foreach (SkillGroup objLoopSkillGroup in SkillGroups)
+            {
+                if (objLoopSkillGroup.Rating > 0 && !dicGroups.ContainsKey(objLoopSkillGroup.Name))
+                {
+                    dicGroups.Add(objLoopSkillGroup.Name, objLoopSkillGroup.Id);
+                }
+            }
 
-			Dictionary<string, Guid> groups =
-				SkillGroups.Where(group => group.Rating > 0)
-					.GroupBy(arg => arg.Name)
-					.Select(group => group.First())
-					.ToDictionary(x => x.Name, x => x.Id);
+            Dictionary<string, Guid> dicSkills = new Dictionary<string, Guid>();
+            foreach (Skill objLoopSkill in Skills)
+            {
+                if (objLoopSkill.LearnedRating > 0 && !dicGroups.ContainsKey(objLoopSkill.Name))
+                {
+                    dicSkills.Add(objLoopSkill.Name, objLoopSkill.Id);
+                }
+            }
+            foreach (KnowledgeSkill objLoopSkill in KnowledgeSkills)
+            {
+                if (!dicGroups.ContainsKey(objLoopSkill.Name))
+                {
+                    dicSkills.Add(objLoopSkill.Name, objLoopSkill.Id);
+                }
+            }
 
-			Dictionary<string, Guid> skills =
-				Skills.Where(skill => skill.LearnedRating > 0)
-					.Concat(KnowledgeSkills)
-					//Next 2 lines prevent dictionary throwing exception in the unlikly case that player have both
-					.GroupBy(skill => skill.Name)
-					.Select(group => group.First())
-					.ToDictionary(x => x.Name, x => x.Id);
-			
-			UpdateUndoSpecific(skillNode.OwnerDocument, skills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill});
-			UpdateUndoSpecific(skillNode.OwnerDocument, groups, new[] { KarmaExpenseType.ImproveSkillGroup });
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill });
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, new[] { KarmaExpenseType.ImproveSkillGroup });
 		}
 
 		private static void UpdateUndoSpecific(XmlDocument doc, Dictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
@@ -259,21 +291,22 @@ namespace Chummer.Skills
 
 			//Find everything
 			XmlNodeList nodesToChange = doc.SelectNodes(xpath);
-
-			for (var i = 0; i < nodesToChange.Count; i++)
-			{
-				try
-				{
-					nodesToChange[i].InnerText = map[nodesToChange[i].InnerText].ToString();
-				}
-				catch (Exception ex)
-				{
-					Log.Error(new object[] { "Failed to convert", ex, nodesToChange[i].ParentNode.OuterXml});
-
-					nodesToChange[i].InnerText = new Guid().ToString();  //This creates 00.. guid in default formatting
-				}
-			}
-		}
+            if (nodesToChange != null)
+            {
+                Guid guidLoop;
+                for (var i = 0; i < nodesToChange.Count; i++)
+                {
+                    if (map.TryGetValue(nodesToChange[i].InnerText, out guidLoop))
+                    {
+                        nodesToChange[i].InnerText = guidLoop.ToString();
+                    }
+                    else
+                    {
+                        nodesToChange[i].InnerText = new Guid().ToString(); //This creates 00.. guid in default formatting
+                    }
+                }
+            }
+        }
 
 		internal void Save(XmlTextWriter writer)
 		{
@@ -365,7 +398,7 @@ namespace Chummer.Skills
 
 		public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
-		/// <summary>
+	    /// <summary>
 		/// Number of free Knowledge Skill Points the character has.
 		/// </summary>
 		public int KnowledgeSkillPoints
@@ -373,7 +406,7 @@ namespace Chummer.Skills
 			get
 			{
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-				var fromAttributes = (_character.INT.Value + _character.LOG.Value) * _character.Options.FreeKnowledgeMultiplier;
+				int fromAttributes = (_character.INT.Value + _character.LOG.Value) * _character.Options.FreeKnowledgeMultiplier;
 
 				int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
 				return fromAttributes + val;
@@ -547,25 +580,29 @@ namespace Chummer.Skills
 		}
 		public static int CompareSkills(Skill rhs, Skill lhs)
 		{
-			if (rhs is ExoticSkill)
+            ExoticSkill rhsExoticSkill = (rhs.IsExoticSkill ? rhs : null) as ExoticSkill;
+            ExoticSkill lhsExoticSkill = (lhs.IsExoticSkill ? lhs : null) as ExoticSkill;
+			if (rhsExoticSkill != null)
 			{
-				if (lhs is ExoticSkill)
+				if (lhsExoticSkill != null)
 				{
-					return ((rhs as ExoticSkill).Specific ?? "").CompareTo((lhs as ExoticSkill).Specific ?? "");
+					return String.Compare(rhsExoticSkill.Specific ?? string.Empty, lhsExoticSkill.Specific ?? string.Empty, StringComparison.Ordinal);
 				}
 				else
 				{
 					return 1;
 				}
 			}
-			else if (lhs is ExoticSkill)
+			else if (lhsExoticSkill != null)
 			{
 				return -1;
 			}
-			else
+			else if (rhs != null && lhs != null)
 			{
-				return rhs.DisplayName.CompareTo(lhs.DisplayName);
+			    return String.Compare(rhs.DisplayName, lhs.DisplayName, StringComparison.Ordinal);
 			}
+
+			return 0;
 		}
 
 		public static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
@@ -583,8 +620,8 @@ namespace Chummer.Skills
 			foreach (XmlNode objXmlSkill in objXmlSkillList)
 			{
 				ListItem objSkill = new ListItem();
-				objSkill.Value = objXmlSkill["name"].InnerText;
-				objSkill.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+				objSkill.Value = objXmlSkill["name"]?.InnerText;
+				objSkill.Name = objXmlSkill["translate"]?.InnerText ?? objSkill.Value;
 				lstSkillOrder.Add(objSkill);
 			}
 			SortListItem objSort = new SortListItem();
@@ -609,7 +646,7 @@ namespace Chummer.Skills
 			switch (filter)
 			{
 				case FilterOptions.All:
-					return "";
+					return string.Empty;
 				case FilterOptions.NonSpecial:
 					return " and not(category = 'Magical Active') and not(category = 'Resonance Active')";
 				case FilterOptions.Magician:
@@ -665,8 +702,11 @@ namespace Chummer.Skills
 		[Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
 		internal void KnoChanged()
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+		    if (PropertyChanged != null)
+		    {
+		        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
+		        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+		    }
 		}
 
 

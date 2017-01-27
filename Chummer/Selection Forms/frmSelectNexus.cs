@@ -40,12 +40,12 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void nudProcessor_ValueChanged(object sender, EventArgs e)
@@ -144,7 +144,7 @@ namespace Chummer
 			}
 
 			// System.
-			string strSystemAvail = "";
+			string strSystemAvail = string.Empty;
 			int intSystemCost = 0;
 			if (intSystem <= 3)
 			{
@@ -163,7 +163,7 @@ namespace Chummer
 			}
 
 			// Firewall.
-			string strFirewallAvail = "";
+			string strFirewallAvail = string.Empty;
 			int intFirewallCost = 0;
 			if (intFirewall <= 3)
 			{

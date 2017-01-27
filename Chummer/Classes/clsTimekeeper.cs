@@ -46,9 +46,10 @@ namespace Chummer
 
 		public static TimeSpan Elapsed(string taskname)
 		{
-			if (Starts.ContainsKey(taskname))
+		    TimeSpan objStartTimeSpan;
+            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
 			{
-				return time.Elapsed - Starts[taskname];
+				return time.Elapsed - objStartTimeSpan;
 			}
 			else
 			{
@@ -58,19 +59,20 @@ namespace Chummer
 
 		public static TimeSpan Finish(string taskname)
 		{
-			if (Starts.ContainsKey(taskname))
-			{
-				TimeSpan final = time.Elapsed - Starts[taskname];
+            TimeSpan objStartTimeSpan;
+            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
+            {
+				TimeSpan final = time.Elapsed - objStartTimeSpan;
 
 				Starts.Remove(taskname);
 				string logentry = $"Task \"{taskname}\" finished in {final}";
                 Chummer.Log.Info(logentry);
 
 				Debug.WriteLine(logentry);
-				
-				if (Statistics.ContainsKey(taskname))
+
+                Tuple<TimeSpan, int> existing;
+                if (Statistics.TryGetValue(taskname, out existing))
 				{
-					Tuple<TimeSpan, int> existing = Statistics[taskname];
 					Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
 				}
 				else

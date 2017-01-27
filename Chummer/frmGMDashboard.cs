@@ -44,27 +44,27 @@ namespace Chummer
         {
             get
             {
-                if (frmGMDashboard._instance == null)
-                    frmGMDashboard._instance = new frmGMDashboard();
-                return frmGMDashboard._instance;
+                if (_instance == null)
+                    _instance = new frmGMDashboard();
+                return _instance;
             }
         }
 
         protected frmGMDashboard()
         {
             InitializeComponent();
-            this.UpdateTabs();
+            UpdateTabs();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-            this.frmInitative = new frmInitiative();
-            this.frmInitative.Hide();
-            this.VisibleChanged += frmGMDashboard_VisibleChanged;
-            this.frmInitative.InitUC.CurrentCharacterChanged += InitUC_CurrentCharacterChanged;
-            this.frmInitative.FormClosing += frmInitative_FormClosing;
-            this.FormClosing += frmGMDashboard_FormClosing;
-            this.frmInitative.TopMost = true;
-            this.CenterToParent();
+            frmInitative = new frmInitiative();
+            frmInitative.Hide();
+            VisibleChanged += frmGMDashboard_VisibleChanged;
+            frmInitative.InitUC.CurrentCharacterChanged += InitUC_CurrentCharacterChanged;
+            frmInitative.FormClosing += frmInitative_FormClosing;
+            FormClosing += frmGMDashboard_FormClosing;
+            frmInitative.TopMost = true;
+            CenterToParent();
             // auto hide the form at creation
-            this.Hide();
+            Hide();
         }
 
         #endregion
@@ -84,7 +84,7 @@ namespace Chummer
         /// </summary>
         public DiceRollerControl DiceRoller
         {
-            get { return this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
+            get { return tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
         }
         #endregion
 
@@ -96,7 +96,7 @@ namespace Chummer
          */
         void frmGMDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.exitToolStripMenuItem_Click(sender, null);
+            exitToolStripMenuItem_Click(sender, null);
             e.Cancel = true;
         }
 
@@ -106,7 +106,7 @@ namespace Chummer
          */
         void frmInitative_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.frmInitative.Hide();
+            frmInitative.Hide();
             e.Cancel = true;
         }
 
@@ -115,7 +115,7 @@ namespace Chummer
          */
         private void initativeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.frmInitative.Show();
+            frmInitative.Show();
         }
 
         /*
@@ -123,8 +123,8 @@ namespace Chummer
          */
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.frmInitative.Hide();
-            this.Hide();
+            frmInitative.Hide();
+            Hide();
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Chummer
         /// <param name="e"></param>
         void frmGMDashboard_VisibleChanged(object sender, EventArgs e)
         {
-            this.frmInitative.Visible = this.Visible;
+            frmInitative.Visible = Visible;
         }
 
         /// <summary>
@@ -144,9 +144,9 @@ namespace Chummer
         /// <param name="e"></param>
         void InitUC_CurrentCharacterChanged(object sender, EventArgs e)
         {
-            this.CurrentNPC = this.frmInitative.InitUC.CurrentCharacter;
+            CurrentNPC = frmInitative.InitUC.CurrentCharacter;
 
-            this.UpdateControls();
+            UpdateControls();
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Chummer
         /// <param name="e"></param>
         void DiceClick_Clicked(object sender, EventArgs e)
         {
-            this.tabControl.SelectedIndex = (int)DashBoardPages.Dice;
+            tabControl.SelectedIndex = (int)DashBoardPages.Dice;
         }
         #endregion
 
@@ -167,16 +167,16 @@ namespace Chummer
          */
         private void UpdateTabs()
         {
-            this.tabControl.TabPages.Add(DashBoardPages.CM.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Skills.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Vassels.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Vehicles.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Dice.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.TempBonus.ToString());
+            tabControl.TabPages.Add(DashBoardPages.CM.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Skills.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Vassels.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Vehicles.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Dice.ToString());
+            tabControl.TabPages.Add(DashBoardPages.TempBonus.ToString());
 
             // setup the controls for each tab
-            this.tabControl.TabPages[(int)DashBoardPages.CM].Controls.Add(new ConditionMonitorUserControl());
-            this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls.Add(new DiceRollerControl());
+            tabControl.TabPages[(int)DashBoardPages.CM].Controls.Add(new ConditionMonitorUserControl());
+            tabControl.TabPages[(int)DashBoardPages.Dice].Controls.Add(new DiceRollerControl());
         }
 
         private void UpdateControls()
@@ -184,9 +184,9 @@ namespace Chummer
             // tosses the character information relevant to each character
         #region Condition Monitor
             ConditionMonitorUserControl uc = 
-                this.tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
-            uc.MaxPhysical = this.CurrentNPC.PhysicalCM;
-            uc.MaxStun = this.CurrentNPC.StunCM;
+                tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
+            uc.MaxPhysical = CurrentNPC.PhysicalCM;
+            uc.MaxStun = CurrentNPC.StunCM;
             uc.Physical = uc.MaxPhysical;
             uc.Stun = uc.MaxStun;
         #endregion
@@ -197,7 +197,7 @@ namespace Chummer
 
         #region Dice Roller
             DiceRollerControl dice = 
-                this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
+                tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
             //dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
         #endregion
         }

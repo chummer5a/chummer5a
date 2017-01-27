@@ -27,7 +27,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+            this.DoubleBuffered = true;
+            this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();

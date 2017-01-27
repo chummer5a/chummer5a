@@ -2503,9 +2503,7 @@
 			<armorcapacity>0</armorcapacity>
 			<avail>14R</avail>
 			<cost>1800</cost>
-			<bonus>
-				<addweapon>Ares Briefcase Shield</addweapon>
-			</bonus>
+			<addweapon>Ares Briefcase Shield</addweapon>
 			<source>CA</source>
 			<page>136</page>
 		</armor>

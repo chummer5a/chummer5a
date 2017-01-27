@@ -145,7 +145,7 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : "";
+		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : string.Empty;
 	}
 
 	

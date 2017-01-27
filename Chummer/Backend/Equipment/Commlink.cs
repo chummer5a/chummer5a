@@ -32,14 +32,13 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
 		public void Create(XmlNode objXmlGear, Character objCharacter, TreeNode objNode, int intRating, bool blnAddImprovements = true, bool blnCreateChildren = true)
 		{
-            base.Create(objXmlGear, objCharacter, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), "", false, false, blnAddImprovements, blnCreateChildren);
+            base.Create(objXmlGear, objCharacter, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), string.Empty, false, false, blnAddImprovements, blnCreateChildren);
 
-			_intDeviceRating = Convert.ToInt32(objXmlGear["devicerating"].InnerText);
-            
-			_intAttack = Convert.ToInt32(objXmlGear["attack"].InnerText);
-			_intSleaze= Convert.ToInt32(objXmlGear["sleaze"].InnerText);
-			_intDataProcessing = Convert.ToInt32(objXmlGear["dataprocessing"].InnerText);
-			_intFirewall = Convert.ToInt32(objXmlGear["firewall"].InnerText);
+            objXmlGear.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating);
+            objXmlGear.TryGetInt32FieldQuickly("attack", ref _intAttack);
+            objXmlGear.TryGetInt32FieldQuickly("sleaze", ref _intSleaze);
+            objXmlGear.TryGetInt32FieldQuickly("dataprocessing", ref _intDataProcessing);
+            objXmlGear.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
 		}
 
 		/// <summary>
@@ -86,15 +85,15 @@ namespace Chummer.Backend.Equipment
 		public override void Load(XmlNode objNode, bool blnCopy = false)
 		{
             base.Load(objNode, blnCopy);
-			objNode.TryGetField("overclocked", out _strOverclocked);
-			_intDeviceRating = Convert.ToInt32(objNode["devicerating"].InnerText);
-			objNode.TryGetField("attack", out _intAttack);
-			objNode.TryGetField("sleaze", out _intSleaze);
-			objNode.TryGetField("dataprocessing", out _intDataProcessing);
-			objNode.TryGetField("firewall", out _intFirewall);
-            objNode.TryGetField("livingpersona", out _blnIsLivingPersona);
-            objNode.TryGetField("active", out _blnActiveCommlink);
-		}
+			objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
+            objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating);
+            objNode.TryGetInt32FieldQuickly("attack", ref _intAttack);
+			objNode.TryGetInt32FieldQuickly("sleaze", ref _intSleaze);
+			objNode.TryGetInt32FieldQuickly("dataprocessing", ref _intDataProcessing);
+			objNode.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
+            objNode.TryGetBoolFieldQuickly("livingpersona", ref _blnIsLivingPersona);
+            objNode.TryGetBoolFieldQuickly("active", ref _blnActiveCommlink);
+        }
 
 		/// <summary>
 		/// Core code to Save the object's XML to the XmlWriter.

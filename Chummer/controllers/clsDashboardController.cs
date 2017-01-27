@@ -32,22 +32,21 @@ namespace Chummer.controllers
         {
             get
             {
-                if (clsDashboardController._instance == null)
-                    clsDashboardController._instance = new clsDashboardController();
+                if (_instance == null)
+                    _instance = new clsDashboardController();
 
-                return clsDashboardController._instance;
+                return _instance;
             }
         }
 
         /**
          * Singleton instance, no outside instantiation
-         */
+         
         private clsDashboardController()
         {
             // TODO edward
-            
         }
-
+        */
         #endregion
 
         #region Initiative

@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmSelectLimit : Form
     {
-        private string _strReturnValue = "";
+        private string _strReturnValue = string.Empty;
 
 		private List<ListItem> _lstLimits = new List<ListItem>();
 
@@ -53,15 +53,17 @@ namespace Chummer
             _lstLimits.Add(objMental);
             _lstLimits.Add(objSocial);
 
-			cboLimit.ValueMember = "Value";
+            cboLimit.BeginUpdate();
+            cboLimit.ValueMember = "Value";
 			cboLimit.DisplayMember = "Name";
 			cboLimit.DataSource = _lstLimits;
+            cboLimit.EndUpdate();
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
         {
 			_strReturnValue = cboLimit.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void frmSelectLimit_Load(object sender, EventArgs e)
@@ -72,7 +74,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void frmSelectLimit_Shown(object sender, EventArgs e)
@@ -120,11 +122,13 @@ namespace Chummer
 			objItem.Value = strValue;
 			objItem.Name = strValue;
 			lstItems.Add(objItem);
-			cboLimit.DataSource = null;
+            cboLimit.BeginUpdate();
+            cboLimit.DataSource = null;
 			cboLimit.ValueMember = "Value";
 			cboLimit.DisplayMember = "Name";
 			cboLimit.DataSource = lstItems;
-		}
+            cboLimit.EndUpdate();
+        }
 
 		/// <summary>
 		/// Limit the list to a few Limits.
@@ -140,11 +144,13 @@ namespace Chummer
 				objItem.Name = LanguageManager.Instance.GetString("String_Limit" + strLimit + "Short");
 				_lstLimits.Add(objItem);
 			}
-			cboLimit.DataSource = null;
-			cboLimit.DataSource = _lstLimits;
+            cboLimit.BeginUpdate();
+            cboLimit.DataSource = null;
 			cboLimit.ValueMember = "Value";
 			cboLimit.DisplayMember = "Name";
-		}
+            cboLimit.DataSource = _lstLimits;
+            cboLimit.EndUpdate();
+        }
 
 		/// <summary>
 		/// Exclude the list of Limits.
@@ -163,11 +169,13 @@ namespace Chummer
 					}
 				}
 			}
-			cboLimit.DataSource = null;
-			cboLimit.DataSource = _lstLimits;
+            cboLimit.BeginUpdate();
+            cboLimit.DataSource = null;
 			cboLimit.ValueMember = "Value";
 			cboLimit.DisplayMember = "Name";
-		}
+            cboLimit.DataSource = _lstLimits;
+            cboLimit.EndUpdate();
+        }
 		#endregion
     }
 }
