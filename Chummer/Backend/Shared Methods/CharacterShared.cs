@@ -517,7 +517,7 @@ namespace Chummer
 		/// <param name="picMugshot"></param>
 		protected bool AddMugshot(PictureBox picMugshot)
 		{
-			bool blnSuccess = true;
+			bool blnSuccess = false;
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
 			{
@@ -533,30 +533,27 @@ namespace Chummer
 
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
+			    blnSuccess = true;
 				// Convert the image to a string usinb Base64.
                 _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
 
                 Image imgMugshot = new Bitmap(openFileDialog.FileName, true);
-                if (imgMugshot != null)
-                {
-                    MemoryStream objStream = new MemoryStream();
-                    imgMugshot.Save(objStream, imgMugshot.RawFormat);
-                    string strResult = Convert.ToBase64String(objStream.ToArray());
-                    objStream.Close();
+                MemoryStream objStream = new MemoryStream();
+                imgMugshot.Save(objStream, imgMugshot.RawFormat);
+                string strResult = Convert.ToBase64String(objStream.ToArray());
+                objStream.Close();
 
-                    _objCharacter.Mugshots.Add(strResult);
-                }
-                else
-					blnSuccess = false;
-			}
+                _objCharacter.Mugshots.Add(strResult);
+            }
 			return blnSuccess;
 		}
 
-        /// <summary>
-		/// Update the mugshot info of a character.
-		/// </summary>
-		/// <param name="picMugshot"></param>
-		protected bool UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
+	    /// <summary>
+	    /// Update the mugshot info of a character.
+	    /// </summary>
+	    /// <param name="picMugshot"></param>
+	    /// <param name="intCurrentMugshotIndexInList"></param>
+	    protected bool UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
         {
             if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count)
             {
@@ -564,11 +561,15 @@ namespace Chummer
                 return false;
             }
 
+            Image imgMugshot = null;
             byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots[intCurrentMugshotIndexInList]);
-            MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-            objImageStream.Write(bytImage, 0, bytImage.Length);
-            Image imgMugshot = Image.FromStream(objImageStream, true);
-            objImageStream.Close();
+            if (bytImage.Length > 0)
+            {
+                MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
+                objImageStream.Write(bytImage, 0, bytImage.Length);
+                imgMugshot = Image.FromStream(objImageStream, true);
+                objImageStream.Close();
+            }
 
             picMugshot.Image = imgMugshot;
 
@@ -578,7 +579,7 @@ namespace Chummer
         /// <summary>
 		/// Remove a mugshot of a character.
 		/// </summary>
-		/// <param name="picMugshot"></param>
+		/// <param name="intCurrentMugshotIndexInList"></param>
 		protected void RemoveMugshot(int intCurrentMugshotIndexInList)
         {
             if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count)
