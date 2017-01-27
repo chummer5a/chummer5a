@@ -1662,12 +1662,12 @@ namespace Chummer
 			// converting from old dwarven resistance to new dwarven resistance
 			if (Metatype.ToLower().Equals("dwarf"))
             {
-                Quality objOldQuality = Qualities.Where(x => x.Name.Equals("Resistance to Pathogens and Toxins")).First();
+                Quality objOldQuality = Qualities.FirstOrDefault(x => x.Name.Equals("Resistance to Pathogens and Toxins"));
                 if (objOldQuality != null)
                 {
                     Qualities.Remove(objOldQuality);
-                    if (Qualities.Where(x => x.Name.Equals("Resistance to Pathogens/Toxins")).Any() == false &&
-                        Qualities.Where(x => x.Name.Equals("Dwarf Resistance")).Any() == false)
+                    if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins")) == false &&
+                        Qualities.Any(x => x.Name.Equals("Dwarf Resistance")) == false)
                     {
                         XmlNode objXmlDwarfQuality =
                             XmlManager.Instance.Load("qualities.xml")
