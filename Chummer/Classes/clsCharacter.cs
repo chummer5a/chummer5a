@@ -1035,9 +1035,12 @@ namespace Chummer
             // Mugshots
             objXmlCharacter.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
             XmlNodeList objXmlMugshotsList = objXmlDocument.SelectNodes("/character/mugshots/mugshot");
-            foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
+            if (objXmlMugshotsList != null)
             {
-                Mugshots.Add(objXmlMugshot.InnerText);
+                foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
+                {
+                    Mugshots.Add(objXmlMugshot.InnerText);
+                }
             }
             if (Mugshots.Count == 0)
             {
@@ -1127,7 +1130,7 @@ namespace Chummer
             objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
 
 		    objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-		    
+
             _decNuyenBP = Convert.ToDecimal(objXmlCharacter["nuyenbp"].InnerText, GlobalOptions.Instance.CultureInfo);
             _decNuyenMaximumBP = Convert.ToDecimal(objXmlCharacter["nuyenmaxbp"].InnerText, GlobalOptions.Instance.CultureInfo);
             objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
@@ -1137,7 +1140,7 @@ namespace Chummer
             objXmlCharacter.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
             objXmlCharacter.TryGetBoolFieldQuickly("initiationoverride", ref _blnInitiationEnabled);
 		    objXmlCharacter.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
-		   
+
 		    objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
 		    objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
 		    objXmlCharacter.TryGetBoolFieldQuickly("blackmarket", ref _blnBlackMarketDiscount);
@@ -1169,7 +1172,7 @@ namespace Chummer
                 _lstImprovements.Add(objImprovement);
             }
             Timekeeper.Finish("load_char_imp");
-            
+
             Timekeeper.Start("load_char_quality");
             // Qualities
             objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");

@@ -555,7 +555,7 @@ namespace Chummer
 	    /// <param name="intCurrentMugshotIndexInList"></param>
 	    protected bool UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
         {
-            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count)
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count || string.IsNullOrEmpty(_objCharacter.Mugshots[intCurrentMugshotIndexInList]))
             {
                 picMugshot.Image = null;
                 return false;
