@@ -712,7 +712,7 @@ namespace Chummer.Skills
                     bool blnHaveSpec = false;
 
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute && 
-                        Specializations.Where(y => y.Name == objSwapSkillAttribute.Exclude).Any())
+                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude))
                     {
                         intBasePool += 2;
                         blnHaveSpec = true;

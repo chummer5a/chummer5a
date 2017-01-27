@@ -1871,12 +1871,12 @@ namespace Chummer
 			{
 				if (objNode.Name == "required")
 				{
-					if (objNode["oneof"].Cast<XmlNode>().Where(objRequiredNode => objRequiredNode.Name == "quality").Any(objRequiredNode => _objCharacter.Qualities.Any(objQuality => objQuality.Name == objRequiredNode.InnerText)))
+					if (objNode["oneof"].Cast<XmlNode>().Any(objRequiredNode => objRequiredNode.Name == "quality" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == objRequiredNode.InnerText)))
 					{
 						blnFound = true;
 						break;
                     }
-                    if (objNode["oneof"].Cast<XmlNode>().Where(objRequiredNode => objRequiredNode.Name == "power").Any(objRequiredNode => _objCharacter.Powers.Any(objPower => objPower.Name == objRequiredNode.InnerText)))
+                    if (objNode["oneof"].Cast<XmlNode>().Any(objRequiredNode => objRequiredNode.Name == "power" && _objCharacter.Powers.Any(objPower => objPower.Name == objRequiredNode.InnerText)))
                     {
                         blnFound = true;
                         break;
