@@ -131,6 +131,15 @@ namespace Chummer
                     objXmlSourceNode.TryGetInt32FieldQuickly("mainmugshotindex", ref intMainMugshotIndex);
                     XmlNodeList objXmlMugshotsList = objXmlSourceNode.SelectNodes("mugshots/mugshot");
                     List<string> lstMugshots = (from XmlNode objXmlMugshot in objXmlMugshotsList where !string.IsNullOrWhiteSpace(objXmlMugshot.InnerText) select objXmlMugshot.InnerText).ToList();
+					if (intMainMugshotIndex >= lstMugshots.Count)
+						intMainMugshotIndex = 0;
+					else if (intMainMugshotIndex < 0)
+					{
+						if (lstMugshots.Count > 0)
+							intMainMugshotIndex = lstMugshots.Count - 1;
+						else
+							intMainMugshotIndex = 0;
+					}
 					if (lstMugshots.Count > 0)
                     {
                         byte[] bytImage = Convert.FromBase64String(lstMugshots.ElementAt(intMainMugshotIndex));
