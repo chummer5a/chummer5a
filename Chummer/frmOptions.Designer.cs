@@ -121,6 +121,7 @@
             this.lblPDFAppPath = new System.Windows.Forms.Label();
             this.lblXSLT = new System.Windows.Forms.Label();
             this.cboXSLT = new System.Windows.Forms.ComboBox();
+            this.cboPDFParameters = new helpers.ComboBox();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.cboLanguage = new System.Windows.Forms.ComboBox();
             this.cmdVerify = new System.Windows.Forms.Button();
