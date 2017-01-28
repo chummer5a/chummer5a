@@ -25,6 +25,7 @@ Application Changes:
 - Fixed the bug where flipping through mugshots in career mode would change the default mugshot.
 - Updated the Updated control with code tweaks and separate buttons for downloading the latest version and installing it (the latter restarts the program).
 - Unified controls for the Most Recently Used characters lists and optimized some of the code behind maintaining them.
+- Fixed Chummer5 updater not actually updating properly for many systems.
 
 Data Changes:
 

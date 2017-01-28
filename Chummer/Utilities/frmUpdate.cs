@@ -53,18 +53,6 @@ namespace Chummer
 		private void frmUpdate_Load(object sender, EventArgs e)
 		{
 			Log.Info("frmUpdate_Load");
-			// Count the number of instances of Chummer that are currently running.
-			Log.Info("Get process list");
-			string strFileName = Process.GetCurrentProcess().MainModule.FileName;
-			Log.Info("Get Chummer process count");
-			int intCount = 0;
-			foreach (Process objProcess in Process.GetProcesses())
-			{
-				if (objProcess?.MainModule.FileName == strFileName)
-				{
-					intCount++;
-				}
-			}
 			_blnUnBlocked = CheckConnection("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt");
 
 			if (_blnUnBlocked)
@@ -88,9 +76,11 @@ namespace Chummer
 						                        .Replace("\n", "<br />") + "</font>";
 				}
 
-				Log.Info("intCount = " + intCount.ToString());
+                Log.Info("Check Global Mutex for duplicate");
+                bool blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+                Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
 				// If there is more than 1 instance running, do not let the application be updated.
-				if (intCount > 1)
+				if (blnHasDuplicate)
 				{
 					Log.Info("More than one instance, exiting");
 					if (!_blnSilentMode && !_blnSilentCheck)
@@ -112,9 +102,10 @@ namespace Chummer
 
 		private bool CheckConnection(string strURL)
 		{
-			if (Uri.CheckSchemeName(strURL))
+            Uri uriConnectionAddress;
+            if (Uri.TryCreate(strURL, UriKind.Absolute, out uriConnectionAddress))
 			{
-				HttpWebRequest request = WebRequest.Create(strURL) as HttpWebRequest;
+				HttpWebRequest request = WebRequest.Create(uriConnectionAddress) as HttpWebRequest;
 
 			    if (request != null)
 			    {
@@ -167,8 +158,8 @@ namespace Chummer
 				{
 					if (!blnFoundTag && line.Contains("tag_name"))
 					{
-                        LatestVersion = line.Split(':')[1];
-                        LatestVersion = LatestVersion.Split('}')[0].Replace("\"", string.Empty);
+                        _strLatestVersion = line.Split(':')[1];
+                        LatestVersion = _strLatestVersion.Split('}')[0].Replace("\"", string.Empty);
 						blnFoundTag = true;
                         if (blnFoundArchive)
                             break;
@@ -267,6 +258,8 @@ namespace Chummer
             Log.Info("cmdRestart_Click");
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
             {
+                cmdUpdate.Enabled = false;
+                cmdRestart.Enabled = false;
                 //Create a backup file in the temp directory. 
                 string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
                 Log.Info("Creating archive from application path: ", _strAppPath);
@@ -274,38 +267,43 @@ namespace Chummer
                 {
                     ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
                 }
-                try
+                // Delete the old Chummer5 executable.
+                if (File.Exists(_strAppPath + "\\Chummer5.exe.old"))
+                    File.Delete(_strAppPath + "\\Chummer5.exe.old");
+                // Rename the current Chummer5 executable.
+                File.Move(_strAppPath + "\\Chummer5.exe", _strAppPath + "\\Chummer5.exe.old");
+                foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll"))
                 {
-                    // Delete the old Chummer5 executable.
-                    if (File.Exists(_strAppPath + "\\Chummer5.exe.old"))
-                        File.Delete(_strAppPath + "\\Chummer5.exe.old");
-                    // Rename the current Chummer5 executable.
-                    File.Move(_strAppPath + "\\Chummer5.exe", _strAppPath + "\\Chummer5.exe.old");
+                    if (File.Exists(strLoopDllName + ".old"))
+                        File.Delete(strLoopDllName + ".old");
+                    File.Move(strLoopDllName, strLoopDllName + ".old");
+                }
 
-                    // Copy over the archive from the temp directory.
-                    Log.Info("Extracting downloaded archive into application path: ", _strTempPath);
-                    using (ZipArchive archive = ZipFile.OpenRead(_strTempPath))
-                    {
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            entry.ExtractToFile(Path.Combine(_strAppPath, entry.FullName), true);
-                        }
-                    }
-                    Log.Info("Restart Chummer");
-                    Application.Restart();
-                }
-                catch (Exception ex)
+                // Copy over the archive from the temp directory.
+                Log.Info("Extracting downloaded archive into application path: ", _strTempPath);
+                using (ZipArchive archive = ZipFile.OpenRead(_strTempPath))
                 {
-                    Log.Error("ERROR Message = " + ex.Message);
-                    Log.Error("ERROR Source  = " + ex.Source);
-                    Log.Error("ERROR Trace   = " + ex.StackTrace);
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        // Skip directories because they already get handled with Directory.CreateDirectory
+                        if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
+                            continue;
+                        string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
+                        Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
+                        entry.ExtractToFile(strLoopPath, true);
+                    }
                 }
+                Log.Info("Restart Chummer");
+                Application.Restart();
+                cmdUpdate.Enabled = true;
+                cmdRestart.Enabled = true;
             }
         }
 
         private void DownloadUpdates()
-		{
-		    if (!Uri.CheckSchemeName(_strDownloadFile))
+        {
+            Uri uriDownloadFileAddress;
+            if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out uriDownloadFileAddress))
 		        return;
 			Log.Enter("DownloadUpdates");
             cmdUpdate.Enabled = false;
@@ -315,7 +313,7 @@ namespace Chummer
 			WebClient client = new WebClient();
 			client.DownloadProgressChanged += wc_DownloadProgressChanged;
 			client.DownloadFileCompleted += wc_DownloadCompleted;
-			client.DownloadFileAsync(new Uri(_strDownloadFile), _strTempPath);
+			client.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
 		}
 
 		#region AsyncDownload Events
