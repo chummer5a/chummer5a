@@ -82,20 +82,15 @@ namespace Chummer
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
-			// Delete the old executable if it exists (created by the update process).
-			if (File.Exists("Chummer.exe.old"))
-			{
-				try
-				{
-					File.Delete("Chummer.exe.old");
-				}
-				catch (System.IO.IOException)
-				{
-				}
-			}
+            // Delete the old executable if it exists (created by the update process).
+            foreach (string strLoopOldFilePath in Directory.GetFiles(Application.StartupPath, "*.old"))
+            {
+                if (File.Exists(strLoopOldFilePath))
+                    File.Delete(strLoopOldFilePath);
+            }
 
-			// Populate the MRU list.
-			PopulateMRU();
+            // Populate the MRU list.
+            PopulateMRU();
 
 			GlobalOptions.Instance.MainForm = this;
 
