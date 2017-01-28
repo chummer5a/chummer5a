@@ -22,6 +22,9 @@ Application Changes:
 - Fixed a bug where cancelling the option saving confirmation message would still save options.
 - Made performance improvements, thanks primarily to static code analysis, mainly to the load speed of characters and the skills tab (load times reduced by ca. 10-20% depending on the screen/tab).
 - Fixed a crash related to loading characters with no mugshots.
+- Fixed the bug where flipping through mugshots in career mode would change the default mugshot.
+- Updated the Updated control with code tweaks and separate buttons for downloading the latest version and installing it (the latter restarts the program).
+- Unified controls for the Most Recently Used characters lists and optimized some of the code behind maintaining them.
 
 Data Changes:
 

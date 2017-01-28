@@ -6310,7 +6310,7 @@ namespace Chummer
                 _objCharacter.MainMugshotIndex = Convert.ToInt32(nudMugshotIndex.Value) - 1;
                 blnStatusChanged = true;
             }
-            else if (chkIsMainMugshot.Checked == true && Convert.ToInt32(nudMugshotIndex.Value) - 1 == _objCharacter.MainMugshotIndex)
+            else if (chkIsMainMugshot.Checked == false && Convert.ToInt32(nudMugshotIndex.Value) - 1 == _objCharacter.MainMugshotIndex)
             {
                 if (_objCharacter.MainMugshotIndex == 0)
                 {

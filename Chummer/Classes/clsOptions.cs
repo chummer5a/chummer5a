@@ -238,16 +238,20 @@ namespace Chummer
 			{
 				if (objXmlBook["code"] != null)
 				{
-					SourcebookInfo objSource = new SourcebookInfo();
                     string strTemp = string.Empty;
                     LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText);
                     if (!string.IsNullOrEmpty(strTemp))
                     {
+                        SourcebookInfo objSource = new SourcebookInfo();
                         string[] strParts = strTemp.Split('|');
                         objSource.Code = objXmlBook["code"].InnerText;
                         objSource.Path = strParts[0];
                         if (strParts.Length > 1)
-                            objSource.Offset = Convert.ToInt32(strParts[1]);
+                        {
+                            int intTmp;
+                            if (int.TryParse(strParts[1], out intTmp))
+                                objSource.Offset = intTmp;
+                        }
 
                         _lstSourcebookInfo.Add(objSource);
                     }
@@ -623,12 +627,10 @@ namespace Chummer
 			get
 			{
 				return _strCharacterRosterPath;
-				
 			}
 			set
 			{
 				_strCharacterRosterPath = value;
-				
 			}
 		}
 
@@ -640,20 +642,22 @@ namespace Chummer
 		/// Add a file to the most recently used characters.
 		/// </summary>
 		/// <param name="strFile">Name of the file to add.</param>
-		public void AddToMRUList(string strFile)
+		public void AddToMRUList(string strFile, string strMRUType = "mru")
 		{
-			List<string> strFiles = ReadMRUList();
+			List<string> strFiles = ReadMRUList(strMRUType);
 
-			// Make sure the file does not already exist in the MRU list.
-			if (strFiles.Contains(strFile))
+            // Make sure the file doesn't exist in the sticky MRU list if we're adding to base MRU list.
+            if (strMRUType == "mru")
+            {
+                List<string> strStickyFiles = ReadMRUList("stickymru");
+                if (strStickyFiles.Contains(strFile))
+                    return;
+            }
+            // Make sure the file does not already exist in the MRU list.
+            if (strFiles.Contains(strFile))
 				strFiles.Remove(strFile);
 
-			// Make sure the file doesn't exist in the sticky MRU list.
-			List<string> strStickyFiles = ReadStickyMRUList();
-			if (strStickyFiles.Contains(strFile))
-				return;
-
-			strFiles.Insert(0, strFile);
+		    strFiles.Insert(0, strFile);
 
 			if (strFiles.Count > 10)
 				strFiles.RemoveRange(10, strFiles.Count - 10);
@@ -662,7 +666,7 @@ namespace Chummer
 			foreach (string strItem in strFiles)
 			{
 				i++;
-                _objBaseChummerKey.SetValue("mru" + i.ToString(), strItem);
+                _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
 			}
 			MRUChanged?.Invoke();
 		}
@@ -671,32 +675,30 @@ namespace Chummer
 		/// Remove a file from the most recently used characters.
 		/// </summary>
 		/// <param name="strFile">Name of the file to remove.</param>
-		public void RemoveFromMRUList(string strFile)
+		public void RemoveFromMRUList(string strFile, string strMRUType = "mru")
 		{
-			List<string> strFiles = ReadMRUList();
+			List<string> strFiles = ReadMRUList(strMRUType);
 
-			foreach (string strItem in strFiles)
+            bool blnHasRemoved = false;
+            for (int i = 0; i < strFiles.Count; i++)
+            {
+                if (blnHasRemoved)
+                {
+                    _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
+                }
+                else if (strFiles[i] == strFile)
+                {
+                    strFiles.RemoveAt(i);
+                    blnHasRemoved = true;
+                }
+            }
+            if (strFiles.Count < 10)
 			{
-				if (strItem == strFile)
+				for (int i = strFiles.Count + 1; i <= 10; i++)
 				{
-					strFiles.Remove(strItem);
-					break;
-				}
-			}
-
-			int i = 0;
-			foreach (string strItem in strFiles)
-			{
-				i++;
-                _objBaseChummerKey.SetValue("mru" + i.ToString(), strItem);
-			}
-			if (strFiles.Count < 10)
-			{
-				for (i = strFiles.Count + 1; i <= 10; i++)
-				{
-					if (_objBaseChummerKey.GetValue("mru" + i.ToString()) != null)
+					if (_objBaseChummerKey.GetValue(strMRUType + i.ToString()) != null)
 					{
-                        _objBaseChummerKey.DeleteValue("mru" + i.ToString());
+                        _objBaseChummerKey.DeleteValue(strMRUType + i.ToString());
 					}
 				}
 			}
@@ -706,95 +708,16 @@ namespace Chummer
 		/// <summary>
 		/// Retrieve the list of most recently used characters.
 		/// </summary>
-		public List<string> ReadMRUList()
+		public List<string> ReadMRUList(string strMRUType = "mru")
 		{
 			List<string> lstFiles = new List<string>();
 
 			for (int i = 1; i <= 10; i++)
 			{
-				if (_objBaseChummerKey.GetValue("mru" + i.ToString()) != null)
+			    object objLoopValue = _objBaseChummerKey.GetValue(strMRUType + i.ToString());
+				if (objLoopValue != null)
 				{
-					lstFiles.Add(_objBaseChummerKey.GetValue("mru" + i.ToString()).ToString());
-				}
-			}
-
-			return lstFiles;
-		}
-
-		/// <summary>
-		/// Add a file to the sticky most recently used characters.
-		/// </summary>
-		/// <param name="strFile">Name of the file to add.</param>
-		public void AddToStickyMRUList(string strFile)
-		{
-			List<string> strFiles = ReadStickyMRUList();
-
-			// Make sure the file does not already exist in the MRU list.
-			if (strFiles.Contains(strFile))
-				strFiles.Remove(strFile);
-
-			strFiles.Insert(0, strFile);
-
-			if (strFiles.Count > 10)
-				strFiles.RemoveRange(10, strFiles.Count - 10);
-
-			int i = 0;
-			foreach (string strItem in strFiles)
-			{
-				i++;
-                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), strItem);
-			}
-			MRUChanged?.Invoke();
-		}
-
-		/// <summary>
-		/// Remove a file from the sticky most recently used characters.
-		/// </summary>
-		/// <param name="strFile">Name of the file to remove.</param>
-		public void RemoveFromStickyMRUList(string strFile)
-		{
-			List<string> strFiles = ReadStickyMRUList();
-
-			foreach (string strItem in strFiles)
-			{
-				if (strItem == strFile)
-				{
-					strFiles.Remove(strItem);
-					break;
-				}
-			}
-
-			int i = 0;
-			foreach (string strItem in strFiles)
-			{
-				i++;
-                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), strItem);
-			}
-			if (strFiles.Count < 10)
-			{
-				for (i = strFiles.Count + 1; i <= 10; i++)
-				{
-                    if (_objBaseChummerKey.GetValue("stickymru" + i.ToString()) != null)
-                    {
-                        _objBaseChummerKey.DeleteValue("stickymru" + i.ToString());
-					}
-				}
-			}
-			MRUChanged?.Invoke();
-		}
-
-		/// <summary>
-		/// Retrieve the list of sticky most recently used characters.
-		/// </summary>
-		public List<string> ReadStickyMRUList()
-		{
-			List<string> lstFiles = new List<string>();
-
-			for (int i = 1; i <= 10; i++)
-			{
-				if (_objBaseChummerKey.GetValue("stickymru" + i.ToString()) != null)
-				{
-					lstFiles.Add(_objBaseChummerKey.GetValue("stickymru" + i.ToString()).ToString());
+					lstFiles.Add(objLoopValue.ToString());
 				}
 			}
 
