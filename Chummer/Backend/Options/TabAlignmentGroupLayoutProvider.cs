@@ -132,12 +132,12 @@ namespace Chummer.Backend.Options
                 int height = Math.Max(s1.Height, controlSize.Height - Math.Min(0, controlOffset.Y));
                 int width = controlSize.Width + s1.Width + s2.Width; //Probably sane way
                 Console.WriteLine($"Calculated width = {width} from {controlSize.Width} +{s1.Width} + {s2.Width} \"{textMaybeEmbeddedControl}\"");
-                return new Size(width -5, height);
+                return new Size(width /*-5*/, height);
             }
             else
             {
                 Size s = TextRenderer.MeasureText(textMaybeEmbeddedControl, Control.DefaultFont);
-                s.Width -= 5;
+                //s.Width -= 5;
                 return s;
             }
         }
