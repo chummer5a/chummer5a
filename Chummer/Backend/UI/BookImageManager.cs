@@ -15,6 +15,9 @@ namespace Chummer.Backend.UI
 {
     public class BookImageManager
     {
+        private const int HIGH_BYTE = 0xff << 24;
+
+
         public Color BackColor = SystemColors.Control;
         public Color GlowColor = Color.Blue;
 
@@ -60,6 +63,7 @@ namespace Chummer.Backend.UI
 
         private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
         private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_unchecked"));
+        private Lazy<Bitmap> MissingImage = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("book/missing"));
 
         private Image GenerateImage(string bookCode, bool enabled, bool aura, int scale)
         {
@@ -161,11 +165,23 @@ namespace Chummer.Backend.UI
                 {
                     int pixel = sourceArray[(sourceWidth * yw * scale) + (xw * scale)];
                     
-                        int memindex = width * (yw + y) + x + xw;
+                    int memindex = width * (yw + y) + x + xw;
+
+                    //If alpha byte is 255 just copy over, if 0, don't copy over, if 1-254 do the actual blend
+                    if ((pixel & HIGH_BYTE) == HIGH_BYTE)
+                    {
+                        destinationArray[memindex] = pixel;
+                    }
+                    else if ((pixel & HIGH_BYTE) == 0)
+                    {
+
+                    }
+                    else
+                    {
                         int orginalColor = destinationArray[memindex];
                         int blend = ColorUtilities.ARGBIntXYZAlphaBlend(pixel, orginalColor);
                         destinationArray[memindex] = blend;
-                    
+                    }
                 }
             }
 
@@ -287,8 +303,13 @@ namespace Chummer.Backend.UI
             return hash;
         }
 
+        private Dictionary<string, Bitmap> imageCache = new Dictionary<string, Bitmap>();
         private Bitmap GetBaseImage(string bookCode)
         {
+            Bitmap quick;
+            if (imageCache.TryGetValue(bookCode, out quick))
+                return quick;
+
 			string filePath = Path.Combine(Application.StartupPath, "images", $"{bookCode}.png");
 			
 			
@@ -305,11 +326,13 @@ namespace Chummer.Backend.UI
 				}
 
 	            Console.WriteLine($"w{bmp2.Width} h{bmp2.Height}");
+			    imageCache[bookCode] = bmp2;
 				return bmp2;
 	        }
 	        else
-	        {
-	            return (Bitmap) Properties.Resources.ResourceManager.GetObject("book/missing");
+			{
+			    imageCache[bookCode] = MissingImage.Value;
+	            return MissingImage.Value;
 	        }
         }
 
