@@ -32,7 +32,6 @@ namespace Chummer
         private Lifestyle _objSourceLifestyle;
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Advanced;
-	    private CommonFunctions _objFunctions = new CommonFunctions();
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 

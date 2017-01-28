@@ -5467,9 +5467,9 @@ namespace Chummer
                         foreach (Gear objGear in objDelAccessory.Gear)
                             _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
                     }
-                    if (objWeapon.Children.Count > 0)
+                    if (objWeapon.UnderbarrelWeapons.Count > 0)
                     {
-                        foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
+                        foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                         {
                             foreach (WeaponAccessory objDelAccessory in objUnderbarrelWeapon.WeaponAccessories)
                             {
@@ -5487,13 +5487,13 @@ namespace Chummer
                     // Locate the selected Underbarrel Weapon if applicable.
                     foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
                     {
-                        if (objCharacterWeapon.Children.Count > 0)
+                        if (objCharacterWeapon.UnderbarrelWeapons.Count > 0)
                         {
-                            foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.Children)
+                            foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.UnderbarrelWeapons)
                             {
                                 if (objUnderbarrelWeapon.InternalId == treWeapons.SelectedNode.Tag.ToString())
                                 {
-                                    objCharacterWeapon.Children.Remove(objUnderbarrelWeapon);
+                                    objCharacterWeapon.UnderbarrelWeapons.Remove(objUnderbarrelWeapon);
                                     treWeapons.SelectedNode.Remove();
                                     return;
                                 }
@@ -5510,9 +5510,9 @@ namespace Chummer
                             objWeapon = objCharacterWeapon;
                             break;
                         }
-                        if (objCharacterWeapon.Children.Count > 0)
+                        if (objCharacterWeapon.UnderbarrelWeapons.Count > 0)
                         {
-                            foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.Children)
+                            foreach (Weapon objUnderbarrelWeapon in objCharacterWeapon.UnderbarrelWeapons)
                             {
                                 if (objUnderbarrelWeapon.InternalId == treWeapons.SelectedNode.Parent.Tag.ToString())
                                 {
@@ -6003,13 +6003,13 @@ namespace Chummer
                             if (!blnFound)
                             {
                                 // Remove the Underbarrel Weapon if the selected item it is one.
-                                if (objWeapon.Children.Count > 0)
+                                if (objWeapon.UnderbarrelWeapons.Count > 0)
                                 {
-                                    foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
+                                    foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                                     {
                                         if (objUnderbarrelWeapon.InternalId == treVehicles.SelectedNode.Tag.ToString())
                                         {
-                                            objWeapon.Children.Remove(objUnderbarrelWeapon);
+                                            objWeapon.UnderbarrelWeapons.Remove(objUnderbarrelWeapon);
                                             treVehicles.SelectedNode.Remove();
                                             break;
                                         }
@@ -6046,9 +6046,9 @@ namespace Chummer
                     {
                         foreach (Weapon objWeapon in objMod.Weapons)
                         {
-                            if (objWeapon.Children.Count > 0)
+                            if (objWeapon.UnderbarrelWeapons.Count > 0)
                             {
-                                foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
+                                foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                                 {
                                     foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                                     {
@@ -8222,7 +8222,7 @@ namespace Chummer
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.VehicleMounted = true;
             objWeapon.IsUnderbarrelWeapon = true;
-            objSelectedWeapon.Children.Add(objWeapon);
+            objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
 
             objNode.ContextMenuStrip = cmsVehicleWeapon;
             treVehicles.SelectedNode.Nodes.Add(objNode);
@@ -8749,7 +8749,7 @@ namespace Chummer
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
-            objSelectedWeapon.Children.Add(objWeapon);
+            objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
 
             objNode.ContextMenuStrip = cmsWeapon;
             treWeapons.SelectedNode.Nodes.Add(objNode);
@@ -20188,7 +20188,7 @@ namespace Chummer
                         Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
                         TreeNode objUnderbarrelNode = new TreeNode();
                         objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
-                        objWeapon.Children.Add(objUnderbarrelWeapon);
+                        objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
                         objNode.Nodes.Add(objUnderbarrelNode);
                         objNode.Expand();
                     }

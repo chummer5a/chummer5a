@@ -38,12 +38,12 @@ namespace Chummer
 			bool blnAddRecent = true;
 			bool blnAddFavourite = true;
 			bool blnAddWatch = true;
-			foreach (string strFile in GlobalOptions.Instance.ReadStickyMRUList().Where(File.Exists))
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList("stickymru").Where(File.Exists))
 			{
 				if (blnAddFavourite)
 				{
 					treCharacterList.Nodes.Add(objFavouriteNode);
-					
+
 					blnAddFavourite = false;
 				}
 				CacheCharacter(strFile, objFavouriteNode);
@@ -58,7 +58,7 @@ namespace Chummer
 				}
 				CacheCharacter(strFile, objRecentNode);
 			}
-			
+
 			if (!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath) && Directory.Exists(GlobalOptions.Instance.CharacterRosterPath))
 			{
 				string[] objFiles = Directory.GetFiles(GlobalOptions.Instance.CharacterRosterPath);
@@ -89,14 +89,15 @@ namespace Chummer
         /// <param name="objParentNode"></param>
         private void CacheCharacter(string strFile, TreeNode objParentNode)
 		{
-			TreeNode objNode = new TreeNode();
+            if (!File.Exists(strFile))
+                return;
 			XmlDocument objXmlSource = new XmlDocument();
-			// If we run into any problems loading the character cache, fail out early. 
+			// If we run into any problems loading the character cache, fail out early.
 			try
 			{
 				objXmlSource.Load(strFile);
 			}
-			catch (Exception)
+			catch (IOException)
 			{
                 return;
             }
@@ -155,7 +156,8 @@ namespace Chummer
 			objCache.FilePath = strFile;
 			objCache.FileName = strFile.Split('\\').ToArray().Last();
 			lstCharacterCache.Add(objCache);
-			objNode.Tag = lstCharacterCache.IndexOf(objCache);
+            TreeNode objNode = new TreeNode();
+            objNode.Tag = lstCharacterCache.IndexOf(objCache);
 
 			objNode.Text = CalculatedName(objCache);
 			objNode.ToolTipText = objCache.FilePath;
@@ -296,8 +298,11 @@ namespace Chummer
 
 		private void treCharacterList_DragOver(object sender, DragEventArgs e)
 		{
-			Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-			TreeNode objNode = ((TreeView) sender).GetNodeAt(pt).Parent;
+            TreeView treSenderView = sender as TreeView;
+            if (treSenderView == null)
+                return;
+            Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
+			TreeNode objNode = treSenderView.GetNodeAt(pt).Parent;
 			if (objNode.Tag.ToString() != "Watch")
 			{
 				objNode.BackColor = SystemColors.ControlDark;
@@ -309,35 +314,50 @@ namespace Chummer
 		private void treCharacterList_DragDrop(object sender, DragEventArgs e)
 		{
 			// Do not allow the root element to be moved.
-			if (treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent.Tag.ToString() == "Watch")
+			if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent.Tag.ToString() == "Watch")
 				return;
-
 
 			if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
 			{
-				Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-				TreeNode DestinationNode = ((TreeView) sender).GetNodeAt(pt).Level > 0 ? ((TreeView) sender).GetNodeAt(pt).Parent : ((TreeView) sender).GetNodeAt(pt);
-				TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-				CharacterCache objCache = lstCharacterCache[Convert.ToInt32(NewNode.Tag)];
-
-				if (DestinationNode.Tag.ToString() != "Watch")
+			    TreeView treSenderView = sender as TreeView;
+			    if (treSenderView == null)
+			        return;
+                Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
+                TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
+                if (nodDestinationNode.Level > 0)
+                    nodDestinationNode = nodDestinationNode.Parent;
+				if (nodDestinationNode.Tag.ToString() != "Watch")
 				{
-					switch (DestinationNode.Tag.ToString())
-					{
-						case "Recent":
-							GlobalOptions.Instance.RemoveFromStickyMRUList(objCache.FilePath);
-							GlobalOptions.Instance.AddToMRUList(objCache.FilePath);
-							break;
-						case "Favourite":
-							GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
-							GlobalOptions.Instance.AddToStickyMRUList(objCache.FilePath);
-							break;
-						default:
-							return;
-					}
-					DestinationNode.Nodes.Add((TreeNode)NewNode.Clone());
-					DestinationNode.Expand();
-					NewNode.Remove();
+                    TreeNode nodNewNode = e.Data.GetData("System.Windows.Forms.TreeNode") as TreeNode;
+                    int intCharacterIndex;
+                    CharacterCache objCache = null;
+				    if (nodNewNode == null)
+				        return;
+                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < lstCharacterCache.Count)
+                        objCache = lstCharacterCache[intCharacterIndex];
+
+				    if (objCache == null)
+                        return;
+				    switch (nodDestinationNode.Tag.ToString())
+				    {
+				        case "Recent":
+				            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
+				            GlobalOptions.Instance.AddToMRUList(objCache.FilePath);
+				            break;
+				        case "Favourite":
+				            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
+				            GlobalOptions.Instance.AddToMRUList(objCache.FilePath, "stickymru");
+				            break;
+				        default:
+				            return;
+				    }
+				    TreeNode nodClonedNewNode = nodNewNode.Clone() as TreeNode;
+				    if (nodClonedNewNode != null)
+				    {
+				        nodDestinationNode.Nodes.Add(nodClonedNewNode);
+				        nodDestinationNode.Expand();
+				    }
+				    nodNewNode.Remove();
 				}
 			}
 		}
@@ -351,7 +371,7 @@ namespace Chummer
 		{
 			CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
 			GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
-			GlobalOptions.Instance.RemoveFromStickyMRUList(objCache.FilePath);
+			GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
 			treCharacterList.Nodes.RemoveAt(sender.Index);
 		}
 		#endregion

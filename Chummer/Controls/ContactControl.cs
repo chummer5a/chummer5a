@@ -30,7 +30,6 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private Contact _objContact;
-		private CommonFunctions functions = new CommonFunctions();
         private readonly Character _objCharacter;
         private string _strContactName;
         private string _strContactRole;

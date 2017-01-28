@@ -31,7 +31,6 @@ namespace Chummer
     public partial class SpiritControl : UserControl
     {
 		private Spirit _objSpirit;
-		private CommonFunctions functions = new CommonFunctions();
 		private readonly bool _blnCareer = false;
 
         // Events.

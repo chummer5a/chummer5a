@@ -601,9 +601,9 @@ namespace Chummer.Backend.Equipment
 					Weapon objWeapon = new Weapon(_objCharacter);
 					objWeapon.Load(nodChild, blnCopy);
 					objWeapon.VehicleMounted = true;
-					if (objWeapon.Children.Count > 0)
+					if (objWeapon.UnderbarrelWeapons.Count > 0)
 					{
-						foreach (Weapon objUnderbarrel in objWeapon.Children)
+						foreach (Weapon objUnderbarrel in objWeapon.UnderbarrelWeapons)
 							objUnderbarrel.VehicleMounted = true;
 					}
 					_lstWeapons.Add(objWeapon);

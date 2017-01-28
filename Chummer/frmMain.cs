@@ -47,7 +47,7 @@ namespace Chummer
 		{
 			InitializeComponent();
 			Version version = Assembly.GetExecutingAssembly().GetName().Version;
-			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+			string strCurrentVersion = $"{version.Major}.{version.Minor}.{version.Build}";
 
 			Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
 
@@ -178,7 +178,13 @@ namespace Chummer
 			frmCharacter.Show();
 		}
 
-		private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
+	    public sealed override string Text
+	    {
+	        get { return base.Text; }
+	        set { base.Text = value; }
+	    }
+
+	    private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
@@ -317,7 +323,7 @@ namespace Chummer
 				strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
 
 				GlobalOptions.Instance.RemoveFromMRUList(strFileName);
-				GlobalOptions.Instance.AddToStickyMRUList(strFileName);
+				GlobalOptions.Instance.AddToMRUList(strFileName, "stickymru");
 			}
 		}
 
@@ -333,7 +339,7 @@ namespace Chummer
 			{
 				string strFileName = ((ToolStripMenuItem)sender).Text;
 
-				GlobalOptions.Instance.RemoveFromStickyMRUList(strFileName);
+				GlobalOptions.Instance.RemoveFromMRUList(strFileName, "stickymru");
 				GlobalOptions.Instance.AddToMRUList(strFileName);
 			}
 		}
@@ -765,178 +771,83 @@ namespace Chummer
 		/// </summary>
 		public void PopulateMRU()
 		{
-			int i = -1;
-			foreach (string strFile in GlobalOptions.Instance.ReadStickyMRUList())
+		    List<string> strStickyMRUList = GlobalOptions.Instance.ReadMRUList("stickymru");
+            List<string> strMRUList = GlobalOptions.Instance.ReadMRUList();
+
+            for (int i = 0; i < 10; i++)
 			{
-				i++;
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (i)
+				ToolStripMenuItem objStickyItem;
+                ToolStripMenuItem objItem;
+                switch (i)
 				{
 					case 0:
-						objItem = mnuStickyMRU0;
-						break;
+                        objStickyItem = mnuStickyMRU0;
+				        objItem = mnuMRU0;
+                        break;
 					case 1:
-						objItem = mnuStickyMRU1;
-						break;
+                        objStickyItem = mnuStickyMRU1;
+                        objItem = mnuMRU1;
+                        break;
 					case 2:
-						objItem = mnuStickyMRU2;
-						break;
+                        objStickyItem = mnuStickyMRU2;
+                        objItem = mnuMRU2;
+                        break;
 					case 3:
-						objItem = mnuStickyMRU3;
-						break;
+                        objStickyItem = mnuStickyMRU3;
+                        objItem = mnuMRU3;
+                        break;
 					case 4:
-						objItem = mnuStickyMRU4;
-						break;
+                        objStickyItem = mnuStickyMRU4;
+                        objItem = mnuMRU4;
+                        break;
 					case 5:
-						objItem = mnuStickyMRU5;
-						break;
+                        objStickyItem = mnuStickyMRU5;
+                        objItem = mnuMRU5;
+                        break;
 					case 6:
-						objItem = mnuStickyMRU6;
-						break;
+                        objStickyItem = mnuStickyMRU6;
+                        objItem = mnuMRU6;
+                        break;
 					case 7:
-						objItem = mnuStickyMRU7;
-						break;
+                        objStickyItem = mnuStickyMRU7;
+                        objItem = mnuMRU7;
+                        break;
 					case 8:
-						objItem = mnuStickyMRU8;
-						break;
+                        objStickyItem = mnuStickyMRU8;
+                        objItem = mnuMRU8;
+                        break;
 					case 9:
-						objItem = mnuStickyMRU9;
-						break;
+                        objStickyItem = mnuStickyMRU9;
+                        objItem = mnuMRU9;
+                        break;
+                    default:
+				        continue;
 				}
 
-				objItem.Visible = true;
-				objItem.Text = strFile;
-				mnuFileMRUSeparator.Visible = true;
-			}
-
-			// Hide any unused items.
-			for (int x = i + 1; x <= 10; x++)
-			{
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (x)
-				{
-					case 0:
-						objItem = mnuStickyMRU0;
-						break;
-					case 1:
-						objItem = mnuStickyMRU1;
-						break;
-					case 2:
-						objItem = mnuStickyMRU2;
-						break;
-					case 3:
-						objItem = mnuStickyMRU3;
-						break;
-					case 4:
-						objItem = mnuStickyMRU4;
-						break;
-					case 5:
-						objItem = mnuStickyMRU5;
-						break;
-					case 6:
-						objItem = mnuStickyMRU6;
-						break;
-					case 7:
-						objItem = mnuStickyMRU7;
-						break;
-					case 8:
-						objItem = mnuStickyMRU8;
-						break;
-					case 9:
-						objItem = mnuStickyMRU9;
-						break;
-				}
-
-				objItem.Visible = false;
-			}
-
-			i = -1;
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
-			{
-				i++;
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (i)
-				{
-					case 0:
-						objItem = mnuMRU0;
-						break;
-					case 1:
-						objItem = mnuMRU1;
-						break;
-					case 2:
-						objItem = mnuMRU2;
-						break;
-					case 3:
-						objItem = mnuMRU3;
-						break;
-					case 4:
-						objItem = mnuMRU4;
-						break;
-					case 5:
-						objItem = mnuMRU5;
-						break;
-					case 6:
-						objItem = mnuMRU6;
-						break;
-					case 7:
-						objItem = mnuMRU7;
-						break;
-					case 8:
-						objItem = mnuMRU8;
-						break;
-					case 9:
-						objItem = mnuMRU9;
-						break;
-				}
-
-				objItem.Visible = true;
-				if (i == 9)
-					objItem.Text = "1&0 " + strFile;
-				else
-					objItem.Text = "&" + (i + 1).ToString() + " " + strFile;
-				mnuFileMRUSeparator.Visible = true;
-			}
-
-			// Hide any unused items.
-			for (int x = i + 1; x < 10; x++)
-			{
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (x)
-				{
-					case 0:
-						objItem = mnuMRU0;
-						break;
-					case 1:
-						objItem = mnuMRU1;
-						break;
-					case 2:
-						objItem = mnuMRU2;
-						break;
-					case 3:
-						objItem = mnuMRU3;
-						break;
-					case 4:
-						objItem = mnuMRU4;
-						break;
-					case 5:
-						objItem = mnuMRU5;
-						break;
-					case 6:
-						objItem = mnuMRU6;
-						break;
-					case 7:
-						objItem = mnuMRU7;
-						break;
-					case 8:
-						objItem = mnuMRU8;
-						break;
-					case 9:
-						objItem = mnuMRU9;
-						break;
-				}
-
-				objItem.Visible = false;
-			}
+			    if (i < strStickyMRUList.Count)
+			    {
+			        objStickyItem.Visible = true;
+			        objStickyItem.Text = strStickyMRUList[i];
+			        mnuFileMRUSeparator.Visible = true;
+			    }
+			    else
+			    {
+                    objStickyItem.Visible = false;
+                }
+			    if (i < strMRUList.Count)
+			    {
+                    objItem.Visible = true;
+                    if (i == 9)
+                        objItem.Text = "1&0 " + strMRUList[i];
+                    else
+                        objItem.Text = "&" + (i + 1).ToString() + " " + strMRUList[i];
+                    mnuFileMRUSeparator.Visible = true;
+                }
+                else
+                {
+                    objItem.Visible = false;
+                }
+            }
 		}
 
 		private void objCareer_DiceRollerOpened(Object sender)

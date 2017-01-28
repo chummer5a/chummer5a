@@ -204,9 +204,9 @@ namespace Chummer
                                 lstItems.Add(objItem);
                             }
                         }
-                        if (objWeapon.Children.Count > 0)
+                        if (objWeapon.UnderbarrelWeapons.Count > 0)
                         {
-                            foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
+                            foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                             {
                                 if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
                                 {
@@ -299,9 +299,9 @@ namespace Chummer
                                         lstItems.Add(objItem);
                                     }
                                 }
-                                if (objWeapon.Children.Count > 0)
+                                if (objWeapon.UnderbarrelWeapons.Count > 0)
                                 {
-                                    foreach (Weapon objUnderbarrelWeapon in objWeapon.Children)
+                                    foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                                     {
                                         if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
                                         {
