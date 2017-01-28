@@ -115,12 +115,12 @@ namespace Chummer.Backend.UI
             if (enabled)
             {
                 Bitmap overlay = CheckboxChecked.Value;
-                DrawOver(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
+                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
             else
             {
                 Bitmap overlay = CheckboxUnchecked.Value;
-                DrawOver(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
+                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
 
             //create aura
@@ -140,7 +140,7 @@ namespace Chummer.Backend.UI
             return final;
         }
 
-        private void DrawOver(int[] destinationArray, Bitmap overlay, int x, int y, int width, int scale)
+        private void DrawOverWithAlpha(int[] destinationArray, Bitmap overlay, int x, int y, int width, int scale)
         {
             BitmapData sourceData = overlay.LockBits(new Rectangle(0, 0, overlay.Width, overlay.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -153,17 +153,18 @@ namespace Chummer.Backend.UI
             int sourceWidth = overlay.Width;
             int sourceHeight = overlay.Height;
 
-            int transpcolor = sourceArray[0];
-
+           
             for (int yw = 0; yw < sourceHeight / scale; yw++)
             {
                 for (int xw = 0; xw < sourceWidth / scale; xw++)
                 {
                     int pixel = sourceArray[(sourceWidth * yw * scale) + (xw * scale)];
-                    if (pixel != transpcolor)
-                    {
-                        destinationArray[width * (yw + y) + x + xw] = pixel;
-                    }
+                    
+                        int memindex = width * (yw + y) + x + xw;
+                        int orginalColor = destinationArray[memindex];
+                        int blend = ColorUtilities.ARGBIntXYZAlphaBlend(pixel, orginalColor);
+                        destinationArray[memindex] = blend;
+                    
                 }
             }
 

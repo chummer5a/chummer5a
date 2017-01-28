@@ -98,6 +98,45 @@ namespace Chummer.Backend
             return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
         }
 
+        /// <summary>
+        /// Performs alpha blending between 2 colors
+        /// </summary>
+        /// <param name="overlay">The color to be drawn above back</param>
+        /// <param name="back">The background color</param>
+        /// <returns></returns>
+        public static int ARGBIntXYZAlphaBlend(int overlay, int back)
+        {
+            double[] overlayargb = ToColorFractions(overlay);
+            double[] backargb = ToColorFractions(back);
+
+            
+
+            double[] overlayxyz = RGBToXYZ(overlayargb);
+            double[] baclxyz = RGBToXYZ(backargb);
+
+            //Calculate the new alpha value. Calculation is done with a multiplication of the alpha values, but instead of multiplying the alpha values
+            //the "reverse" alpha is multiplied to find the new "reverse" alpha. Reverse alpha is the opposite of alpha 1 - a = r a
+            double newalpha = 1 - ((1 - overlayargb[3]) * (1 - backargb[3]));
+
+            double overlayfraction = overlayargb[3] / newalpha;
+
+            double[] xyz = new double[3];
+            for (int i = 0; i < 3; i++)
+            {
+                xyz[i] = (overlayxyz[i] * overlayfraction) + (baclxyz[i] * (1-overlayfraction));
+            }
+
+            double[] rgb = XYZToRGB(xyz);
+
+            for (int i = 0; i < 3; i++)
+            {
+                rgb[i] = Math.Max(0, Math.Min(1, rgb[i]));
+            }
+
+            int final = (int)(newalpha * 255);
+            return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
+        }
+
         private static double CalculateRealScale(double alpha1, double alpha2, float scale)
         {
             double mod1 = alpha1 * (1-scale);
