@@ -65,17 +65,18 @@ namespace Chummer.Backend.UI
         {
             Stopwatch sw = Stopwatch.StartNew();
             Bitmap source = GetBaseImage(bookCode);
+            int source_w = source.Width, source_h = source.Height;
 
             //Comming soon: Bitmap checkbox (un)checked
 
-            BitmapData sourceData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height),
+            BitmapData sourceData = source.LockBits(new Rectangle(0, 0, source_w, source_h),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             //This might create some _weird_ errors if somebody tries to run it on another endianess. ARM?
             int[] sourceArray = new int[sourceData.Width* sourceData.Height];
 
-            int realWidth = (source.Width + GlowBorder * 2) / scale;
-            int[] destinationArray = new int[realWidth * ((source.Height + GlowBorder * 2) / scale)];
+            int realWidth = (source_w + GlowBorder * 2) / scale;
+            int[] destinationArray = new int[realWidth * ((source_h + GlowBorder * 2) / scale)];
 
             Marshal.Copy(sourceData.Scan0, sourceArray, 0, Math.Abs(sourceData.Stride) * sourceData.Height / sizeof(int));
             source.UnlockBits(sourceData);
@@ -100,11 +101,11 @@ namespace Chummer.Backend.UI
             }
 
             //Copy main image
-            for (int y = 0; y < source.Height / scale; y++)
+            for (int y = 0; y < source_h / scale; y++)
             {
-                for (int x = 0; x < source.Width / scale; x++)
+                for (int x = 0; x < source_w / scale; x++)
                 {
-                    int color = convert(sourceArray[(y * scale * source.Width ) + ( x * scale)]);
+                    int color = convert(sourceArray[(y * scale * source_w) + ( x * scale)]);
                     //Color preprocessing here
                     destinationArray[(y + (GlowBorder/ scale)) * realWidth + (GlowBorder/ scale) + x] = color;
                 }
@@ -115,20 +116,20 @@ namespace Chummer.Backend.UI
             if (enabled)
             {
                 Bitmap overlay = CheckboxChecked.Value;
-                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
+                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source_h - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
             else
             {
                 Bitmap overlay = CheckboxUnchecked.Value;
-                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
+                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source_h - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
 
             //create aura
             if(aura)
-                CreateAura(auracolor, backcolor, destinationArray, source.Width /scale, source.Height /scale, GlowBorder/scale);
+                CreateAura(auracolor, backcolor, destinationArray, source_w / scale, source_h /scale, GlowBorder/scale);
 
 
-            Bitmap final = new Bitmap((source.Width + GlowBorder * 2) / scale, (source.Height + GlowBorder * 2) / scale);
+            Bitmap final = new Bitmap((source_w + GlowBorder * 2) / scale, (source_h + GlowBorder * 2) / scale);
             BitmapData destinationData = final.LockBits(new Rectangle(0, 0, final.Width, final.Height),
                 ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             Marshal.Copy(destinationArray, 0, destinationData.Scan0, destinationArray.Length);

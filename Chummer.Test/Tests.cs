@@ -2,6 +2,7 @@
 using System.Globalization;
 using NUnit.Framework;
 using Chummer.Backend;
+using Chummer.Backend.Datastructures;
 
 namespace Chummer.Test
 {
@@ -10,18 +11,22 @@ namespace Chummer.Test
     {
         private const string RGB = "RGB";
 
-        private static void XYZBackTest(double[] rgb)
+        private static void XYZBackTest(Vector3 rgb)
         {
-            double[] rgb2 = ColorUtilities.XYZToRGB(ColorUtilities.RGBToXYZ(rgb));
+            Vector3 rgb2 = ColorUtilities.XYZToRGB(ColorUtilities.RGBToXYZ(rgb));
 
-            for (int i = 0; i < 3; i++)
-            {
-                TestContext.Write(RGB[i]);
-                Assert.AreEqual(rgb[i], rgb2[i], 0.000001);
-            }
+            TestContext.Write("R");
+            Assert.AreEqual(rgb.X, rgb2.X, 0.000001);
+
+            TestContext.Write("G");
+            Assert.AreEqual(rgb.Y, rgb2.Y, 0.000001);
+
+            TestContext.Write("B");
+            Assert.AreEqual(rgb.Z, rgb2.Z, 0.000001);
+
         }
 
-        private static void RBGLabBackTest(double[] rgb)
+        private static void RBGLabBackTest(Vector3 rgb)
         {
 
             var rgb2 =
@@ -30,39 +35,38 @@ namespace Chummer.Test
             TestUtils.AreMostlyEqual(rgb, rgb2, 0.01);
         }
 
-        private static double[] FromHex(string hex)
+        private static Vector3 FromHex(string hex)
         {
-            double[] o = new double[3];
-            for (int i = 0; i < 3; i++)
-            {
-                o[i] = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber) / 255.0;
-            }
-            return o;
+            return new Vector3(
+                int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber) / 255.0,
+                int.Parse(hex.Substring(2, 2), NumberStyles.HexNumber) / 255.0,
+                int.Parse(hex.Substring(4, 2), NumberStyles.HexNumber) / 255.0
+            );
         }
 
         [Test]
         public void RBGXYZBackZero()
         {
-            XYZBackTest(new double[]{0,0,0});
+            XYZBackTest(new Vector3(0,0,0));
         }
 
         [Test]
         public void RBGXYZBackQuarter()
         {
-            XYZBackTest(new double[]{0.25, 0.25, 0.25});
+            XYZBackTest(new Vector3(0.25, 0.25, 0.25));
         }
 
         [Test]
         public void RBGXYZBackHalf()
         {
-            XYZBackTest(new double[]{0.5, 0.5, 0.5});
+            XYZBackTest(new Vector3(0.5, 0.5, 0.5));
         }
 
 
         [Test]
         public void RBGXYZBackOne()
         {
-            XYZBackTest(new double[]{1, 1, 1});
+            XYZBackTest(new Vector3(1, 1, 1));
         }
 
         [Test]
@@ -98,46 +102,46 @@ namespace Chummer.Test
         [Test]
         public void RGBToXYZGreen()
         {
-            var xyz = ColorUtilities.RGBToXYZ(new double[3] {0, 1, 0});
-            TestUtils.AreMostlyEqual(new double[3]{.3576, .7152, .1192}, xyz, 0.01);
+            var xyz = ColorUtilities.RGBToXYZ(new Vector3(0, 1, 0));
+            TestUtils.AreMostlyEqual(new Vector3(.3576, .7152, .1192), xyz, 0.01);
         }
         [Test]
         public void RGBToXYZPink()
         {
-            var xyz = ColorUtilities.RGBToXYZ(new double[3] {1, .75294, .79608});
-            TestUtils.AreMostlyEqual(new double[3]{.70869, .63271, .64977}, xyz, 0.01);
+            var xyz = ColorUtilities.RGBToXYZ(new Vector3(1, .75294, .79608));
+            TestUtils.AreMostlyEqual(new Vector3(.70869, .63271, .64977), xyz, 0.01);
         }
         [Test]
         public void XYZToRGBGreen()
         {
-            var rgb = ColorUtilities.XYZToRGB(new double[3]{.3576, .7152, .1192});
-            TestUtils.AreMostlyEqual(new double[3] {0, 1, 0}, rgb, 0.01);
+            var rgb = ColorUtilities.XYZToRGB(new Vector3(.3576, .7152, .1192));
+            TestUtils.AreMostlyEqual(new Vector3(0, 1, 0), rgb, 0.01);
         }
 
         [Test]
         public void XYZToRGBPink()
         {
-            var rgb = ColorUtilities.XYZToRGB(new double[3] {.70869, .63271, .64977});
-            TestUtils.AreMostlyEqual(new double[3] {1, .75294, .79608}, rgb, 0.01);
+            var rgb = ColorUtilities.XYZToRGB(new Vector3(.70869, .63271, .64977));
+            TestUtils.AreMostlyEqual(new Vector3(1, .75294, .79608), rgb, 0.01);
 
         }
 
         [Test]
         public void OneColorFraction()
         {
-            TestUtils.AreMostlyEqual(new double[]{1,1,1,1}, ColorUtilities.ToColorFractions(-1), 0.001);
+            TestUtils.AreMostlyEqual(new Vector4(1,1,1,1), ColorUtilities.ToColorFractions(-1), 0.001);
         }
 
         [Test]
         public void FullAlphaHalfColorFraction()
         {
             uint a = 0xff808080;
-            TestUtils.AreMostlyEqual(new double[]{0.5,0.5,0.5,1}, ColorUtilities.ToColorFractions(unchecked((int)a)), 0.01);
+            TestUtils.AreMostlyEqual(new Vector4(0.5,0.5,0.5,1), ColorUtilities.ToColorFractions(unchecked((int)a)), 0.01);
         }
         [Test]
         public void HalfColorFraction()
         {
-            TestUtils.AreMostlyEqual(new double[]{0.5,0.5,0.5,0.5}, ColorUtilities.ToColorFractions(int.MinValue + 8421504), 0.01);
+            TestUtils.AreMostlyEqual(new Vector4(0.5,0.5,0.5,0.5), ColorUtilities.ToColorFractions(int.MinValue + 8421504), 0.01);
         }
 
     }

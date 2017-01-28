@@ -131,6 +131,8 @@
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Datastructures\SimpleTree.cs" />
+    <Compile Include="Backend\Datastructures\Vector3.cs" />
+    <Compile Include="Backend\Datastructures\Vector4.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Equipment\Armor.cs" />
