@@ -264,15 +264,15 @@ namespace Chummer
 								            if (objChild["disadvantage"] != null)
 								            {
                                                 objItem.InnerXml += "<altdisadvantage>" + objChild["disadvantage"].InnerXml + "</altdisadvantage>";
-								            }
-								            if (objChild.Attributes?["translate"] != null)
-								            {
-                                                // Handle Category name translations.
-                                                (objItem as XmlElement).SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
-                                            }
+											}
+											if (objChild.Attributes?["translate"] != null)
+											{
+												// Handle Category name translations.
+												(objItem as XmlElement).SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
+											}
 
-                                            // Check for Skill Specialization information.
-                                            if (strFileName == "skills.xml")
+											// Check for Skill Specialization information.
+											if (strFileName == "skills.xml")
                                             {
                                                 if (objChild["specs"] != null)
                                                 {
@@ -357,7 +357,14 @@ namespace Chummer
                                                 }
                                             }
                                         }
-                                    }
+									}
+									else if (objChild.Attributes?["translate"] != null)
+									{
+										// Handle Category name translations.
+										XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]");
+										// Expected result is null if not found.
+										(objItem as XmlElement)?.SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
+									}
 								}
 							}
 						}
