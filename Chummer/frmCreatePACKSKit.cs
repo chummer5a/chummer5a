@@ -214,7 +214,7 @@ namespace Chummer
 			{
 				int intNuyenBP = Convert.ToInt32(_objCharacter.NuyenBP);
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-					intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.Instance.CultureInfo) / 2.0);
+					intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.CultureInfo) / 2.0);
 				objWriter.WriteElementString("nuyenbp", intNuyenBP.ToString());
 			}
 

@@ -1486,19 +1486,19 @@ namespace Chummer.Backend.Equipment
 
 					strEss = strEssExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprEss = nav.Compile(strEss);
-					decReturn = Convert.ToDecimal(nav.Evaluate(xprEss), GlobalOptions.Instance.CultureInfo);
+					decReturn = Convert.ToDecimal(nav.Evaluate(xprEss), GlobalOptions.CultureInfo);
 				}
 				else
 				{
 					if (_strESS.StartsWith("FixedValues"))
 					{
 						string[] strValues = _strESS.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-						decReturn = Convert.ToDecimal(strValues[_intRating - 1], GlobalOptions.Instance.CultureInfo);
+						decReturn = Convert.ToDecimal(strValues[_intRating - 1], GlobalOptions.CultureInfo);
 					}
 					else
 					{
 						// Just a straight cost, so return the value.
-						decReturn = Convert.ToDecimal(_strESS, GlobalOptions.Instance.CultureInfo);
+						decReturn = Convert.ToDecimal(_strESS, GlobalOptions.CultureInfo);
 					}
 				}
 
@@ -1510,7 +1510,7 @@ namespace Chummer.Backend.Equipment
 
 				if (_intEssenceDiscount != 0)
 				{
-					decimal decDiscount = Convert.ToDecimal(_intEssenceDiscount, GlobalOptions.Instance.CultureInfo) * 0.01m;
+					decimal decDiscount = Convert.ToDecimal(_intEssenceDiscount, GlobalOptions.CultureInfo) * 0.01m;
 					decESSMultiplier *= (1.0m - decDiscount);
 				}
 
@@ -1526,7 +1526,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 					dblCharacterESSMultiplier = dblMultiplier;
 				}
@@ -1537,7 +1537,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 					dblCharacterESSMultiplier = dblMultiplier;
 				}
@@ -1549,7 +1549,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-							dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 					dblBasicBiowareESSMultiplier = dblBasicMultiplier;
 				}
@@ -1560,9 +1560,9 @@ namespace Chummer.Backend.Equipment
 				if (_strCategory == "Basic")
 					dblCharacterESSMultiplier -= (1 - dblBasicBiowareESSMultiplier);
 
-				dblCharacterESSMultiplier -= (1 - Convert.ToDouble(decESSMultiplier, GlobalOptions.Instance.CultureInfo));
+				dblCharacterESSMultiplier -= (1 - Convert.ToDouble(decESSMultiplier, GlobalOptions.CultureInfo));
 
-				decReturn = decReturn * Convert.ToDecimal(dblCharacterESSMultiplier, GlobalOptions.Instance.CultureInfo);
+				decReturn = decReturn * Convert.ToDecimal(dblCharacterESSMultiplier, GlobalOptions.CultureInfo);
 
 				// Check if the character has Sensitive System.
 				if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
@@ -1630,7 +1630,7 @@ namespace Chummer.Backend.Equipment
                         }
                         XPathExpression xprCost = nav.Compile(strCost);
                         // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+                        double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
                         intCost = Convert.ToInt32(dblCost);
                     }
                     else
@@ -1643,14 +1643,14 @@ namespace Chummer.Backend.Equipment
                         char[] chrParentheses = { '(', ')' };
 						string[] strValues = _strCost.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
                         if (_intRating <= strValues.Length)
-                            intCost = Convert.ToInt32(strValues[_intRating - 1], GlobalOptions.Instance.CultureInfo);
+                            intCost = Convert.ToInt32(strValues[_intRating - 1], GlobalOptions.CultureInfo);
 					}
 					else
 					{
 						// Just a straight cost, so return the value.
 						try
 						{
-							intCost = Convert.ToInt32(_strCost, GlobalOptions.Instance.CultureInfo);
+							intCost = Convert.ToInt32(_strCost, GlobalOptions.CultureInfo);
 						}
 						catch (FormatException)
 						{
@@ -1660,12 +1660,12 @@ namespace Chummer.Backend.Equipment
 				}
 
 				// Factor in the Cost multiplier of the selected CyberwareGrade.
-				intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * Grade.Cost);
+				intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * Grade.Cost);
 
 				intReturn = intCost;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
 
 				// Add in the cost of all child components.
 				foreach (Cyberware objChild in _objChildren)
@@ -1678,10 +1678,10 @@ namespace Chummer.Backend.Equipment
 							int intPluginCost = 0;
 							string strMultiplier = objChild.Cost;
 							strMultiplier = strMultiplier.Replace("*", string.Empty);
-							intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.Instance.CultureInfo) - 1));
+							intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.CultureInfo) - 1));
 
 							if (objChild.DiscountCost)
-								intPluginCost = Convert.ToInt32(Convert.ToDouble(intPluginCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+								intPluginCost = Convert.ToInt32(Convert.ToDouble(intPluginCost, GlobalOptions.CultureInfo) * 0.9);
 							
 							intReturn += intPluginCost;
 						}
@@ -1708,7 +1708,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 				}
 
@@ -1718,7 +1718,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 				}
 
@@ -1729,7 +1729,7 @@ namespace Chummer.Backend.Equipment
 				if (_blnSuite)
 					dblSuiteMultiplier = 0.9;
 
-				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.Instance.CultureInfo) * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
+				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.CultureInfo) * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
 			}
 		}
 
@@ -1763,14 +1763,14 @@ namespace Chummer.Backend.Equipment
                         char[] chrParentheses = { '(', ')' };
                         string[] strValues = _strCost.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
                         if (_intRating <= strValues.Length)
-                            intCost = Convert.ToInt32(strValues[_intRating - 1], GlobalOptions.Instance.CultureInfo);
+                            intCost = Convert.ToInt32(strValues[_intRating - 1], GlobalOptions.CultureInfo);
                     }
                     else
                     {
                         // Just a straight cost, so return the value.
                         try
                         {
-                            intCost = Convert.ToInt32(_strCost, GlobalOptions.Instance.CultureInfo);
+                            intCost = Convert.ToInt32(_strCost, GlobalOptions.CultureInfo);
                         }
                         catch (FormatException)
                         {
@@ -1780,12 +1780,12 @@ namespace Chummer.Backend.Equipment
                 }
 
 				// Factor in the Cost multiplier of the selected CyberwareGrade.
-				intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * Grade.Cost);
+				intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * Grade.Cost);
 
 				intReturn = intCost;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
 
                 // Add in the cost of all child components.
                 foreach (Cyberware objChild in _objChildren)
@@ -1798,10 +1798,10 @@ namespace Chummer.Backend.Equipment
                             int intPluginCost = 0;
                             string strMultiplier = objChild.Cost;
                             strMultiplier = strMultiplier.Replace("*", string.Empty);
-                            intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.Instance.CultureInfo) - 1));
+                            intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.CultureInfo) - 1));
 
                             if (objChild.DiscountCost)
-                                intPluginCost = Convert.ToInt32(Convert.ToDouble(intPluginCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+                                intPluginCost = Convert.ToInt32(Convert.ToDouble(intPluginCost, GlobalOptions.CultureInfo) * 0.9);
 
                             intReturn += intPluginCost;
                         }
@@ -1823,7 +1823,7 @@ namespace Chummer.Backend.Equipment
                 const double dblMultiplier = 1;
 				const double decSuiteMultiplier = 1.0;
 
-				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.Instance.CultureInfo) * decSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
+				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.CultureInfo) * decSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
 			}
 		}
 
@@ -1861,7 +1861,7 @@ namespace Chummer.Backend.Equipment
 					strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost);
 					XPathExpression xprCost = nav.Compile(strCost);
 					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
 					intCost = Convert.ToInt32(dblCost);
 				}
 				else
@@ -1871,14 +1871,14 @@ namespace Chummer.Backend.Equipment
                         char[] chrParentheses = { '(', ')' };
                         string[] strValues = _strCost.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
                         if (_intRating <= strValues.Length)
-                            intCost = Convert.ToInt32(strValues[_intRating - 1], GlobalOptions.Instance.CultureInfo);
+                            intCost = Convert.ToInt32(strValues[_intRating - 1], GlobalOptions.CultureInfo);
                     }
                     else
                     {
                         // Just a straight cost, so return the value.
                         try
                         {
-                            intCost = Convert.ToInt32(_strCost, GlobalOptions.Instance.CultureInfo);
+                            intCost = Convert.ToInt32(_strCost, GlobalOptions.CultureInfo);
                         }
                         catch (FormatException)
                         {
@@ -1888,12 +1888,12 @@ namespace Chummer.Backend.Equipment
                 }
 
 				// Factor in the Cost multiplier of the selected CyberwareGrade.
-				intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * Grade.Cost);
+				intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * Grade.Cost);
 
 				intReturn = intCost;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
 
 				// Retrieve the Genetech Cost Multiplier if available.
 				double dblMultiplier = 1;
@@ -1903,7 +1903,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 				}
 
@@ -1913,7 +1913,7 @@ namespace Chummer.Backend.Equipment
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+							dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 					}
 				}
 
@@ -1924,7 +1924,7 @@ namespace Chummer.Backend.Equipment
 				if (_blnSuite)
 					dblSuiteMultiplier = 0.9;
 
-				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.Instance.CultureInfo) * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
+				return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * Convert.ToDouble(dblMultiplier, GlobalOptions.CultureInfo) * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
 			}
 		}
 

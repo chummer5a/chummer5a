@@ -1001,7 +1001,7 @@ namespace Chummer
 				else
 				{
 					// Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
-					double dblMAG = Convert.ToDouble(_objCharacter.MAG.TotalValue, GlobalOptions.Instance.CultureInfo);
+					double dblMAG = Convert.ToDouble(_objCharacter.MAG.TotalValue, GlobalOptions.CultureInfo);
 					intPowerPoints = Convert.ToInt32(Math.Floor(dblMAG / 3.0));
 				}
 

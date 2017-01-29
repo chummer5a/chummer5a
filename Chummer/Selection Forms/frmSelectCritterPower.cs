@@ -505,7 +505,7 @@ namespace Chummer
 			{
 				XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 				XmlNode objXmlPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
-				_dblPowerPoints = Convert.ToDouble(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
+				_dblPowerPoints = Convert.ToDouble(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.CultureInfo);
 			}
 
 			DialogResult = DialogResult.OK;
@@ -580,8 +580,7 @@ namespace Chummer
 
         private void lblCritterPowerSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblCritterPowerSource.Text);
+            CommonFunctions.StaticOpenPDF(lblCritterPowerSource.Text, _objCharacter);
         }
 	}
 }

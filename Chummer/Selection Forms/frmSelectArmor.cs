@@ -685,7 +685,7 @@ namespace Chummer
 			{
 				XPathNavigator nav = _objXmlDocument.CreateNavigator();
 				XPathExpression xprCost = nav.Compile(objXmlArmor["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-				double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+				double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
 				if (chkBlackMarketDiscount.Checked)
 				{
 					dblCost = dblCost - (dblCost*0.90);
@@ -695,8 +695,8 @@ namespace Chummer
 			}
 			else
 			{
-				double dblCost = Convert.ToDouble(objXmlArmor["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(objXmlArmor["cost"].InnerText, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 				if (chkBlackMarketDiscount.Checked)
 				{
 					dblCost = dblCost * 0.90;
@@ -728,8 +728,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

@@ -146,11 +146,6 @@ namespace Chummer
 			this.lblAttributesMetatype = new System.Windows.Forms.Label();
 			this.lblAttributesBase = new System.Windows.Forms.Label();
 			this.lblAttributesAug = new System.Windows.Forms.Label();
-			this.lblRatingLabel = new System.Windows.Forms.Label();
-			this.lblSystemLabel = new System.Windows.Forms.Label();
-			this.lblFirewallLabel = new System.Windows.Forms.Label();
-			this.lblResponseLabel = new System.Windows.Forms.Label();
-			this.lblSignalLabel = new System.Windows.Forms.Label();
 			this.cmdIncreasePowerPoints = new System.Windows.Forms.Button();
 			this.lblMovementLabel = new System.Windows.Forms.Label();
 			this.cmsMartialArts = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -411,11 +406,6 @@ namespace Chummer
 			this.lblAlias = new System.Windows.Forms.Label();
 			this.lblMetatypeSource = new System.Windows.Forms.Label();
 			this.lblMetatypeSourceLabel = new System.Windows.Forms.Label();
-			this.nudSignal = new System.Windows.Forms.NumericUpDown();
-			this.nudResponse = new System.Windows.Forms.NumericUpDown();
-			this.lblFirewall = new System.Windows.Forms.Label();
-			this.lblSystem = new System.Windows.Forms.Label();
-			this.lblRating = new System.Windows.Forms.Label();
 			this.cmdSwapQuality = new System.Windows.Forms.Button();
 			this.lblQualityBP = new System.Windows.Forms.Label();
 			this.lblQualityBPLabel = new System.Windows.Forms.Label();
@@ -1254,8 +1244,6 @@ namespace Chummer
 			this.tabPeople.SuspendLayout();
 			this.tabContacts.SuspendLayout();
 			this.tabEnemies.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudSignal)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).BeginInit();
 			this.panAttributes.SuspendLayout();
 			this.tabSkills.SuspendLayout();
 			this.tabLimits.SuspendLayout();
@@ -2324,66 +2312,6 @@ namespace Chummer
 			this.lblAttributesAug.Tag = "Label_Augmented";
 			this.lblAttributesAug.Text = "(Aug)";
 			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
-			// 
-			// lblRatingLabel
-			// 
-			this.lblRatingLabel.AutoSize = true;
-			this.lblRatingLabel.Location = new System.Drawing.Point(628, 107);
-			this.lblRatingLabel.Name = "lblRatingLabel";
-			this.lblRatingLabel.Size = new System.Drawing.Size(38, 13);
-			this.lblRatingLabel.TabIndex = 77;
-			this.lblRatingLabel.Tag = "String_Rating";
-			this.lblRatingLabel.Text = "Rating";
-			this.tipTooltip.SetToolTip(this.lblRatingLabel, "An A.I.\'s Rating is the average of their CHA, INT, LOG, and WIL Attributes.");
-			this.lblRatingLabel.Visible = false;
-			// 
-			// lblSystemLabel
-			// 
-			this.lblSystemLabel.AutoSize = true;
-			this.lblSystemLabel.Location = new System.Drawing.Point(628, 133);
-			this.lblSystemLabel.Name = "lblSystemLabel";
-			this.lblSystemLabel.Size = new System.Drawing.Size(41, 13);
-			this.lblSystemLabel.TabIndex = 79;
-			this.lblSystemLabel.Tag = "String_System";
-			this.lblSystemLabel.Text = "System";
-			this.tipTooltip.SetToolTip(this.lblSystemLabel, "An A.I.\'s System is the average of their INT and LOG Attributes.");
-			this.lblSystemLabel.Visible = false;
-			// 
-			// lblFirewallLabel
-			// 
-			this.lblFirewallLabel.AutoSize = true;
-			this.lblFirewallLabel.Location = new System.Drawing.Point(628, 159);
-			this.lblFirewallLabel.Name = "lblFirewallLabel";
-			this.lblFirewallLabel.Size = new System.Drawing.Size(42, 13);
-			this.lblFirewallLabel.TabIndex = 81;
-			this.lblFirewallLabel.Tag = "String_Firewall";
-			this.lblFirewallLabel.Text = "Firewall";
-			this.tipTooltip.SetToolTip(this.lblFirewallLabel, "An A.I.\'s Firewall is the average of their CHA and WIL Attributes.");
-			this.lblFirewallLabel.Visible = false;
-			// 
-			// lblResponseLabel
-			// 
-			this.lblResponseLabel.AutoSize = true;
-			this.lblResponseLabel.Location = new System.Drawing.Point(628, 185);
-			this.lblResponseLabel.Name = "lblResponseLabel";
-			this.lblResponseLabel.Size = new System.Drawing.Size(55, 13);
-			this.lblResponseLabel.TabIndex = 83;
-			this.lblResponseLabel.Tag = "String_Response";
-			this.lblResponseLabel.Text = "Response";
-			this.tipTooltip.SetToolTip(this.lblResponseLabel, "Response of the Node the A.I. currently resides on.");
-			this.lblResponseLabel.Visible = false;
-			// 
-			// lblSignalLabel
-			// 
-			this.lblSignalLabel.AutoSize = true;
-			this.lblSignalLabel.Location = new System.Drawing.Point(628, 211);
-			this.lblSignalLabel.Name = "lblSignalLabel";
-			this.lblSignalLabel.Size = new System.Drawing.Size(36, 13);
-			this.lblSignalLabel.TabIndex = 84;
-			this.lblSignalLabel.Tag = "String_Signal";
-			this.lblSignalLabel.Text = "Signal";
-			this.tipTooltip.SetToolTip(this.lblSignalLabel, "Signal of the Node the A.I. currently resides on.");
-			this.lblSignalLabel.Visible = false;
 			// 
 			// cmdIncreasePowerPoints
 			// 
@@ -4891,16 +4819,6 @@ namespace Chummer
 			this.tabCommon.Controls.Add(this.lblAlias);
 			this.tabCommon.Controls.Add(this.lblMetatypeSource);
 			this.tabCommon.Controls.Add(this.lblMetatypeSourceLabel);
-			this.tabCommon.Controls.Add(this.nudSignal);
-			this.tabCommon.Controls.Add(this.nudResponse);
-			this.tabCommon.Controls.Add(this.lblSignalLabel);
-			this.tabCommon.Controls.Add(this.lblResponseLabel);
-			this.tabCommon.Controls.Add(this.lblFirewallLabel);
-			this.tabCommon.Controls.Add(this.lblFirewall);
-			this.tabCommon.Controls.Add(this.lblSystemLabel);
-			this.tabCommon.Controls.Add(this.lblSystem);
-			this.tabCommon.Controls.Add(this.lblRatingLabel);
-			this.tabCommon.Controls.Add(this.lblRating);
 			this.tabCommon.Controls.Add(this.cmdSwapQuality);
 			this.tabCommon.Controls.Add(this.lblQualityBP);
 			this.tabCommon.Controls.Add(this.lblQualityBPLabel);
@@ -5127,86 +5045,6 @@ namespace Chummer
 			this.lblMetatypeSourceLabel.TabIndex = 86;
 			this.lblMetatypeSourceLabel.Tag = "Label_Source";
 			this.lblMetatypeSourceLabel.Text = "Source:";
-			// 
-			// nudSignal
-			// 
-			this.nudSignal.Enabled = false;
-			this.nudSignal.Location = new System.Drawing.Point(712, 209);
-			this.nudSignal.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-			this.nudSignal.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.nudSignal.Name = "nudSignal";
-			this.nudSignal.Size = new System.Drawing.Size(40, 20);
-			this.nudSignal.TabIndex = 85;
-			this.nudSignal.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.nudSignal.Visible = false;
-			this.nudSignal.ValueChanged += new System.EventHandler(this.nudSignal_ValueChanged);
-			// 
-			// nudResponse
-			// 
-			this.nudResponse.Enabled = false;
-			this.nudResponse.Location = new System.Drawing.Point(712, 183);
-			this.nudResponse.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-			this.nudResponse.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.nudResponse.Name = "nudResponse";
-			this.nudResponse.Size = new System.Drawing.Size(40, 20);
-			this.nudResponse.TabIndex = 76;
-			this.nudResponse.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.nudResponse.Visible = false;
-			this.nudResponse.ValueChanged += new System.EventHandler(this.nudResponse_ValueChanged);
-			// 
-			// lblFirewall
-			// 
-			this.lblFirewall.AutoSize = true;
-			this.lblFirewall.Location = new System.Drawing.Point(711, 159);
-			this.lblFirewall.Name = "lblFirewall";
-			this.lblFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblFirewall.TabIndex = 82;
-			this.lblFirewall.Text = "[0]";
-			this.lblFirewall.Visible = false;
-			// 
-			// lblSystem
-			// 
-			this.lblSystem.AutoSize = true;
-			this.lblSystem.Location = new System.Drawing.Point(711, 133);
-			this.lblSystem.Name = "lblSystem";
-			this.lblSystem.Size = new System.Drawing.Size(19, 13);
-			this.lblSystem.TabIndex = 80;
-			this.lblSystem.Text = "[0]";
-			this.lblSystem.Visible = false;
-			// 
-			// lblRating
-			// 
-			this.lblRating.AutoSize = true;
-			this.lblRating.Location = new System.Drawing.Point(711, 107);
-			this.lblRating.Name = "lblRating";
-			this.lblRating.Size = new System.Drawing.Size(19, 13);
-			this.lblRating.TabIndex = 78;
-			this.lblRating.Text = "[0]";
-			this.lblRating.Visible = false;
 			// 
 			// cmdSwapQuality
 			// 
@@ -14440,8 +14278,6 @@ namespace Chummer
 			this.tabContacts.PerformLayout();
 			this.tabEnemies.ResumeLayout(false);
 			this.tabEnemies.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudSignal)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).EndInit();
 			this.panAttributes.ResumeLayout(false);
 			this.panAttributes.PerformLayout();
 			this.tabSkills.ResumeLayout(false);
@@ -14875,16 +14711,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblAlias;
         private System.Windows.Forms.Label lblMetatypeSource;
         private System.Windows.Forms.Label lblMetatypeSourceLabel;
-        internal System.Windows.Forms.NumericUpDown nudSignal;
-        internal System.Windows.Forms.NumericUpDown nudResponse;
-        private System.Windows.Forms.Label lblSignalLabel;
-        private System.Windows.Forms.Label lblResponseLabel;
-        private System.Windows.Forms.Label lblFirewallLabel;
-        private System.Windows.Forms.Label lblFirewall;
-        private System.Windows.Forms.Label lblSystemLabel;
-        private System.Windows.Forms.Label lblSystem;
-        private System.Windows.Forms.Label lblRatingLabel;
-        private System.Windows.Forms.Label lblRating;
         private System.Windows.Forms.Button cmdSwapQuality;
         private System.Windows.Forms.Label lblQualityBP;
         private System.Windows.Forms.Label lblQualityBPLabel;

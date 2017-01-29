@@ -28,7 +28,7 @@ namespace Chummer
 		private string _strSelectedCategory = string.Empty;
 		private string _strForceCategory = string.Empty;
 
-		public String WeaponType { get; set; }
+		public string WeaponType { get; set; }
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 

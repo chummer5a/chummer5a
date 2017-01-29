@@ -68,9 +68,8 @@ namespace Chummer
 			XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 			foreach (XmlNode objXmlCategory in objXmlCategoryList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCategory.InnerText;
-				if (objXmlCategory.Attributes != null)
+			    ListItem objItem = new ListItem {Value = objXmlCategory.InnerText};
+			    if (objXmlCategory.Attributes != null)
 				{
 					if (objXmlCategory.Attributes["translate"] != null)
 						objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
@@ -110,12 +109,8 @@ namespace Chummer
 			{
                 if (objXmlVehicle["hidden"] != null)
                     continue;
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlVehicle["name"].InnerText;
-				if (objXmlVehicle["translate"] != null)
-					objItem.Name = objXmlVehicle["translate"].InnerText;
-				else
-					objItem.Name = objXmlVehicle["name"].InnerText;
+				ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
+			    objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
 				lstVehicles.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
@@ -161,12 +156,8 @@ namespace Chummer
 			{
                 if (objXmlVehicle["hidden"] != null)
                     continue;
-                ListItem objItem = new ListItem();
-				objItem.Value = objXmlVehicle["name"].InnerText;
-				if (objXmlVehicle["translate"] != null)
-					objItem.Name = objXmlVehicle["translate"].InnerText;
-				else
-					objItem.Name = objXmlVehicle["name"].InnerText;
+			    ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
+			    objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
 
                 if (objXmlVehicle["category"] != null)
                 {
@@ -360,53 +351,58 @@ namespace Chummer
 
 			// Retireve the information for the selected Vehicle.
 			XmlNode objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + lstVehicle.SelectedValue + "\"]");
+		    if (objXmlVehicle == null)
+		        return;
 
 			if (chkUsedVehicle.Checked)
-				dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.Instance.CultureInfo);
+				dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.CultureInfo);
 
-			lblVehicleHandling.Text = objXmlVehicle["handling"].InnerText;
-			lblVehicleAccel.Text = objXmlVehicle["accel"].InnerText;
-			lblVehicleSpeed.Text = objXmlVehicle["speed"].InnerText;
-			lblVehiclePilot.Text = objXmlVehicle["pilot"].InnerText;
-			lblVehicleBody.Text = objXmlVehicle["body"].InnerText;
-			lblVehicleArmor.Text = objXmlVehicle["armor"].InnerText;
-            lblVehicleSeats.Text = objXmlVehicle["seats"].InnerText;
-            lblVehicleSensor.Text = objXmlVehicle["sensor"].InnerText;
+			lblVehicleHandling.Text = objXmlVehicle["handling"]?.InnerText;
+			lblVehicleAccel.Text = objXmlVehicle["accel"]?.InnerText;
+			lblVehicleSpeed.Text = objXmlVehicle["speed"]?.InnerText;
+			lblVehiclePilot.Text = objXmlVehicle["pilot"]?.InnerText;
+			lblVehicleBody.Text = objXmlVehicle["body"]?.InnerText;
+			lblVehicleArmor.Text = objXmlVehicle["armor"]?.InnerText;
+            lblVehicleSeats.Text = objXmlVehicle["seats"]?.InnerText;
+            lblVehicleSensor.Text = objXmlVehicle["sensor"]?.InnerText;
 
-			if (chkUsedVehicle.Checked)
-			{
-				string strSuffix = string.Empty;
-				string strAvail = objXmlVehicle["avail"].InnerText;
-				if (strAvail.Contains("R") || strAvail.Contains("F"))
-				{
-					strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-					strAvail = strAvail.Replace(strSuffix, string.Empty);
-					strAvail = (Convert.ToInt32(strAvail) + 4).ToString() + strSuffix;
-					lblVehicleAvail.Text = strAvail;
-				}
-				else
-					lblVehicleAvail.Text = (Convert.ToInt32(objXmlVehicle["avail"].InnerText) + 4).ToString();
-			}
-			else
-				lblVehicleAvail.Text = objXmlVehicle["avail"].InnerText;
+            string strAvail = objXmlVehicle["avail"]?.InnerText;
+		    if (!string.IsNullOrEmpty(strAvail))
+		    {
+		        if (chkUsedVehicle.Checked)
+		        {
+		            string strSuffix = string.Empty;
+                    if (strAvail.Contains("R") || strAvail.Contains("F"))
+		            {
+		                strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
+		                strAvail = strAvail.Replace(strSuffix, string.Empty);
+		            }
+                    int intTmp;
+                    if (int.TryParse(strAvail, out intTmp))
+                        strAvail = (intTmp + 4).ToString() + strSuffix;
+                }
+                lblVehicleAvail.Text = strAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"))
+		                .Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+		    }
+		    else
+		    {
+		        lblVehicleAvail.Text = string.Empty;
+		    }
 
-			lblVehicleAvail.Text = lblVehicleAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-
-			// Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
-            if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
+		    // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
+            if (objXmlVehicle["cost"]?.InnerText.StartsWith("Variable") == true)
             {
                 lblVehicleCost.Text = objXmlVehicle["cost"].InnerText;
                 lblTest.Text = string.Empty;
             }
             else
             {
-                int intCost = Convert.ToInt32(objXmlVehicle["cost"].InnerText);
-
-				intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * dblCostModifier));
+                int intCost = 0;
+                objXmlVehicle.TryGetInt32FieldQuickly("cost", ref intCost);
 
                 // Apply the markup if applicable.
-                double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * dblCostModifier;
+                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 
 				if (chkBlackMarketDiscount.Checked)
 				{
@@ -418,18 +414,18 @@ namespace Chummer
                 if (chkFreeItem.Checked)
                     intCost = 0;
 
-                lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", intCost);
+                lblVehicleCost.Text = $"{intCost:###,###,##0¥}";
                 lblTest.Text = _objCharacter.AvailTest(intCost, lblVehicleAvail.Text);
             }
 
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlVehicle["source"].InnerText);
-			string strPage = objXmlVehicle["page"].InnerText;
+			string strBook = _objCharacter.Options.LanguageBookShort(objXmlVehicle["source"]?.InnerText);
+			string strPage = objXmlVehicle["page"]?.InnerText;
 			if (objXmlVehicle["altpage"] != null)
 				strPage = objXmlVehicle["altpage"].InnerText;
 			lblSource.Text = strBook + " " + strPage;
 
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 		}
 
 		/// <summary>
@@ -438,12 +434,14 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			XmlNode objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + lstVehicle.SelectedValue + "\"]");
+		    if (objXmlVehicle == null)
+		        return;
 
 			if (chkUsedVehicle.Checked)
 			{
-				double dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.Instance.CultureInfo);
-				int intCost = Convert.ToInt32(objXmlVehicle["cost"].InnerText);
-				intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * dblCostModifier));
+				double dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.CultureInfo);
+				int intCost = Convert.ToInt32(objXmlVehicle["cost"]?.InnerText);
+				intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * dblCostModifier));
 
 				_blnUsedVehicle = true;
 				_strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), "F");
@@ -451,8 +449,8 @@ namespace Chummer
 			}
 
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-			_strSelectCategory = objXmlVehicle["category"].InnerText;
-			_strSelectedVehicle = objXmlVehicle["name"].InnerText;
+			_strSelectCategory = objXmlVehicle["category"]?.InnerText;
+			_strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 
 			DialogResult = DialogResult.OK;
@@ -503,8 +501,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

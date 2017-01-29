@@ -27,9 +27,9 @@ namespace Chummer
 		public frmAbout()
 		{
 			InitializeComponent();
-			Text = String.Format("About {0}", AssemblyTitle);
+			Text = $@"About {AssemblyTitle}";
 			labelProductName.Text = AssemblyProduct;
-			labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+			labelVersion.Text = $@"Version {AssemblyVersion}";
 			labelCopyright.Text = AssemblyCopyright;
 			labelCompanyName.Text = AssemblyCompany;
 			textBoxDescription.Text = AssemblyDescription;
@@ -133,8 +133,7 @@ namespace Chummer
 			if (e.Control && e.KeyCode == Keys.A)
 			{
 				e.SuppressKeyPress = true;
-				if (sender != null)
-					((TextBox)sender).SelectAll();
+			    (sender as TextBox)?.SelectAll();
 			}
 		}
 

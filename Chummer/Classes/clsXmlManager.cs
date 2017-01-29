@@ -81,7 +81,7 @@ namespace Chummer
 				}
 			}
 		}
-		static readonly XmlManager _objInstance = new XmlManager();
+		private static readonly XmlManager _objInstance = new XmlManager();
 		private static readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
 
 		#region Constructor and Instance
@@ -138,7 +138,6 @@ namespace Chummer
 			// Create a new document that everything will be merged into.
 			XmlDocument objDoc;
 			XmlDocument objXmlFile = new XmlDocument();
-			XmlNodeList objList;
 
 			if (blnLoadFile)
 			{
@@ -148,8 +147,7 @@ namespace Chummer
                 objDoc.AppendChild(objCont);
                 // Load the base file and retrieve all of the child nodes.
                 objXmlFile.Load(strPath);
-				objList = objXmlFile.SelectNodes("/chummer/*");
-				foreach (XmlNode objNode in objList)
+				foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
 				{
 					// Append the entire child node to the new document.
 					objDoc.DocumentElement.AppendChild(objDoc.ImportNode(objNode, true));
@@ -162,8 +160,7 @@ namespace Chummer
 					foreach (string strFile in Directory.GetFiles(strPath, "override*_" + strFileName))
 					{
 						objXmlFile.Load(strFile);
-						objList = objXmlFile.SelectNodes("/chummer/*");
-						foreach (XmlNode objNode in objList)
+						foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
 						{
 							foreach (XmlNode objType in objNode.ChildNodes)
 							{
@@ -187,8 +184,7 @@ namespace Chummer
                     foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
                     {
                         objXmlFile.Load(strFile);
-                        objList = objXmlFile.SelectNodes("/chummer/*");
-                        foreach (XmlNode objNode in objList)
+                        foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                         {
                             // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
                             List<XmlNode> lstDelete = new List<XmlNode>();
@@ -218,8 +214,7 @@ namespace Chummer
                             }
 
                             // Append the entire child node to the new document.
-                            XmlNode objImported = objDoc.ImportNode(objNode, true);
-                            objDoc.DocumentElement.AppendChild(objImported);
+                            objDoc.DocumentElement?.AppendChild(objDoc.ImportNode(objNode, true));
                         }
                     }
                 }
@@ -268,7 +263,7 @@ namespace Chummer
 											if (objChild.Attributes?["translate"] != null)
 											{
 												// Handle Category name translations.
-												(objItem as XmlElement).SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
+												(objItem as XmlElement)?.SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
 											}
 
 											// Check for Skill Specialization information.
@@ -280,11 +275,8 @@ namespace Chummer
                                                     {
                                                         if (objSpec.Attributes?["translate"] != null)
                                                         {
-                                                            XmlNode objSpecItem = objItem.SelectSingleNode("specs/spec[. = \"" + objSpec.InnerXml + "\"]");
-                                                            if (objSpecItem != null)
-                                                            {
-                                                                (objSpecItem as XmlElement).SetAttribute("translate", objSpec.Attributes["translate"].InnerXml);
-                                                            }
+                                                            XmlElement objSpecItem = objItem.SelectSingleNode("specs/spec[. = \"" + objSpec.InnerXml + "\"]") as XmlElement;
+                                                            objSpecItem?.SetAttribute("translate", objSpec.Attributes["translate"].InnerXml);
                                                         }
                                                     }
                                                 }
@@ -296,7 +288,7 @@ namespace Chummer
                                                 {
                                                     foreach (XmlNode objMetavariant in objChild.SelectNodes("metavariants/metavariant"))
                                                     {
-                                                        if (objMetavariant["name"] != null)
+                                                        if (objMetavariant["name"] != null && objChild["name"] != null)
                                                         {
                                                             XmlNode objMetavariantItem =
                                                                 objDoc.SelectSingleNode(
@@ -334,8 +326,8 @@ namespace Chummer
                                                     {
                                                         if (objAdvantage.Attributes?["translate"] != null)
                                                         {
-                                                            XmlNode objAdvantageItem = objItem.SelectSingleNode("techniques/technique[. = \"" + objAdvantage.InnerXml + "\"]");
-                                                            (objAdvantageItem as XmlElement)?.SetAttribute("translate", objAdvantage.Attributes["translate"].InnerXml);
+                                                            XmlElement objAdvantageItem = objItem.SelectSingleNode("techniques/technique[. = \"" + objAdvantage.InnerXml + "\"]") as XmlElement;
+                                                            objAdvantageItem?.SetAttribute("translate", objAdvantage.Attributes["translate"].InnerXml);
                                                         }
                                                     }
                                                 }
@@ -360,10 +352,10 @@ namespace Chummer
 									}
 									else if (objChild.Attributes?["translate"] != null)
 									{
-										// Handle Category name translations.
-										XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]");
-										// Expected result is null if not found.
-										(objItem as XmlElement)?.SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
+                                        // Handle Category name translations.
+                                        XmlElement objItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]") as XmlElement;
+                                        // Expected result is null if not found.
+                                        objItem?.SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
 									}
 								}
 							}
@@ -391,7 +383,7 @@ namespace Chummer
 			}
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-            if (GlobalOptions.Instance.LiveCustomData && strFileName != "improvements.xml")
+            if (GlobalOptions.Instance.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
 			{
 				strPath = Path.Combine(Application.StartupPath, "customdata");
 			    if (Directory.Exists(strPath))
@@ -399,8 +391,7 @@ namespace Chummer
 			        foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
 			        {
 			            objXmlFile.Load(strFile);
-			            objList = objXmlFile.SelectNodes("/chummer/*");
-			            foreach (XmlNode objNode in objList)
+			            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
 			            {
 			                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
 			                List<XmlNode> lstDelete = new List<XmlNode>();
@@ -429,8 +420,7 @@ namespace Chummer
 			                }
 
 			                // Append the entire child node to the new document.
-			                XmlNode objImported = objDoc.ImportNode(objNode, true);
-			                objDoc.DocumentElement.AppendChild(objImported);
+			                objDoc.DocumentElement?.AppendChild(objDoc.ImportNode(objNode, true));
 			            }
 			        }
 			    }

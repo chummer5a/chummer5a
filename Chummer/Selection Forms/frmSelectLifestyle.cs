@@ -391,8 +391,8 @@ namespace Chummer
 
 				// Check for modifiers in the improvements
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-				decimal decModifier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
-				decMod += Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
+				decimal decModifier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.CultureInfo);
+				decMod += Convert.ToDecimal(decModifier / 100, GlobalOptions.CultureInfo);
 			}
 
 			intNuyen = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
@@ -454,8 +454,7 @@ namespace Chummer
 
 		private void lblSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-			objCommon.OpenPDF(lblSource.Text);
-		}
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+        }
 	}
 }

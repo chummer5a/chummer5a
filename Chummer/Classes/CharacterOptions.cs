@@ -836,14 +836,15 @@ namespace Chummer
 			_lstBooks.Clear();
 			foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/settings/books/book"))
 				_lstBooks.Add(objXmlBook.InnerText);
+            RecalculateBookXPath();
 
-			// Load default build settings.
-			objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
+            // Load default build settings.
+            objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
 			objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
 			objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
 			objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
 
-			return true;
+            return true;
 		}
         #endregion
 
@@ -985,11 +986,12 @@ namespace Chummer
 			foreach (string strBookCode in strBooks)
 			{
 				XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-				if (objXmlBook != null && objXmlBook["code"] != null)
+				if (objXmlBook?["code"] != null)
 				{
 					_lstBooks.Add(objXmlBook["code"].InnerText);
 				}
 			}
+            RecalculateBookXPath();
 
             // Delete the Registry keys ones the values have been retrieve since they will no longer be used.
             _objBaseChummerKey.DeleteValue("books");
@@ -1001,11 +1003,15 @@ namespace Chummer
 		/// <param name="strCode">Book code to convert.</param>
 		public string BookFromCode(string strCode)
 		{
-            if (string.IsNullOrWhiteSpace(strCode))
-                return string.Empty;
-			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			return objXmlBook?["name"]?.InnerText ?? string.Empty;
-		}
+		    if (!string.IsNullOrWhiteSpace(strCode))
+		    {
+		        XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["name"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+            }
+            return string.Empty;
+        }
 
 		/// <summary>
 		/// Book code (using the translated version if applicable).
@@ -1016,11 +1022,13 @@ namespace Chummer
 			if (!string.IsNullOrWhiteSpace(strCode))
             {
                 XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                if (objXmlBook != null && objXmlBook["altcode"] != null)
-                    return objXmlBook["altcode"].InnerText;
+                string strReturn = objXmlBook?["altcode"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+                return strCode;
             }
-		    return strCode;
-		}
+            return string.Empty;
+        }
 
 		/// <summary>
 		/// Determine the book's original code by using the alternate code.
@@ -1031,11 +1039,12 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strCode))
             {
                 XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
-                if (objXmlBook != null && objXmlBook["code"] != null)
-                    return objXmlBook["code"].InnerText;
+                string strReturn = objXmlBook?["code"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
             }
-            return strCode;
-		}
+            return string.Empty;
+        }
 
 		/// <summary>
 		/// Book name (using the translated version if applicable).
@@ -1048,13 +1057,15 @@ namespace Chummer
                 XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (objXmlBook != null)
                 {
-                    if (objXmlBook["translate"] != null)
-                        return objXmlBook["translate"].InnerText;
-                    else if (objXmlBook["name"] != null)
-                        return objXmlBook["name"].InnerText;
+                    string strReturn = objXmlBook["translate"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
+                    strReturn = objXmlBook["name"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
                 }
             }
-            return strCode;
+            return string.Empty;
 		}
 
 		/// <summary>
@@ -1063,16 +1074,14 @@ namespace Chummer
 		/// <param name="strCode">Book code to search for.</param>
 		public bool BookEnabled(string strCode)
 		{
-			bool blnReturn = false;
 			foreach (string strBook in _lstBooks)
 			{
 				if (strBook == strCode)
 				{
-					blnReturn = true;
-					break;
+				    return true;
 				}
 			}
-			return blnReturn;
+			return false;
 		}
 
 		/// <summary>
@@ -1080,17 +1089,9 @@ namespace Chummer
 		/// </summary>
 		public string BookXPath()
 		{
-		    if (string.IsNullOrEmpty(_strBookXPath))
+            string strPath = _strBookXPath;
+            if (!string.IsNullOrEmpty(_strBookXPath))
 		    {
-                string strPath = "(";
-
-                foreach (string strBook in _lstBooks)
-                {
-                    if (!string.IsNullOrEmpty(strBook))
-                        strPath += "source = \"" + strBook + "\" or ";
-                }
-                strPath = strPath.Substring(0, strPath.Length - 4) + ")";
-
                 if (GlobalOptions.Instance.MissionsOnly)
                 {
                     strPath += " and not(nomission)";
@@ -1100,20 +1101,47 @@ namespace Chummer
                 {
                     strPath += " and not(optionaldrone)";
                 }
-                _strBookXPath = strPath;
             }
-			return _strBookXPath;
+            else
+            {
+                if (GlobalOptions.Instance.MissionsOnly)
+                {
+                    strPath += "not(nomission)";
+                    if (!GlobalOptions.Instance.Dronemods)
+                    {
+                        strPath += " and not(optionaldrone)";
+                    }
+                }
+                else if (!GlobalOptions.Instance.Dronemods)
+                {
+                    strPath += "not(optionaldrone)";
+                }
+            }
+			return strPath;
 		}
 
-		public List<string> BookLinq()
-		{
-			return _lstBooks;
-		}
-
-		/// <summary>
-		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// <summary>
+		/// XPath query used to filter items based on the user's selected source books.
 		/// </summary>
-		public bool PrintSkillsWithZeroRating
+		public void RecalculateBookXPath()
+        {
+            _strBookXPath = "(";
+
+            foreach (string strBook in _lstBooks)
+            {
+                if (!string.IsNullOrWhiteSpace(strBook))
+                    _strBookXPath += "source = \"" + strBook + "\" or ";
+            }
+            if (_strBookXPath.Length >= 4)
+                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+            else
+                _strBookXPath = string.Empty;
+        }
+
+        /// <summary>
+        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// </summary>
+        public bool PrintSkillsWithZeroRating
 		{
 			get
 			{

@@ -967,7 +967,7 @@ namespace Chummer.Backend.Equipment
 					intTotalCost = Convert.ToInt32(_strCost);
 				}
 				if (DiscountCost)
-					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.CultureInfo) * 0.9);
 
 				// Go through all of the Mods for this piece of Armor and add the Cost value.
 				foreach (ArmorMod objMod in _lstArmorMods)
@@ -1008,7 +1008,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				if (DiscountCost)
-					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.CultureInfo) * 0.9);
 
 				return intTotalCost;
 			}
@@ -1197,7 +1197,7 @@ namespace Chummer.Backend.Equipment
 					// This is only calculated if the Maximum Armor Modification rule is enabled.
 					if (_objCharacter.Options.MaximumArmorModifications)
 					{
-						int intA = (3 * Convert.ToInt32(_strA, GlobalOptions.Instance.CultureInfo) + 1) / 2;
+						int intA = (3 * Convert.ToInt32(_strA, GlobalOptions.CultureInfo) + 1) / 2;
 						strReturn = Math.Max(intA, 6).ToString();
 					}
 					else
@@ -1230,7 +1230,7 @@ namespace Chummer.Backend.Equipment
 						XPathExpression xprCapacity = nav.Compile(strCapacity);
 
 						strCapacity = nav.Evaluate(xprCapacity).ToString();
-						strCapacity = Math.Ceiling(Convert.ToDouble(strCapacity) + Convert.ToDouble(strReturn)).ToString(CultureInfo.CurrentCulture);
+						strCapacity = Math.Ceiling(Convert.ToDouble(strCapacity) + Convert.ToDouble(strReturn)).ToString(GlobalOptions.CultureInfo);
 						strReturn = strCapacity;
 					}
 				}

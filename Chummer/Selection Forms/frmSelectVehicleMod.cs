@@ -186,47 +186,38 @@ namespace Chummer
                     XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
-                    HashSet<String> objForbiddenAccessory = new HashSet<String>();
+                    HashSet<string> objForbiddenAccessory = new HashSet<string>();
                     foreach (XmlNode node in objXmlForbiddenList)
                     {
                         objForbiddenAccessory.Add(node.InnerText);
                     }
 
-                    foreach (VehicleMod objAccessory in _lstMods.Where(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                    if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
                     {
-                        goto NextItem;
+                        continue;
                     }
                 }
 
                 if (objXmlMod["required"]?["oneof"] != null)
                 {
-                    bool boolCanAdd = false;
                     XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
-                    HashSet<String> objRequiredAccessory = new HashSet<String>();
+                    HashSet<string> objRequiredAccessory = new HashSet<string>();
                     foreach (XmlNode node in objXmlRequiredList)
                     {
                         objRequiredAccessory.Add(node.InnerText);
                     }
 
-                    foreach (VehicleMod objAccessory in _lstMods.Where(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                    if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
                     {
-                        boolCanAdd = true;
-                        break;
-                    }
-                    if (!boolCanAdd)
                         continue;
+                    }
                 }
 
-                ListItem objItem = new ListItem();
-					objItem.Value = objXmlMod["name"].InnerText;
-					if (objXmlMod["translate"] != null)
-						objItem.Name = objXmlMod["translate"].InnerText;
-					else
-						objItem.Name = objXmlMod["name"].InnerText;
-					lstMods.Add(objItem);
-            NextItem:;
+			    ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
+			    objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
+				lstMods.Add(objItem);
 			}
             lstMod.BeginUpdate();
             lstMod.DataSource = null;
@@ -574,7 +565,7 @@ namespace Chummer
                         XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
                         //Add to set for O(N log M) runtime instead of O(N * M)
 
-                        HashSet<String> objForbiddenAccessory = new HashSet<String>();
+                        HashSet<string> objForbiddenAccessory = new HashSet<string>();
                         foreach (XmlNode node in objXmlForbiddenList)
                         {
                             objForbiddenAccessory.Add(node.InnerText);
@@ -592,7 +583,7 @@ namespace Chummer
                         XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
                         //Add to set for O(N log M) runtime instead of O(N * M)
 
-                        HashSet<String> objRequiredAccessory = new HashSet<String>();
+                        HashSet<string> objRequiredAccessory = new HashSet<string>();
                         foreach (XmlNode node in objXmlRequiredList)
                         {
                             objRequiredAccessory.Add(node.InnerText);
@@ -716,10 +707,10 @@ namespace Chummer
 					if (intMax == 0)
 					{
 						intMax = 1000000;
-						lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+						lblCost.Text = string.Format("{0:###,###,##0¥+}", intMin);
 					}
 					else
-						lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+						lblCost.Text = string.Format("{0:###,###,##0}", intMin) + "-" + string.Format("{0:###,###,##0¥}", intMax);
 
 					intItemCost = intMin;
 				}
@@ -748,12 +739,12 @@ namespace Chummer
                     }
 
 					XPathExpression xprCost = nav.Compile(strCost);
-					int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
 					intCost *= _intModMultiplier;
 
 					// Apply any markup.
-					double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-					dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+					double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+					dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 					
 					if (chkBlackMarketDiscount.Checked)
 					{
@@ -761,7 +752,7 @@ namespace Chummer
 					}
 
 					intCost = Convert.ToInt32(dblCost);
-					lblCost.Text = String.Format("{0:###,###,##0¥}", intCost);
+					lblCost.Text = string.Format("{0:###,###,##0¥}", intCost);
 
 					intItemCost = intCost;
 				}
@@ -959,8 +950,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

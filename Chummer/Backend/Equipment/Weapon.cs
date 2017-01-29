@@ -177,7 +177,7 @@ namespace Chummer.Backend.Equipment
 			{
 				_strRange = objXmlWeapon["range"].InnerText;
 				if (objXmlWeapon["range"].Attributes["multiply"] != null)
-					_dblRangeMultiplier = Convert.ToDouble(objXmlWeapon["range"].Attributes["multiply"].InnerText, GlobalOptions.Instance.CultureInfo);
+					_dblRangeMultiplier = Convert.ToDouble(objXmlWeapon["range"].Attributes["multiply"].InnerText, GlobalOptions.CultureInfo);
 			}
 
             objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
@@ -316,7 +316,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("cost", _intCost.ToString());
 			objWriter.WriteElementString("useskill", _strUseSkill);
 			objWriter.WriteElementString("range", _strRange);
-			objWriter.WriteElementString("rangemultiply", _dblRangeMultiplier.ToString(GlobalOptions.Instance.CultureInfo));
+			objWriter.WriteElementString("rangemultiply", _dblRangeMultiplier.ToString(GlobalOptions.CultureInfo));
 			objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
 			objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
 			objWriter.WriteElementString("source", _strSource);
@@ -1425,7 +1425,6 @@ namespace Chummer.Backend.Equipment
 			}
 			strDamage += " + " + intImprove.ToString();
 
-			CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
 			CharacterOptions objOptions = _objCharacter.Options;
 			int intBonus = 0;
 			if (objOptions.MoreLethalGameplay)
@@ -1498,7 +1497,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     xprDamage = nav.Compile(strDamage);
-                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.Instance.CultureInfo) + intBonus);
+                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.CultureInfo) + intBonus);
                 }
                 catch (XPathException) { }
 				if (_strName == "Unarmed Attack (Smashing Blow)")
@@ -1541,7 +1540,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     xprDamage = nav.Compile(strDamage);
-                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.Instance.CultureInfo) + intBonus);
+                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.CultureInfo) + intBonus);
                 }
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
@@ -1907,7 +1906,7 @@ namespace Chummer.Backend.Equipment
 				int intCostMultiplier = 1;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
 
 				// Run through the Weapon Accessories and see if anything changes the cost multiplier (Vintage mod).
 				foreach (WeaponAccessory objAccessory in _lstAccessories)
@@ -1951,7 +1950,7 @@ namespace Chummer.Backend.Equipment
 				int intWeaponCostMultiplier = 1;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
 
 				// If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
 				if (_blnCyberware || _strCategory == "Gear")
@@ -2167,8 +2166,6 @@ namespace Chummer.Backend.Equipment
 					intRCModifier = intRCBase;
 					intRCBase = 0;
 				}
-
-				CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
 
 				// Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
 				if (!string.IsNullOrEmpty(AmmoLoaded) && AmmoLoaded != "00000000-0000-0000-0000-000000000000")
@@ -2571,7 +2568,7 @@ namespace Chummer.Backend.Equipment
 
 			XPathExpression xprRange = nav.Compile(strRange);
 
-			double dblReturn = Convert.ToDouble(nav.Evaluate(xprRange).ToString(), GlobalOptions.Instance.CultureInfo) * _dblRangeMultiplier;
+			double dblReturn = Convert.ToDouble(nav.Evaluate(xprRange).ToString(), GlobalOptions.CultureInfo) * _dblRangeMultiplier;
 			int intReturn = Convert.ToInt32(Math.Ceiling(dblReturn));
 
 			return intReturn;

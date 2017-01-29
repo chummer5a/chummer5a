@@ -48,7 +48,7 @@ namespace Chummer
 				lblDescription.Text = LanguageManager.Instance.GetString("Omae_NoDescription");
 			else
 				lblDescription.Text = objNode["description"].InnerText;
-			DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.Instance.CultureInfo);
+			DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.CultureInfo);
 			lblDate.Text = LanguageManager.Instance.GetString("Omae_UpdatedDate") + " " + datDate.ToShortDateString();
 			lblCount.Text = LanguageManager.Instance.GetString("Omae_DownloadCount").Replace("{0}", objNode["count"].InnerText);
 
