@@ -656,22 +656,30 @@ namespace Chummer
 			if (objGear.WeaponID != Guid.Empty.ToString())
 			{
 				// Remove the Weapon from the TreeView.
-				TreeNode objRemoveNode = new TreeNode();
+				TreeNode objRemoveNode = null;
 				foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
 				{
-					if (objWeaponNode.Tag.ToString() == objGear.WeaponID)
-						objRemoveNode = objWeaponNode;
+				    if (objWeaponNode.Tag.ToString() == objGear.WeaponID)
+				    {
+				        objRemoveNode = objWeaponNode;
+				        break;
+				    }
 				}
-				treWeapons.Nodes.Remove(objRemoveNode);
+                if (objRemoveNode != null)
+				    treWeapons.Nodes.Remove(objRemoveNode);
 
 				// Remove the Weapon from the Character.
-				Weapon objRemoveWeapon = new Weapon(_objCharacter);
+				Weapon objRemoveWeapon = null;
 				foreach (Weapon objWeapon in _objCharacter.Weapons)
 				{
-					if (objWeapon.InternalId == objGear.WeaponID)
-						objRemoveWeapon = objWeapon;
+				    if (objWeapon.InternalId == objGear.WeaponID)
+				    {
+				        objRemoveWeapon = objWeapon;
+				        break;
+				    }
 				}
-				_objCharacter.Weapons.Remove(objRemoveWeapon);
+                if (objRemoveWeapon != null)
+				    _objCharacter.Weapons.Remove(objRemoveWeapon);
 			}
 
 			objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
@@ -697,9 +705,8 @@ namespace Chummer
 					_objCharacter.Foci.Remove(objFocus);
 				}
 			}
-
 			// If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
-			if (objGear.Category == "Stacked Focus")
+			else if (objGear.Category == "Stacked Focus")
 			{
 				foreach (StackedFocus objStack in _objCharacter.StackedFoci)
 				{
@@ -734,19 +741,26 @@ namespace Chummer
 				{
 					foreach (TreeNode objWeaponNode in objVehicleNode.Nodes)
 					{
-						if (objWeaponNode.Tag.ToString() == objGear.WeaponID)
-							objRemoveNode = objWeaponNode;
+					    if (objWeaponNode.Tag.ToString() == objGear.WeaponID)
+					    {
+					        objRemoveNode = objWeaponNode;
+					        break;
+					    }
 					}
 					objVehicleNode.Nodes.Remove(objRemoveNode);
 				}
 				// Remove the Weapon from the Vehicle.
-				Weapon objRemoveWeapon = new Weapon(_objCharacter);
+				Weapon objRemoveWeapon = null;
 				foreach (Weapon objWeapon in objVehicle.Weapons)
 				{
-					if (objWeapon.InternalId == objGear.WeaponID)
-						objRemoveWeapon = objWeapon;
+				    if (objWeapon.InternalId == objGear.WeaponID)
+				    {
+				        objRemoveWeapon = objWeapon;
+				        break;
+				    }
 				}
-				objVehicle.Weapons.Remove(objRemoveWeapon);
+                if (objRemoveWeapon != null)
+				    objVehicle.Weapons.Remove(objRemoveWeapon);
 			}
 		}
 
@@ -765,7 +779,7 @@ namespace Chummer
 		    TreeNodeCollection objWeaponNodes = treWeapons.Nodes;
             if (objSelectedNode == null)
 		        return;
-		    else if (objSelectedNode.Level == 1)
+		    if (objSelectedNode.Level == 1)
 		    {
 		        Armor objArmor = FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), _objCharacter.Armor);
 		        if (objArmor == null)
@@ -823,7 +837,7 @@ namespace Chummer
 		            if (objMod.WeaponID != Guid.Empty.ToString())
 		            {
 		                // Remove the Weapon from the TreeView.
-		                TreeNode objRemoveNode = new TreeNode();
+		                TreeNode objRemoveNode = null;
 		                foreach (TreeNode objWeaponNode in objWeaponNodes)
 		                {
 		                    if (objWeaponNode.Tag.ToString() == objMod.WeaponID)
@@ -832,10 +846,11 @@ namespace Chummer
 		                        break;
 		                    }
 		                }
-                        objWeaponNodes.Remove(objRemoveNode);
+                        if (objRemoveNode != null)
+                            objWeaponNodes.Remove(objRemoveNode);
 
 		                // Remove the Weapon from the Character.
-		                Weapon objRemoveWeapon = new Weapon(_objCharacter);
+		                Weapon objRemoveWeapon = null;
 		                foreach (Weapon objWeapon in _objCharacter.Weapons)
 		                {
 		                    if (objWeapon.InternalId == objMod.WeaponID)
@@ -844,7 +859,8 @@ namespace Chummer
                                 break;
 		                    }
 		                }
-		                _objCharacter.Weapons.Remove(objRemoveWeapon);
+                        if (objRemoveWeapon != null)
+                            _objCharacter.Weapons.Remove(objRemoveWeapon);
 		            }
 
 		            // Remove any Improvements created by the ArmorMod.
@@ -1212,14 +1228,25 @@ namespace Chummer
 			objWeaponsNode.Nodes.Add(objNode);
 			objWeaponsNode.Expand();
 		}
-		#endregion
+        #endregion
 
-		#region PDF Functions
-		/// <summary>
-		/// Open a PDF file using the provided source information.
-		/// </summary>
-		/// <param name="strSource">Book coode and page number to open.</param>
-		public void OpenPDF(string strSource)
+        #region PDF Functions
+
+	    /// <summary>
+	    /// Open a PDF file using the provided source information.
+	    /// </summary>
+	    /// <param name="strSource">Book coode and page number to open.</param>
+	    public void OpenPDF(string strSource)
+	    {
+	        StaticOpenPDF(strSource, _objCharacter);
+	    }
+
+        /// <summary>
+        /// Static Function to open a PDF file using the provided source information.
+        /// </summary>
+        /// <param name="strSource">Book coode and page number to open.</param>
+        /// <param name="objCharacter">Character from which alternate sources should be fetched.</param>
+        public static void StaticOpenPDF(string strSource, Character objCharacter = null)
 		{
 			// The user must have specified the arguments of their PDF application in order to use this functionality.
 			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters))
@@ -1242,8 +1269,8 @@ namespace Chummer
 
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = strTemp[0];
-            if (_objCharacter != null)
-				strBook = _objCharacter.Options.BookFromAltCode(strBook);
+            if (objCharacter != null)
+				strBook = objCharacter.Options.BookFromAltCode(strBook);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             Uri uriPath = null;
@@ -1267,10 +1294,12 @@ namespace Chummer
 			strParams = strParams.Replace("{page}", intPage.ToString());
 			strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
 			strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
-			ProcessStartInfo objProgress = new ProcessStartInfo();
-			objProgress.FileName = GlobalOptions.Instance.PDFAppPath;
-			objProgress.Arguments = strParams;
-			Process.Start(objProgress);
+		    ProcessStartInfo objProgress = new ProcessStartInfo
+		    {
+		        FileName = GlobalOptions.Instance.PDFAppPath,
+		        Arguments = strParams
+		    };
+		    Process.Start(objProgress);
 		}
 		#endregion
 

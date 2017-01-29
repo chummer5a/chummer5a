@@ -222,12 +222,12 @@ namespace Chummer
 	    {
 		    set
 		    {
-				_strLimitToCategories = String.Join(" or category = ",
-						  value.SelectNodes("category")
-								.Cast<XmlNode>()
-								.Select(n => "\"" + n.InnerText + "\""));
+		        IEnumerable<string> lstCategories = value?.SelectNodes("category")?
+		            .Cast<XmlNode>()
+		            .Select(n => "\"" + n.InnerText + "\"");
+                if (lstCategories != null)
+                    _strLimitToCategories = string.Join(" or category = ", lstCategories);
 			}
-		    
 	    }
 
 		/// <summary>

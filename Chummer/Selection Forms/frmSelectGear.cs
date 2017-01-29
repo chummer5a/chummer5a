@@ -864,7 +864,7 @@ namespace Chummer
 				}
 				lblAvail.Text = strPrefix + lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
-				double dblMultiplier = Convert.ToDouble(nudGearQty.Value / nudGearQty.Increment, GlobalOptions.Instance.CultureInfo);
+				double dblMultiplier = Convert.ToDouble(nudGearQty.Value / nudGearQty.Increment, GlobalOptions.CultureInfo);
 				if (chkDoItYourself.Checked)
 					dblMultiplier *= 0.5;
 
@@ -874,8 +874,8 @@ namespace Chummer
 					try
 					{
 						XPathExpression xprCost = nav.Compile(objXmlGear["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-						double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+						double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 					    if (chkBlackMarketDiscount.Checked)
 					        dblCost *= 0.9;
 						if (chkHacked.Checked)
@@ -932,8 +932,8 @@ namespace Chummer
 					{
 						XPathExpression xprCost = nav.Compile(objXmlGear["cost3"].InnerText.Replace("Rating", nudRating.Value.ToString()));
 						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
 						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
@@ -943,8 +943,8 @@ namespace Chummer
 					{
 						XPathExpression xprCost = nav.Compile(objXmlGear["cost6"].InnerText.Replace("Rating", nudRating.Value.ToString()));
 						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
 						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
@@ -954,8 +954,8 @@ namespace Chummer
 					{
 						XPathExpression xprCost = nav.Compile(objXmlGear["cost10"].InnerText.Replace("Rating", nudRating.Value.ToString()));
 						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
 						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
@@ -1049,7 +1049,7 @@ namespace Chummer
                                     }
                                     if (strCalculatedCapacity.Contains('.'))
 									{
-										double dblCalculatedCapacity = Convert.ToDouble(strCalculatedCapacity, GlobalOptions.Instance.CultureInfo);
+										double dblCalculatedCapacity = Convert.ToDouble(strCalculatedCapacity, GlobalOptions.CultureInfo);
 										int intCalculatedCapacity = Convert.ToInt32(Math.Floor(dblCalculatedCapacity));
 										if (intCalculatedCapacity < 1)
 											intCalculatedCapacity = 1;
@@ -1194,8 +1194,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

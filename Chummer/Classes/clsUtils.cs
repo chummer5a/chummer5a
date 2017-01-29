@@ -37,17 +37,16 @@ namespace Chummer
 		public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords )
 		{
 			//parse to base math string
-			Regex regex = new Regex(String.Join("|", keywords.Keys));
-			number = regex.Replace(number, m => keywords[m.Value].ToString(System.Globalization.CultureInfo.InvariantCulture));
+			Regex regex = new Regex(string.Join("|", keywords.Keys));
+			number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.CultureInfo));
 
 			XmlDocument objXmlDocument = new XmlDocument();
 			XPathNavigator nav = objXmlDocument.CreateNavigator();
-            XPathExpression xprValue = null;
-            try
+		    try
             {
-                xprValue = nav.Compile(number);
+                XPathExpression xprValue = nav.Compile(number);
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                if (float.TryParse(nav.Evaluate(xprValue).ToString(), out parsed))
+                if (float.TryParse(nav.Evaluate(xprValue)?.ToString(), out parsed))
                 {
                     return true;
                 }

@@ -426,9 +426,8 @@ namespace Chummer
 
 		private void lblSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-			objCommon.OpenPDF(lblSource.Text);
-		}
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+        }
 
 		private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
 		{
@@ -455,9 +454,8 @@ namespace Chummer
 
 		private void lblQualitySource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-			objCommon.OpenPDF(lblQualitySource.Text);
-		}
+            CommonFunctions.StaticOpenPDF(lblQualitySource.Text, _objCharacter);
+        }
 		#endregion
 
 		#region Properties
@@ -728,7 +726,7 @@ namespace Chummer
                 intNuyen += intBaseNuyen;
             }
             intNuyen += intExtraCostAssets + Convert.ToInt32(intExtraCostAssets * (intMultiplier / 100.0));
-            intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
+            intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.CultureInfo));
             intNuyen = Convert.ToInt32((intNuyen + Convert.ToInt32(nudRoommates.Value)) / (Convert.ToInt32(nudRoommates.Value) + 1));
             intNuyen += intExtraCostServicesOutings + Convert.ToInt32(intExtraCostServicesOutings * (intMultiplier / 100.0)); ;
             intNuyen += intExtraCostContracts;

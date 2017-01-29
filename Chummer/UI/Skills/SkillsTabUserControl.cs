@@ -501,7 +501,7 @@ namespace Chummer.UI.Skills
 		{
 			if (_searchMode)
 			{
-				_skills.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+				_skills.Filter(skill => GlobalOptions.CultureInfo.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
 			}
 		}
 
@@ -536,7 +536,7 @@ namespace Chummer.UI.Skills
 		{
 			if (_searchMode)
 			{
-				_knoSkills.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.WriteableName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+				_knoSkills.Filter(skill => GlobalOptions.CultureInfo.CompareInfo.IndexOf(skill.WriteableName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
 			}
 		}
 	}

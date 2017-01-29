@@ -366,7 +366,7 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.Instance.CultureInfo);
+			_datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.CultureInfo);
             objNode.TryGetInt32FieldQuickly("amount", ref _intAmount);
             objNode.TryGetStringFieldQuickly("reason", ref _strReason);
             if (objNode["type"] != null)

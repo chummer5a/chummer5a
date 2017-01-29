@@ -3744,27 +3744,6 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
-		private void nudResponse_ValueChanged(object sender, EventArgs e)
-		{
-			_objCharacter.Response = Convert.ToInt32(nudResponse.Value);
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void nudSignal_ValueChanged(object sender, EventArgs e)
-		{
-			_objCharacter.Signal = Convert.ToInt32(nudSignal.Value);
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-
-
-
 		private void UpdateSpellDefence()
 		{
 			// Update the Spell Defence labels.
@@ -5101,8 +5080,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickArmor.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickArmor.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickArmor.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -5255,8 +5234,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickWeapon.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -5625,8 +5604,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickVehicle.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickVehicle.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickVehicle.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -5744,7 +5723,7 @@ namespace Chummer
 						int intVehicleCost = Convert.ToInt32(objFoundVehicle.Cost);
 						
 						// Make sure the character has enough Nuyen for the expense.
-						int intCost = Convert.ToInt32(Convert.ToDouble(intVehicleCost, GlobalOptions.Instance.CultureInfo) * (Convert.ToDouble(intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0), GlobalOptions.Instance.CultureInfo);
+						int intCost = Convert.ToInt32(Convert.ToDouble(intVehicleCost, GlobalOptions.CultureInfo) * (Convert.ToDouble(intPercentage, GlobalOptions.CultureInfo) / 100.0), GlobalOptions.CultureInfo);
 						if (intCost > _objCharacter.Nuyen)
 						{
 							MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6357,7 +6336,7 @@ namespace Chummer
                     dblMultiplier -= 0.1;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
@@ -6433,7 +6412,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -6454,7 +6433,7 @@ namespace Chummer
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
@@ -6504,7 +6483,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -8773,7 +8752,7 @@ namespace Chummer
 		private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
 		{
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponAccessory"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -8889,8 +8868,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickWeaponAccessory.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickWeaponAccessory.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickWeaponAccessory.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -9006,8 +8985,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickArmorMod.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickArmorMod.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickArmorMod.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -9301,8 +9280,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickWeapon.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -9433,8 +9412,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickWeaponAccessory.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickWeaponAccessory.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickWeaponAccessory.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -9520,8 +9499,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickWeapon.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -9694,7 +9673,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -9899,7 +9878,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -10599,7 +10578,7 @@ namespace Chummer
 							return;
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(objCyberware.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(objCyberware.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						string strEntry = string.Empty;
 						if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
@@ -10684,7 +10663,7 @@ namespace Chummer
 							return;
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(objGear.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(objGear.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						string strEntry = LanguageManager.Instance.GetString("String_ExpenseSoldCyberwareGear");
 						objExpense.Create(intAmount, strEntry + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
@@ -10726,7 +10705,7 @@ namespace Chummer
 						return;
 
 					// Create the Expense Log Entry for the sale.
-					int intAmount = Convert.ToInt32(Convert.ToDouble(objArmor.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+					int intAmount = Convert.ToInt32(Convert.ToDouble(objArmor.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 					ExpenseLogEntry objExpense = new ExpenseLogEntry();
 					objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 					_objCharacter.ExpenseEntries.Add(objExpense);
@@ -10812,7 +10791,7 @@ namespace Chummer
 						treArmor.SelectedNode.Remove();
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objMod.Parent.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objMod.Parent.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -10839,7 +10818,7 @@ namespace Chummer
 						treArmor.SelectedNode.Remove();
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objArmor.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objArmor.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -10872,7 +10851,7 @@ namespace Chummer
 					treArmor.SelectedNode.Remove();
 
 					// Create the Expense Log Entry for the sale.
-					int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objArmor.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+					int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objArmor.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 					ExpenseLogEntry objExpense = new ExpenseLogEntry();
 					objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 					_objCharacter.ExpenseEntries.Add(objExpense);
@@ -10930,7 +10909,7 @@ namespace Chummer
 						return;
 
 					// Create the Expense Log Entry for the sale.
-					int intAmount = Convert.ToInt32(Convert.ToDouble(objWeapon.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+					int intAmount = Convert.ToInt32(Convert.ToDouble(objWeapon.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 					ExpenseLogEntry objExpense = new ExpenseLogEntry();
 					objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 					_objCharacter.ExpenseEntries.Add(objExpense);
@@ -10977,7 +10956,7 @@ namespace Chummer
 						objWeapon.WeaponAccessories.Remove(objAccessory);
 						treWeapons.SelectedNode.Remove();
 
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objWeapon.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objWeapon.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11000,7 +10979,7 @@ namespace Chummer
 							objGear.Parent.Children.Remove(objGear);
 						treWeapons.SelectedNode.Remove();
 
-						int intAmount = Convert.ToInt32(Convert.ToDouble(objGear.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(objGear.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11050,7 +11029,7 @@ namespace Chummer
 						return;
 
 					// Create the Expense Log Entry for the sale.
-					int intAmount = Convert.ToInt32(Convert.ToDouble(objGear.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+					int intAmount = Convert.ToInt32(Convert.ToDouble(objGear.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 					ExpenseLogEntry objExpense = new ExpenseLogEntry();
 					objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 					_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11098,7 +11077,7 @@ namespace Chummer
 						return;
 
 					// Create the Expense Log Entry for the sale.
-					int intAmount = Convert.ToInt32(Convert.ToDouble(objVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+					int intAmount = Convert.ToInt32(Convert.ToDouble(objVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 					ExpenseLogEntry objExpense = new ExpenseLogEntry();
 					objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 					_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11146,7 +11125,7 @@ namespace Chummer
 									treVehicles.SelectedNode.Remove();
 
 									// Create the Expense Log Entry for the sale.
-									int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+									int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 									ExpenseLogEntry objExpense = new ExpenseLogEntry();
 									objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 									_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11200,7 +11179,7 @@ namespace Chummer
 								treVehicles.SelectedNode.Remove();
 
 								// Create the Expense Log Entry for the sale.
-								int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+								int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 								ExpenseLogEntry objExpense = new ExpenseLogEntry();
 								objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 								_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11248,7 +11227,7 @@ namespace Chummer
 									treVehicles.SelectedNode.Remove();
 
 									// Create the Expense Log Entry for the sale.
-									int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+									int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 									ExpenseLogEntry objExpense = new ExpenseLogEntry();
 									objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 									_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11279,7 +11258,7 @@ namespace Chummer
 						treVehicles.SelectedNode.Remove();
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11308,7 +11287,7 @@ namespace Chummer
 									treVehicles.SelectedNode.Remove();
 
 									// Create the Expense Log Entry for the sale.
-									int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+									int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 									ExpenseLogEntry objExpense = new ExpenseLogEntry();
 									objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleCyberware") + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 									_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11346,7 +11325,7 @@ namespace Chummer
 										treVehicles.SelectedNode.Remove();
 
 										// Create the Expense Log Entry for the sale.
-										int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+										int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 										ExpenseLogEntry objExpense = new ExpenseLogEntry();
 										objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 										_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11374,7 +11353,7 @@ namespace Chummer
 											treVehicles.SelectedNode.Remove();
 
 											// Create the Expense Log Entry for the sale.
-											int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+											int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 											ExpenseLogEntry objExpense = new ExpenseLogEntry();
 											objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeapon") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 											_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11408,7 +11387,7 @@ namespace Chummer
 						_objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11445,7 +11424,7 @@ namespace Chummer
 												treVehicles.SelectedNode.Remove();
 
 												// Create the Expense Log Entry for the sale.
-												int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+												int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 												ExpenseLogEntry objExpense = new ExpenseLogEntry();
 												objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 												_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11480,7 +11459,7 @@ namespace Chummer
 						_objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11509,7 +11488,7 @@ namespace Chummer
 						_objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
 
 						// Create the Expense Log Entry for the sale.
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
+						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objFoundVehicle.TotalCost, GlobalOptions.CultureInfo) * frmSell.SellPercent);
 						ExpenseLogEntry objExpense = new ExpenseLogEntry();
 						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 						_objCharacter.ExpenseEntries.Add(objExpense);
@@ -11728,8 +11707,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickWeapon.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickWeapon.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -12440,8 +12419,6 @@ namespace Chummer
 				return;
 			}
 
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
 			objItem = lstNuyen.SelectedItems[0];
 
@@ -12647,7 +12624,7 @@ namespace Chummer
 						else
 							_objCharacter.Gear.Remove(objGear);
 
-						objCommon.DeleteGear(objGear, treWeapons, _objImprovementManager);
+                        _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
 						TreeNode objNode = CommonFunctions.FindNode(objGear.InternalId, treGear);
 						objNode.Remove();
 					}
@@ -14113,8 +14090,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickCyberware.Markup != 0 && !frmPickCyberware.FreeCost)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickCyberware.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickCyberware.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -14611,7 +14588,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -14781,7 +14758,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -14917,7 +14894,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -15077,7 +15054,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -15320,7 +15297,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -15455,7 +15432,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
 			{
@@ -18374,7 +18351,7 @@ namespace Chummer
 				double dblMultiplier = 1.0;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
 
-				int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
 				if (intKarmaExpense > _objCharacter.Karma)
 				{
@@ -18424,7 +18401,7 @@ namespace Chummer
 					}
 				}
 
-				int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
 				string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
 				tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -18442,7 +18419,7 @@ namespace Chummer
 				double dblMultiplier = 1.0;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
 
-				int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
 				if (intKarmaExpense > _objCharacter.Karma)
 				{
@@ -18492,7 +18469,7 @@ namespace Chummer
 					}
 				}
 
-				int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
 				string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
 				tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -20063,79 +20040,66 @@ namespace Chummer
 		#region Sourcebook Label Events
 		private void lblMetatypeSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblMetatypeSource.Text);
 		}
 
 		private void lblQualitySource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblQualitySource.Text);
 		}
 
 		private void lblMartialArtSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblMartialArtSource.Text);
 		}
 
 		private void lblSpellSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblSpellSource.Text);
 		}
 
 		private void lblComplexFormSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblComplexFormSource.Text);
 		}
 
 		private void lblCritterPowerSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblCritterPowerSource.Text);
 		}
 
 		private void lblMetamagicSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblMetamagicSource.Text);
 		}
 
 		private void lblCyberwareSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblCyberwareSource.Text);
 		}
 
 		private void lblLifestyleSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblLifestyleSource.Text);
 		}
 
 		private void lblArmorSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblArmorSource.Text);
 		}
 
 		private void lblWeaponSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblWeaponSource.Text);
 		}
 
 		private void lblGearSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblGearSource.Text);
 		}
 
 		private void lblVehicleSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
 			_objFunctions.OpenPDF(lblVehicleSource.Text);
 		}
 		#endregion
@@ -20904,8 +20868,8 @@ namespace Chummer
 				// Initiative.
 				lblINI.Text = _objCharacter.Initiative;
                 string strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
-                if (_objCharacter.INI.AttributeModifiers > 0 || _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
-                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INI.AttributeModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
+                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
+                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
                 strInit += " + (" + _objCharacter.InitiativeDice.ToString() + "d6)";
                 tipTooltip.SetToolTip(lblINI, strInit);
 
@@ -22378,7 +22342,7 @@ namespace Chummer
 				foreach (Improvement objImprovement in _objCharacter.Improvements)
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 				}
 				frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
 			}
@@ -22389,7 +22353,7 @@ namespace Chummer
 				foreach (Improvement objImprovement in _objCharacter.Improvements)
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 				}
 				frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
 			}
@@ -22401,7 +22365,7 @@ namespace Chummer
 				foreach (Improvement objImprovement in _objCharacter.Improvements)
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-						dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+						dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 				}
 				frmPickCyberware.BasicBiowareESSMultiplier = dblBasicMultiplier;
 			}
@@ -22413,7 +22377,7 @@ namespace Chummer
 				foreach (Improvement objImprovement in _objCharacter.Improvements)
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 				}
 				frmPickCyberware.GenetechCostMultiplier = dblMultiplier;
 			}
@@ -22425,7 +22389,7 @@ namespace Chummer
 				foreach (Improvement objImprovement in _objCharacter.Improvements)
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+						dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
 				}
 				frmPickCyberware.TransgenicsBiowareCostMultiplier = dblMultiplier;
 			}
@@ -22730,7 +22694,7 @@ namespace Chummer
             
             // Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 
 			// Reduce the cost to 10% for Hacked programs.
 			if (frmPickGear.Hacked)
@@ -22802,8 +22766,8 @@ namespace Chummer
 			// Apply a markup if applicable.
 			if (frmPickGear.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickGear.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickGear.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -23051,14 +23015,14 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
 
 			// Apply a markup if applicable.
 			int intCost = objNewGear.TotalCost;
 			if (frmPickGear.Markup != 0)
 			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickGear.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickGear.Markup, GlobalOptions.CultureInfo) / 100.0);
 				intCost = Convert.ToInt32(dblCost);
 			}
 
@@ -23218,7 +23182,7 @@ namespace Chummer
                     return;
 
                 lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
-                lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo).ToString();
+                lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.CultureInfo).ToString();
                 string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
                 string strPage = objLifestyle.Page;
                 lblLifestyleSource.Text = strBook + " " + strPage;
@@ -24858,7 +24822,7 @@ namespace Chummer
 				if (chkInitiationSchooling.Checked)
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
-				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
@@ -24871,7 +24835,7 @@ namespace Chummer
 				if (chkInitiationSchooling.Checked)
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
-				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
@@ -24912,11 +24876,6 @@ namespace Chummer
 			tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
 			tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
 			tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
-			tipTooltip.SetToolTip(lblRatingLabel, LanguageManager.Instance.GetString("Tip_CommonAIRating"));
-			tipTooltip.SetToolTip(lblSystemLabel, LanguageManager.Instance.GetString("Tip_CommonAISystem"));
-			tipTooltip.SetToolTip(lblFirewallLabel, LanguageManager.Instance.GetString("Tip_CommonAIFirewall"));
-			tipTooltip.SetToolTip(lblResponseLabel, LanguageManager.Instance.GetString("Tip_CommonAIResponse"));
-			tipTooltip.SetToolTip(lblSignalLabel, LanguageManager.Instance.GetString("Tip_CommonAISignal"));
 			tipTooltip.SetToolTip(cmdBurnEdge, LanguageManager.Instance.GetString("Tip_CommonBurnEdge"));
 			// Spells Tab.
 			tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.Instance.GetString("Tip_DiceRoller"));
@@ -25134,17 +25093,6 @@ namespace Chummer
 			lblAlias.Left = Math.Max(288, cmdDeleteQuality.Left + cmdDeleteQuality.Width + 6);
 			txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
 			txtAlias.Width = lblMetatypeLabel.Left - txtAlias.Left - 6;
-
-			intWidth = Math.Max(lblRatingLabel.Width, lblSystemLabel.Width);
-			intWidth = Math.Max(intWidth, lblFirewallLabel.Width);
-			intWidth = Math.Max(intWidth, lblResponseLabel.Width);
-			intWidth = Math.Max(intWidth, lblSignalLabel.Width);
-
-			lblRating.Left = lblRatingLabel.Left + intWidth + 6;
-			lblSystem.Left = lblSystemLabel.Left + intWidth + 6;
-			lblFirewall.Left = lblFirewallLabel.Left + intWidth + 6;
-			nudResponse.Left = lblResponseLabel.Left + intWidth + 6;
-			nudSignal.Left = lblSignalLabel.Left + intWidth + 6;
 
 			// Skills tab.
 

@@ -61,7 +61,7 @@ namespace Chummer
 		{
 			get
 			{
-				return Convert.ToDouble(nudPercent.Value / 100, GlobalOptions.Instance.CultureInfo);
+				return Convert.ToDouble(nudPercent.Value / 100, GlobalOptions.CultureInfo);
 			}
 		}
 		#endregion

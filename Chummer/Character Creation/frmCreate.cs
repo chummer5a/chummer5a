@@ -3999,24 +3999,6 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-
-        private void nudResponse_ValueChanged(object sender, EventArgs e)
-        {
-            _objCharacter.Response = Convert.ToInt32(nudResponse.Value);
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-
-        private void nudSignal_ValueChanged(object sender, EventArgs e)
-        {
-            _objCharacter.Signal = Convert.ToInt32(nudSignal.Value);
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
         #endregion
 
         #region ContactControl Events
@@ -5792,7 +5774,7 @@ namespace Chummer
                         int intVehicleCost = Convert.ToInt32(objFoundVehicle.Cost);
 
                         // Make sure the character has enough Nuyen for the expense.
-                        int intCost = Convert.ToInt32(Convert.ToDouble(intVehicleCost, GlobalOptions.Instance.CultureInfo) * (Convert.ToDouble(intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0), GlobalOptions.Instance.CultureInfo);
+                        int intCost = Convert.ToInt32(Convert.ToDouble(intVehicleCost, GlobalOptions.CultureInfo) * (Convert.ToDouble(intPercentage, GlobalOptions.CultureInfo) / 100.0), GlobalOptions.CultureInfo);
                         VehicleMod objRetrofit = new VehicleMod(_objCharacter);
 
                         XmlDocument objVehiclesDoc = XmlManager.Instance.Load("vehicles.xml");
@@ -8355,7 +8337,7 @@ namespace Chummer
 
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
-                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -8519,7 +8501,7 @@ namespace Chummer
 
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
-                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10077,7 +10059,7 @@ namespace Chummer
 
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
-                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10209,7 +10191,7 @@ namespace Chummer
 
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
-                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10334,7 +10316,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10450,7 +10432,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10578,7 +10560,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10789,7 +10771,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -10900,7 +10882,7 @@ namespace Chummer
 
 			// Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
-                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -14823,8 +14805,8 @@ namespace Chummer
                 // Initiative.
                 lblINI.Text = _objCharacter.Initiative;
                 string strInit = string.Format("{0} ({1}) + {2} ({3})", LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.Value.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.Value.ToString());
-                if (_objCharacter.INI.AttributeModifiers > 0 || _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
-                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INI.AttributeModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
+                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
+                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
                 strInit += " + (" + _objCharacter.InitiativeDice.ToString() + "d6)";
                 tipTooltip.SetToolTip(lblINI, strInit);
 
@@ -15160,16 +15142,16 @@ namespace Chummer
                 // Enable and set the Rating values as needed.
                 if (objCyberware.Rating == 0)
                 {
-                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.Instance.CultureInfo);
+                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
                     nudCyberwareRating.Minimum = 0;
-                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.Instance.CultureInfo);
+                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
                     nudCyberwareRating.Enabled = false;
                 }
                 else
                 {
-                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.Instance.CultureInfo);
-                    nudCyberwareRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.Instance.CultureInfo);
-                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.Instance.CultureInfo);
+                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
                     nudCyberwareRating.Enabled = true;
                 }
 
@@ -16516,7 +16498,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
                 }
                 frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
             }
@@ -16527,7 +16509,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
                 }
                 frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
             }
@@ -16539,7 +16521,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                        dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+                        dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
                 }
                 frmPickCyberware.BasicBiowareESSMultiplier = dblBasicMultiplier;
             }
@@ -16551,7 +16533,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
                 }
                 frmPickCyberware.GenetechCostMultiplier = dblMultiplier;
             }
@@ -16563,7 +16545,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.Instance.CultureInfo) / 100));
+                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.CultureInfo) / 100));
                 }
                 frmPickCyberware.TransgenicsBiowareCostMultiplier = dblMultiplier;
             }
@@ -16797,7 +16779,7 @@ namespace Chummer
             objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
-                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
             {
@@ -16991,7 +16973,7 @@ namespace Chummer
 
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
-                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
+                objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.CultureInfo) * 0.5).ToString();
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
             {
@@ -17095,14 +17077,14 @@ namespace Chummer
 			if (objLifestyle == null)
 				return;
 
-			lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
-			nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo);
-			lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + String.Format("{0:###,###,##0Æ½", objLifestyle.Multiplier);
+			lblLifestyleCost.Text = string.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
+			nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.CultureInfo);
+			lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + string.Format("{0:###,###,##0¥", objLifestyle.Multiplier);
 			string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
 			string strPage = objLifestyle.Page;
 			lblLifestyleSource.Text = strBook + " " + strPage;
             tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
-            lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0Æ½", objLifestyle.TotalCost);
+            lblLifestyleTotalCost.Text = string.Format("= {0:###,###,##0¥", objLifestyle.TotalCost);
 
 			// Change the Cost/Month label.
 			if (objLifestyle.StyleType == LifestyleType.Safehouse)
@@ -19787,8 +19769,8 @@ namespace Chummer
                     objPowerControl.DeletePower += objPower_DeletePower;
 
                     objPowerControl.PowerName = objXmlPowerNode["name"].InnerText;
-                    objPowerControl.PointsPerLevel = Convert.ToDecimal(objXmlPowerNode["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-                    objPowerControl.AdeptWayDiscount = Convert.ToDecimal(objXmlPowerNode["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
+                    objPowerControl.PointsPerLevel = Convert.ToDecimal(objXmlPowerNode["points"].InnerText, GlobalOptions.CultureInfo);
+                    objPowerControl.AdeptWayDiscount = Convert.ToDecimal(objXmlPowerNode["adeptway"].InnerText, GlobalOptions.CultureInfo);
                     if (objXmlPowerNode["levels"].InnerText == "no")
                     {
                         objPowerControl.LevelEnabled = false;
@@ -20697,7 +20679,7 @@ namespace Chummer
 				if (chkInitiationSchooling.Checked)
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
-				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
@@ -20710,7 +20692,7 @@ namespace Chummer
 				if (chkInitiationSchooling.Checked)
 					dblMultiplier -= 0.1;
 				dblMultiplier = Math.Round(dblMultiplier, 2);
-				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * dblMultiplier));
 
                 strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
@@ -21092,11 +21074,6 @@ namespace Chummer
             tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
             tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
             tipTooltip.SetToolTip(lblNuyen, String.Format(LanguageManager.Instance.GetString("Tip_CommonNuyen"), _objCharacter.Options.KarmaNuyenPer));
-            tipTooltip.SetToolTip(lblRatingLabel, LanguageManager.Instance.GetString("Tip_CommonAIRating"));
-            tipTooltip.SetToolTip(lblSystemLabel, LanguageManager.Instance.GetString("Tip_CommonAISystem"));
-            tipTooltip.SetToolTip(lblFirewallLabel, LanguageManager.Instance.GetString("Tip_CommonAIFirewall"));
-            tipTooltip.SetToolTip(lblResponseLabel, LanguageManager.Instance.GetString("Tip_CommonAIResponse"));
-            tipTooltip.SetToolTip(lblSignalLabel, LanguageManager.Instance.GetString("Tip_CommonAISignal"));
             // Spells Tab.
             tipTooltip.SetToolTip(lblSelectedSpells, LanguageManager.Instance.GetString("Tip_SpellsSelectedSpells"));
             tipTooltip.SetToolTip(lblSpirits, LanguageManager.Instance.GetString("Tip_SpellsSpirits"));
@@ -21214,17 +21191,6 @@ namespace Chummer
             txtAlias.Width = lblMetatypeLabel.Left - txtAlias.Left - 6;
             nudNuyen.Left = lblNuyen.Left + lblNuyen.Width + 6;
             lblNuyenTotal.Left = nudNuyen.Left + nudNuyen.Width + 6;
-
-            intWidth = Math.Max(lblRatingLabel.Width, lblSystemLabel.Width);
-            intWidth = Math.Max(intWidth, lblFirewallLabel.Width);
-            intWidth = Math.Max(intWidth, lblResponseLabel.Width);
-            intWidth = Math.Max(intWidth, lblSignalLabel.Width);
-
-            lblRating.Left = lblRatingLabel.Left + intWidth + 6;
-            lblSystem.Left = lblSystemLabel.Left + intWidth + 6;
-            lblFirewall.Left = lblFirewallLabel.Left + intWidth + 6;
-            nudResponse.Left = lblResponseLabel.Left + intWidth + 6;
-            nudSignal.Left = lblSignalLabel.Left + intWidth + 6;
 
             // Martial Arts tab.
             lblMartialArtSource.Left = lblMartialArtSourceLabel.Left + intWidth + 6;

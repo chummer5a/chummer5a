@@ -289,7 +289,7 @@ namespace Chummer
 
 			lblA.Text = objXmlMod["armor"].InnerText;
 
-			nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.Instance.CultureInfo);
+			nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.CultureInfo);
             if (nudRating.Maximum <= 1)
                 nudRating.Enabled = false;
             else
@@ -354,8 +354,8 @@ namespace Chummer
                 XPathExpression xprCost = nav.Compile(strCost);
 
                 // Apply any markup.
-                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo);
+                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 
                 lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
 
@@ -439,8 +439,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

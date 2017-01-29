@@ -254,6 +254,7 @@ namespace Chummer
             // If the SR5 book was somehow missed, add it back.
             if (!blnSR5Included)
                 _characterOptions.Books.Add("SR5");
+            _characterOptions.RecalculateBookXPath();
 
             XmlManager.Instance.Verify(cboLanguage.SelectedValue.ToString(), lstBooks);
 
@@ -389,8 +390,7 @@ namespace Chummer
 
             SaveRegistrySettings();
 
-            CommonFunctions objCommon = new CommonFunctions(null);
-            objCommon.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
+            CommonFunctions.StaticOpenPDF(treSourcebook.SelectedNode.Tag + " 5");
         }
 		#endregion
 
@@ -763,6 +763,7 @@ namespace Chummer
             // If the SR5 book was somehow missed, add it back.
             if (!blnSR5Included)
                 _characterOptions.Books.Add("SR5");
+            _characterOptions.RecalculateBookXPath();
         }
 
         private void RestoreDefaultKarmaValues()

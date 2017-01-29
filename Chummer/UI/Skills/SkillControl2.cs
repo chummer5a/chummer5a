@@ -313,8 +313,7 @@ namespace Chummer.UI.Skills
 
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_skill.CharacterObject);
-            objCommon.OpenPDF(_skill.Source+" "+_skill.Page);
+            CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
         }
     }
 }

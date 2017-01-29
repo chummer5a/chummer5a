@@ -2978,7 +2978,7 @@ namespace Chummer.Classes
 						objPower.Extra = strSelection;
 					if (objXmlPower["doublecost"] != null)
 						objPower.DoubleCost = false;
-					objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
+					objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.CultureInfo);
 					objPower.Source = objXmlPower["source"].InnerText;
 					objPower.Page = objXmlPower["page"].InnerText;
 
@@ -3445,7 +3445,7 @@ namespace Chummer.Classes
 							blnLevels = (objXmlPower["levels"].InnerText == "yes");
 						objPower.LevelsEnabled = blnLevels;
 						objPower.Name = objXmlPower["name"].InnerText;
-						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
+						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.CultureInfo);
 						objPower.Source = objXmlPower["source"].InnerText;
 						objPower.Page = objXmlPower["page"].InnerText;
 						objPower.BonusSource = SourceName;

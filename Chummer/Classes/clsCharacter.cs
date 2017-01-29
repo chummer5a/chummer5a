@@ -158,20 +158,7 @@ namespace Chummer
 
 		// Attributes.
         public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-		private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
-        private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
-        private CharacterAttrib _attREA = new CharacterAttrib("REA");
-        private CharacterAttrib _attSTR = new CharacterAttrib("STR");
-        private CharacterAttrib _attCHA = new CharacterAttrib("CHA");
-        private CharacterAttrib _attINT = new CharacterAttrib("INT");
-        private CharacterAttrib _attLOG = new CharacterAttrib("LOG");
-        private CharacterAttrib _attWIL = new CharacterAttrib("WIL");
-        private CharacterAttrib _attINI = new CharacterAttrib("INI");
-        private CharacterAttrib _attEDG = new CharacterAttrib("EDG");
-        private CharacterAttrib _attMAG = new CharacterAttrib("MAG");
-        private CharacterAttrib _attRES = new CharacterAttrib("RES");
-        private CharacterAttrib _attESS = new CharacterAttrib("ESS");
-		private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
+        private Dictionary<string, CharacterAttrib> _attributes;
 
 		private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
@@ -181,8 +168,6 @@ namespace Chummer
         private string _strGroupNotes = string.Empty;
         private int _intInitiateGrade = 0;
         private int _intSubmersionGrade = 0;
-        private int _intResponse = 1;
-        private int _intSignal = 1;
 	    private bool _blnOverrideSpecialAttributeESSLoss = false;
 
         // Pseudo-Attributes use for Mystic Adepts.
@@ -293,20 +278,13 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            _attBOD._objCharacter = this;
-            _attAGI._objCharacter = this;
-            _attREA._objCharacter = this;
-            _attSTR._objCharacter = this;
-            _attCHA._objCharacter = this;
-            _attINT._objCharacter = this;
-            _attLOG._objCharacter = this;
-            _attWIL._objCharacter = this;
-            _attINI._objCharacter = this;
-            _attEDG._objCharacter = this;
-            _attMAG._objCharacter = this;
-            _attRES._objCharacter = this;
-            _attESS._objCharacter = this;
-			_attDEP._objCharacter = this;
+            _attributes = new Dictionary<string, CharacterAttrib>();
+            foreach (string strAttribute in AttributeStrings)
+            {
+                CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute);
+                objLoopAttrib._objCharacter = this;
+                _attributes.Add(strAttribute, objLoopAttrib);
+            }
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
 			SkillsSection = new SkillsSection(this);
@@ -382,7 +360,7 @@ namespace Chummer
             objWriter.WriteElementString("priorityskillgroup", _strSkillGroup);
 
             // <essenceatspecialstart />
-            objWriter.WriteElementString("essenceatspecialstart", _decEssenceAtSpecialStart.ToString(GlobalOptions.Instance.CultureInfo));
+            objWriter.WriteElementString("essenceatspecialstart", _decEssenceAtSpecialStart.ToString(GlobalOptions.CultureInfo));
 
             // <name />
             objWriter.WriteElementString("name", _strName);
@@ -550,20 +528,10 @@ namespace Chummer
 
 			// <attributes>
 			objWriter.WriteStartElement("attributes");
-            _attBOD.Save(objWriter);
-            _attAGI.Save(objWriter);
-            _attREA.Save(objWriter);
-            _attSTR.Save(objWriter);
-            _attCHA.Save(objWriter);
-            _attINT.Save(objWriter);
-            _attLOG.Save(objWriter);
-            _attWIL.Save(objWriter);
-            _attINI.Save(objWriter);
-            _attEDG.Save(objWriter);
-            _attMAG.Save(objWriter);
-            _attRES.Save(objWriter);
-            _attESS.Save(objWriter);
-			_attDEP.Save(objWriter);
+            foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+            {
+                objAttribute.Value.Save(objWriter);
+            }
             // </attributes>
             objWriter.WriteEndElement();
 
@@ -1009,7 +977,7 @@ namespace Chummer
 			if (objXmlCharacter["essenceatspecialstart"] != null)
             {
 			    _decEssenceAtSpecialStart = Convert.ToDecimal(objXmlCharacter["essenceatspecialstart"].InnerText,
-				    GlobalOptions.Instance.CultureInfo);
+				    GlobalOptions.CultureInfo);
                 // fix to work around a mistake made when saving decimal values in previous versions.
                 if (_decEssenceAtSpecialStart > EssenceMaximum)
                     _decEssenceAtSpecialStart /= 10;
@@ -1131,8 +1099,8 @@ namespace Chummer
 
 		    objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
 
-            _decNuyenBP = Convert.ToDecimal(objXmlCharacter["nuyenbp"].InnerText, GlobalOptions.Instance.CultureInfo);
-            _decNuyenMaximumBP = Convert.ToDecimal(objXmlCharacter["nuyenmaxbp"].InnerText, GlobalOptions.Instance.CultureInfo);
+            _decNuyenBP = Convert.ToDecimal(objXmlCharacter["nuyenbp"].InnerText, GlobalOptions.CultureInfo);
+            _decNuyenMaximumBP = Convert.ToDecimal(objXmlCharacter["nuyenmaxbp"].InnerText, GlobalOptions.CultureInfo);
             objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
@@ -1197,34 +1165,10 @@ namespace Chummer
 	        Timekeeper.Finish("load_char_quality");
 			Timekeeper.Start("load_char_attrib");
             // Attributes.
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"BOD\"]");
-            _attBOD.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"AGI\"]");
-            _attAGI.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
-            _attREA.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
-            _attSTR.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
-            _attCHA.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
-            _attINT.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
-            _attLOG.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
-            _attWIL.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
-            _attINI.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
-            _attEDG.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
-            _attMAG.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
-            _attRES.Load(objXmlCharacter);
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
-            _attESS.Load(objXmlCharacter);
-			objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
-			_attDEP.Load(objXmlCharacter);
+            foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+            {
+                objAttribute.Value.Load(objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"" + objAttribute.Key + "\"]"));
+            }
 
 	        Timekeeper.Finish("load_char_attrib");
 			Timekeeper.Start("load_char_misc2");
@@ -2004,15 +1948,11 @@ namespace Chummer
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = strDrainAtt.Replace("BOD", _attBOD.TotalValue.ToString());
-                strDrain = strDrain.Replace("AGI", _attAGI.TotalValue.ToString());
-                strDrain = strDrain.Replace("REA", _attREA.TotalValue.ToString());
-                strDrain = strDrain.Replace("STR", _attSTR.TotalValue.ToString());
-                strDrain = strDrain.Replace("CHA", _attCHA.TotalValue.ToString());
-                strDrain = strDrain.Replace("INT", _attINT.TotalValue.ToString());
-                strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
-                strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
-                strDrain = strDrain.Replace("MAG", _attMAG.TotalValue.ToString());
+                string strDrain = strDrainAtt;
+                foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+                {
+                    strDrain = strDrain.Replace(objAttribute.Key, objAttribute.Value.TotalValue.ToString());
+                }
                 if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
@@ -2028,7 +1968,6 @@ namespace Chummer
 	            {
 					objWriter.WriteElementString("attr",drainAttribute);
 				}
-				
 				objWriter.WriteEndElement();
 
 	            if (_strMagicTradition != "Custom")
@@ -2077,19 +2016,16 @@ namespace Chummer
                 objXmlDocument = XmlManager.Instance.Load("streams.xml");
 
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strTechnomancerStream + "\"]");
-                strDrainAtt = objXmlTradition["drain"].InnerText;
+                if (objXmlTradition != null)
+                    strDrainAtt = objXmlTradition["drain"].InnerText;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = strDrainAtt.Replace("BOD", _attBOD.TotalValue.ToString());
-                strDrain = strDrain.Replace("AGI", _attAGI.TotalValue.ToString());
-                strDrain = strDrain.Replace("REA", _attREA.TotalValue.ToString());
-                strDrain = strDrain.Replace("STR", _attSTR.TotalValue.ToString());
-                strDrain = strDrain.Replace("CHA", _attCHA.TotalValue.ToString());
-                strDrain = strDrain.Replace("INT", _attINT.TotalValue.ToString());
-                strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
-                strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
-                strDrain = strDrain.Replace("RES", _attRES.TotalValue.ToString());
-				XPathExpression xprDrain = nav.Compile(strDrain);
+                string strDrain = strDrainAtt;
+                foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+                {
+                    strDrain = strDrain.Replace(objAttribute.Key, objAttribute.Value.TotalValue.ToString());
+                }
+                XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Fading Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
@@ -2099,24 +2035,10 @@ namespace Chummer
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
-            _attBOD.Print(objWriter);
-            _attAGI.Print(objWriter);
-            _attREA.Print(objWriter);
-            _attSTR.Print(objWriter);
-            _attCHA.Print(objWriter);
-            _attINT.Print(objWriter);
-            _attLOG.Print(objWriter);
-            _attWIL.Print(objWriter);
-            _attINI.Print(objWriter);
-            _attEDG.Print(objWriter);
-            _attMAG.Print(objWriter);
-            _attRES.Print(objWriter);
-			_attDEP.Print(objWriter);
-
-            objWriter.WriteStartElement("attribute");
-            objWriter.WriteElementString("name", "ESS");
-            objWriter.WriteElementString("base", Essence.ToString());
-            objWriter.WriteEndElement();
+            foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+            {
+                objAttribute.Value.Print(objWriter);
+            }
 
             // </attributes>
             objWriter.WriteEndElement();
@@ -2202,9 +2124,9 @@ namespace Chummer
             // <memory />
             objWriter.WriteElementString("memory", Memory.ToString());
             // <liftweight />
-            objWriter.WriteElementString("liftweight", (_attSTR.TotalValue * 15).ToString());
+            objWriter.WriteElementString("liftweight", (STR.TotalValue * 15).ToString());
             // <carryweight />
-            objWriter.WriteElementString("carryweight", (_attSTR.TotalValue * 10).ToString());
+            objWriter.WriteElementString("carryweight", (STR.TotalValue * 10).ToString());
 
             // <skills>
 			objWriter.WriteStartElement("skills");
@@ -2434,11 +2356,11 @@ namespace Chummer
                 Commlink objLivingPersona = new Commlink(this);
                 objLivingPersona.Name = LanguageManager.Instance.GetString("String_LivingPersona");
                 objLivingPersona.Category = LanguageManager.Instance.GetString("String_Commlink");
-                objLivingPersona.DeviceRating = _attRES.TotalValue;
-                objLivingPersona.Attack = _attCHA.TotalValue;
-                objLivingPersona.Sleaze = _attINT.TotalValue;
-                objLivingPersona.DataProcessing = _attLOG.TotalValue;
-                objLivingPersona.Firewall = _attWIL.TotalValue;
+                objLivingPersona.DeviceRating = RES.TotalValue;
+                objLivingPersona.Attack = CHA.TotalValue;
+                objLivingPersona.Sleaze = INT.TotalValue;
+                objLivingPersona.DataProcessing = LOG.TotalValue;
+                objLivingPersona.Firewall = WIL.TotalValue;
                 objLivingPersona.Source = _objOptions.LanguageBookShort("SR5");
                 objLivingPersona.Page = "251";
                 objLivingPersona.IsLivingPersona = true;
@@ -2618,34 +2540,13 @@ namespace Chummer
             _blnCritterEnabled = false;
 
             // Reset Attributes.
-            _attBOD = new CharacterAttrib("BOD");
-            _attBOD._objCharacter = this;
-            _attAGI = new CharacterAttrib("AGI");
-            _attAGI._objCharacter = this;
-            _attREA = new CharacterAttrib("REA");
-            _attREA._objCharacter = this;
-            _attSTR = new CharacterAttrib("STR");
-            _attSTR._objCharacter = this;
-            _attCHA = new CharacterAttrib("CHA");
-            _attCHA._objCharacter = this;
-            _attINT = new CharacterAttrib("INT");
-            _attINT._objCharacter = this;
-            _attLOG = new CharacterAttrib("LOG");
-            _attLOG._objCharacter = this;
-            _attWIL = new CharacterAttrib("WIL");
-            _attWIL._objCharacter = this;
-            _attINI = new CharacterAttrib("INI");
-            _attINI._objCharacter = this;
-            _attEDG = new CharacterAttrib("EDG");
-            _attEDG._objCharacter = this;
-            _attMAG = new CharacterAttrib("MAG");
-            _attMAG._objCharacter = this;
-            _attRES = new CharacterAttrib("RES");
-            _attRES._objCharacter = this;
-            _attESS = new CharacterAttrib("ESS");
-            _attESS._objCharacter = this;
-			_attDEP = new CharacterAttrib("DEP");
-			_attDEP._objCharacter = this;
+            _attributes.Clear();
+            foreach (string strAttribute in AttributeStrings)
+            {
+                CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute);
+                objLoopAttrib._objCharacter = this;
+                _attributes.Add(strAttribute, objLoopAttrib);
+            }
 			_blnMAGEnabled = false;
             _blnRESEnabled = false;
             _blnDEPEnabled = false;
@@ -3918,50 +3819,12 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         public CharacterAttrib GetAttribute(string strAttribute)
         {
-            switch (strAttribute)
+            CharacterAttrib objReturnAttrib;
+            if (!_attributes.TryGetValue(strAttribute, out objReturnAttrib))
             {
-                case "AGI":
-                case "AGIBase":
-                    return _attAGI;
-                case "REA":
-                case "REABase":
-                    return _attREA;
-                case "STR":
-                case "STRBase":
-                    return _attSTR;
-                case "CHA":
-                case "CHABase":
-                    return _attCHA;
-                case "INT":
-                case "INTBase":
-                    return _attINT;
-                case "LOG":
-                case "LOGBase":
-                    return _attLOG;
-                case "WIL":
-                case "WILBase":
-                    return _attWIL;
-                case "INI":
-                    return _attINI;
-                case "EDG":
-                case "EDGBase":
-                    return _attEDG;
-                case "MAG":
-                case "MAGBase":
-                    return _attMAG;
-                case "RES":
-                case "RESBase":
-                    return _attRES;
-				case "DEP":
-				case "DEPBase":
-					return _attDEP;
-				case "ESS":
-                    return _attESS;
-                case "BOD":
-                case "BODBase":
-                default:
-                    return _attBOD;
+                _attributes.TryGetValue(strAttribute.Replace("Base", string.Empty), out objReturnAttrib);
             }
+            return objReturnAttrib;
         }
 
         /// <summary>
@@ -3971,7 +3834,7 @@ namespace Chummer
         {
             get
             {
-                return _attBOD;
+                return _attributes["BOD"];
             }
         }
 
@@ -3982,7 +3845,7 @@ namespace Chummer
         {
             get
             {
-                return _attAGI;
+                return _attributes["AGI"];
             }
         }
 
@@ -3993,7 +3856,7 @@ namespace Chummer
         {
             get
             {
-                return _attREA;
+                return _attributes["REA"];
             }
         }
 
@@ -4004,7 +3867,7 @@ namespace Chummer
         {
             get
             {
-                return _attSTR;
+                return _attributes["STR"];
             }
         }
 
@@ -4015,7 +3878,7 @@ namespace Chummer
         {
             get
             {
-                return _attCHA;
+                return _attributes["CHA"];
             }
         }
 
@@ -4026,7 +3889,7 @@ namespace Chummer
         {
             get
             {
-                return _attINT;
+                return _attributes["INT"];
             }
         }
 
@@ -4037,7 +3900,7 @@ namespace Chummer
         {
             get
             {
-                return _attLOG;
+                return _attributes["LOG"];
             }
         }
 
@@ -4048,18 +3911,7 @@ namespace Chummer
         {
             get
             {
-                return _attWIL;
-            }
-        }
-
-        /// <summary>
-        /// Initiative (INI) CharacterAttribute.
-        /// </summary>
-        public CharacterAttrib INI
-        {
-            get
-            {
-                return _attINI;
+                return _attributes["WIL"];
             }
         }
 
@@ -4070,7 +3922,7 @@ namespace Chummer
         {
             get
             {
-                return _attEDG;
+                return _attributes["EDG"];
             }
         }
 
@@ -4081,7 +3933,7 @@ namespace Chummer
         {
             get
             {
-                return _attMAG;
+                return _attributes["MAG"];
             }
         }
 
@@ -4092,7 +3944,7 @@ namespace Chummer
         {
             get
             {
-                return _attRES;
+                return _attributes["RES"];
             }
 		}
 
@@ -4103,7 +3955,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _attDEP;
+				return _attributes["DEP"];
 			}
 		}
 
@@ -4114,7 +3966,7 @@ namespace Chummer
         {
             get
             {
-                return _attESS;
+                return _attributes["ESS"];
             }
         }
 
@@ -4436,7 +4288,7 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(_attESS.MetatypeMaximum, GlobalOptions.Instance.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.Instance.CultureInfo);
+                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
                 decimal decCyberware = 0m;
@@ -4492,7 +4344,7 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(_attESS.MetatypeMaximum, GlobalOptions.Instance.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.Instance.CultureInfo);
+                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
                 decimal decCyberware = 0m;
@@ -4525,7 +4377,7 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(_attESS.MetatypeMaximum, GlobalOptions.Instance.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.Instance.CultureInfo);
+                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
                 decimal decCyberware = 0m;
@@ -4558,7 +4410,7 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(_attESS.MetatypeMaximum, GlobalOptions.Instance.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.Instance.CultureInfo);
+                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
                 decimal decCyberware = 0m;
@@ -4588,7 +4440,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToDecimal(_attESS.MetatypeMaximum, GlobalOptions.Instance.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.Instance.CultureInfo);
+                return Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.CultureInfo);
             }
         }
 
@@ -4622,7 +4474,7 @@ namespace Chummer
             get
             {
                 int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDiceAdd));
-                
+
                 return Math.Min(intExtraIP, 5);
             }
         }
@@ -4631,12 +4483,11 @@ namespace Chummer
 	    {
 		    get
 			{
-				int intINI = (_attINT.TotalValue + _attREA.TotalValue) + WoundModifiers;
+				int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifiers;
 				intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative);
 				if (intINI < 0)
 					intINI = 0;
 				return intINI;
-
 			}
 	    }
 		#endregion
@@ -4656,7 +4507,7 @@ namespace Chummer
 		{
 			get
 			{
-				return (_attINT.TotalValue * 2) + WoundModifiers;
+				return (INT.TotalValue * 2) + WoundModifiers;
 			}
 		}
 
@@ -4691,7 +4542,7 @@ namespace Chummer
 			{
 				if (_strMetatype == "A.I.")
 				{
-					int intINI = (_attINT.TotalValue) + WoundModifiers;
+					int intINI = (INT.TotalValue) + WoundModifiers;
 					if (_blnHasHomeNode)
 					{
 						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
@@ -4757,7 +4608,7 @@ namespace Chummer
 				{
 					return MatrixInitiativeValue;
 				}
-				return _attINT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+				return INT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
 			}
 	    }
 
@@ -4803,7 +4654,7 @@ namespace Chummer
 				{
 					return MatrixInitiativeValue;
 				}
-				return _attINT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+				return INT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
 			}
 		}
 
@@ -4824,75 +4675,6 @@ namespace Chummer
 		#endregion
 		#endregion
 		#endregion
-		/// <summary>
-		/// An A.I.'s Rating.
-		/// </summary>
-		public int Rating
-        {
-            get
-            {
-                double dblAverage = Convert.ToDouble(_attCHA.TotalValue, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(_attINT.TotalValue, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(_attLOG.TotalValue, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(_attWIL.TotalValue, GlobalOptions.Instance.CultureInfo);
-                dblAverage = Math.Ceiling(dblAverage / 4);
-                return Convert.ToInt32(dblAverage);
-            }
-        }
-
-        /// <summary>
-        /// An A.I.'s System.
-        /// </summary>
-        public int System
-        {
-            get
-            {
-                double dblAverage = Convert.ToDouble(_attINT.TotalValue, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(_attLOG.TotalValue, GlobalOptions.Instance.CultureInfo);
-                dblAverage = Math.Ceiling(dblAverage / 2);
-                return Convert.ToInt32(dblAverage);
-            }
-        }
-
-        /// <summary>
-        /// An A.I.'s Firewall.
-        /// </summary>
-        public int Firewall
-        {
-            get
-            {
-                double dblAverage = Convert.ToDouble(_attCHA.TotalValue, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(_attWIL.TotalValue, GlobalOptions.Instance.CultureInfo);
-                dblAverage = Math.Ceiling(dblAverage / 2);
-                return Convert.ToInt32(dblAverage);
-            }
-        }
-
-        /// <summary>
-        /// An A.I.'s Signal.
-        /// </summary>
-        public int Signal
-        {
-            get
-            {
-                return _intSignal;
-            }
-            set
-            {
-                _intSignal = value;
-            }
-        }
-
-        /// <summary>
-        /// An A.I.'s Response.
-        /// </summary>
-        public int Response
-        {
-            get
-            {
-                return _intResponse;
-            }
-            set
-            {
-                _intResponse = value;
-            }
-        }
-
 	    #endregion
 
         #region Special CharacterAttribute Tests
@@ -4903,7 +4685,7 @@ namespace Chummer
         {
             get
             {
-                return _attWIL.TotalValue + _attCHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Composure);
+                return WIL.TotalValue + CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Composure);
             }
         }
 
@@ -4914,7 +4696,7 @@ namespace Chummer
         {
             get
             {
-                return _attINT.TotalValue + _attCHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions);
+                return INT.TotalValue + CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions);
             }
         }
 
@@ -4925,7 +4707,7 @@ namespace Chummer
         {
             get
             {
-                return _attSTR.TotalValue + _attBOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry);
+                return STR.TotalValue + BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry);
             }
         }
 
@@ -4936,7 +4718,7 @@ namespace Chummer
         {
             get
             {
-                return _attLOG.TotalValue + _attWIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory);
+                return LOG.TotalValue + WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory);
             }
         }
         #endregion
@@ -5630,8 +5412,8 @@ namespace Chummer
 				}
 
 	            // calculate armor encumberance
-                if (intTotalA > _attSTR.TotalValue)
-                    return (intTotalA - _attSTR.TotalValue) / 2 * -1;  // we expect a negative number
+                if (intTotalA > STR.TotalValue)
+                    return (intTotalA - STR.TotalValue) / 2 * -1;  // we expect a negative number
                 return 0;
             }
         }
@@ -5650,11 +5432,11 @@ namespace Chummer
 				if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
 				{
 					// A.I.s add 1/2 their System to Physical CM since they do not have BOD.
-					intCMPhysical += (_attDEP.TotalValue + 1) / 2;
+					intCMPhysical += (DEP.TotalValue + 1) / 2;
 				}
 				else
 				{
-					intCMPhysical += (_attBOD.TotalValue + 1) / 2;
+					intCMPhysical += (BOD.TotalValue + 1) / 2;
 				}
                 // Include Improvements in the Condition Monitor values.
                 intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
@@ -5673,7 +5455,7 @@ namespace Chummer
                 // A.I. do not have a Stun Condition Monitor.
                 if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
                 { 
-                    intCMStun = 8 + (_attWIL.TotalValue + 1) / 2;
+                    intCMStun = 8 + (WIL.TotalValue + 1) / 2;
                     // Include Improvements in the Condition Monitor values.
                     intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
                 }
@@ -5717,7 +5499,7 @@ namespace Chummer
                 if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
                 {
                     // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
-                    intCMOverflow = _attBOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
+                    intCMOverflow = BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
                 }
                 return intCMOverflow;
             }
@@ -5869,7 +5651,7 @@ namespace Chummer
         {
             get
             {
-                decimal decImprovement = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.Instance.CultureInfo);
+                decimal decImprovement = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.CultureInfo);
                 if (_objBuildMethod == CharacterBuildMethod.Karma)
                     decImprovement *= 2.0m;
 
@@ -5925,7 +5707,7 @@ namespace Chummer
                 }
 				else
 				{
-					intLimit = (_attSTR.TotalValue * 2 + _attBOD.TotalValue + _attREA.TotalValue + 2) / 3;
+					intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
 				}
 				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
 				strReturn = Convert.ToString(intLimit);
@@ -5940,7 +5722,7 @@ namespace Chummer
         {
             get
             {
-				int intLimit = (_attLOG.TotalValue * 2 + _attINT.TotalValue + _attWIL.TotalValue + 2) / 3;
+				int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
                 if (_strMetatype == "A.I." && _blnHasHomeNode)
 				{
 					if (_strHomeNodeCategory == "Vehicle")
@@ -5979,16 +5761,16 @@ namespace Chummer
 				{
 					if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
 					{
-						intLimit = (_attCHA.TotalValue + _intHomeNodeDataProcessing + _attWIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+						intLimit = (CHA.TotalValue + _intHomeNodeDataProcessing + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
 					}
 					else
 					{
-						intLimit = (_attCHA.TotalValue + _intHomeNodePilot + _attWIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+						intLimit = (CHA.TotalValue + _intHomeNodePilot + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
                     }
 				}
 				else
 				{
-					intLimit = (_attCHA.TotalValue * 2 + _attWIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+					intLimit = (CHA.TotalValue * 2 + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
 				}
                 intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.SocialLimit);
                 return intLimit;
@@ -6221,9 +6003,9 @@ namespace Chummer
             int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 			int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 
-			intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
-			intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
-			intSprint += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
+			intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.CultureInfo) * dblPercent));
+			intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.CultureInfo) * dblPercent));
+			intSprint += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.CultureInfo) * dblPercent));
 
 			if (_objOptions.CyberlegMovement && blnUseCyberlegs)
 			{
@@ -6238,7 +6020,7 @@ namespace Chummer
 				{
 					if (strMovementType == "Swim")
 					{
-						intWalk = (intAGI + _attSTR.CalculatedTotalValue(false) / 2)* intWalkMultiplier;
+						intWalk = (intAGI + STR.CalculatedTotalValue(false) / 2)* intWalkMultiplier;
 					}
 					else
 					{
@@ -6251,12 +6033,12 @@ namespace Chummer
 			{
 				if (strMovementType == "Swim")
 				{
-					intWalk = (_attAGI.TotalValue + _attSTR.TotalValue / 2)*intWalkMultiplier;
+					intWalk = (AGI.TotalValue + STR.TotalValue / 2)*intWalkMultiplier;
 				}
 				else
 				{
-					intWalk = (_attAGI.CalculatedTotalValue(false) * intWalkMultiplier);
-					intRun = (_attAGI.CalculatedTotalValue(false) * intRunMultiplier);
+					intWalk = (AGI.CalculatedTotalValue(false) * intWalkMultiplier);
+					intRun = (AGI.CalculatedTotalValue(false) * intRunMultiplier);
 				}
 			}
 			if (strMovementType == "Swim")

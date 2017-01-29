@@ -660,13 +660,13 @@ namespace Chummer
                                 if (objXmlRequired.InnerText.StartsWith("-"))
                                 {
                                     // Essence must be less than the value.
-                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.Instance.CultureInfo))
+                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.CultureInfo))
                                         blnOneOfMet = true;
                                 }
                                 else
                                 {
                                     // Essence must be equal to or greater than the value.
-                                    if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.CultureInfo))
+                                    if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.CultureInfo))
                                         blnOneOfMet = true;
                                 }
                                 break;
@@ -698,17 +698,10 @@ namespace Chummer
                             case "attributetotal":
                                 // Check if the character's Attributes add up to a particular total.
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
-                                strAttributes = strAttributes.Replace("BOD", _objCharacter.GetAttribute("BOD").Value.ToString());
-                                strAttributes = strAttributes.Replace("AGI", _objCharacter.GetAttribute("AGI").Value.ToString());
-                                strAttributes = strAttributes.Replace("REA", _objCharacter.GetAttribute("REA").Value.ToString());
-                                strAttributes = strAttributes.Replace("STR", _objCharacter.GetAttribute("STR").Value.ToString());
-                                strAttributes = strAttributes.Replace("CHA", _objCharacter.GetAttribute("CHA").Value.ToString());
-                                strAttributes = strAttributes.Replace("INT", _objCharacter.GetAttribute("INT").Value.ToString());
-                                strAttributes = strAttributes.Replace("INT", _objCharacter.GetAttribute("LOG").Value.ToString());
-                                strAttributes = strAttributes.Replace("WIL", _objCharacter.GetAttribute("WIL").Value.ToString());
-                                strAttributes = strAttributes.Replace("MAG", _objCharacter.GetAttribute("MAG").Value.ToString());
-                                strAttributes = strAttributes.Replace("RES", _objCharacter.GetAttribute("RES").Value.ToString());
-                                strAttributes = strAttributes.Replace("EDG", _objCharacter.GetAttribute("EDG").Value.ToString());
+                                foreach (string strAttribute in Character.AttributeStrings)
+                                {
+                                    strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                }
 
                                 XmlDocument objXmlDocument = new XmlDocument();
                                 XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -937,13 +930,13 @@ namespace Chummer
                                 if (objXmlRequired.InnerText.StartsWith("-"))
                                 {
                                     // Essence must be less than the value.
-                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.Instance.CultureInfo))
+                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.CultureInfo))
                                         blnFound = true;
                                 }
                                 else
                                 {
                                     // Essence must be equal to or greater than the value.
-                                    if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.CultureInfo))
+                                    if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.CultureInfo))
                                         blnFound = true;
                                 }
                                 break;
@@ -972,17 +965,10 @@ namespace Chummer
                             case "attributetotal":
                                 // Check if the character's Attributes add up to a particular total.
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
-                                strAttributes = strAttributes.Replace("BOD", _objCharacter.GetAttribute("BOD").Value.ToString());
-                                strAttributes = strAttributes.Replace("AGI", _objCharacter.GetAttribute("AGI").Value.ToString());
-                                strAttributes = strAttributes.Replace("REA", _objCharacter.GetAttribute("REA").Value.ToString());
-                                strAttributes = strAttributes.Replace("STR", _objCharacter.GetAttribute("STR").Value.ToString());
-                                strAttributes = strAttributes.Replace("CHA", _objCharacter.GetAttribute("CHA").Value.ToString());
-                                strAttributes = strAttributes.Replace("INT", _objCharacter.GetAttribute("INT").Value.ToString());
-                                strAttributes = strAttributes.Replace("INT", _objCharacter.GetAttribute("LOG").Value.ToString());
-                                strAttributes = strAttributes.Replace("WIL", _objCharacter.GetAttribute("WIL").Value.ToString());
-                                strAttributes = strAttributes.Replace("MAG", _objCharacter.GetAttribute("MAG").Value.ToString());
-                                strAttributes = strAttributes.Replace("RES", _objCharacter.GetAttribute("RES").Value.ToString());
-                                strAttributes = strAttributes.Replace("EDG", _objCharacter.GetAttribute("EDG").Value.ToString());
+                                foreach (string strAttribute in Character.AttributeStrings)
+                                {
+                                    strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                }
 
                                 XmlDocument objXmlDocument = new XmlDocument();
                                 XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -1164,8 +1150,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

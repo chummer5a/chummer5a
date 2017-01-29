@@ -23,26 +23,32 @@ namespace Chummer.Skills
 			XmlNodeList objXmlCategoryList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]");
 
             KnowledgeTypes = (from XmlNode objXmlCategory in objXmlCategoryList
-		        let display = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText
+		        let display = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
 		        orderby display
 		        select new ListItem(objXmlCategory.InnerText, display)).ToList();
-
 
 		    XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
 			DefaultKnowledgeSkillCatagories = new List<ListItem>();
 			foreach (XmlNode objXmlSkill in objXmlSkillList)
 			{
-				string display = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+			    string strSkillName = objXmlSkill["name"]?.InnerText;
+                if (string.IsNullOrWhiteSpace(strSkillName))
+                    continue;
+				string display = objXmlSkill["translate"]?.InnerText ?? strSkillName;
 
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
-					_translator.Add(objXmlSkill["name"].InnerText, display);
+					_translator.Add(strSkillName, display);
 				}
 
-				DefaultKnowledgeSkillCatagories.Add(new ListItem(objXmlSkill["name"].InnerText, display));
+				DefaultKnowledgeSkillCatagories.Add(new ListItem(strSkillName, display));
 
-				NameCategoryMap[objXmlSkill["name"].InnerText] = objXmlSkill["category"].InnerText;
-				CategoriesSkillMap[objXmlSkill["category"].InnerText] = objXmlSkill["attribute"].InnerText;
+                string strCategory = objXmlSkill["category"]?.InnerText;
+			    if (!string.IsNullOrWhiteSpace(strCategory))
+			    {
+			        NameCategoryMap[strSkillName] = strCategory;
+			        CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
+			    }
 			}
 		}
 
@@ -66,7 +72,7 @@ namespace Chummer.Skills
 
 		public KnowledgeSkill(Character character) : base(character, (string)null)
 		{
-			AttributeObject = character.GetAttribute("LOG");
+			AttributeObject = character.LOG;
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 			_type = string.Empty;
 			SuggestedSpecializations = new List<ListItem>();
@@ -77,7 +83,7 @@ namespace Chummer.Skills
 			WriteableName = forcedName;
 			ForcedName = true;
 		}
-		
+
 		public List<ListItem> KnowledgeSkillCatagories
 		{
 			get { return _knowledgeSkillCatagories ?? DefaultKnowledgeSkillCatagories; }

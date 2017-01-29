@@ -742,11 +742,11 @@ namespace Chummer.Backend.Equipment
 				//Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number. 
 				if (decCapacity > 0)
 				{
-					strReturn = Math.Ceiling(decCapacity).ToString(CultureInfo.CurrentCulture);
+					strReturn = Math.Ceiling(decCapacity).ToString(GlobalOptions.CultureInfo);
 				}
 				else
 				{
-					strReturn = Math.Floor(decCapacity).ToString(CultureInfo.CurrentCulture);
+					strReturn = Math.Floor(decCapacity).ToString(GlobalOptions.CultureInfo);
 				}
 				if (blnSquareBrackets)
 					strReturn = "[" + strReturn + "]";
@@ -771,7 +771,7 @@ namespace Chummer.Backend.Equipment
 
 					string strCostExpr = _strCost.Replace("Armor Cost", _objParent.Cost.ToString());
 					XPathExpression xprCost = nav.Compile(strCostExpr);
-					intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.Instance.CultureInfo)));
+					intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.CultureInfo)));
 				}
 				else if (_strCost.Contains("Rating"))
 				{
@@ -780,7 +780,7 @@ namespace Chummer.Backend.Equipment
 
 					string strCostExpr = _strCost.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCostExpr);
-					intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.Instance.CultureInfo)));
+					intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.CultureInfo)));
 				}
 				else if (_strCost.StartsWith("FixedValues"))
 				{
@@ -791,7 +791,7 @@ namespace Chummer.Backend.Equipment
 					intReturn = Convert.ToInt32(_strCost);
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
 
 				return intReturn;
 			}

@@ -211,8 +211,8 @@ namespace Chummer
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
         	// Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_dblESSMultiplier = Convert.ToDouble(objXmlGrade["ess"].InnerText, GlobalOptions.Instance.CultureInfo);
+			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.CultureInfo);
+			_dblESSMultiplier = Convert.ToDouble(objXmlGrade["ess"].InnerText, GlobalOptions.CultureInfo);
 			_intAvailModifier = Convert.ToInt32(objXmlGrade["avail"].InnerText);
 
             UpdateCyberwareInfo();
@@ -436,9 +436,8 @@ namespace Chummer
 
 		private void lblSource_Click(object sender, EventArgs e)
 		{
-			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-			objCommon.OpenPDF(lblSource.Text);
-		}
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+        }
 
 		private void nudMarkup_ValueChanged(object sender, EventArgs e)
 		{
@@ -877,7 +876,7 @@ namespace Chummer
 
 				if (nudESSDiscount.Visible)
 				{
-					double dblDiscountModifier = Convert.ToDouble(nudESSDiscount.Value, GlobalOptions.Instance.CultureInfo) * 0.01;
+					double dblDiscountModifier = Convert.ToDouble(nudESSDiscount.Value, GlobalOptions.CultureInfo) * 0.01;
 					dblCharacterESSModifier *= (1.0 - dblDiscountModifier);
 				}
 
@@ -1033,7 +1032,7 @@ namespace Chummer
                         string[] strValues = objXmlCyberware["cost"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
                         if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                         {
-                            intItemCost = Convert.ToInt32((Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier * dblGenetechCostModifier));
+                            intItemCost = Convert.ToInt32((Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.CultureInfo) * _dblCostMultiplier * dblGenetechCostModifier));
                             if (chkBlackMarketDiscount.Checked)
                             {
                                 intItemCost -= Convert.ToInt32(intItemCost * 0.10);
@@ -1076,9 +1075,9 @@ namespace Chummer
                             }
                         }
                         XPathExpression xprCost = nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-                        double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier *
+                        double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * _dblCostMultiplier *
                                     dblGenetechCostModifier);
-                        dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                        dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
                         intItemCost = Convert.ToInt32(dblCost);
 
                         if (chkBlackMarketDiscount.Checked)
@@ -1100,13 +1099,13 @@ namespace Chummer
 				if (objXmlCyberware["ess"].InnerText.StartsWith("FixedValues"))
 				{
 					string[] strValues = objXmlCyberware["ess"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					decimal decESS = Convert.ToDecimal(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.Instance.CultureInfo);
-					dblESS = Math.Round(Convert.ToDouble(decESS, GlobalOptions.Instance.CultureInfo) * dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+					decimal decESS = Convert.ToDecimal(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.CultureInfo);
+					dblESS = Math.Round(Convert.ToDouble(decESS, GlobalOptions.CultureInfo) * dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
 				}
 				else
 				{
 					XPathExpression xprEssence = nav.Compile(objXmlCyberware["ess"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-					dblESS = Math.Round(Convert.ToDouble(nav.Evaluate(xprEssence), GlobalOptions.Instance.CultureInfo) * dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+					dblESS = Math.Round(Convert.ToDouble(nav.Evaluate(xprEssence), GlobalOptions.CultureInfo) * dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
 				}
 				// Check if the character has Sensitive System.
 				if (_objMode == Mode.Cyberware)
@@ -1414,13 +1413,13 @@ namespace Chummer
 								if (objXmlRequired.InnerText.StartsWith("-"))
 								{
 									// Essence must be less than the value.
-									if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.Instance.CultureInfo))
+									if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.CultureInfo))
 										blnOneOfMet = true;
 								}
 								else
 								{
 									// Essence must be equal to or greater than the value.
-									if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.CultureInfo))
+									if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.CultureInfo))
 										blnOneOfMet = true;
 								}
 								break;
@@ -1452,19 +1451,12 @@ namespace Chummer
 							case "attributetotal":
 								// Check if the character's Attributes add up to a particular total.
 								string strAttributes = objXmlRequired["attributes"].InnerText;
-								strAttributes = strAttributes.Replace("BOD", _objCharacter.GetAttribute("BOD").Value.ToString());
-								strAttributes = strAttributes.Replace("AGI", _objCharacter.GetAttribute("AGI").Value.ToString());
-								strAttributes = strAttributes.Replace("REA", _objCharacter.GetAttribute("REA").Value.ToString());
-								strAttributes = strAttributes.Replace("STR", _objCharacter.GetAttribute("STR").Value.ToString());
-								strAttributes = strAttributes.Replace("CHA", _objCharacter.GetAttribute("CHA").Value.ToString());
-								strAttributes = strAttributes.Replace("INT", _objCharacter.GetAttribute("INT").Value.ToString());
-								strAttributes = strAttributes.Replace("INT", _objCharacter.GetAttribute("LOG").Value.ToString());
-								strAttributes = strAttributes.Replace("WIL", _objCharacter.GetAttribute("WIL").Value.ToString());
-								strAttributes = strAttributes.Replace("MAG", _objCharacter.GetAttribute("MAG").Value.ToString());
-								strAttributes = strAttributes.Replace("RES", _objCharacter.GetAttribute("RES").Value.ToString());
-								strAttributes = strAttributes.Replace("EDG", _objCharacter.GetAttribute("EDG").Value.ToString());
+                                foreach (string strAttribute in Character.AttributeStrings)
+                                {
+                                    strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                }
 
-								XmlDocument objXmlDocument = new XmlDocument();
+                                XmlDocument objXmlDocument = new XmlDocument();
 								XPathNavigator nav = objXmlDocument.CreateNavigator();
 								XPathExpression xprAttributes = nav.Compile(strAttributes);
 								if (Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))

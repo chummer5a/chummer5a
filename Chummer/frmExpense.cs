@@ -33,7 +33,7 @@ namespace Chummer
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
 			// Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
-			DateTimeFormatInfo objDateTimeInfo = CultureInfo.CurrentCulture.DateTimeFormat;
+			DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
 			string strDatePattern = objDateTimeInfo.FullDateTimePattern.Replace(":ss", string.Empty);
 			if (!GlobalOptions.Instance.DatesIncludeTime)
 				strDatePattern = objDateTimeInfo.LongDatePattern;

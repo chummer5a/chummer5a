@@ -92,7 +92,7 @@ namespace Chummer
 	public sealed class GlobalOptions
 	{
 		static readonly GlobalOptions _objInstance = new GlobalOptions();
-		static readonly CultureInfo _objCultureInfo = CultureInfo.InvariantCulture;
+		static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
 
 		public Action MRUChanged;
 
@@ -516,7 +516,7 @@ namespace Chummer
 		/// <summary>
 		/// CultureInfor for number localization.
 		/// </summary>
-		public CultureInfo CultureInfo
+		public static CultureInfo CultureInfo
 		{
 			get
 			{

@@ -736,9 +736,9 @@ namespace Chummer.Backend.Equipment
 
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				decimal decMultiplier = 1;
-				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
+				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.CultureInfo);
 				if (_objType == LifestyleType.Standard)
-					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
+					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.CultureInfo);
                 decimal decExtraMultiplierBaseOnly = 0;
 
 				decimal decBaseCost = Cost;
@@ -764,10 +764,10 @@ namespace Chummer.Backend.Equipment
 				}
 
 				decMultiplier += _intRoommates * 10;
-				decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.Instance.CultureInfo);
-                decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.Instance.CultureInfo);
+				decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.CultureInfo);
+                decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.CultureInfo);
 
-                double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
+                double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.CultureInfo) / 100.0;
 
                 int intBaseLifestyleCost = Convert.ToInt32(decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly));
                 if (!_blnTrustFund)

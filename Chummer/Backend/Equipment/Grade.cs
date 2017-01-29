@@ -29,11 +29,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
             if (objNode["ess"] != null)
-			    _decEss = Convert.ToDecimal(objNode["ess"].InnerText, GlobalOptions.Instance.CultureInfo);
+			    _decEss = Convert.ToDecimal(objNode["ess"].InnerText, GlobalOptions.CultureInfo);
             if (objNode["cost"] != null)
-                _dblCost = Convert.ToDouble(objNode["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
+                _dblCost = Convert.ToDouble(objNode["cost"].InnerText, GlobalOptions.CultureInfo);
             if (objNode["avail"] != null)
-                _intAvail = Convert.ToInt32(objNode["avail"].InnerText, GlobalOptions.Instance.CultureInfo);
+                _intAvail = Convert.ToInt32(objNode["avail"].InnerText, GlobalOptions.CultureInfo);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
         }
 		#endregion

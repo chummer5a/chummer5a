@@ -4743,8 +4743,8 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString(GlobalOptions.Instance.CultureInfo));
-            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString(GlobalOptions.Instance.CultureInfo));
+			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString(GlobalOptions.CultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
 			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString());
@@ -4782,9 +4782,9 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             if (objNode["pointsperlevel"] != null)
-			    _decPointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.Instance.CultureInfo);
+			    _decPointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.CultureInfo);
             if (objNode["adeptway"] != null)
-                _decAdeptWayDiscount = Convert.ToDecimal(objNode["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
+                _decAdeptWayDiscount = Convert.ToDecimal(objNode["adeptway"].InnerText, GlobalOptions.CultureInfo);
             else
             {
                 string strPowerName = _strName;
@@ -4793,7 +4793,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                 if (objXmlPower != null && objXmlPower["adeptway"] != null)
-                    _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
+                    _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.CultureInfo);
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
@@ -7401,7 +7401,7 @@ namespace Chummer
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.Instance.CultureInfo));
+            objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.CultureInfo));
 			objWriter.WriteElementString("counttowardslimit", _blnCountTowardsLimit.ToString());
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
