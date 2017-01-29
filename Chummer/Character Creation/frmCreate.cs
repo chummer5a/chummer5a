@@ -614,7 +614,7 @@ namespace Chummer
             if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
             {
                 nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
-                nudMysticAdeptMAGMagician.Value = _objCharacter.MAGMagician;
+                nudMysticAdeptMAGMagician.Value = _objCharacter.MysticAdeptPowerPoints;
 
                 lblMysticAdeptAssignment.Visible = true;
                 nudMysticAdeptMAGMagician.Visible = true;
@@ -823,15 +823,10 @@ namespace Chummer
 
                     objSpiritControl.SpiritName = objSpirit.Name;
                     objSpiritControl.ServicesOwed = objSpirit.ServicesOwed;
-                    if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-                    {
-                        if (_objOptions.SpiritForceBasedOnTotalMAG)
-                            objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue;
-                        else
-                            objSpiritControl.ForceMaximum = _objCharacter.MAGMagician;
-                    }
-                    else
+                    if (_objOptions.SpiritForceBasedOnTotalMAG)
                         objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue;
+                    else
+                        objSpiritControl.ForceMaximum = _objCharacter.MAG.Value;
                     objSpiritControl.CritterName = objSpirit.CritterName;
                     objSpiritControl.Force = objSpirit.Force;
                     objSpiritControl.Bound = objSpirit.Bound;
@@ -3992,8 +3987,7 @@ namespace Chummer
 
 		private void nudMysticAdeptMAGMagician_ValueChanged(object sender, EventArgs e)
         {
-            _objCharacter.MAGMagician = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
-            _objCharacter.MAGAdept = Convert.ToInt32(_objCharacter.MAG.TotalValue - nudMysticAdeptMAGMagician.Value);
+            _objCharacter.MysticAdeptPowerPoints = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -14492,7 +14486,7 @@ namespace Chummer
             if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
             {
                 // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                intMAG = _objCharacter.MAGAdept;
+                intMAG = _objCharacter.MysticAdeptPowerPoints;
             }
             else
             {
@@ -14642,16 +14636,12 @@ namespace Chummer
                 // Update the MAG pseudo-Attributes if applicable.
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
                 {
-                    _objCharacter.MAGAdept = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
+                    _objCharacter.MysticAdeptPowerPoints = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
                 }
 
                 // If MAG is enabled, update the Force for Spirits (equal to Magician MAG Rating) and Adept Powers.
                 if (_objCharacter.MAGEnabled)
                 {
-                    int intMAG = Convert.ToInt32(_objCharacter.MAG.TotalValue);
-                    if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-                        intMAG = _objCharacter.MAGMagician;
-
                     foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                     {
                         if (_objOptions.SpiritForceBasedOnTotalMAG)
@@ -14661,7 +14651,7 @@ namespace Chummer
                         }
                         else
                         {
-                            int intLocalMAG = intMAG;
+                            int intLocalMAG = _objCharacter.MAG.Value;
                             if (intLocalMAG == 0)
                                 intLocalMAG = 1;
 

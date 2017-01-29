@@ -30,6 +30,7 @@ Application Changes:
 - Increased use of static functions for increased portability and performance.
 - Removed attributes and controls that were holdovers from SR4e (e.g. Response, Signal, Initiative as a separate attribute, etc.).
 - Fixed multiple minor possible crashes if data was entered in an incorrect format.
+- Removed some 4e references to Mystic Adepts having to split their magic between being an Adept and a Magician. Fixed some weird behaviour with Spirit Force maximums related to this. 
 
 Data Changes:
 
