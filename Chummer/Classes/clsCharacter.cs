@@ -130,7 +130,6 @@ namespace Chummer
         private string _strRun = string.Empty;
         private string _strSprint = string.Empty;
         private int _intMetatypeBP = 0;
-        private int _intMutantCritterBaseSkills = 0;
 
 		// Special Flags.
 		
@@ -337,8 +336,6 @@ namespace Chummer
             objWriter.WriteElementString("run", _strRun);
             // <sprint />
             objWriter.WriteElementString("sprint", _strSprint);
-            // <mutantcritterbaseskills />
-            objWriter.WriteElementString("mutantcritterbaseskills", _intMutantCritterBaseSkills.ToString());
 
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
@@ -996,7 +993,6 @@ namespace Chummer
             objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
             objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
 		    objXmlCharacter.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
-		    objXmlCharacter.TryGetInt32FieldQuickly("mutantcritterbaseskills", ref _intMutantCritterBaseSkills);
 
             // General character information.
             objXmlCharacter.TryGetStringFieldQuickly("name", ref _strName);
@@ -2527,7 +2523,6 @@ namespace Chummer
             _strMetavariant = string.Empty;
             _strMetatypeCategory = string.Empty;
             _intMetatypeBP = 0;
-            _intMutantCritterBaseSkills = 0;
             _strMovement = string.Empty;
 
             // Reset Special Tab Flags.
@@ -5807,21 +5802,6 @@ namespace Chummer
             set
             {
                 _strMetatypeCategory = value;
-            }
-        }
-
-        /// <summary>
-        /// The number of Skill points the Critter had before it became a Mutant Critter.
-        /// </summary>
-        public int MutantCritterBaseSkills
-        {
-            get
-            {
-                return _intMutantCritterBaseSkills;
-            }
-            set
-            {
-                _intMutantCritterBaseSkills = value;
             }
         }
 

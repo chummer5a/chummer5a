@@ -1080,8 +1080,6 @@ namespace Chummer
 				{
 					int intMinModifier = -3;
                     int intMaxModifier = 3;
-                    if (cboCategory.SelectedValue.ToString() == "Mutant Critters")
-                        intMinModifier = 0;
                     if (cboCategory.SelectedValue.ToString() == "Technocritters")
                     {
                         intMinModifier = -1;
@@ -1545,13 +1543,6 @@ namespace Chummer
 					objGear.Cost6 = "0";
 					objGear.Cost10 = "0";
 					_objCharacter.Gear.Add(objGear);
-				}
-
-				// If this is a Mutant Critter, count up the number of Skill points they start with.
-				if (_objCharacter.MetatypeCategory == "Mutant Critters")
-				{
-					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-						_objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 				}
 
                 // begin priority based character settings
