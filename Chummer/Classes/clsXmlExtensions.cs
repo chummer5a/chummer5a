@@ -101,8 +101,8 @@ namespace Chummer
             catch (Exception)
             {
                 //If we are debugging, great
-                if (Debugger.IsAttached && false)
-                    Debugger.Break();
+                //if (Debugger.IsAttached && false)
+                //    Debugger.Break();
 
                 //Otherwise just log it
 #if DEBUG
@@ -249,7 +249,7 @@ namespace Chummer
                 }
                 else if (objXmlOperationChildNode.Name == "AND")
                 {
-                    boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, false) != boolInvert;
+                    boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode) != boolInvert;
                 }
                 else
                 {

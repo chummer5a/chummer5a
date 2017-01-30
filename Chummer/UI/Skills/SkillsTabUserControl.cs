@@ -330,7 +330,7 @@ namespace Chummer.UI.Skills
 		private void MakeSkillDisplays()
 		{
 			Stopwatch sw = Stopwatch.StartNew();
-			_groups = new BindingListDisplay<SkillGroup>(_character.SkillsSection.SkillGroups, @group => new SkillGroupControl(@group))
+			_groups = new BindingListDisplay<SkillGroup>(_character.SkillsSection.SkillGroups, group => new SkillGroupControl(group))
 			{
 				Location = new Point(0, 15),
 			};

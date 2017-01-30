@@ -5190,7 +5190,6 @@ namespace Chummer
             get
             {
                 int intHighest = 0;
-                int intArmor = 0;
 	            string strHighest = string.Empty;
 	            bool blnCustomFit = false;
 
@@ -5208,7 +5207,7 @@ namespace Chummer
 					}
                 }
 
-                intArmor = intHighest;
+                int intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
                 int intStacking = 0;
@@ -5262,8 +5261,6 @@ namespace Chummer
             get
             {
                 int intHighest = 0;
-                int intArmor = 0;
-                string strHighest;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 foreach (Armor objArmor in _lstArmor)
@@ -5271,10 +5268,9 @@ namespace Chummer
                     if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
                     {
                         intHighest = objArmor.TotalArmor;
-                        strHighest = objArmor.Name;
                     }
                 }
-                intArmor = intHighest;
+                int intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
                 int intStacking = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
@@ -5634,27 +5630,21 @@ namespace Chummer
         {
             get
             {
-				int intLimit = 0;
-				string strReturn = string.Empty;
+				int intLimit;
 				if (_strMetatype == "A.I.")
 				{
 					if (_blnHasHomeNode && _strHomeNodeCategory == "Vehicle")
 					{
-						strReturn = _strHomeNodeHandling;
+						return _strHomeNodeHandling;
 					}
-					else
-					{
-						strReturn = "0";
-					}
-                    return strReturn;
+                    return "0";
                 }
 				else
 				{
 					intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
 				}
 				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
-				strReturn = Convert.ToString(intLimit);
-                return strReturn;
+				return Convert.ToString(intLimit);
 			}
         }
 
@@ -5699,7 +5689,7 @@ namespace Chummer
         {
             get
             {
-				int intLimit = 0;
+				int intLimit;
 				if (_strMetatype == "A.I." && _blnHasHomeNode)
 				{
 					if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
@@ -5782,8 +5772,7 @@ namespace Chummer
 	            }
 
 				string strReturn = string.Empty;
-				XmlDocument objXmlDocument = new XmlDocument();
-	            objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+				XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 	            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 if (objXmlNode != null)
                 {
@@ -5834,7 +5823,7 @@ namespace Chummer
 		/// Character's running Movement rate. 
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
-		private int WalkingRate(string strType)
+		private int WalkingRate(string strType = "Ground")
 		{
 			string[] strReturn = _strWalk.Split('/');
 
@@ -5850,7 +5839,6 @@ namespace Chummer
                         int.TryParse(strReturn[1], out intTmp);
                     break;
                 case "Ground":
-                default:
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -5862,7 +5850,7 @@ namespace Chummer
 		/// Character's running Movement rate. 
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
-		private int RunningRate(string strType)
+		private int RunningRate(string strType = "Ground")
 		{
 			string[] strReturn = _strRun.Split('/');
 
@@ -5878,7 +5866,6 @@ namespace Chummer
                         int.TryParse(strReturn[1], out intTmp);
                     break;
                 case "Ground":
-                default:
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -5890,7 +5877,7 @@ namespace Chummer
 		/// Character's running Movement rate. 
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
-		private int SprintingRate(string strType)
+		private int SprintingRate(string strType = "Ground")
 		{
 			string[] strReturn = _strSprint.Split('/');
 
@@ -5906,7 +5893,6 @@ namespace Chummer
                         int.TryParse(strReturn[1], out intTmp);
                     break;
                 case "Ground":
-                default:
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -5916,7 +5902,7 @@ namespace Chummer
 
 	    private string CalculatedMovement(Improvement.ImprovementType objImprovementType, string strMovementType, bool blnUseCyberlegs = false)
 	    {
-		    string strReturn = "0";
+		    string strReturn;
 			int intMultiply = 1;
 			// If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
 			if (strMovementType == "Fly" && _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) < 0)
@@ -5971,11 +5957,11 @@ namespace Chummer
 			}
 			if (strMovementType == "Swim")
 			{
-				strReturn = String.Format("{0}, {1}m/ hit", intWalk, intSprint);
+				strReturn = $"{intWalk}, {intSprint}m/ hit";
 			}
 			else
 			{
-				strReturn = String.Format("{0}/{1}, {2}m/ hit", intWalk, intRun, intSprint);
+				strReturn = $"{intWalk}/{intRun}, {intSprint}m/ hit";
 			}
 			if (string.IsNullOrEmpty(strReturn) || strReturn == "0/0, 0m/ hit")
 			{
@@ -6466,24 +6452,14 @@ namespace Chummer
         /// <param name="strAvail">Item's Availability.</param>
         public string AvailTest(int intCost, string strAvail)
         {
-            string strReturn = string.Empty;
-            string strInterval = string.Empty;
-            int intAvail = 0;
-            int intTest = 0;
+            string strReturn;
+            int intAvail;
+            int.TryParse(strAvail.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), string.Empty).Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), string.Empty), out intAvail);
 
-            try
+            if (intAvail != 0 && (strAvail.Contains(LanguageManager.Instance.GetString("String_AvailRestricted")) || strAvail.Contains(LanguageManager.Instance.GetString("String_AvailForbidden"))))
             {
-                intAvail = Convert.ToInt32(strAvail.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), string.Empty).Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), string.Empty));
-            }
-            catch (FormatException) { }
-
-            bool blnCalculate = true;
-
-            if (intAvail == 0 || (!strAvail.Contains(LanguageManager.Instance.GetString("String_AvailRestricted")) && !strAvail.Contains(LanguageManager.Instance.GetString("String_AvailForbidden"))))
-                blnCalculate = false;
-
-            if (blnCalculate)
-            {
+                string strInterval;
+                int intTest = 0;
                 // Determine the interval based on the item's price.
                 if (intCost <= 100)
                     strInterval = "12 " + LanguageManager.Instance.GetString("String_Hours");
@@ -6578,7 +6554,7 @@ namespace Chummer
             {
                 if (objImprovement.ImproveType == objImprovementType)
                 {
-                    if (!blnRequireEnabled || (blnRequireEnabled && objImprovement.Enabled))
+                    if (!blnRequireEnabled || objImprovement.Enabled)
                         return true;
                 }
             }

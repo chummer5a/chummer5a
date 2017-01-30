@@ -479,7 +479,7 @@ namespace Chummer
 			// Make sure the destination is another piece of Gear or a Location.
 			bool blnDestinationGear = true;
 			bool blnDestinationLocation = false;
-			Vehicle objTempVehicle = new Vehicle(_objCharacter);
+			Vehicle objTempVehicle;
 			Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
 			if (objDestinationGear == null)
 				blnDestinationGear = false;
@@ -500,7 +500,7 @@ namespace Chummer
 				return;
 
 			// Locate the currently selected piece of Gear.
-			Vehicle objVehicle = new Vehicle(_objCharacter);
+			Vehicle objVehicle;
 			Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
 
 			// Gear cannot be moved to one of its children.
@@ -713,7 +713,7 @@ namespace Chummer
 		/// </summary>
 		public void ClearCyberwareTab(TreeView treCyberware, TreeView treWeapons, TreeView treVehicles, TreeView treQualities)
         {
-            XmlDocument objXmlDocument = new XmlDocument();
+            XmlDocument objXmlDocument;
             // Run through all of the Advanced Programs and remove their Improvements.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
@@ -963,7 +963,7 @@ namespace Chummer
 		/// </summary>
 		public string CalculateFreeSpiritPowerPoints()
 		{
-			string strReturn = string.Empty;
+			string strReturn;
 
 			if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
 			{
@@ -982,11 +982,11 @@ namespace Chummer
 				if (_objCharacter.Options.FreeSpiritPowerPointsMAG)
 					intPowerPoints = _objCharacter.MAG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-				strReturn = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+				strReturn = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
 			}
 			else
 			{
-				int intPowerPoints = 0;
+				int intPowerPoints;
 
 				if (_objCharacter.Metatype == "Free Spirit")
 				{
@@ -1012,7 +1012,7 @@ namespace Chummer
 						intUsed++;
 				}
 
-				strReturn = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - intUsed, intPowerPoints);
+				strReturn = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - intUsed, intPowerPoints);
 			}
 
 			return strReturn;
@@ -1023,8 +1023,6 @@ namespace Chummer
 		/// </summary>
 		public string CalculateFreeSpritePowerPoints()
 		{
-			string strReturn = string.Empty;
-
 			// Free Sprite Power Points.
 			double dblPowerPoints = 0;
 
@@ -1036,9 +1034,7 @@ namespace Chummer
 
 			int intPowerPoints = _objCharacter.EDG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-			strReturn = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
-
-			return strReturn;
+			return string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
 		}
 
 		/// <summary>

@@ -205,9 +205,9 @@ namespace Chummer.helpers
             {
                 if (objHighlighted != null)
                 {
-                    if (objNode != (TreeNode)objHighlighted)
+                    if (objNode != objHighlighted)
                         objNode.BackColor = SystemColors.Window;
-                    ClearNodeBackground(objNode, (TreeNode)objHighlighted);
+                    ClearNodeBackground(objNode, objHighlighted);
                 }
             }
         }

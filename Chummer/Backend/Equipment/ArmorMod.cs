@@ -112,7 +112,7 @@ namespace Chummer.Backend.Equipment
 
                 if (objXmlArmorCostNode.InnerText.StartsWith("Variable"))
                 {
-                    int intMin = 0;
+                    int intMin;
                     int intMax = 0;
                     char[] chrParentheses = { '(', ')' };
                     string strCost = objXmlArmorCostNode.InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
@@ -505,11 +505,10 @@ namespace Chummer.Backend.Equipment
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-					string strCost = string.Empty;
+                    
 					string strCostExpression = _strCost;
 
-					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					return nav.Evaluate(xprCost).ToString();
 				}
@@ -661,10 +660,9 @@ namespace Chummer.Backend.Equipment
 				if (_strAvail.Contains("+"))
 					return _strAvail;
 
-				string strCalculated = string.Empty;
-				string strReturn = string.Empty;
+				string strCalculated;
 
-				if (_strAvail.Contains("Rating"))
+			    if (_strAvail.Contains("Rating"))
 				{
 					// If the availability is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -693,7 +691,7 @@ namespace Chummer.Backend.Equipment
 						strCalculated = Convert.ToInt32(_strAvail).ToString();
 				}
 
-				int intAvail = 0;
+				int intAvail;
 				string strAvailText = string.Empty;
 				if (strCalculated.Contains("F") || strCalculated.Contains("R"))
 				{
@@ -703,7 +701,7 @@ namespace Chummer.Backend.Equipment
 				else
 					intAvail = Convert.ToInt32(strCalculated);
 
-				strReturn = intAvail.ToString() + strAvailText;
+				string strReturn = intAvail.ToString() + strAvailText;
 
 				// Translate the Avail string.
 				strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
@@ -763,7 +761,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intReturn = 0;
+				int intReturn;
 
 				if (_strCost.Contains("Armor Cost"))
 				{

@@ -348,7 +348,7 @@ namespace Chummer.Skills
 			//Makes debugging easier as we often only care about value calculation
 			if (LearnedRating == 0) return 0;
 
-			int cost = 0;
+			int cost;
 			if (SkillGroupObject?.Karma > 0)
 			{
 				int groupUpper = SkillGroupObject.GetEnumerable().Min(x => x.Base + x.Karma);
@@ -461,14 +461,10 @@ namespace Chummer.Skills
 			if (!CanUpgradeCareer) return;
 
 			int price = UpgradeKarmaCost();
-            string strSkillType = string.Empty;
+            string strSkillType = "String_ExpenseActiveSkill";
             if (IsKnowledgeSkill)
             {
                 strSkillType = "String_ExpenseKnowledgeSkill";
-            }
-            else
-            {
-                strSkillType = "String_ExpenseActiveSkill";
             }
 			//If data file contains {4} this crashes but...
 			string upgradetext =

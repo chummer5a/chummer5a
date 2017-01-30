@@ -586,7 +586,7 @@ namespace Chummer.Skills
 			{
 				if (lhsExoticSkill != null)
 				{
-					return String.Compare(rhsExoticSkill.Specific ?? string.Empty, lhsExoticSkill.Specific ?? string.Empty, StringComparison.Ordinal);
+					return string.Compare(rhsExoticSkill.Specific ?? string.Empty, lhsExoticSkill.Specific ?? string.Empty, StringComparison.Ordinal);
 				}
 				else
 				{
@@ -597,13 +597,9 @@ namespace Chummer.Skills
 			{
 				return -1;
 			}
-			else if (rhs != null && lhs != null)
-			{
-			    return String.Compare(rhs.DisplayName, lhs.DisplayName, StringComparison.Ordinal);
-			}
 
-			return 0;
-		}
+            return string.Compare(rhs.DisplayName, lhs.DisplayName, StringComparison.Ordinal);
+        }
 
 		public static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
 		{
