@@ -1106,10 +1106,6 @@ namespace Chummer
 
             mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
 
-            if (_objCharacter.MetatypeCategory == "Mundane Critters")
-                mnuSpecialMutantCritter.Visible = true;
-            if (_objCharacter.MetatypeCategory == "Mutant Critters")
-                mnuSpecialToxicCritter.Visible = true;
             if (_objCharacter.MetatypeCategory == "Cyberzombie")
                 mnuSpecialCyberzombie.Visible = false;
 
@@ -1979,52 +1975,6 @@ namespace Chummer
         private void mnuSpecialChangeMetatype_Click(object sender, EventArgs e)
         {
             ChangeMetatype();
-        }
-
-        private void mnuSpecialMutantCritter_Click(object sender, EventArgs e)
-        {
-            _objCharacter.MetatypeCategory = "Mutant Critters";
-            mnuSpecialMutantCritter.Visible = false;
-            mnuSpecialToxicCritter.Visible = true;
-
-            // Update the Critter's CharacterAttribute maximums to 1.5X their current value (or 1, whichever is higher).
-            _objCharacter.BOD.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.BOD.Value + 1) / 2);
-            _objCharacter.AGI.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.AGI.Value + 1) / 2);
-            _objCharacter.REA.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.REA.Value + 1) / 2);
-            _objCharacter.STR.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.STR.Value + 1) / 2);
-            _objCharacter.CHA.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.CHA.Value + 1) / 2);
-            _objCharacter.INT.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.INT.Value + 1) / 2);
-            _objCharacter.LOG.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.LOG.Value + 1) / 2);
-            _objCharacter.WIL.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.WIL.Value + 1) / 2);
-            _objCharacter.EDG.MetatypeMaximum = Math.Max(1, (3 * _objCharacter.EDG.Value + 1) / 2);
-            _objCharacter.MAG.MetatypeMaximum = (3 * _objCharacter.MAG.Value + 1) / 2;
-            _objCharacter.RES.MetatypeMaximum = (3 * _objCharacter.RES.Value + 1) / 2;
-            _objCharacter.DEP.MetatypeMaximum = (3 * _objCharacter.DEP.Value + 1) / 2;
-
-            _objCharacter.BOD.MetatypeMinimum = _objCharacter.BOD.Value;
-            _objCharacter.AGI.MetatypeMinimum = _objCharacter.AGI.Value;
-            _objCharacter.REA.MetatypeMinimum = _objCharacter.REA.Value;
-            _objCharacter.STR.MetatypeMinimum = _objCharacter.STR.Value;
-            _objCharacter.CHA.MetatypeMinimum = _objCharacter.CHA.Value;
-            _objCharacter.INT.MetatypeMinimum = _objCharacter.INT.Value;
-            _objCharacter.LOG.MetatypeMinimum = _objCharacter.LOG.Value;
-            _objCharacter.WIL.MetatypeMinimum = _objCharacter.WIL.Value;
-            _objCharacter.EDG.MetatypeMinimum = _objCharacter.EDG.Value;
-            _objCharacter.MAG.MetatypeMinimum = _objCharacter.MAG.Value;
-            _objCharacter.RES.MetatypeMinimum = _objCharacter.RES.Value;
-            _objCharacter.DEP.MetatypeMinimum = _objCharacter.DEP.Value;
-
-            // Count the number of Skill points the Critter currently has.
-            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                _objCharacter.MutantCritterBaseSkills += objSkill.Rating;
-
-            UpdateCharacterInfo();
-        }
-
-        private void mnuSpecialToxicCritter_Click(object sender, EventArgs e)
-        {
-            _objCharacter.MetatypeCategory = "Toxic Critters";
-            mnuSpecialToxicCritter.Visible = false;
         }
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
@@ -14915,87 +14865,6 @@ namespace Chummer
                 if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Memory) != 0)
                     strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory).ToString() + ")";
                 tipTooltip.SetToolTip(lblMemory, strTip);
-
-                // If this is a Mutant Critter, determine their Essence loss: -1 for each of: Every 2 points added to a Skill, Each Quality (or Quality Rating). This can be offset by a Negative Quality (or Quality Rating)
-                if (_objCharacter.MetatypeCategory == "Mutant Critters")
-                {
-                    // Remove any current Essence Improvements from MutantCritter.
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MutantCritter, string.Empty);
-
-                    int intEssencePenalty = 0;
-                    int intIntuitionPenalty = 0;
-                    int intAttributeDiff = 0;
-                    int intQualityPoints = 0;
-                    int intSkillPoints = 0;
-
-                    intAttributeDiff += (_objCharacter.BOD.Value - _objCharacter.BOD.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.AGI.Value - _objCharacter.AGI.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.REA.Value - _objCharacter.REA.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.STR.Value - _objCharacter.STR.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.CHA.Value - _objCharacter.CHA.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.INT.Value - _objCharacter.INT.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.LOG.Value - _objCharacter.LOG.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.WIL.Value - _objCharacter.WIL.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.EDG.Value - _objCharacter.EDG.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.MAG.Value - _objCharacter.MAG.MetatypeMinimum);
-                    intAttributeDiff += (_objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum);
-					intAttributeDiff += (_objCharacter.DEP.Value - _objCharacter.DEP.MetatypeMinimum);
-
-					// -1 Essence for every 2 points spent on Attributes.
-					intEssencePenalty += (intAttributeDiff + 1) / 2;
-
-                    // Run through the Qualities the Critter has and add up their Mutant Points.
-                    foreach (Quality objQuality in _objCharacter.Qualities)
-                    {
-                        if (objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable)
-                            intQualityPoints += objQuality.MutantPoints;
-                    }
-                    // Negative Qualities can only offset the cost of Positive Qualities, so set this back to 0 if there are more Negative than Positive.
-                    if (intQualityPoints < 0)
-                        intQualityPoints = 0;
-
-                    // Run through the Skills the Critter has.
-                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                        intSkillPoints += objSkill.Rating;
-
-                    // Subtract the number fo Skill points the Critter had when it mutated.
-                    intSkillPoints -= _objCharacter.MutantCritterBaseSkills;
-
-                    // Make sure this doesn't go below 0.
-                    if (intSkillPoints < 0)
-                        intSkillPoints = 0;
-
-                    // Every 2 points causes another point of Essence loss.
-                    intEssencePenalty += (intSkillPoints + 1) / 2;
-
-                    intEssencePenalty += intQualityPoints;
-
-                    // Essence cannot go below 1 from these changes, so make sure we don't go over ESS - 1.
-                    if (intEssencePenalty > _objCharacter.ESS.MetatypeMaximum - 1)
-                        intEssencePenalty = _objCharacter.ESS.MetatypeMaximum - 1;
-                    // INT is reduced for every 2 points of ESS lost to a minimum of 1.
-                    intIntuitionPenalty = (intEssencePenalty + 1) / 2;
-                    if (_objCharacter.INT.TotalValue - intIntuitionPenalty < 1)
-                        intIntuitionPenalty = _objCharacter.INT.TotalValue - 1;
-
-                    // Now that everything is calculated, create the Essence Loss and Intuition Penalty Improvements.
-                    intEssencePenalty *= -1;
-                    intIntuitionPenalty *= -1;
-                    if (intEssencePenalty < 0)
-                        _objImprovementManager.CreateImprovement("", Improvement.ImprovementSource.MutantCritter, string.Empty, Improvement.ImprovementType.Essence, string.Empty, intEssencePenalty);
-                    if (intIntuitionPenalty < 0)
-                        _objImprovementManager.CreateImprovement("INT", Improvement.ImprovementSource.MutantCritter, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intIntuitionPenalty);
-                    if (_objCharacter.INT.TotalValue != nudINT.Value)
-                        lblINTAug.Text = string.Format("({0})", _objCharacter.INT.TotalValue);
-                    else
-                        lblINTAug.Text = string.Empty;
-
-                    // Refresh the Essence values.
-                    decESS = _objCharacter.Essence;
-                    lblESSMax.Text = decESS.ToString();
-                    tssEssence.Text = string.Format("{0:0.00}", decESS);
-                    lblPBuildEssence.Text = string.Format("{0:0.00}", decESS);
-                }
 
                 _blnSkipUpdate = false;
 

@@ -656,8 +656,6 @@ namespace Chummer
 					else
 					{
 						int intMinModifier = -3;
-						if (objXmlMetatype["category"].InnerText == "Mutant Critters")
-							intMinModifier = 0;
 						_objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3));
 						_objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3));
 						_objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3));
@@ -915,13 +913,6 @@ namespace Chummer
 						objGear.Cost6 = "0";
 						objGear.Cost10 = "0";
 						_objCharacter.Gear.Add(objGear);
-					}
-
-					// If this is a Mutant Critter, count up the number of Skill points they start with.
-					if (_objCharacter.MetatypeCategory == "Mutant Critters")
-					{
-						foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							_objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 					}
 				}
 				catch

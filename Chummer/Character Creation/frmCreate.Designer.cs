@@ -2709,26 +2709,6 @@ namespace Chummer
 			this.mnuSpecialChangeMetatype.Text = "Change &Metatype";
 			this.mnuSpecialChangeMetatype.Click += new System.EventHandler(this.mnuSpecialChangeMetatype_Click);
 			// 
-			// mnuSpecialMutantCritter
-			// 
-			this.mnuSpecialMutantCritter.Image = global::Chummer.Properties.Resources.emoticon_surprised;
-			this.mnuSpecialMutantCritter.Name = "mnuSpecialMutantCritter";
-			this.mnuSpecialMutantCritter.Size = new System.Drawing.Size(213, 22);
-			this.mnuSpecialMutantCritter.Tag = "Menu_SpecialConvertToMutantCritter";
-			this.mnuSpecialMutantCritter.Text = "Convert to Mutant Critter";
-			this.mnuSpecialMutantCritter.Visible = false;
-			this.mnuSpecialMutantCritter.Click += new System.EventHandler(this.mnuSpecialMutantCritter_Click);
-			// 
-			// mnuSpecialToxicCritter
-			// 
-			this.mnuSpecialToxicCritter.Image = global::Chummer.Properties.Resources.emoticon_tongue;
-			this.mnuSpecialToxicCritter.Name = "mnuSpecialToxicCritter";
-			this.mnuSpecialToxicCritter.Size = new System.Drawing.Size(213, 22);
-			this.mnuSpecialToxicCritter.Tag = "Menu_SpecialConvertToToxicCritter";
-			this.mnuSpecialToxicCritter.Text = "Convert to Toxic Critter";
-			this.mnuSpecialToxicCritter.Visible = false;
-			this.mnuSpecialToxicCritter.Click += new System.EventHandler(this.mnuSpecialToxicCritter_Click);
-			// 
 			// mnuSpecialCyberzombie
 			// 
 			this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.emoticon_evilgrin;

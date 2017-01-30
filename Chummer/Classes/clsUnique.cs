@@ -1789,58 +1789,6 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Number of points a Quality counts as for a Mutant Critter.
-		/// </summary>
-		public int MutantPoints
-		{
-			get
-			{
-				int intReturn = 0;
-
-				if (_strMutant == "yes")
-				{
-					if (_strName.Contains("Rating 1"))
-					{
-						if (_objQualityType == QualityType.Positive)
-							intReturn = 1;
-						else
-							intReturn = -1;
-					}
-					else if (_strName.Contains("Rating 2"))
-					{
-						if (_objQualityType == QualityType.Positive)
-							intReturn = 2;
-						else
-							intReturn = -2;
-					}
-					else if (_strName.Contains("Rating 3"))
-					{
-						if (_objQualityType == QualityType.Positive)
-							intReturn = 3;
-						else
-							intReturn = -3;
-					}
-					else if (_strName.Contains("Rating 4"))
-					{
-						if (_objQualityType == QualityType.Positive)
-							intReturn = 4;
-						else
-							intReturn = -4;
-					}
-					else
-					{
-						if (_objQualityType == QualityType.Positive)
-							intReturn = 1;
-						else
-							intReturn = -1;
-					}
-				}
-
-				return intReturn;
-			}
-		}
-
-		/// <summary>
 		/// Notes.
 		/// </summary>
 		public string Notes

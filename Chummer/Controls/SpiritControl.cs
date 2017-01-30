@@ -581,8 +581,6 @@ namespace Chummer
 			else
 			{
 				int intMinModifier = -3;
-				if (objXmlMetatype["category"].InnerText == "Mutant Critters")
-					intMinModifier = 0;
 				objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3));
 				objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3));
 				objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3));
@@ -749,13 +747,6 @@ namespace Chummer
 				objGear.Cost6 = "0";
 				objGear.Cost10 = "0";
 				objCharacter.Gear.Add(objGear);
-			}
-
-			// If this is a Mutant Critter, count up the number of Skill points they start with.
-			if (objCharacter.MetatypeCategory == "Mutant Critters")
-			{
-				foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
-					objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 			}
 
             // Add the Unarmed Attack Weapon to the character.
