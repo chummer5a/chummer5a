@@ -139,8 +139,9 @@ namespace Chummer
 	        if (!tree.Created)
 	        {
 	            Control c = tree.ControlLazy();
-	            Controls.Add(c);
                 SetupControl(c);
+                Controls.Add(c);
+                
 	        }
 
 	      

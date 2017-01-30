@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Chummer.Backend.Datastructures;
 
 namespace Chummer.Backend
 {
@@ -18,47 +19,40 @@ namespace Chummer.Backend
         public static int ARGBIntLABInterpolate(int color1, int color2, float scale)
         {
             ScaleSanityCheck(scale);
-            double[] argb1 = ToColorFractions(color1);
-            double[] argb2 = ToColorFractions(color2);
+            Vector4 argb1 = ToColorFractions(color1);
+            Vector4 argb2 = ToColorFractions(color2);
 
-            double[] xyz1 = RGBToXYZ(argb1);
-            double[] xyz2 = RGBToXYZ(argb2);
+            Vector3 xyz1 = RGBToXYZ(argb1.AsVector3);
+            Vector3 xyz2 = RGBToXYZ(argb2.AsVector3);
 
-            double[] lab1 = XYZToLAB(xyz1);
-            double[] lab2 = XYZToLAB(xyz2);
+            Vector3 lab1 = XYZToLAB(xyz1);
+            Vector3 lab2 = XYZToLAB(xyz2);
 
-            double newalpha = Math.Max(argb1[3],argb2[3]);
+            double newalpha = Math.Max(argb1.W,argb2.W);
 
-            double realscale = CalculateRealScale(argb1[3], argb2[3], scale);
+            double realscale = CalculateRealScale(argb1.W, argb2.W, scale);
 
-            double[] lab3 = new double[3];
-            for (int i = 0; i < 3; i++)
-            {
-                lab3[i] = lab1[i] * (1 - realscale) + lab2[i] * realscale;
-            }
+            Vector3 lab3 = new Vector3(
+                lab1.X * (1 - realscale) + lab2.X * realscale,
+                lab1.Y * (1 - realscale) + lab2.Y * realscale,
+                lab1.Z * (1 - realscale) + lab2.Z * realscale
+            );
 
-            double[] xyz = LABToXYZ(lab3);
 
-            double[] rgb = XYZToRGB(xyz);
+            Vector3 xyz = LABToXYZ(lab3);
 
-            for (int i = 0; i < 3; i++)
-            {
-                rgb[i] = Math.Max(0, Math.Min(1, rgb[i]));
-            }
+            Vector3 rgb = XYZToRGB(xyz);
+
+            rgb = new Vector3(
+                Math.Max(0, Math.Min(1, rgb.X)),
+                Math.Max(0, Math.Min(1, rgb.Y)),
+                Math.Max(0, Math.Min(1, rgb.Z))
+            );
 
             int final = (int)(newalpha * 255);
-            return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
+            return (final << 24) | ((int)(rgb.X * 255) << 16) | ((int)(rgb.Y * 255) << 8) | ((int)(rgb.Z * 255));
 
-                unchecked
-            {
 
-                for (int i = 0; i < 3; i++)
-                {
-                    final <<= 8;
-                    final |= (int)(rgb[2-i] * 255);
-                }
-                return final;
-            }
         }
 
         private static void ScaleSanityCheck(float scale)
@@ -71,31 +65,73 @@ namespace Chummer.Backend
         {
             ScaleSanityCheck(scale);
 
-            double[] argb1 = ToColorFractions(color1);
-            double[] argb2 = ToColorFractions(color2);
+            Vector4 argb1 = ToColorFractions(color1);
+            Vector4 argb2 = ToColorFractions(color2);
 
-            double[] xyz1 = RGBToXYZ(argb1);
-            double[] xyz2 = RGBToXYZ(argb2);
+            Vector3 xyz1 = RGBToXYZ(argb1.AsVector3);
+            Vector3 xyz2 = RGBToXYZ(argb2.AsVector3);
 
-            double newalpha = Math.Max(argb1[3],argb2[3]);
+            double newalpha = Math.Max(argb1.W,argb2.W);
 
-            double realscale = CalculateRealScale(argb1[3], argb2[3], scale);
+            double realscale = CalculateRealScale(argb1.W, argb2.W, scale);
 
-            double[] xyz = new double[3];
-            for (int i = 0; i < 3; i++)
-            {
-                xyz[i] = xyz1[i] * (1 - realscale) + xyz2[i] * realscale;
-            }
+            Vector3 xyz = new Vector3(
+                xyz1.X * (1 - realscale) + xyz2.X * realscale,
+                xyz1.Y * (1 - realscale) + xyz2.Y * realscale, 
+                xyz1.Z * (1 - realscale) + xyz2.Z * realscale
+            );
+            
+            Vector3 rgb = XYZToRGB(xyz);
 
-            double[] rgb = XYZToRGB(xyz);
-
-            for (int i = 0; i < 3; i++)
-            {
-                rgb[i] = Math.Max(0, Math.Min(1, rgb[i]));
-            }
+            rgb = new Vector3(
+                Math.Max(0, Math.Min(1, rgb.X)),
+                Math.Max(0, Math.Min(1, rgb.Y)),
+                Math.Max(0, Math.Min(1, rgb.Z))
+            );
 
             int final = (int)(newalpha * 255);
-            return (final << 24) | ((int)(rgb[0] * 255) << 16) | ((int)(rgb[1] * 255) << 8) | ((int)(rgb[2] * 255));
+            return (final << 24) | ((int)(rgb.X * 255) << 16) | ((int)(rgb.Y * 255) << 8) | ((int)(rgb.Z * 255));
+        }
+
+        /// <summary>
+        /// Performs alpha blending between 2 colors
+        /// </summary>
+        /// <param name="overlay">The color to be drawn above back</param>
+        /// <param name="back">The background color</param>
+        /// <returns></returns>
+        public static int ARGBIntXYZAlphaBlend(int overlay, int back)
+        {
+            Vector4 overlayargb = ToColorFractions(overlay);
+            Vector4 backargb = ToColorFractions(back);
+
+            
+
+            Vector3 overlayxyz = RGBToXYZ(overlayargb.AsVector3);
+            Vector3 baclxyz = RGBToXYZ(backargb.AsVector3);
+
+            //Calculate the new alpha value. Calculation is done with a multiplication of the alpha values, but instead of multiplying the alpha values
+            //the "reverse" alpha is multiplied to find the new "reverse" alpha. Reverse alpha is the opposite of alpha 1 - a = r a
+            double newalpha = 1 - ((1 - overlayargb.W) * (1 - backargb.W));
+
+            double overlayfraction = overlayargb.W / newalpha;
+
+            Vector3 xyz = new Vector3(
+                (overlayxyz.X * overlayfraction) + (baclxyz.X * (1 - overlayfraction)),
+                (overlayxyz.Y * overlayfraction) + (baclxyz.Y * (1 - overlayfraction)),
+                (overlayxyz.Z * overlayfraction) + (baclxyz.Z * (1 - overlayfraction))
+            );
+
+            Vector3 rgb = XYZToRGB(xyz);
+
+            rgb = new Vector3(
+                Math.Max(0, Math.Min(1, rgb.X)),
+                Math.Max(0, Math.Min(1, rgb.Y)),
+                Math.Max(0, Math.Min(1, rgb.Z))
+            );
+
+            
+            int final = (int)(newalpha * 255);
+            return (final << 24) | ((int)(rgb.X * 255) << 16) | ((int)(rgb.Y * 255) << 8) | ((int)(rgb.Z * 255));
         }
 
         private static double CalculateRealScale(double alpha1, double alpha2, float scale)
@@ -109,127 +145,98 @@ namespace Chummer.Backend
 
         private const double epsilon = 216.0 / 24389.0;
         private const double kappa = 24389.0 / 27.0;
-        private static readonly double[] XYZreference = RGBToXYZ(new[] {1.0, 1.0, 1.0});
+        private static readonly Vector3 XYZreference = RGBToXYZ(new Vector3(1,1,1));
 
-        internal static double[] XYZToLAB(double[] XYZ)
+        internal static Vector3 XYZToLAB(Vector3 XYZ)
         {
 
-            double[] xyz = new double[3];
-            double[] f= new double[3];
-            double[] Lab = new double[3];
+            Vector3 xyz = new Vector3(
+                XYZ.X / XYZreference.X,
+                XYZ.Y / XYZreference.Y, 
+                XYZ.Z / XYZreference.Z);
+            
+            Vector3 f = new Vector3(
+                xyz.X > epsilon ? Math.Pow(xyz.X, 1.0 / 3.0) : (kappa * xyz.X + 16.0) / 116,
+                xyz.Y > epsilon ? Math.Pow(xyz.Y, 1.0 / 3.0) : (kappa * xyz.Y + 16.0) / 116,
+                xyz.Z > epsilon ? Math.Pow(xyz.Z, 1.0 / 3.0) : (kappa * xyz.Z + 16.0) / 116
+                );
 
-            for (int i = 0; i < 3; i++)
-            {
-                xyz[i] = XYZ[i] / XYZreference[i];
-            }
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (xyz[i] > epsilon)
-                {
-                    //Cube root
-                    f[i] = Math.Pow(xyz[i], 1.0 / 3.0);
-                }
-                else
-                {
-                    f[i] = (kappa * xyz[i] + 16.0) / 116;
-                }
-            }
-
-            Lab[2] = 116.0 * f[1] - 16;
-            Lab[1] = 500.0 * (f[2] - f[1]);
-            Lab[0] = 200.0 * (f[1] - f[0]);
-            return Lab;
+            return new Vector3(
+                200.0 * (f.Y - f.X), 
+                500.0 * (f.Z - f.Y), 
+                116.0 * f.Y - 16);
+            
         }
 
-        internal static double[] LABToXYZ(double[] Lab)
+        internal static Vector3 LABToXYZ(Vector3 Lab)
         {
-            double[] f = new double[3];
-            double[] xyz = new double[3];
-            double[] XYZ = new double[3];
+            Vector3 xyz = new Vector3();
 
-            f[1] = (Lab[2] + 16) / 116;
-            f[0] = f[1] - (Lab[0] / 200);
-            f[2] = (Lab[1] / 500) + f[1];
+            double f_1 = (Lab.Z + 16) / 116;
+            double f_0 = f_1 - (Lab.X / 200);
+            double f_2 = (Lab.Y / 500) + f_1;
 
-            if (Math.Pow(f[2], 3) > epsilon)
+            if (Math.Pow(f_2, 3) > epsilon)
             {
-                xyz[2] = Math.Pow(f[2], 3);
+                xyz.Z = Math.Pow(f_2, 3);
             }
             else
             {
-                xyz[2] = (116*f[2]-16) /kappa;
+                xyz.Z = (116*f_2-16) /kappa;
             }
 
-            if (Lab[2] > kappa * epsilon)
+            if (Lab.Z > kappa * epsilon)
             {
-                xyz[1] = Math.Pow((Lab[2] + 16) / 116, 3);
+                xyz.Y = Math.Pow((Lab.Z + 16) / 116, 3);
             }
             else
             {
-                xyz[1] = Lab[2] / kappa;
+                xyz.Y = Lab.Z / kappa;
             }
 
-            if (Math.Pow(f[0], 3) > epsilon)
+            if (Math.Pow(f_0, 3) > epsilon)
             {
-                xyz[0] = Math.Pow(f[0], 3);
+                xyz.X = Math.Pow(f_0, 3);
             }
             else
             {
-                xyz[0] = (116 * f[0] - 16) / kappa;
+                xyz.X = (116 * f_0 - 16) / kappa;
             }
 
-            for (int i = 0; i < 3; i++)
-            {
-                XYZ[i] = xyz[i] * XYZreference[i];
-            }
-
-            return XYZ;
+            return new Vector3(
+                xyz.X * XYZreference.X,
+                xyz.Y * XYZreference.Y,
+                xyz.Z * XYZreference.Z);
         }
 
-        internal static double[] XYZToRGB(double[] input)
+        internal static Vector3 XYZToRGB(Vector3 input)
         {
             /*
 1     3.2404548360214087	-1.537138850102575	-0.4985315468684809
 2	-0.9692663898756537	1.876010928842491	0.04155608234667351
 3	0.055643419604213644	-0.20402585426769815	1.0572251624579287
 */
-            double[] v = new double[3];
+            Vector3 v = new Vector3(
+                3.2404548360214087 * input.X + -1.537138850102575 * input.Y + -0.4985315468684809 * input.Z,
+                -0.9692663898756537 * input.X + 1.876010928842491 * input.Y + 0.04155608234667351 * input.Z,
+                0.055643419604213644 * input.X + -0.20402585426769815 * input.Y + 1.0572251624579287 * input.Z
+            );
+            
 
-            v[0] = 3.2404548360214087 * input[0] + -1.537138850102575 * input[1] + -0.4985315468684809 * input[2];
-            v[1] = -0.9692663898756537 * input[0] + 1.876010928842491 * input[1] + 0.04155608234667351 * input[2];
-            v[2] = 0.055643419604213644 * input[0] + -0.20402585426769815 * input[1] + 1.0572251624579287 * input[2];
-
-            double[] V = new double[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (v[i] <= 0.00313080)
-                {
-                    V[i] = 12.92 * v[i];
-                }
-                else
-                {
-                    V[i] = 1.055 * Math.Pow(v[i], 1 / 2.4) - 0.055;
-                }
-
-
-            }
+            Vector3 V = new Vector3(
+                v.X <= 0.00313080 ? 12.92 * v.X : 1.055 * Math.Pow(v.X, 1 / 2.4) - 0.055,
+                v.Y <= 0.00313080 ? 12.92 * v.Y : 1.055 * Math.Pow(v.Y, 1 / 2.4) - 0.055,
+                v.Z <= 0.00313080 ? 12.92 * v.Z : 1.055 * Math.Pow(v.Z, 1 / 2.4) - 0.055);
 
             return V;
         }
 
-        internal static double[] RGBToXYZ(double[] input)
+        internal static Vector3 RGBToXYZ(Vector3 input)
         {
-            double[] result = new double[3];
-            double[] v = new double[3];
-            int i = 0;
-            for (; i < 3; i++)
-            {
-                double V = input[i];
-
-                v[i] = V > 0.04045 ? Math.Pow((V + 0.055) / 1.055, 2.4) : V / 12.92;
-            }
+            Vector3 v = new Vector3(
+                input.X > 0.04045 ? Math.Pow((input.X + 0.055) / 1.055, 2.4) : input.X / 12.92,
+                input.Y > 0.04045 ? Math.Pow((input.Y + 0.055) / 1.055, 2.4) : input.Y / 12.92,
+                input.Z > 0.04045 ? Math.Pow((input.Z + 0.055) / 1.055, 2.4) : input.Z / 12.92);
 
             /* [X;Y;Z] = M*v
             *
@@ -241,25 +248,27 @@ namespace Chummer.Backend
 
             //Do the matrix multiplication. As we don't have any matrix math package included, here it is raw
 
-            result[0] = v[0] * 0.4124564 + v[1] * 0.3575761 + v[2] * 0.1804375;
-            result[1] = v[0] * 0.2126729 + v[1] * 0.7151522 + v[2] * 0.0721750;
-            result[2] = v[0] * 0.0193339 + v[1] * 0.1191920 + v[2] * 0.9503041;
+            double x = v.X * 0.4124564 + v.Y * 0.3575761 + v.Z * 0.1804375;
+            double y = v.X * 0.2126729 + v.Y * 0.7151522 + v.Z * 0.0721750;
+            double z = v.X * 0.0193339 + v.Y * 0.1191920 + v.Z * 0.9503041;
 
-            return result;
+            return new Vector3(x,y,z);
         }
 
-        internal static double[] ToColorFractions(int color)
+        internal static Vector4 ToColorFractions(int color)
         {
-            double[] result = new double[4];
-            for (int i = 0; i < 4; i++)
-            {
-                result[i] = (color & 0xff) / 255.0;
-                color >>= 8;
-            }
-            //Now we  have
-            double temp = result[0];
-            result[0] = result[2];
-            result[2] = temp;
+            Vector4 result = new Vector4();
+            
+            result.Z = (color & 0xff) / 255.0;
+            color >>= 8;
+
+            result.Y = (color & 0xff) / 255.0;
+            color >>= 8;
+
+            result.X = (color & 0xff) / 255.0;
+            color >>= 8;
+
+            result.W = (color & 0xff) / 255.0;
 
             return result;
         }
@@ -269,5 +278,7 @@ namespace Chummer.Backend
         {
             return System.Drawing.Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
         }
+
+        
     }
 }

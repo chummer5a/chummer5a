@@ -15,6 +15,9 @@ namespace Chummer.Backend.UI
 {
     public class BookImageManager
     {
+        private const int HIGH_BYTE = 0xff << 24;
+
+
         public Color BackColor = SystemColors.Control;
         public Color GlowColor = Color.Blue;
 
@@ -58,24 +61,26 @@ namespace Chummer.Backend.UI
 
         }
 
-        private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_check"));
-        private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
+        private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
+        private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_unchecked"));
+        private Lazy<Bitmap> MissingImage = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("book/missing"));
 
         private Image GenerateImage(string bookCode, bool enabled, bool aura, int scale)
         {
             Stopwatch sw = Stopwatch.StartNew();
             Bitmap source = GetBaseImage(bookCode);
+            int source_w = source.Width, source_h = source.Height;
 
             //Comming soon: Bitmap checkbox (un)checked
 
-            BitmapData sourceData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height),
+            BitmapData sourceData = source.LockBits(new Rectangle(0, 0, source_w, source_h),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             //This might create some _weird_ errors if somebody tries to run it on another endianess. ARM?
             int[] sourceArray = new int[sourceData.Width* sourceData.Height];
 
-            int realWidth = (source.Width + GlowBorder * 2) / scale;
-            int[] destinationArray = new int[realWidth * ((source.Height + GlowBorder * 2) / scale)];
+            int realWidth = (source_w + GlowBorder * 2) / scale;
+            int[] destinationArray = new int[realWidth * ((source_h + GlowBorder * 2) / scale)];
 
             Marshal.Copy(sourceData.Scan0, sourceArray, 0, Math.Abs(sourceData.Stride) * sourceData.Height / sizeof(int));
             source.UnlockBits(sourceData);
@@ -100,11 +105,11 @@ namespace Chummer.Backend.UI
             }
 
             //Copy main image
-            for (int y = 0; y < source.Height / scale; y++)
+            for (int y = 0; y < source_h / scale; y++)
             {
-                for (int x = 0; x < source.Width / scale; x++)
+                for (int x = 0; x < source_w / scale; x++)
                 {
-                    int color = convert(sourceArray[(y * scale * source.Width ) + ( x * scale)]);
+                    int color = convert(sourceArray[(y * scale * source_w) + ( x * scale)]);
                     //Color preprocessing here
                     destinationArray[(y + (GlowBorder/ scale)) * realWidth + (GlowBorder/ scale) + x] = color;
                 }
@@ -115,20 +120,20 @@ namespace Chummer.Backend.UI
             if (enabled)
             {
                 Bitmap overlay = CheckboxChecked.Value;
-                DrawOver(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
+                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source_h - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
             else
             {
                 Bitmap overlay = CheckboxUnchecked.Value;
-                DrawOver(destinationArray, overlay, GlowBorder / scale, (source.Height - overlay.Height + GlowBorder) / scale, realWidth, scale);
+                DrawOverWithAlpha(destinationArray, overlay, GlowBorder / scale, (source_h - overlay.Height + GlowBorder) / scale, realWidth, scale);
             }
 
             //create aura
             if(aura)
-                CreateAura(auracolor, backcolor, destinationArray, source.Width /scale, source.Height /scale, GlowBorder/scale);
+                CreateAura(auracolor, backcolor, destinationArray, source_w / scale, source_h /scale, GlowBorder/scale);
 
 
-            Bitmap final = new Bitmap((source.Width + GlowBorder * 2) / scale, (source.Height + GlowBorder * 2) / scale);
+            Bitmap final = new Bitmap((source_w + GlowBorder * 2) / scale, (source_h + GlowBorder * 2) / scale);
             BitmapData destinationData = final.LockBits(new Rectangle(0, 0, final.Width, final.Height),
                 ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             Marshal.Copy(destinationArray, 0, destinationData.Scan0, destinationArray.Length);
@@ -140,7 +145,7 @@ namespace Chummer.Backend.UI
             return final;
         }
 
-        private void DrawOver(int[] destinationArray, Bitmap overlay, int x, int y, int width, int scale)
+        private void DrawOverWithAlpha(int[] destinationArray, Bitmap overlay, int x, int y, int width, int scale)
         {
             BitmapData sourceData = overlay.LockBits(new Rectangle(0, 0, overlay.Width, overlay.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -153,16 +158,29 @@ namespace Chummer.Backend.UI
             int sourceWidth = overlay.Width;
             int sourceHeight = overlay.Height;
 
-            int transpcolor = sourceArray[0];
-
+           
             for (int yw = 0; yw < sourceHeight / scale; yw++)
             {
                 for (int xw = 0; xw < sourceWidth / scale; xw++)
                 {
                     int pixel = sourceArray[(sourceWidth * yw * scale) + (xw * scale)];
-                    if (pixel != transpcolor)
+                    
+                    int memindex = width * (yw + y) + x + xw;
+
+                    //If alpha byte is 255 just copy over, if 0, don't copy over, if 1-254 do the actual blend
+                    if ((pixel & HIGH_BYTE) == HIGH_BYTE)
                     {
-                        destinationArray[width * (yw + y) + x + xw] = pixel;
+                        destinationArray[memindex] = pixel;
+                    }
+                    else if ((pixel & HIGH_BYTE) == 0)
+                    {
+
+                    }
+                    else
+                    {
+                        int orginalColor = destinationArray[memindex];
+                        int blend = ColorUtilities.ARGBIntXYZAlphaBlend(pixel, orginalColor);
+                        destinationArray[memindex] = blend;
                     }
                 }
             }
@@ -285,33 +303,36 @@ namespace Chummer.Backend.UI
             return hash;
         }
 
+        private Dictionary<string, Bitmap> imageCache = new Dictionary<string, Bitmap>();
         private Bitmap GetBaseImage(string bookCode)
         {
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
-			XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + bookCode + "\"]");
+            Bitmap quick;
+            if (imageCache.TryGetValue(bookCode, out quick))
+                return quick;
 
-	        if (objXmlBook["bookimage"]?.InnerText != null)
-	        {
-		        string strTemp = objXmlBook["bookimage"]?.InnerText;
-
-				byte[] bytes = Convert.FromBase64String(strTemp);
-
+			string filePath = Path.Combine(Application.StartupPath, "images", $"{bookCode}.png");
+			
+			
+			if (File.Exists(filePath))
+			{
 				Bitmap bmp2 = null;
-				using (MemoryStream m = new MemoryStream(bytes))
+				using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read))
 				{
 					//this construct is needed if we want to Close and Dispose the MemoryStream
-					Bitmap bmpTmp = new Bitmap(m);
+					Bitmap bmpTmp = new Bitmap(fs);
 					bmp2 = new Bitmap(bmpTmp);
 					bmpTmp.Dispose();
-					m.Close();
+					fs.Close();
 				}
 
 	            Console.WriteLine($"w{bmp2.Width} h{bmp2.Height}");
+			    imageCache[bookCode] = bmp2;
 				return bmp2;
 	        }
 	        else
-	        {
-	            return (Bitmap) Properties.Resources.ResourceManager.GetObject("book/missing");
+			{
+			    imageCache[bookCode] = MissingImage.Value;
+	            return MissingImage.Value;
 	        }
         }
 
