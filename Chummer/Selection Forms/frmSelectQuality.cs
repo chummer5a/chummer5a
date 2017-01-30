@@ -791,13 +791,13 @@ namespace Chummer
 								if (objXmlRequired.InnerText.StartsWith("-"))
 								{
 									// Essence must be less than the value.
-									if (decGrade < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.CultureInfo))
+									if (decGrade < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.InvariantCultureInfo))
 										blnOneOfMet = true;
 								}
 								else
 								{
 									// Essence must be equal to or greater than the value.
-									if (decGrade >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.CultureInfo))
+									if (decGrade >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
 										blnOneOfMet = true;
 								}
 							}
@@ -805,13 +805,13 @@ namespace Chummer
 							else if (objXmlRequired.InnerText.StartsWith("-"))
 							{
 								// Essence must be less than the value.
-								if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.CultureInfo))
+								if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.InvariantCultureInfo))
 									blnOneOfMet = true;
 							}
 							else
 							{
 								// Essence must be equal to or greater than the value.
-								if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.CultureInfo))
+								if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
 									blnOneOfMet = true;
 							}
 							if (!blnOneOfMet)
@@ -1110,13 +1110,13 @@ namespace Chummer
 							if (objXmlRequired.InnerText.StartsWith("-"))
 							{
 								// Essence must be less than the value.
-								if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.CultureInfo))
+								if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.InvariantCultureInfo))
 									blnFound = true;
 							}
 							else
 							{
 								// Essence must be equal to or greater than the value.
-								if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.CultureInfo))
+								if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
 									blnFound = true;
 							}
 

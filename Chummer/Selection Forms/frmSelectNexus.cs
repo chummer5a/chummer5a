@@ -148,17 +148,17 @@ namespace Chummer
 			int intSystemCost = 0;
 			if (intSystem <= 3)
 			{
-				strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.CultureInfo) / 5.0)).ToString();
+				strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString();
 				intSystemCost = intSystem * intPersona * 25;
 			}
 			else if (intSystem <= 6)
 			{
-				strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.CultureInfo) / 2.0)).ToString();
+				strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 2.0)).ToString();
 				intSystemCost = intSystem * intPersona * 50;
 			}
 			else
 			{
-				strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.CultureInfo) / 2.0)).ToString() + "F";
+				strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 2.0)).ToString() + "F";
 				intSystemCost = intSystem * intPersona * 300;
 			}
 
@@ -167,17 +167,17 @@ namespace Chummer
 			int intFirewallCost = 0;
 			if (intFirewall <= 3)
 			{
-				strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.CultureInfo) / 10.0)).ToString();
+				strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 10.0)).ToString();
 				intFirewallCost = intFirewall * intProcessor * 25;
 			}
 			else if (intFirewall <= 6)
 			{
-				strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.CultureInfo) / 5.0)).ToString();
+				strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString();
 				intFirewallCost = intFirewall * intProcessor * 50;
 			}
 			else
 			{
-				strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.CultureInfo) / 5.0)).ToString() + "F";
+				strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString() + "F";
 				intFirewallCost = intFirewall * intProcessor * 250;
 			}
 

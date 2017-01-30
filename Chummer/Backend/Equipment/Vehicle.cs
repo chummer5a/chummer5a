@@ -1176,20 +1176,12 @@ namespace Chummer.Backend.Equipment
 					{
 						if (objMod.Bonus.InnerXml.Contains("<sensor>"))
 						{
-							if (objMod.Bonus["sensor"].InnerText.Contains("+") || objMod.Bonus["sensor"].InnerText.Contains("-"))
-							{
-								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								intSensor += Convert.ToInt32(strAccel, GlobalOptions.CultureInfo);
-							}
-							else
-							{
-								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								intSensor = Convert.ToInt32(strAccel, GlobalOptions.CultureInfo);
-							}
-						}
+                            string strSensor = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+                            intSensor += Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo);
+                        }
 					}
 				}
-				
+
 				// Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
 				// The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
 				foreach (Gear objGear in _lstGear)
@@ -1197,7 +1189,7 @@ namespace Chummer.Backend.Equipment
 					if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
 					{
                         objGear.MaxRating = Math.Max(intSensor, 0);
-                        objGear.Rating = Math.Max(intSensor, 0);				    
+                        objGear.Rating = Math.Max(intSensor, 0);
 					}
 					break;
 				}
@@ -1484,12 +1476,12 @@ namespace Chummer.Backend.Equipment
 			{
 				int intCost = Convert.ToInt32(_strCost);
 				if (BlackMarketDiscount)
-					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * 0.9);
+					intCost = intCost * 9 / 10;
 
 				if (DealerConnectionDiscount)
-					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * 0.9);
+                    intCost = intCost * 9 / 10;
 
-				foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Do not include the price of Mods that are part of the base configureation.
 					if (!objMod.IncludedInVehicle)
@@ -1520,12 +1512,12 @@ namespace Chummer.Backend.Equipment
 				int intCost = Convert.ToInt32(_strCost);
 
 				if (BlackMarketDiscount)
-					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * 0.9);
+                    intCost = intCost * 9 / 10;
 
-				if (DealerConnectionDiscount)
-					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * 0.9);
+                if (DealerConnectionDiscount)
+                    intCost = intCost * 9 / 10;
 
-				return intCost;
+                return intCost;
 			}
 		}
 
@@ -1559,7 +1551,7 @@ namespace Chummer.Backend.Equipment
 						XmlDocument objXmlDocument = new XmlDocument();
 						XPathNavigator nav = objXmlDocument.CreateNavigator();
 						XPathExpression xprSeats = nav.Compile(objMod.Bonus["seats"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString()));
-						intTotalBonusSeats += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.CultureInfo);
+						intTotalBonusSeats += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.InvariantCultureInfo);
 					}
 				}
 
@@ -1633,7 +1625,7 @@ namespace Chummer.Backend.Equipment
 							XmlDocument objXmlDocument = new XmlDocument();
 							XPathNavigator nav = objXmlDocument.CreateNavigator();
 							XPathExpression xprSeats = nav.Compile(objMod.Bonus["offroadspeed"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString()));
-							intTotalBonusOffroadSpeed += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.CultureInfo);
+							intTotalBonusOffroadSpeed += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.InvariantCultureInfo);
 						}
 					}
 				}
@@ -1706,7 +1698,7 @@ namespace Chummer.Backend.Equipment
 							XmlDocument objXmlDocument = new XmlDocument();
 							XPathNavigator nav = objXmlDocument.CreateNavigator();
 							XPathExpression xprSeats = nav.Compile(objMod.Bonus["accel"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Accel", intTotalAccel.ToString()));
-							intTotalBonusAccel += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.CultureInfo);
+							intTotalBonusAccel += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.InvariantCultureInfo);
 						}
 					}
 					if (objMod.Bonus.InnerXml.Contains("<offroadaccel>"))
@@ -1718,7 +1710,7 @@ namespace Chummer.Backend.Equipment
 							XmlDocument objXmlDocument = new XmlDocument();
 							XPathNavigator nav = objXmlDocument.CreateNavigator();
 							XPathExpression xprSeats = nav.Compile(objMod.Bonus["offroadaccel"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString()));
-							intTotalBonusOffroadAccel += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.CultureInfo);
+							intTotalBonusOffroadAccel += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.InvariantCultureInfo);
 						}
 					}
 				}
@@ -1830,7 +1822,7 @@ namespace Chummer.Backend.Equipment
 							XmlDocument objXmlDocument = new XmlDocument();
 							XPathNavigator nav = objXmlDocument.CreateNavigator();
 							XPathExpression xprSeats = nav.Compile(objMod.Bonus["handling"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Handling", intBaseHandling.ToString()));
-							intTotalBonusHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.CultureInfo);
+							intTotalBonusHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.InvariantCultureInfo);
 						}
 					}
 					if (objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
@@ -1842,7 +1834,7 @@ namespace Chummer.Backend.Equipment
 							XmlDocument objXmlDocument = new XmlDocument();
 							XPathNavigator nav = objXmlDocument.CreateNavigator();
 							XPathExpression xprSeats = nav.Compile(objMod.Bonus["offroadhandling"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadHandling", intBaseOffroadHandling.ToString()));
-							intTotalBonusOffroadHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.CultureInfo);
+							intTotalBonusOffroadHandling += Convert.ToInt32(nav.Evaluate(xprSeats), GlobalOptions.InvariantCultureInfo);
 						}
 					}
 				}

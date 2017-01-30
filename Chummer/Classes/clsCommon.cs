@@ -102,7 +102,7 @@ namespace Chummer
                     if (objLoop.InternalId == strGuid)
                     {
                         objNeedle = objLoop;
-                        if (!string.IsNullOrEmpty(objNeedle?.Name))
+                        if (!string.IsNullOrEmpty(objNeedle.Name))
                             return objNeedle;
                     }
                     if (objLoop.Children.Count > 0)

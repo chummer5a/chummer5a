@@ -19,7 +19,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+ using System.Globalization;
+ using System.Linq;
 using System.Text;
 using System.Xml;
 using Chummer;
@@ -31,8 +32,7 @@ namespace Chummer
     {
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
-	    public delegate bool TryParseFunction<T>(String input, out T result);
-	    
+	    public delegate bool TryParseFunction<T>(string input, out T result);
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
@@ -46,7 +46,7 @@ namespace Chummer
         /// <param name="read">The variable to save the read to</param>
         /// <param name="onError">The value to return in case of failure. This parameter is optional</param>
         /// <returns>true if successful read</returns>
-        public static bool TryGetField<T>(this XmlNode node, String field, out T read, T onError = default(T)) where T : IConvertible
+        public static bool TryGetField<T>(this XmlNode node, string field, out T read, T onError = default(T)) where T : IConvertible
         {
             /*
              * This extension method allows easier access of xml, instead of
@@ -101,14 +101,14 @@ namespace Chummer
             catch (Exception)
             {
                 //If we are debugging, great
-                if (Debugger.IsAttached && false)
-                    Debugger.Break();
+                //if (Debugger.IsAttached && false)
+                //    Debugger.Break();
 
                 //Otherwise just log it
 #if DEBUG
                 System.Reflection.MethodBase mth 
                     = new StackTrace().GetFrame(1).GetMethod();
-                String errorMsg = String.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType.Name, mth);
+                string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType.Name, mth);
 #else
                 String errorMsg = String.Format("Tried to read missing field \"{0}\"", field);
 #endif
@@ -135,10 +135,10 @@ namespace Chummer
 		/// <param name="read"></param>
 		/// <param name="onError"></param>
 		/// <returns></returns>
-		public static bool TryGetField<T>(this XmlNode node, String field, TryParseFunction<T> parser, out T read,
+		public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read,
 			T onError = default(T))
 		{
-			String fieldValue = null;
+			string fieldValue = null;
 			if (!CheckGetField<T>(node, field, ref fieldValue))
 			{
 				read = onError;
@@ -155,7 +155,7 @@ namespace Chummer
 		}
 
 		//T needed for debug info (so not)
-		private static bool CheckGetField<T>(XmlNode node, String field,  ref string fieldValue)
+		private static bool CheckGetField<T>(XmlNode node, string field,  ref string fieldValue)
 	    {
 		    if (node[field] == null)
 		    {
@@ -164,7 +164,7 @@ namespace Chummer
 			    //builds due to inlining
 			    System.Reflection.MethodBase mth
 				    = new StackTrace().GetFrame(2).GetMethod();
-			    String errorMsg = String.Format
+			    string errorMsg = string.Format
 				    (
 					    "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
 					    field,
@@ -193,7 +193,7 @@ namespace Chummer
         /// <param name="field">The field to try and extract from the XmlNode</param>
         /// <param name="read">The variable to save the read to, if successful</param>
         /// <returns>true if successful read</returns>
-        public static bool TryPreserveField<T>(this XmlNode node, String field, ref T read) where T : IConvertible
+        public static bool TryPreserveField<T>(this XmlNode node, string field, ref T read) where T : IConvertible
         {
             T value;
             if (node.TryGetField(field, out value))
@@ -212,10 +212,10 @@ namespace Chummer
 		/// <param name="field">The field to check on the XmlNode</param>
 		/// <param name="value">The value to compare to</param>
 		/// <returns>true if the field exists and is equal to value</returns>
-	    public static bool TryCheckValue(this XmlNode node, String field, String value)
+	    public static bool TryCheckValue(this XmlNode node, string field, string value)
 	    {
 			//QUESTION: Create regex version?
-		    String fieldValue;
+		    string fieldValue;
 		    if (node.TryGetField(field, out fieldValue))
 		    {
 			    return fieldValue == value;
@@ -241,9 +241,7 @@ namespace Chummer
             bool boolSubNodeResult;
             foreach (XmlNode objXmlOperationChildNode in objXmlNodeList)
             {
-                boolInvert = false;
-                if (objXmlOperationChildNode.Attributes?["NOT"] != null)
-                    boolInvert = true;
+                boolInvert = objXmlOperationChildNode.Attributes?["NOT"] != null;
 
                 if (objXmlOperationChildNode.Name == "OR")
                 {
@@ -251,7 +249,7 @@ namespace Chummer
                 }
                 else if (objXmlOperationChildNode.Name == "AND")
                 {
-                    boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, false) != boolInvert;
+                    boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode) != boolInvert;
                 }
                 else
                 {
@@ -264,9 +262,7 @@ namespace Chummer
                     else
                     {
                         // default is "any", replace with switch() if more check modes are necessary
-                        boolOperationChildNodeResult = false;
-                        if (objXmlOperationChildNode.Attributes?["checktype"]?.InnerText == "all")
-                            boolOperationChildNodeResult = true;
+                        boolOperationChildNodeResult = objXmlOperationChildNode.Attributes?["checktype"]?.InnerText == "all";
 
                         foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
                         {
@@ -345,7 +341,7 @@ namespace Chummer
         /// Like TryGetField for strings, only with as little overhead as possible.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetStringFieldQuickly(this XmlNode node, String field, ref String read)
+        public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
         {
             XmlElement objField = node[field];
             if (objField != null)
@@ -360,13 +356,14 @@ namespace Chummer
         /// Like TryGetField for ints, but taking advantage of int.TryParse... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetInt32FieldQuickly(this XmlNode node, String field, ref int read)
+        public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node[field];
             if (objField != null)
             {
                 int intTmp;
-                if (int.TryParse(objField.InnerText, out intTmp))
+                if (objCulture == null && int.TryParse(objField.InnerText, out intTmp) ||
+                    objCulture != null && int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out intTmp))
                 {
                     read = intTmp;
                     return true;
@@ -379,7 +376,7 @@ namespace Chummer
         /// Like TryGetField for bools, but taking advantage of bool.TryParse... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetBoolFieldQuickly(this XmlNode node, String field, ref bool read)
+        public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
         {
             XmlElement objField = node[field];
             if (objField != null)
@@ -398,13 +395,14 @@ namespace Chummer
         /// Like TryGetField for decimals, but taking advantage of decimal.TryParse... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetDecFieldQuickly(this XmlNode node, String field, ref decimal read)
+        public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node[field];
             if (objField != null)
             {
                 decimal decTmp;
-                if (decimal.TryParse(objField.InnerText, out decTmp))
+                if (objCulture == null && decimal.TryParse(objField.InnerText, out decTmp) ||
+                    objCulture != null && decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decTmp))
                 {
                     read = decTmp;
                     return true;
@@ -417,13 +415,14 @@ namespace Chummer
         /// Like TryGetField for doubles, but taking advantage of double.TryParse... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetDoubleFieldQuickly(this XmlNode node, String field, ref double read)
+        public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node[field];
             if (objField != null)
             {
                 double dblTmp;
-                if (double.TryParse(objField.InnerText, out dblTmp))
+                if (objCulture == null && double.TryParse(objField.InnerText, out dblTmp) ||
+                    objCulture != null && double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out dblTmp))
                 {
                     read = dblTmp;
                     return true;

@@ -355,7 +355,7 @@ namespace Chummer
 		        return;
 
 			if (chkUsedVehicle.Checked)
-				dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.CultureInfo);
+				dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.InvariantCultureInfo);
 
 			lblVehicleHandling.Text = objXmlVehicle["handling"]?.InnerText;
 			lblVehicleAccel.Text = objXmlVehicle["accel"]?.InnerText;
@@ -401,7 +401,7 @@ namespace Chummer
                 objXmlVehicle.TryGetInt32FieldQuickly("cost", ref intCost);
 
                 // Apply the markup if applicable.
-                double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * dblCostModifier;
+                double dblCost = Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * dblCostModifier;
                 dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 
 				if (chkBlackMarketDiscount.Checked)
@@ -441,7 +441,7 @@ namespace Chummer
 			{
 				double dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.CultureInfo);
 				int intCost = Convert.ToInt32(objXmlVehicle["cost"]?.InnerText);
-				intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.CultureInfo) * dblCostModifier));
+				intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * dblCostModifier));
 
 				_blnUsedVehicle = true;
 				_strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), "F");

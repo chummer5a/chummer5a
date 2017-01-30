@@ -877,13 +877,13 @@ namespace Chummer.Backend.Equipment
 				int intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
                 // Apply a markup if applicable.
                 if (_intMarkup != 0)
                 {
-                    double dblCost = Convert.ToDouble(intReturn, GlobalOptions.CultureInfo);
-                    dblCost *= 1 + (Convert.ToDouble(_intMarkup, GlobalOptions.CultureInfo) / 100.0);
+                    double dblCost = Convert.ToDouble(intReturn, GlobalOptions.InvariantCultureInfo);
+                    dblCost *= 1 + (Convert.ToDouble(_intMarkup, GlobalOptions.InvariantCultureInfo) / 100.0);
                     intReturn = Convert.ToInt32(dblCost);
                 }
 

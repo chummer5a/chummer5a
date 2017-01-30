@@ -655,7 +655,7 @@ namespace Chummer.Backend.Equipment
 
 					strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strConceal);
-					double dblConceal = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					double dblConceal = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intReturn = Convert.ToInt32(dblConceal);
 				}
 				else if (!string.IsNullOrEmpty(_strConceal))
@@ -935,7 +935,7 @@ namespace Chummer.Backend.Equipment
 				intReturn = (Convert.ToInt32(nav.Evaluate(xprCost).ToString()) * _objParent.CostMultiplier);
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
 				// Add in the cost of any Gear the Weapon Accessory has attached to it.
 				foreach (Gear objGear in _lstGear)
@@ -966,14 +966,14 @@ namespace Chummer.Backend.Equipment
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					strCost = strCost.Replace("Weapon Cost", _objParent.Cost.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intReturn = Convert.ToInt32(dblCost);
 				}
 				else
 					intReturn = Convert.ToInt32(_strCost) * _objParent.CostMultiplier;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
 				return intReturn;
 			}

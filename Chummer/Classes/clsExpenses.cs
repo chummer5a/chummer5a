@@ -366,7 +366,7 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.CultureInfo);
+			_datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             objNode.TryGetInt32FieldQuickly("amount", ref _intAmount);
             objNode.TryGetStringFieldQuickly("reason", ref _strReason);
             if (objNode["type"] != null)
@@ -387,7 +387,7 @@ namespace Chummer
 		public void Print(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("expense");
-			objWriter.WriteElementString("date", _datDate.ToString());
+			objWriter.WriteElementString("date", _datDate.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("amount", _intAmount.ToString());
 			objWriter.WriteElementString("reason", _strReason);
 			objWriter.WriteElementString("type", _objExpenseType.ToString());

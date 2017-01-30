@@ -289,7 +289,7 @@ namespace Chummer
 
 			lblA.Text = objXmlMod["armor"].InnerText;
 
-			nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.CultureInfo);
+			nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
             if (nudRating.Maximum <= 1)
                 nudRating.Enabled = false;
             else
@@ -315,8 +315,8 @@ namespace Chummer
 			}
 			try
 			{
-				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
-				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
+				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+				lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
 			}
 			catch (XPathException)
 			{
@@ -328,7 +328,7 @@ namespace Chummer
             if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
             {
                 int intMin = 0;
-                int intMax = 0;
+                int intMax = int.MaxValue;
                 string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                 if (strCost.Contains("-"))
                 {
@@ -339,25 +339,24 @@ namespace Chummer
                 else
                     intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-                if (intMax == 0)
+                if (intMax == int.MaxValue)
                 {
-                    intMax = 1000000;
-                    lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                    lblCost.Text = $"{intMin:###,###,##0¥+}";
                 }
                 else
-                    lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+                    lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
             }
             else
             {
-                string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString());
+                string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 strCost = strCost.Replace("Armor Cost", _intArmorCost.ToString());
                 XPathExpression xprCost = nav.Compile(strCost);
 
                 // Apply any markup.
-                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo);
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
 
-                lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
+                lblCost.Text = $"{dblCost:###,###,##0¥}";
 
                 int intCost = Convert.ToInt32(dblCost);
                 lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
@@ -381,12 +380,12 @@ namespace Chummer
                 }
 
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
+                XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
                 if (_objCapacityStyle == CapacityStyle.Standard)
                     lblCapacity.Text = "[" + nav.Evaluate(xprCapacity) + "]";
                 else if (_objCapacityStyle == CapacityStyle.PerRating)
-                    lblCapacity.Text = "[" + nudRating.Value.ToString() + "]";
+                    lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + "]";
                 else if (_objCapacityStyle == CapacityStyle.Zero)
                     lblCapacity.Text = "[0]";
             }

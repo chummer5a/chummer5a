@@ -357,7 +357,7 @@ namespace Chummer
             objWriter.WriteElementString("priorityskillgroup", _strSkillGroup);
 
             // <essenceatspecialstart />
-            objWriter.WriteElementString("essenceatspecialstart", _decEssenceAtSpecialStart.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("essenceatspecialstart", _decEssenceAtSpecialStart.ToString(GlobalOptions.InvariantCultureInfo));
 
             // <name />
             objWriter.WriteElementString("name", _strName);
@@ -474,9 +474,9 @@ namespace Chummer
 
 
             // <nuyenbp />
-            objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString());
+            objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyenmaxbp />
-            objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString());
+            objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
 
             // <adept />
             objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString());
@@ -496,7 +496,7 @@ namespace Chummer
             // <friendsinhighplaces />
             objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
 			// <prototypetranshuman />
-			objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString());
+			objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
 			
             // <blackmarket />
             objWriter.WriteElementString("blackmarketdiscount", _blnBlackMarketDiscount.ToString());
@@ -550,7 +550,7 @@ namespace Chummer
             objWriter.WriteElementString("groupnotes", _strGroupNotes);
 
             // External reader friendly stuff.
-            objWriter.WriteElementString("totaless", Essence.ToString());
+            objWriter.WriteElementString("totaless", Essence.ToString(GlobalOptions.InvariantCultureInfo));
 
             // Write out the Mystic Adept MAG split info.
             if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -974,7 +974,7 @@ namespace Chummer
 			if (objXmlCharacter["essenceatspecialstart"] != null)
             {
 			    _decEssenceAtSpecialStart = Convert.ToDecimal(objXmlCharacter["essenceatspecialstart"].InnerText,
-				    GlobalOptions.CultureInfo);
+				    GlobalOptions.InvariantCultureInfo);
                 // fix to work around a mistake made when saving decimal values in previous versions.
                 if (_decEssenceAtSpecialStart > EssenceMaximum)
                     _decEssenceAtSpecialStart /= 10;
@@ -1094,9 +1094,9 @@ namespace Chummer
             objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
 
 		    objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-
-            _decNuyenBP = Convert.ToDecimal(objXmlCharacter["nuyenbp"].InnerText, GlobalOptions.CultureInfo);
-            _decNuyenMaximumBP = Convert.ToDecimal(objXmlCharacter["nuyenmaxbp"].InnerText, GlobalOptions.CultureInfo);
+            
+            objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
+            objXmlCharacter.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
             objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
@@ -4268,7 +4268,15 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                foreach (Improvement objImprovement in _lstImprovements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled)
+                    {
+                        return 0.1m;
+                    }
+                }
+                decimal decESS = EssenceMaximum;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
                 decimal decCyberware = 0m;
@@ -4283,35 +4291,20 @@ namespace Chummer
 						if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
 							decCyberware += objCyberware.CalculatedESS;
 						else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-						{
 							decBioware += objCyberware.CalculatedESS;
-						}
                     }
                 }
 				if (_decPrototypeTranshuman > 0)
 				{
-					if ((decBioware - _decPrototypeTranshuman) < 0)
+                    decBioware -= _decPrototypeTranshuman;
+                    if (decBioware < 0)
 					{
 						decBioware = 0;
-					}
-					else
-					{
-						decBioware -= _decPrototypeTranshuman;
 					}
 				}
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
-
-                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                foreach (Improvement objImprovement in _lstImprovements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled)
-                    {
-                        decESS = 0.1m;
-                        break;
-                    }
-                }
 
                 return decESS;
             }
@@ -4324,23 +4317,13 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
                 decimal decCyberware = 0m;
-                decimal decBioware = 0m;
-                decimal decHole = 0m;
                 foreach (Cyberware objCyberware in _lstCyberware)
                 {
-                    if (objCyberware.Name == "Essence Hole")
-                        decHole += objCyberware.CalculatedESS;
-                    else
-                    {
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            decCyberware += objCyberware.CalculatedESS;
-                        else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                            decBioware += objCyberware.CalculatedESS;
-                    }
+                    if (objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                        decCyberware += objCyberware.CalculatedESS;
                 }
                 // Removed Cyber/Bio discount
                 //if (decCyberware > decBioware)
@@ -4357,23 +4340,13 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
-                decimal decCyberware = 0m;
                 decimal decBioware = 0m;
-                decimal decHole = 0m;
                 foreach (Cyberware objCyberware in _lstCyberware)
                 {
-                    if (objCyberware.Name == "Essence Hole")
-                        decHole += objCyberware.CalculatedESS;
-                    else
-                    {
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            decCyberware += objCyberware.CalculatedESS;
-                        else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                            decBioware += objCyberware.CalculatedESS;
-                    }
+                    if (objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                        decBioware += objCyberware.CalculatedESS;
                 }
                 // Removed Cyber/Bio discount
                 //if (decCyberware > decBioware)
@@ -4390,23 +4363,13 @@ namespace Chummer
         {
             get
             {
-                decimal decESS = Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.Essence), GlobalOptions.CultureInfo);
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
                 // character's ESS while the lower removes half of its cost from the character's ESS.
-                decimal decCyberware = 0m;
-                decimal decBioware = 0m;
                 decimal decHole = 0m;
                 foreach (Cyberware objCyberware in _lstCyberware)
                 {
                     if (objCyberware.Name == "Essence Hole")
                         decHole += objCyberware.CalculatedESS;
-                    else
-                    {
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            decCyberware += objCyberware.CalculatedESS;
-                        else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                            decBioware += objCyberware.CalculatedESS;
-                    }
                 }
 
                 return decHole;
@@ -4420,7 +4383,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToDecimal(ESS.MetatypeMaximum, GlobalOptions.CultureInfo) + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.CultureInfo);
+                return Convert.ToDecimal(ESS.MetatypeMaximum + _objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -4432,7 +4395,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to MAG and RES.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + _objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax) - Essence));
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
 
@@ -5227,7 +5190,6 @@ namespace Chummer
             get
             {
                 int intHighest = 0;
-                int intArmor = 0;
 	            string strHighest = string.Empty;
 	            bool blnCustomFit = false;
 
@@ -5245,7 +5207,7 @@ namespace Chummer
 					}
                 }
 
-                intArmor = intHighest;
+                int intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
                 int intStacking = 0;
@@ -5299,8 +5261,6 @@ namespace Chummer
             get
             {
                 int intHighest = 0;
-                int intArmor = 0;
-                string strHighest;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 foreach (Armor objArmor in _lstArmor)
@@ -5308,10 +5268,9 @@ namespace Chummer
                     if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
                     {
                         intHighest = objArmor.TotalArmor;
-                        strHighest = objArmor.Name;
                     }
                 }
-                intArmor = intHighest;
+                int intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
                 int intStacking = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
@@ -5631,7 +5590,7 @@ namespace Chummer
         {
             get
             {
-                decimal decImprovement = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.CultureInfo);
+                decimal decImprovement = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.InvariantCultureInfo);
                 if (_objBuildMethod == CharacterBuildMethod.Karma)
                     decImprovement *= 2.0m;
 
@@ -5671,27 +5630,21 @@ namespace Chummer
         {
             get
             {
-				int intLimit = 0;
-				string strReturn = string.Empty;
+				int intLimit;
 				if (_strMetatype == "A.I.")
 				{
 					if (_blnHasHomeNode && _strHomeNodeCategory == "Vehicle")
 					{
-						strReturn = _strHomeNodeHandling;
+						return _strHomeNodeHandling;
 					}
-					else
-					{
-						strReturn = "0";
-					}
-                    return strReturn;
+                    return "0";
                 }
 				else
 				{
 					intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
 				}
 				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
-				strReturn = Convert.ToString(intLimit);
-                return strReturn;
+				return Convert.ToString(intLimit);
 			}
         }
 
@@ -5736,7 +5689,7 @@ namespace Chummer
         {
             get
             {
-				int intLimit = 0;
+				int intLimit;
 				if (_strMetatype == "A.I." && _blnHasHomeNode)
 				{
 					if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
@@ -5819,8 +5772,7 @@ namespace Chummer
 	            }
 
 				string strReturn = string.Empty;
-				XmlDocument objXmlDocument = new XmlDocument();
-	            objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+				XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
 	            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 if (objXmlNode != null)
                 {
@@ -5871,7 +5823,7 @@ namespace Chummer
 		/// Character's running Movement rate. 
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
-		private int WalkingRate(string strType)
+		private int WalkingRate(string strType = "Ground")
 		{
 			string[] strReturn = _strWalk.Split('/');
 
@@ -5887,7 +5839,6 @@ namespace Chummer
                         int.TryParse(strReturn[1], out intTmp);
                     break;
                 case "Ground":
-                default:
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -5899,7 +5850,7 @@ namespace Chummer
 		/// Character's running Movement rate. 
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
-		private int RunningRate(string strType)
+		private int RunningRate(string strType = "Ground")
 		{
 			string[] strReturn = _strRun.Split('/');
 
@@ -5915,7 +5866,6 @@ namespace Chummer
                         int.TryParse(strReturn[1], out intTmp);
                     break;
                 case "Ground":
-                default:
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -5927,7 +5877,7 @@ namespace Chummer
 		/// Character's running Movement rate. 
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
-		private int SprintingRate(string strType)
+		private int SprintingRate(string strType = "Ground")
 		{
 			string[] strReturn = _strSprint.Split('/');
 
@@ -5943,7 +5893,6 @@ namespace Chummer
                         int.TryParse(strReturn[1], out intTmp);
                     break;
                 case "Ground":
-                default:
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -5953,7 +5902,7 @@ namespace Chummer
 
 	    private string CalculatedMovement(Improvement.ImprovementType objImprovementType, string strMovementType, bool blnUseCyberlegs = false)
 	    {
-		    string strReturn = "0";
+		    string strReturn;
 			int intMultiply = 1;
 			// If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
 			if (strMovementType == "Fly" && _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) < 0)
@@ -5968,9 +5917,9 @@ namespace Chummer
             int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 			int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 
-			intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.CultureInfo) * dblPercent));
-			intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.CultureInfo) * dblPercent));
-			intSprint += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.CultureInfo) * dblPercent));
+			intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
+			intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
+			intSprint += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
 
 			if (_objOptions.CyberlegMovement && blnUseCyberlegs)
 			{
@@ -6008,11 +5957,11 @@ namespace Chummer
 			}
 			if (strMovementType == "Swim")
 			{
-				strReturn = String.Format("{0}, {1}m/ hit", intWalk, intSprint);
+				strReturn = $"{intWalk}, {intSprint}m/ hit";
 			}
 			else
 			{
-				strReturn = String.Format("{0}/{1}, {2}m/ hit", intWalk, intRun, intSprint);
+				strReturn = $"{intWalk}/{intRun}, {intSprint}m/ hit";
 			}
 			if (string.IsNullOrEmpty(strReturn) || strReturn == "0/0, 0m/ hit")
 			{
@@ -6503,24 +6452,14 @@ namespace Chummer
         /// <param name="strAvail">Item's Availability.</param>
         public string AvailTest(int intCost, string strAvail)
         {
-            string strReturn = string.Empty;
-            string strInterval = string.Empty;
-            int intAvail = 0;
-            int intTest = 0;
+            string strReturn;
+            int intAvail;
+            int.TryParse(strAvail.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), string.Empty).Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), string.Empty), out intAvail);
 
-            try
+            if (intAvail != 0 && (strAvail.Contains(LanguageManager.Instance.GetString("String_AvailRestricted")) || strAvail.Contains(LanguageManager.Instance.GetString("String_AvailForbidden"))))
             {
-                intAvail = Convert.ToInt32(strAvail.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), string.Empty).Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), string.Empty));
-            }
-            catch (FormatException) { }
-
-            bool blnCalculate = true;
-
-            if (intAvail == 0 || (!strAvail.Contains(LanguageManager.Instance.GetString("String_AvailRestricted")) && !strAvail.Contains(LanguageManager.Instance.GetString("String_AvailForbidden"))))
-                blnCalculate = false;
-
-            if (blnCalculate)
-            {
+                string strInterval;
+                int intTest = 0;
                 // Determine the interval based on the item's price.
                 if (intCost <= 100)
                     strInterval = "12 " + LanguageManager.Instance.GetString("String_Hours");
@@ -6615,7 +6554,7 @@ namespace Chummer
             {
                 if (objImprovement.ImproveType == objImprovementType)
                 {
-                    if (!blnRequireEnabled || (blnRequireEnabled && objImprovement.Enabled))
+                    if (!blnRequireEnabled || objImprovement.Enabled)
                         return true;
                 }
             }

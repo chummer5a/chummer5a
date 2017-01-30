@@ -93,8 +93,9 @@ namespace Chummer
 	{
 		static readonly GlobalOptions _objInstance = new GlobalOptions();
 		static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
+        static readonly CultureInfo _objInvariantCultureInfo = CultureInfo.InvariantCulture;
 
-		public Action MRUChanged;
+        public Action MRUChanged;
 
 		private frmMain _frmMainForm;
         private static readonly RegistryKey _objBaseChummerKey;
@@ -514,7 +515,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// CultureInfor for number localization.
+		/// CultureInfo for number localization.
 		/// </summary>
 		public static CultureInfo CultureInfo
 		{
@@ -524,10 +525,21 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Clipboard.
+        /// <summary>
+		/// Invariant CultureInfo for saving and loading of numbers.
 		/// </summary>
-		public XmlDocument Clipboard
+		public static CultureInfo InvariantCultureInfo
+        {
+            get
+            {
+                return _objInvariantCultureInfo;
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public XmlDocument Clipboard
 		{
 			get
 			{

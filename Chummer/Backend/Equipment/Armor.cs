@@ -50,15 +50,16 @@ namespace Chummer.Backend.Equipment
 			_objCharacter = objCharacter;
 		}
 
-		/// Create an Armor from an XmlNode and return the TreeNodes for it.
-		/// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
-		/// <param name="objNode">TreeNode to populate a TreeView.</param>
-		/// <param name="cmsArmorMod">ContextMenuStrip to apply to Armor Mode TreeNodes.</param>
-		/// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
-		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		/// <param name="intRating">Rating of the item.</param>
-		/// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
-		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
+        /// Create an Armor from an XmlNode and return the TreeNodes for it.
+        /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
+        /// <param name="objNode">TreeNode to populate a TreeView.</param>
+        /// <param name="cmsArmorMod">ContextMenuStrip to apply to Armor Mode TreeNodes.</param>
+        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
+        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="intRating">Rating of the item.</param>
+        /// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
+        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
+        public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
 		{
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -97,7 +98,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable"))
                 {
-                    int intMin = 0;
+                    int intMin;
                     int intMax = 0;
                     char[] charParentheses = { '(', ')' };
                     string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
@@ -129,10 +130,9 @@ namespace Chummer.Backend.Equipment
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-                    string strCost = string.Empty;
                     string strCostExpression = _strCost;
 
-                    strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+                    string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strCost);
                     _strCost = nav.Evaluate(xprCost).ToString();
                 }
@@ -237,7 +237,7 @@ namespace Chummer.Backend.Equipment
 
 					XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlArmorMod.InnerText + "\"]");
 					if (objXmlMod != null)
-					{ 
+					{
 						ArmorMod objMod = new ArmorMod(_objCharacter);
 						List<Weapon> lstWeapons = new List<Weapon>();
 						List<TreeNode> lstWeaponNodes = new List<TreeNode>();
@@ -375,9 +375,8 @@ namespace Chummer.Backend.Equipment
 					// Use the Gear's SubClass if applicable.
 					if (objGear.GetType() == typeof(Commlink))
 					{
-						Commlink objCommlink = new Commlink(_objCharacter);
-						objCommlink = (Commlink)objGear;
-						objCommlink.Save(objWriter);
+						Commlink objCommlink = objGear as Commlink;
+						objCommlink?.Save(objWriter);
 					}
 					else
 					{
@@ -519,9 +518,8 @@ namespace Chummer.Backend.Equipment
 				// Use the Gear's SubClass if applicable.
 				if (objGear.GetType() == typeof(Commlink))
 				{
-					Commlink objCommlink = new Commlink(_objCharacter);
-					objCommlink = (Commlink)objGear;
-					objCommlink.Print(objWriter);
+					Commlink objCommlink = objGear as Commlink;
+					objCommlink?.Print(objWriter);
 				}
 				else
 				{
@@ -897,35 +895,15 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				if (!blnHighest)
+				if (!blnHighest || Convert.ToInt32(_strO) == 0)
 					blnUseBase = true;
 
-				if (blnHighest && Convert.ToInt32(_strO) == 0)
-					blnUseBase = true;
-
-				int intTotalArmor = 0;
+				int intTotalArmor;
+			    int.TryParse(_strA, out intTotalArmor);
 				// if there's zero or usebase is true, we're all done. Calculate as normal.
-				if (blnUseBase)
+				if (blnCustomFitted || (!blnUseBase && intOverride > 1 && !blnHighest))
 				{
-					intTotalArmor = Convert.ToInt32(_strA);
-				}
-				else
-				{
-					if (intOverride > 0)
-					{
-						if (intOverride == 1)
-							intTotalArmor = Convert.ToInt32(_strA);
-						else if (blnHighest)
-							intTotalArmor = Convert.ToInt32(_strA);
-						else
-							intTotalArmor = Convert.ToInt32(_strO);
-					}
-					else
-						intTotalArmor = Convert.ToInt32(_strA);
-				}
-				if (blnCustomFitted)
-				{
-					intTotalArmor = Convert.ToInt32(_strO);
+                    int.TryParse(_strO, out intTotalArmor);
 				}
 
 				// Go through all of the Mods for this piece of Armor and add the Armor value.
@@ -948,17 +926,16 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intTotalCost = 0;
+				int intTotalCost;
 				if (_strCost.Contains("Rating"))
 				{
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strCost = string.Empty;
 					string strCostExpression = _strCost;
 
-					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					intTotalCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 				}
@@ -967,7 +944,7 @@ namespace Chummer.Backend.Equipment
 					intTotalCost = Convert.ToInt32(_strCost);
 				}
 				if (DiscountCost)
-					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.CultureInfo) * 0.9);
+					intTotalCost = intTotalCost * 9 / 10;
 
 				// Go through all of the Mods for this piece of Armor and add the Cost value.
 				foreach (ArmorMod objMod in _lstArmorMods)
@@ -988,17 +965,16 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intTotalCost = 0;
+				int intTotalCost;
 				if (_strCost.Contains("Rating"))
 				{
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strCost = string.Empty;
 					string strCostExpression = _strCost;
 
-					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					intTotalCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 				}
@@ -1008,7 +984,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				if (DiscountCost)
-					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.CultureInfo) * 0.9);
+					intTotalCost = intTotalCost * 9 / 10;
 
 				return intTotalCost;
 			}
@@ -1094,11 +1070,9 @@ namespace Chummer.Backend.Equipment
 				if (_strAvail.Contains("+"))
 					return _strAvail;
 
-				string strCalculated = string.Empty;
-				string strReturn = string.Empty;
+				string strCalculated;
 
-
-				// Just a straight cost, so return the value.
+			    // Just a straight cost, so return the value.
 			    if (_strAvail.Contains("F") || _strAvail.Contains("R"))
 				{
 				    strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
@@ -1106,7 +1080,7 @@ namespace Chummer.Backend.Equipment
 				else
 					strCalculated = Convert.ToInt32(_strAvail).ToString();
 
-				int intAvail = 0;
+				int intAvail;
 				string strAvailText = string.Empty;
 				if (strCalculated.Contains("F") || strCalculated.Contains("R"))
 				{
@@ -1126,11 +1100,10 @@ namespace Chummer.Backend.Equipment
 							// If the cost is determined by the Rating, evaluate the expression.
 							XmlDocument objXmlDocument = new XmlDocument();
 							XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-							string strAvailability = string.Empty;
+                            
 							string strAvailExpression = (objChild.Avail);
 
-							strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
+							string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
 							if (strAvailability.Contains("R") || strAvailability.Contains("F"))
 							{
 								if (strAvailText != "F")
@@ -1172,7 +1145,7 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				strReturn = intAvail.ToString() + strAvailText;
+				string strReturn = intAvail.ToString() + strAvailText;
 
 				// Translate the Avail string.
 				strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
@@ -1189,7 +1162,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = string.Empty;
+				string strReturn;
 
 				// If an Armor Capacity is specified for the Armor, use that value. Otherwise, use the higher of 6 or (Highest Armor Rating * 1.5, round up).
 				if (string.IsNullOrEmpty(_strArmorCapacity) || _strArmorCapacity == "0")
@@ -1246,9 +1219,8 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intCapacity = 0;
 				// Get the Armor base Capacity.
-				intCapacity = Convert.ToInt32(CalculatedCapacity);
+				int intCapacity = Convert.ToInt32(CalculatedCapacity);
 
 				// If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
 				// Capacity since it's disabled and return 0 instead.

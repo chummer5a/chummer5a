@@ -647,7 +647,7 @@ namespace Chummer
 					intReturn = TotalAugmentedMaximum;
 
 				// An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES" || _strAbbrev == "DEP")))
+				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")))
 				{
 					if (intReturn < 0)
 						return 0;
@@ -700,7 +700,7 @@ namespace Chummer
 					intReturn = 0;
 				}*/
 
-				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES" || _strAbbrev == "DEP"))
+				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
 				{
 					if (_objCharacter.Options.ESSLossReducesMaximumOnly || _objCharacter.OverrideSpecialAttributeEssenceLoss)
 					{
@@ -4691,15 +4691,15 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString(GlobalOptions.CultureInfo));
+			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
 			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString());
 			objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
 			objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
             objWriter.WriteElementString("bonussource", _strBonusSource);
-            objWriter.WriteElementString("freepoints", _decFreePoints.ToString());
+            objWriter.WriteElementString("freepoints", _decFreePoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("free", _blnFree.ToString());
@@ -4729,10 +4729,9 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
-            if (objNode["pointsperlevel"] != null)
-			    _decPointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.CultureInfo);
+            objNode.TryGetDecFieldQuickly("pointsperlevel", ref _decPointsPerLevel);
             if (objNode["adeptway"] != null)
-                _decAdeptWayDiscount = Convert.ToDecimal(objNode["adeptway"].InnerText, GlobalOptions.CultureInfo);
+                _decAdeptWayDiscount = Convert.ToDecimal(objNode["adeptway"].InnerText, GlobalOptions.InvariantCultureInfo);
             else
             {
                 string strPowerName = _strName;
@@ -4740,8 +4739,8 @@ namespace Chummer
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (objXmlPower != null && objXmlPower["adeptway"] != null)
-                    _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.CultureInfo);
+                if (objXmlPower?["adeptway"] != null)
+                    _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
@@ -4780,13 +4779,13 @@ namespace Chummer
 			objWriter.WriteStartElement("power");
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString());
-            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString());
+			objWriter.WriteElementString("pointsperlevel", _decPointsPerLevel.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("adeptway", _decAdeptWayDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             if (_blnLevelsEnabled)
 				objWriter.WriteElementString("rating", _intRating.ToString());
 			else
 				objWriter.WriteElementString("rating", "0");
-			objWriter.WriteElementString("totalpoints", PowerPoints.ToString());
+			objWriter.WriteElementString("totalpoints", PowerPoints.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			if (_objCharacter.Options.PrintNotes)
@@ -7349,7 +7348,7 @@ namespace Chummer
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("counttowardslimit", _blnCountTowardsLimit.ToString());
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
