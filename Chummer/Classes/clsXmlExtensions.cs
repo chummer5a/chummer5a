@@ -235,14 +235,11 @@ namespace Chummer
             XmlNodeList objXmlNodeList = objXmlOperationNode.SelectNodes("*");
             if (objXmlNodeList == null)
                 return false;
-            bool boolInvert;
-            string strOperationType;
-            bool boolOperationChildNodeResult;
-            bool boolSubNodeResult;
             foreach (XmlNode objXmlOperationChildNode in objXmlNodeList)
             {
-                boolInvert = objXmlOperationChildNode.Attributes?["NOT"] != null;
+                bool boolInvert = objXmlOperationChildNode.Attributes?["NOT"] != null;
 
+                bool boolOperationChildNodeResult;
                 if (objXmlOperationChildNode.Name == "OR")
                 {
                     boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, true) != boolInvert;
@@ -266,7 +263,7 @@ namespace Chummer
 
                         foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
                         {
-                            boolSubNodeResult = boolInvert;
+                            bool boolSubNodeResult = boolInvert;
                             if (objXmlTargetNode.SelectNodes("*").Count > 0)
                             {
                                 if (objXmlOperationChildNode.SelectNodes("*").Count > 0)
@@ -274,7 +271,7 @@ namespace Chummer
                             }
                             else
                             {
-                                strOperationType = "==";
+                                string strOperationType = "==";
                                 if (objXmlOperationChildNode.Attributes?["operation"] != null)
                                     strOperationType = objXmlOperationChildNode.Attributes?["operation"].InnerText;
                                 // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value

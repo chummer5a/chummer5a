@@ -99,7 +99,7 @@ namespace Chummer.Skills
 		{
 			get { return _knowledgeSkillCatagories != null; }
 		}
-		
+
 		public string WriteableName
 		{
 			get { return _translator.Read(_name, ref _translated); }

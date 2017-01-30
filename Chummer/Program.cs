@@ -109,7 +109,7 @@ namespace Chummer
 		    }
 		}
 
-		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
+		static readonly ExceptionHeatMap heatmap = new ExceptionHeatMap();
 
 		static void FixCwd()
 		{

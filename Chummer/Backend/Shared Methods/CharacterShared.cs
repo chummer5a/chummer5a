@@ -40,7 +40,7 @@ namespace Chummer
 	{
 		protected Character _objCharacter;
 		protected MainController _objController;
-		protected CharacterOptions _objOptions;
+	    protected CharacterOptions _objOptions;
 		protected CommonFunctions _objFunctions;
 
 		public CharacterShared()
@@ -53,7 +53,7 @@ namespace Chummer
 		/// </summary>
 		public class TransportWrapper
 		{
-			private Control _control;
+			private readonly Control _control;
 
 			public TransportWrapper(Control control)
 			{
@@ -303,7 +303,7 @@ namespace Chummer
 			lblAstral.Text = _objCharacter.LimitAstral.ToString();
 		}
 
-		private Lazy<Skill> _gunneryCached;
+		private readonly Lazy<Skill> _gunneryCached;
 
 		protected int MountedGunManualOperationDicePool(Weapon weapon)
 		{

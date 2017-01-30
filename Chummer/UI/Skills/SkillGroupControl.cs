@@ -7,7 +7,7 @@ namespace Chummer.UI.Skills
 {
 	public partial class SkillGroupControl : UserControl
 	{
-		private SkillGroup _skillGroup;
+		private readonly SkillGroup _skillGroup;
 		public SkillGroupControl(SkillGroup skillGroup)
 		{
 			_skillGroup = skillGroup;
