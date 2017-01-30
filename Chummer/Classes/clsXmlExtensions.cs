@@ -343,10 +343,17 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
         {
+
             XmlElement objField = node[field];
             if (objField != null)
             {
                 read = objField.InnerText;
+                return true;
+            }
+            XmlAttribute objAttribute = node.Attributes[field];
+            if (objAttribute != null)
+            {
+                read = objAttribute.InnerText;
                 return true;
             }
             return false;
