@@ -3991,9 +3991,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Amount of MAG invested in Adept for Mystic Adepts.
+        /// Amount of Power Points for Mystic Adepts.
         /// </summary>
-        public int MAGAdept
+        public int MysticAdeptPowerPoints
         {
             get
             {
@@ -4002,21 +4002,6 @@ namespace Chummer
             set
             {
                 _intMAGAdept = value;
-            }
-        }
-
-        /// <summary>
-        /// Amount of MAG invested in Magician for Mystic Adepts.
-        /// </summary>
-        public int MAGMagician
-        {
-            get
-            {
-                return _intMAGMagician;
-            }
-            set
-            {
-                _intMAGMagician = value;
             }
         }
 

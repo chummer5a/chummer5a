@@ -102,10 +102,7 @@ namespace Chummer.Skills
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
 			objWriter.WriteElementString("page", Page);
-			if (Attribute == "MAG" && CharacterObject.AdeptEnabled && CharacterObject.MagicianEnabled)
-				objWriter.WriteElementString("attributemod", CharacterObject.MAGMagician.ToString());
-			else
-				objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
+			objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
 			objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString());
 			objWriter.WriteElementString("poolmod", dicePoolModifiers.ToString());
 			objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString());

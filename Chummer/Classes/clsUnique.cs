@@ -3028,7 +3028,7 @@ namespace Chummer
 					if (_objCharacter.Options.SpiritForceBasedOnTotalMAG)
 						intMAG = _objCharacter.MAG.TotalValue;
 					else
-						intMAG = _objCharacter.MAGMagician;
+						intMAG = _objCharacter.MAG.Value;
 				}
 
 				XmlDocument objXmlDocument = new XmlDocument();

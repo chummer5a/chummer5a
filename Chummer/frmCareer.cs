@@ -528,8 +528,8 @@ namespace Chummer
 			int intCharacterMAG = _objCharacter.MAG.TotalValue;
 			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
 			{
-				lblMysticAdeptMAGAdept.Text = _objCharacter.MAGAdept.ToString();
-				intCharacterMAG = _objCharacter.MAGMagician;
+				lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
+				intCharacterMAG = _objCharacter.MysticAdeptPowerPoints;
 
 				lblMysticAdeptAssignment.Visible = true;
 				lblMysticAdeptMAGAdept.Visible = true;
@@ -4600,19 +4600,15 @@ namespace Chummer
 			objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
 			objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
-			int intMAG = Convert.ToInt32(_objCharacter.MAG.TotalValue);
-			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-			{
-				intMAG = _objCharacter.MAGMagician;
-			}
 			if (_objOptions.SpiritForceBasedOnTotalMAG)
 			{
 				objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue * 2;
 				objSpiritControl.Force = _objCharacter.MAG.TotalValue;
 			}
 			else
-			{
-				if (intMAG == 0)
+            {
+                int intMAG = Convert.ToInt32(_objCharacter.MAG.Value);
+                if (intMAG == 0)
 					intMAG = 1;
 				objSpiritControl.ForceMaximum = intMAG * 2;
 				objSpiritControl.Force = intMAG;
@@ -11978,7 +11974,7 @@ namespace Chummer
 					_objCharacter.GetAttribute(objEntry.Undo.ObjectId).Value -= 1;
 					break;
                 case KarmaExpenseType.AddPowerPoint:
-                    _objCharacter.MAGAdept -= 1;
+                    _objCharacter.MysticAdeptPowerPoints -= 1;
                     break;
                 case KarmaExpenseType.AddQuality:
 					// Locate the Quality that was added.
@@ -20166,7 +20162,7 @@ namespace Chummer
 			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
 			{
 				// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-				intMAG = _objCharacter.MAGAdept;
+				intMAG = _objCharacter.MysticAdeptPowerPoints;
 			}
 			else
 			{
@@ -20265,7 +20261,7 @@ namespace Chummer
 				RedlinerCheck();
 
                 //needs to be somewhere...
-			    cmdIncreasePowerPoints.Enabled = (_objCharacter.MAGAdept < _objCharacter.MAG.TotalValue) &&_objCharacter.Karma >= 5;
+			    cmdIncreasePowerPoints.Enabled = (_objCharacter.MysticAdeptPowerPoints < _objCharacter.MAG.TotalValue) &&_objCharacter.Karma >= 5;
 
 				string strFormat;
 				if (_objCharacter.Options.EssenceDecimals == 4)
@@ -20446,8 +20442,8 @@ namespace Chummer
 					_objCharacter.TechnomancerEnabled = false;
 				}
 
-                if (_objCharacter.MAGAdept > _objCharacter.MAG.TotalValue)
-                    _objCharacter.MAGAdept = _objCharacter.MAG.TotalValue;
+                if (_objCharacter.MysticAdeptPowerPoints > _objCharacter.MAG.TotalValue)
+                    _objCharacter.MysticAdeptPowerPoints = _objCharacter.MAG.TotalValue;
 
 				// If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
 				if (_objCharacter.DEPEnabled)
@@ -20730,11 +20726,10 @@ namespace Chummer
 				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip);
 
 				// Update the MAG pseudo-Attributes if applicable.
-				int intCharacterMAG = _objCharacter.MAG.TotalValue;
+				int intCharacterMAG = _objCharacter.MAG.Value;
 				if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
 				{
-					lblMysticAdeptMAGAdept.Text = _objCharacter.MAGAdept.ToString();
-					intCharacterMAG = _objCharacter.MAGMagician;
+					lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
 				}
 
 				// Update the maximum Force for all Spirits.
@@ -26346,7 +26341,7 @@ namespace Chummer
                 return;
             }
 
-            if (_objCharacter.MAGAdept + 1 > _objCharacter.MAG.TotalValue)
+            if (_objCharacter.MysticAdeptPowerPoints + 1 > _objCharacter.MAG.TotalValue)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughMagic"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -26365,7 +26360,7 @@ namespace Chummer
             objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
             objExpense.Undo = objUndo;
 
-            _objCharacter.MAGAdept += 1;
+            _objCharacter.MysticAdeptPowerPoints += 1;
 
             UpdateCharacterInfo();
 
