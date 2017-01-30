@@ -679,7 +679,7 @@ namespace Chummer
 				}
 				try
 				{
-					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString()));
+					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString(GlobalOptions.InvariantCultureInfo)));
 					lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
 				}
 				catch (XPathException)
@@ -739,11 +739,11 @@ namespace Chummer
                     }
 
 					XPathExpression xprCost = nav.Compile(strCost);
-					int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intCost *= _intModMultiplier;
 
 					// Apply any markup.
-					double dblCost = Convert.ToDouble(intCost, GlobalOptions.CultureInfo);
+					double dblCost = Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo);
 					dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 					
 					if (chkBlackMarketDiscount.Checked)
@@ -931,8 +931,8 @@ namespace Chummer
 		}
 		private string ReplaceStrings(string strInput)
 		{
-			strInput = strInput.Replace("Rating", nudRating.Value.ToString());
-			strInput = strInput.Replace("Vehicle Cost", _objVehicle.Cost.ToString());
+			strInput = strInput.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+			strInput = strInput.Replace("Vehicle Cost", _objVehicle.Cost);
 			strInput = strInput.Replace("Weapon Cost", _intWeaponCost.ToString());
 			strInput = strInput.Replace("Total Cost", _intTotalWeaponCost.ToString());
 			strInput = strInput.Replace("Body", _objVehicle.Body.ToString());

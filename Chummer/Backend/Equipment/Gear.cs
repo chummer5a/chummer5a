@@ -1622,7 +1622,7 @@ namespace Chummer.Backend.Equipment
 					string strReturn = string.Empty;
 
 					// This has resulted in a non-whole number, so round it (minimum of 1).
-					decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.CultureInfo);
+					decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
 					int intNumber = Convert.ToInt32(Math.Ceiling(decNumber));
 					if (intNumber < 1)
 						intNumber = 1;
@@ -1795,7 +1795,7 @@ namespace Chummer.Backend.Equipment
                     strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intReturn = Convert.ToInt32(dblCost);
 				}
 				else
@@ -1903,7 +1903,7 @@ namespace Chummer.Backend.Equipment
                     {
 					    XPathExpression xprCost = nav.Compile(strCost);
 					    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					    dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					    dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
                     }
                     catch (XPathException)
                     {
@@ -1935,7 +1935,7 @@ namespace Chummer.Backend.Equipment
                     {
 					    XPathExpression xprCost = nav.Compile(strCost);
 					    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					    dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					    dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
                     }
                     catch (XPathException)
                     {
@@ -1961,7 +1961,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
 				// Add in the cost of all child components.
 				int intPlugin = 0;
@@ -2067,7 +2067,7 @@ namespace Chummer.Backend.Equipment
                     strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intReturn = Convert.ToInt32(dblCost);
 				}
 				else
@@ -2091,7 +2091,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
 				// The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
 				int intParentMultiplier = 1;

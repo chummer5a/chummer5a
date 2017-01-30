@@ -335,8 +335,8 @@ namespace Chummer
         /// </summary>
         public void UpdatePointsPerLevel()
         {
-            string strCalculated = _objPower.CalculatedPointsPerLevel.ToString();
-            string strPoints = _objPower.PowerPoints.ToString();
+            string strCalculated = _objPower.CalculatedPointsPerLevel.ToString(GlobalOptions.InvariantCultureInfo);
+            string strPoints = _objPower.PowerPoints.ToString(GlobalOptions.InvariantCultureInfo);
 
             while (strCalculated.EndsWith("0") && strCalculated.Length > 4)
                 strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);

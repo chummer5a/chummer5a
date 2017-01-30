@@ -855,7 +855,7 @@ namespace Chummer
 
 				try
 				{
-					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
+					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 					lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier).ToString() + strAvail;
 				}
 				catch (XPathException)
@@ -873,8 +873,8 @@ namespace Chummer
 				{
 					try
 					{
-						XPathExpression xprCost = nav.Compile(objXmlGear["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-						double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
+						XPathExpression xprCost = nav.Compile(objXmlGear["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+						double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * dblMultiplier;
 						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 					    if (chkBlackMarketDiscount.Checked)
 					        dblCost *= 0.9;
@@ -899,12 +899,12 @@ namespace Chummer
                         string strCost ="0";
                         if (nudRating.Value > 0)
                             strCost = strValues[Convert.ToInt32(nudRating.Value) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
-                        lblCost.Text = String.Format("{0:###,###,##0¥+}", Convert.ToInt32(strCost));
+                        lblCost.Text = $"{Convert.ToInt32(strCost):###,###,##0¥+}";
                     }
                     else if (objXmlGear["cost"].InnerText.StartsWith("Variable"))
 					{
 						int intMin = 0;
-						int intMax = 0;
+						int intMax = int.MaxValue;
 						string strCost = objXmlGear["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
 						if (strCost.Contains("-"))
 						{
@@ -915,13 +915,12 @@ namespace Chummer
 						else
 							intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-						if (intMax == 0)
+						if (intMax == int.MaxValue)
 						{
-							intMax = 1000000;
-							lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+							lblCost.Text = $"{intMin:###,###,##0¥+}";
 						}
 						else
-							lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+							lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
 
 						intItemCost = intMin;
 					}
@@ -930,42 +929,42 @@ namespace Chummer
 				{
 					if (nudRating.Value <= 3)
 					{
-						XPathExpression xprCost = nav.Compile(objXmlGear["cost3"].InnerText.Replace("Rating", nudRating.Value.ToString()));
+						XPathExpression xprCost = nav.Compile(objXmlGear["cost3"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
-						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
+						lblCost.Text = $"{dblCost * _intCostMultiplier:###,###,##0¥}";
 						intItemCost = Convert.ToInt32(dblCost);
 					}
 					else if (nudRating.Value <= 6)
 					{
-						XPathExpression xprCost = nav.Compile(objXmlGear["cost6"].InnerText.Replace("Rating", nudRating.Value.ToString()));
+						XPathExpression xprCost = nav.Compile(objXmlGear["cost6"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
-						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
+						lblCost.Text = $"{dblCost * _intCostMultiplier:###,###,##0¥}";
 						intItemCost = Convert.ToInt32(dblCost);
 					}
 					else
 					{
-						XPathExpression xprCost = nav.Compile(objXmlGear["cost10"].InnerText.Replace("Rating", nudRating.Value.ToString()));
+						XPathExpression xprCost = nav.Compile(objXmlGear["cost10"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 						double dblCost = 0.0;
-						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo) * dblMultiplier;
-						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * dblMultiplier;
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
-						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);
+						lblCost.Text = $"{dblCost * _intCostMultiplier:###,###,##0¥}";
 						intItemCost = Convert.ToInt32(dblCost);
 					}
 				}
 
 				if (chkFreeItem.Checked)
 				{
-					lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
+					lblCost.Text = $"{0:###,###,##0¥}";
 					intItemCost = 0;
 				}
 
@@ -994,7 +993,7 @@ namespace Chummer
 							strCapacity = strFirstHalf;
 							if (blnSquareBrackets && strCapacity.Length > 2)
 								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
+							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
                             if (objXmlGear[strCapacityField].InnerText == "[*]")
                                 lblCapacity.Text = "*";
@@ -1022,7 +1021,7 @@ namespace Chummer
 							strCapacity = objXmlGear[strCapacityField].InnerText;
                             if (blnSquareBrackets && strCapacity.Length > 2)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
+							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
 							if (objXmlGear[strCapacityField].InnerText == "[*]")
 								lblCapacity.Text = "*";
@@ -1049,7 +1048,7 @@ namespace Chummer
                                     }
                                     if (strCalculatedCapacity.Contains('.'))
 									{
-										double dblCalculatedCapacity = Convert.ToDouble(strCalculatedCapacity, GlobalOptions.CultureInfo);
+										double dblCalculatedCapacity = Convert.ToDouble(strCalculatedCapacity, GlobalOptions.InvariantCultureInfo);
 										int intCalculatedCapacity = Convert.ToInt32(Math.Floor(dblCalculatedCapacity));
 										if (intCalculatedCapacity < 1)
 											intCalculatedCapacity = 1;
@@ -1075,7 +1074,7 @@ namespace Chummer
 					if (nudRating.Value == 0)
 						lblCapacity.Text = "[1]";
 					else
-						lblCapacity.Text = "[" + nudRating.Value.ToString() + "]";
+						lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.CultureInfo) + "]";
 				}
 				
 				// Rating.

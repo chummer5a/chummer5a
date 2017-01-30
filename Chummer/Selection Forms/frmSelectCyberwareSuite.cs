@@ -124,8 +124,8 @@ namespace Chummer
 				decTotalESS += objCyberware.CalculatedESS;
 			}
 
-			lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString();
-			lblCost.Text = String.Format("{0:###,###,##0¥}", intTotalCost);
+			lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
+			lblCost.Text = $"{intTotalCost:###,###,##0¥}";
 			_intCost = intTotalCost;
 		}
 		#endregion

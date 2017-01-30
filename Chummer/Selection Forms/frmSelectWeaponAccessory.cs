@@ -406,7 +406,7 @@ namespace Chummer
 		            try
 		            {
 		                XPathExpression xprCost = nav.Compile(strCost);
-		                dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo);
+		                dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
 		            }
 		            catch (XPathException)
 		            {

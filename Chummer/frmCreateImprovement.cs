@@ -328,10 +328,10 @@ namespace Chummer
 
 			// Retrieve the XML data from the document and replace the values as necessary.
 			string strXml = objFetchNode["xml"].InnerText;
-			strXml = strXml.Replace("{val}", nudVal.Value.ToString());
-			strXml = strXml.Replace("{min}", nudMin.Value.ToString());
-			strXml = strXml.Replace("{max}", nudMax.Value.ToString());
-			strXml = strXml.Replace("{aug}", nudAug.Value.ToString());
+			strXml = strXml.Replace("{val}", nudVal.Value.ToString(GlobalOptions.InvariantCultureInfo));
+			strXml = strXml.Replace("{min}", nudMin.Value.ToString(GlobalOptions.InvariantCultureInfo));
+			strXml = strXml.Replace("{max}", nudMax.Value.ToString(GlobalOptions.InvariantCultureInfo));
+			strXml = strXml.Replace("{aug}", nudAug.Value.ToString(GlobalOptions.InvariantCultureInfo));
             strXml = strXml.Replace("{free}", chkFree.Checked.ToString().ToLower());
             strXml = strXml.Replace("{select}", txtSelect.Text);
 			strXml = strXml.Replace("{applytorating}", strRating);

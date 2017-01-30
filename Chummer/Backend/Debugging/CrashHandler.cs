@@ -109,22 +109,22 @@ namespace Chummer.Backend.Debugging
 
 		internal static void WebMiniDumpHandler(Exception ex)
 		{
-				try
-				{
-					DumpData dump = new DumpData();
-					
-					dump.AddException(ex);
-					dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
-					dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+			try
+			{
+				DumpData dump = new DumpData();
 
-					Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+				dump.AddException(ex);
+				dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
+				dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 
-					crashHandler.WaitForExit();
-				}
-				catch(Exception nex)
-				{
-					MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
-				}
+				Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+
+				crashHandler.WaitForExit();
+			}
+			catch(Exception nex)
+			{
+				MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
+			}
 		}
 	}
 }

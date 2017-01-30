@@ -50,15 +50,16 @@ namespace Chummer.Backend.Equipment
 			_objCharacter = objCharacter;
 		}
 
-		/// Create an Armor from an XmlNode and return the TreeNodes for it.
-		/// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
-		/// <param name="objNode">TreeNode to populate a TreeView.</param>
-		/// <param name="cmsArmorMod">ContextMenuStrip to apply to Armor Mode TreeNodes.</param>
-		/// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
-		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		/// <param name="intRating">Rating of the item.</param>
-		/// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
-		public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
+        /// Create an Armor from an XmlNode and return the TreeNodes for it.
+        /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
+        /// <param name="objNode">TreeNode to populate a TreeView.</param>
+        /// <param name="cmsArmorMod">ContextMenuStrip to apply to Armor Mode TreeNodes.</param>
+        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
+        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="intRating">Rating of the item.</param>
+        /// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
+        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
+        public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
 		{
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -237,7 +238,7 @@ namespace Chummer.Backend.Equipment
 
 					XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlArmorMod.InnerText + "\"]");
 					if (objXmlMod != null)
-					{ 
+					{
 						ArmorMod objMod = new ArmorMod(_objCharacter);
 						List<Weapon> lstWeapons = new List<Weapon>();
 						List<TreeNode> lstWeaponNodes = new List<TreeNode>();
@@ -897,10 +898,7 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				if (!blnHighest)
-					blnUseBase = true;
-
-				if (blnHighest && Convert.ToInt32(_strO) == 0)
+				if (!blnHighest || Convert.ToInt32(_strO) == 0)
 					blnUseBase = true;
 
 				int intTotalArmor = 0;
@@ -967,7 +965,7 @@ namespace Chummer.Backend.Equipment
 					intTotalCost = Convert.ToInt32(_strCost);
 				}
 				if (DiscountCost)
-					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.CultureInfo) * 0.9);
+					intTotalCost = intTotalCost * 9 / 10;
 
 				// Go through all of the Mods for this piece of Armor and add the Cost value.
 				foreach (ArmorMod objMod in _lstArmorMods)
@@ -1008,7 +1006,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				if (DiscountCost)
-					intTotalCost = Convert.ToInt32(Convert.ToDouble(intTotalCost, GlobalOptions.CultureInfo) * 0.9);
+					intTotalCost = intTotalCost * 9 / 10;
 
 				return intTotalCost;
 			}

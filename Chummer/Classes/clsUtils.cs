@@ -38,7 +38,7 @@ namespace Chummer
 		{
 			//parse to base math string
 			Regex regex = new Regex(string.Join("|", keywords.Keys));
-			number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.CultureInfo));
+			number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.InvariantCultureInfo));
 
 			XmlDocument objXmlDocument = new XmlDocument();
 			XPathNavigator nav = objXmlDocument.CreateNavigator();

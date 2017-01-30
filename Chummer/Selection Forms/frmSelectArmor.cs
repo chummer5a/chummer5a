@@ -660,7 +660,7 @@ namespace Chummer
 			if (objXmlArmor["cost"].InnerText.StartsWith("Variable"))
 			{
 				int intMin = 0;
-				int intMax = 0;
+				int intMax = int.MaxValue;
 				string strCost = objXmlArmor["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
 				if (strCost.Contains("-"))
 				{
@@ -671,45 +671,44 @@ namespace Chummer
 				else
 					intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-				if (intMax == 0)
+				if (intMax == int.MaxValue)
 				{
-					intMax = 1000000;
-					lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+					lblCost.Text = $"{intMin:###,###,##0¥+}";
 				}
 				else
-					lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+					lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
 
 				intItemCost = intMin;
 			}
 			else if (objXmlArmor["cost"].InnerText.Contains("Rating"))
 			{
 				XPathNavigator nav = _objXmlDocument.CreateNavigator();
-				XPathExpression xprCost = nav.Compile(objXmlArmor["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-				double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.CultureInfo));
+				XPathExpression xprCost = nav.Compile(objXmlArmor["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+				double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 				if (chkBlackMarketDiscount.Checked)
 				{
 					dblCost = dblCost - (dblCost*0.90);
 				}
-				intItemCost = Convert.ToInt32(dblCost);
-				lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+				intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
+				lblCost.Text = $"{intItemCost:###,###,##0¥}";
 			}
 			else
 			{
-				double dblCost = Convert.ToDouble(objXmlArmor["cost"].InnerText, GlobalOptions.CultureInfo);
+				double dblCost = Convert.ToDouble(objXmlArmor["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
 				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
 				if (chkBlackMarketDiscount.Checked)
 				{
 					dblCost = dblCost * 0.90;
 				}
-				lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
-				intItemCost = Convert.ToInt32(dblCost);
+				lblCost.Text = $"{dblCost:###,###,##0¥}";
+				intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
 			}
 
 			lblCapacity.Text = objXmlArmor["armorcapacity"].InnerText;
 
 			if (chkFreeItem.Checked)
 			{
-				lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
+				lblCost.Text = $"{0:###,###,##0¥}";
 				intItemCost = 0;
 			}
 

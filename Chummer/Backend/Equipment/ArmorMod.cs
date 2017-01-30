@@ -221,6 +221,7 @@ namespace Chummer.Backend.Equipment
 		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
+		/// <param name="blnCopy">Whether or not we are copying an existing node.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
             if (blnCopy)
@@ -737,9 +738,9 @@ namespace Chummer.Backend.Equipment
 				XPathExpression xprCapacity = nav.Compile(strCapacity);
 
 				decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
-				string strReturn = string.Empty;
+				string strReturn;
 
-				//Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number. 
+				//Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
 				if (decCapacity > 0)
 				{
 					strReturn = Math.Ceiling(decCapacity).ToString(GlobalOptions.CultureInfo);
