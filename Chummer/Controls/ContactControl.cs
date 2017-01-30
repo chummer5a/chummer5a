@@ -76,8 +76,8 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-	        MoveControls();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            MoveControls();
         }
 
         private void ContactControl_Load(object sender, EventArgs e)
