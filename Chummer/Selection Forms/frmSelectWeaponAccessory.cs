@@ -255,17 +255,17 @@ namespace Chummer
 				lblRC.Visible = false;
 				lblRCLabel.Visible = false;
 			}
-		    int intMaxRating;
+		  int intMaxRating;
 			if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out intMaxRating) && intMaxRating > 1)
 			{
 				nudRating.Enabled = true;
 				nudRating.Visible = true;
 				lblRatingLabel.Visible = true;
 				nudRating.Maximum = intMaxRating;
-            }
+      }
 			else
 			{
-				nudRating.Value = intMaxRating;
+			  nudRating.Enabled = false;
 				nudRating.Visible = false;
 				lblRatingLabel.Visible = false;
 			}
@@ -477,7 +477,15 @@ namespace Chummer
 		{
 			get
 			{
-				return nudRating.Value.ToString(GlobalOptions.CultureInfo);
+			  if (nudRating.Enabled)
+			  {
+			    return nudRating.Value.ToString(GlobalOptions.CultureInfo);
+			  }
+			  else
+			  {
+          // Display Rating for items without one as 0
+			    return 0.ToString(GlobalOptions.CultureInfo);
+			  }
 			}
 		}
 

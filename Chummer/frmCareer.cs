@@ -8747,8 +8747,8 @@ namespace Chummer
 
 		private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
 		{
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
+      // Make sure a parent item is selected, then open the Select Accessory window.
+      if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponAccessory"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
