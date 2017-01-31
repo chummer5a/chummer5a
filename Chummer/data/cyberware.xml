@@ -3675,7 +3675,7 @@
 			<name>Stirrup Interface</name>
 			<category>Special Biodrone Cyberware</category>
 			<rating>3</rating>
-			<ess>3.2 + Rating</ess>
+			<ess>2.2 + Rating</ess>
 			<capacity>0</capacity>
       <bonus>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>

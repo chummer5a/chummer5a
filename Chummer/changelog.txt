@@ -33,6 +33,7 @@ Application Changes:
 - Removed some 4e references to Mystic Adepts having to split their magic between being an Adept and a Magician. Fixed some weird behaviour with Spirit Force maximums related to this. 
 - Fixed some issues related to localized number formats.
 - Added a basic Autosave feature to save backup files to the saves\autosave folder. By default this will save every five minutes, if the character is 'dirty', ie has had non-saved changes made.
+- Removed redundant code that caused duplication of costs for Advanced Lifestyle qualities. 
 
 Data Changes:
 
@@ -50,6 +51,7 @@ Data Changes:
 - Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
+- Fixed in incorrect ESS cost for the Stirrup Interface cyberware. 
 
 New Strings: 
 
