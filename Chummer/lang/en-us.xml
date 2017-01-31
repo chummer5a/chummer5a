@@ -2252,7 +2252,7 @@
 		</string>
 		<string>
 			<key>Message_NoExtraKarma</key>
-			<text>You have {0} remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose these extra points?</text>
+			<text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose these extra points?</text>
 		</string>	
 		<string>
 			<key>Message_SumtoTen</key>
