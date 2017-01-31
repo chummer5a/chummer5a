@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -66,7 +67,32 @@ namespace Chummer
 			}
 		}
 
-		protected void RedlinerCheck()
+        public Stopwatch Autosave_StopWatch = Stopwatch.StartNew();
+        /// <summary>
+        /// Automatically Save the character to a backup folder.
+        /// </summary>
+        public void AutoSaveCharacter()
+        {
+            if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "autosave")))
+                Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "autosave"));
+            
+            string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
+            string strShowFileName = strFile[strFile.Length - 1];
+
+            if (string.IsNullOrEmpty(strShowFileName))
+                strShowFileName = _objCharacter.Alias;
+            string strFilePath = Path.Combine(Application.StartupPath, "saves", "autosave", strShowFileName);
+            try
+            {
+                _objCharacter.Save(strFilePath);
+            }
+            catch
+            {
+                // ignored, no point crashing the application if we can't backup.
+            }
+            Autosave_StopWatch.Restart();
+        }
+        protected void RedlinerCheck()
 		{
 			string strSeekerImprovPrefix = "SEEKER";
 		    var lstSeekerAttributes = new List<string>();

@@ -293,9 +293,13 @@ namespace Chummer
         /// <summary>
         /// Save the Character to an XML file.
         /// </summary>
-        public void Save()
+        public void Save(string strFileName = "")
         {
-            FileStream objStream = new FileStream(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            if (string.IsNullOrWhiteSpace(strFileName))
+            {
+                strFileName = _strFileName;
+            }
+            FileStream objStream = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 	        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
 	        {
 		        Formatting = Formatting.Indented,
