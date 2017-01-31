@@ -404,7 +404,7 @@ namespace Chummer
 		private void objCharacter_CharacterNameChanged(Object sender)
 		{
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-		    if (tabForms.SelectedTab != null)
+		    if (tabForms.TabCount > 0 && tabForms.SelectedTab != null)
 		    {
 		        Character objCharacter = sender as Character;
 		        if (objCharacter != null)
