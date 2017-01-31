@@ -118,7 +118,6 @@ namespace Chummer.Skills
 		    string strNameValue;
 			if (NameCategoryMap.TryGetValue(name, out strNameValue))
 			{
-			    Type = strNameValue;
 				SuggestedSpecializations.Clear();
 
 				XmlNodeList list =
@@ -128,7 +127,6 @@ namespace Chummer.Skills
 					SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
 				}
 				OnPropertyChanged(nameof(CGLSpecializations));
-				OnPropertyChanged(nameof(Type));
 			}
 		}
 

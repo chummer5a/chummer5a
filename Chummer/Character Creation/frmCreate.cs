@@ -16937,14 +16937,14 @@ namespace Chummer
 			if (objLifestyle == null)
 				return;
 
-			lblLifestyleCost.Text = string.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
+			lblLifestyleCost.Text = $"{objLifestyle.TotalMonthlyCost:###,###,##0¥}";
 			nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo);
-			lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + string.Format("{0:###,###,##0¥", objLifestyle.Multiplier);
+			lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + $"{objLifestyle.Multiplier:###,###,##0¥}";
 			string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
 			string strPage = objLifestyle.Page;
 			lblLifestyleSource.Text = strBook + " " + strPage;
             tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
-            lblLifestyleTotalCost.Text = string.Format("= {0:###,###,##0¥", objLifestyle.TotalCost);
+            lblLifestyleTotalCost.Text = $"{objLifestyle.TotalCost:###,###,##0¥}";
 
 			// Change the Cost/Month label.
 			if (objLifestyle.StyleType == LifestyleType.Safehouse)

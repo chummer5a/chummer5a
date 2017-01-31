@@ -347,7 +347,7 @@ namespace Chummer
                 read = objField.InnerText;
                 return true;
             }
-            XmlAttribute objAttribute = node.Attributes[field];
+            XmlAttribute objAttribute = node.Attributes?[field];
             if (objAttribute != null)
             {
                 read = objAttribute.InnerText;
