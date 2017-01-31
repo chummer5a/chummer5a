@@ -58,6 +58,10 @@ New Strings:
 - Checkbox_Option_PrioritySpellsAsAdeptPowers
 - Checkbox_Options_Live_CustomData
 
+Changed Strings:
+
+- Message_NoExtraKarma
+
 Build 190
 
 Application Changes:
