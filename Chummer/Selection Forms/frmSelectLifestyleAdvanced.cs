@@ -597,17 +597,8 @@ namespace Chummer
 				intMinComfort += objQuality.ComfortMinimum;
 				intMinSec += objQuality.SecurityMinimum;
 
-				if (objQuality.Type == QualityType.Positive)
-				{
-					objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name.ToString() + "\" and category = \"Positive\"]");
-				}
-				// Calculate the cost of Negative Qualities.
-				else if (objQuality.Type == QualityType.Negative)
-				{
-					objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name.ToString() + "\" and category = \"Negative\"]");
-				}
                 // Calculate the cost of Entertainments.
-				else if (objQuality.Type == QualityType.Entertainment || objQuality.Type == QualityType.Contracts)
+				if (objQuality.Type == QualityType.Entertainment || objQuality.Type == QualityType.Contracts)
 				{
 					objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
                     if (objXmlNode != null)
@@ -660,21 +651,6 @@ namespace Chummer
                         }
                     }
 				}
-
-                if (objXmlNode != null)
-                {
-                    intLP -= Convert.ToInt32(objXmlNode["lp"]?.InnerText);
-                    intMaxComfort += Convert.ToInt32(objXmlNode["comforts"]?.InnerText);
-                    intMinComfort += Convert.ToInt32(objXmlNode["comfortsMinimum"]?.InnerText);
-                    intMaxArea += Convert.ToInt32(objXmlNode["neighborhood"]?.InnerText);
-                    intMinArea += Convert.ToInt32(objXmlNode["neighborhoodMinimum"]?.InnerText);
-                    intMaxSec += Convert.ToInt32(objXmlNode["security"]?.InnerText);
-                    intMinSec += Convert.ToInt32(objXmlNode["securityMinimum"]?.InnerText);
-                    intMultiplier += Convert.ToInt32(objXmlNode["multiplier"]?.InnerText);
-                    intMultiplierBaseOnly += Convert.ToInt32(objXmlNode["multiplierbaseonly"]?.InnerText);
-                    if (objQuality.Type != QualityType.Entertainment && objQuality.Type != QualityType.Contracts)
-                        intBaseNuyen += Convert.ToInt32(objXmlNode["cost"]?.InnerText);
-                }
             }
             _blnSkipRefresh = true;
 
