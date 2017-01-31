@@ -14878,6 +14878,11 @@ namespace Chummer
             RefreshLimitModifiers();
             UpdateReputation();
 			UpdateInitiationCost();
+
+            if (Autosave_StopWatch.Elapsed.Minutes >= 5 && _blnIsDirty)
+            {
+                AutoSaveCharacter();
+            }
 		}
 
 		//TODO: Rrmove pending further testing. Should be redundant now.
@@ -19198,10 +19203,8 @@ namespace Chummer
                     }
 
                     strNewName = Path.Combine(Application.StartupPath, "saves", "backup", strNewName);
-
-                    _objCharacter.FileName = strNewName;
-                    _objCharacter.Save();
-                    _objCharacter.FileName = strFileName;
+                    
+                    _objCharacter.Save(strNewName);
                 }
 
 				// See if the character has any Karma remaining.

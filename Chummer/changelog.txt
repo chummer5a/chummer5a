@@ -32,6 +32,7 @@ Application Changes:
 - Fixed multiple minor possible crashes if data was entered in an incorrect format.
 - Removed some 4e references to Mystic Adepts having to split their magic between being an Adept and a Magician. Fixed some weird behaviour with Spirit Force maximums related to this. 
 - Fixed some issues related to localized number formats.
+- Added a basic Autosave feature to save backup files to the saves\autosave folder. By default this will save every five minutes, if the character is 'dirty', ie has had non-saved changes made.
 
 Data Changes:
 

@@ -20991,7 +20991,12 @@ namespace Chummer
             RefreshLimitModifiers();
 			RefreshImprovements();
 			UpdateReputation();
-		}
+
+            if (Autosave_StopWatch.Elapsed.Minutes >= 5 && _blnIsDirty)
+            {
+                AutoSaveCharacter();
+            }
+        }
 
 		/// <summary>
 		/// Refresh the information for the currently displayed piece of Cyberware.
