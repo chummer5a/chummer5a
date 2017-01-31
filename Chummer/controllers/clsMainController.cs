@@ -28,7 +28,7 @@ namespace Chummer
 {
 	public class MainController : CharacterShared
     {
-		private ImprovementManager _objImprovementManager;
+		private readonly ImprovementManager _objImprovementManager;
 
 		public MainController(Character objCharacter)
 		{
@@ -991,7 +991,7 @@ namespace Chummer
 				if (_objCharacter.Metatype == "Free Spirit")
 				{
 					// Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-					intPowerPoints = _objCharacter.EDG.Value + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints); ;
+					intPowerPoints = _objCharacter.EDG.Value + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
 				}
 				else if (_objCharacter.Metatype == "Ally Spirit")
 				{
@@ -1070,11 +1070,11 @@ namespace Chummer
 				string strAdvantage = string.Empty;
 				string strDisadvantage = string.Empty;
 
-				XmlDocument objXmlDocument;
-				if (!string.IsNullOrEmpty(strMentorSpirit))
+			    if (!string.IsNullOrEmpty(strMentorSpirit))
 				{
 					// Load the appropriate XML document.
-					if (objMentorType == MentorType.Mentor)
+				    XmlDocument objXmlDocument;
+				    if (objMentorType == MentorType.Mentor)
 						objXmlDocument = XmlManager.Instance.Load("mentors.xml");
 					else
 						objXmlDocument = XmlManager.Instance.Load("paragons.xml");

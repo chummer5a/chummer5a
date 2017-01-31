@@ -20,7 +20,7 @@ namespace Chummer.UI.Shared
 		private readonly Func<TType, Control> _createFunc;  //Function to create a control out of a item
 		private readonly bool _loadVisibleOnly;
 		private List<ControlWithMetaData> _contentList;
-		private List<int> _displayIndex = new List<int>();
+		private readonly List<int> _displayIndex = new List<int>();
 		private IndexComparer _indexComparer;
 		private BitArray _rendered;
 		private int _offScreenChunkSize = 1;
@@ -295,7 +295,7 @@ namespace Chummer.UI.Shared
 
             public Control Control => _control ?? (_control = CreateControl());
 
-            public bool ControlCreated => _control != null;
+		    private bool ControlCreated => _control != null;
 
             public bool Visible
 			{
