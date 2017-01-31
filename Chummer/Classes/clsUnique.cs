@@ -49,7 +49,7 @@ namespace Chummer
 		private int _intAugModifier = 0;
         private int _intBase = 0;
         private int _intKarma = 0;
-		private string _strAbbrev = string.Empty;
+		private string _strAbbrev;
 		public Character _objCharacter;
 
 		public event PropertyChangedEventHandler PropertyChanged;
