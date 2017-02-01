@@ -1619,7 +1619,7 @@ namespace Chummer
 			SkillPropertyChanged_StopWatch.Restart();
 
 			UpdateWindowTitle();
-            lblCareerKarma.Text = String.Format("{0:###,###,##0}", _objCharacter.CareerKarma);
+            lblCareerKarma.Text = $"{_objCharacter.CareerKarma:###,###,##0}";
             //UpdateSkillInfo();
             PopulateExpenseList();
             PopulateCalendar();
@@ -20177,7 +20177,7 @@ namespace Chummer
 			while (strRemain.EndsWith("0") && strRemain.Length > 4)
 				strRemain = strRemain.Substring(0, strRemain.Length - 1);
 
-			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
+			lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
 		}
 
 	    public void RefreshContacts()
@@ -20263,21 +20263,16 @@ namespace Chummer
                 //needs to be somewhere...
 			    cmdIncreasePowerPoints.Enabled = (_objCharacter.MysticAdeptPowerPoints < _objCharacter.MAG.TotalValue) &&_objCharacter.Karma >= 5;
 
-				string strFormat;
-				if (_objCharacter.Options.EssenceDecimals == 4)
-					strFormat = "{0:0.0000}";
-				else
-					strFormat = "{0:0.00}";
-				decimal decESS = _objCharacter.Essence;
+				decimal decESS = Math.Round(_objCharacter.Essence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
 				lblESSMax.Text = decESS.ToString(GlobalOptions.CultureInfo);
-				tssEssence.Text = string.Format(strFormat, decESS);
+				tssEssence.Text = lblESSMax.Text;
 
-				lblCyberwareESS.Text = string.Format(strFormat, _objCharacter.CyberwareEssence);
-				lblBiowareESS.Text = string.Format(strFormat, _objCharacter.BiowareEssence);
-				lblEssenceHoleESS.Text = string.Format(strFormat, _objCharacter.EssenceHole);
+				lblCyberwareESS.Text = Math.Round(_objCharacter.CyberwareEssence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+				lblBiowareESS.Text = Math.Round(_objCharacter.BiowareEssence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+				lblEssenceHoleESS.Text = Math.Round(_objCharacter.EssenceHole, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
 
-				// Reduce a character's MAG and RES from Essence Loss.
-				int intReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(decESS));
+                // Reduce a character's MAG and RES from Essence Loss.
+                int intReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(decESS));
 
 				// Remove any Improvements from MAG and RES from Essence Loss.
 				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
@@ -20928,8 +20923,8 @@ namespace Chummer
 				}
 
 				// Update the Nuyen and Karma for the character.
-				tssNuyen.Text = String.Format("{0:###,###,##0¥}", _objCharacter.Nuyen);
-				lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", _objCharacter.Nuyen);
+				tssNuyen.Text = $"{_objCharacter.Nuyen:###,###,##0¥}";
+				lblRemainingNuyen.Text = $"{_objCharacter.Nuyen:###,###,##0¥}";
 				
 				PopulateExpenseList();
 
@@ -20962,10 +20957,10 @@ namespace Chummer
 				tipTooltip.SetToolTip(lblMemory, strTip);
 
 				// Career Karma.
-				lblCareerKarma.Text = String.Format("{0:###,###,##0}", _objCharacter.CareerKarma);
+				lblCareerKarma.Text = $"{_objCharacter.CareerKarma:###,###,##0}";
 
 				// Career Nuyen.
-				lblCareerNuyen.Text = String.Format("{0:###,###,##0¥}", _objCharacter.CareerNuyen);
+				lblCareerNuyen.Text = $"{_objCharacter.CareerNuyen:###,###,##0¥}";
 
 				// Update Damage Resistance Pool.
 				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) + _objCharacter.TotalArmorRating).ToString();
@@ -21114,7 +21109,7 @@ namespace Chummer
 				_blnSkipRefresh = false;
 
 				lblCyberwareAvail.Text = objCyberware.TotalAvail;
-				lblCyberwareCost.Text = String.Format("{0:###,###,##0¥}", objCyberware.TotalCost);
+				lblCyberwareCost.Text = $"{objCyberware.TotalCost:###,###,##0¥}";
 				lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" + objCyberware.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 				lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(GlobalOptions.CultureInfo);
 				UpdateCharacterInfo();
@@ -21203,7 +21198,7 @@ namespace Chummer
                     lblCyberwareName.Text = objGear.DisplayNameShort;
                     lblCyberwareCategory.Text = objGear.DisplayCategory;
                     lblCyberwareAvail.Text = objGear.TotalAvail(true);
-                    lblCyberwareCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+                    lblCyberwareCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
                     lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     lblCyberwareEssence.Text = "0";
                     lblCyberwareGrade.Text = string.Empty;
@@ -21509,7 +21504,7 @@ namespace Chummer
 				_blnSkipRefresh = false;
 
 				lblWeaponAvail.Text = objWeapon.TotalAvail;
-				lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
+				lblWeaponCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
 				lblWeaponConceal.Text = objWeapon.CalculatedConcealability();
 				lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
                 lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
@@ -21554,7 +21549,7 @@ namespace Chummer
 					cmdWeaponBuyAmmo.Enabled = true;
 
 					lblWeaponAvail.Text = objWeapon.TotalAvail;
-					lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
+					lblWeaponCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
 					lblWeaponConceal.Text = "+4";
 					lblWeaponDamage.Text = objWeapon.CalculatedDamage();
 					lblWeaponRC.Text = objWeapon.TotalRC;
@@ -21655,7 +21650,7 @@ namespace Chummer
                         lblWeaponCategory.Text = LanguageManager.Instance.GetString("String_WeaponAccessory");
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail;
                         lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
-                        lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objSelectedAccessory.TotalCost));
+                        lblWeaponCost.Text = $"{objSelectedAccessory.TotalCost:###,###,##0¥}";
                         lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
                         lblWeaponDamage.Text = string.Empty;
                         lblWeaponRC.Text = objSelectedAccessory.RC;
@@ -21717,7 +21712,7 @@ namespace Chummer
                             lblWeaponName.Text = objGear.DisplayNameShort;
                             lblWeaponCategory.Text = objGear.DisplayCategory;
                             lblWeaponAvail.Text = objGear.TotalAvail(true);
-                            lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+                            lblWeaponCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
                             lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
                             lblWeaponConceal.Text = string.Empty;
                             lblWeaponDamage.Text = string.Empty;
@@ -21856,7 +21851,7 @@ namespace Chummer
 				lblArmorAvail.Text = objArmor.TotalAvail;
 				lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 				lblArmorRating.Text = string.Empty;
-				lblArmorCost.Text = String.Format("{0:###,###,##0¥}", objArmor.TotalCost);
+				lblArmorCost.Text = $"{objArmor.TotalCost:###,###,##0¥}";
 				string strBook = _objOptions.LanguageBookShort(objArmor.Source);
 				string strPage = objArmor.Page;
 				lblArmorSource.Text = strBook + " " + strPage;
@@ -21899,7 +21894,7 @@ namespace Chummer
 						else
 							lblArmorCapacity.Text = "[1]";
 					}
-					lblArmorCost.Text = String.Format("{0:###,###,##0¥}", objSelectedMod.TotalCost);
+					lblArmorCost.Text = $"{objSelectedMod.TotalCost:###,###,##0¥}";
 
 					string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
 					string strPage = objSelectedMod.Page;
@@ -21931,7 +21926,7 @@ namespace Chummer
 						else
 							lblArmorCapacity.Text = "[1]";
 					}
-                    lblArmorCost.Text = String.Format("{0:###,###,##0¥}", objSelectedGear.TotalCost);
+                    lblArmorCost.Text = $"{objSelectedGear.TotalCost:###,###,##0¥}";
                     string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
 					string strPage = objSelectedGear.Page;
 					lblArmorSource.Text = strBook + " " + strPage;
@@ -21959,7 +21954,7 @@ namespace Chummer
                 lblArmorValue.Text = string.Empty;
 				lblArmorAvail.Text = objSelectedGear.TotalAvail(true);
 				lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                lblArmorCost.Text = String.Format("{0:###,###,##0¥}", objSelectedGear.TotalCost);
+                lblArmorCost.Text = $"{objSelectedGear.TotalCost:###,###,##0¥}";
                 string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
 				string strPage = objSelectedGear.Page;
 				lblArmorSource.Text = strBook + " " + strPage;
@@ -22022,7 +22017,7 @@ namespace Chummer
                     lblGearName.Text = objGear.DisplayNameShort;
                     lblGearCategory.Text = objGear.DisplayCategory;
                     lblGearAvail.Text = objGear.TotalAvail(true);
-                    lblGearCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+                    lblGearCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
                     lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
@@ -23181,7 +23176,7 @@ namespace Chummer
                 if (objLifestyle == null)
                     return;
 
-                lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
+                lblLifestyleCost.Text = $"{objLifestyle.TotalMonthlyCost:###,###,##0¥}";
                 lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
                 string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
                 string strPage = objLifestyle.Page;
@@ -23414,7 +23409,7 @@ namespace Chummer
 				lblVehicleName.Text = objVehicle.DisplayNameShort;
 				lblVehicleCategory.Text = objVehicle.DisplayCategory;
 				lblVehicleAvail.Text = objVehicle.CalculatedAvail;
-				lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objVehicle.TotalCost);
+				lblVehicleCost.Text = $"{objVehicle.TotalCost:###,###,##0¥}";
 				lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
 				lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
 				lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
@@ -23599,7 +23594,7 @@ namespace Chummer
 					lblVehicleName.Text = objMod.DisplayNameShort;
 					lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleModification");
 					lblVehicleAvail.Text = objMod.TotalAvail;
-					lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objMod.TotalCost);
+					lblVehicleCost.Text = $"{objMod.TotalCost:###,###,##0¥}";
 					lblVehicleHandling.Text = string.Empty;
 					lblVehicleAccel.Text = string.Empty;
 					lblVehicleSpeed.Text = string.Empty;
@@ -23637,7 +23632,7 @@ namespace Chummer
 						lblVehicleName.Text = objGear.DisplayNameShort;
 						lblVehicleCategory.Text = objGear.DisplayCategory;
 						lblVehicleAvail.Text = objGear.TotalAvail(true);
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+						lblVehicleCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
 						lblVehicleHandling.Text = string.Empty;
 						lblVehicleAccel.Text = string.Empty;
 						lblVehicleSpeed.Text = string.Empty;
@@ -23776,7 +23771,7 @@ namespace Chummer
 						lblVehicleName.Text = objWeapon.DisplayNameShort;
 						lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
 						lblVehicleAvail.Text = objWeapon.TotalAvail;
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
+						lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
 						lblVehicleHandling.Text = string.Empty;
 						lblVehicleAccel.Text = string.Empty;
 						lblVehicleSpeed.Text = string.Empty;
@@ -23851,7 +23846,7 @@ namespace Chummer
 					lblVehicleName.Text = objGear.DisplayNameShort;
 					lblVehicleCategory.Text = objGear.DisplayCategory;
 					lblVehicleAvail.Text = objGear.TotalAvail(true);
-					lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+					lblVehicleCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
 					lblVehicleHandling.Text = string.Empty;
 					lblVehicleAccel.Text = string.Empty;
 					lblVehicleSpeed.Text = string.Empty;
@@ -23979,7 +23974,7 @@ namespace Chummer
 						lblVehicleName.Text = objWeapon.DisplayNameShort;
 						lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
 						lblVehicleAvail.Text = objWeapon.TotalAvail;
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
+						lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
 						lblVehicleHandling.Text = string.Empty;
 						lblVehicleAccel.Text = string.Empty;
 						lblVehicleSpeed.Text = string.Empty;
@@ -24039,7 +24034,7 @@ namespace Chummer
 							lblVehicleName.Text = objCyberware.DisplayNameShort;
 							lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleModification");
 							lblVehicleAvail.Text = objCyberware.TotalAvail;
-							lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objCyberware.TotalCost);
+							lblVehicleCost.Text = $"{objCyberware.TotalCost:###,###,##0¥}";
 							lblVehicleHandling.Text = string.Empty;
 							lblVehicleAccel.Text = string.Empty;
 							lblVehicleSpeed.Text = string.Empty;
@@ -24083,7 +24078,7 @@ namespace Chummer
 					lblVehicleName.Text = objGear.DisplayNameShort;
 					lblVehicleCategory.Text = objGear.DisplayCategory;
 					lblVehicleAvail.Text = objGear.TotalAvail(true);
-					lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+					lblVehicleCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
 					lblVehicleHandling.Text = string.Empty;
 					lblVehicleAccel.Text = string.Empty;
 					lblVehicleSpeed.Text = string.Empty;
@@ -24131,7 +24126,7 @@ namespace Chummer
 						lblVehicleName.Text = objAccessory.DisplayNameShort;
 						lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponAccessory");
 						lblVehicleAvail.Text = objAccessory.TotalAvail;
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objAccessory.TotalCost));
+						lblVehicleCost.Text = $"{objAccessory.TotalCost:###,###,##0¥}";
 						lblVehicleHandling.Text = string.Empty;
 						lblVehicleAccel.Text = string.Empty;
 						lblVehicleSpeed.Text = string.Empty;
@@ -24282,7 +24277,7 @@ namespace Chummer
 						lblVehicleName.Text = objWeapon.DisplayNameShort;
 						lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
 						lblVehicleAvail.Text = objWeapon.TotalAvail;
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
+						lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
 						lblVehicleHandling.Text = string.Empty;
 						lblVehicleAccel.Text = string.Empty;
 						lblVehicleSpeed.Text = string.Empty;
@@ -24346,7 +24341,7 @@ namespace Chummer
 					lblVehicleName.Text = objAccessory.DisplayNameShort;
 					lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponAccessory");
 					lblVehicleAvail.Text = objAccessory.TotalAvail;
-					lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objAccessory.TotalCost));
+					lblVehicleCost.Text = $"{objAccessory.TotalCost:###,###,##0¥}";
 					lblVehicleHandling.Text = string.Empty;
 					lblVehicleAccel.Text = string.Empty;
 					lblVehicleSpeed.Text = string.Empty;
@@ -24424,7 +24419,7 @@ namespace Chummer
 						lblVehicleName.Text = objGear.DisplayNameShort;
 						lblVehicleCategory.Text = objGear.DisplayCategory;
 						lblVehicleAvail.Text = objGear.TotalAvail(true);
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+						lblVehicleCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
 						lblVehicleHandling.Text = string.Empty;
 						lblVehicleAccel.Text = string.Empty;
 						lblVehicleSpeed.Text = string.Empty;
@@ -24474,7 +24469,7 @@ namespace Chummer
 				lblVehicleName.Text = objGear.DisplayNameShort;
 				lblVehicleCategory.Text = objGear.DisplayCategory;
 				lblVehicleAvail.Text = objGear.TotalAvail(true);
-				lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
+				lblVehicleCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
 				lblVehicleHandling.Text = string.Empty;
 				lblVehicleAccel.Text = string.Empty;
 				lblVehicleSpeed.Text = string.Empty;
@@ -24541,7 +24536,7 @@ namespace Chummer
 
 					if (objExpense.Type == ExpenseType.Nuyen)
 					{
-						objAmountItem.Text = string.Format("{0:###,###,##0¥}", objExpense.Amount);
+						objAmountItem.Text = $"{objExpense.Amount:###,###,##0¥}";
 					}
 
 					objItem.SubItems.Add(objAmountItem);

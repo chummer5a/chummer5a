@@ -696,7 +696,7 @@ namespace Chummer.Skills
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		[Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
-		internal void KnoChanged()
+		private void KnoChanged()
 		{
 		    if (PropertyChanged != null)
 		    {

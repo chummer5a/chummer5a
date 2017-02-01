@@ -33,7 +33,8 @@ Application Changes:
 - Removed some 4e references to Mystic Adepts having to split their magic between being an Adept and a Magician. Fixed some weird behaviour with Spirit Force maximums related to this. 
 - Fixed some issues related to localized number formats.
 - Added a basic Autosave feature to save backup files to the saves\autosave folder. By default this will save every five minutes, if the character is 'dirty', ie has had non-saved changes made.
-- Removed redundant code that caused duplication of costs for Advanced Lifestyle qualities. 
+- Removed redundant code that caused duplication of costs for Advanced Lifestyle qualities.
+- Essence costs are now properly displayed in all forms using both the computer's localisation and rounded to the decimal points set in the options menu.
 
 Data Changes:
 

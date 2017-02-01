@@ -9,7 +9,6 @@ namespace Chummer.Backend.Skills
 	class SkillSorter : IComparer<Skill>
 	{
 		private readonly Comparison<Skill> _comparison;
-		private readonly Comparison<KnowledgeSkill> _knocomparison;
 
 		public SkillSorter(Comparison<Skill> comparison)
 		{
@@ -33,14 +32,13 @@ namespace Chummer.Backend.Skills
 
 	class KnowledgeSkillSorter : IComparer<KnowledgeSkill>
 	{
-		private readonly Comparison<Skill> _comparison;
-		private readonly Comparison<KnowledgeSkill> _knocomparison;
+		private readonly Comparison<KnowledgeSkill> _comparison;
 
 		public KnowledgeSkillSorter(Comparison<KnowledgeSkill> comparison)
 		{
 			if (comparison == null) throw new ArgumentNullException(nameof(comparison));
 
-			_knocomparison = comparison;
+            _comparison = comparison;
 		}
 
 		/// <summary>
@@ -52,7 +50,7 @@ namespace Chummer.Backend.Skills
 		/// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
 		public int Compare(KnowledgeSkill x, KnowledgeSkill y)
 		{
-			return _knocomparison(x, y);
+			return _comparison(x, y);
 		}
 	}
 
@@ -78,17 +76,11 @@ namespace Chummer.Backend.Skills
 					return -1;
 				}
 			}
-			else
-			{
-				if (y.SkillGroupObject != null)
-				{
-					return 1;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-		}
+			else if (y.SkillGroupObject != null)
+            {
+                return 1;
+            }
+            return 0;
+        }
 	}
 }
