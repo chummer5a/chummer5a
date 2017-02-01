@@ -9,7 +9,7 @@ namespace Chummer.Skills
 {
 	public class KnowledgeSkill : Skill
 	{
-		private static readonly TranslatedField<string> _translator = new TranslatedField<string>(); 
+		private static readonly TranslatedField<string> _translator = new TranslatedField<string>();
 		private static readonly Dictionary<string, string> CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribtue
 		private static readonly Dictionary<string, string> NameCategoryMap = new Dictionary<string, string>();  //names to their category
 
@@ -64,10 +64,9 @@ namespace Chummer.Skills
 			get { return true; } //TODO LM
 		}
 
-		protected string _translated; //non english name, if present
+	    private string _translated; //non english name, if present
 		private List<ListItem> _knowledgeSkillCatagories;
 		private string _type;
-		private string _skillCategory;
 		public bool ForcedName { get; }
 
 		public KnowledgeSkill(Character character) : base(character, (string)null)
@@ -236,8 +235,6 @@ namespace Chummer.Skills
 				cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
 			}
 
-			
-
 			cost +=  //Spec
 					(!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
 					CharacterObject.Options.KarmaSpecialization : 0;
@@ -251,7 +248,7 @@ namespace Chummer.Skills
 		{
 			if (rhs.Name != null && lhs.Name != null)
 			{
-				return rhs.WriteableName.CompareTo(lhs.WriteableName);
+				return string.Compare(rhs.WriteableName, lhs.WriteableName, StringComparison.Ordinal);
 			}
 			return 0;
 		}
@@ -262,36 +259,26 @@ namespace Chummer.Skills
 		/// <returns>Price in karma</returns>
 		public override int UpgradeKarmaCost()
 		{
-			int adjustment = 0;
+            if (LearnedRating >= RatingMaximum)
+            {
+                return -1;
+            }
+            int adjustment = 0;
 			if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
 			{
 				adjustment = LearnedRating > 5 ? 2 : -1;
 			}
-
 			if (HasRelatedBoost() && CharacterObject.Created && LearnedRating >= 3)
 			{
 				adjustment -= 1;
 			}
 
+			int value = LearnedRating == 0 ?
+                CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment :
+                (LearnedRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill + adjustment;
 
-			int value;
-			if (LearnedRating >= RatingMaximum)
-			{
-				return -1;
-			}
-			else if (LearnedRating == 0)
-			{
-				value =  CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment;
-			}
-			else
-			{
-				value = (LearnedRating == 0
-					? CharacterObject.Options.KarmaNewActiveSkill
-					: (LearnedRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill)
-					   + adjustment;
-			}
-
-			if (UneducatedEffect()) value *= 2;
+			if (UneducatedEffect())
+                value *= 2;
 			return value;
 		}
 
@@ -301,16 +288,13 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public override int CurrentSpCost()
 		{
+		    int intPointCost = BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1);
 			if (HasRelatedBoost())
 			{
-				return (BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1) + 1)/2;
+                intPointCost = (intPointCost + 1)/2;
 			}
-			else
-			{
-                return BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1);
-            }
-
-		}
+            return intPointCost;
+        }
 
 		/// <summary>
 		/// This method checks if the character have the related knowledge skill
@@ -320,7 +304,7 @@ namespace Chummer.Skills
 		/// it is technical it returns Character.TechSchool
 		/// </summary>
 		/// <returns></returns>
-		public bool HasRelatedBoost()
+		private bool HasRelatedBoost()
 		{
 			switch (_type)
 			{
@@ -333,34 +317,30 @@ namespace Chummer.Skills
 				case "Academic":
 					return CharacterObject.SkillsSection.CollegeEducation;
 				case "Interest":
-					return false; 
-
-
-				default:
 					return false;
 			}
-		}
+            return false;
+        }
 
 		private bool UneducatedEffect()
 		{
 			switch (_type)
 			{
 				case "Professional":
-					return CharacterObject.SkillsSection.Uneducated;
-				case "Academic":
-					return CharacterObject.SkillsSection.Uneducated;
-
-				default:
-					return false;
+                case "Academic":
+                    return CharacterObject.SkillsSection.Uneducated;
 			}
-		}
+            return false;
+        }
 
 		protected override void SaveExtendedData(XmlTextWriter writer)
 		{
 			writer.WriteElementString("name", _name);
 			writer.WriteElementString("type", _type);
-			if(_translated != null) writer.WriteElementString(GlobalOptions.Instance.Language, _translated);
-			if(ForcedName) writer.WriteElementString("forced", null);
+			if (_translated != null)
+                writer.WriteElementString(GlobalOptions.Instance.Language, _translated);
+			if (ForcedName)
+                writer.WriteElementString("forced", null);
 		}
 
 		public void Load(XmlNode node)

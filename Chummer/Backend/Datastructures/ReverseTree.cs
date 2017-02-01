@@ -12,7 +12,7 @@ namespace Chummer.Datastructures
 		private readonly T _self;
 		private ReverseTree<T> _parent;
 		private ReverseTree<T> _root;
-		private ReverseTree<T>[] _children;
+		//private ReverseTree<T>[] _children;
 		private Dictionary<T, ReverseTree<T>> _seachDictionary = new Dictionary<T, ReverseTree<T>>();
 		public ReverseTree(T self, params ReverseTree<T>[] children)
 		{
@@ -30,6 +30,7 @@ namespace Chummer.Datastructures
 
 		private void setRoot(ReverseTree<T> root)
 		{
+            /*
 			if (_children != null)
 			{
 				foreach (ReverseTree<T> reverseTree in _children)
@@ -37,6 +38,7 @@ namespace Chummer.Datastructures
 					reverseTree.setRoot(root);
 				}
 			}
+            */
 			_root = root;
 			foreach (KeyValuePair<T, ReverseTree<T>> keyValuePair in _seachDictionary)
 			{
