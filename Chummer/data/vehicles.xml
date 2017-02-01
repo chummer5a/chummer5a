@@ -5664,6 +5664,25 @@
 			<page>149</page>
 		</vehicle>
 		<vehicle>
+			<id>546f0dc2-0478-4d36-a4cd-0b091ffa0eb2</id>
+			<name>Remote Cyberhand</name>
+			<category>Drones: Mini</category>
+			<hidden />
+			<handling>0</handling>
+			<accel>0</accel>
+			<speed>0</speed>
+			<pilot>0</pilot>
+			<body>0</body>
+			<armor>0</armor>
+			<seats>0</seats>
+			<sensor>0</sensor>
+			<gears />
+			<avail>8</avail>
+			<cost>0</cost>
+			<source>R5</source>
+			<page>130</page>
+		</vehicle>
+		<vehicle>
 			<id>2013dff9-f313-441b-9207-3fdb8a44c8ba</id>
 			<name>Ammo Drone (Small)</name>
 			<category>Drones: Small</category>
