@@ -21,8 +21,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Runtime.Remoting.Messaging;
+ using System.Windows.Forms;
 using System.Xml;
+ using Chummer.UI.Options;
 
 namespace Chummer
 {
@@ -497,7 +499,25 @@ namespace Chummer
                     }
             }
         }
-       
+
+
+	    /// <summary>
+	    /// Retrives a string from the language file, if it exists
+	    /// </summary>
+	    /// <param name="key">The string to try and find</param>
+	    /// <param name="result">The result. null if none found</param>
+	    /// <returns>A value indicating if the string was successfully found</returns>
+	    public bool TryGetString(string key, out string result)
+	    {
+	        if (_objDictionary.TryGetValue(key, out result))
+	        {
+	            result = result.Replace("\\n", "\n");
+	            return true;
+	        }
+
+	        result = null;
+	        return false;
+	    }
 
 		/// <summary>
 		/// Retrieve a string from the language file.

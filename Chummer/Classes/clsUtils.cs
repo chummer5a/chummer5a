@@ -23,7 +23,8 @@ using System.Diagnostics;
 ﻿using System.Linq;
 ﻿using System.Net;
 ﻿using System.Reflection;
-﻿using System.Text.RegularExpressions;
+ using System.Text;
+ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -126,5 +127,23 @@ namespace Chummer
 			int intResult = GitVersion().CompareTo(verCurrentversion);
 			return intResult;
 		}
+
+	    public static string PascalCaseInsertSpaces(string pascalCaseName)
+	    {
+	         StringBuilder sb = new StringBuilder();
+	        foreach (char c in pascalCaseName)
+	        {
+	            if (c == '_' && sb.Length != 0)
+	                sb.Append(' ');
+	            else
+	            {
+	                if (char.IsUpper(c)&& sb.Length != 0)
+	                    sb.Append(' ');
+
+	                sb.Append(c);
+	            }
+	        }
+	        return sb.ToString();
+	    }
 	}
 }

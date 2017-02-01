@@ -150,33 +150,16 @@ namespace Chummer.Backend.Options
         {
             try
             {
-                DisplayConfigurationAttribute disp = arg.GetCustomAttribute<DisplayConfigurationAttribute>();
                 string displayString;
-                string toolTip = null;
-                if (disp != null)
+                string toolTip;
+                if (!LanguageManager.Instance.TryGetString("Display_" + arg.Name, out displayString))
                 {
-                    displayString = LanguageManager.Instance.GetString(disp.DisplayName);
-                    if (!string.IsNullOrWhiteSpace(disp.Tooltip))
-                    {
-                        toolTip = LanguageManager.Instance.GetString(disp.Tooltip);
-                    }
+                    displayString = Utils.PascalCaseInsertSpaces(arg.Name);
+                    Log.Info($"No translation found for {arg.DeclaringType.Name}.{arg.Name}");
                 }
-                else
-                {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (char c in arg.Name)
-                    {
-                        if (c == '_')
-                            sb.Append(' ');
-                        else if (char.IsUpper(c))
-                        {
-                            sb.Append(' ');
-                            sb.Append(c);
-                        }
-                        else sb.Append(c);
-                    }
-                    displayString = sb.ToString();
-                }
+
+                LanguageManager.Instance.TryGetString("Tooltip_" + arg.Name, out toolTip);
+
 
                 OptionEntryProxy option = new OptionEntryProxy(target, arg, displayString, toolTip);
 
