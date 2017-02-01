@@ -366,7 +366,7 @@ namespace Chummer
             if (objField != null)
             {
                 int intTmp;
-                if (objCulture == null && int.TryParse(objField.InnerText, out intTmp) ||
+                if (objCulture == null && int.TryParse(objField.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out intTmp) ||
                     objCulture != null && int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out intTmp))
                 {
                     read = intTmp;
@@ -405,7 +405,7 @@ namespace Chummer
             if (objField != null)
             {
                 decimal decTmp;
-                if (objCulture == null && decimal.TryParse(objField.InnerText, out decTmp) ||
+                if (objCulture == null && decimal.TryParse(objField.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture,out decTmp) ||
                     objCulture != null && decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decTmp))
                 {
                     read = decTmp;
@@ -425,7 +425,7 @@ namespace Chummer
             if (objField != null)
             {
                 double dblTmp;
-                if (objCulture == null && double.TryParse(objField.InnerText, out dblTmp) ||
+                if (objCulture == null && double.TryParse(objField.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out dblTmp) ||
                     objCulture != null && double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out dblTmp))
                 {
                     read = dblTmp;
