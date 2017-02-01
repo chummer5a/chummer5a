@@ -2597,6 +2597,7 @@
 			<capacity>[5]</capacity>
 			<avail>8</avail>
 			<cost>8000</cost>
+			<addvehicle>Remote Cyberhand</addvehicle>
 			<bonus>
 				<selectside />
 			</bonus>

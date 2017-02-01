@@ -52,6 +52,7 @@ Data Changes:
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 - Fixed in incorrect ESS cost for the Stirrup Interface cyberware. 
+- Remote Cyberhand cyberware now adds a Remote Cyberhand drone, similar to the Ocular Drone.  
 
 New Strings: 
 
