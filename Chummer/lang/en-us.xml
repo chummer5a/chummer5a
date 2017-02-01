@@ -8139,6 +8139,164 @@ Do you want to continue?</text>
 			<text>Condition:</text>
 		</string>
 		<!-- End Region -->
+		<!-- Region New options Display Strings -->
+		<string>
+			<key>Display_ConfirmDelete</key>
+			<text>{} Ask for confirmation when deleting items</text>
+		</string>
+		<string>
+			<key>Display_ConfirmKarmaExpense</key>
+			<text>{} Ask for confirmation for Karma expenses</text>
+		</string>
+		<string>
+			<key>Display_KarmaAttribute</key>
+			<text>Improve Attribute by 1\t\t{} x New Rating</text>
+		</string>
+		<string>
+			<key>Display_KarmaQuality</key>
+			<text>Positive/Negative Quality\t\t{} x Karma Cost</text>
+		</string>
+		<string>
+			<key>Display_KarmaContact</key>
+			<text>Contacts\t\t{} x (Connection + Loyality)</text>
+		</string>
+		<string>
+			<key>Display_KarmaEnemy</key>
+			<text>Enemies\t\t{} x (Connection + Incidence)</text>
+		</string>
+		<string>
+			<key>Display_KarmaManeuver</key>
+			<text>Combat Maneuver\t\t{}</text><!--CHECK: Should this be martial arts manuever insted-->
+		</string>
+		<string>
+			<key>Display_KarmaSpecialization</key>
+			<text>Skill Specialization\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaNewKnowledgeSkill</key>
+			<text>New Knowledge Skill\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaImproveKnowledgeSkill</key>
+			<text>Improve Knowledge Skill by 1\t\t{} x New Rating</text>
+		</string>
+		<string>
+			<key>Display_KarmaNewActiveSkill</key>
+			<text>New Active Skill\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaImproveActiveSkill</key>
+			<text>Improve Active Skill by 1\t\t{} x New Rating</text>
+		</string>
+		<string>
+			<key>Display_KarmaNewSkillGroup</key>
+			<text>New Skill Group\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaImproveSkillGroup</key>
+			<text>Improve Skill Group by 1\t\t{} x New Rating</text>
+		</string>
+		<string>
+			<key>Display_KarmaSpell</key>
+			<text>New Spell \t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaEnhancement</key>
+			<text>Karma Enhancement (NOTE: WTF IS THIS?)\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaSpirit</key>
+			<text>Bound Spirit\t\t{} x Services Owed</text>
+		</string>
+		<string>
+			<key>Display_KarmaInitiation</key>
+			<text>Initiation/Submersion\t(\t{} x New Rating) + 10</text>
+		</string>
+		<string>
+			<key>Display_KarmaMetamagic</key>
+			<text>Additional Metamagic/Echoes\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaJoinGroup</key>
+			<text>Join a Group\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaLeaveGroup</key>
+			<text>Leave a Group\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaAlchemicalFocus</key>
+			<text>Bind an Alchemical Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaBanishingFocus</key>
+			<text>Bind a Banishing Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaBindingFocus</key>
+			<text>Bind a Binding Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaCenteringFocus</key>
+			<text>Bind a Centering Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaCounterspellingFocus</key>
+			<text>Bind a Counterspelling Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaDisenchantingFocus</key>
+			<text>Bind a Disenchanting Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaFlexibleSignatureFocus</key>
+			<text>Bind a Flexible Signature Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaMaskingFocus</key>
+			<text>Bind a Masking Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaPowerFocus</key>
+			<text>Bind a Power Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaQiFocus</key>
+			<text>Bind a Qi Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaRitualSpellcastingFocus</key>
+			<text>Bind a Ritual Spellcasting Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaSpellcastingFocus</key>
+			<text>Bind a Spellcasting Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaSpellShapingFocus</key>
+			<text>Bind a Spell Shaping Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaSummoningFocus</key>
+			<text>Bind a Summoning Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaSustainingFocus</key>
+			<text>Bind a Sustaining Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_KarmaWeaponFocus</key>
+			<text>Bind a Weapon Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_Karma_Focus</key>
+			<text>Bind a _ Focus\t\t{} x Force</text>
+		</string>
+		<string>
+			<key>Display_Karma__Focus</key>
+			<text>Bind a _ Focus\t\t{} x Force</text>
+		</string>
+		<!-- End Region -->
 		<!-- End Region -->
 	</strings>
 </chummer>
