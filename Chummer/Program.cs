@@ -44,7 +44,8 @@ namespace Chummer
 			//If debuging and launched from other place (Bootstrap), launch debugger
 			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
 			{
-				Debugger.Launch();
+			    Debugging = true;
+				try{Debugger.Launch();}catch{}
 			}
 	        sw.TaskEnd("dbgchk");
 			//Various init stuff (that mostly "can" be removed as they serve 
@@ -112,10 +113,11 @@ namespace Chummer
 			Log.Info(ExceptionMap);
 		}
 
+	    public static bool Debugging { get; private set; } = false;
 	    public static BookImageManager BookImageManager { get; private set; } = new BookImageManager();
 	    public static OptionsManager OptionsManager { get; private set; }
 	    static ExceptionHeatMap heatmap = new ExceptionHeatMap();
-	    
+
 	    static void FixCwd()
 		{
 			//If launched by file assiocation, the cwd is file location. 

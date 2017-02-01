@@ -50,6 +50,11 @@ namespace Chummer.UI.Options
 
             for (int i = 0; i < layouted.Controlls.Count; i++)
             {
+                if (Program.Debugging)
+                {
+                    layouted.Controlls[i].Control.BackColor = ColorUtilities.RandomLightColor();
+                }
+
                 System.Drawing.Point p = layouted.Controlls[i].Point;
                 p.Offset(5,5);
                 Controls.Add(layouted.Controlls[i].Control);
@@ -88,10 +93,9 @@ namespace Chummer.UI.Options
                 {
                     Text = textInfo.Text,
                     Width = textInfo.Size.Width,
-                    Height = textInfo.Size.Height,
-                    //BackColor = ColorUtilities.RandomColor(),
-                    //Padding = new Padding(0,3,0,3)
+                    Height = textInfo.Size.Height
                 };
+
                 if (textInfo.Style != FontStyle.Regular)
                 {
                     label.Font = GetCachedFont(textInfo.Style);

@@ -279,6 +279,9 @@ namespace Chummer.Backend
             return System.Drawing.Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
         }
 
-        
+        public static Color RandomLightColor()
+        {
+            return System.Drawing.Color.FromArgb(random.Next(127,255), random.Next(127,255), random.Next(127,255));
+        }
     }
 }
