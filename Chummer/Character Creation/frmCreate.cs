@@ -3901,7 +3901,7 @@ namespace Chummer
             _objCharacter.RES.Base = Convert.ToInt32(nudRES.Value);
             _objCharacter.RES.Value = Convert.ToInt32(nudRES.Value) + Convert.ToInt32(nudKRES.Value);
 
-            if (treComplexForms.SelectedNode.Level == 1)
+            if (treComplexForms.SelectedNode?.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
                 ComplexForm objProgram = CommonFunctions.FindByIdWithNameCheck(treComplexForms.SelectedNode.Tag.ToString(), _objCharacter.ComplexForms);
