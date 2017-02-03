@@ -35,6 +35,8 @@ Application Changes:
 - Added a basic Autosave feature to save backup files to the saves\autosave folder. By default this will save every five minutes, if the character is 'dirty', ie has had non-saved changes made.
 - Removed redundant code that caused duplication of costs for Advanced Lifestyle qualities.
 - Essence costs are now properly displayed in all forms using both the computer's localisation and rounded to the decimal points set in the options menu.
+- Fixed an issue that prevented the creation of metavariant critters. 
+- Suppressed a crash when attempting to load characters marked as UTF-16 Encoded.
 
 Data Changes:
 
@@ -54,6 +56,7 @@ Data Changes:
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 - Fixed in incorrect ESS cost for the Stirrup Interface cyberware. 
 - Remote Cyberhand cyberware now adds a Remote Cyberhand drone, similar to the Ocular Drone.  
+- Fixed incorrect useskill settings for several exotic weapons. 
 
 New Strings: 
 

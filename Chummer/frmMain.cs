@@ -689,9 +689,12 @@ namespace Chummer
 				Character objCharacter = new Character();
 				objCharacter.FileName = strFileName;
 
-                //Check for typo in Corrupter quality and correct it
                 XmlDocument objXmlDocument = new XmlDocument();
-                objXmlDocument.Load(strFileName);
+                //StreamReader is used to prevent encoding errors
+                using (StreamReader sr = new StreamReader(strFileName, true))
+                {
+                    objXmlDocument.Load(sr);
+                }
                 XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                 if (!string.IsNullOrEmpty(objXmlCharacter?["appversion"]?.InnerText))
                 {
@@ -705,6 +708,7 @@ namespace Chummer
                     Version.TryParse(strVersion, out verSavedVersion);
                     Version.TryParse("5.188.34", out verCorrectedVersion);
                     int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
+                    //Check for typo in Corrupter quality and correct it
                     if (intResult == -1)
                     {
                         File.WriteAllText(strFileName, Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));

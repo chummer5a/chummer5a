@@ -3707,7 +3707,7 @@
 			<avail>24F</avail>
 			<cost>35000</cost>
 			<allowaccessory>true</allowaccessory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
 			<accessorymounts>
 				<mount>Top</mount>
 				<mount>Under</mount>
@@ -3737,7 +3737,7 @@
 			<avail>18F</avail>
 			<cost>16000</cost>
 			<allowaccessory>true</allowaccessory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
 			<accessorymounts>
 				<mount>Top</mount>
 				<mount>Under</mount>
@@ -3762,7 +3762,7 @@
 			<avail>14F</avail>
 			<cost>7500</cost>
 			<allowaccessory>true</allowaccessory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
 			<accessorymounts>
 				<mount>Top</mount>
 				<mount>Under</mount>
@@ -7890,7 +7890,7 @@
 			<avail>6F</avail>
 			<cost>40</cost>
 			<allowaccessory>true</allowaccessory>
-			<useskill>Exotic Ranged Weapons</useskill>
+			<useskill>Exotic Ranged Weapon</useskill>
 			<range>Aerodynamic Grenade</range>
 			<source>HT</source>
 			<page>183</page>
