@@ -95,8 +95,11 @@ namespace Chummer
 			// If we run into any problems loading the character cache, fail out early.
 			try
 			{
-				objXmlSource.Load(strFile);
-			}
+                using (StreamReader sr = new StreamReader(strFile, true))
+                {
+                    objXmlSource.Load(sr);
+                }
+            }
 			catch (IOException)
 			{
                 return;

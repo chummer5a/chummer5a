@@ -900,7 +900,10 @@ namespace Chummer
         {
 			Timekeeper.Start("load_xml");
             XmlDocument objXmlDocument = new XmlDocument();
-            objXmlDocument.Load(_strFileName);
+            using (StreamReader sr = new StreamReader(_strFileName, true))
+            {
+                objXmlDocument.Load(sr);
+            }
 	        Timekeeper.Finish("load_xml");
 			Timekeeper.Start("load_char_misc");
             XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
