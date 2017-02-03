@@ -56,6 +56,7 @@ Data Changes:
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
 - Fixed in incorrect ESS cost for the Stirrup Interface cyberware. 
 - Remote Cyberhand cyberware now adds a Remote Cyberhand drone, similar to the Ocular Drone.  
+- Fixed incorrect useskill settings for several exotic weapons. 
 
 New Strings: 
 
