@@ -57,6 +57,7 @@ Data Changes:
 - Fixed in incorrect ESS cost for the Stirrup Interface cyberware. 
 - Remote Cyberhand cyberware now adds a Remote Cyberhand drone, similar to the Ocular Drone.  
 - Fixed incorrect useskill settings for several exotic weapons. 
+- Fixed cost discount syntax for the Wendigo and Mutaqua qualities. 
 
 New Strings: 
 
