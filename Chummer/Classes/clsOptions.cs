@@ -138,10 +138,10 @@ namespace Chummer
         /// <summary>
         /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
+        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
         {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
-            if (objRegistryResult != null)
+			object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
+			if (objRegistryResult != null)
             {
                 bool blnTemp;
                 if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
@@ -152,10 +152,10 @@ namespace Chummer
         /// <summary>
         /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private static void LoadStringFromRegistry(ref string strStorage, string strBoolName)
+        private static void LoadStringFromRegistry(ref string strStorage, string strBoolName, string strSubKey = "")
         {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
-            if (objRegistryResult != null)
+	        object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.OpenSubKey(strSubKey).GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
+	        if (objRegistryResult != null)
             {
                 strStorage = objRegistryResult.ToString();
             }
@@ -240,7 +240,7 @@ namespace Chummer
 				if (objXmlBook["code"] != null)
 				{
                     string strTemp = string.Empty;
-                    LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText);
+                    LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText, "Sourcebook");
                     if (!string.IsNullOrEmpty(strTemp))
                     {
                         SourcebookInfo objSource = new SourcebookInfo();
