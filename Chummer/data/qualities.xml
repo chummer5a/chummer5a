@@ -9109,7 +9109,7 @@
 						<quality>Mystic Adept</quality>
 					</oneof>
 				</required>
-				<discount>-10</discount>
+				<value>-10</value>
 			</costdiscount>
 			<category>Positive</category>
 			<bonus>
@@ -9268,7 +9268,7 @@
 						<quality>Mystic Adept</quality>
 					</oneof>
 				</required>
-				<discount>-10</discount>
+				<value>-10</value>
 			</costdiscount>
 			<category>Positive</category>
 			<bonus>
@@ -9932,7 +9932,7 @@
 						<quality>Mystic Adept</quality>
 					</oneof>
 				</required>
-				<discount>-10</discount>
+				<value>-10</value>
 			</costdiscount>
 			<bonus>
 				<enableattribute>
