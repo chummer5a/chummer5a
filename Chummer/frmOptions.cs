@@ -330,8 +330,11 @@ namespace Chummer
 	        {
 	            openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
 
-	            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-	                UpdateSourcebookInfoPath(openFileDialog.FileName);
+		        if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+		        {
+			        UpdateSourcebookInfoPath(openFileDialog.FileName);
+			        txtPDFLocation.Text = openFileDialog.FileName;
+		        }
 	        }
 	    }
 
