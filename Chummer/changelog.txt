@@ -37,6 +37,7 @@ Application Changes:
 - Essence costs are now properly displayed in all forms using both the computer's localisation and rounded to the decimal points set in the options menu.
 - Fixed an issue that prevented the creation of metavariant critters. 
 - Suppressed a crash when attempting to load characters marked as UTF-16 Encoded.
+- Fixed a crash when adding a Martial Art.
 
 Data Changes:
 

@@ -26,13 +26,25 @@ namespace Chummer
         string InternalId { get; }
     }
 
-    public interface INamedItemWithGuid : IItemWithGuid
+    public interface INamedItem
     {
         string Name { get; set; }
     }
 
-    public interface INamedParentWithGuid<T> : INamedItemWithGuid
+    public interface IHasChildren<T>
     {
         List<T> Children { get; }
+    }
+
+    public interface INamedItemWithGuid : IItemWithGuid, INamedItem
+    {
+    }
+
+    public interface INamedParent<T> : IHasChildren<T>, INamedItem
+    {
+    }
+
+    public interface INamedParentWithGuid<T> : INamedParent<T>, IItemWithGuid
+    {
     }
 }
