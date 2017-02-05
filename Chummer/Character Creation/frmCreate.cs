@@ -21038,7 +21038,7 @@ namespace Chummer
             lblNuyenTotal.Left = nudNuyen.Left + nudNuyen.Width + 6;
 
             // Martial Arts tab.
-            lblMartialArtSource.Left = lblMartialArtSourceLabel.Left + intWidth + 6;
+            lblMartialArtSource.Left = lblMartialArtSourceLabel.Right + 6;
 
             // Spells and Spirits tab.
             intWidth = Math.Max(lblSpellDescriptorsLabel.Width, lblSpellCategoryLabel.Width);
