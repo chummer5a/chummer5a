@@ -19,7 +19,10 @@ namespace Chummer.Backend.Equipment
 		private int _intLP = 0;
 		private int _intCost = 0;
 		private int _intMultiplier = 0;
-		private QualityType _objLifestyleQualityType = QualityType.Positive;
+        private int _intBaseMultiplier = 0;
+        private string _strAllowedFreeLifestyles = string.Empty;
+        private Lifestyle _objParentLifestyle = null;
+        private QualityType _objLifestyleQualityType = QualityType.Positive;
 		private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
 		private readonly Character _objCharacter;
@@ -27,7 +30,7 @@ namespace Chummer.Backend.Equipment
 		private string _strAltPage = string.Empty;
 		private bool _blnFree;
 
-		#region Helper Methods
+        #region Helper Methods
 		/// <summary>
 		/// Convert a string to a LifestyleQualityType.
 		/// </summary>
@@ -76,27 +79,23 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
 		/// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
-		public void Create(XmlNode objXmlLifestyleQuality, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
+		public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
 		{
+		    _objParentLifestyle = objParentLifestyle;
             objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("cost", ref _intCost);
             if (objXmlLifestyleQuality["category"] != null)
 			    _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
 			_objLifestyleQualitySource = objLifestyleQualitySource;
-			if (objXmlLifestyleQuality["print"] != null)
-			{
-				if (objXmlLifestyleQuality["print"].InnerText == "no")
-					_blnPrint = false;
-			}
-			if (objXmlLifestyleQuality["contributetolimit"] != null)
-			{
-				if (objXmlLifestyleQuality["contributetolimit"].InnerText == "no")
-					_blnContributeToLimit = false;
-			}
+            if (objXmlLifestyleQuality["print"]?.InnerText == "no")
+                _blnPrint = false;
+            if (objXmlLifestyleQuality["contributetolimit"]?.InnerText == "no")
+                _blnContributeToLimit = false;
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
-			if (objNode.Text.Contains('('))
+            objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref _strAllowedFreeLifestyles);
+            if (objNode.Text.Contains('('))
 			{
 				_strExtra = objNode.Text.Split('(')[1].TrimEnd(')');
 			}
@@ -127,10 +126,13 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			// Built-In Qualities appear as grey text to show that they cannot be removed.
-			if (objLifestyleQualitySource == QualitySource.BuiltIn)
-				objNode.ForeColor = SystemColors.GrayText;
-			objNode.Name = Name;
+            // Built-In Qualities appear as grey text to show that they cannot be removed.
+		    if (objLifestyleQualitySource == QualitySource.BuiltIn)
+		    {
+		        objNode.ForeColor = SystemColors.GrayText;
+		        Free = true;
+		    }
+		    objNode.Name = Name;
 			objNode.Text = DisplayName;
 			objNode.Tag = InternalId;
 		}
@@ -147,14 +149,16 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("cost", _intCost.ToString());
 			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
-			objWriter.WriteElementString("lp", _intLP.ToString());
+            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString());
+            objWriter.WriteElementString("lp", _intLP.ToString());
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
 			objWriter.WriteElementString("print", _blnPrint.ToString());
 			objWriter.WriteElementString("lifestylequalitytype", _objLifestyleQualityType.ToString());
 			objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			if (_nodBonus != null)
+            objWriter.WriteElementString("allowed", _strAllowedFreeLifestyles);
+            if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
 				objWriter.WriteElementString("bonus", string.Empty);
@@ -167,14 +171,16 @@ namespace Chummer.Backend.Equipment
 		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
+		public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
+		    ParentLifestyle = objParentLifestyle;
+		    objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             objNode.TryGetInt32FieldQuickly("cost", ref _intCost);
             objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
+            objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
@@ -183,6 +189,12 @@ namespace Chummer.Backend.Equipment
 			    _objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+		    if (!objNode.TryGetStringFieldQuickly("allowed", ref _strAllowedFreeLifestyles))
+		    {
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+                XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+		        _strAllowedFreeLifestyles = objXmlQuality?["allowed"]?.InnerText ?? string.Empty;
+		    }
 			_nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
@@ -293,10 +305,25 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
+        /// <summary>
+		/// LifestyleQuality's parent lifestyle.
 		/// </summary>
-		public string Extra
+		public Lifestyle ParentLifestyle
+        {
+            get
+            {
+                return _objParentLifestyle;
+            }
+            set
+            {
+                _objParentLifestyle = value;
+            }
+        }
+
+        /// <summary>
+        /// Extra information that should be applied to the name, like a linked CharacterAttribute.
+        /// </summary>
+        public string Extra
 		{
 			get
 			{
@@ -364,10 +391,6 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				return _objLifestyleQualityType;
-			}
-			set
-			{
-				_objLifestyleQualityType = value;
 			}
 		}
 
@@ -469,7 +492,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public int Cost
 		{
-			get { return Free ? 0 : _intCost; }
+			get { return (Free || FreeByLifestyle) ? 0 : _intCost; }
 			set { _intCost = value; }
 		}
 
@@ -482,10 +505,30 @@ namespace Chummer.Backend.Equipment
 			set { _blnFree = value; }
 		}
 
-		/// <summary>
-		/// Minimum level of Comfort that's necessary for the Quality to not cost Nuyen.
+        /// <summary>
+		/// Are the costs of this Quality included in base lifestyle costs?
 		/// </summary>
-		public int ComfortMinimum { get; set; }
+		public bool FreeByLifestyle
+        {
+            get
+            {
+                if (Type == QualityType.Entertainment || Type == QualityType.Contracts)
+                {
+                    if (!string.IsNullOrEmpty(_strAllowedFreeLifestyles) && !string.IsNullOrEmpty(_objParentLifestyle?.BaseLifestyle) &&
+                        (_strAllowedFreeLifestyles.Contains(_objParentLifestyle.BaseLifestyle) ||
+                        _strAllowedFreeLifestyles.Contains(Lifestyle.GetEquivalentLifestyle(_objParentLifestyle.BaseLifestyle))))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Minimum level of Comfort that's necessary for the Quality to not cost Nuyen.
+        /// </summary>
+        public int ComfortMinimum { get; set; }
 
 		/// <summary>
 		/// Comfort LP Cost/Benefit of the Quality.
@@ -501,21 +544,29 @@ namespace Chummer.Backend.Equipment
 		/// Minimum level of Security that's necessary for the Quality to not cost Nuyen.
 		/// </summary>
 		public int SecurityMinimum { get; set; }
-		
-		/// <summary>
-		/// Percentage by which the quality increases the overall Lifestyle Cost.
-		/// </summary>
-		public int Multiplier { get; set; }
 
-		/// <summary>
-		/// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
-		/// </summary>
-		public int BaseMultiplier { get; set; }
+        /// <summary>
+        /// Percentage by which the quality increases the overall Lifestyle Cost.
+        /// </summary>
+        public int Multiplier
+        {
+            get { return (Free || FreeByLifestyle) ? 0 : _intMultiplier; }
+            set { _intMultiplier = value; }
+        }
 
-		/// <summary>
-		/// Category of the Quality. 
-		/// </summary>
-		public string Category { get; set; }
+        /// <summary>
+        /// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        /// </summary>
+        public int BaseMultiplier
+        {
+            get { return (Free || FreeByLifestyle) ? 0 : _intBaseMultiplier; }
+            set { _intBaseMultiplier = value; }
+        }
+
+        /// <summary>
+        /// Category of the Quality. 
+        /// </summary>
+        public string Category { get; set; }
 
 		/// <summary>
 		/// Area/Neighborhood LP Cost/Benefit of the Quality.
@@ -527,6 +578,6 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public int AreaMinimum { get; set; }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -64,25 +64,18 @@ namespace Chummer
 			List<ListItem> lstLifestyle = new List<ListItem>();
 			foreach (XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle"))
 			{
-				bool blnAdd = true;
-				if (objXmlLifestyle["name"].InnerText == "ID ERROR. Re-add life style to fix")
-				{
-					blnAdd = false;
-				}
-			    if (!_objCharacter.Options.Books.Contains(objXmlLifestyle["source"].InnerText))
-			    {
-			        blnAdd = false;
-			    }
+			    string strLifeStyleName = objXmlLifestyle["name"]?.InnerText;
 
-                if (blnAdd)
+                if (!string.IsNullOrEmpty(strLifeStyleName) &&
+                    strLifeStyleName != "ID ERROR. Re-add life style to fix" &&
+                    _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText))
 				{
-					ListItem objItem = new ListItem();
-				objItem.Value = objXmlLifestyle["name"].InnerText;
-				if (objXmlLifestyle["translate"] != null)
-					objItem.Name = objXmlLifestyle["translate"].InnerText;
-				else
-					objItem.Name = objXmlLifestyle["name"].InnerText;
-				lstLifestyle.Add(objItem);
+				    ListItem objItem = new ListItem
+				    {
+				        Value = strLifeStyleName,
+				        Name = objXmlLifestyle["translate"]?.InnerText ?? strLifeStyleName
+				    };
+				    lstLifestyle.Add(objItem);
 				}
 			}
             cboLifestyle.BeginUpdate();
@@ -104,66 +97,40 @@ namespace Chummer
 			{
 				TreeNode nodOption = new TreeNode();
 
-				XmlNode nodMultiplier = objXmlOption["multiplier"];
-                if (nodMultiplier != null)
+			    string strOptionName = objXmlOption["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strOptionName))
 				{
-					int intCost = Convert.ToInt32(nodMultiplier.InnerText);
-					if (intCost > 0)
-					{
-						nodOption.Tag = objXmlOption["name"].InnerText + " [+" + intCost.ToString() + "%]";
-						if (objXmlOption["translate"] != null)
-							nodOption.Text = objXmlOption["translate"].InnerText + " [+" + intCost.ToString() + "%]";
-						else
-							nodOption.Text = objXmlOption["name"].InnerText + " [+" + intCost.ToString() + "%]";
-						treQualities.Nodes.Add(nodOption);
-					}
-					else
-					{
-						nodOption.Tag = objXmlOption["name"].InnerText + " [" + intCost.ToString() + "%]";
-						if (objXmlOption["translate"] != null)
-							nodOption.Text = objXmlOption["translate"].InnerText + " [" + intCost.ToString() + "%]";
-						else
-							nodOption.Text = objXmlOption["name"].InnerText + " [" + intCost.ToString() + "%]";
-						treQualities.Nodes.Add(nodOption);
-					}
-				}
-				else
-				{
-                    nodMultiplier = objXmlOption["multiplierbaseonly"];
-
-                    if (nodMultiplier != null)
-                    {
-                        int intCost = Convert.ToInt32(nodMultiplier.InnerText);
-                        if (intCost > 0)
-                        {
-                            nodOption.Tag = objXmlOption["name"].InnerText + " [+" + intCost.ToString() + "% "+ LanguageManager.Instance.GetString("Label_Base") +"]";
-                            if (objXmlOption["translate"] != null)
-                                nodOption.Text = objXmlOption["translate"].InnerText + " [+" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
-                            else
-                                nodOption.Text = objXmlOption["name"].InnerText + " [+" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
+                    XmlNode nodMultiplier = objXmlOption["multiplier"];
+				    string strBaseString = string.Empty;
+				    if (nodMultiplier == null)
+				    {
+				        nodMultiplier = objXmlOption["multiplierbaseonly"];
+				        strBaseString = " " + LanguageManager.Instance.GetString("Label_Base");
+				    }
+                    int intCost;
+                    if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out intCost))
+				    {
+				        if (intCost > 0)
+				        {
+				            nodOption.Tag = strOptionName + " [+" + intCost.ToString() + strBaseString + "%]";
+                            nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName) + " [+" + intCost.ToString() + strBaseString + "%]";
                             treQualities.Nodes.Add(nodOption);
-                        }
-                        else
-                        {
-                            nodOption.Tag = objXmlOption["name"].InnerText + " [" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
-                            if (objXmlOption["translate"] != null)
-                                nodOption.Text = objXmlOption["translate"].InnerText + " [" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
-                            else
-                                nodOption.Text = objXmlOption["name"].InnerText + " [" + intCost.ToString() + "% " + LanguageManager.Instance.GetString("Label_Base") +"]";
-                            treQualities.Nodes.Add(nodOption);
-                        }
-                    }
+				        }
+				        else
+				        {
+				            nodOption.Tag = strOptionName + " [" + intCost.ToString() + strBaseString + "%]";
+                            nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName) + " [" + intCost.ToString() + strBaseString + "%]";
+				            treQualities.Nodes.Add(nodOption);
+				        }
+				    }
                     else
                     {
-                        string strCost = objXmlOption["cost"].InnerText;
-                        nodOption.Tag = objXmlOption["name"].InnerText + " [" + strCost + "¥]";
-                        if (objXmlOption["translate"] != null)
-                            nodOption.Text = objXmlOption["translate"].InnerText + " [" + strCost + "¥]";
-                        else
-                            nodOption.Text = objXmlOption["name"].InnerText + " [" + strCost + "¥]";
+                        string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
+                        nodOption.Tag = strOptionName + " [" + strCost + "¥]";
+                        nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName) + " [" + strCost + "¥]";
                         treQualities.Nodes.Add(nodOption);
                     }
-				}
+                }
 			}
 
 			SortTree(treQualities);
@@ -295,25 +262,25 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
-			_objLifestyle.Source = Convert.ToString(objXmlAspect["source"].InnerText);
-			_objLifestyle.Page = Convert.ToString(objXmlAspect["page"].InnerText);
+			XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
+			_objLifestyle.Source = objXmlLifestyle["source"].InnerText;
+			_objLifestyle.Page = objXmlLifestyle["page"].InnerText;
 			_objLifestyle.Name = txtLifestyleName.Text;
 			_objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
-			_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
+			_objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
 			_objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
 			_objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
 			_objLifestyle.LifestyleQualities.Clear();
 			_objLifestyle.StyleType = _objType;
 
 			Guid source;
-			if (objXmlAspect.TryGetField("id", Guid.TryParse, out source))
+			if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out source))
 			{
 				_objLifestyle.SourceID = source;
 			}
 			else
 			{
-				Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlAspect });
+				Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
 				if (System.Diagnostics.Debugger.IsAttached)
 				{
 					System.Diagnostics.Debugger.Break();
@@ -325,7 +292,7 @@ namespace Chummer
 				{
 					XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + GetQualityName(objNode.Tag.ToString()) + "\"]");
 					LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-					objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+					objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected, objNode);
 					_objLifestyle.LifestyleQualities.Add(objQuality);
 				}
 			}
@@ -354,7 +321,6 @@ namespace Chummer
 			if (_blnSkipRefresh)
 				return 0;
 
-			int intNuyen = 0;
 			decimal decBaseCost = 0;
 			decimal decCost = 0;
 			// Get the base cost of the lifestyle
@@ -384,30 +350,28 @@ namespace Chummer
 					if (objNode.Checked)
 					{
 						objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + GetQualityName(objNode.Tag.ToString()) + "\"]");
-						if (objXmlAspect["multiplier"] != null)
-							decMod += (Convert.ToDecimal(objXmlAspect["multiplier"].InnerText) / 100);
+					    string strMultiplier = objXmlAspect?["multiplier"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strMultiplier))
+							decMod += Convert.ToDecimal(strMultiplier) / 100;
 					}
 				}
 
 				// Check for modifiers in the improvements
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				decimal decModifier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
-				decMod += Convert.ToDecimal(decModifier / 100, GlobalOptions.InvariantCultureInfo);
+				decMod += decModifier / 100;
 			}
-
-			intNuyen = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
-			intNuyen += Convert.ToInt32(decCost);
-			lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
+		    decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
 			if (nudPercentage.Value != 100)
 			{
-				decimal decDiscount = 0;
-				decDiscount = decBaseCost + (decBaseCost * decMod);
-				decDiscount += decCost;
+				decimal decDiscount = decNuyen;
 				decDiscount = decDiscount * (nudPercentage.Value /100);
-				lblCost.Text += String.Format(" (" + "{0:###,###,##0¥}" +")", Convert.ToInt32(decDiscount));
+				lblCost.Text += " (" + $"{Convert.ToInt32(decDiscount):###,###,##0¥}" + ")";
 			}
-			return intNuyen;
+            int intNuyen = Convert.ToInt32(decNuyen);
+            lblCost.Text = $"{intNuyen:###,###,##0¥}";
+            return intNuyen;
 		}
 
 		/// <summary>

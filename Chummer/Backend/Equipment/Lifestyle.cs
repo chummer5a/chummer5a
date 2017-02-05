@@ -189,7 +189,7 @@ namespace Chummer.Backend.Equipment
 			foreach (XmlNode objXmlQuality in objXmlNodeList)
 			{
 				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-				objQuality.Load(objXmlQuality);
+				objQuality.Load(objXmlQuality, this);
 				_lstLifestyleQualities.Add(objQuality);
 			}
 
@@ -198,7 +198,7 @@ namespace Chummer.Backend.Equipment
 			foreach (XmlNode objXmlQuality in objXmlNodeList)
 			{
 				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-				objQuality.Load(objXmlQuality);
+				objQuality.Load(objXmlQuality, this);
 				_lstLifestyleQualities.Add(objQuality);
 			}
 
@@ -743,25 +743,19 @@ namespace Chummer.Backend.Equipment
 
 				decimal decBaseCost = Cost;
                 decimal decExtraAssetCost = 0;
-				decimal decConstractCost = 0;
+				decimal decContractCost = 0;
 				foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
 				{
-					//Add the flat cost from Qualities.
-					if (!objQuality.Free)
-					{
-						if (objQuality.Cost > 0)
-						{
-							if (objQuality.Category == "Contracts")
-								decConstractCost += objQuality.Cost;
-							else
-								decExtraAssetCost += objQuality.Cost;
-						}
-						//Add the percentage point modifiers from Qualities.
-						decMultiplier += objQuality.Multiplier;
-						//Add the percentage point modifiers from Qualities.
-						decExtraMultiplierBaseOnly += objQuality.BaseMultiplier;
-					}
-				}
+                    //Add the flat cost from Qualities.
+                    if (objQuality.Category == "Contracts")
+                        decContractCost += objQuality.Cost;
+                    else
+                        decExtraAssetCost += objQuality.Cost;
+                    //Add the percentage point modifiers from Qualities.
+                    decMultiplier += objQuality.Multiplier;
+                    //Add the percentage point modifiers from Qualities.
+                    decExtraMultiplierBaseOnly += objQuality.BaseMultiplier;
+                }
 
 				decMultiplier += _intRoommates * 10;
 				decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.InvariantCultureInfo);
@@ -776,10 +770,26 @@ namespace Chummer.Backend.Equipment
                 }
                 intReturn += Convert.ToInt32(decExtraAssetCost * decMultiplier);
 				intReturn = Convert.ToInt32(intReturn * dblPercentage);
-                intReturn += Convert.ToInt32(decConstractCost);
+                intReturn += Convert.ToInt32(decContractCost);
 				return intReturn;
 			}
 		}
+
+        public static string GetEquivalentLifestyle(string strLifestyle)
+        {
+            switch (strLifestyle)
+            {
+                case "Bolt Hole":
+                    return "Squatter";
+                case "Traveler":
+                    return "Low";
+                case "Commercial":
+                    return "Medium";
+            }
+            if (strLifestyle.StartsWith("Hospitalized"))
+                return "High";
+            return strLifestyle;
+        }
 		#endregion
 
 		#region Methods
