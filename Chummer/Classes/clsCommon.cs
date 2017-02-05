@@ -1270,14 +1270,14 @@ namespace Chummer
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = strTemp[0];
             if (objCharacter != null)
-				strBook = objCharacter.Options.BookFromAltCode(strBook);
+				strBook = objCharacter.Options.LanguageBookShort(strBook);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             Uri uriPath = null;
             bool blnFound = false;
-			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo)
+			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo.Where(objInfo => objInfo.Code == strBook))
 			{
-			    if (!string.IsNullOrEmpty(objInfo.Path) && objInfo.Code == strBook)
+			    if (!string.IsNullOrEmpty(objInfo.Path))
 			    {
 			        blnFound = true;
 			        uriPath = new Uri(objInfo.Path);
