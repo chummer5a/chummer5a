@@ -1273,22 +1273,17 @@ namespace Chummer
 				strBook = objCharacter.Options.LanguageBookShort(strBook);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            Uri uriPath = null;
-            bool blnFound = false;
-			foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo.Where(objInfo => objInfo.Code == strBook))
-			{
-			    if (!string.IsNullOrEmpty(objInfo.Path))
-			    {
-			        blnFound = true;
-			        uriPath = new Uri(objInfo.Path);
-			        intPage += objInfo.Offset;
-                    break;
-			    }
-			}
-
-			// If the sourcebook was not found, we can't open anything.
-            if (!blnFound)
-				return;
+            Uri uriPath;
+            SourcebookInfo objBookInfo = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(
+		        objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+		    if (objBookInfo != null)
+		    {
+		        uriPath = new Uri(objBookInfo.Path);
+		        intPage += objBookInfo.Offset;
+		    }
+            // If the sourcebook was not found, we can't open anything.
+            else
+                return;
 
 			string strParams = GlobalOptions.Instance.PDFParameters;
 			strParams = strParams.Replace("{page}", intPage.ToString());
