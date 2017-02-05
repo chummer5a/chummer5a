@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,7 +21,7 @@ namespace Chummer.Backend.Equipment
 		private int _intCost = 0;
 		private int _intMultiplier = 0;
         private int _intBaseMultiplier = 0;
-        private string _strAllowedFreeLifestyles = string.Empty;
+        private List<string> _lstAllowedFreeLifestyles = new List<string>();
         private Lifestyle _objParentLifestyle = null;
         private QualityType _objLifestyleQualityType = QualityType.Positive;
 		private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
@@ -94,7 +95,9 @@ namespace Chummer.Backend.Equipment
                 _blnContributeToLimit = false;
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
-            objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref _strAllowedFreeLifestyles);
+		    string strAllowedFreeLifestyles = string.Empty;
+            if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
+                _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
             if (objNode.Text.Contains('('))
 			{
 				_strExtra = objNode.Text.Split('(')[1].TrimEnd(')');
@@ -157,7 +160,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("allowed", _strAllowedFreeLifestyles);
+            objWriter.WriteElementString("allowed", string.Join(",", _lstAllowedFreeLifestyles));
             if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
@@ -189,13 +192,15 @@ namespace Chummer.Backend.Equipment
 			    _objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-		    if (!objNode.TryGetStringFieldQuickly("allowed", ref _strAllowedFreeLifestyles))
+            string strAllowedFreeLifestyles = string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
 		    {
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
                 XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
-		        _strAllowedFreeLifestyles = objXmlQuality?["allowed"]?.InnerText ?? string.Empty;
+                strAllowedFreeLifestyles = objXmlQuality?["allowed"]?.InnerText ?? string.Empty;
 		    }
-			_nodBonus = objNode["bonus"];
+            _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
+            _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -514,9 +519,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (Type == QualityType.Entertainment || Type == QualityType.Contracts)
                 {
-                    if (!string.IsNullOrEmpty(_strAllowedFreeLifestyles) && !string.IsNullOrEmpty(_objParentLifestyle?.BaseLifestyle) &&
-                        (_strAllowedFreeLifestyles.Contains(_objParentLifestyle.BaseLifestyle) ||
-                        _strAllowedFreeLifestyles.Contains(Lifestyle.GetEquivalentLifestyle(_objParentLifestyle.BaseLifestyle))))
+                    string strLifestyleEquivalent = Lifestyle.GetEquivalentLifestyle(_objParentLifestyle.BaseLifestyle);
+                    if (!string.IsNullOrEmpty(_objParentLifestyle?.BaseLifestyle) &&
+                        _lstAllowedFreeLifestyles.Any(strLifestyle => strLifestyle == strLifestyleEquivalent || strLifestyle == _objParentLifestyle.BaseLifestyle))
                     {
                         return true;
                     }
