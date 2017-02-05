@@ -189,7 +189,8 @@ namespace Chummer
 
 		private void cboLifestyle_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			CalculateValues();
+            _objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
+            CalculateValues();
 		}
 
 		private void nudPercentage_ValueChanged(object sender, EventArgs e)

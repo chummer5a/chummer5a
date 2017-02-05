@@ -201,6 +201,7 @@ namespace Chummer
         {
 			if (!_blnSkipRefresh)
 			{
+                _objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
                 XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
                 if (objXmlAspect?["source"] != null && objXmlAspect["page"] != null)
@@ -494,11 +495,10 @@ namespace Chummer
             //_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
 	        _objLifestyle.Cost = CalculateValues();
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
-            _objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedItem.ToString();
+            _objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
 			_objLifestyle.Area = Convert.ToInt32(nudArea.Value);
 			_objLifestyle.Comforts = Convert.ToInt32(nudComforts.Value);
 			_objLifestyle.Security = Convert.ToInt32(nudSecurity.Value);
-			_objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
 			_objLifestyle.TrustFund = chkTrustFund.Checked;
 	        _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : Convert.ToInt32(nudRoommates.Value);
 
