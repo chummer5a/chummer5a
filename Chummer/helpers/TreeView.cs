@@ -82,7 +82,7 @@ namespace Chummer.helpers
         {
             TreeNode newNode = new TreeNode();
             newNode.Text = input.DisplayName;
-            newNode.Tag = input.Name;
+            newNode.Tag = input.InternalId;
             newNode.ContextMenuStrip = strip;
             if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
