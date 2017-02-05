@@ -1042,6 +1042,7 @@ namespace Chummer
                 string strReturn = objXmlBook?["code"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
+                return strCode;
             }
             return string.Empty;
         }

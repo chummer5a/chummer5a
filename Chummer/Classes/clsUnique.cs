@@ -5927,7 +5927,7 @@ namespace Chummer
 			}
 
 			objNode.Text = DisplayName;
-			objNode.Tag = _guiID;
+			objNode.Tag = _guiID.ToString();
 		}
 
 		/// <summary>
