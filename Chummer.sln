@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer", "Chummer\Chummer.csproj", "{95279469-5A3E-42E6-993C-6A403586C86E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChummerDataViewer", "ChummerDataViewer\ChummerDataViewer.csproj", "{9951D983-ED70-4F91-A958-8C13F006CB24}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "Translator\Translator.csproj", "{C798B52A-4B80-4C6C-A334-55B5DA332F31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Textblock-Converter", "TextblockConverter\Textblock-Converter.csproj", "{97EFDBA5-9A5A-459E-BEC4-BA7647295675}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,14 @@ Global
 		{C798B52A-4B80-4C6C-A334-55B5DA332F31}.Release|Any CPU.ActiveCfg = Release|x86
 		{C798B52A-4B80-4C6C-A334-55B5DA332F31}.Release|x86.ActiveCfg = Release|x86
 		{C798B52A-4B80-4C6C-A334-55B5DA332F31}.Release|x86.Build.0 = Release|x86
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|x86.Build.0 = Debug|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|x86.ActiveCfg = Release|Any CPU
+		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
