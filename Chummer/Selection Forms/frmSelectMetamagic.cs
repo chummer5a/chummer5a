@@ -26,7 +26,7 @@ namespace Chummer
 {
 	public partial class frmSelectMetamagic : Form
 	{
-		private string _strSelectedMetamagic = "";
+		private string _strSelectedMetamagic = string.Empty;
 
 		private Mode _objMode = Mode.Metamagic;
 		private string _strNode = "metamagic";
@@ -64,14 +64,14 @@ namespace Chummer
 			// Update the window title if needed.
 			if (_strNode == "echo")
 			{
-				this.Text = LanguageManager.Instance.GetString("Title_SelectMetamagic_Echo");
+				Text = LanguageManager.Instance.GetString("Title_SelectMetamagic_Echo");
 				chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectEcho_LimitList");
 			}
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			BuildMetamagicList();
@@ -79,7 +79,7 @@ namespace Chummer
 
 		private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstMetamagic.Text == "")
+			if (string.IsNullOrEmpty(lstMetamagic.Text))
 				return;
 
 			// Retireve the information for the selected piece of Cyberware.
@@ -101,12 +101,12 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstMetamagic_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstMetamagic.Text != "")
+			if (!string.IsNullOrEmpty(lstMetamagic.Text))
 				AcceptForm();
 		}
 
@@ -224,18 +224,20 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstMetamagics.Sort(objSort.Compare);
-			lstMetamagic.DataSource = null;
+            lstMetamagic.BeginUpdate();
+            lstMetamagic.DataSource = null;
 			lstMetamagic.ValueMember = "Value";
 			lstMetamagic.DisplayMember = "Name";
 			lstMetamagic.DataSource = lstMetamagics;
-		}
+            lstMetamagic.EndUpdate();
+        }
 
 		/// <summary>
 		/// Accept the selected item and close the form.
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (lstMetamagic.Text == "")
+			if (string.IsNullOrEmpty(lstMetamagic.Text))
 				return;
 
 			_strSelectedMetamagic = lstMetamagic.SelectedValue.ToString();
@@ -250,7 +252,7 @@ namespace Chummer
 			if (!RequirementMet(objXmlMetamagic, true))
 				return;
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		/// <summary>
@@ -264,8 +266,8 @@ namespace Chummer
 			if (_objCharacter.IgnoreRules)
 				return true;
 
-			string strParent = "";
-			string strChild = "";
+			string strParent = string.Empty;
+			string strChild = string.Empty;
 			if (_objMode == Mode.Metamagic)
 			{
 				strParent = "metamagics";
@@ -280,7 +282,7 @@ namespace Chummer
 			if (objXmlCheckMetamagic.InnerXml.Contains("<required>"))
 			{
                 bool blnRequirementMet = true;
-                string strRequirement = "";
+                string strRequirement = string.Empty;
                 if (objXmlCheckMetamagic.InnerXml.Contains("<allof>"))
                 {
                     strRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
@@ -348,7 +350,7 @@ namespace Chummer
 
 				// Metatype requirements.
 				bool blnMetatypeFound = false;
-				string strMetatypeRequirement = "";
+				string strMetatypeRequirement = string.Empty;
 				if (objXmlCheckMetamagic.SelectNodes("required/allof/metatype").Count == 0)
 					blnMetatypeFound = true;
 				else
@@ -377,7 +379,7 @@ namespace Chummer
 
 				// Quality requirements.
 				bool blnQualityFound = false;
-				string strQualityRequirement = "";
+				string strQualityRequirement = string.Empty;
 				if (objXmlCheckMetamagic.SelectNodes("required/allof/quality").Count == 0)
 					blnQualityFound = true;
 				else
@@ -452,8 +454,8 @@ namespace Chummer
 
 				if (!blnRequirementMet)
 				{
-					string strMessage = "";
-					string strTitle = "";
+					string strMessage = string.Empty;
+					string strTitle = string.Empty;
 
 					if (_objMode == Mode.Metamagic)
 					{
@@ -479,8 +481,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

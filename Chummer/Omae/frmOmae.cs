@@ -40,14 +40,14 @@ namespace Chummer
 	public partial class frmOmae : Form
 	{
 		// Error message constants.
-		private readonly string NO_CONNECTION_MESSAGE = "";
-		private readonly string NO_CONNECTION_TITLE = "";
+		private readonly string NO_CONNECTION_MESSAGE = string.Empty;
+		private readonly string NO_CONNECTION_TITLE = string.Empty;
 
 		private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
 		private List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
 		private bool _blnLoggedIn = false;
-		private string _strUserName = "";
+		private string _strUserName = string.Empty;
 		private readonly frmMain _frmMain;
 		private OmaeMode _objMode = OmaeMode.Character;
 
@@ -145,14 +145,14 @@ namespace Chummer
 		{
 			string strReturn = strValue;
 			strReturn = strReturn.Replace(" ", "_");
-			strReturn = strReturn.Replace("\\", "");
-			strReturn = strReturn.Replace("/", "");
-			strReturn = strReturn.Replace(":", "");
-			strReturn = strReturn.Replace("*", "");
-			strReturn = strReturn.Replace("?", "");
-			strReturn = strReturn.Replace("<", "");
-			strReturn = strReturn.Replace(">", "");
-			strReturn = strReturn.Replace("|", "");
+			strReturn = strReturn.Replace("\\", string.Empty);
+			strReturn = strReturn.Replace("/", string.Empty);
+			strReturn = strReturn.Replace(":", string.Empty);
+			strReturn = strReturn.Replace("*", string.Empty);
+			strReturn = strReturn.Replace("?", string.Empty);
+			strReturn = strReturn.Replace("<", string.Empty);
+			strReturn = strReturn.Replace(">", string.Empty);
+			strReturn = strReturn.Replace("|", string.Empty);
 			return strReturn;
 		}
 
@@ -485,7 +485,7 @@ namespace Chummer
 		{
 			_strUserName = GlobalOptions.Instance.OmaeUserName;
 			txtUserName.Text = _strUserName;
-			if (txtUserName.Text != "")
+			if (!string.IsNullOrEmpty(txtUserName.Text))
 				txtPassword.Focus();
 			else
 				txtUserName.Focus();
@@ -518,12 +518,12 @@ namespace Chummer
 		private void cmdRegister_Click(object sender, EventArgs e)
 		{
 			// Make sure User Name and Password are provided.
-			if (txtUserName.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_Omae_ChooseUsername"), LanguageManager.Instance.GetString("MessageTitle_Omae_ChooseUsername"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
-			if (txtPassword.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtPassword.Text.Trim()))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_Omae_ChoosePassword"), LanguageManager.Instance.GetString("MessageTitle_Omae_ChoosePassword"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
@@ -557,12 +557,12 @@ namespace Chummer
 		private void cmdLogin_Click(object sender, EventArgs e)
 		{
 			// Make sure User Name and Password are provided.
-			if (txtUserName.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_Omae_EnterUsername"), LanguageManager.Instance.GetString("MessageTitle_Omae_ChooseUsername"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
-			if (txtPassword.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtPassword.Text.Trim()))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_Omae_EnterPassword"), LanguageManager.Instance.GetString("MessageTitle_Omae_ChoosePassword"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
@@ -594,8 +594,8 @@ namespace Chummer
 					}
 					else
 					{
-						GlobalOptions.Instance.OmaePassword = "";
-						objRegistry.SetValue("omaepassword", "");
+						GlobalOptions.Instance.OmaePassword = string.Empty;
+						objRegistry.SetValue("omaepassword", string.Empty);
 						GlobalOptions.Instance.OmaeAutoLogin = chkAutoLogin.Checked;
 						objRegistry.SetValue("omaeautologin", chkAutoLogin.Checked.ToString());
 					}
@@ -740,7 +740,7 @@ namespace Chummer
 					MemoryStream objStream = new MemoryStream();
 					XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
 
-					objService.FetchDataFiles(Convert.ToInt32(cboSortOrder.SelectedValue), "", txtFilterUser.Text).WriteTo(objWriter);
+					objService.FetchDataFiles(Convert.ToInt32(cboSortOrder.SelectedValue), string.Empty, txtFilterUser.Text).WriteTo(objWriter);
 					// Flush the output.
 					objWriter.Flush();
 					objStream.Flush();
@@ -852,12 +852,12 @@ namespace Chummer
 		private void cmdFilterClear_Click(object sender, EventArgs e)
 		{
 			// Clear the contents of the Filter controls.
-			cboFilterMetatype.Text = "";
-			cboFilterMetavariant.Text = "";
-			txtFilterUser.Text = "";
-			cboFilterQuality1.Text = "";
-			cboFilterQuality2.Text = "";
-			cboFilterQuality3.Text = "";
+			cboFilterMetatype.Text = string.Empty;
+			cboFilterMetavariant.Text = string.Empty;
+			txtFilterUser.Text = string.Empty;
+			cboFilterQuality1.Text = string.Empty;
+			cboFilterQuality2.Text = string.Empty;
+			cboFilterQuality3.Text = string.Empty;
 			cboFilterMode.Text = "Any Mode";
 		}
 
@@ -895,7 +895,7 @@ namespace Chummer
 
 		private void frmOmae_Resize(object sender, EventArgs e)
 		{
-			this.Width = 702;
+			Width = 702;
 		}
 
 		private void cmdUploadLanguage_Click(object sender, EventArgs e)

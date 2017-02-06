@@ -38,83 +38,71 @@ namespace Chummer
 
 		public String GetStory()
 		{
-			try
-			{
-				//Generate list of all life modules (xml, we don't save required data to quality) this character has
-				List<XmlNode> modules = new List<XmlNode>();
+            //Little bit of data required for following steps
+            XmlDocument xdoc = XmlManager.Instance.Load("lifemodules.xml");
 
-				foreach (Quality quality in _objCharacter.Qualities)
-				{
-					if (quality.Type == QualityType.LifeModule)
-					{
-						modules.Add(Quality.GetNodeOverrideable(quality.QualityId));
-					}
-				}
+            if (xdoc != null)
+            {
+                //Generate list of all life modules (xml, we don't save required data to quality) this character has
+                List<XmlNode> modules = new List<XmlNode>();
 
-				//Little bit of data required for following steps
-				XmlDocument xdoc = XmlManager.Instance.Load("lifemodules.xml");
+			    foreach (Quality quality in _objCharacter.Qualities)
+			    {
+				    if (quality.Type == QualityType.LifeModule)
+				    {
+					    modules.Add(Quality.GetNodeOverrideable(quality.QualityId));
+				    }
+			    }
 
-				//Sort the list (Crude way, but have to do)
-				for (int i = 0; i < modules.Count; i++)
-				{
-					String stageName = "";
+                //Sort the list (Crude way, but have to do)
+                for (int i = 0; i < modules.Count; i++)
+                {
+                    String stageName = string.Empty;
                     if (i <= 4)
-					{
-						stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
-					}
-					else
-					{
-						stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + 5 + "\"]").InnerText;
-					}
-					int j;
-					for (j = i; j < modules.Count; j++)
-					{
-						if (modules[j]["stage"].InnerText == stageName)
-							break;
-					}
-					if (j != i && j < modules.Count)
-					{
-						XmlNode tmp = modules[i];
-						modules[i] = modules[j];
-						modules[j] = tmp;
-					}
-				}
+                    {
+                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
+                    }
+                    else
+                    {
+                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + 5 + "\"]").InnerText;
+                    }
+                    int j;
+                    for (j = i; j < modules.Count; j++)
+                    {
+                        if (modules[j]["stage"] != null && modules[j]["stage"].InnerText == stageName)
+                            break;
+                    }
+                    if (j != i && j < modules.Count)
+                    {
+                        XmlNode tmp = modules[i];
+                        modules[i] = modules[j];
+                        modules[j] = tmp;
+                    }
+                }
 
-				StringBuilder story = new StringBuilder();
-				//Acctualy "write" the story
-				foreach (XmlNode module in modules)
-				{
-					try
-					{
-						Write(story, module["story"].InnerText, 5);
-						story.Append(Environment.NewLine);
-						story.Append(Environment.NewLine);
-					}
-					catch (Exception e)
-					{
-						return 
-							"Failed trying to write " + module.Name + 
-							Environment.NewLine + e.Message + 
-							Environment.NewLine + Environment.NewLine + 
-							e.StackTrace.ToString();
-					}
+                StringBuilder story = new StringBuilder();
+                //Acctualy "write" the story
+                foreach (XmlNode module in modules)
+                {
+                    if (module["story"] != null)
+                    {
+                        Write(story, module["story"].InnerText, 5);
+                        story.Append(Environment.NewLine);
+                        story.Append(Environment.NewLine);
+                    }
+                }
 
-				}
+                return story.ToString();
+            }
 
-				return story.ToString();
-			}
-			catch (Exception e)
-			{
-				return e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace.ToString();
-			}
-			
+            return string.Empty;
 		}
 
 		private void Write(StringBuilder story, string innerText, int levels)
 		{
 			if (levels <= 0) return;
 
-			int startingLenght = story.Length;
+			int startingLength = story.Length;
 
 			String[] words;
             if (innerText.StartsWith("$") && innerText.IndexOf(" ") < 0)
@@ -143,7 +131,7 @@ namespace Chummer
 				}
 				else
 				{
-					if (story.Length != startingLenght && !mfix)
+					if (story.Length != startingLength && !mfix)
 					{
 						story.Append(' ');
 					}
@@ -158,13 +146,13 @@ namespace Chummer
 						
 					}
 				}
-				
 			}
-
 		}
 
 		public string Macro(string innerText)
 		{
+            if (string.IsNullOrEmpty(innerText))
+                return string.Empty;
 			String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
 			String macroName, macroPool;
 			if (endString.Contains("_"))
@@ -181,27 +169,21 @@ namespace Chummer
 			//$DOLLAR is defined elsewhere to prevent recursive calling
 			if (macroName == "street")
 			{
-				if (_objCharacter.Alias != "")
+				if (!string.IsNullOrEmpty(_objCharacter.Alias))
 				{
 					return _objCharacter.Alias;
 				}
-				else
-				{
-					return "Alias ";
-				}
+				return "Alias ";
 			}
-			else if(macroName == "real")
+			if(macroName == "real")
 			{
-				if (_objCharacter.Name != "")
+				if (!string.IsNullOrEmpty(_objCharacter.Name))
 				{
 					return _objCharacter.Name;
 				}
-				else
-				{
-					return "Unnamed John Doe ";
-				}
+				return "Unnamed John Doe ";
 			}
-			else if (macroName == "year")
+			if (macroName == "year")
 			{
 				int year;
 				if (int.TryParse(_objCharacter.Age, out year))
@@ -211,71 +193,70 @@ namespace Chummer
 					{
 						return (2075 + age - year).ToString();
 					}
-					else
-					{
-						return (2075 - year).ToString();
-					}
+					return (2075 - year).ToString();
 				}
-				else
-				{
-					return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
-				}
+				return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
 			}
 
 			//Did not meet predefined macros, check user defined
 			
 			String searchString = "/chummer/storybuilder/macros/" + macroName;
-			XmlNode userMacro =
-				XmlManager.Instance.Load("lifemodules.xml")
-				.SelectSingleNode(searchString);
-			
-			if (userMacro != null)
-			{
-				if (userMacro.FirstChild != null)
-				{
-					String selected;
-					//Allready defined, no need to do anything fancy
-					if (persistenceDictionary.ContainsKey(macroPool))
-					{
-						selected = persistenceDictionary[macroPool];
-					}
-					else if (userMacro.FirstChild.Name == "random")
-					{
-						//Any node not named 
-						XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-						selected = possible[random.Next(possible.Count)].Name;
+            XmlDocument objXmlLifeModulesDocument = XmlManager.Instance.Load("lifemodules.xml");
 
-					}
-					else if (userMacro.FirstChild.Name == "persistent")
-					{
-						//Any node not named 
-						XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-						selected = possible[random.Next(possible.Count)].Name;
-						persistenceDictionary.Add(macroPool, selected);
-					}
-					else
-					{
-						return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
-					}
+            if (objXmlLifeModulesDocument != null)
+            {
+                XmlNode userMacro = objXmlLifeModulesDocument.SelectSingleNode(searchString);
 
-					if (userMacro.FirstChild[selected] != null)
-					{
-						return userMacro.FirstChild[selected].InnerText;
-					}
-					else if (userMacro.FirstChild["default"] != null)
-					{
-						return userMacro.FirstChild["default"].InnerText;
-					}
-					else
-					{
-						return String.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
-					}
-				}
-				else
-				{
-					return userMacro.InnerText;
-				}
-			}
+                if (userMacro != null)
+                {
+                    if (userMacro.FirstChild != null)
+                    {
+                        string selected;
+                        //Allready defined, no need to do anything fancy
+                        if (!persistenceDictionary.TryGetValue(macroPool, out selected))
+                        {
+                            if (userMacro.FirstChild.Name == "random")
+                            {
+                                //Any node not named 
+                                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+                                if (possible != null && possible.Count > 0)
+                                    selected = possible[random.Next(possible.Count)].Name;
+                            }
+                            else if (userMacro.FirstChild.Name == "persistent")
+                            {
+                                //Any node not named 
+                                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+                                if (possible != null && possible.Count > 0)
+                                {
+                                    selected = possible[random.Next(possible.Count)].Name;
+                                    persistenceDictionary.Add(macroPool, selected);
+                                }
+                            }
+                            else
+                            {
+                                return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(selected) && userMacro.FirstChild[selected] != null)
+                        {
+                            return userMacro.FirstChild[selected].InnerText;
+                        }
+                        else if (userMacro.FirstChild["default"] != null)
+                        {
+                            return userMacro.FirstChild["default"].InnerText;
+                        }
+                        else
+                        {
+                            return String.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
+                        }
+                    }
+                    else
+                    {
+                        return userMacro.InnerText;
+                    }
+                }
+            }
 			return String.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));
 		}
 	}

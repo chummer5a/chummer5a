@@ -269,6 +269,14 @@
 							</td>
 						</tr>
 					</xsl:if>
+          <xsl:if test="depenabled='True'">
+            <xsl:call-template name="page_breaker" />
+            <tr>
+              <td class="fill100">
+                <xsl:call-template name="print_ai_programs" />
+              </td>
+            </tr>
+          </xsl:if>
 					<xsl:if test="magenabled = 'True'">
 						<xsl:call-template name="page_breaker" />
 						<xsl:choose>
@@ -451,9 +459,9 @@
 	<xsl:template name="print_mugshot_and_priorities">
 		<table class="stats general">
 			<tr><td colspan="2"><div class="bigheader">[Mugshot]</div></td></tr>
-			<tr><td colspan="2">
-				<xsl:if test="mugshot != ''">
-					<img src="data:image/png;base64,{mugshotbase64}" />
+			<tr><td colspan="2" style="text-align:center;">
+				<xsl:if test="mainmugshotbase64 != ''">
+					<img src="data:image/png;base64,{mainmugshotbase64}" />
 				</xsl:if>
 			</td></tr>
 			<xsl:if test="prioritymetatype != ''">
@@ -1428,6 +1436,42 @@
 			
 		</xsl:if>
 	</xsl:template>
+
+  <xsl:template name="print_ai_programs">
+    <xsl:if test="count(aiprograms/aiprogram) &gt; 0">
+
+      <table class="stats matrix">
+        <tr>
+          <td colspan="2">
+            <div class="bigheader">[AI Programs and Advanced Programs]</div>
+          </td>
+        </tr>
+        <tr class="smallheader">
+          <td>Name</td>
+          <td>Requires Program</td>
+        </tr>
+
+        <xsl:for-each select="aiprograms/aiprogram">
+          <xsl:sort select="name" />
+
+          <tr>
+            <td>
+              <xsl:value-of select="name" />
+              <xsl:if test="extra!=''">
+                (<xsl:value-of select="extra" />)
+              </xsl:if>
+              <xsl:call-template name="print_source_page" />
+              <xsl:call-template name="print_notes" />
+            </td>
+            <td>
+              <xsl:value-of select="requiresprogram" />
+            </td>
+          </tr>
+        </xsl:for-each>
+      </table>
+
+    </xsl:if>
+  </xsl:template>
 	
 	<xsl:template name="print_magic">
 		<table class="stats magic">
@@ -1816,6 +1860,79 @@
 			</table>
 			<br />
 		</xsl:if>
+    <xsl:if test="hasothermugshots = 'yes'">
+      <table class="stats description">
+        <tr>
+          <td>
+            <div class="bigheader">[Other Mugshots]</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+              <tr>
+                <td width="33%" style="text-align:center;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
+                      <tr>
+                        <td width="100%" style="text-align:center;">
+                          <img>
+                            <xsl:attribute name="src">
+                              data:image/png;base64,<xsl:value-of select='stringbase64' />
+                            </xsl:attribute>
+                          </img>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </table>
+                </td>
+                <td width="33%" style="text-align:center;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <xsl:if test="count(othermugshots/mugshot[position() mod 3 = 2]) = 0">
+                      <tr>
+                        <td></td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
+                      <tr>
+                        <td width="100%" style="text-align:center;">
+                          <img>
+                            <xsl:attribute name="src">
+                              data:image/png;base64,<xsl:value-of select='stringbase64' />
+                            </xsl:attribute>
+                          </img>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </table>
+                </td>
+                <td width="33%" style="text-align:center;">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <xsl:if test="count(othermugshots/mugshot[position() mod 3 = 0]) = 0">
+                      <tr>
+                        <td></td>
+                      </tr>
+                    </xsl:if>
+                    <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
+                      <tr>
+                        <td width="100%" style="text-align:center;">
+                          <img>
+                            <xsl:attribute name="src">
+                              data:image/png;base64,<xsl:value-of select='stringbase64' />
+                            </xsl:attribute>
+                          </img>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <br />
+    </xsl:if>
 		
 		<xsl:if test="notes!='' or gamenotes!=''">
 			<table class="stats description">
@@ -1925,7 +2042,10 @@
 				<br />
 			</xsl:if>
 			<span style="color:darkgreen;">
-				<sup><i><xsl:value-of select="notes" /></i></sup>
+				<sup><i>
+						<xsl:call-template name="PreserveLineBreaks">
+							<xsl:with-param name="text" select="notes"/>
+						</xsl:call-template></i></sup>
 			</span>
 		</xsl:if>
 	</xsl:template>

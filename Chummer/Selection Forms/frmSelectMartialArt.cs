@@ -26,10 +26,10 @@ namespace Chummer
 {
 	public partial class frmSelectMartialArt : Form
 	{
-		private string _strSelectedMartialArt = "";
+		private string _strSelectedMartialArt = string.Empty;
 
 		private bool _blnAddAgain = false;
-		private string _strForcedValue = "";
+		private string _strForcedValue = string.Empty;
         private bool _blnShowQualities = false;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -45,10 +45,10 @@ namespace Chummer
 
 		private void frmSelectMartialArt_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			XmlNodeList objArtList;
@@ -58,7 +58,7 @@ namespace Chummer
 			_objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
 
 			// Populate the Martial Arts list.
-			if (_strForcedValue == "")
+			if (string.IsNullOrEmpty(_strForcedValue))
 				objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
 			else
 				objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[name = \"" + _strForcedValue + "\"]");
@@ -78,7 +78,8 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstMartialArt.Sort(objSort.Compare);
-			lstMartialArts.DataSource = null;
+            lstMartialArts.BeginUpdate();
+            lstMartialArts.DataSource = null;
 			lstMartialArts.ValueMember = "Value";
 			lstMartialArts.DisplayMember = "Name";
 			lstMartialArts.DataSource = lstMartialArt;
@@ -88,24 +89,24 @@ namespace Chummer
 				lstMartialArts.SelectedIndex = 0;
 				AcceptForm();
 			}
-		}
+            lstMartialArts.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstMartialArts.Text != "")
+			if (!string.IsNullOrEmpty(lstMartialArts.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstMartialArts_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstMartialArts.Text != "")
-				AcceptForm();
-		}
+            cmdOK_Click(sender, e);
+        }
 
 		private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -185,14 +186,13 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			_strSelectedMartialArt = lstMartialArts.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

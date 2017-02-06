@@ -359,6 +359,10 @@
 			<text>Mount:</text>
 		</string>
 		<string>
+			<key>Label_ExtraMount</key>
+			<text>Extra Mount:</text>
+		</string>
+		<string>
 			<key>Label_DataFile</key>
 			<text>Data File:</text>
 		</string>

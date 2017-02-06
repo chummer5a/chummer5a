@@ -128,6 +128,11 @@
 			<code>R5</code>
 		</book>
 		<book>
+			<id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
+			<name>Rigger 5.0 German</name>
+			<code>R5G</code>
+		</book>
+		<book>
 			<id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
 			<name>Howling Shadows</name>
 			<code>HS</code>
@@ -166,6 +171,11 @@
 			<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
 			<name>Shadows In Focus: San Francisco Metroplex</name>
 			<code>SFM</code>
+		</book>
+		<book>
+			<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
+			<name>Cutting Aces</name>
+			<code>CA</code>
 		</book>
 	</books>
 </chummer>

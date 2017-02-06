@@ -29,29 +29,43 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.cmdSaveHTML = new System.Windows.Forms.Button();
+			this.cmdSaveHTML = new SplitButton();
+			this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.webBrowser1 = new System.Windows.Forms.WebBrowser();
 			this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsPrintPreview = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmdPrint = new SplitButton();
 			this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 			this.cboXSLT = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.cmdSaveXML = new System.Windows.Forms.Button();
+			this.lblCharacterSheet = new System.Windows.Forms.Label();
+			this.tsSaveAsXml = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsSaveAsPdf = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsSaveButton.SuspendLayout();
 			this.cmsPrintButton.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdSaveHTML
 			// 
+			this.cmdSaveHTML.AutoSize = true;
+			this.cmdSaveHTML.ContextMenuStrip = this.cmsSaveButton;
 			this.cmdSaveHTML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.cmdSaveHTML.Location = new System.Drawing.Point(118, 12);
+			this.cmdSaveHTML.Location = new System.Drawing.Point(98, 12);
 			this.cmdSaveHTML.Name = "cmdSaveHTML";
-			this.cmdSaveHTML.Size = new System.Drawing.Size(100, 23);
+			this.cmdSaveHTML.Size = new System.Drawing.Size(107, 23);
+			this.cmdSaveHTML.SplitMenuStrip = this.cmsSaveButton;
 			this.cmdSaveHTML.TabIndex = 1;
 			this.cmdSaveHTML.Tag = "Button_Viewer_SaveAsHtml";
 			this.cmdSaveHTML.Text = "Save as HTML";
 			this.cmdSaveHTML.UseVisualStyleBackColor = true;
 			this.cmdSaveHTML.Click += new System.EventHandler(this.cmdSaveHTML_Click);
+			// 
+			// cmsSaveButton
+			// 
+			this.cmsSaveButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsSaveAsXml,
+            this.tsSaveAsPdf});
+			this.cmsSaveButton.Name = "cmsPrintButton";
+			this.cmsSaveButton.Size = new System.Drawing.Size(181, 26);
 			// 
 			// webBrowser1
 			// 
@@ -62,7 +76,7 @@
 			this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
 			this.webBrowser1.Name = "webBrowser1";
 			this.webBrowser1.ScriptErrorsSuppressed = true;
-			this.webBrowser1.Size = new System.Drawing.Size(756, 583);
+			this.webBrowser1.Size = new System.Drawing.Size(761, 583);
 			this.webBrowser1.TabIndex = 5;
 			this.webBrowser1.WebBrowserShortcutsEnabled = false;
 			// 
@@ -100,41 +114,44 @@
 			// 
 			this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboXSLT.FormattingEnabled = true;
-			this.cboXSLT.Location = new System.Drawing.Point(501, 14);
+			this.cboXSLT.Location = new System.Drawing.Point(509, 14);
 			this.cboXSLT.Name = "cboXSLT";
-			this.cboXSLT.Size = new System.Drawing.Size(266, 21);
+			this.cboXSLT.Size = new System.Drawing.Size(216, 21);
 			this.cboXSLT.TabIndex = 4;
 			this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
 			// 
-			// label1
+			// lblCharacterSheet
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(408, 17);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(87, 13);
-			this.label1.TabIndex = 3;
-			this.label1.Tag = "Label_Viewer_CharacterSheet";
-			this.label1.Text = "Character Sheet:";
+			this.lblCharacterSheet.AutoSize = true;
+			this.lblCharacterSheet.Location = new System.Drawing.Point(416, 17);
+			this.lblCharacterSheet.Name = "lblCharacterSheet";
+			this.lblCharacterSheet.Size = new System.Drawing.Size(87, 13);
+			this.lblCharacterSheet.TabIndex = 3;
+			this.lblCharacterSheet.Tag = "Label_Viewer_CharacterSheet";
+			this.lblCharacterSheet.Text = "Character Sheet:";
 			// 
-			// cmdSaveXML
+			// tsSaveAsXml
 			// 
-			this.cmdSaveXML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.cmdSaveXML.Location = new System.Drawing.Point(224, 12);
-			this.cmdSaveXML.Name = "cmdSaveXML";
-			this.cmdSaveXML.Size = new System.Drawing.Size(100, 23);
-			this.cmdSaveXML.TabIndex = 2;
-			this.cmdSaveXML.Tag = "Button_Viewer_SaveAsXml";
-			this.cmdSaveXML.Text = "Save XML";
-			this.cmdSaveXML.UseVisualStyleBackColor = true;
-			this.cmdSaveXML.Click += new System.EventHandler(this.cmdSaveXML_Click);
+			this.tsSaveAsXml.Name = "tsSaveAsXml";
+			this.tsSaveAsXml.Size = new System.Drawing.Size(180, 22);
+			this.tsSaveAsXml.Text = "Save as XML";
+			this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
+			this.tsSaveAsXml.Click += cmdSaveXML_Click;
+			// 
+			// tsSaveAsPdf
+			// 
+			this.tsSaveAsPdf.Name = "tsSaveAsPdf";
+			this.tsSaveAsPdf.Size = new System.Drawing.Size(32, 19);
+			this.tsSaveAsPdf.Text = "Save as PDF";
+			this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
+			this.tsSaveAsPdf.Click += cmdSavePDF_Click;
 			// 
 			// frmViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(779, 637);
-			this.Controls.Add(this.cmdSaveXML);
-			this.Controls.Add(this.label1);
+			this.ClientSize = new System.Drawing.Size(784, 637);
+			this.Controls.Add(this.lblCharacterSheet);
 			this.Controls.Add(this.cboXSLT);
 			this.Controls.Add(this.cmdSaveHTML);
 			this.Controls.Add(this.webBrowser1);
@@ -146,6 +163,7 @@
 			this.Text = "Character Viewer";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmViewer_FormClosing);
 			this.Load += new System.EventHandler(this.frmViewer_Load);
+			this.cmsSaveButton.ResumeLayout(false);
 			this.cmsPrintButton.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -153,17 +171,17 @@
 		}
 
 		#endregion
-
-		internal System.Windows.Forms.Button cmdSaveHTML;
 		private System.Windows.Forms.WebBrowser webBrowser1;
 		internal SplitButton cmdPrint;
 		private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
 		private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
 		internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
 		private System.Windows.Forms.ComboBox cboXSLT;
-		private System.Windows.Forms.Label label1;
-		internal System.Windows.Forms.Button cmdSaveXML;
-		
+		private System.Windows.Forms.Label lblCharacterSheet;
+		private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
+		internal SplitButton cmdSaveHTML;
+		private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
+		private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
 	}
 
 }

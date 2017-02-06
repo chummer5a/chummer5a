@@ -13,11 +13,11 @@
 												<xsl:if test="position() mod 2 != 1">
 													<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 												</xsl:if>
-												<td width="50%" valign="top">
+												<td width="45%" valign="top">
 													<xsl:value-of select="name" />
 													<xsl:if test="spec != ''"> (<xsl:value-of select="spec" />)</xsl:if>
 												</td>
-												<td width="10%" style="text-align:center;" valign="top">
+												<td width="15%" style="text-align:center;" valign="top">
 													<xsl:value-of select="total" />
 													<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 												</td>
@@ -43,11 +43,11 @@
 												<xsl:if test="position() mod 2 != 1">
 													<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 												</xsl:if>
-												<td width="50%" valign="top">
+												<td width="45%" valign="top">
 													<xsl:value-of select="name" />
 													<xsl:if test="spec != ''"> (<xsl:value-of select="spec" />)</xsl:if>
 												</td>
-												<td width="10%" style="text-align:center;" valign="top">
+												<td width="15%" style="text-align:center;" valign="top">
 													<xsl:value-of select="total" />
 													<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 												</td>
@@ -71,12 +71,12 @@
 												<xsl:if test="position() mod 2 != 1">
 													<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 												</xsl:if>
-												<td width="50%" valign="top">
+												<td width="45%" valign="top">
 													<xsl:if test="islanguage = 'True'">Sprache: </xsl:if>
 													<xsl:value-of select="name" />
 													<xsl:if test="spec != ''"> (<xsl:value-of select="spec" />)</xsl:if>
 												</td>
-												<td width="10%" style="text-align:center;" valign="top">
+												<td width="15%" style="text-align:center;" valign="top">
 													<xsl:choose>
 														<xsl:when test="islanguage = 'True' and rating = 0">
 															M
@@ -125,12 +125,12 @@
 												<xsl:if test="position() mod 2 != 1">
 													<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 												</xsl:if>
-												<td width="50%" valign="top">
+												<td width="45%" valign="top">
 													<xsl:if test="islanguage = 'islanguage'">Sprache: </xsl:if>
 													<xsl:value-of select="name" />
 													<xsl:if test="spec != ''"> (<xsl:value-of select="spec" />)</xsl:if>
 												</td>
-												<td width="10%" style="text-align:center;" valign="top">
+												<td width="15%" style="text-align:center;" valign="top">
 													<xsl:choose>
 														<xsl:when test="islanguage = 'True' and rating = 0">
 															M
@@ -173,11 +173,11 @@
 												</td>
 											</tr>
 		</xsl:for-each>
-		<xsl:if test="mugshot != ''">
+		<xsl:if test="mainmugshotbase64 != ''">
 											<tr>
 												<td colspan="5" style="text-align:center;">
 													<br />
-													<img src="data:image/png;base64,{mugshotbase64}" />
+													<img src="data:image/png;base64,{mainmugshotbase64}" />
 												</td>
 											</tr>
 		</xsl:if>

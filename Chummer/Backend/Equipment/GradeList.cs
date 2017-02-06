@@ -18,11 +18,9 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
 		public void LoadList(Improvement.ImprovementSource objSource)
 		{
-			string strXmlFile = "";
+			string strXmlFile = "cyberware.xml";
 			if (objSource == Improvement.ImprovementSource.Bioware)
 				strXmlFile = "bioware.xml";
-			else
-				strXmlFile = "cyberware.xml";
 			XmlDocument objXMlDocument = XmlManager.Instance.Load(strXmlFile);
 			
 			foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade"))
@@ -41,22 +39,10 @@ namespace Chummer.Backend.Equipment
 			Grade objReturn = new Grade();
 			foreach (Grade objGrade in _lstGrades)
 			{
-				if (objGrade.Name == "Standard")
+				if (objGrade.Name == strGrade)
 				{
 					objReturn = objGrade;
 					break;
-				}
-			}
-
-			if (strGrade != "Standard")
-			{
-				foreach (Grade objGrade in _lstGrades)
-				{
-					if (objGrade.Name == strGrade)
-					{
-						objReturn = objGrade;
-						break;
-					}
 				}
 			}
 
@@ -67,7 +53,7 @@ namespace Chummer.Backend.Equipment
 		#region Enumeration Methods
 		public IEnumerator<Grade> GetEnumerator()
 		{
-			return this._lstGrades.GetEnumerator();
+			return _lstGrades.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

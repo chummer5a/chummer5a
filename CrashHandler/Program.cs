@@ -46,19 +46,15 @@ namespace CrashHandler
 		{ 
 			if (args.Length == 0) return;
 
-			if (_functions.ContainsKey(args[0]))
+		    Action<string[]> actCachedAction;
+			if (_functions.TryGetValue(args[0], out actCachedAction))
 			{
-				_functions[args[0]](args.Skip(1).ToArray());
+                actCachedAction(args.Skip(1).ToArray());
 			}
-			
-
-
 
 			//Application.EnableVisualStyles();
 			//Application.SetCompatibleTextRenderingDefault(false);
 			//Application.Run(new frmCrashReporter());
-
-
 		}
 	}
 }

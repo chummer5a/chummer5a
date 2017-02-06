@@ -37,25 +37,24 @@ namespace Chummer
 		public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords )
 		{
 			//parse to base math string
-			try
-			{
-				Regex regex = new Regex(String.Join("|", keywords.Keys));
-				number = regex.Replace(number, m => keywords[m.Value].ToString(System.Globalization.CultureInfo.InvariantCulture));
+			Regex regex = new Regex(string.Join("|", keywords.Keys));
+			number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.InvariantCultureInfo));
 
-				XmlDocument objXmlDocument = new XmlDocument();
-				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				XPathExpression xprValue = nav.Compile(number);
-
-				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-				if (float.TryParse(nav.Evaluate(xprValue).ToString(), out parsed))
-				{
-					return true;
-				}
-			}
-			catch (Exception ex)
-			{	
-				Log.Exception(ex);
-			}
+			XmlDocument objXmlDocument = new XmlDocument();
+			XPathNavigator nav = objXmlDocument.CreateNavigator();
+		    try
+            {
+                XPathExpression xprValue = nav.Compile(number);
+                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
+                if (float.TryParse(nav.Evaluate(xprValue)?.ToString(), out parsed))
+                {
+                    return true;
+                }
+            }
+            catch (XPathException ex)
+            {
+                Log.Exception(ex);
+            }
 
 			parsed = 0;
 			return false;
@@ -65,12 +64,11 @@ namespace Chummer
 		{
 			if (Debugger.IsAttached)
 				Debugger.Break();
-			
 		}
 
 		public static bool IsRunningInVisualStudio()
 		{
-			return System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv";
+			return Process.GetCurrentProcess().ProcessName == "devenv";
 		}
 
 		public static Version GitVersion()
@@ -90,12 +88,12 @@ namespace Chummer
 			// Read the content.
 
 			string responseFromServer = reader.ReadToEnd();
-			string[] stringSeparators = new string[] { "," };
-			var result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+			string[] stringSeparators = { "," };
+			string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string line in result.Where(line => line.Contains("tag_name")))
 			{
-				var strVersion = line.Split(':')[1];
+				string strVersion = line.Split(':')[1];
 				strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
 				strVersion = strVersion + ".0";
 				Version.TryParse(strVersion, out verLatestVersion);
@@ -134,7 +132,7 @@ namespace Chummer
 			}
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Application.ExecutablePath,
+				FileName = Application.StartupPath + "\\Chummer5.exe",
 				Arguments = arguments
 			};
 			Application.Exit();

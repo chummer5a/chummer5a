@@ -33,12 +33,12 @@ namespace Chummer.helpers
             TreeNode newNode = new TreeNode();
             newNode.Text = newNode.Name = input.DisplayName;
             newNode.Tag = input.InternalId;
-            if (input.Notes != string.Empty)
+            if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
             newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
             newNode.ContextMenuStrip = strip;
 
-            TreeNode nodeToAddTo = this.Nodes[(int)Enum.Parse(typeof(LimitType),input.Limit)];
+            TreeNode nodeToAddTo = Nodes[(int)Enum.Parse(typeof(LimitType),input.Limit)];
             if (!nodeToAddTo.Nodes.ContainsKey(newNode.Text))
             {
                 nodeToAddTo.Nodes.Add(newNode);
@@ -53,15 +53,15 @@ namespace Chummer.helpers
                 strName += " [+" + input.Value.ToString() + "]";
             else
                 strName += " [" + input.Value.ToString() + "]";
-            if (input.Exclude != "")
+            if (!string.IsNullOrEmpty(input.Exclude))
                 strName += " (" + input.Exclude + ")";
             newNode.Text = newNode.Name = strName;
             newNode.Tag = input.SourceName;
-            if (input.Notes != string.Empty)
+            if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
             newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
             newNode.ContextMenuStrip = strip;
-            if (input.ImprovedName == "")
+            if (string.IsNullOrEmpty(input.ImprovedName))
             {
                 if (input.ImproveType == Improvement.ImprovementType.SocialLimit)
                     input.ImprovedName = "Social";
@@ -71,7 +71,7 @@ namespace Chummer.helpers
                     input.ImprovedName = "Physical";
             }
 
-            TreeNode nodeToAddTo = this.Nodes[(int)Enum.Parse(typeof(LimitType), input.ImprovedName)];
+            TreeNode nodeToAddTo = Nodes[(int)Enum.Parse(typeof(LimitType), input.ImprovedName)];
             if (!nodeToAddTo.Nodes.ContainsKey(newNode.Text))
             {
                 nodeToAddTo.Nodes.Add(newNode);
@@ -82,9 +82,9 @@ namespace Chummer.helpers
         {
             TreeNode newNode = new TreeNode();
             newNode.Text = input.DisplayName;
-            newNode.Tag = input.Name;
+            newNode.Tag = input.InternalId;
             newNode.ContextMenuStrip = strip;
-            if (input.Notes != string.Empty)
+            if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
             newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
 
@@ -99,13 +99,13 @@ namespace Chummer.helpers
 
             if (input.IsQuality)
             {
-                this.Nodes[1].Nodes.Add(newNode);
-                this.Nodes[1].Expand();
+                Nodes[1].Nodes.Add(newNode);
+                Nodes[1].Expand();
             }
             else
             {
-                this.Nodes[0].Nodes.Add(newNode);
-                this.Nodes[0].Expand();
+                Nodes[0].Nodes.Add(newNode);
+                Nodes[0].Expand();
             }
         }
         public void Add(Quality input, ContextMenuStrip strip)
@@ -115,18 +115,15 @@ namespace Chummer.helpers
             newNode.Tag = input.InternalId;
             newNode.ContextMenuStrip = strip;
 
-            if (input.Notes != string.Empty)
+            if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
-            else
-            {
-                if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable)
-                    newNode.ForeColor = SystemColors.GrayText;
-                if (!input.Implemented)
-                    newNode.ForeColor = Color.Red;
-            }
+            else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable)
+                newNode.ForeColor = SystemColors.GrayText;
+            if (!input.Implemented)
+                newNode.ForeColor = Color.Red;
             newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
 
-            TreeNode nodeToAddTo = this.Nodes[(int)input.Type];
+            TreeNode nodeToAddTo = Nodes[(int)input.Type];
             if (!nodeToAddTo.Nodes.ContainsKey(newNode.Text))
             {
                 nodeToAddTo.Nodes.Add(newNode);
@@ -139,38 +136,38 @@ namespace Chummer.helpers
             objNode.Text = input.DisplayName;
             objNode.Tag = input.InternalId;
             objNode.ContextMenuStrip = strip;
-            if (input.Notes != string.Empty)
+            if (!string.IsNullOrEmpty(input.Notes))
                 objNode.ForeColor = Color.SaddleBrown;
             objNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
 
             switch (input.Category)
             {
                 case "Combat":
-                    this.Nodes[0].Nodes.Add(objNode);
-                    this.Nodes[0].Expand();
+                    Nodes[0].Nodes.Add(objNode);
+                    Nodes[0].Expand();
                     break;
                 case "Detection":
-                    this.Nodes[1].Nodes.Add(objNode);
-                    this.Nodes[1].Expand();
+                    Nodes[1].Nodes.Add(objNode);
+                    Nodes[1].Expand();
                     break;
                 case "Health":
-                    this.Nodes[2].Nodes.Add(objNode);
-                    this.Nodes[2].Expand();
+                    Nodes[2].Nodes.Add(objNode);
+                    Nodes[2].Expand();
                     break;
                 case "Illusion":
-                    this.Nodes[3].Nodes.Add(objNode);
-                    this.Nodes[3].Expand();
+                    Nodes[3].Nodes.Add(objNode);
+                    Nodes[3].Expand();
                     break;
                 case "Manipulation":
-                    this.Nodes[4].Nodes.Add(objNode);
-                    this.Nodes[4].Expand();
+                    Nodes[4].Nodes.Add(objNode);
+                    Nodes[4].Expand();
                     break;
                 case "Rituals":
                     int intNode = 5;
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                         intNode = 0;
-                    this.Nodes[intNode].Nodes.Add(objNode);
-                    this.Nodes[intNode].Expand();
+                    Nodes[intNode].Nodes.Add(objNode);
+                    Nodes[intNode].Expand();
                     break;
             }
         }
@@ -181,25 +178,19 @@ namespace Chummer.helpers
         /// <param name="treTree">TreeView to sort.</param>
         public void SortCustom()
         {
-            for (int i = 0; i <= this.Nodes.Count - 1; i++)
+            for (int i = 0; i <= Nodes.Count - 1; i++)
             {
                 List<TreeNode> lstNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in this.Nodes[i].Nodes)
+                foreach (TreeNode objNode in Nodes[i].Nodes)
                     lstNodes.Add(objNode);
-                this.Nodes[i].Nodes.Clear();
-                try
-                {
-                    SortByName objSort = new SortByName();
-                    lstNodes.Sort(objSort.Compare);
-                }
-                catch
-                {
-                }
+                Nodes[i].Nodes.Clear();
+                SortByName objSort = new SortByName();
+                lstNodes.Sort(objSort.Compare);
 
                 foreach (TreeNode objNode in lstNodes)
-                    this.Nodes[i].Nodes.Add(objNode);
+                    Nodes[i].Nodes.Add(objNode);
 
-                this.Nodes[i].Expand();
+                Nodes[i].Expand();
             }
         }
 
@@ -210,13 +201,13 @@ namespace Chummer.helpers
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
         public void ClearNodeBackground(TreeNode objHighlighted)
         {
-            foreach (TreeNode objNode in this.Nodes)
+            foreach (TreeNode objNode in Nodes)
             {
                 if (objHighlighted != null)
                 {
-                    if (objNode != (TreeNode)objHighlighted)
+                    if (objNode != objHighlighted)
                         objNode.BackColor = SystemColors.Window;
-                    ClearNodeBackground(objNode, (TreeNode)objHighlighted);
+                    ClearNodeBackground(objNode, objHighlighted);
                 }
             }
         }

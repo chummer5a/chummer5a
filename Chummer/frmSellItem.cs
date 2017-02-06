@@ -33,12 +33,12 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 		#endregion
 
@@ -47,9 +47,9 @@ namespace Chummer
 		{
 			nudPercent.Left = lblSellForLabel.Left + lblSellForLabel.Width + 6;
 			lblPercentLabel.Left = nudPercent.Left + nudPercent.Width + 6;
-			this.Width = lblPercentLabel.Left + lblPercentLabel.Width + 19;
-			if (this.Width < 185)
-				this.Width = 185;
+			Width = lblPercentLabel.Left + lblPercentLabel.Width + 19;
+			if (Width < 185)
+				Width = 185;
 		}
 		#endregion
 
@@ -61,7 +61,7 @@ namespace Chummer
 		{
 			get
 			{
-				return Convert.ToDouble(nudPercent.Value / 100, GlobalOptions.Instance.CultureInfo);
+				return Convert.ToDouble(nudPercent.Value / 100, GlobalOptions.CultureInfo);
 			}
 		}
 		#endregion

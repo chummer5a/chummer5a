@@ -28,7 +28,7 @@ namespace Chummer
 	{
 		private static int _intWidth = 534;
 		private static int _intHeight = 278;
-		private readonly bool _blnLoading = false;
+	    private readonly bool _blnLoading;
 		private string _strNotes = "";
 		RichTextBoxExtended objExtended = new RichTextBoxExtended();
 		#region Control Events
@@ -37,18 +37,31 @@ namespace Chummer
 			InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			_blnLoading = true;
-			this.Width = _intWidth;
-			this.Height = _intHeight;
-			objExtended.Dock = DockStyle.Fill;
-			this.Controls.Add(objExtended);
-			_blnLoading = false;
+			Width = _intWidth;
+			Height = _intHeight;
+            objExtended.Dock = DockStyle.Fill;
+            this.Controls.Add(objExtended);
+            _blnLoading = false;
 		}
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Notes = objExtended.RichTextBox.Text;
-			FormattedNotes = objExtended.RichTextBox.Rtf;
-			this.DialogResult = DialogResult.OK;
+            Notes = objExtended.RichTextBox.Text;
+            FormattedNotes = objExtended.RichTextBox.Rtf;
+            DialogResult = DialogResult.OK;
+		}
+
+		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+				DialogResult = DialogResult.OK;
+
+			if (e.Control && e.KeyCode == Keys.A)
+			{
+				e.SuppressKeyPress = true;
+                if (sender != null)
+					((TextBox)sender).SelectAll();
+			}
 		}
 
 		private void frmNotes_Resize(object sender, EventArgs e)
@@ -56,8 +69,8 @@ namespace Chummer
 			if (_blnLoading)
 				return;
 
-			_intWidth = this.Width;
-			_intHeight = this.Height;
+			_intWidth = Width;
+			_intHeight = Height;
 		}
 		#endregion
 

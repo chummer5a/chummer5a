@@ -464,12 +464,16 @@
                     <br/>
                     <br/>== Powers == <xsl:call-template name="powers"/>
                 </xsl:if>
-                <xsl:if test="techprograms/techprogram">
+                <xsl:if test="complexforms/complexform">
                     <br/>
                     <br/>== Complex Forms == <br/>(Tradition: <xsl:value-of select="stream"/>,
                     Resist Fading with <xsl:value-of select="drain"/>) <xsl:call-template
                         name="complexforms"/>
                 </xsl:if>
+              <xsl:if test="aiprograms/aiprogram">
+                <br/>
+                <br/>== AI Programs and Advanced Programs == <xsl:call-template name="aiprograms"/>
+              </xsl:if>
                 <xsl:if test="critterpowers/critterpower">
                     <br/>
                     <br/>== Critter Powers == <xsl:call-template name="critterpowers"/>
@@ -763,7 +767,7 @@
     </xsl:template>
 
     <xsl:template name="complexforms">
-        <xsl:for-each select="techprograms/techprogram">
+        <xsl:for-each select="complexforms/complexform">
             <xsl:sort select="name"/>
             <br/>
             <xsl:value-of select="name"/>
@@ -776,9 +780,38 @@
                     <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating"
                         /></xsl:if>
                     <xsl:if test="position() != last()">, </xsl:if>
-                </xsl:for-each>) </xsl:if>
+                </xsl:for-each>) </xsl:if> Target: <xsl:value-of select="target"/>, 
+          Duration: <xsl:value-of select="duration"/>, 
+          Fading Value: <xsl:value-of select="fv"/> 
         </xsl:for-each>
     </xsl:template>
+
+  <xsl:template name="aiprograms">
+    <xsl:for-each select="aiprograms/aiprogram">
+      <xsl:sort select="name"/>
+      <br/>
+      <xsl:value-of select="name"/>
+      <xsl:if test="extra != ''">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="extra != ''">
+        Requires: <xsl:value-of select="requiresprogram"/>
+      </xsl:if>
+      <xsl:if test="programoptions/programoption">
+        (<xsl:for-each
+                    select="programoptions/programoption">
+          <xsl:sort select="name"/>
+          <xsl:value-of select="name"/>
+          <xsl:if test="rating &gt; 0">
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="rating"
+                        />
+          </xsl:if>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>)
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
 
     <xsl:template name="lifestyle">
         <xsl:for-each select="lifestyles/lifestyle">
@@ -820,6 +853,9 @@
                 <xsl:value-of select="rating"/>
             </xsl:if>
             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+            <xsl:if test="qty > 1">
+              x<xsl:value-of select="qty"/>
+            </xsl:if>
             <xsl:if test="children/gear"> [<xsl:call-template name="gearplugin">
                     <xsl:with-param name="gear" select="."/>
                 </xsl:call-template>] </xsl:if>
@@ -837,9 +873,12 @@
             <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty"/></xsl:if>
             <xsl:if test="children/gear">
                 <xsl:for-each select="children/gear">
-                    <br/>&#160;&#160;&#160;+<xsl:value-of select="name"/>
-                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-                    <xsl:if test="rating != 0"> Rating <xsl:value-of select="rating"/></xsl:if>
+                  <br/>&#160;&#160;&#160;+<xsl:value-of select="name"/>
+                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                  <xsl:if test="rating != 0"> Rating <xsl:value-of select="rating"/></xsl:if>
+                  <xsl:if test="qty > 1">
+                    x<xsl:value-of select="qty"/>
+                  </xsl:if>
                     <xsl:if test="children/gear"> [<xsl:call-template name="gearplugin">
                             <xsl:with-param name="gear" select="."/>
                         </xsl:call-template>] </xsl:if>
@@ -862,12 +901,18 @@
                     <br/>&#160;&#160;&#160;+<xsl:value-of select="name"/>
                     <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                     <xsl:if test="rating != 0"> Rating <xsl:value-of select="rating"/></xsl:if>
+                    <xsl:if test="qty > 1">
+                      x<xsl:value-of select="qty"/>
+                    </xsl:if>
                     <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
                             <xsl:sort select="name"/>
                             <xsl:value-of select="name"/>
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                            <xsl:if test="qty > 1">
+                              x<xsl:value-of select="qty"/>
+                            </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -885,6 +930,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                            <xsl:if test="qty > 1">
+                              x<xsl:value-of select="qty"/>
+                            </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -909,6 +957,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                            <xsl:if test="qty > 1">
+                              x<xsl:value-of select="qty"/>
+                            </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -926,6 +977,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                            <xsl:if test="qty > 1">
+                              x<xsl:value-of select="qty"/>
+                            </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -950,6 +1004,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                            <xsl:if test="qty > 1">
+                              x<xsl:value-of select="qty"/>
+                            </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -967,7 +1024,10 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-                            <xsl:if test="position() != last()">, </xsl:if>
+                            <xsl:if test="qty > 1">
+                              x<xsl:value-of select="qty"/>
+                            </xsl:if>
+                      <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
             </xsl:if>
@@ -992,6 +1052,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                      <xsl:if test="qty > 1">
+                        x<xsl:value-of select="qty"/>
+                      </xsl:if>                      
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -1009,6 +1072,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                      <xsl:if test="qty > 1">
+                        x<xsl:value-of select="qty"/>
+                      </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -1033,6 +1099,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                      <xsl:if test="qty > 1">
+                        x<xsl:value-of select="qty"/>
+                      </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -1050,6 +1119,9 @@
                             <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of
                                     select="rating"/></xsl:if>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+                      <xsl:if test="qty > 1">
+                        x<xsl:value-of select="qty"/>
+                      </xsl:if>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
@@ -1147,6 +1219,7 @@
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                             <xsl:if test="rating != 0"> Rating <xsl:value-of select="rating"
                                 /></xsl:if>
+                          
                             <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
                                     <xsl:sort select="name"/>
                                     <xsl:value-of select="name"/>
@@ -1154,8 +1227,14 @@
                                             select="rating"/></xsl:if>
                                     <xsl:if test="extra != ''"> (<xsl:value-of select="extra"
                                         />)</xsl:if>
+                              <xsl:if test="qty > 1">
+                                x<xsl:value-of select="qty"/>
+                              </xsl:if>
                                     <xsl:if test="position() != last()">, </xsl:if>
                                 </xsl:for-each>] </xsl:if>
+                          <xsl:if test="qty > 1">
+                            x<xsl:value-of select="qty"/>
+                          </xsl:if>
                         </xsl:for-each>
                     </xsl:if>
                 </xsl:for-each>
@@ -1203,8 +1282,14 @@
                                             select="rating"/></xsl:if>
                                     <xsl:if test="extra != ''"> (<xsl:value-of select="extra"
                                         />)</xsl:if>
+                              <xsl:if test="qty > 1">
+                                x<xsl:value-of select="qty"/>
+                              </xsl:if>
                                     <xsl:if test="position() != last()">, </xsl:if>
                                 </xsl:for-each>] </xsl:if>
+                          <xsl:if test="qty > 1">
+                            x<xsl:value-of select="qty"/>
+                          </xsl:if>
                         </xsl:for-each>
                     </xsl:if>
                 </xsl:for-each>

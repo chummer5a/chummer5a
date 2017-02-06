@@ -102,7 +102,7 @@ namespace Chummer.Skills
 
 					value -= overMax; //reduce value by leftovers, later prevents it going belov 0
 				}
-					
+
 				_base = Math.Max(0, value - FreeBase());
 
 				//if old != base, base changed
@@ -199,10 +199,9 @@ namespace Chummer.Skills
 			get
 			{
 				int otherbonus = _character.Improvements.Where(x =>
-					x.Enabled &&
-					x.ImproveType == Improvement.ImprovementType.Skill &&
-					x.ImprovedName == Name).Sum(x => x.Maximum);
-									
+                    x.ImprovedName == Name &&
+                    x.Enabled &&
+					x.ImproveType == Improvement.ImprovementType.Skill).Sum(x => x.Maximum);
 				return (_character.Created  || _character.IgnoreRules
 					? 12
 					: (IsKnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
@@ -241,10 +240,7 @@ namespace Chummer.Skills
 
 				if (ware == null) return -1;
 
-				bool affected = SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) ?? false;
-
-				if (affected) return 0;
-				
+				if (SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) == true) return 0;
 
 				return -1;
 			}
@@ -279,7 +275,8 @@ namespace Chummer.Skills
 
 		private IEnumerable<Improvement> RelevantImprovements()
 		{
-			foreach (Improvement objImprovement in CharacterObject.Improvements)
+            if (string.IsNullOrWhiteSpace(Name)) yield break;
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
 			{
 				if(!objImprovement.Enabled) continue;
 
@@ -301,6 +298,15 @@ namespace Chummer.Skills
 						if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
 							yield return objImprovement;
 						break;
+					case Improvement.ImprovementType.BlockSkillDefault:
+						if (objImprovement.ImprovedName == SkillGroup)
+							yield return objImprovement;
+						break;
+                    case Improvement.ImprovementType.SwapSkillAttribute:
+                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        if (objImprovement.Target == Name)
+                            yield return objImprovement;
+                        break;
 					case Improvement.ImprovementType.EnhancedArticulation:
 						if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
 							yield return objImprovement;
@@ -340,10 +346,9 @@ namespace Chummer.Skills
 		{
 			//No rating can obv not cost anything
 			//Makes debugging easier as we often only care about value calculation
-			if (LearnedRating == 0) return 0; 
-			
+			if (LearnedRating == 0) return 0;
 
-			int cost = 0;
+			int cost;
 			if (SkillGroupObject?.Karma > 0)
 			{
 				int groupUpper = SkillGroupObject.GetEnumerable().Min(x => x.Base + x.Karma);
@@ -369,10 +374,15 @@ namespace Chummer.Skills
 
 			cost = Math.Max(0, cost); //Don't give karma back...
 
-			cost +=  //Spec
-					(!string.IsNullOrWhiteSpace(Specialization) && (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma || _character.BuildMethod == CharacterBuildMethod.LifeModule)) ?
-					_character.Options.KarmaSpecialization : 0;
-
+			foreach (SkillSpecialization objSpec in Specializations)
+			{
+                if (!objSpec.Free)
+				    cost += //Spec
+					(BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma ||
+					  _character.BuildMethod == CharacterBuildMethod.LifeModule)
+						? _character.Options.KarmaSpecialization
+						: 0;
+			}
 
 			if (Unaware()) cost *= 2;
 
@@ -451,14 +461,10 @@ namespace Chummer.Skills
 			if (!CanUpgradeCareer) return;
 
 			int price = UpgradeKarmaCost();
-            string strSkillType = "";
+            string strSkillType = "String_ExpenseActiveSkill";
             if (IsKnowledgeSkill)
             {
-                strSkillType = "String_ExpenseActiveSkill";
-            }
-            else
-            {
-                strSkillType = "String_ExpenseActiveSkill";
+                strSkillType = "String_ExpenseKnowledgeSkill";
             }
 			//If data file contains {4} this crashes but...
 			string upgradetext =
