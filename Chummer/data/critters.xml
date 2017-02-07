@@ -44,6 +44,7 @@
 	</categories>
 	<metatypes>
 		<!-- Region Mundane Critters -->
+		<!-- Region Hazard Pay -->
 		<metatype>
 			<id>8958c476-e37e-4783-b6d9-54a0acfd846a</id>
 			<name>Arctic Fox</name>
@@ -110,6 +111,7 @@
 			<source>HP</source>
 			<page>72</page>
 		</metatype>
+		<!-- End Region -->
 		<metatype>
 			<id>522d14b3-9f8f-485d-9796-cd15fc94f044</id>
 			<name>Bear</name>

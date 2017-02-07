@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -11,8 +12,9 @@ namespace WpfApplication1
     /// </summary>
     public partial class MainWindow
     {
-        private string[] _attAbbrevs;
-        private string[] _attValues;
+	    private List<string> _attAbbrevs = new List<string>();
+	    private List<string> _attValues = new List<string>();
+	    private readonly List<string> _attList = new List<string> { "bod","agi","rea","str", "cha", "int","log","wil", "ini", "edg", "mag","res","dep","ess"};
 		public MainWindow()
         {
             InitializeComponent();
@@ -20,30 +22,55 @@ namespace WpfApplication1
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            var lines = textBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-	        if (lines.Length <= 0) return;
+            var lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+	        if (lines.Length <= 1) return;
 	        var doc = new XmlDocument();
 	        // write the root chummer node.
 	        XmlNode objHeader = doc.CreateElement("critter");
 	        doc.AppendChild(objHeader);
 
-	        _attAbbrevs = ReplaceAttributeAbbrevs(lines[0]).Split(' ');
-	        _attValues = lines[1].Split(' ');
-	        if (_attAbbrevs.Length != _attValues.Length)
+			XmlNode xmlNode = doc.CreateElement("id");
+			Guid g = Guid.NewGuid();
+			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString();
+			objHeader.AppendChild(xmlNode);
+
+			xmlNode = doc.CreateElement("name");
+			xmlNode.InnerText = txtName.Text;
+			objHeader.AppendChild(xmlNode);
+
+			_attAbbrevs = new List<string>(ReplaceAttributeAbbrevs(lines[0]).Split(' '));
+	        _attValues = new List<string>(lines[1].Split(' '));
+	        if (_attAbbrevs.Count != _attValues.Count)
 	        {
 		        MessageBox.Show("Mismatched attribute lengths!");
 		        return;
 	        }
-	        for (var i = 0; i < _attAbbrevs.Length; i++)
+
+			var nodes = new[] { "min", "max", "aug" };
+	        foreach (string str in _attList)
 	        {
-		        var nodes = new[] {"min", "max", "aug"};
-		        foreach (var node in nodes)
+		        if (_attAbbrevs.Contains(str))
 		        {
-			        XmlNode xmlNode = doc.CreateElement($"{_attAbbrevs[i]}{node}".ToLower());
-		            xmlNode.InnerText = node == "aug" ? _attValues[i] + 4 : _attValues[i];
-		            objHeader.AppendChild(xmlNode);
+			        int i = _attAbbrevs.IndexOf(str);
+			        foreach (var node in nodes)
+			        {
+				        xmlNode = doc.CreateElement($"{str}{node}".ToLower());
+				        xmlNode.InnerText = node == "aug" ? (Convert.ToInt32(_attValues[i]) + 4).ToString() : _attValues[i];
+				        objHeader.AppendChild(xmlNode);
+			        }
 		        }
+		        else
+		        {
+					foreach (var node in nodes)
+					{
+						xmlNode = doc.CreateElement($"{str}{node}".ToLower());
+						xmlNode.InnerText = "0";
+						objHeader.AppendChild(xmlNode);
+					}
+				}
 	        }
+
+
 	        //Skip the first two lines, since we know they're attributes. 
 	        for (var i = 2; i < lines.Length; i++)
 	        {
@@ -59,9 +86,9 @@ namespace WpfApplication1
 				        rawMove = rawMove.Replace('(', ',').Replace(")",string.Empty);
 			        }
 			        var movements = rawMove.Split(',').ToArray();
-			        var walk = new[] {"0", "0", "0"};
+			        var walk = new[] {"0", "1", "0"};
 			        var run = new[] { "0", "0", "0" };
-			        var sprint = new[] { "0", "0", "0" };
+			        var sprint = new[] { "0", "1", "0" };
 			        foreach (var movement in movements.Where(movement => movement != "Movement"))
 			        {
 				        var current = movement.Replace("x", "").Replace("+", "").TrimEnd();
@@ -80,9 +107,16 @@ namespace WpfApplication1
 				        walk[position] = currentMovement[0];
 				        run[position] = currentMovement[1];
 				        sprint[position] = currentMovement[2];
+
+						// Set default swimming values if not present; based on metahuman values, may be incorrect. 
+				        if (position == 1)
+				        {
+					        walk[position] = Math.Max(Convert.ToInt32(walk[position]), 1).ToString();
+							sprint[position] = Math.Max(Convert.ToInt32(sprint[position]), 1).ToString();
+						}
 			        }
 
-			        XmlNode xmlNode = doc.CreateElement("walk");
+			        xmlNode = doc.CreateElement("walk");
 			        xmlNode.InnerText = string.Join("/", walk);
 			        objHeader.AppendChild(xmlNode);
 
@@ -101,7 +135,7 @@ namespace WpfApplication1
 			        XmlNode xmlParentNode = doc.CreateElement("skills");
 			        foreach (var s in split.Where(s => s != string.Empty))
 			        {
-				        XmlNode xmlNode = doc.CreateElement("skill"); 
+				        xmlNode = doc.CreateElement("skill"); 
 				        var attr = doc.CreateAttribute("rating");
 				        var index = s.LastIndexOf(' ');
 				        xmlNode.InnerText = s.Substring(0, index).Trim();
@@ -114,41 +148,62 @@ namespace WpfApplication1
 		        else if (lines[i].StartsWith("Complex Forms"))
 		        {
 			        var line = lines[i].Replace("Complex Forms ", "");
-			        var skills = line.Split(',');
+			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("complexforms");
-			        foreach (var s in skills)
-			        {
-				        XmlNode xmlNode = doc.CreateElement("complexform");
-				        xmlNode.InnerText = s.Trim();
-				        xmlParentNode.AppendChild(xmlNode);
-			        }
-			        objHeader.AppendChild(xmlParentNode);
+					foreach (var s in split.Where(s => s != string.Empty))
+					{
+						xmlNode = doc.CreateElement("complexform");
+						if (s.Contains('('))
+						{
+							var attr = doc.CreateAttribute("select");
+							attr.Value = s.Split('(', ')')[1];
+							xmlNode.Attributes?.Append(attr);
+						}
+
+						xmlNode.InnerText = s.Split('(', ')')[0].Trim();
+						xmlParentNode.AppendChild(xmlNode);
+					}
+					objHeader.AppendChild(xmlParentNode);
 		        }
 		        else if (lines[i].StartsWith("Powers"))
 		        {
 			        var line = lines[i].Replace("Powers ", "");
 			        var split = line.Split(',');
-			        XmlNode xmlParentNode = doc.CreateElement("critterpowers");
-			        foreach (var s in split)
-			        {
-				        XmlNode xmlNode = doc.CreateElement("critterpower");
-				        xmlNode.InnerText = s.Trim();
-				        xmlParentNode.AppendChild(xmlNode);
-			        }
-			        objHeader.AppendChild(xmlParentNode);
+			        XmlNode xmlParentNode = doc.CreateElement("powers");
+					foreach (var s in split.Where(s => s != string.Empty))
+					{
+						xmlNode = doc.CreateElement("power");
+						if (s.Contains('('))
+						{
+							var attr = doc.CreateAttribute("select");
+							attr.Value = s.Split('(', ')')[1];
+							xmlNode.Attributes?.Append(attr);
+						}
+
+						xmlNode.InnerText = s.Split('(', ')')[0].Trim();
+						xmlParentNode.AppendChild(xmlNode);
+					}
+					objHeader.AppendChild(xmlParentNode);
 		        }
 		        else if (lines[i].StartsWith("Programs"))
 		        {
 			        var line = lines[i].Replace("Programs ", "");
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("gears");
-			        foreach (var s in split)
-			        {
-				        XmlNode xmlNode = doc.CreateElement("gear");
-				        xmlNode.InnerText = s.Trim();
-				        xmlParentNode.AppendChild(xmlNode);
-			        }
-			        objHeader.AppendChild(xmlParentNode);
+					foreach (var s in split.Where(s => s != string.Empty))
+					{
+						xmlNode = doc.CreateElement("quality");
+						if (s.Contains('('))
+						{
+							var attr = doc.CreateAttribute("rating");
+							attr.Value = s.Split('(', ')')[1];
+							xmlNode.Attributes?.Append(attr);
+						}
+
+						xmlNode.InnerText = s.Split('(', ')')[0].Trim();
+						xmlParentNode.AppendChild(xmlNode);
+					}
+					objHeader.AppendChild(xmlParentNode);
 		        }
 		        else if (lines[i].StartsWith("Qualities"))
 		        {
@@ -157,7 +212,7 @@ namespace WpfApplication1
 			        XmlNode xmlParentNode = doc.CreateElement("qualities");
 			        foreach (var s in split.Where(s => s != string.Empty))
 			        {
-				        XmlNode xmlNode = doc.CreateElement("quality");
+				        xmlNode = doc.CreateElement("quality");
 				        if (s.Contains('('))
 				        {
 					        var attr = doc.CreateAttribute("select");
@@ -173,13 +228,29 @@ namespace WpfApplication1
 		        else if (lines[i].StartsWith("Armor"))
 				{
 					var line = lines[i].Replace("Armor ", "");
-					XmlNode xmlNode = doc.CreateElement("armor");
+					xmlNode = doc.CreateElement("armor");
 					xmlNode.InnerText = line.Trim();
 					objHeader.AppendChild(xmlNode);
 				}
 	        }
 
-	        textBox.Text = System.Xml.Linq.XElement.Parse(doc.InnerXml).ToString();
+			// Create the default critter tab bonus. 
+			XmlNode xmlBonusNode = doc.CreateElement("bonus");
+			XmlNode xmlChildNode = doc.CreateElement("enabletab");
+			XmlNode xmlTabNode = doc.CreateElement("name");
+	        xmlTabNode.InnerText = "critter";
+	        xmlChildNode.AppendChild(xmlTabNode);
+	        xmlBonusNode.AppendChild(xmlChildNode);
+			objHeader.AppendChild(xmlBonusNode);
+
+			xmlNode = doc.CreateElement("source");
+	        xmlNode.InnerText = txtSource.Text.Length > 0 ? txtSource.Text : "EDITME";
+	        objHeader.AppendChild(xmlNode);
+			xmlNode = doc.CreateElement("page");
+			xmlNode.InnerText = txtPage.Text.Length > 0 ? txtPage.Text : "EDITME";
+			objHeader.AppendChild(xmlNode);
+
+			txtRaw.Text = System.Xml.Linq.XElement.Parse(doc.InnerXml).ToString();
         }
 
 		private static string ReplaceAttributeAbbrevs(string input)

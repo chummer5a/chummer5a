@@ -1908,19 +1908,18 @@
 			<category>LifeModule</category>
 			<name>Community College</name>
 			<karma>55</karma>
-			<bonus>
-				<attributelevel>
-					<name>LOG</name>
-				</attributelevel>
-				<attributelevel>
-					<name>WIL</name>
-				</attributelevel>
-			</bonus>
+			<bonus />
 			<versions>
 				<version>
 					<id>cb7cf388-ca3b-4344-b6ba-7f813a8c347f</id>
 					<name>Architecture</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Artisan</name>
 							<spec>Drawing</spec>
@@ -1942,6 +1941,12 @@
 					<id>5233f360-4ad7-4b03-aab6-fd6a81f5fbaf</id>
 					<name>Business</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Con</name>
 						</skilllevel>
@@ -1963,6 +1968,12 @@
 					<id>3204c2db-d015-4da4-bcd4-cdedb127e5ca</id>
 					<name>Computer Science</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Cybercombat</name>
 						</skilllevel>
@@ -1984,6 +1995,12 @@
 					<id>b86653c5-96fd-46d4-9b97-b1e57d4049be</id>
 					<name>Engineering</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Chemistry</name>
 						</skilllevel>
@@ -2005,6 +2022,12 @@
 					<id>f5bf36b6-3d72-4daf-9d97-3a17ac31e91e</id>
 					<name>Law</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Etiquette</name>
 						</skilllevel>
@@ -2026,6 +2049,12 @@
 					<id>c3486abc-87e5-4bb4-be65-144bd6c8b692</id>
 					<name>Magic</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skillgrouplevel>
 							<name>Sorcery</name>
 							<val>1</val>
@@ -2044,6 +2073,12 @@
 					<id>6277e39c-10ff-4a7f-83ca-f9a8d84dc644</id>
 					<name>Mathematics</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2065,6 +2100,12 @@
 					<id>558dfe69-711c-4ca3-b16c-3678c3ef3083</id>
 					<name>Medicine</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skillgrouplevel>
 							<name>Biotech</name>
 							<val>2</val>
@@ -2083,6 +2124,12 @@
 					<id>9a0e5409-7a46-4afe-91ae-ac93b101ba37</id>
 					<name>Natural Sciences</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2108,6 +2155,12 @@
 					<id>7da1dbda-242f-4b42-8e91-fdb553033297</id>
 					<name>Art</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Artisan</name>
 							<val>3</val>
@@ -2123,6 +2176,12 @@
 					<id>d29437b7-c771-4fe6-a36a-994091ec8df1</id>
 					<name>History</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2141,6 +2200,12 @@
 					<id>117e5150-c50f-44dc-828c-9adfe06e589d</id>
 					<name>Languages</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<knowledgeskilllevel>
 							<name>[Any]</name>
 							<val>6</val>
@@ -2161,6 +2226,12 @@
 					<id>bc75eec6-c413-4457-b581-59590b792aca</id>
 					<name>Literature</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Artisan</name>
 							<spec>Writing</spec>
@@ -2179,6 +2250,12 @@
 					<id>953b9a51-745f-442a-b1e5-e5e9a24901c8</id>
 					<name>Metahumanities</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2195,6 +2272,12 @@
 					<id>9615d244-4ff5-4de2-b810-f5afeb90f4f6</id>
 					<name>Social Science</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2206,6 +2289,38 @@
 							<val>13</val>
 						</knowledgeskilllevel>
 					</bonus>
+				</version>
+				<version>
+					<id>45b62128-12f9-4d3f-89b9-b5ee34af16db</id>
+					<name>Trade School Shop</name>
+					<bonus>
+						<addqualities>
+							<addquality>Grease Monkey</addquality>
+						</addqualities>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<skillgrouplevel>
+							<name>Engineering</name>
+							<val>1</val>
+						</skillgrouplevel>
+						<knowledgeskilllevel>
+							<name>[Practical Mechanics]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Industrial Manufacturers]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Machine Parts]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+					</bonus>
+					<source>R5</source>
 				</version>
 			</versions>
 			<story>$real wanted to get something that resembled higher education, but couldn’t afford to go to a real college. The solution: community college.</story>
@@ -4522,8 +4637,8 @@
 					<group>Interest</group>
 					<val>1</val>
 				</knowledgeskilllevel>
-				<!--todo: +6 points to be spent among vocational skills relating to your job (no more than 3 ranks per skill)-->
 			</bonus>
+			<!--todo: +6 points to be spent among vocational skills relating to your job (no more than 3 ranks per skill)-->
 			<story>$real got a job, exchanging labor for currency like a normal person.</story>
 			<source>RF</source>
 			<page>79</page>

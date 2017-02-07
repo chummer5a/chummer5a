@@ -1469,7 +1469,7 @@ namespace Chummer.Classes
 		{
 			Log.Info(new object[] { "skillgrouplevel", bonusNode.OuterXml });
 			String strSkillGroup = String.Empty;
-			int value = 0;
+			int value = 1;
 			if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup) &&
 				bonusNode.TryGetInt32FieldQuickly("val", ref value))
 			{
