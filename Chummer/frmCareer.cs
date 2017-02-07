@@ -828,7 +828,7 @@ namespace Chummer
 			{
 				TreeNode objMartialArtNode = new TreeNode();
 				objMartialArtNode.Text = objMartialArt.DisplayName;
-				objMartialArtNode.Tag = objMartialArt.Name;
+				objMartialArtNode.Tag = objMartialArt.InternalId;
 				objMartialArtNode.ContextMenuStrip = cmsMartialArts;
 				if (!string.IsNullOrEmpty(objMartialArt.Notes))
 					objMartialArtNode.ForeColor = Color.SaddleBrown;

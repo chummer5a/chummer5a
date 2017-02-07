@@ -90,7 +90,7 @@ namespace Chummer
 		            if (xmlNode["versions"] != null)
 		            {
 			            treNode.Nodes.AddRange(
-				            BuildList(xmlNode.SelectNodes("versions/version")));
+				            BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Options.BookXPath() + "or not(source)]")));
 		            }
 
 		            treNode.Tag = xmlNode["id"].InnerText;

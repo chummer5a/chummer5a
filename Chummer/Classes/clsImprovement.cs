@@ -989,7 +989,7 @@ namespace Chummer
 				_strLimitSelection = container.LimitSelection;
 				_strSelectedValue = container.SelectedValue;
 			}
-			else
+			else if (bonusNode.NodeType != XmlNodeType.Comment)
 			{
                 Utils.BreakIfDebug();
                 Log.Warning(new object[]

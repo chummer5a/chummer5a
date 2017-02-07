@@ -9,24 +9,41 @@
     Width="525"
     Height="350"
     mc:Ignorable="d">
-    <Grid>
-        <TextBox
-            x:Name="textBox"
-            Width="497"
-            Height="270"
-            Margin="10,10,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
+	<Grid>
+		<TextBox
+            x:Name="txtRaw"
+            Margin="10,103,10,35"
             AcceptsReturn="True"
-            TextWrapping="Wrap" />
-        <Button
+            TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+		<Button
             x:Name="button"
-            Width="98"
-            Margin="409,289,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
+            Margin="0,0,10,10"
             Click="button_Click"
-            Content="Create as Critter" />
+            Content="Create as Critter" HorizontalAlignment="Right" Width="98" Height="20" VerticalAlignment="Bottom" />
+		<TextBox
+	  x:Name="txtName"
+	  Margin="80,10,10,0"
+	  AcceptsReturn="True"
+	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" />
+		<TextBox
+	  x:Name="txtGUID"
+	  Margin="80,41,10,0"
+	  AcceptsReturn="True"
+	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" />
+		<Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="65"/>
+		<Label Content="GUID" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="65"/>
+		<Label Content="Source" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="65"/>
+		<TextBox
+	  x:Name="txtSource"
+	  Margin="80,72,280,0"
+	  AcceptsReturn="True"
+	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" />
+		<Label Content="Page" Margin="0,72,172,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="65"/>
+		<TextBox
+	  x:Name="txtPage"
+	  Margin="0,72,10,0"
+	  AcceptsReturn="True"
+	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="157" />
 
-    </Grid>
+	</Grid>
 </Window>

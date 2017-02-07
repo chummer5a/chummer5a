@@ -38,6 +38,8 @@ Application Changes:
 - Fixed an issue that prevented the creation of metavariant critters. 
 - Suppressed a crash when attempting to load characters marked as UTF-16 Encoded.
 - Fixed problems related to the calculation of lifestyle quality costs for advanced lifestyles.
+- Added the ability for life module 'versions' to be filtered based on their source. Specifically, this hides the Trade School Shop version of Community College in Rigger 5 if you don't have the book enabled.
+- Fixed a logic issue with the skillgrouplevel improvement that prevented the value from defaulting to 1. 
 
 Data Changes:
 
@@ -59,7 +61,8 @@ Data Changes:
 - Remote Cyberhand cyberware now adds a Remote Cyberhand drone, similar to the Ocular Drone.  
 - Fixed incorrect useskill settings for several exotic weapons. 
 - Fixed cost discount syntax for the Wendigo and Mutaqua qualities. 
-
+- Added a missing metagenic flag for the Greasy Skin quality.
+- Moved a todo notice for the Regular Job life module that prevented taking the module. Note: This quality still does not work as intended, and only provides the relevant knowledge skills. Active skill points are not provided yet. 
 New Strings: 
 
 - Checkbox_Option_PrioritySpellsAsAdeptPowers
