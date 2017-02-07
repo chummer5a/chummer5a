@@ -40,8 +40,8 @@ namespace WpfApplication1
 		        foreach (var node in nodes)
 		        {
 			        XmlNode xmlNode = doc.CreateElement($"{_attAbbrevs[i]}{node}".ToLower());
-			        xmlNode.InnerText = _attValues[i];
-			        objHeader.AppendChild(xmlNode);
+		            xmlNode.InnerText = node == "aug" ? _attValues[i] + 4 : _attValues[i];
+		            objHeader.AppendChild(xmlNode);
 		        }
 	        }
 	        //Skip the first two lines, since we know they're attributes. 
@@ -66,7 +66,7 @@ namespace WpfApplication1
 			        {
 				        var current = movement.Replace("x", "").Replace("+", "").TrimEnd();
 				        var position = 0; 
-				        if (current.ToLower().Contains("swim"))
+				        if (current.ToLower().Contains("swimming"))
 				        {
 					        position = 1;
 					        current = current.Split(' ')[0];
@@ -175,8 +175,7 @@ namespace WpfApplication1
 					var line = lines[i].Replace("Armor ", "");
 					XmlNode xmlNode = doc.CreateElement("armor");
 					xmlNode.InnerText = line.Trim();
-					doc.AppendChild(xmlNode);
-
+					objHeader.AppendChild(xmlNode);
 				}
 	        }
 
