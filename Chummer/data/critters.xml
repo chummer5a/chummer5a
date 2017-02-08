@@ -1000,7 +1000,7 @@
 		<metatype>
 			<id>77c9b816-af11-4aa7-bc94-4c373fd147a6</id>
 			<name>Abrams Lobster</name>
-			<category>Mundane Critters</category>
+			<category>Paranormal Critters</category>
 			<karma>0</karma>
 			<bodmin>4</bodmin>
 			<bodmax>4</bodmax>
@@ -17970,7 +17970,7 @@
 		<metatype>
 			<id>a1cfa419-e728-4a3e-ad2b-43d3ce062ef1</id>
 			<name>Wendigo (Magician)</name>
-			<category>Paranormal Critters</category>
+			<category>Infected</category>
 			<karma>0</karma>
 			<bodmin>8</bodmin>
 			<bodmax>8</bodmax>
@@ -18028,7 +18028,7 @@
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
-					<val>3</val>
+					<val>6</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
@@ -18073,7 +18073,7 @@
 		<metatype>
 			<id>09a65ad9-18f2-40bf-88c2-b4c057e2b1c6</id>
 			<name>Wendigo (Mystic Adept)</name>
-			<category>Paranormal Critters</category>
+			<category>Infected</category>
 			<karma>0</karma>
 			<bodmin>8</bodmin>
 			<bodmax>8</bodmax>
@@ -18131,7 +18131,7 @@
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
-					<val>3</val>
+					<val>6</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
@@ -19531,6 +19531,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<initiativepass>1</initiativepass>
 			</bonus>
 			<powers>
 				<power rating="2">Armor</power>
@@ -19930,7 +19931,7 @@
 		</metatype>
 		<metatype>
 			<id>3ac65435-45f1-4d78-ad90-42fbd36b1a85</id>
-			<name>Baboon</name>
+			<name>Ozian Baboon</name>
 			<category>Paranormal Critters</category>
 			<karma>0</karma>
 			<bodmin>5</bodmin>
@@ -20976,7 +20977,7 @@
 			<powers>
 				<power rating="4">Armor</power>
 				<power select="Low-Light Vision">Enhanced Senses</power>
-				<power select="Thermogrpahic Vision">Enhanced Senses</power>
+				<power select="Thermographic Vision">Enhanced Senses</power>
 				<power select="Kick: DV 9P, AP +1, +1 Reach">Natural Weapon</power>
 				<power>Magic Sense</power>
 				<power>Sapience</power>
@@ -21216,6 +21217,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<reach>1</reach>
 			</bonus>
 			<powers>
 				<power rating="4">Armor</power>
@@ -21756,7 +21758,8 @@
 				</enabletab>
 			</bonus>
 			<powers>
-				<power>Animal Control</power>
+				<power select="Fish">Animal Control</power>
+				<power select="Aquatic Mammals">Animal Control</power>
 				<power rating="20">Armor</power>
 				<power>Compulsion</power>
 				<power>Engulf</power>
@@ -22448,7 +22451,7 @@
 				<power select="Touch">Enhanced Senses</power>
 				<power select="360-Degree Vision">Enhanced Senses</power>
 				<power select="Toxins">Immunity</power>
-				<power select="Tongue: DV 3S, 0">Natural Weapon</power>
+				<power select="Tongue: DV 3S, AP 0">Natural Weapon</power>
 				<power select="Bite: DV 12P, AP -2">Natural Weapon</power>
 				<power select="Hearing">Reduced Senses</power>
 				<power select="Smell">Reduced Senses</power>
@@ -22456,7 +22459,7 @@
 			<skills>
 				<skill rating="4">Gymnastics</skill>
 				<skill rating="4">Perception</skill>
-				<skill rating="6">Shadowing</skill>
+				<skill rating="6">Sneaking</skill>
 				<skill rating="5">Unarmed Combat</skill>
 			</skills>
 			<source>HS</source>
@@ -23442,6 +23445,7 @@
 					<name>critter</name>
 				</enabletab>
 				<initiativepass>2</initiativepass>
+				<reach>-1</reach>
 			</bonus>
 			<powers>
 				<power rating="6">Armor</power>
@@ -23523,6 +23527,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<reach>-1</reach>
 			</bonus>
 			<powers>
 				<power select="Smell">Enhanced Senses</power>
@@ -26068,7 +26073,8 @@
 			</bonus>
 			<powers>
 				<power rating="6">Armor</power>
-				<power>Animal Control</power>
+				<power select="Wolverines">Animal Control</power>
+				<power select="Badgers">Animal Control</power>
 				<power select="Smell">Enhanced Senses</power>
 				<power select="Claws: DV 8P, AP 0">Natural Weapon</power>
 				<power select="Vision">Reduced Senses</power>
@@ -26385,7 +26391,8 @@
 				<reach>-1</reach>
 			</bonus>
 			<powers>
-				<power>Animal Control</power>
+				<power select="Devil Rats">Animal Control</power>
+				<power select="Rats">Animal Control</power>
 				<power rating="2">Armor</power>
 				<power>Concealment</power>
 				<power>Corrosive Spit</power>
@@ -29542,6 +29549,7 @@
 			<source>RW</source>
 			<page>167</page>
 		</metatype>
+		<!-- TODO: Mutant Critters and Toxic Critters from Howling Shadows -->
 		<!-- End Region -->
 		<!-- Region Fey -->
 		<metatype>
@@ -38514,7 +38522,7 @@
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
-					<val>3</val>
+					<val>4</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
@@ -38591,14 +38599,14 @@
 			<essaug>2D6</essaug>
 			<walk>3/1/0</walk>
 			<run>5/0/0</run>
-			<sprint>8/1/0</sprint>
+			<sprint>3/1/0</sprint>
 			<bonus>
 				<enableattribute>
 					<name>MAG</name>
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
-					<val>3</val>
+					<val>6</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
@@ -38856,7 +38864,7 @@
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
-					<val>3</val>
+					<val>6</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
@@ -39034,7 +39042,7 @@
 				</enabletab>
 			</bonus>
 			<powers>
-				<power>Animal Control</power>
+				<power select="Vermin">Animal Control</power>
 				<power rating="2">Armor</power>
 				<power>Dual Natured</power>
 				<power select="Thermographic Vision">Enhanced Senses</power>
@@ -39116,7 +39124,7 @@
 					<min>1</min>
 					<max>6</max>
 					<aug>6</aug>
-					<val>3</val>
+					<val>6</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
@@ -39202,13 +39210,20 @@
 			<run>6/0/0</run>
 			<sprint>4/1/0</sprint>
 			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+					<min>1</min>
+					<max>6</max>
+					<aug>6</aug>
+					<val>3</val>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
 				<reach>1</reach>
 			</bonus>
 			<powers>
-				<power>Animal Control</power>
+				<power select="Subterranean Critters">Animal Control</power>
 				<power>Concealment</power>
 				<power>Dual Natured</power>
 				<power select="Low-Light Vision">Enhanced Senses</power>
@@ -39312,7 +39327,7 @@
 				<skill rating="5">Perception</skill>
 				<skill rating="4">Sneaking</skill>
 				<skill rating="7">Unarmed Combat</skill>
-				<group rating="5">Athletics</group>
+				<group rating="6">Athletics</group>
 			</skills>
 			<source>HS</source>
 			<page>88</page>
@@ -39463,9 +39478,9 @@
 				<enableattribute>
 					<name>MAG</name>
 					<min>1</min>
-					<max>7</max>
-					<aug>7</aug>
-					<val>4</val>
+					<max>6</max>
+					<aug>6</aug>
+					<val>6</val>
 				</enableattribute>
 				<enabletab>
 					<name>critter</name>
