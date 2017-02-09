@@ -994,11 +994,11 @@ namespace Chummer
 				lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
                 // Cost.
-                int intItemCost = 0;
+                double dblItemCost = 0;
                 if (chkFree.Checked)
                 {
                     lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
-                    intItemCost = 0;
+                    dblItemCost = 0;
                 }
                 else if (objXmlCyberware["cost"] != null)
                 {
@@ -1025,19 +1025,21 @@ namespace Chummer
                         else
                             lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
 
-                        intItemCost = intMin;
+                        dblItemCost = intMin;
                     }
                     if (objXmlCyberware["cost"].InnerText.StartsWith("FixedValues"))
                     {
                         string[] strValues = objXmlCyberware["cost"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
                         if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                         {
-                            intItemCost = Convert.ToInt32((Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier * dblGenetechCostModifier));
+                            dblItemCost = Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier * dblGenetechCostModifier;
                             if (chkBlackMarketDiscount.Checked)
                             {
-                                intItemCost -= Convert.ToInt32(intItemCost * 0.10);
+                                dblItemCost -= Convert.ToInt32(dblItemCost * 0.10);
                             }
-                            lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+                            double multiplier = 1 + Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo)/100.0;
+                            dblItemCost *= multiplier;
+                            lblCost.Text = String.Format("{0:###,###,##0¥}", dblItemCost);
                         }
                     }
                     else
@@ -1078,21 +1080,21 @@ namespace Chummer
                         double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier *
                                     dblGenetechCostModifier);
                         dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
-                        intItemCost = Convert.ToInt32(dblCost);
+                        dblItemCost = dblCost;
 
                         if (chkBlackMarketDiscount.Checked)
                         {
-                            intItemCost -= Convert.ToInt32(intItemCost * 0.10);
+                            dblItemCost -= Convert.ToInt32(dblItemCost * 0.10);
                         }
 
-                        lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+                        lblCost.Text = String.Format("{0:###,###,##0¥}", dblItemCost);
                     }
                 }
                 else
-                    lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+                    lblCost.Text = String.Format("{0:###,###,##0¥}", dblItemCost);
 
                 // Test required to find the item.
-                lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
+                lblTest.Text = _objCharacter.AvailTest(Convert.ToInt32(dblItemCost), lblAvail.Text);
 
 				// Essence.
 				double dblESS = 0.0;

@@ -1408,9 +1408,6 @@
 					<quality>Natural Weapon: Kick (Centaur)</quality> 
 					<quality>Magic Sense</quality>
 				</positive>
-				<negative>
-					<quality removable="true">Uneducated</quality>
-				</negative>
 			</qualities>
 			<powers>
 				<power>Search</power>

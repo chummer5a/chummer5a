@@ -137,7 +137,7 @@ namespace Chummer
 
 			if (_objSourceLifestyle != null)
 			{
-				txtLifestyleName.Text = _objSourceLifestyle.Name;
+				txtLifestyleName.Text = _objSourceLifestyle.LifestyleName;
 				if (!string.IsNullOrEmpty(_objSourceLifestyle.BaseLifestyle))
 				{
 					cboLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
@@ -266,8 +266,9 @@ namespace Chummer
 			XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
 			_objLifestyle.Source = objXmlLifestyle["source"].InnerText;
 			_objLifestyle.Page = objXmlLifestyle["page"].InnerText;
-			_objLifestyle.Name = txtLifestyleName.Text;
-			_objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
+			_objLifestyle.LifestyleName = txtLifestyleName.Text;
+            _objLifestyle.Name = cboLifestyle.SelectedValue.ToString();
+            _objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
 			_objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
 			_objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
 			_objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);

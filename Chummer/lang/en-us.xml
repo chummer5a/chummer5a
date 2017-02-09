@@ -2203,6 +2203,10 @@
 			<text>{0} more items with Avail higher than {1} than allowed</text>
 		</string>
     <string>
+      <key>Message_RestrictedGearUsed</key>
+      <text>Restricted Gear was used on:\n{0}</text>
+    </string>
+    <string>
       <key>Message_InvalidCyberwareGrades</key>
       <text>Cyber/Bioware Grade limit exceeded for the following items:</text>
     </string>    

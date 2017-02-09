@@ -18570,10 +18570,11 @@ namespace Chummer
 
 			// Check the character's equipment and make sure nothing goes over their set Maximum Availability.
 			bool blnRestrictedGearUsed = false;
+		    string strRestrictedItem = "";
 			// Gear Availability.
 			foreach (Gear objGear in _objCharacter.Gear)
 			{
-				CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
+				CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
 			}
 
 			// Cyberware Availability.
@@ -18590,6 +18591,7 @@ namespace Chummer
 		                ((GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)))
 		            {
 		                blnRestrictedGearUsed = true;
+		                strRestrictedItem = objCyberware.DisplayName;
 		            }
 		            else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
 		            {
@@ -18614,7 +18616,8 @@ namespace Chummer
 		                        ((GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)))
 		                    {
 		                        blnRestrictedGearUsed = true;
-		                    }
+                                strRestrictedItem = $"{objPlugin.DisplayName} ({objPlugin.Parent.DisplayName})";
+                            }
 		                    else if (GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)
 		                    {
 		                        intRestrictedCount++;
@@ -18631,13 +18634,13 @@ namespace Chummer
 
 		            foreach (Gear objGear in objPlugin.Gear.Where(objGear => !objGear.IncludedInParent))
 		            {
-		                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
+		                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
 		            }
 
 		            foreach (Gear objGear in objCyberware.Gear.Where(objGear => !objGear.IncludedInParent))
 		            {
-		                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
-		            }
+		                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                    }
 		        }
 		    }
 
@@ -18687,7 +18690,7 @@ namespace Chummer
 
                 foreach (Gear objGear in objArmor.Gear.Where(objGear => !objGear.IncludedInParent))
                 {
-                    CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
+                    CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
                 }
             }
 
@@ -18738,7 +18741,7 @@ namespace Chummer
 
 					foreach (Gear objGear in objAccessory.Gear.Where(objGear => !objGear.IncludedInParent))
 					{
-                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
+                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
                     }
 				}
 			}
@@ -18812,7 +18815,7 @@ namespace Chummer
 					}
 					foreach (Gear objGear in objVehicle.Gear)
 					{
-                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems);
+                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
                     }
 				}
 			}
@@ -18823,7 +18826,8 @@ namespace Chummer
 				blnValid = false;
 				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());
 				strMessage += strAvailItems;
-			}
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_RestrictedGearUsed").Replace("{0}", strRestrictedItem);
+            }
 
 			if (!string.IsNullOrWhiteSpace(strExConItems))
 			{
@@ -19078,7 +19082,7 @@ namespace Chummer
         /// <param name="blnOutRestrictedGearUsed"></param>
         /// <param name="intOutRestrictedCount"></param>
         /// <param name="strOutAvailItems"></param>
-	    private void CheckRestrictedGear(Gear objGear, bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, out bool blnOutRestrictedGearUsed, out int intoutRestrictedCount, out string strOutAvailItems)
+	    private void CheckRestrictedGear(Gear objGear, bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intoutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
 	    {
             //TODO: Make this dynamically update without having to validate the character.
             if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
@@ -19086,6 +19090,7 @@ namespace Chummer
                 if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
                 {
                     blnRestrictedGearUsed = true;
+                    strRestrictedItem = objGear.Parent == null ? objGear.DisplayName : $"{objGear.DisplayName} ({objGear.Parent})";
                 }
                 else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                 {
@@ -19109,6 +19114,7 @@ namespace Chummer
                         if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
                         {
                             blnRestrictedGearUsed = true;
+                            strRestrictedItem = objGear.DisplayName;
                         }
                         else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                         {
@@ -19131,6 +19137,7 @@ namespace Chummer
                                 if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
                                 {
                                     blnRestrictedGearUsed = true;
+                                    strRestrictedItem = objGear.DisplayName;
                                 }
                                 else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                 {
@@ -19151,6 +19158,7 @@ namespace Chummer
 	        strOutAvailItems = strAvailItems;
 	        intoutRestrictedCount = intRestrictedCount;
 	        blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+	        strOutRestrictedItem = strRestrictedItem;
 	    }
 
         /// <summary>

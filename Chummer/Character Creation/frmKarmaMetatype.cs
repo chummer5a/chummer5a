@@ -1011,7 +1011,7 @@ namespace Chummer
 		            }
 	            }
 	            XmlDocument objSkillDocument = XmlManager.Instance.Load("skills.xml");
-				//Set the Skill Ratings for the Critter.
+				//Set the Active Skill Ratings for the Critter.
 				foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
 				{
 					XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objXmlSkill.InnerText + "\"]");
@@ -1027,10 +1027,27 @@ namespace Chummer
 							objSkill.Karma = Convert.ToInt32(objXmlSkill.Attributes?["rating"]?.InnerText);
 						}
 					}
-				}
+                }
+                //Set the Skill Group Ratings for the Critter.
+                foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
+                {
+                    XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/skillgroups/skillgroup[name = \"" + objXmlSkill.InnerText + "\"]");
+                    
+                    foreach (SkillGroup objSkill in _objCharacter.SkillsSection.SkillGroups.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
+                    {
+                        if (objXmlSkill.Attributes?["rating"]?.InnerText == "F")
+                        {
+                            objSkill.Karma = intForce;
+                        }
+                        else if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
+                        {
+                            objSkill.Karma = Convert.ToInt32(objXmlSkill.Attributes?["rating"]?.InnerText);
+                        }
+                    }
+                }
 
-				//Set the Skill Ratings for the Critter.
-				foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
+                //Set the Knowledge Skill Ratings for the Critter.
+                foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
 				{
 					XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + objXmlSkill.InnerText + "\"]");
 					Skill.FromData(objXmlSkillNode, _objCharacter);
