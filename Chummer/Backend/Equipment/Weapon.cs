@@ -2543,7 +2543,7 @@ namespace Chummer.Backend.Equipment
 				strRangeCategory = _strRange;
 
             XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRangeCategory + "\"]");
-            if (objXmlCategoryNode == null || objXmlCategoryNode[strFindRange] != null)
+            if (objXmlCategoryNode?[strFindRange] == null)
             {
                 return -1;
             }
