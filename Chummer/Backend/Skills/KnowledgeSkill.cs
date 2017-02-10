@@ -125,6 +125,9 @@ namespace Chummer.Skills
 				{
 					SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
 				}
+
+                SortListItem objSort = new SortListItem();
+                SuggestedSpecializations.Sort(objSort.Compare);
 				OnPropertyChanged(nameof(CGLSpecializations));
 			}
 		}
