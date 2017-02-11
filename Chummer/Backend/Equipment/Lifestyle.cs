@@ -199,7 +199,7 @@ namespace Chummer.Backend.Equipment
 			{
 				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 				objQuality.Load(objXmlQuality, this);
-				_lstLifestyleQualities.Add(objQuality);
+				_lstFreeGrids.Add(objQuality);
 			}
 
 			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
