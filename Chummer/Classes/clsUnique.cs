@@ -114,11 +114,11 @@ namespace Chummer
 		/// Print the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter)
+		public void Print(XmlTextWriter objWriter, string strOverwriteBase = "")
 		{
 			objWriter.WriteStartElement("attribute");
 			objWriter.WriteElementString("name", _strAbbrev);
-			objWriter.WriteElementString("base", Value.ToString());
+			objWriter.WriteElementString("base", !string.IsNullOrEmpty(strOverwriteBase) ? strOverwriteBase : Value.ToString());
 			objWriter.WriteElementString("total", TotalValue.ToString());
 			objWriter.WriteElementString("min", TotalMinimum.ToString());
 			objWriter.WriteElementString("max", TotalMaximum.ToString());
@@ -787,9 +787,13 @@ namespace Chummer
 		/// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
 		public void AssignLimits(string strMin, string strMax, string strAug)
 		{
-			MetatypeMinimum = Convert.ToInt32(strMin);
-			MetatypeMaximum = Convert.ToInt32(strMax);
-			MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
+		    int intTmp;
+		    int.TryParse(strMin, out intTmp);
+			MetatypeMinimum = intTmp;
+            int.TryParse(strMax, out intTmp);
+            MetatypeMaximum = intTmp;
+            int.TryParse(strAug, out intTmp);
+            MetatypeAugmentedMaximum = intTmp;
 		}
 
 		/// <summary>
@@ -797,8 +801,7 @@ namespace Chummer
 		/// </summary>
 		public string ToolTip()
 		{
-			string strReturn = string.Empty;
-			strReturn += _strAbbrev + " (" + Value.ToString() + ")";
+			string strReturn = _strAbbrev + " (" + Value.ToString() + ")";
 			string strModifier = string.Empty;
 
 			List<string> lstUniqueName = new List<string>();
