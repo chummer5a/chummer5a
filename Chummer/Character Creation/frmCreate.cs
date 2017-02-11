@@ -20749,7 +20749,16 @@ namespace Chummer
             nudLOG.Value = _objCharacter.LOG.Value;
             nudWIL.Value = _objCharacter.WIL.Value;
             nudEDG.Value = _objCharacter.EDG.Value;
-            nudDEP.Value = _objCharacter.DEP.Value;
+            if (_objCharacter.DEP.Value < 1)
+            {
+                if (nudDEP.Maximum < 1)
+                    nudDEP.Maximum = 1;
+                if (nudDEP.Minimum < 1)
+                    nudDEP.Minimum = 1;
+                nudDEP.Value = 1;
+            }
+            else
+                nudDEP.Value = _objCharacter.DEP.Value;
             if (_objCharacter.MAG.Value < 1)
             {
                 if (nudMAG.Maximum < 1)

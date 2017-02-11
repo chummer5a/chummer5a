@@ -737,28 +737,17 @@ namespace Chummer
    //         Log.Enter("ValueToInt");
    //         Log.Info("strValue = " + strValue);
 			//Log.Info("intRating = " + intRating.ToString());
-            
-			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
-			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
-			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("DEP") || strValue.Contains("MAG") || strValue.Contains("RES"))
+            if (strValue.Contains("Rating") || Character.AttributeStrings.Any(strValue.Contains))
 			{
-				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
-				strValue = strValue.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
-				strValue = strValue.Replace("REA", _objCharacter.REA.TotalValue.ToString());
-				strValue = strValue.Replace("STR", _objCharacter.STR.TotalValue.ToString());
-				strValue = strValue.Replace("CHA", _objCharacter.CHA.TotalValue.ToString());
-				strValue = strValue.Replace("INT", _objCharacter.INT.TotalValue.ToString());
-				strValue = strValue.Replace("LOG", _objCharacter.LOG.TotalValue.ToString());
-				strValue = strValue.Replace("WIL", _objCharacter.WIL.TotalValue.ToString());
-				strValue = strValue.Replace("EDG", _objCharacter.EDG.TotalValue.ToString());
-                strValue = strValue.Replace("DEP", _objCharacter.DEP.TotalValue.ToString());
-                strValue = strValue.Replace("MAG", _objCharacter.MAG.TotalValue.ToString());
-				strValue = strValue.Replace("RES", _objCharacter.RES.TotalValue.ToString());
+                string strReturn = strValue.Replace("Rating", intRating.ToString());
+                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
+                foreach (string strAttribute in Character.AttributeStrings)
+			    {
+                    strReturn = strReturn.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
+                }
 
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				string strReturn = strValue.Replace("Rating", intRating.ToString());
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
                 XPathExpression xprValue = nav.Compile(strReturn);
@@ -1119,46 +1108,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.Attribute:
-                        CharacterAttrib objChangedAttribute = null;
-                        switch (objImprovement.ImprovedName)
-                        {
-                            case "BOD":
-                                objChangedAttribute = _objCharacter.BOD;
-                                break;
-                            case "AGI":
-                                objChangedAttribute = _objCharacter.AGI;
-                                break;
-                            case "REA":
-                                objChangedAttribute = _objCharacter.REA;
-                                break;
-                            case "STR":
-                                objChangedAttribute = _objCharacter.STR;
-                                break;
-                            case "CHA":
-                                objChangedAttribute = _objCharacter.CHA;
-                                break;
-                            case "INT":
-                                objChangedAttribute = _objCharacter.INT;
-                                break;
-                            case "LOG":
-                                objChangedAttribute = _objCharacter.LOG;
-                                break;
-                            case "WIL":
-                                objChangedAttribute = _objCharacter.WIL;
-                                break;
-                            case "EDG":
-                                objChangedAttribute = _objCharacter.EDG;
-                                break;
-                            case "MAG":
-                                objChangedAttribute = _objCharacter.MAG;
-                                break;
-                            case "RES":
-                                objChangedAttribute = _objCharacter.RES;
-                                break;
-                            case "DEP":
-                                objChangedAttribute = _objCharacter.DEP;
-                                break;
-                        }
+                        CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
                         if (objImprovement.Minimum > 0)
                         {
                             objChangedAttribute.Value -= objImprovement.Minimum;
