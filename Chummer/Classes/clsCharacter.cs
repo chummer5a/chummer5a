@@ -1879,15 +1879,15 @@ namespace Chummer
             // <karma />
             objWriter.WriteElementString("karma", _intKarma.ToString());
             // <totalkarma />
-            objWriter.WriteElementString("totalkarma", string.Format("{0:###,###,##0}", Convert.ToInt32(CareerKarma)));
+            objWriter.WriteElementString("totalkarma", $"{CareerKarma:###,###,##0}");
             // <special />
             objWriter.WriteElementString("special", _intSpecial.ToString());
             // <totalspecial />
-            objWriter.WriteElementString("totalspecial", string.Format("{0:###,###,##0}", Convert.ToInt32(_intTotalSpecial)));
+            objWriter.WriteElementString("totalspecial", $"{_intTotalSpecial:###,###,##0}");
             // <attributes />
             objWriter.WriteElementString("attributes", _intSpecial.ToString());
             // <totalattributes />
-            objWriter.WriteElementString("totalattributes", string.Format("{0:###,###,##0}", Convert.ToInt32(_intTotalAttributes)));
+            objWriter.WriteElementString("totalattributes", $"{_intTotalAttributes:###,###,##0}");
             // <streetcred />
             objWriter.WriteElementString("streetcred", _intStreetCred.ToString());
             // <calculatedstreetcred />
@@ -2039,7 +2039,7 @@ namespace Chummer
             objWriter.WriteStartElement("attributes");
             foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
             {
-                objAttribute.Value.Print(objWriter);
+                objAttribute.Value.Print(objWriter, objAttribute.Key == "ESS" ? Essence.ToString(GlobalOptions.CultureInfo) : string.Empty);
             }
 
             // </attributes>

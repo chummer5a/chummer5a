@@ -85,7 +85,6 @@
             this.cboSpec.Location = new System.Drawing.Point(344, 0);
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(177, 21);
-            this.cboSpec.Sorted = true;
             this.cboSpec.TabIndex = 17;
             // 
             // chkKarma

@@ -44,6 +44,9 @@ Application Changes:
 - Altered the Availability Check method when moving to Career mode to show the item that Restricted Gear was used on, if any.
 - Fixed the behaviour of FixedValues on the SelectCyberware form to work with career mode markups. 
 - Fixed the basic lifestyle form to properly populate the names. 
+- Fixed possible crashes caused by critters, metavariants, or metatypes not properly having all attributes defined.
+- Fixed cases where Essence loss would affect Depth rating in Career mode.
+- Fixed possible crash caused by changing to a metatype without a Depth rating.
 
 Data Changes:
 
