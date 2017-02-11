@@ -3,12 +3,20 @@
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:include href="../xt.TitleName.xslt"/>
 	
-	<xsl:template match="/characters">
+	<xsl:template match="/characters/character">
+		<xsl:variable name="TitleName">
+			<xsl:call-template name="TitleName">
+				<xsl:with-param name="name" select="name"/>
+				<xsl:with-param name="alias" select="alias"/>
+			</xsl:call-template>
+		</xsl:variable>
+
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 			<head>
 				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
-				<title>Spielleiter Charaktere</title>
+				<title><xsl:value-of select="$TitleName" /></title>
 				<style type="text/css">
 					*
 					{
@@ -62,110 +70,88 @@
 				</style>
 			</head>
 			<body>
-				<xsl:for-each select="character">
 					<table width="100%" cellspacing="0" cellpadding="2" border="0" style="border: solid 2px #000000;">
 						<tr>
 							<td>
 								<strong><xsl:value-of select="name" /></strong> (<xsl:value-of select="metatype" />)
 								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-								<strong>Movement:</strong> <xsl:value-of select="movement" />
+								<strong>Bewegung: </strong> <xsl:value-of select="movement" />
 								<table width="100%" cellspacing="0" cellpadding="2">
 									<tr>
-										<td width="6%" align="center"><strong>K</strong></td>
-										<td width="6%" align="center"><strong>G</strong></td>
-										<td width="6%" align="center"><strong>R</strong></td>
-										<td width="6%" align="center"><strong>S</strong></td>
-										<td width="6%" align="center"><strong>C</strong></td>
-										<td width="6%" align="center"><strong>I</strong></td>
-										<td width="6%" align="center"><strong>L</strong></td>
-										<td width="6%" align="center"><strong>W</strong></td>
-										<td width="6%" align="center"><strong>E</strong></td>
+										<td width="9%" align="center"><strong>K</strong></td>
+										<td width="9%" align="center"><strong>G</strong></td>
+										<td width="9%" align="center"><strong>R</strong></td>
+										<td width="9%" align="center"><strong>S</strong></td>
+										<td width="9%" align="center"><strong>C</strong></td>
+										<td width="9%" align="center"><strong>I</strong></td>
+										<td width="9%" align="center"><strong>L</strong></td>
+										<td width="9%" align="center"><strong>W</strong></td>
+										<td width="9%" align="center"><strong>EDG</strong></td>
 										<xsl:if test="magenabled = 'True'">
-											<td width="6%" align="center"><strong>MAG</strong></td>
+											<td width="9%" align="center"><strong>MAG</strong></td>
 										</xsl:if>
 										<xsl:if test="resenabled = 'True'">
-											<td width="6%" align="center"><strong>RES</strong></td>
+											<td width="9%" align="center"><strong>RES</strong></td>
 										</xsl:if>
-										<td width="6%" align="center"><strong>ESS</strong></td>
-										<td width="6%" align="center"><strong>INI</strong></td>
-										<td width="6%" align="center"><strong>ID</strong></td>
-										<xsl:if test="astralip/base or matrixip/base">
-										<td width="6%" align="center">
-											<xsl:if test="astralip/base">
-												<strong>A INI</strong>
-											</xsl:if>
-											<xsl:if test="matrixip/base">
-												<strong>M INI</strong>
-											</xsl:if>
-										</td>
-										<td width="6%" align="center">
-											<xsl:if test="matrixip/base">
-												<strong>A ID</strong>
-											</xsl:if>
-											<xsl:if test="matrixip/base">
-												<strong>M ID</strong>
-											</xsl:if>
-										</td>
-										</xsl:if>
-										<td width="6%" align="center"><strong>SBH</strong></td>
+										<td width="9%" align="center"><strong>ESS</strong></td>
 									</tr>
 									<tr>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'BOD']/base" />
 											<xsl:if test="attributes/attribute[name = 'BOD']/total != attributes/attribute[name = 'BOD']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'BOD']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'AGI']/base" />
 											<xsl:if test="attributes/attribute[name = 'AGI']/total != attributes/attribute[name = 'AGI']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'AGI']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'REA']/base" />
 											<xsl:if test="attributes/attribute[name = 'REA']/total != attributes/attribute[name = 'REA']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'REA']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'STR']/base" />
 											<xsl:if test="attributes/attribute[name = 'STR']/total != attributes/attribute[name = 'STR']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'STR']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'CHA']/base" />
 											<xsl:if test="attributes/attribute[name = 'CHA']/total != attributes/attribute[name = 'CHA']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'CHA']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'INT']/base" />
 											<xsl:if test="attributes/attribute[name = 'INT']/total != attributes/attribute[name = 'INT']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'INT']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'LOG']/base" />
 											<xsl:if test="attributes/attribute[name = 'LOG']/total != attributes/attribute[name = 'LOG']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'LOG']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'WIL']/base" />
 											<xsl:if test="attributes/attribute[name = 'WIL']/total != attributes/attribute[name = 'WIL']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'WIL']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'EDG']/base" />
 											<xsl:if test="attributes/attribute[name = 'EDG']/total != attributes/attribute[name = 'EDG']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'EDG']/total" />)
 											</xsl:if>
 										</td>
 										<xsl:if test="magenabled = 'True'">
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'MAG']/base" />
 											<xsl:if test="attributes/attribute[name = 'MAG']/total != attributes/attribute[name = 'MAG']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'MAG']/total" />)
@@ -173,51 +159,64 @@
 										</td>
 										</xsl:if>
 										<xsl:if test="resenabled = 'True'">
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'RES']/base" />
 											<xsl:if test="attributes/attribute[name = 'RES']/total != attributes/attribute[name = 'RES']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'RES']/total" />)
 											</xsl:if>
 										</td>
 										</xsl:if>
-										<td width="6%" align="center">
+										<td width="9%" align="center">
 											<xsl:value-of select="attributes/attribute[name = 'ESS']/base" />
 											<xsl:if test="attributes/attribute[name = 'ESS']/total != attributes/attribute[name = 'ESS']/base">
 												(<xsl:value-of select="attributes/attribute[name = 'ESS']/total" />)
 											</xsl:if>
 										</td>
-										<td width="6%" align="center">
-											<xsl:value-of select="init/base" />
-											<xsl:if test="init/total != init/base">
-												(<xsl:value-of select="init/total" />)
-											</xsl:if>
+									</tr>
+									<tr colspan="11">
+										<td width="9%" align="center" valign="top"><strong>INIT</strong></td>
+										<td width="9%" align="center" valign="top"><strong>RIGGER</strong></td>
+										<td width="9%" align="center" valign="top"><strong>ASTRAL</strong></td>
+										<td width="9%" align="center" valign="top"><strong>MATRIX AR</strong></td>
+										<td width="9%" align="center" valign="top"><strong>MX KALT</strong></td>
+										<td width="9%" align="center" valign="top"><strong>MX HEISS</strong></td>
+										<td width="9%" align="center" valign="top"><strong>ZM</strong></td>
+										<td width="9%" align="center" valign="top"><strong>KÖRPER</strong></td>
+										<td width="9%" align="center" valign="top"><strong>GEIST</strong></td>
+										<td width="9%" align="center" valign="top"><strong>SOZIAL</strong></td>
+									</tr>
+									<tr colspan="11">
+									</tr>
+									<tr colspan="11">
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="init" />
 										</td>
-										<td width="6%" align="center">
-											<xsl:value-of select="ip/base" />
-											<xsl:if test="ip/total != ip/base">
-												(<xsl:value-of select="ip/total" />)
-											</xsl:if>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="riggerinit" />
 										</td>
-										<xsl:if test="astralip/base or matrixip/base">
-										<td width="6%" align="center">
-											<xsl:if test="astralip/base">
-												<xsl:value-of select="astralinit" />
-											</xsl:if>
-											<xsl:if test="matrixip/base">
-												<xsl:value-of select="matrixinit" />
-											</xsl:if>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="astralinit" />
 										</td>
-										<td width="6%" align="center">
-											<xsl:if test="astralip/base">
-												<xsl:value-of select="astralip" />
-											</xsl:if>
-											<xsl:if test="matrixip/base">
-												<xsl:value-of select="matrixip" />
-											</xsl:if>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="matrixarinit" />
 										</td>
-										</xsl:if>
-										<td width="6%" align="center">
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="matrixcoldinit" />
+										</td>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="matrixhotinit" />
+										</td>
+										<td width="9%" align="center" valign="top">
 											<xsl:value-of select="physicalcm" />/<xsl:value-of select="stuncm" />
+										</td>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="limitphysical" />
+										</td>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="limitmental" />
+										</td>
+										<td width="9%" align="center" valign="top">
+											<xsl:value-of select="limitsocial" />
 										</td>
 									</tr>
 								</table>
@@ -238,7 +237,7 @@
 									<xsl:value-of select="name" />
 									<xsl:if test="spec != ''"> (<xsl:value-of select="spec" />)</xsl:if>
 									<xsl:text> </xsl:text><xsl:value-of select="total" />
-									<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="total + 2" />)</xsl:if>
+									<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 									<xsl:if test="position() != last()">, </xsl:if>
 								</xsl:for-each></p>
 								
@@ -250,7 +249,7 @@
 										<xsl:if test="spec != ''"> (<xsl:value-of select="spec" />)</xsl:if>
 										<xsl:if test="rating = 0"><xsl:text> </xsl:text>N</xsl:if>
 										<xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="total" /></xsl:if>
-										<xsl:if test="spec != ''"> (<xsl:value-of select="total + 2" />)</xsl:if>
+										<xsl:if test="spec != ''"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 										<xsl:if test="position() != last()">, </xsl:if>
 									</xsl:for-each></p>
 								</xsl:if>
@@ -260,10 +259,11 @@
 										<td width="49%" valign="top">
 											<table width="100%" cellspacing="0" cellpadding="2">
 												<tr>
-													<td><strong>Waffen</strong></td>
+													<td><strong>Waffe</strong></td>
 													<td align="center"><strong>Pool</strong></td>
+													<td align="center"><strong>Präz</strong></td>
 													<td align="center"><strong>Schaden</strong></td>
-													<td align="center"><strong>PB</strong></td>
+													<td align="center"><strong>DK</strong></td>
 													<td align="center"><strong>Modus</strong></td>
 													<td align="center"><strong>RK</strong></td>
 												</tr>
@@ -275,6 +275,7 @@
 														</xsl:if>
 														<td><xsl:value-of select="name" /></td>
 														<td align="center"><xsl:value-of select="dicepool" /></td>
+														<td align="center"><xsl:value-of select="accuracy" /></td>
 														<td align="center"><xsl:value-of select="damage" /></td>
 														<td align="center"><xsl:value-of select="ap" /></td>
 														<td align="center"><xsl:value-of select="mode" /></td>
@@ -296,7 +297,7 @@
 																	<xsl:sort select="name" />
 																					<xsl:value-of select="name" />
 																					<xsl:if test="rating > 0">
-																					Rating <xsl:value-of select="rating" />
+																					Stufe <xsl:value-of select="rating" />
 																					</xsl:if>
 																					<xsl:if test="position() != last()">, </xsl:if>
 																</xsl:for-each>
@@ -332,9 +333,8 @@
 										<td width="25%" valign="top">
 											<table width="100%" cellspacing="0" cellpadding="2">
 												<tr>
-													<td><strong>Panzerung (<xsl:value-of select="armorb" />/<xsl:value-of select="armori" />)</strong></td>
-													<td align="center"><strong>B</strong></td>
-													<td align="center"><strong>S</strong></td>
+													<td><strong>Panzerung (<xsl:value-of select="armor" />)</strong></td>
+													<td align="center"> </td>
 												</tr>
 												<xsl:for-each select="armors/armor">
 													<xsl:sort select="name" />
@@ -343,13 +343,12 @@
 															<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 														</xsl:if>
 														<td><xsl:value-of select="name" /></td>
-														<td align="center"><xsl:value-of select="b" /></td>
-														<td align="center"><xsl:value-of select="i" /></td>
+														<td align="center"><xsl:value-of select="armor" /></td>
 													</tr>
 													<xsl:if test="armormods/armormod">
 														<tr>
-															<td colspan="3" class="indent">
-																(mit 
+															<td colspan="2" class="indent">
+																(mit
 																<xsl:for-each select="armormods/armormod">
 																	<xsl:sort select="name" />
 																	<xsl:value-of select="name" />
@@ -363,7 +362,7 @@
 															<xsl:if test="position() mod 2 != 1">
 																<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 															</xsl:if>
-															<td colspan="3" class="indent">
+															<td colspan="2" class="indent">
 																<xsl:for-each select="gears/gear">
 																	<xsl:sort select="name" />
 																	<xsl:value-of select="name" />
@@ -450,14 +449,14 @@
 										<xsl:if test="position() != last()">, </xsl:if>
 									</xsl:for-each></p>
 								</xsl:if>
-
-                <xsl:if test="complexforms/complexform">
+								
+								<xsl:if test="complexforms/complexform">
 									<p><strong>Komplexe Formen: </strong>
 									<xsl:for-each select="complexforms/complexform">
 										<xsl:sort select="name" />
 										<xsl:value-of select="name" />
 										<xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-										<xsl:text> </xsl:text>(<xsl:value-of select="target" />, <xsl:value-of select="duration" />, <xsl:value-of select="fv" />)
+                    <xsl:text> </xsl:text>(<xsl:value-of select="target" />, <xsl:value-of select="duration" />, <xsl:value-of select="fv" />)
                     <xsl:if test="programoptions/programoption">
 											(<xsl:for-each select="programoptions/programoption">
 												<xsl:sort select="name" />
@@ -500,9 +499,9 @@
 									<xsl:for-each select="cyberwares/cyberware">
 										<xsl:sort select="name" />
 										<xsl:value-of select="name" />
-										<xsl:if test="rating != 0"> Rating <xsl:value-of select="rating" /></xsl:if>
+										<xsl:if test="rating != 0"> Stufe <xsl:value-of select="rating" /></xsl:if>
 										<xsl:if test="children/cyberware">
-											(mit 
+											(mit
 											<xsl:for-each select="children/cyberware">
 												<xsl:value-of select="name" />
 												<xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
@@ -536,7 +535,6 @@
 							</td>
 						</tr>
 					</table>
-				</xsl:for-each>
 			</body>
 		</html>
 	</xsl:template>
