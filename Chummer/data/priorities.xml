@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -35,9 +35,26 @@
 			<category>Heritage</category>
 			<metatypes>
 				<metatype>
-					<name>E-Ghost</name>
-					<value>9</value>
+					<name>A.I.</name>
+					<value>4</value>
 					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>E-Ghost</name>
+							<value>4</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xenosapient</name>
+							<value>4</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Protosapient</name>
+							<value>4</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>
 				</metatype>
 				<metatype>
 					<name>Human</name>
@@ -239,6 +256,28 @@
 			<category>Heritage</category>
 			<metatypes>
 				<metatype>
+					<name>A.I.</name>
+					<value>2</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>E-Ghost</name>
+							<value>2</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xenosapient</name>
+							<value>2</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Protosapient</name>
+							<value>2</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>
+				</metatype>
+				<metatype>
 					<name>Human</name>
 					<value>7</value>
 					<karma>0</karma>
@@ -433,10 +472,32 @@
 		</priority>
 		<priority>
 			<id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
-			<name>C - Human, Dwarf, Elf, or Ork</name>
+			<name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
 			<value>C,2</value>
 			<category>Heritage</category>
 			<metatypes>
+				<metatype>
+					<name>A.I.</name>
+					<value>0</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>E-Ghost</name>
+							<value>0</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xenosapient</name>
+							<value>0</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Protosapient</name>
+							<value>0</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>
+				</metatype>
 				<metatype>
 					<name>Human</name>
 					<value>5</value>
@@ -676,9 +737,7 @@
 			</metatypes>
 		</priority>
 		<!-- End Region -->
-		<!-- End Region -->
 		<!-- Region Talents -->
-		<!-- Region Default -->
 		<priority>
 			<id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
 			<name>A - Magician or Technomancer</name>
@@ -696,6 +755,9 @@
 					<skillqty>2</skillqty>
 					<skillval>5</skillval>
 					<skilltype>magic</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Mystic Adept - 6 Magic/10 Spells</name>
@@ -708,6 +770,9 @@
 					<skillqty>2</skillqty>
 					<skillval>5</skillval>
 					<skilltype>magic</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Technomancer - 6 Resonance/5 Complex Forms</name>
@@ -720,6 +785,20 @@
 					<skillqty>2</skillqty>
 					<skillval>5</skillval>
 					<skilltype>resonance</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>AI - 6 Depth</name>
+					<value>A.I.</value>
+					<depth>6</depth>
+					<skillqty>2</skillqty>
+					<skillval>5</skillval>
+					<skilltype>matrix</skilltype>
+					<required>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</required>
 				</talent>
 			</talents>
 		</priority>
@@ -739,6 +818,9 @@
 					<skillqty>1</skillqty>
 					<skillval>4</skillval>
 					<skilltype>active</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Magician - 4 Magic/7 Spells</name>
@@ -751,6 +833,9 @@
 					<skillqty>2</skillqty>
 					<skillval>4</skillval>
 					<skilltype>magic</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Mystic Adept - 4 Magic/7 Spells</name>
@@ -763,6 +848,9 @@
 					<skillqty>2</skillqty>
 					<skillval>4</skillval>
 					<skilltype>magic</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Aspected Magician - 5 Magic</name>
@@ -779,6 +867,9 @@
 					<skillgroupqty>1</skillgroupqty>
 					<skillgroupval>4</skillgroupval>
 					<skillgrouptype>choices</skillgrouptype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Technomancer - 4 Resonance/2 Complex Forms</name>
@@ -791,6 +882,20 @@
 					<skillqty>2</skillqty>
 					<skillval>4</skillval>
 					<skilltype>resonance</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>AI - 4 Depth</name>
+					<value>AI</value>
+					<depth>4</depth>
+					<skillqty>2</skillqty>
+					<skillval>4</skillval>
+					<skilltype>matrix</skilltype>
+					<required>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</required>
 				</talent>
 			</talents>
 		</priority>
@@ -810,6 +915,9 @@
 					<skillqty>1</skillqty>
 					<skillval>2</skillval>
 					<skilltype>active</skilltype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Magician - 3 Magic/5 Spells</name>
@@ -819,6 +927,9 @@
 					</qualities>
 					<magic>3</magic>
 					<spells>5</spells>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Mystic Adept - 3 Magic/5 Spells</name>
@@ -828,6 +939,9 @@
 					</qualities>
 					<magic>3</magic>
 					<spells>5</spells>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Aspected Magician - 3 Magic</name>
@@ -844,6 +958,9 @@
 					<skillgroupqty>1</skillgroupqty>
 					<skillgroupval>2</skillgroupval>
 					<skillgrouptype>choices</skillgrouptype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Technomancer - 3 Resonance/1 Complex Forms</name>
@@ -853,6 +970,20 @@
 					</qualities>
 					<resonance>3</resonance>
 					<cfp>1</cfp>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>AI - 3 Depth</name>
+					<value>AI</value>
+					<depth>3</depth>
+					<skillqty>1</skillqty>
+					<skillval>2</skillval>
+					<skilltype>matrix</skilltype>
+					<required>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</required>
 				</talent>
 			</talents>
 		</priority>
@@ -869,6 +1000,9 @@
 						<quality>Adept</quality>
 					</qualities>
 					<magic>2</magic>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
 				</talent>
 				<talent>
 					<name>Aspected Magician - 2 Magic</name>
@@ -885,6 +1019,17 @@
 					<skillgroupqty>1</skillgroupqty>
 					<skillgroupval>0</skillgroupval>
 					<skillgrouptype>choices</skillgrouptype>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>AI - 2 Depth</name>
+					<value>AI</value>
+					<depth>2</depth>
+					<required>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</required>
 				</talent>
 			</talents>
 		</priority>
@@ -897,49 +1042,57 @@
 				<talent>
 					<name>Mundane</name>
 					<value>Mundane</value>
+					<forbidden>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>AI - 2 Depth</name>
+					<value>AI</value>
+					<depth>1</depth>
+					<required>
+						<oneof><metatype>A.I.</metatype></oneof>
+					</required>
 				</talent>
 			</talents>
 		</priority>
 		<!-- End Region -->
-		<!-- End Region -->
 		<!-- Region Attributes -->
-		<!-- Region Default -->
 		<priority>
 			<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
-			<name>A - 24 Attributes</name>
+			<name>A - 24 (12) Attributes</name>
 			<value>A,4</value>
 			<category>Attributes</category>
 			<attributes>24</attributes>
 		</priority>
 		<priority>
 			<id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
-			<name>B - 20 Attributes</name>
+			<name>B - 20 (10) Attributes</name>
 			<value>B,3</value>
 			<category>Attributes</category>
 			<attributes>20</attributes>
 		</priority>
 		<priority>
 			<id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
-			<name>C - 16 Attributes</name>
+			<name>C - 16 (8) Attributes</name>
 			<value>C,2</value>
 			<category>Attributes</category>
 			<attributes>16</attributes>
 		</priority>
 		<priority>
 			<id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
-			<name>D - 14 Attributes</name>
+			<name>D - 14 (7) Attributes</name>
 			<value>D,1</value>
 			<category>Attributes</category>
 			<attributes>14</attributes>
 		</priority>
 		<priority>
 			<id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
-			<name>E - 12 Attributes</name>
+			<name>E - 12 (6) Attributes</name>
 			<value>E,0</value>
 			<category>Attributes</category>
 			<attributes>12</attributes>
 		</priority>
-		<!-- End Region -->
 		<!-- End Region -->
 		<!-- Region Skills -->
 		<!-- Region Street Scum -->

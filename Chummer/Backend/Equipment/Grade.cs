@@ -9,7 +9,7 @@ namespace Chummer.Backend.Equipment
 	public class Grade
 	{
 		private string _strName = "Standard";
-		private string _strAltName = "";
+		private string _strAltName = string.Empty;
 		private decimal _decEss = 1.0m;
 		private double _dblCost = 1.0;
 		private int _intAvail = 0;
@@ -26,14 +26,13 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_strName = objNode["name"].InnerText;
-			if (objNode["translate"] != null)
-				_strAltName = objNode["translate"].InnerText;
-			_decEss = Convert.ToDecimal(objNode["ess"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_dblCost = Convert.ToDouble(objNode["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_intAvail = Convert.ToInt32(objNode["avail"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_strSource = objNode["source"].InnerText;
-		}
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+            objNode.TryGetDecFieldQuickly("ess", ref _decEss);
+            objNode.TryGetDoubleFieldQuickly("cost", ref _dblCost);
+            objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+        }
 		#endregion
 
 		#region Properties
@@ -55,10 +54,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strAltName != string.Empty)
+				if (!string.IsNullOrEmpty(_strAltName))
 					return _strAltName;
-				else
-					return _strName;
+
+				return _strName;
 			}
 		}
 

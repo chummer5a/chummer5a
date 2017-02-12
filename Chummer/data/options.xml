@@ -52,7 +52,7 @@
 			</pdfargument>
 			<pdfargument>
 				<name>Unix-style</name>
-				<value>-p {page} {localpath}</value>
+				<value>-p {page} "{localpath}"</value>
 			</pdfargument>
 		</pdfarguments>
 	</options>

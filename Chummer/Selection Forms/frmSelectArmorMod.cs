@@ -28,9 +28,9 @@ namespace Chummer
 {
 	public partial class frmSelectArmorMod : Form
 	{
-		private string _strSelectedArmorMod = "";
+		private string _strSelectedArmorMod = string.Empty;
 
-		private string _strAllowedCategories = "";
+		private string _strAllowedCategories = string.Empty;
 		private bool _blnAddAgain = false;
 		private int _intArmorCost = 0;
 		private int _intMarkup = 0;
@@ -55,10 +55,10 @@ namespace Chummer
 
 		private void frmSelectArmorMod_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			List<ListItem> lstMods = new List<ListItem>();
@@ -68,10 +68,10 @@ namespace Chummer
 
 			// Populate the Mods list.
 			string[] strAllowed = _strAllowedCategories.Split(',');
-			string strMount = "";
+			string strMount = string.Empty;
 			for (int i = 0; i < strAllowed.Length; i++)
 			{
-				if (strAllowed[i] != "")
+				if (!string.IsNullOrEmpty(strAllowed[i]))
 					strMount += "category = \"" + strAllowed[i] + "\"";
 				if (i < strAllowed.Length-1 || !_blnExcludeGeneralCategory)
 				{
@@ -100,10 +100,12 @@ namespace Chummer
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 			SortListItem objSort = new SortListItem();
 			lstMods.Sort(objSort.Compare);
-			lstMod.ValueMember = "Value";
+            lstMod.BeginUpdate();
+            lstMod.ValueMember = "Value";
 			lstMod.DisplayMember = "Name";
 			lstMod.DataSource = lstMods;
-		}
+            lstMod.EndUpdate();
+        }
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -112,13 +114,13 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstMod.Text != "")
+			if (!string.IsNullOrEmpty(lstMod.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void nudRating_ValueChanged(object sender, EventArgs e)
@@ -128,7 +130,7 @@ namespace Chummer
 
 		private void lstMod_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstMod.Text != "")
+			if (!string.IsNullOrEmpty(lstMod.Text))
 				AcceptForm();
 		}
 
@@ -287,7 +289,7 @@ namespace Chummer
 
 			lblA.Text = objXmlMod["armor"].InnerText;
 
-			nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.Instance.CultureInfo);
+			nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
             if (nudRating.Maximum <= 1)
                 nudRating.Enabled = false;
             else
@@ -300,8 +302,8 @@ namespace Chummer
                 }
             }
 
-			string strAvail = "";
-			string strAvailExpr = "";
+			string strAvail = string.Empty;
+			string strAvailExpr = string.Empty;
 			strAvailExpr = objXmlMod["avail"].InnerText;
 
 			XPathExpression xprAvail;
@@ -313,28 +315,52 @@ namespace Chummer
 			}
 			try
 			{
-				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
-				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
+				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+				lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
 			}
-			catch
+			catch (XPathException)
 			{
 				lblAvail.Text = objXmlMod["avail"].InnerText;
 			}
 			lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
-			// Cost.
-			string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString());
-			strCost = strCost.Replace("Armor Cost", _intArmorCost.ToString());
-			XPathExpression xprCost = nav.Compile(strCost);
+            // Cost.
+            if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+            {
+                int intMin = 0;
+                int intMax = int.MaxValue;
+                string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                if (strCost.Contains("-"))
+                {
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
+                }
+                else
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-			// Apply any markup.
-			double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
-			dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+                if (intMax == int.MaxValue)
+                {
+                    lblCost.Text = $"{intMin:###,###,##0¥+}";
+                }
+                else
+                    lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+            }
+            else
+            {
+                string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                strCost = strCost.Replace("Armor Cost", _intArmorCost.ToString());
+                XPathExpression xprCost = nav.Compile(strCost);
 
-			lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
+                // Apply any markup.
+                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
 
-			int intCost = Convert.ToInt32(dblCost);
-			lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+                lblCost.Text = $"{dblCost:###,###,##0¥}";
+
+                int intCost = Convert.ToInt32(dblCost);
+                lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+            }
 
 			// Capacity.
 			// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -354,12 +380,12 @@ namespace Chummer
                 }
 
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString()));
+                XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
                 if (_objCapacityStyle == CapacityStyle.Standard)
                     lblCapacity.Text = "[" + nav.Evaluate(xprCapacity) + "]";
                 else if (_objCapacityStyle == CapacityStyle.PerRating)
-                    lblCapacity.Text = "[" + nudRating.Value.ToString() + "]";
+                    lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + "]";
                 else if (_objCapacityStyle == CapacityStyle.Zero)
                     lblCapacity.Text = "[0]";
             }
@@ -384,7 +410,7 @@ namespace Chummer
 			_strSelectedArmorMod = lstMod.SelectedValue.ToString();
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
@@ -412,8 +438,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

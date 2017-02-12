@@ -43,7 +43,7 @@
             this.chkFree = new System.Windows.Forms.CheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.lblMinimumLabel = new System.Windows.Forms.Label();
             this.lblMinimum = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
@@ -300,7 +300,7 @@
 		private System.Windows.Forms.CheckBox chkFree;
 		private System.Windows.Forms.TextBox txtSearch;
 		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Label lblMinimumLabel;
         private System.Windows.Forms.Label lblMinimum;
         private System.Windows.Forms.Label lblCostLabel;

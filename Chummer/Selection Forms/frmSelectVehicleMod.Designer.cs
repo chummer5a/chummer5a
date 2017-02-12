@@ -55,10 +55,12 @@
 			this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
 			this.lblTest = new System.Windows.Forms.Label();
 			this.lblTestLabel = new System.Windows.Forms.Label();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cboCategory = new System.Windows.Forms.ComboBox();
+			this.lblVehicleCapacity = new System.Windows.Forms.Label();
+			this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
 			this.SuspendLayout();
@@ -155,7 +157,7 @@
 			// lstMod
 			// 
 			this.lstMod.FormattingEnabled = true;
-			this.lstMod.Location = new System.Drawing.Point(12, 37);
+			this.lstMod.Location = new System.Drawing.Point(15, 31);
 			this.lstMod.Name = "lstMod";
 			this.lstMod.Size = new System.Drawing.Size(237, 368);
 			this.lstMod.TabIndex = 22;
@@ -170,7 +172,6 @@
 			this.lblSlots.Size = new System.Drawing.Size(19, 13);
 			this.lblSlots.TabIndex = 12;
 			this.lblSlots.Text = "[0]";
-			this.lblSlots.Visible = false;
 			// 
 			// lblSlotsLabel
 			// 
@@ -181,7 +182,6 @@
 			this.lblSlotsLabel.TabIndex = 11;
 			this.lblSlotsLabel.Tag = "Label_Slots";
 			this.lblSlotsLabel.Text = "Slots:";
-			this.lblSlotsLabel.Visible = false;
 			// 
 			// lblCategory
 			// 
@@ -252,7 +252,6 @@
 			this.chkFreeItem.Tag = "Checkbox_Free";
 			this.chkFreeItem.Text = "Free!";
 			this.chkFreeItem.UseVisualStyleBackColor = true;
-			this.chkFreeItem.Visible = true;
 			this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
 			// 
 			// txtSearch
@@ -324,7 +323,7 @@
 			// lblTestLabel
 			// 
 			this.lblTestLabel.AutoSize = true;
-			this.lblTestLabel.Location = new System.Drawing.Point(370, 98);
+			this.lblTestLabel.Location = new System.Drawing.Point(368, 98);
 			this.lblTestLabel.Name = "lblTestLabel";
 			this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
 			this.lblTestLabel.TabIndex = 7;
@@ -373,6 +372,25 @@
 			this.cboCategory.TabIndex = 41;
 			this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
 			// 
+			// lblVehicleCapacity
+			// 
+			this.lblVehicleCapacity.AutoSize = true;
+			this.lblVehicleCapacity.Location = new System.Drawing.Point(421, 143);
+			this.lblVehicleCapacity.Name = "lblVehicleCapacity";
+			this.lblVehicleCapacity.Size = new System.Drawing.Size(19, 13);
+			this.lblVehicleCapacity.TabIndex = 43;
+			this.lblVehicleCapacity.Text = "[0]";
+			// 
+			// lblVehicleCapacityLabel
+			// 
+			this.lblVehicleCapacityLabel.AutoSize = true;
+			this.lblVehicleCapacityLabel.Location = new System.Drawing.Point(348, 143);
+			this.lblVehicleCapacityLabel.Name = "lblVehicleCapacityLabel";
+			this.lblVehicleCapacityLabel.Size = new System.Drawing.Size(51, 13);
+			this.lblVehicleCapacityLabel.TabIndex = 42;
+			this.lblVehicleCapacityLabel.Tag = "Label_Capacity";
+			this.lblVehicleCapacityLabel.Text = "Capacity:";
+			// 
 			// frmSelectVehicleMod
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -380,6 +398,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(513, 417);
+			this.Controls.Add(this.lblVehicleCapacity);
+			this.Controls.Add(this.lblVehicleCapacityLabel);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.cboCategory);
 			this.Controls.Add(this.chkBlackMarketDiscount);
@@ -453,9 +473,11 @@
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
 		private System.Windows.Forms.Label lblTest;
 		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox cboCategory;
+		private System.Windows.Forms.Label lblVehicleCapacity;
+		private System.Windows.Forms.Label lblVehicleCapacityLabel;
 	}
 }

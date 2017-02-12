@@ -25,9 +25,9 @@ namespace Chummer
 {
     public partial class frmSelectSkillGroup : Form
     {
-        private string _strReturnValue = "";
-		private string _strForceValue = "";
-		private string _strExcludeCategory = "";
+        private string _strReturnValue = string.Empty;
+		private string _strForceValue = string.Empty;
+		private string _strExcludeCategory = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -43,25 +43,26 @@ namespace Chummer
 			List<ListItem> lstGroups = new List<ListItem>();
 			_objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-			if (_strForceValue == "")
+			if (string.IsNullOrEmpty(_strForceValue))
 			{
 				// Build the list of Skill Groups found in the Skills file.
 				XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name");
 				foreach (XmlNode objXmlSkill in objXmlSkillList)
 				{
 					bool blnAdd = true;
-					if (_strExcludeCategory != string.Empty)
+					if (!string.IsNullOrEmpty(_strExcludeCategory))
 					{
 						blnAdd = false;
 						string[] strExcludes = _strExcludeCategory.Split(',');
-						string strExclude = "";
+						string strExclude = string.Empty;
 						for (int i = 0; i <= strExcludes.Length - 1; i++)
 							strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
 						// Remove the trailing " and ";
 						strExclude = strExclude.Substring(0, strExclude.Length - 5);
 
 						XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
-						blnAdd = objXmlNodeList.Count > 0;
+                        if (objXmlNodeList != null)
+                            blnAdd = objXmlNodeList.Count > 0;
 					}
 
 					if (blnAdd)
@@ -90,9 +91,11 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstGroups.Sort(objSort.Compare);
-			cboSkillGroup.ValueMember = "Value";
+            cboSkillGroup.BeginUpdate();
+            cboSkillGroup.ValueMember = "Value";
 			cboSkillGroup.DisplayMember = "Name";
 			cboSkillGroup.DataSource = lstGroups;
+            cboSkillGroup.EndUpdate();
 
             // Select the first Skill in the list.
             cboSkillGroup.SelectedIndex = 0;
@@ -104,12 +107,12 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboSkillGroup.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 		#endregion
 

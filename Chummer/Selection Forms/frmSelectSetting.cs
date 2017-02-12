@@ -56,25 +56,27 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstSettings.Sort(objSort.Compare);
-			cboSetting.DataSource = lstSettings;
+            cboSetting.BeginUpdate();
 			cboSetting.ValueMember = "Value";
 			cboSetting.DisplayMember = "Name";
+            cboSetting.DataSource = lstSettings;
+            cboSetting.EndUpdate();
 
-			// Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
-			cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
+            // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
+            cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
 			if (cboSetting.SelectedIndex == -1)
 				cboSetting.SelectedIndex = 0;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			_strSettingsFile = cboSetting.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 

@@ -35,7 +35,7 @@
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.chkLimitList = new System.Windows.Forms.CheckBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -152,6 +152,6 @@
 		private System.Windows.Forms.Label lblSource;
 		private System.Windows.Forms.Label lblSourceLabel;
 		private System.Windows.Forms.CheckBox chkLimitList;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 	}
 }

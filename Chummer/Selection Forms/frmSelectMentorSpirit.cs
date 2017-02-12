@@ -26,7 +26,7 @@ namespace Chummer
 {
 	public partial class frmSelectMentorSpirit : Form
 	{
-		private string _strSelectedMentor = "";
+		private string _strSelectedMentor = string.Empty;
 
 		private XmlNode _nodBonus;
 		private XmlNode _nodChoice1Bonus;
@@ -49,12 +49,12 @@ namespace Chummer
 		private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
 		{
 			if (_strXmlFile == "paragons.xml")
-				this.Text = LanguageManager.Instance.GetString("Title_SelectMentorSpirit_Paragon");
+				Text = LanguageManager.Instance.GetString("Title_SelectMentorSpirit_Paragon");
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			// Load the Mentor information.
@@ -76,10 +76,12 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstMentors.Sort(objSort.Compare);
+            lstMentor.BeginUpdate();
             lstMentor.DataSource = null;
             lstMentor.ValueMember = "Value";
             lstMentor.DisplayMember = "Name";
             lstMentor.DataSource = lstMentors;
+            lstMentor.EndUpdate();
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -94,7 +96,7 @@ namespace Chummer
 
 		private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstMentor.Text == "")
+			if (string.IsNullOrEmpty(lstMentor.Text))
 				return;
 
 			// Get the information for the selected Mentor.
@@ -109,7 +111,9 @@ namespace Chummer
 			else
 				lblDisadvantage.Text = objXmlMentor["disadvantage"].InnerText;
 
-			cboChoice1.DataSource = null;
+            cboChoice1.BeginUpdate();
+            cboChoice2.BeginUpdate();
+            cboChoice1.DataSource = null;
 			cboChoice2.DataSource = null;
 
 			// If the Mentor offers a choice of bonuses, build the list and let the user select one.
@@ -179,8 +183,10 @@ namespace Chummer
 				lblChoice2.Visible = false;
 				cboChoice2.Visible = false;
 			}
+            cboChoice1.EndUpdate();
+            cboChoice2.EndUpdate();
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText);
 			string strPage = objXmlMentor["page"].InnerText;
 			if (objXmlMentor["altpage"] != null)
 				strPage = objXmlMentor["altpage"].InnerText;
@@ -220,13 +226,13 @@ namespace Chummer
 		{
 			get
 			{
-				try
+				if (cboChoice1.SelectedValue != null)
 				{
 					return cboChoice1.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
-					return "";
+					return string.Empty;
 				}
 			}
 		}
@@ -238,13 +244,13 @@ namespace Chummer
 		{
 			get
 			{
-				try
-				{
+                if (cboChoice2.SelectedValue != null)
+                {
 					return cboChoice2.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
-					return "";
+					return string.Empty;
 				}
 			}
 		}
@@ -289,7 +295,7 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (lstMentor.Text != "")
+			if (!string.IsNullOrEmpty(lstMentor.Text))
 			{
 				_strSelectedMentor = lstMentor.SelectedValue.ToString();
 
@@ -311,15 +317,14 @@ namespace Chummer
 						_nodChoice2Bonus = objChoice.SelectSingleNode("bonus");
 				}
 
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
 		}
 		#endregion
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

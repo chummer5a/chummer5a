@@ -12,7 +12,7 @@ namespace Chummer.UI.Skills
 {
 	[DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
 	public partial class SkillControl2 : UserControl
-	{
+    {
 		private readonly Skill _skill;
 		private readonly Font _normal;
 		private readonly Font _italic;
@@ -20,8 +20,9 @@ namespace Chummer.UI.Skills
 
 		public SkillControl2(Skill skill)
 		{
-			this._skill = skill;
+			_skill = skill;
 			InitializeComponent();
+            SuspendLayout();
 
 			DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -42,8 +43,6 @@ namespace Chummer.UI.Skills
 			_attributeActive = skill.AttributeObject;
 			_attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
 			Skill_PropertyChanged(null, null);  //if null it updates all
-			
-			
 			_normal = btnAttribute.Font;
 			_italic = new Font(_normal, FontStyle.Italic);
 			if (skill.CharacterObject.Created)
@@ -77,7 +76,6 @@ namespace Chummer.UI.Skills
 			else
 			{
 				lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
-				
 				//Up down boxes
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -86,7 +84,6 @@ namespace Chummer.UI.Skills
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
 					DataSourceUpdateMode.OnPropertyChanged);
-				
 				if (skill.CharacterObject.BuildMethod.HaveSkillPoints())
 				{
 					chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
@@ -98,27 +95,26 @@ namespace Chummer.UI.Skills
 					chkKarma.Visible = false;
 				}
 
-				
-				if (skill.IsExoticSkill)
+                cboSpec.BeginUpdate();
+                if (skill.IsExoticSkill)
 				{
 					cboSpec.Enabled = false;
 					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
 				}
 				else
 				{
 					//dropdown/spec
-					cboSpec.DataSource = skill.CGLSpecializations;
 					cboSpec.DisplayMember = nameof(ListItem.Name);
 					cboSpec.ValueMember = nameof(ListItem.Value);
 					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
 						DataSourceUpdateMode.OnPropertyChanged);
 					cboSpec.SelectedIndex = -1;
+                    cboSpec.DataSource = skill.CGLSpecializations;
 
-					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
+                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				}
-			}
+                cboSpec.EndUpdate();
+            }
 
 			//Delete button
 			if (skill.AllowDelete)
@@ -128,9 +124,11 @@ namespace Chummer.UI.Skills
 
 				if (skill.CharacterObject.Created)
 				{
-					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y); 
+					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y);
 				}
 			}
+
+            ResumeLayout();
 		}
 
 		private void ContextMenu_Opening(object sender, CancelEventArgs e)
@@ -194,7 +192,7 @@ namespace Chummer.UI.Skills
 					break;
 			}
 		}
-		
+
 		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
 			frmCareer parrent = ParentForm as frmCareer;
@@ -202,7 +200,7 @@ namespace Chummer.UI.Skills
 			{
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
 					_skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
-					
+
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
@@ -230,23 +228,26 @@ namespace Chummer.UI.Skills
 			_skill.AddSpecialization(selectForm.SelectedItem);
 
 			//TODO turn this into a databinding, but i don't care enough right now
-			lblCareerSpec.Text = string.Join(", ",
-					(from specialization in _skill.Specializations
-					 select specialization.Name));
+			lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName));
 
-			parrent?.UpdateCharacterInfo();
+            parrent?.UpdateCharacterInfo();
 		}
 
 		private void SetupDropdown()
 		{
-			List<ListItem> list =  new[] {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"}.Select(
-				x => new ListItem(x, LanguageManager.Instance.GetString($"String_Attribute{x}Short"))).ToList();
+            List<ListItem> lstAttributeItems = new List<ListItem>();
+		    foreach (string strLoopAttribute in Character.AttributeStrings)
+		    {
+                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.Instance.GetString($"String_Attribute{strLoopAttribute}Short")));
+            }
 
-			cboSelectAttribute.ValueMember = "Value";
+            cboSelectAttribute.BeginUpdate();
+            cboSelectAttribute.ValueMember = "Value";
 			cboSelectAttribute.DisplayMember = "Name";
-			cboSelectAttribute.DataSource = list;
+			cboSelectAttribute.DataSource = lstAttributeItems;
 			cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
-		}
+            cboSelectAttribute.EndUpdate();
+        }
 
 		private void btnAttribute_Click(object sender, EventArgs e)
 		{
@@ -286,31 +287,25 @@ namespace Chummer.UI.Skills
 
 		private void tsSkillLabelNotes_Click(object sender, EventArgs e)
 		{
-			try
-			{
-				frmNotes frmItemNotes = new frmNotes();
-				frmItemNotes.Notes = _skill.Notes;
-				frmItemNotes.ShowDialog(this);
+            frmNotes frmItemNotes = new frmNotes();
+            frmItemNotes.Notes = _skill.Notes;
+            frmItemNotes.ShowDialog(this);
 
-				if (frmItemNotes.DialogResult == DialogResult.OK)
-				{
-					_skill.Notes = frmItemNotes.Notes;
-					_skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
-					tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
-				}
-				if (_skill.Notes != string.Empty)
-				{
-					lblName.ForeColor = Color.SaddleBrown;
-				}
-				else
-				{
-					lblName.ForeColor = Color.Black;
-				}
-			}
-			catch
-			{
-			}
-		}
+            if (frmItemNotes.DialogResult == DialogResult.OK)
+            {
+                _skill.Notes = frmItemNotes.Notes;
+                _skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
+                tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
+            }
+            if (!string.IsNullOrEmpty(_skill.Notes))
+            {
+                lblName.ForeColor = Color.SaddleBrown;
+            }
+            else
+            {
+                lblName.ForeColor = Color.Black;
+            }
+        }
 
 		private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{
@@ -319,8 +314,7 @@ namespace Chummer.UI.Skills
 
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_skill.CharacterObject);
-            objCommon.OpenPDF(_skill.Source+" "+_skill.Page);
+            CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
         }
     }
 }

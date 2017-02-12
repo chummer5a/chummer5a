@@ -27,7 +27,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+            this.DoubleBuffered = true;
+            this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,7 +89,7 @@
 			this.printPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.tabForms = new System.Windows.Forms.TabControl();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -746,7 +747,7 @@
 		private System.Windows.Forms.ToolStripButton tsbPrint;
 		private System.Windows.Forms.ToolStripButton printPreviewToolStripButton;
 		private System.Windows.Forms.ToolStripButton helpToolStripButton;
-		private System.Windows.Forms.ToolTip toolTip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip toolTip;
 		private System.Windows.Forms.ToolStripMenuItem mnuToolsUpdate;
 		private System.Windows.Forms.ToolStripButton tsbSave;
 		private System.Windows.Forms.ToolStripMenuItem mnuHelpRevisionHistory;

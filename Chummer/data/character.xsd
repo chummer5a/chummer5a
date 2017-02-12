@@ -262,7 +262,6 @@
 		<xs:element name="metavariant" type="xs:string" minOccurs="1" maxOccurs="1" />
 		<xs:element name="metatypecategory" type="xs:string" minOccurs="1" maxOccurs="1" />
 		<xs:element name="movement" type="xs:string" minOccurs="1" maxOccurs="1" />
-		<xs:element name="mutantcritterbaseskills" type="xs:integer" minOccurs="1" maxOccurs="1" />
 		<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
 		<xs:element name="mugshot" type="xs:string" minOccurs="1" maxOccurs="1" />
 		<xs:element name="sex" type="xs:string" minOccurs="1" maxOccurs="1" />

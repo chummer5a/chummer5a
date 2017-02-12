@@ -35,7 +35,7 @@
 			this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.cboContactRole = new System.Windows.Forms.ComboBox();
 			this.txtContactName = new System.Windows.Forms.TextBox();
 			this.txtContactLocation = new System.Windows.Forms.TextBox();
@@ -352,7 +352,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
         private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
         private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.PictureBox imgNotes;
         private System.Windows.Forms.ComboBox cboContactRole;
         private System.Windows.Forms.TextBox txtContactName;

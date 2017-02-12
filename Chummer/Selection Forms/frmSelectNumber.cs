@@ -40,12 +40,12 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			_intReturnValue = Convert.ToInt32(nudNumber.Value);
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 		#endregion
 
@@ -107,7 +107,7 @@ namespace Chummer
 			{
 				cmdCancel.Enabled = value;
 				if (!value)
-					this.ControlBox = false;
+					ControlBox = false;
 			}
 		}
 		#endregion

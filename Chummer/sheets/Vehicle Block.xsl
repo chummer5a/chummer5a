@@ -722,7 +722,7 @@
       <xsl:when test="category = 'Military, Security and Medical Craft'">
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aerospace</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Anthroform</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Walker</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Ground Craft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
@@ -751,7 +751,7 @@
       </xsl:when>
       <xsl:when test="category = 'Drones: Micro'">
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Anthroform</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Walker</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Ground Craft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
@@ -760,7 +760,7 @@
       </xsl:when>
       <xsl:when test="category = 'Drones: Mini'">
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Anthroform</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Walker</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Ground Craft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
@@ -769,7 +769,7 @@
       </xsl:when>
       <xsl:when test="category = 'Drones: Small'">
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Anthroform</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Walker</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Ground Craft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
@@ -778,7 +778,7 @@
       </xsl:when>
       <xsl:when test="category = 'Drones: Medium'">
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Anthroform</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Walker</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Ground Craft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
@@ -787,7 +787,7 @@
       </xsl:when>
       <xsl:when test="category = 'Drones: Large'">
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Anthroform</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Walker</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Ground Craft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
         <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>

@@ -29,14 +29,12 @@ namespace Chummer
 		private readonly XmlDocument _objXmlDocument = new XmlDocument();
 		private bool _blnLoading = false;
 		private bool _blnSkipRefresh = false;
-		private readonly Character _objCharacter;
 		private Spell _objSpell;
 
 		#region Control Events
 		public frmCreateSpell(Character objCharacter)
 		{
-			_objCharacter = objCharacter;
-			_objSpell = new Spell(_objCharacter);
+			_objSpell = new Spell(objCharacter);
 			InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			_objXmlDocument = XmlManager.Instance.Load("spells.xml");
@@ -67,7 +65,11 @@ namespace Chummer
 					objItem.Name = objXmlCategory.InnerXml;
 				lstCategory.Add(objItem);
 			}
-			cboCategory.ValueMember = "Value";
+            cboCategory.BeginUpdate();
+            cboType.BeginUpdate();
+            cboRange.BeginUpdate();
+            cboDuration.BeginUpdate();
+            cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = lstCategory;
 			cboCategory.SelectedIndex = 0;
@@ -121,8 +123,12 @@ namespace Chummer
 			cboDuration.DataSource = lstDurations;
 			cboDuration.SelectedIndex = 0;
 			_blnLoading = false;
+            cboCategory.EndUpdate();
+            cboType.EndUpdate();
+            cboRange.EndUpdate();
+            cboDuration.EndUpdate();
 
-			CalculateDrain();
+            CalculateDrain();
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -401,7 +407,7 @@ namespace Chummer
 			CalculateDrain();
 			txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
 			if (!txtRestriction.Enabled)
-				txtRestriction.Text = "";
+				txtRestriction.Text = string.Empty;
 		}
 
 		private void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
@@ -414,7 +420,7 @@ namespace Chummer
 			CalculateDrain();
 			txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
 			if (!txtRestriction.Enabled)
-				txtRestriction.Text = "";
+				txtRestriction.Text = string.Empty;
 		}
 
 		private void nudNumberOfEffects_ValueChanged(object sender, EventArgs e)
@@ -434,7 +440,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 		#endregion
 
@@ -448,8 +454,8 @@ namespace Chummer
 			{
 				chkCheckbox.Enabled = true;
 				chkCheckbox.Checked = false;
-				chkCheckbox.Text = "";
-				chkCheckbox.Tag = "";
+				chkCheckbox.Text = string.Empty;
+				chkCheckbox.Tag = string.Empty;
 				chkCheckbox.Visible = false;
 			}
 			nudNumberOfEffects.Visible = false;
@@ -546,7 +552,7 @@ namespace Chummer
 
 			foreach (CheckBox chkCheckbox in panModifiers.Controls.OfType<CheckBox>())
 			{
-				if (chkCheckbox.Text != string.Empty)
+				if (!string.IsNullOrEmpty(chkCheckbox.Text))
 				{
 					chkCheckbox.Visible = true;
 					chkCheckbox.Text += " (" + chkCheckbox.Tag + ")";
@@ -568,7 +574,7 @@ namespace Chummer
 		private string CalculateDrain()
 		{
 			if (_blnLoading)
-				return "";
+				return string.Empty;
 
 			int intDV = 0;
 
@@ -624,7 +630,7 @@ namespace Chummer
 				}
 			}
 
-			string strBase = "";
+			string strBase = string.Empty;
 			if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
 			{
 				// Health Spells use (Damage Value) as their base.
@@ -640,7 +646,7 @@ namespace Chummer
 			if (intDV > 0)
 				strDV = "+" + strDV;
 			if (intDV == 0)
-				strDV = "";
+				strDV = string.Empty;
 			lblDV.Text = (strBase + strDV).Replace("/", "÷");
 			lblDV.Text = lblDV.Text.Replace("F", LanguageManager.Instance.GetString("String_SpellForce"));
 			lblDV.Text = lblDV.Text.Replace("Damage Value", LanguageManager.Instance.GetString("String_SpellDamageValue"));
@@ -653,19 +659,19 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			string strMessage = "";
+			string strMessage = string.Empty;
 			// Make sure a name has been provided.
-			if (txtName.Text.Trim() == string.Empty)
+			if (string.IsNullOrEmpty(txtName.Text.Trim()))
 			{
-				if (strMessage != string.Empty)
+				if (!string.IsNullOrEmpty(strMessage))
 					strMessage += '\n';
 				strMessage += LanguageManager.Instance.GetString("Message_SpellName");
 			}
 
 			// Make sure a Restricted value if the field is enabled.
-			if (txtRestriction.Enabled && txtRestriction.Text.Trim() == string.Empty)
+			if (txtRestriction.Enabled && string.IsNullOrEmpty(txtRestriction.Text.Trim()))
 			{
-				if (strMessage != string.Empty)
+				if (!string.IsNullOrEmpty(strMessage))
 					strMessage += '\n';
 				strMessage += LanguageManager.Instance.GetString("Message_SpellRestricted");
 			}
@@ -676,7 +682,7 @@ namespace Chummer
 				// Either Direct or Indirect must be selected.
 				if (!chkModifier1.Checked && !chkModifier2.Checked)
 				{
-					if (strMessage != string.Empty)
+					if (!string.IsNullOrEmpty(strMessage))
 						strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_CombatSpellRequirement1");
 				}
@@ -684,8 +690,8 @@ namespace Chummer
 				// Either Physical damage or Stun damage must be selected.
 				if (!chkModifier4.Checked && !chkModifier5.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_CombatSpellRequirement2");
 				}
 			}
@@ -694,16 +700,16 @@ namespace Chummer
 				// Either Directional, Area, or Psychic must be selected.
 				if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_DetectionSpellRequirement1");
 				}
 
 				// Either Active or Passive must be selected.
 				if (!chkModifier4.Checked && !chkModifier5.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_DetectionSpellRequirement2");
 				}
 			}
@@ -716,16 +722,16 @@ namespace Chummer
 				// Either Obvious or Realistic must be selected.
 				if (!chkModifier1.Checked && !chkModifier2.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_IllusionSpellRequirement1");
 				}
 
 				// Either Single-Sense or Multi-Sense must be selected.
 				if (!chkModifier3.Checked && !chkModifier4.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_IllusionSpellRequirement2");
 				}
 			}
@@ -734,29 +740,29 @@ namespace Chummer
 				// Either Environmental, Mental, or Physical must be selected.
 				if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_ManipulationSpellRequirement1");
 				}
 
 				// Either Minor Change or Major Change must be selected.
 				if (!chkModifier4.Checked && !chkModifier5.Checked)
 				{
-					if (strMessage != string.Empty)
-						strMessage += '\n';
+                    if (!string.IsNullOrEmpty(strMessage))
+                        strMessage += '\n';
 					strMessage += LanguageManager.Instance.GetString("Message_ManipulationSpellRequirement2");
 				}
 			}
 
 			// Show the message if necessary.
-			if (strMessage != string.Empty)
+			if (!string.IsNullOrEmpty(strMessage))
 			{
 				MessageBox.Show(strMessage, LanguageManager.Instance.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			// If we're made it this far, everything is OK, so create the Spell.
-			string strDescriptors = "";
+			string strDescriptors = string.Empty;
 			switch (cboCategory.SelectedValue.ToString())
 			{
 				case "Detection":
@@ -822,7 +828,7 @@ namespace Chummer
 				strRange += " (A)";
 
 			// Remove the trailing ", " from the Descriptors string.
-			if (strDescriptors != string.Empty)
+			if (!string.IsNullOrEmpty(strDescriptors))
 				strDescriptors = strDescriptors.Substring(0, strDescriptors.Length - 2);
 
 			_objSpell.Name = txtName.Text;
@@ -841,11 +847,11 @@ namespace Chummer
 					_objSpell.Damage = "S";
 			}
 			_objSpell.DV = CalculateDrain();
-			if (txtRestriction.Text != string.Empty)
+			if (!string.IsNullOrEmpty(txtRestriction.Text))
 				_objSpell.Extra = txtRestriction.Text;
 			_objSpell.Duration = cboDuration.SelectedValue.ToString();
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

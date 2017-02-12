@@ -37,7 +37,7 @@
             this.lblCommonSkill = new System.Windows.Forms.Label();
             this.lblCommonSkillLabel = new System.Windows.Forms.Label();
             this.lstOptions = new System.Windows.Forms.ListBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // cmdOKAdd
@@ -172,6 +172,6 @@
 		private System.Windows.Forms.Label lblCommonSkill;
 		private System.Windows.Forms.Label lblCommonSkillLabel;
 		private System.Windows.Forms.ListBox lstOptions;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 	}
 }

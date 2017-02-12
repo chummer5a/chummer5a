@@ -59,7 +59,7 @@
 			this.lblTest = new System.Windows.Forms.Label();
 			this.lblTestLabel = new System.Windows.Forms.Label();
 			this.chkTransgenic = new System.Windows.Forms.CheckBox();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.lblCyberwareNotes = new System.Windows.Forms.Label();
 			this.lblCyberwareNotesLabel = new System.Windows.Forms.Label();
 			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
@@ -547,7 +547,7 @@
 		private System.Windows.Forms.Label lblTest;
 		private System.Windows.Forms.Label lblTestLabel;
 		private System.Windows.Forms.CheckBox chkTransgenic;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.Label lblCyberwareNotes;
 		private System.Windows.Forms.Label lblCyberwareNotesLabel;
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;

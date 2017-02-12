@@ -6243,7 +6243,7 @@
       <category translate="Appareils auditifs">Audio Enhancements</category>
       <category translate="Biotech">Biotech</category>
       <category translate="Accessoires pour commlinks">Commlink Accessories</category>
-      <category translate="Contrats DocWagon">DocWagon Contract</category>
+      <category translate="Contrats/Entretien">Contracts/Upkeep</category>
       <category translate="Drogues">Drugs</category>
       <category translate="Explosifs">Explosives</category>
       <category translate="Foci">Foci</category>
@@ -8271,26 +8271,26 @@
       </gear>
       <gear>
         <id>6b28b36a-416a-4041-9561-558083158d7c</id>
-        <name>DocWagon Contract, Basic</name>
-        <translate>DocWagon Contract, Basic</translate>
+        <name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Basic (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
         <id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
-        <name>DocWagon Contract, Gold</name>
-        <translate>DocWagon Contract, Gold</translate>
+        <name>DocWagon Contract, Gold (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Gold (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
         <id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
-        <name>DocWagon Contract, Platinum</name>
-        <translate>DocWagon Contract, Platinum</translate>
+        <name>DocWagon Contract, Platinum (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Platinum (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
         <id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
-        <name>DocWagon Contract, Super-Platinum</name>
-        <translate>DocWagon Contract, Super-Platinum</translate>
+        <name>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</name>
+        <translate>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</translate>
         <page>450</page>
       </gear>
       <gear>
@@ -9267,8 +9267,8 @@
 					l'initiative.</page>
       </improvement>
       <improvement>
-        <id>matrixinitiativepassadd</id>
-        <name>Matrix Initiative Passes</name>
+        <id>matrixinitiativediceadd</id>
+        <name>Matrix Initiative Dice</name>
         <translate>Passes d'initiative matricielle</translate>
         <page>Ajuste le nombre de passes d'initiative matricielle du personnage par la
 					valeur entrée. Les nombres positifs augmentent le nombre de PI. Les nombres
@@ -22380,8 +22380,8 @@
       </priority>
       <priority>
         <id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
-        <name>C - Human, Dwarf, Elf, or Ork</name>
-        <translate>C - Human, Dwarf, Elf, or Ork</translate>
+        <name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
+        <translate>C - Human, Dwarf, Elf, Ork, or A.I.</translate>
       </priority>
       <priority>
         <id>255da2ba-8d21-4a73-9f81-37156901db72</id>
@@ -22420,28 +22420,28 @@
       </priority>
       <priority>
         <id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
-        <name>A - 24 Attributes</name>
-        <translate>A - 24 Attributes</translate>
+        <name>A - 24 (12) Attributes</name>
+        <translate>A - 24 (12) Attributes</translate>
       </priority>
       <priority>
         <id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
-        <name>B - 20 Attributes</name>
-        <translate>B - 20 Attributes</translate>
+        <name>B - 20 (10) Attributes</name>
+        <translate>B - 20 (10) Attributes</translate>
       </priority>
       <priority>
         <id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
-        <name>C - 16 Attributes</name>
-        <translate>C - 16 Attributes</translate>
+        <name>C - 16 (8) Attributes</name>
+        <translate>C - 16 (8) Attributes</translate>
       </priority>
       <priority>
         <id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
-        <name>D - 14 Attributes</name>
-        <translate>D - 14 Attributes</translate>
+        <name>D - 14 (7) Attributes</name>
+        <translate>D - 14 (7) Attributes</translate>
       </priority>
       <priority>
         <id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
-        <name>E - 12 Attributes</name>
-        <translate>E - 12 Attributes</translate>
+        <name>E - 12 (6) Attributes</name>
+        <translate>E - 12 (6) Attributes</translate>
       </priority>
       <priority>
         <id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>

@@ -28,7 +28,7 @@ namespace Chummer
 		private int _intAreaOfInfluence = 0;
 		private int _intMagicalResources = 0;
 		private int _intMatrixResources = 0;
-		private string _strGroupName = "";
+		private string _strGroupName = string.Empty;
 		private Color _objColour;
 		private bool _blnFree = false;
 		private bool _blnSkipUpdate = false;
@@ -68,12 +68,12 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void chkFreeContact_CheckedChanged(object sender, EventArgs e)

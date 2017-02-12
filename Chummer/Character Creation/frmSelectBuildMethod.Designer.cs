@@ -28,11 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.chkIgnoreRules = new System.Windows.Forms.CheckBox();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTip1 = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.cmdCancel = new System.Windows.Forms.Button();
 			this.cboBuildMethod = new System.Windows.Forms.ComboBox();
 			this.lblMaxAvail = new System.Windows.Forms.Label();
@@ -61,7 +60,7 @@
 			this.nudKarma.Name = "nudKarma";
 			this.nudKarma.Size = new System.Drawing.Size(70, 20);
 			this.nudKarma.TabIndex = 2;
-			this.nudKarma.Tag = "";
+			this.nudKarma.Tag = string.Empty;
 			this.nudKarma.Value = new decimal(new int[] {
             400,
             0,
@@ -94,10 +93,15 @@
 			// 
 			// toolTip1
 			// 
+			this.toolTip1.AllowLinksHandling = true;
 			this.toolTip1.AutoPopDelay = 10000;
+			this.toolTip1.BaseStylesheet = null;
 			this.toolTip1.InitialDelay = 250;
 			this.toolTip1.IsBalloon = true;
+			this.toolTip1.MaximumSize = new System.Drawing.Size(0, 0);
+			this.toolTip1.OwnerDraw = true;
 			this.toolTip1.ReshowDelay = 100;
+			this.toolTip1.TooltipCssClass = "htmltooltip";
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.toolTip1.ToolTipTitle = "Chummer Help";
 			// 
@@ -209,7 +213,7 @@
 			this.nudMaxNuyen.Size = new System.Drawing.Size(70, 20);
 			this.nudMaxNuyen.TabIndex = 13;
 			this.nudMaxNuyen.Value = new decimal(new int[] {
-            200,
+            235,
             0,
             0,
             0});
@@ -229,7 +233,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(318, 188);
+			this.ClientSize = new System.Drawing.Size(318, 214);
 			this.ControlBox = false;
 			this.Controls.Add(this.lblMaxNuyen);
 			this.Controls.Add(this.nudMaxNuyen);
@@ -269,7 +273,7 @@
         private System.Windows.Forms.NumericUpDown nudKarma;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.CheckBox chkIgnoreRules;
-        private System.Windows.Forms.ToolTip toolTip1;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip toolTip1;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ComboBox cboBuildMethod;
         private System.Windows.Forms.Label lblMaxAvail;

@@ -48,23 +48,23 @@ namespace Chummer.Backend.Debugging
 					);
 				attributes.Add("commandline", Environment.CommandLine);
 				attributes.Add("visible-version", Application.ProductVersion);
-				
-				try
-				{
-					RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-					if (!cv.GetValueNames().Contains("ProductId"))
-					{
-						//On 32 bit builds? get 64 bit registry
-						cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-					}
-					
-					attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
-					attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+                if (Registry.LocalMachine != null)
+                {
+                    RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-					
-				}
-				catch{ }
+                    if (cv != null)
+                    {
+                        if (!cv.GetValueNames().Contains("ProductId"))
+                        {
+                            //On 32 bit builds? get 64 bit registry
+                            cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                        }
+
+                        attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
+                        attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+                    }
+                }
 
 				attributes.Add("machine-name", Environment.MachineName);
 				attributes.Add("current-dir", Application.StartupPath);
@@ -109,22 +109,22 @@ namespace Chummer.Backend.Debugging
 
 		internal static void WebMiniDumpHandler(Exception ex)
 		{
-				try
-				{
-					DumpData dump = new DumpData();
-					
-					dump.AddException(ex);
-					dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
-					dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+			try
+			{
+				DumpData dump = new DumpData();
 
-					Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+				dump.AddException(ex);
+				dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
+				dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 
-					crashHandler.WaitForExit();
-				}
-				catch(Exception nex)
-				{
-					MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
-				}
+				Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+
+				crashHandler.WaitForExit();
+			}
+			catch(Exception nex)
+			{
+				MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
+			}
 		}
 	}
 }
