@@ -41,24 +41,9 @@ namespace ChummerDataViewer.Model
 					{
 						OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
 						byte[] encrypted = client.DownloadData(task.Url);
-						using (AesManaged managed = new AesManaged())
-						{
-							managed.IV = GetIv(task.Key);
-							managed.Key = GetKey(task.Key);
-							ICryptoTransform encryptor = managed.CreateDecryptor();
-
-							// Create the streams used for encryption.
-							using (MemoryStream msEncrypt = new MemoryStream())
-							{
-								using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-								{
-									csEncrypt.Write(encrypted, 0, encrypted.Length);
-								}
-
-								byte[] buffer =  msEncrypt.ToArray();
-								WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
-							}
-						}
+					    byte[] buffer;
+					    buffer = Decrypt(task.Key, encrypted);
+					    WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
 					}
 
 					if (_queue.IsEmpty)
@@ -79,7 +64,30 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private void WriteAndForget(byte[] buffer, string destinationPath, Guid guid)
+	    public static byte[] Decrypt(string key, byte[] encrypted)
+	    {
+	        byte[] buffer;
+	        using (AesManaged managed = new AesManaged())
+	        {
+	            managed.IV = GetIv(key);
+	            managed.Key = GetKey(key);
+	            ICryptoTransform encryptor = managed.CreateDecryptor();
+
+	            // Create the streams used for encryption.
+	            using (MemoryStream msEncrypt = new MemoryStream())
+	            {
+	                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+	                {
+	                    csEncrypt.Write(encrypted, 0, encrypted.Length);
+	                }
+
+	                buffer = msEncrypt.ToArray();
+	            }
+	        }
+	        return buffer;
+	    }
+
+	    private void WriteAndForget(byte[] buffer, string destinationPath, Guid guid)
 		{
 			ThreadPool.QueueUserWorkItem(a =>
 			{
@@ -89,7 +97,7 @@ namespace ChummerDataViewer.Model
 			});
 		}
 
-		private byte[] GetKey(string key)
+		private static byte[] GetKey(string key)
 		{
 			string keypart = key.Split(':')[1];
 
@@ -99,7 +107,7 @@ namespace ChummerDataViewer.Model
 					 .ToArray();
 		}
 
-		private byte[] GetIv(string iv)
+		private static byte[] GetIv(string iv)
 		{
 			string ivpart = iv.Split(':')[0];
 
@@ -137,7 +145,7 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : "";
+		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : string.Empty;
 	}
 
 	

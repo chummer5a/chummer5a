@@ -335,10 +335,10 @@ namespace Chummer
 
 		public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
 		{
-			if (!logEnabled)
-				return;
-
-			logWriter?.WriteLine("First chance exception: " +e?.Exception ?? "null");
+		    if (logEnabled)
+		    {
+                logWriter?.WriteLine("First chance exception: " + e?.Exception);
+            }
 		}
 	}
 }

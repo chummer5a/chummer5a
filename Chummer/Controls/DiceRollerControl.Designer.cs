@@ -84,7 +84,7 @@
             this.txtResults.Name = "txtResults";
             this.txtResults.Size = new System.Drawing.Size(422, 102);
             this.txtResults.TabIndex = 3;
-            this.txtResults.Text = "";
+            this.txtResults.Text = string.Empty;
             // 
             // tableLayoutPanel2
             // 
@@ -130,7 +130,7 @@
             this.lblLimit.Name = "lblLimit";
             this.lblLimit.Size = new System.Drawing.Size(39, 25);
             this.lblLimit.TabIndex = 51;
-            this.lblLimit.Tag = "";
+            this.lblLimit.Tag = string.Empty;
             this.lblLimit.Text = "Limit:";
             this.lblLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 

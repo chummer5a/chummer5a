@@ -35,7 +35,7 @@ namespace Chummer
 		private string _strMode = "Gear";
 		private Character _objCharacter;
 		private bool _blnAllowAutoSelect = true;
-		private string _strForceItem = "";
+		private string _strForceItem = string.Empty;
 
 		#region Control Events
 		public frmSelectItem()
@@ -60,7 +60,7 @@ namespace Chummer
 					// Retrieve the plugin information if it has any.
 					if (objGear.Children.Count > 0)
 					{
-						string strPlugins = "";
+						string strPlugins = string.Empty;
 						foreach (Gear objChild in objGear.Children)
 						{
 							strPlugins += objChild.DisplayNameShort + ", ";
@@ -358,16 +358,17 @@ namespace Chummer
                 }
             }
 
-			// Populate the lists.
-			cboAmmo.DataSource = lstItems;
+            // Populate the lists.
+            cboAmmo.BeginUpdate();
 			cboAmmo.ValueMember = "Value";
 			cboAmmo.DisplayMember = "Name";
+            cboAmmo.DataSource = lstItems;
 
-			// If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-			if (cboAmmo.Items.Count == 1 && _blnAllowAutoSelect)
+            // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
+            if (cboAmmo.Items.Count == 1 && _blnAllowAutoSelect)
 				AcceptForm();
 
-			if (_strForceItem != string.Empty)
+			if (!string.IsNullOrEmpty(_strForceItem))
 			{
 				cboAmmo.SelectedIndex = cboAmmo.FindStringExact(_strForceItem);
 				if (cboAmmo.SelectedIndex != -1)
@@ -387,11 +388,12 @@ namespace Chummer
 					AcceptForm();
 				}
 			}
-		}
+            cboAmmo.EndUpdate();
+        }
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -500,11 +502,11 @@ namespace Chummer
 		{
 			get
 			{
-				try
+				if (cboAmmo.SelectedValue != null)
 				{
 					return cboAmmo.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
 					return cboAmmo.Text;
 				}
@@ -555,13 +557,13 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
 		{
 			cboAmmo.Left = lblAmmoLabel.Left + lblAmmoLabel.Width + 6;
-			cboAmmo.Width = this.Width - cboAmmo.Left - 19;
+			cboAmmo.Width = Width - cboAmmo.Left - 19;
 		}
 		#endregion
 	}

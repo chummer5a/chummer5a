@@ -173,11 +173,11 @@
 												</td>
 											</tr>
 		</xsl:for-each>
-		<xsl:if test="mugshot != ''">
+		<xsl:if test="mainmugshotbase64 != ''">
 											<tr>
 												<td colspan="5" style="text-align:center;">
 													<br />
-													<img src="data:image/png;base64,{mugshotbase64}" />
+													<img src="data:image/png;base64,{mainmugshotbase64}" />
 												</td>
 											</tr>
 		</xsl:if>

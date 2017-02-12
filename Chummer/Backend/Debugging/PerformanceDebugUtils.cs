@@ -10,12 +10,11 @@ namespace Chummer
 	{
 		public static TimeSpan TaskEnd(this Stopwatch sw, string task)
 		{
-			TimeSpan elapsed;
-			sw.Stop();
+		    sw.Stop();
 
-			elapsed = sw.Elapsed;
+			TimeSpan elapsed = sw.Elapsed;
 			Trace.WriteLine($"{task} finished in {elapsed.TotalMilliseconds} ms");
-			
+
 			sw.Restart();
 			return elapsed;
 

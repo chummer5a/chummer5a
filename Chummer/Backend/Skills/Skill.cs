@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
@@ -34,8 +35,7 @@ namespace Chummer.Skills
 		protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
 		private string _translatedCategory = null;
-
-
+		private bool _blnDefault;
 
 		public void WriteTo(XmlTextWriter writer)
 		{
@@ -96,16 +96,13 @@ namespace Chummer.Skills
 			objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
 			objWriter.WriteElementString("base", Base.ToString());
 			objWriter.WriteElementString("karma", Karma.ToString());
-			objWriter.WriteElementString("spec", Specialization);
+			objWriter.WriteElementString("spec", DisplaySpecialization);
 			objWriter.WriteElementString("attribute", Attribute);
 			objWriter.WriteElementString("displayattribute", DisplayAttribute);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
 			objWriter.WriteElementString("page", Page);
-			if (Attribute == "MAG" && CharacterObject.AdeptEnabled && CharacterObject.MagicianEnabled)
-				objWriter.WriteElementString("attributemod", CharacterObject.MAGMagician.ToString());
-			else
-				objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
+			objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
 			objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString());
 			objWriter.WriteElementString("poolmod", dicePoolModifiers.ToString());
 			objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString());
@@ -119,7 +116,7 @@ namespace Chummer.Skills
 
 			objWriter.WriteEndElement();
 		}
-		
+
 		#region Factory
 		/// <summary>
 		/// Load a skill from a xml node from a saved .chum5 file
@@ -129,14 +126,14 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public static Skill Load(Character character, XmlNode n)
 		{
-			if (n["suid"] == null) return null;
+		    if (n?["suid"] == null) return null;
 
 			Guid suid;
-			XmlDocument skills = XmlManager.Instance.Load("skills.xml");
-			if (!Guid.TryParse(n["suid"].InnerText, out suid))
-			{
-				return null;
-			}
+            if (!Guid.TryParse(n["suid"].InnerText, out suid))
+            {
+                return null;
+            }
+            XmlDocument skills = XmlManager.Instance.Load("skills.xml");
 			Skill skill;
 			if (suid != Guid.Empty)
 			{
@@ -157,7 +154,7 @@ namespace Chummer.Skills
 			}
 			else //This is ugly but i'm not sure how to make it pretty
 			{
-				if (n["forced"] != null)
+				if (n["forced"] != null && n["name"] != null)
 				{
 					skill = new KnowledgeSkill(character, n["name"].InnerText);
 				}
@@ -172,10 +169,10 @@ namespace Chummer.Skills
 			XmlElement element = n["guid"];
 			if (element != null) skill.Id = Guid.Parse(element.InnerText);
 
-			n.TryGetField("karma", out skill._karma);
-			n.TryGetField("base", out skill._base);
-			n.TryGetField("buywithkarma", out skill._buyWithKarma);
-			n.TryGetField("notes", out skill._strNotes);
+			n.TryGetInt32FieldQuickly("karma", ref skill._karma);
+			n.TryGetInt32FieldQuickly("base", ref skill._base);
+			n.TryGetBoolFieldQuickly("buywithkarma", ref skill._buyWithKarma);
+			n.TryGetStringFieldQuickly("notes", ref skill._strNotes);
 
 			foreach (XmlNode spec in n.SelectNodes("specs/spec"))
 			{
@@ -183,7 +180,7 @@ namespace Chummer.Skills
 			}
 			XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
 
-			if (objCategoryNode != null && objCategoryNode.Attributes?["translate"] != null)
+			if (objCategoryNode?.Attributes?["translate"] != null)
 			{
 				skill.DisplayCategory = objCategoryNode.Attributes["translate"].InnerText;
 			}
@@ -199,23 +196,29 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public static Skill LegacyLoad(Character character, XmlNode n)
 		{
-			Guid suid;
+            if (n == null)
+                return null;
+            Guid suid;
 			Skill skill;
 
 			n.TryGetField("id", Guid.TryParse, out suid, Guid.NewGuid());
 
-			int baseRating = int.Parse(n["base"].InnerText);
-			int fullRating = int.Parse(n["rating"].InnerText);
-			int karmaRating = fullRating - baseRating;  //Not reading karma directly as career only increases rating
+			int baseRating;
+            int.TryParse(n["base"]?.InnerText, out baseRating);
+		    int fullRating;
+            int.TryParse(n["rating"]?.InnerText, out fullRating);
+            int karmaRating = fullRating - baseRating;  //Not reading karma directly as career only increases rating
 
-			if (n.TryCheckValue("knowledge", "True"))
+		    bool blnTemp = false;
+
+			if (n.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
 			{
-				Skills.KnowledgeSkill kno = new KnowledgeSkill(character);
-				kno.WriteableName = n["name"].InnerText;
+				KnowledgeSkill kno = new KnowledgeSkill(character);
+				kno.WriteableName = n["name"]?.InnerText;
 				kno.Base = baseRating;
 				kno.Karma = karmaRating;
 
-				kno.Type = n["skillcategory"].InnerText;
+				kno.Type = n["skillcategory"]?.InnerText;
 
 				skill = kno;
 			}
@@ -228,25 +231,24 @@ namespace Chummer.Skills
 				if (data == null)
 				{
 					data = XmlManager.Instance.Load("skills.xml")
-						.SelectSingleNode($"/chummer/skills/skill[name = '{n["name"].InnerText}']");
+						.SelectSingleNode($"/chummer/skills/skill[name = '{n["name"]?.InnerText}']");
 				}
 
 
-				skill = Skill.FromData(data, character);
+				skill = FromData(data, character);
 				skill._base = baseRating;
 				skill._karma = karmaRating;
 
 				ExoticSkill exoticSkill = skill as ExoticSkill;
 				if (exoticSkill != null)
 				{
-					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? "";
+					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
 					//don't need to do more load then.
-					
 					exoticSkill.Specific = name;
 					return skill;
 				}
 
-				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
+			    n.TryGetBoolFieldQuickly("buywithkarma", ref skill._buyWithKarma);
 			}
 
 			var v = from XmlNode node
@@ -272,8 +274,10 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public static Skill FromData(XmlNode n, Character character)
 		{
+		    if (n == null)
+		        return null;
 			Skill s;
-			if (n["exotic"] != null && n["exotic"].InnerText == "Yes")
+			if (n["exotic"]?.InnerText == "Yes")
 			{
 				//load exotic skill
 				ExoticSkill s2 = new ExoticSkill(character, n);
@@ -283,18 +287,16 @@ namespace Chummer.Skills
 			{
 				XmlDocument document = XmlManager.Instance.Load("skills.xml");
 				XmlNode knoNode = null;
-				string category = n["category"].InnerText; //if missing we have bigger problems, and a nullref is probably prefered
-				bool knoSkill;
-
-				if (SkillTypeCache != null && SkillTypeCache.ContainsKey(category))
-				{
-					knoSkill = SkillTypeCache[category]; //Simple cache, no need to be sloppy
-				}
-				else
+				string category = n["category"]?.InnerText;
+			    if (string.IsNullOrEmpty(category))
+			        return null;
+                bool knoSkill;
+				if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out knoSkill))
 				{
 					knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
-					knoSkill = knoNode.Attributes["type"].InnerText != "active";
-					SkillTypeCache[category] = knoSkill;
+					knoSkill = knoNode?.Attributes?["type"]?.InnerText != "active";
+                    if (SkillTypeCache != null)
+					    SkillTypeCache[category] = knoSkill;
 				}
 
 
@@ -303,24 +305,18 @@ namespace Chummer.Skills
 					//TODO INIT SKILL
 					if (Debugger.IsAttached) Debugger.Break();
 
-					KnowledgeSkill s2 = new KnowledgeSkill(character);
-
-					s = s2;
+					s = new KnowledgeSkill(character);
 				}
 				else
 				{
-					Skill s2 = new Skill(character, n);
 					//TODO INIT SKILL
 
-					s = s2;
+					s = new Skill(character, n);
 				}
-				if (knoNode != null)
-				{
-					if (knoNode.Attributes["translate"] != null)
-					{
-						s.DisplayCategory = knoNode.Attributes["translate"].InnerText;
-					}
-				}
+			    if (knoNode?.Attributes?["translate"] != null)
+			    {
+			        s.DisplayCategory = knoNode.Attributes["translate"].InnerText;
+			    }
 			}
 
 
@@ -345,23 +341,26 @@ namespace Chummer.Skills
 
 
 		//load from data
-		protected Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText)
+		protected Skill(Character character, XmlNode n) : this(character, n?["skillgroup"]?.InnerText)
 			//Ugly hack, needs by then
 		{
-			_name = n["name"].InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-			AttributeObject = CharacterObject.GetAttribute(n["attribute"].InnerText);
-			Category = n["category"].InnerText;
-			Default = n["default"].InnerText.ToLower() == "yes";
-			Source = n["source"].InnerText;
-			Page = n["page"].InnerText;
-			SkillId = Guid.Parse(n["id"].InnerText);
+		    if (n == null)
+		        return;
+            _name = n["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
+			AttributeObject = CharacterObject.GetAttribute(n["attribute"]?.InnerText);
+			Category = n["category"]?.InnerText;
+			Default = n["default"]?.InnerText.ToLower() == "yes";
+			Source = n["source"]?.InnerText;
+			Page = n["page"]?.InnerText;
+            if (n["id"] != null)
+			    SkillId = Guid.Parse(n["id"]?.InnerText);
 
 			_translatedName = n["translate"]?.InnerText;
 
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 
 			SuggestedSpecializations = new List<ListItem>();
-			foreach (XmlNode node in n["specs"].ChildNodes)
+			foreach (XmlNode node in n["specs"]?.ChildNodes)
 			{
 				SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
 			}
@@ -425,6 +424,12 @@ namespace Chummer.Skills
 		{
 			get
 			{
+                if (Name.Contains("Flight"))
+                {
+                    string strFlyString = CharacterObject.Fly;
+                    if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains("Special"))
+                        return false;
+                }
 				//TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
 				if (CharacterObject.Metatype == "A.I.")
 				{
@@ -449,7 +454,17 @@ namespace Chummer.Skills
 			get { return false; }
 		}
 
-		public bool Default { get; private set; }
+		public bool Default
+		{
+			get
+			{
+				return RelevantImprovements().All(objImprovement => objImprovement.ImproveType != Improvement.ImprovementType.BlockSkillDefault) && _blnDefault;
+			}
+			set
+			{
+				_blnDefault = value;
+			}
+		}
 
 		public virtual bool IsExoticSkill
 		{
@@ -473,7 +488,7 @@ namespace Chummer.Skills
 		public Guid Id { get; private set; } = Guid.NewGuid();
 
 		/// <summary>
-		/// The ID for this skill. This is persistent for active skills over 
+		/// The ID for this skill. This is persistent for active skills over
 		/// multiple characters, ?and predefined knowledge skills,? but not
 		/// for skills where the user supplies a name (Exotic and Knowledge)
 		/// </summary>
@@ -497,7 +512,7 @@ namespace Chummer.Skills
 		private string _cachedStringSpec = null;
 		public virtual string DisplaySpecialization
 		{
-			get { return _cachedStringSpec = _cachedStringSpec ?? string.Join(", ", Specializations.Select(x => x.Name)); }
+			get { return _cachedStringSpec = _cachedStringSpec ?? string.Join(", ", Specializations.Select(x => x.DisplayName)); }
 		}
 
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
@@ -510,15 +525,15 @@ namespace Chummer.Skills
 			{
 				if (LearnedRating == 0)
 				{
-					return ""; //Unleveled skills cannot have a specialization;
+					return string.Empty; //Unleveled skills cannot have a specialization;
 				}
 
 				if (Specializations.Count > 0)
 				{
-					return Specializations[0].Name;
+					return Specializations[0].DisplayName;
 				}
 
-				return "";
+				return string.Empty;
 			}
 			set
 			{
@@ -580,14 +595,14 @@ namespace Chummer.Skills
 							first = false;
 
 							s.Append(" (Base (");
-							s.Append(LearnedRating);
+							s.Append(LearnedRating.ToString());
 							s.Append(")");
 						}
 
 						s.Append(" + ");
 						s.Append(GetName(source));
 						s.Append(" (");
-						s.Append(source.Value);
+						s.Append(source.Value.ToString());
 						s.Append(")");
 					}
 					if (!first) s.Append(")");
@@ -610,12 +625,12 @@ namespace Chummer.Skills
 
 				}
 
-				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating))
+				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute && x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
 				{
 					s.Append(" + ");
 					s.Append(GetName(source));
 					s.Append(" (");
-					s.Append(source.Value);
+					s.Append(source.Value.ToString());
 					s.Append(")");
 				}
 
@@ -639,7 +654,7 @@ namespace Chummer.Skills
 
 						int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
 
-						if (cyberware.Location == CharacterObject.PrimaryArm)
+						if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous || cyberware.LimbSlotCount == 2)
 						{
 							s.Append(pool);
 						}
@@ -650,13 +665,64 @@ namespace Chummer.Skills
 					}
 				}
 
+                foreach(Improvement objSwapSkillAttribute in RelevantImprovements().Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
+                {
+                    s.Append("\n");
+                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                        s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
+                    s.AppendFormat("{0} ", GetName(objSwapSkillAttribute));
+
+                    int intLoopAttribute = CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value;
+                    int intBasePool = PoolOtherAttribute(intLoopAttribute);
+                    bool blnHaveSpec = false;
+
+                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute &&
+                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude))
+                    {
+                        intBasePool += 2;
+                        blnHaveSpec = true;
+                    }
+                    s.Append(intBasePool.ToString());
+
+                    if (objSwapSkillAttribute.ImprovedName == "STR" || objSwapSkillAttribute.ImprovedName == "AGI")
+                    {
+                        foreach (Cyberware cyberware in _character.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
+                        {
+                            s.Append("\n");
+                            if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                                s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
+                            s.AppendFormat("{0} ", GetName(objSwapSkillAttribute));
+                            s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
+                            if (cyberware.Grade != GlobalOptions.CyberwareGrades.GetGrade("Standard"))
+                            {
+                                s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
+                            }
+
+                            int intLoopPool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
+                            if (blnHaveSpec)
+                            {
+                                intLoopPool += 2;
+                            }
+
+                            if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous || cyberware.LimbSlotCount == 2)
+                            {
+                                s.Append(intLoopPool);
+                            }
+                            else
+                            {
+                                s.AppendFormat("{0} (-2 Off Hand)", intLoopPool - 2);
+                            }
+                        }
+                    }
+                }
+
 				return s.ToString();
 			}
 		}
 
 		private string GetName(Improvement source)
 		{
-			string value = null;
+			string value;
 			switch (source.ImproveSource)
 			{
 				case Improvement.ImprovementSource.Bioware:
@@ -705,7 +771,6 @@ namespace Chummer.Skills
 			get
 			{
 				return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost());
-				;
 			}
 		}
 
@@ -723,8 +788,8 @@ namespace Chummer.Skills
 			get
 			{
 				//v-- hack i guess
-				string strReturn = "";
-				string middle = "";
+				string strReturn = string.Empty;
+				string middle = string.Empty;
 				if (!string.IsNullOrWhiteSpace(SkillGroup))
 				{
 					middle = $"{SkillGroup} {LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}\n";
@@ -738,7 +803,6 @@ namespace Chummer.Skills
 				strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.Instance.GetString("String_Page")} {Page}";
 
 				return strReturn;
-					
 			}
 		}
 
@@ -864,9 +928,6 @@ namespace Chummer.Skills
 
 			return _cachedWareRating = 0;
 		}
-
-
-		
 		#endregion
 
 		#region Static
@@ -890,7 +951,7 @@ namespace Chummer.Skills
 								)
 							)
 						)
-					)			
+					)
 				)
 			);
 		#endregion
@@ -907,7 +968,7 @@ namespace Chummer.Skills
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		[NotifyPropertyChangedInvocator]
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			foreach (string s in DependencyTree.Find(propertyName))
 			{
@@ -939,7 +1000,6 @@ namespace Chummer.Skills
 					_oldUpgrade = CanUpgradeCareer;
 					OnPropertyChanged(nameof(CanUpgradeCareer));
 				}
-
 			}
 		}
 
@@ -951,7 +1011,6 @@ namespace Chummer.Skills
 				OnPropertyChanged(nameof(Enabled));
 				_oldEnable = Enabled;
 			}
-
 		}
 
 		private void SpecializationsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
@@ -967,8 +1026,8 @@ namespace Chummer.Skills
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeKarma = int.MinValue;
 			_cachedWareRating = int.MinValue;
-			if (improvements.Any(imp => 
-				(imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) && 
+			if (improvements.Any(imp =>
+				(imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) &&
 				imp.ImprovedName == _name))
 			{
 				OnPropertyChanged(nameof(PoolModifiers));
@@ -986,7 +1045,13 @@ namespace Chummer.Skills
 			{
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
-			
+			//TODO: Doesn't work
+			else if (
+				improvements.Any(
+					imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault))
+			{
+				OnPropertyChanged(nameof(PoolToolTip));
+			}
 		}
 
 	}

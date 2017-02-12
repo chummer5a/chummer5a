@@ -33,22 +33,28 @@ public class SplitButton : Button
 
     const int SplitSectionWidth = 18;
 
-    static int BorderSize = SystemInformation.Border3DSize.Width * 2;
-    bool skipNextOpen;
-    Rectangle dropDownRectangle;
-    bool showSplit;
+    private static readonly int BorderSize = SystemInformation.Border3DSize.Width * 2;
+    bool _skipNextOpen;
+    Rectangle _dropDownRectangle;
+    bool _showSplit;
 
-    bool isSplitMenuVisible;
+    bool _isSplitMenuVisible;
 
 
     ContextMenuStrip m_SplitMenuStrip;
     ContextMenu m_SplitMenu;
 
-    TextFormatFlags textFormatFlags = TextFormatFlags.Default;
+    TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
 
     public SplitButton()
     {
         AutoSize = true;
+    }
+
+    public sealed override bool AutoSize
+    {
+        get { return base.AutoSize; }
+        set { base.AutoSize = value; }
     }
 
     #region Properties
@@ -127,13 +133,12 @@ public class SplitButton : Button
     {
         set
         {
-            if (value != showSplit)
+            if (value != _showSplit)
             {
-                showSplit = value;
+                _showSplit = value;
                 Invalidate();
 
-                if (Parent != null)
-                    Parent.PerformLayout();
+                Parent?.PerformLayout();
             }
         }
     }
@@ -158,7 +163,7 @@ public class SplitButton : Button
 
     protected override bool IsInputKey(Keys keyData)
     {
-        if (keyData.Equals(Keys.Down) && showSplit)
+        if (keyData.Equals(Keys.Down) && _showSplit)
             return true;
 
         return base.IsInputKey(keyData);
@@ -166,7 +171,7 @@ public class SplitButton : Button
 
     protected override void OnGotFocus(EventArgs e)
     {
-        if (!showSplit)
+        if (!_showSplit)
         {
             base.OnGotFocus(e);
             return;
@@ -180,9 +185,9 @@ public class SplitButton : Button
 
     protected override void OnKeyDown(KeyEventArgs kevent)
     {
-        if (showSplit)
+        if (_showSplit)
         {
-            if (kevent.KeyCode.Equals(Keys.Down) && !isSplitMenuVisible)
+            if (kevent.KeyCode.Equals(Keys.Down) && !_isSplitMenuVisible)
             {
                 ShowContextMenuStrip();
             }
@@ -207,7 +212,7 @@ public class SplitButton : Button
         }
         else if (kevent.KeyCode.Equals(Keys.Apps))
         {
-            if (MouseButtons == MouseButtons.None && !isSplitMenuVisible)
+            if (MouseButtons == MouseButtons.None && !_isSplitMenuVisible)
             {
                 ShowContextMenuStrip();
             }
@@ -225,7 +230,7 @@ public class SplitButton : Button
 
     protected override void OnLostFocus(EventArgs e)
     {
-        if (!showSplit)
+        if (!_showSplit)
         {
             base.OnLostFocus(e);
             return;
@@ -241,7 +246,7 @@ public class SplitButton : Button
 
     protected override void OnMouseEnter(EventArgs e)
     {
-        if (!showSplit)
+        if (!_showSplit)
         {
             base.OnMouseEnter(e);
             return;
@@ -258,7 +263,7 @@ public class SplitButton : Button
 
     protected override void OnMouseLeave(EventArgs e)
     {
-        if (!showSplit)
+        if (!_showSplit)
         {
             base.OnMouseLeave(e);
             return;
@@ -274,7 +279,7 @@ public class SplitButton : Button
 
     protected override void OnMouseDown(MouseEventArgs e)
     {
-        if (!showSplit)
+        if (!_showSplit)
         {
             base.OnMouseDown(e);
             return;
@@ -282,9 +287,9 @@ public class SplitButton : Button
 
         //handle ContextMenu re-clicking the drop-down region to close the menu
         if (m_SplitMenu != null && e.Button == MouseButtons.Left && !isMouseEntered)
-            skipNextOpen = true;
+            _skipNextOpen = true;
 
-        if (dropDownRectangle.Contains(e.Location) && !isSplitMenuVisible && e.Button == MouseButtons.Left)
+        if (_dropDownRectangle.Contains(e.Location) && !_isSplitMenuVisible && e.Button == MouseButtons.Left)
         {
             ShowContextMenuStrip();
         }
@@ -296,22 +301,22 @@ public class SplitButton : Button
 
     protected override void OnMouseUp(MouseEventArgs mevent)
     {
-        if (!showSplit)
+        if (!_showSplit)
         {
             base.OnMouseUp(mevent);
             return;
         }
 
         // if the right button was released inside the button
-        if (mevent.Button == MouseButtons.Right && ClientRectangle.Contains(mevent.Location) && !isSplitMenuVisible)
+        if (mevent.Button == MouseButtons.Right && ClientRectangle.Contains(mevent.Location) && !_isSplitMenuVisible)
         {
             ShowContextMenuStrip();
         }
-        else if (m_SplitMenuStrip == null && m_SplitMenu == null || !isSplitMenuVisible)
+        else if (m_SplitMenuStrip == null && m_SplitMenu == null || !_isSplitMenuVisible)
         {
             SetButtonDrawState();
 
-            if (ClientRectangle.Contains(mevent.Location) && !dropDownRectangle.Contains(mevent.Location))
+            if (ClientRectangle.Contains(mevent.Location) && !_dropDownRectangle.Contains(mevent.Location))
             {
                 OnClick(new EventArgs());
             }
@@ -322,7 +327,7 @@ public class SplitButton : Button
     {
         base.OnPaint(pevent);
 
-        if (!showSplit)
+        if (!_showSplit)
             return;
 
         Graphics g = pevent.Graphics;
@@ -344,13 +349,13 @@ public class SplitButton : Button
         }
 
         // calculate the current dropdown rectangle.
-        dropDownRectangle = new Rectangle(bounds.Right - SplitSectionWidth, 0, SplitSectionWidth, bounds.Height);
+        _dropDownRectangle = new Rectangle(bounds.Right - SplitSectionWidth, 0, SplitSectionWidth, bounds.Height);
 
         int internalBorder = BorderSize;
         Rectangle focusRect =
             new Rectangle(internalBorder - 1,
                             internalBorder - 1,
-                            bounds.Width - dropDownRectangle.Width - internalBorder,
+                            bounds.Width - _dropDownRectangle.Width - internalBorder,
                             bounds.Height - (internalBorder * 2) + 2);
 
         bool drawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed || !Application.RenderWithVisualStyles);
@@ -358,8 +363,8 @@ public class SplitButton : Button
 
         if (RightToLeft == RightToLeft.Yes)
         {
-            dropDownRectangle.X = bounds.Left + 1;
-            focusRect.X = dropDownRectangle.Right;
+            _dropDownRectangle.X = bounds.Left + 1;
+            focusRect.X = _dropDownRectangle.Right;
 
             if (drawSplitLine)
             {
@@ -379,7 +384,7 @@ public class SplitButton : Button
         }
 
         // Draw an arrow in the correct location
-        PaintArrow(g, dropDownRectangle);
+        PaintArrow(g, _dropDownRectangle);
 
         //paint the image and text in the "button" part of the splitButton
         PaintTextandImage(g, new Rectangle(0, 0, ClientRectangle.Width - SplitSectionWidth, ClientRectangle.Height));
@@ -410,17 +415,17 @@ public class SplitButton : Button
 
         // If we dont' use mnemonic, set formatFlag to NoPrefix as this will show ampersand.
         if (!UseMnemonic)
-            textFormatFlags = textFormatFlags | TextFormatFlags.NoPrefix;
+            _textFormatFlags = _textFormatFlags | TextFormatFlags.NoPrefix;
         else if (!ShowKeyboardCues)
-            textFormatFlags = textFormatFlags | TextFormatFlags.HidePrefix;
+            _textFormatFlags = _textFormatFlags | TextFormatFlags.HidePrefix;
 
         //draw the text
         if (!string.IsNullOrEmpty(Text))
         {
             if (Enabled)
-                TextRenderer.DrawText(g, Text, Font, text_rectangle, ForeColor, textFormatFlags);
+                TextRenderer.DrawText(g, Text, Font, text_rectangle, ForeColor, _textFormatFlags);
             else
-                ControlPaint.DrawStringDisabled(g, Text, Font, BackColor, text_rectangle, textFormatFlags);
+                ControlPaint.DrawStringDisabled(g, Text, Font, BackColor, text_rectangle, _textFormatFlags);
         }
     }
 
@@ -444,7 +449,7 @@ public class SplitButton : Button
         Size preferredSize = base.GetPreferredSize(proposedSize);
 
         //autosize correctly for splitbuttons
-        if (showSplit)
+        if (_showSplit)
         {
             if (AutoSize)
                 return CalculateButtonAutoSize();
@@ -492,7 +497,7 @@ public class SplitButton : Button
         ret_size.Width += (Padding.Horizontal + 6);
 
         //pad the splitButton arrow region
-        if (showSplit)
+        if (_showSplit)
             ret_size.Width += SplitSectionWidth;
 
         return ret_size;
@@ -506,7 +511,7 @@ public class SplitButton : Button
 
     private void CalculateButtonTextAndImageLayout(ref Rectangle content_rect, out Rectangle textRectangle, out Rectangle imageRectangle)
     {
-        Size text_size = TextRenderer.MeasureText(Text, Font, content_rect.Size, textFormatFlags);
+        Size text_size = TextRenderer.MeasureText(Text, Font, content_rect.Size, _textFormatFlags);
         Size image_size = Image == null ? Size.Empty : Image.Size;
 
         textRectangle = Rectangle.Empty;
@@ -767,11 +772,11 @@ public class SplitButton : Button
 
     private void ShowContextMenuStrip()
     {
-        if (skipNextOpen)
+        if (_skipNextOpen)
         {
             // we were called because we're closing the context menu strip
             // when clicking the dropdown button.
-            skipNextOpen = false;
+            _skipNextOpen = false;
             return;
         }
 
@@ -789,25 +794,25 @@ public class SplitButton : Button
 
     void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
     {
-        isSplitMenuVisible = true;
+        _isSplitMenuVisible = true;
     }
 
     void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
-        isSplitMenuVisible = false;
+        _isSplitMenuVisible = false;
 
         SetButtonDrawState();
 
         if (e.CloseReason == ToolStripDropDownCloseReason.AppClicked)
         {
-            skipNextOpen = (dropDownRectangle.Contains(PointToClient(Cursor.Position))) && MouseButtons == MouseButtons.Left;
+            _skipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))) && MouseButtons == MouseButtons.Left;
         }
     }
 
 
     void SplitMenu_Popup(object sender, EventArgs e)
     {
-        isSplitMenuVisible = true;
+        _isSplitMenuVisible = true;
     }
 
     protected override void WndProc(ref Message m)
@@ -816,7 +821,7 @@ public class SplitButton : Button
         if (m.Msg == 0x0212)
         {
             //this message is only sent when a ContextMenu is closed (not a ContextMenuStrip)
-            isSplitMenuVisible = false;
+            _isSplitMenuVisible = false;
             SetButtonDrawState();
         }
 

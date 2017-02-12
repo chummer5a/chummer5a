@@ -35,11 +35,7 @@ namespace Chummer
 		{
 			if (Debugger.IsAttached) return;
 
-			if (
-				MessageBox.Show("Chummer5a crashed.\nDo you want to send a crash report to the developer?", "Crash!",
-					MessageBoxButtons.YesNo) == DialogResult.Yes)
-			{
-				CrashReport report = new CrashReport(Guid.NewGuid())
+			CrashReport report = new CrashReport(Guid.NewGuid())
 					.AddDefaultData()
 					.AddData("exception.txt", e.ExceptionObject.ToString());
 
@@ -75,7 +71,6 @@ namespace Chummer
 
 				report.Send();
 				MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
-			}
 		}
 
 		private List<KeyValuePair<String, Stream>> values; 
@@ -127,27 +122,26 @@ namespace Chummer
 				report.AppendFormat("Release Build");
 #endif
 				report.AppendLine();
-				//Seconadary id for linux systems?
-				try
-				{
+                //Seconadary id for linux systems?
+                if (Registry.LocalMachine != null)
+                {
+                    RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-					RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    if (cv != null)
+                    {
+                        if (!cv.GetValueNames().Contains("ProductId"))
+                        {
+                            //on 32 bit builds?
+                            //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
 
-					if (!cv.GetValueNames().Contains("ProductId"))
-					{
-						//on 32 bit builds?
-						//cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
+                            cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                        }
 
-						cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-					}
-
-					String[] keys = cv.GetValueNames();
-					report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
-					report.AppendLine();
-				}
-				catch (Exception)
-				{
-				}
+                        String[] keys = cv.GetValueNames();
+                        report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
+                        report.AppendLine();
+                    }
+                }
 
 				report.AppendFormat("CommandLine={0}", Environment.CommandLine);
 				report.AppendLine();

@@ -1,4 +1,6 @@
-﻿namespace Chummer.UI.Skills
+﻿using System;
+
+namespace Chummer.UI.Skills
 {
 	partial class SkillsTabUserControl
 	{
@@ -40,6 +42,7 @@
 			this.btnExotic = new System.Windows.Forms.Button();
 			this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.lblCustomKnowledgeSkillsReminder = new System.Windows.Forms.Label();
 			this.lblKnoBwk = new System.Windows.Forms.Label();
 			this.lblKnoKarma = new System.Windows.Forms.Label();
 			this.lblKnoSp = new System.Windows.Forms.Label();
@@ -47,6 +50,8 @@
 			this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
 			this.lblKnowledgeSkills = new System.Windows.Forms.Label();
 			this.btnKnowledge = new System.Windows.Forms.Button();
+			this.cboSortKnowledge = new System.Windows.Forms.ComboBox();
+			this.cboDisplayFilterKnowledge = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
 			this.splitSkills.Panel1.SuspendLayout();
 			this.splitSkills.Panel2.SuspendLayout();
@@ -82,6 +87,9 @@
 			// splitSkills.Panel2
 			// 
 			this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.Control;
+			this.splitSkills.Panel2.Controls.Add(this.cboSortKnowledge);
+			this.splitSkills.Panel2.Controls.Add(this.cboDisplayFilterKnowledge);
+			this.splitSkills.Panel2.Controls.Add(this.lblCustomKnowledgeSkillsReminder);
 			this.splitSkills.Panel2.Controls.Add(this.lblKnoBwk);
 			this.splitSkills.Panel2.Controls.Add(this.lblKnoKarma);
 			this.splitSkills.Panel2.Controls.Add(this.lblKnoSp);
@@ -221,6 +229,17 @@
 			this.label1.Tag = "Label_SkillGroups";
 			this.label1.Text = "Skill Groups";
 			// 
+			// lblCustomKnowledgeSkillsReminder
+			// 
+			this.lblCustomKnowledgeSkillsReminder.AutoSize = true;
+			this.lblCustomKnowledgeSkillsReminder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCustomKnowledgeSkillsReminder.Location = new System.Drawing.Point(365, 5);
+			this.lblCustomKnowledgeSkillsReminder.Name = "lblCustomKnowledgeSkillsReminder";
+			this.lblCustomKnowledgeSkillsReminder.Size = new System.Drawing.Size(398, 13);
+			this.lblCustomKnowledgeSkillsReminder.TabIndex = 55;
+			this.lblCustomKnowledgeSkillsReminder.Tag = "Label_CustomKnowledgeSkillsReminder";
+			this.lblCustomKnowledgeSkillsReminder.Text = "Remember, you can always write in custom skills and specializations!";
+			// 
 			// lblKnoBwk
 			// 
 			this.lblKnoBwk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -295,6 +314,31 @@
 			this.btnKnowledge.UseVisualStyleBackColor = true;
 			this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
 			// 
+			// cboSortKnowledge
+			// 
+			this.cboSortKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cboSortKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboSortKnowledge.FormattingEnabled = true;
+			this.cboSortKnowledge.IntegralHeight = false;
+			this.cboSortKnowledge.Location = new System.Drawing.Point(476, 23);
+			this.cboSortKnowledge.Name = "cboSortKnowledge";
+			this.cboSortKnowledge.Size = new System.Drawing.Size(133, 21);
+			this.cboSortKnowledge.TabIndex = 55;
+			this.cboSortKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboSortKnowledge_SelectedIndexChanged);
+			// 
+			// cboDisplayFilterKnowledge
+			// 
+			this.cboDisplayFilterKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cboDisplayFilterKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboDisplayFilterKnowledge.FormattingEnabled = true;
+			this.cboDisplayFilterKnowledge.IntegralHeight = false;
+			this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(613, 23);
+			this.cboDisplayFilterKnowledge.Name = "cboDisplayFilterKnowledge";
+			this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(201, 21);
+			this.cboDisplayFilterKnowledge.TabIndex = 54;
+			this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
+			this.cboDisplayFilterKnowledge.TextUpdate += new EventHandler(this.cboDisplayFilterKnowledge_TextUpdate);
+			// 
 			// SkillsTabUserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,5 +378,8 @@
 		private System.Windows.Forms.Label lblKnoSp;
 		private System.Windows.Forms.Label lblKnoBwk;
 		private System.Windows.Forms.Button btnResetCustomDisplayAttribute;
+        private System.Windows.Forms.Label lblCustomKnowledgeSkillsReminder;
+		private System.Windows.Forms.ComboBox cboSortKnowledge;
+		private System.Windows.Forms.ComboBox cboDisplayFilterKnowledge;
 	}
 }

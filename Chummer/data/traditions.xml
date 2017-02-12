@@ -33,11 +33,11 @@
 			<name>Hermetic</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Earth</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Air</spiritdetection>
+				<spirithealth>Spirit of Man</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Spirit of Earth</spiritmanipulation>
 			</spirits>
 			<source>SR5</source>
 			<page>279</page>
@@ -47,11 +47,11 @@
 			<name>Shamanic</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Man</spirit>
+				<spiritcombat>Spirit of Beasts</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Earth</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Man</spiritmanipulation>
 			</spirits>
 			<source>SR5</source>
 			<page>279</page>
@@ -61,11 +61,11 @@
 			<name>Aztec</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Guardian Spirit</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Beasts</spirit>
+				<spiritcombat>Guardian Spirit</spiritcombat>
+				<spiritdetection>Spirit of Fire</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Spirit of Beasts</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>41</page>
@@ -75,11 +75,11 @@
 			<name>Black Magic</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Man</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Earth</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Man</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>41</page>
@@ -89,11 +89,11 @@
 			<name>Buddhism</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
+				<spiritcombat>Spirit of Air</spiritcombat>
+				<spiritdetection>Guidance Spirit</spiritdetection>
+				<spirithealth>Spirit of Earth</spirithealth>
+				<spiritillusion>Spirit of Fire</spiritillusion>
+				<spiritmanipulation>Spirit of Water</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>43</page>
@@ -103,11 +103,11 @@
 			<name>Chaos Magic</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Water</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Air</spiritdetection>
+				<spirithealth>Spirit of Earth</spirithealth>
+				<spiritillusion>Spirit of Man</spiritillusion>
+				<spiritmanipulation>Spirit of Water</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>44</page>
@@ -117,11 +117,11 @@
 			<name>Christian Theurgy</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Guidance Spirit</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Air</spirithealth>
+				<spiritillusion>Spirit of Earth</spiritillusion>
+				<spiritmanipulation>Guidance Spirit</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>44</page>
@@ -131,11 +131,11 @@
 			<name>Druid</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
+				<spiritcombat>Spirit of Beasts</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Earth</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>45</page>
@@ -145,11 +145,11 @@
 			<name>Hinduism</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
+				<spiritcombat>Spirit of Beasts</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Earth</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>46</page>
@@ -159,11 +159,11 @@
 			<name>Islam</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Guardian Spirit</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Fire</spirit>
+				<spiritcombat>Guardian Spirit</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Fire</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>46</page>
@@ -173,11 +173,11 @@
 			<name>Path of the Wheel</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Fire</spirit>
+				<spiritcombat>Spirit of Earth</spiritcombat>
+				<spiritdetection>Guidance Spirit</spiritdetection>
+				<spirithealth>Spirit of Air</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Spirit of Fire</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>47</page>
@@ -187,11 +187,11 @@
 			<name>Qabbalism</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Task Spirit</spirit>
+				<spiritcombat>Spirit of Air</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Spirit of Fire</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Task Spirit</spiritmanipulation>
 			</spirits>
 			<spiritform>Possession</spiritform>
 			<source>SG</source>
@@ -202,11 +202,11 @@
 			<name>Shinto</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Spirit of Man</spirit>
+				<spiritcombat>Spirit of Air</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Beasts</spiritillusion>
+				<spiritmanipulation>Spirit of Man</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>48</page>
@@ -216,11 +216,11 @@
 			<name>Sioux</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Guardian Spirit</spirit>
+				<spiritcombat>Spirit of Beasts</spiritcombat>
+				<spiritdetection>Plant Spirit</spiritdetection>
+				<spirithealth>Spirit of Fire</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Guardian Spirit</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>49</page>
@@ -230,11 +230,11 @@
 			<name>Vodou</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Guardian Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Task Spirit</spirit>
+				<spiritcombat>Guardian Spirit</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Man</spirithealth>
+				<spiritillusion>Guidance Spirit</spiritillusion>
+				<spiritmanipulation>Task Spirit</spiritmanipulation>
 			</spirits>
 			<spiritform>Possession</spiritform>
 			<source>SG</source>
@@ -245,11 +245,11 @@
 			<name>Wicca, Gardnerian</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Earth</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>50</page>
@@ -259,11 +259,11 @@
 			<name>Wicca, Goddess</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Earth</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Earth</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>50</page>
@@ -273,11 +273,11 @@
 			<name>Wuxing</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Guidance Spirit</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Guidance Spirit</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>51</page>
@@ -287,11 +287,11 @@
 			<name>Zoroastrianism</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Plant Spirit</spirit>
+				<spiritcombat>Spirit of Man</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Fire</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Plant Spirit</spiritmanipulation>
 			</spirits>
 			<source>SG</source>
 			<page>52</page>
@@ -301,11 +301,11 @@
 			<name>Insect Shaman</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Soldier</spirit>
-				<spirit>Scout</spirit>
-				<spirit>Caretaker</spirit>
-				<spirit>Nymph</spirit>
-				<spirit>Worker</spirit>
+				<spiritcombat>Soldier</spiritcombat>
+				<spiritdetection>Scout</spiritdetection>
+				<spirithealth>Caretaker</spirithealth>
+				<spiritillusion>Nymph</spiritillusion>
+				<spiritmanipulation>Worker</spiritmanipulation>
 			</spirits>
 			<spiritform>Inhabitation</spiritform>
 			<source>SG</source>
@@ -315,11 +315,11 @@
 			<name>Aboriginal</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
+				<spiritcombat>Spirit of Beasts</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Guidance Spirit</spiritillusion>
+				<spiritmanipulation>Spirit of Air</spiritmanipulation>
 			</spirits>
 			<source>SSP</source>
 			<page>3</page>
@@ -328,11 +328,11 @@
 			<name>Egyptian</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Spirit of Air</spirithealth>
+				<spiritillusion>Guidance Spirit</spiritillusion>
+				<spiritmanipulation>Spirit of Water</spiritmanipulation>
 			</spirits>
 			<spiritform>Possession</spiritform>
 			<source>SSP</source>
@@ -342,11 +342,11 @@
 			<name>Norse</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Guardian Spirit</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Fire</spirit>
+				<spiritcombat>Guardian Spirit</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Plant Spirit</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Fire</spiritmanipulation>
 			</spirits>
 			<source>SSP</source>
 			<page>4</page>
@@ -355,11 +355,11 @@
 			<name>Psionic</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Task Spirit</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Air</spiritdetection>
+				<spirithealth>Spirit of Man</spirithealth>
+				<spiritillusion>Guidance Spirit</spiritillusion>
+				<spiritmanipulation>Task Spirit</spiritmanipulation>
 			</spirits>
 			<spiritform>Possession</spiritform>
 			<source>SSP</source>
@@ -370,11 +370,11 @@
 			<name>Obeah</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Task Spirit</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Water</spirit>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Man</spirithealth>
+				<spiritillusion>Guidance Spirit</spiritillusion>
+				<spiritmanipulation>Task Spirit</spiritmanipulation>
 			</spirits>
 			<source>HT</source>
 			<page>130</page>
@@ -384,11 +384,11 @@
 			<name>Santeria</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Guardian Spirit</spirit>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Water</spirit>
+				<spiritcombat>Guidance Spirit</spiritcombat>
+				<spiritdetection>Guardian Spirit</spiritdetection>
+				<spirithealth>Spirit of Earth</spirithealth>
+				<spiritillusion>Spirit of Man</spiritillusion>
+				<spiritmanipulation>Spirit of Water</spiritmanipulation>
 			</spirits>
 			<source>HT</source>
 			<page>130</page>
@@ -398,11 +398,11 @@
 			<name>Brocken Witches</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spirit>Plant Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Beasts</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
+				<spiritcombat>Plant Spirit</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Beasts</spirithealth>
+				<spiritillusion>Spirit of Fire</spiritillusion>
+				<spiritmanipulation>Spirit of Air</spiritmanipulation>
 			</spirits>
 			<source>SGG</source>
 			<page>42</page>
@@ -412,11 +412,11 @@
 			<name>Faustianer</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Earth</spirit>
+				<spiritcombat>Guidance Spirit</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Fire</spirithealth>
+				<spiritillusion>Spirit of Man</spiritillusion>
+				<spiritmanipulation>Spirit of Earth</spiritmanipulation>
 			</spirits>
 			<source>SGG</source>
 			<page>45</page>
@@ -426,11 +426,11 @@
 			<name>Sorbic Theurgy</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Spirit of Earth</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Man</spirit>
-				<spirit>Spirit of Beasts</spirit>
+				<spiritcombat>Spirit of Earth</spiritcombat>
+				<spiritdetection>Spirit of Air</spiritdetection>
+				<spirithealth>Spirit of Water</spirithealth>
+				<spiritillusion>Spirit of Man</spiritillusion>
+				<spiritmanipulation>Spirit of Beasts</spiritmanipulation>
 			</spirits>
 			<source>SGG</source>
 			<page>51</page>
@@ -440,11 +440,11 @@
 			<name>Street Witches</name>
 			<drain>WIL + CHA</drain>
 			<spirits>
-				<spirit>Guidance Spirit</spirit>
-				<spirit>Spirit of Water</spirit>
-				<spirit>Spirit of Fire</spirit>
-				<spirit>Spirit of Air</spirit>
-				<spirit>Spirit of Man</spirit>
+				<spiritcombat>Guidance Spirit</spiritcombat>
+				<spiritdetection>Spirit of Water</spiritdetection>
+				<spirithealth>Spirit of Fire</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Man</spiritmanipulation>
 			</spirits>
 			<source>SGG</source>
 			<page>52</page>

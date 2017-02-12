@@ -26,7 +26,7 @@ namespace Chummer
 {
 	public partial class frmSelectMartialArtManeuver : Form
 	{
-		private string _strSelectedManeuver = "";
+		private string _strSelectedManeuver = string.Empty;
 
 		private bool _blnAddAgain = false;
 
@@ -43,10 +43,10 @@ namespace Chummer
 
 		private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
 		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			List<ListItem> lstManeuver = new List<ListItem>();
@@ -68,28 +68,29 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstManeuver.Sort(objSort.Compare);
-			lstManeuvers.DataSource = null;
+            lstManeuvers.BeginUpdate();
+            lstManeuvers.DataSource = null;
 			lstManeuvers.ValueMember = "Value";
 			lstManeuvers.DisplayMember = "Name";
 			lstManeuvers.DataSource = lstManeuver;
-		}
+            lstManeuvers.EndUpdate();
+        }
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstManeuvers.Text != "")
+			if (!string.IsNullOrEmpty(lstManeuvers.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstMartialArts_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstManeuvers.Text != "")
-				AcceptForm();
-		}
+            cmdOK_Click(sender, e);
+        }
 
 		private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -143,14 +144,13 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			_strSelectedManeuver = lstManeuvers.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

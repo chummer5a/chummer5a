@@ -7,13 +7,13 @@
 <#@ output extension=".cs" #>
 namespace Chummer.Properties
 {
-	public class Contributors
+	public static class Contributors
 	{
-		public static string[] Usernames = {
+		public static readonly string[] Usernames = {
 <#
 	try
     {
-		string token = Environment.GetEnvironmentVariable("CHUMMER_OAUTH_TOKEN") ?? "";
+		string token = Environment.GetEnvironmentVariable("CHUMMER_OAUTH_TOKEN") ?? string.Empty;
 		WebClient client = new WebClient();
         client.Headers.Add("user-agent", "joha4270/Chummer5a Contributors generator");
         

@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -14,15 +14,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
-using System.Windows.Forms;
-using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
 
 namespace CrashHandler
 {
 	public class CrashDumper
 	{
 		public List<string> FilesList => _filesList;
-		public Dictionary<string, string> PretendFiles => pretendFiles;
+		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
 		public event CrashDumperProgressChangedEvent CrashDumperProgressChanged;
@@ -31,25 +29,33 @@ namespace CrashHandler
 		public bool DoCleanUp { get; set; } = true;
 
 		readonly List<string> _filesList;
-		private readonly Dictionary<string, string> pretendFiles;
+		private readonly Dictionary<string, string> _pretendFiles;
 		readonly Dictionary<string, string> _attributes;
-		short procId;
-		private IntPtr _exceptionPrt;
-		private uint _threadId;
+	    readonly short _procId;
+		private readonly IntPtr _exceptionPrt;
+		private readonly uint _threadId;
 		private volatile CrashDumperProgress _progress;
-		private Thread worker;
-		private ManualResetEvent startSendEvent = new ManualResetEvent(false);
+		private Thread _worker;
+		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
 
 		public CrashDumper(string b64Json)
 		{
-			if (!Deserialize(b64Json, out procId, out _filesList, out pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
+			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
 				throw new ArgumentException();
 			}
 
-			WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
+//		    _filesList = new List<string>();
+//		    _attributes = new Dictionary<string, string>()
+//		    {
+//		        {"visible-error-friendly", "FAKE"},
+//		        {"visible-crash-id", Guid.NewGuid().ToString()}
+//		    };
+//		    _pretendFiles = new Dictionary<string, string>();
+
+		    WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
 			Directory.CreateDirectory(WorkingDirectory);
-			Attributes["visible-crashhandler-major-minor"] = "v2_0";
+			Attributes["visible-crashhandler-major-minor"] = "v3_0";
 		}
 
 		private void AttemptDebug(Process process)
@@ -68,7 +74,7 @@ namespace CrashHandler
 
 		public void AllowSending()
 		{
-			startSendEvent.Set();
+			_startSendEvent.Set();
 		}
 
 		private string GenerateFolderName()
@@ -85,66 +91,77 @@ namespace CrashHandler
 		public void StartCollecting()
 		{
 			SetProgress(CrashDumperProgress.Started);
-			worker = new Thread(WorkerEntryPoint) {IsBackground = true};
-			worker.Start();
+			_worker = new Thread(WorkerEntryPoint) {IsBackground = true};
+			_worker.Start();
 		}
 
 		private void WorkerEntryPoint()
 		{
-			
-			try
+
+		    try
+		    {
+		        Process = Process.GetProcessById(_procId);
+
+		        SetProgress(CrashDumperProgress.Debugger);
+		        AttemptDebug(Process);
+
+		        SetProgress(CrashDumperProgress.CreateDmp);
+		        if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-sucess")))
+		        {
+		            Process.Kill();
+		            SetProgress(CrashDumperProgress.Error);
+		            return;
+		        }
+
+		        SetProgress(CrashDumperProgress.CreateFiles);
+		        GetValue();
+
+		        SetProgress(CrashDumperProgress.CopyFiles);
+		        CopyFiles();
+
+		        SetProgress(CrashDumperProgress.FinishedCollecting);
+		        _startSendEvent.WaitOne();
+
+		        SetProgress(CrashDumperProgress.Compressing);
+		        byte[] zip = GetZip();
+
+		        SetProgress(CrashDumperProgress.Encrypting);
+		        byte[] iv, key;
+		        byte[] encrypted = Encrypt(zip, out iv, out key);
+
+		        SetProgress(CrashDumperProgress.Uploading);
+		        string location = Upload(encrypted);
+
+
+		        SetProgress(CrashDumperProgress.Saving);
+		        Attributes["visible-key"] = MakeStringKey(iv, key);
+		        Attributes["visible-location"] = location;
+
+		        UploadToAws();
+
+		        SetProgress(CrashDumperProgress.Cleanup);
+		        if (DoCleanUp)
+		        {
+		            Clean();
+		        }
+
+		        SetProgress(CrashDumperProgress.FinishedSending);
+		        Process.Kill();
+
+		    }
+		    catch (RemoteServiceException rex)
+		    {
+		        SetProgress(CrashDumperProgress.Error);
+		        System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message);
+		        Process?.Kill();
+		        Environment.Exit(-1);
+
+		    }
+		    catch (Exception ex)
 			{
-				Process = Process.GetProcessById(procId);
+			    SetProgress(CrashDumperProgress.Error);
+			    System.Windows.Forms.MessageBox.Show(ex.ToString ());
 
-				SetProgress(CrashDumperProgress.Debugger);
-				AttemptDebug(Process);
-
-				SetProgress(CrashDumperProgress.CreateDmp);
-				if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-sucess")))
-				{
-					Process.Kill();
-					SetProgress(CrashDumperProgress.Error);
-					return;
-				}
-
-				SetProgress(CrashDumperProgress.CreateFiles);
-				GetValue();
-
-				SetProgress(CrashDumperProgress.CopyFiles);
-				CopyFiles();
-
-				SetProgress(CrashDumperProgress.FinishedCollecting);
-				startSendEvent.WaitOne();
-
-				SetProgress(CrashDumperProgress.Compressing);
-				byte[] zip = GetZip();
-
-				SetProgress(CrashDumperProgress.Encrypting);
-				byte[] iv, key;
-				byte[] encrypted = Encrypt(zip, out iv, out key);
-
-				SetProgress(CrashDumperProgress.Uploading);
-				string location = Upload(encrypted);
-
-				SetProgress(CrashDumperProgress.Saving);
-				Attributes["visible-key"] = MakeStringKey(iv, key);
-				Attributes["visible-location"] = location;
-
-				UploadToAws();
-
-				SetProgress(CrashDumperProgress.Cleanup);
-				if (DoCleanUp)
-				{
-					Clean();
-				}
-
-				SetProgress(CrashDumperProgress.FinishedSending);
-				Process.Kill();
-
-			}
-			catch (Exception)
-			{
-				SetProgress(CrashDumperProgress.Error);
 				Process?.Kill();
 			}
 		}
@@ -175,11 +192,11 @@ namespace CrashHandler
 				if (extraInfo)
 				{
 					dtype |= 0;
-					ret = !(DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
+					ret = !(DbgHlp.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
 					
 				}
-				else if (DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
+				else if (DbgHlp.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
@@ -212,7 +229,7 @@ namespace CrashHandler
 				sb.Append(keyValuePair.Value);
 				sb.AppendLine("\"");
 			}
-			pretendFiles.Add("attributes.txt", sb.ToString());
+			_pretendFiles.Add("attributes.txt", sb.ToString());
 
 			foreach (KeyValuePair<string, string> pair in PretendFiles)
 			{
@@ -274,27 +291,37 @@ namespace CrashHandler
 			return encrypted;
 		}
 
-		private string Upload(byte[] payload)
-		{
-			HttpClient client = new HttpClient();
-			ByteArrayContent subContent = new ByteArrayContent(payload);
-			subContent.Headers.ContentDisposition =   
-				ContentDispositionHeaderValue.Parse($"form-data; name=\"files[]\"; filename=\"{Attributes["visible-crash-id"]}.zip.aes256\"");
-						
-			//subContent.Headers.ContentDisposition.FileName = ""
+	    private string Upload(byte[] payload)
+	    {
+	        HttpClient client = new HttpClient();
 
-			MultipartFormDataContent content = new MultipartFormDataContent {subContent};
-			HttpResponseMessage responce = client.PostAsync(@"https://mixtape.moe/upload.php", content).Result;
-			
-			return ExtractUrl(responce.Content.ReadAsStringAsync().Result);
-		}
+	        using (StreamContent content = new StreamContent(new MemoryStream(payload)))
+	        {
+	            content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+	            HttpResponseMessage responce = client
+	                .PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content)
+	                .Result;
 
-		private string ExtractUrl(string input)
+	            string resp = responce.Content.ReadAsStringAsync().Result;
+
+	            return ExtractUrl(resp);
+	        }
+
+	    }
+
+	    private string ExtractUrl(string input)
 		{
 			Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
-			Dictionary<string, object> files = (Dictionary<string, object>)((ArrayList)top["files"])[0];
-			string ret = (string) files["url"];
-			return ret;
+		    if ("success".Equals(top["status"]))
+		    {
+		        Dictionary<string, object> files = (Dictionary<string, object>) ((ArrayList) top["files"])[0];
+		        string ret = (string) files["url"];
+		        return ret;
+		    }
+		    else
+		    {
+		        throw new RemoteServiceException(top["reason"].ToString());
+		    }
 		}
 
 		private void UploadToAws()
@@ -396,7 +423,15 @@ namespace CrashHandler
 		}
 	}
 
-	public delegate void CrashDumperProgressChangedEvent(object sender, CrashDumperProgressChangedEventArgs args);
+    internal class RemoteServiceException : Exception
+    {
+        public RemoteServiceException(string toString) : base(toString)
+        {
+
+        }
+    }
+
+    public delegate void CrashDumperProgressChangedEvent(object sender, CrashDumperProgressChangedEventArgs args);
 
 	public class CrashDumperProgressChangedEventArgs : EventArgs
 	{

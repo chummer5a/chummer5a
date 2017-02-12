@@ -36,7 +36,7 @@ namespace Chummer
         {
             InitializeComponent();
             //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-            this.CenterToParent();
+            CenterToParent();
         }
 
         private void frmInitRoller_Load(object sender, EventArgs e)
@@ -77,7 +77,7 @@ namespace Chummer
         {
             set
             {
-                this.Text = value;
+                Text = value;
             }
         }
 
