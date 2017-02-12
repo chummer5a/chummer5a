@@ -6443,7 +6443,7 @@
 			<category translate="Audioverstärkung">Audio Enhancements</category>
 			<category translate="Biotech" translated="True">Biotech</category>
 			<category translate="Kommlink-Zubehör">Commlink Accessories</category>
-			<category translate="DocWagon-Vertrag">DocWagon Contract</category>
+			<category translate="Verträge/Unterhalt">Contracts/Upkeep</category>
 			<category translate="Drogen">Drugs</category>
 			<category translate="Sprengstoffe">Explosives</category>
 			<category translate="Foki">Foci</category>
@@ -6527,179 +6527,179 @@
 				<translate>Fairlight Caliban</translate>
 			</gear>
 			<gear>
-        			<id>73e98bb9-4521-45a2-9185-13067fe6b90b</id>
-        			<name>Renraku Aguchi</name>
-        			<page>19</page>
-        			<translate>Renraku Aguchi</translate>
-      			</gear>
-		<gear>
-			<id>ca8c8e4f-39a2-4e91-a6c7-239dd772e4d9</id>
-			<name>Sony Angel</name>
-			<page>19</page>
-			<translate>Sony Angel</translate>
-		</gear>
-		<gear>
-			<id>8bd42918-2c19-4738-8945-b93be3d8e26d</id>
-			<name>Transys Arthur</name>
-			<page>19</page>
-			<translate>Transys Arthur</translate>
-		</gear>
-		<gear>
-			<id>22210eac-768e-42c9-94a0-84077cbcec53</id>
-			<name>Common Denominator Element</name>
-			<page>19</page>
-			<translate>Common Denominator Element</translate>
-		</gear>
-		<gear>
-			<id>00342e9b-4c68-4f9d-88e3-f43bfe94069d</id>
-			<name>Leviathan Technical LT-2100</name>
-			<page>19</page>
-			<translate>Leviathan Technical LT-2100</translate>
-		</gear>
-		<gear>
-			<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-			<name>Microtronica Azteca Raptor</name>
-			<page>19</page>
-			<translate>Microtronica Azteca Raptor</translate>
-		</gear>
-		<gear>
-			<id>40a1ee23-8d27-4360-95ce-00557c773134</id>
-			<name>Xiao Technologies XT-2G</name>
-			<page>19</page>
-			<translate>Xiao Technologies XT-2G</translate>
-		</gear>
-		<gear>
-			<id>da11a064-34bb-409d-a5c5-8fad6ef602e4</id>
-			<name>Matrix Systems GridGopher</name>
-			<page>19</page>
-			<translate>Matrix Systems GridGopher</translate>
-		</gear>
-		<gear>
-			<id>d3ea65d9-833a-47be-93c1-001bd437eb9c</id>
-			<name>MCT-3500</name>
-			<page>19</page>
-			<translate>MCT-3500</translate>
-		</gear>
-		<gear>
-			<id>146a6f15-f00f-45bb-abea-f574b2241915</id>
-			<name>FTL Quark</name>
-			<page>19</page>
-			<translate>FTL Quark</translate>
-		</gear>
-		<gear>
-			<id>117bb53e-3f24-4e53-b861-29564bad7281</id>
-			<name>Novatech NetNinja</name>
-			<page>19</page>
-			<translate>Novatech NetNinja</translate>
-		</gear>
-		<gear>
-			<id>b141098a-1bb3-4003-91fa-fff6958ab68f</id>
-			<name>Pulse Wave</name>
-			<page>19</page>
-			<translate>Pulse Wave</translate>
-		</gear>
-		<gear>
-			<id>07bb0fb2-a84c-4324-8a33-2cdc8f6955a2</id>
-			<name>Fuchi Cyber-X7</name>
-			<page>19</page>
-			<translate>Fuchi Cyber-X7</translate>
-		</gear>
-		<gear>
-			<id>d3de4703-7215-4046-bf17-a8e11f92b3e5</id>
-			<name>EvoTech Himitsu</name>
-			<page>69</page>
-			<translate>EvoTech Himitsu</translate>
-		</gear>
-		<gear>
-			<id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
-			<name>MCT Blue Defender</name>
-			<page>69</page>
-			<translate>MCT Blue Defender</translate>
-		</gear>
-		<gear>
-			<id>4055ed01-a419-4b69-bbac-00260bfa653f</id>
-			<name>Nixdorf Sekretar</name>
-			<page>69</page>
-			<translate>Nixdorf Sekretär</translate>
-		</gear>
-		<gear>
-			<id>784babc6-170b-4bcc-9572-699368e898de</id>
-			<name>Nixdorf Sekretar w/ Liebesekretar</name>
-			<page>69</page>
-			<translate>Nixdorf Sekretär mit Liebessekretär</translate>
-		</gear>
-		<gear>
-			<id>de794f9c-505f-4a09-8be9-f43749240799</id>
-			<name>MCT Trainee</name>
-			<page>72</page>
-			<translate>MCT Trainee</translate>
-		</gear>
-		<gear>
-			<id>0f8d360a-8c9a-41f4-ba5c-f4f8c5677145</id>
-			<name>Radio Shack PCD-500</name>
-			<page>72</page>
-			<translate>Radio Shack PCD-500</translate>
-		</gear>
-		<gear>
-			<id>1658d851-21a0-455e-9b87-ed04b4e010a5</id>
-			<name>C-K Analyst</name>
-			<page>72</page>
-			<translate>C-K Analyst</translate>
-		</gear>
-		<gear>
-			<id>b9d996cd-b670-4bf4-a021-047a887891a2</id>
-			<name>Little Hornet</name>
-			<page>72</page>
-			<translate>Little Hornet</translate>
-		</gear>
-		<gear>
-			<id>98a97367-8747-4ba9-ae97-ea371baaec13</id>
-			<name>Aztechnology Emissary</name>
-			<page>72</page>
-			<translate>Aztechnology Emissary</translate>
-		</gear>
-		<gear>
-			<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-			<name>Microtronica Azteca 300</name>
-			<page>72</page>
-			<translate>Microtronica Azteca 300</translate>
-		</gear>
-		<gear>
-			<id>85828a80-cf4a-4f9f-8eb5-c2c5db5e98ab</id>
-			<name>Yak Killer</name>
-			<page>72</page>
-			<translate>Yak Killer</translate>
-		</gear>
-		<gear>
-			<id>88ad69c3-7e45-4a27-b6a2-bcc525fe3a73</id>
-			<name>Ring of Light Special</name>
-			<page>72</page>
-			<translate>Ring of Light Special</translate>
-		</gear>
-		<gear>
-			<id>396eb5a2-57d3-4a6f-b30d-d3809b073d54</id>
-			<name>Shiawase Cyber-4</name>
-			<page>72</page>
-			<translate>Shiawase Cyber-4</translate>
-		</gear>
-		<gear>
-			<id>aa94122a-6991-46d4-986d-13d72bff1c22</id>
-			<name>Xiao MPG-1</name>
-			<page>72</page>
-			<translate>Xiao MPG-1</translate>
-		</gear>
-		<gear>
-			<id>e19c44a6-02bd-445c-8def-e43c1a5704e0</id>
-			<name>Ares Echo Unlimited</name>
-			<page>72</page>
-			<translate>Ares Echo Unlimited</translate>
-		</gear>
-		<gear>
-			<id>c9cdce54-8b00-48c2-be2a-7e81a3d5a426</id>
-			<name>Fairlight Paladin</name>
-			<page>72</page>
-			<translate>Fairlight Paladin</translate>
-		</gear>
+				<id>73e98bb9-4521-45a2-9185-13067fe6b90b</id>
+				<name>Renraku Aguchi</name>
+				<page>19</page>
+				<translate>Renraku Aguchi</translate>
+			</gear>
+			<gear>
+				<id>ca8c8e4f-39a2-4e91-a6c7-239dd772e4d9</id>
+				<name>Sony Angel</name>
+				<page>19</page>
+				<translate>Sony Angel</translate>
+			</gear>
+			<gear>
+				<id>8bd42918-2c19-4738-8945-b93be3d8e26d</id>
+				<name>Transys Arthur</name>
+				<page>19</page>
+				<translate>Transys Arthur</translate>
+			</gear>
+			<gear>
+				<id>22210eac-768e-42c9-94a0-84077cbcec53</id>
+				<name>Common Denominator Element</name>
+				<page>19</page>
+				<translate>Common Denominator Element</translate>
+			</gear>
+			<gear>
+				<id>00342e9b-4c68-4f9d-88e3-f43bfe94069d</id>
+				<name>Leviathan Technical LT-2100</name>
+				<page>19</page>
+				<translate>Leviathan Technical LT-2100</translate>
+			</gear>
+			<gear>
+				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
+				<name>Microtronica Azteca Raptor</name>
+				<page>19</page>
+				<translate>Microtronica Azteca Raptor</translate>
+			</gear>
+			<gear>
+				<id>40a1ee23-8d27-4360-95ce-00557c773134</id>
+				<name>Xiao Technologies XT-2G</name>
+				<page>19</page>
+				<translate>Xiao Technologies XT-2G</translate>
+			</gear>
+			<gear>
+				<id>da11a064-34bb-409d-a5c5-8fad6ef602e4</id>
+				<name>Matrix Systems GridGopher</name>
+				<page>19</page>
+				<translate>Matrix Systems GridGopher</translate>
+			</gear>
+			<gear>
+				<id>d3ea65d9-833a-47be-93c1-001bd437eb9c</id>
+				<name>MCT-3500</name>
+				<page>19</page>
+				<translate>MCT-3500</translate>
+			</gear>
+			<gear>
+				<id>146a6f15-f00f-45bb-abea-f574b2241915</id>
+				<name>FTL Quark</name>
+				<page>19</page>
+				<translate>FTL Quark</translate>
+			</gear>
+			<gear>
+				<id>117bb53e-3f24-4e53-b861-29564bad7281</id>
+				<name>Novatech NetNinja</name>
+				<page>19</page>
+				<translate>Novatech NetNinja</translate>
+			</gear>
+			<gear>
+				<id>b141098a-1bb3-4003-91fa-fff6958ab68f</id>
+				<name>Pulse Wave</name>
+				<page>19</page>
+				<translate>Pulse Wave</translate>
+			</gear>
+			<gear>
+				<id>07bb0fb2-a84c-4324-8a33-2cdc8f6955a2</id>
+				<name>Fuchi Cyber-X7</name>
+				<page>19</page>
+				<translate>Fuchi Cyber-X7</translate>
+			</gear>
+			<gear>
+				<id>d3de4703-7215-4046-bf17-a8e11f92b3e5</id>
+				<name>EvoTech Himitsu</name>
+				<page>69</page>
+				<translate>EvoTech Himitsu</translate>
+			</gear>
+			<gear>
+				<id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
+				<name>MCT Blue Defender</name>
+				<page>69</page>
+				<translate>MCT Blue Defender</translate>
+			</gear>
+			<gear>
+				<id>4055ed01-a419-4b69-bbac-00260bfa653f</id>
+				<name>Nixdorf Sekretar</name>
+				<page>69</page>
+				<translate>Nixdorf Sekretär</translate>
+			</gear>
+			<gear>
+				<id>784babc6-170b-4bcc-9572-699368e898de</id>
+				<name>Nixdorf Sekretar w/ Liebesekretar</name>
+				<page>69</page>
+				<translate>Nixdorf Sekretär mit Liebessekretär</translate>
+			</gear>
+			<gear>
+				<id>de794f9c-505f-4a09-8be9-f43749240799</id>
+				<name>MCT Trainee</name>
+				<page>72</page>
+				<translate>MCT Trainee</translate>
+			</gear>
+			<gear>
+				<id>0f8d360a-8c9a-41f4-ba5c-f4f8c5677145</id>
+				<name>Radio Shack PCD-500</name>
+				<page>72</page>
+				<translate>Radio Shack PCD-500</translate>
+			</gear>
+			<gear>
+				<id>1658d851-21a0-455e-9b87-ed04b4e010a5</id>
+				<name>C-K Analyst</name>
+				<page>72</page>
+				<translate>C-K Analyst</translate>
+			</gear>
+			<gear>
+				<id>b9d996cd-b670-4bf4-a021-047a887891a2</id>
+				<name>Little Hornet</name>
+				<page>72</page>
+				<translate>Little Hornet</translate>
+			</gear>
+			<gear>
+				<id>98a97367-8747-4ba9-ae97-ea371baaec13</id>
+				<name>Aztechnology Emissary</name>
+				<page>72</page>
+				<translate>Aztechnology Emissary</translate>
+			</gear>
+			<gear>
+				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
+				<name>Microtronica Azteca 300</name>
+				<page>72</page>
+				<translate>Microtronica Azteca 300</translate>
+			</gear>
+			<gear>
+				<id>85828a80-cf4a-4f9f-8eb5-c2c5db5e98ab</id>
+				<name>Yak Killer</name>
+				<page>72</page>
+				<translate>Yak Killer</translate>
+			</gear>
+			<gear>
+				<id>88ad69c3-7e45-4a27-b6a2-bcc525fe3a73</id>
+				<name>Ring of Light Special</name>
+				<page>72</page>
+				<translate>Ring of Light Special</translate>
+			</gear>
+			<gear>
+				<id>396eb5a2-57d3-4a6f-b30d-d3809b073d54</id>
+				<name>Shiawase Cyber-4</name>
+				<page>72</page>
+				<translate>Shiawase Cyber-4</translate>
+			</gear>
+			<gear>
+				<id>aa94122a-6991-46d4-986d-13d72bff1c22</id>
+				<name>Xiao MPG-1</name>
+				<page>72</page>
+				<translate>Xiao MPG-1</translate>
+			</gear>
+			<gear>
+				<id>e19c44a6-02bd-445c-8def-e43c1a5704e0</id>
+				<name>Ares Echo Unlimited</name>
+				<page>72</page>
+				<translate>Ares Echo Unlimited</translate>
+			</gear>
+			<gear>
+				<id>c9cdce54-8b00-48c2-be2a-7e81a3d5a426</id>
+				<name>Fairlight Paladin</name>
+				<page>72</page>
+				<translate>Fairlight Paladin</translate>
+			</gear>
 			<gear>
 				<id>2e409fba-8b1a-42c4-8fa5-4d256ccd540d</id>
 				<name>AR Gloves</name>
@@ -6904,50 +6904,50 @@
 				<page>446</page>
 				<translate>Linguasoft</translate>
 			</gear>
-	<!-- Region Cyberdeck Modules -->
-		<gear>
-			<id>b9b50b8f-de23-4953-b25d-45aaa6a9952f</id>
-      			<name>Hardening</name>
-			<page>73</page>
-			<translate>Härte</translate>
-		</gear>
-		<gear>
-			<id>7355616d-5d79-4d0a-96f2-5ca4095fcabf</id>
-			<name>Induction Receiver</name>
-			<page>73</page>
-			<translate>Induktionsempfänger</translate>
-		</gear>
-		<gear>
-			<id>8706c98d-b53b-4a29-b21b-a921030ae801</id>
-			<name>Multidimensional Coprocessor</name>
-			<page>73</page>
-			<translate>Multidimensionaler Koprozessor</translate>
-		</gear>
-		<gear>
-			<id>9604bbf8-49a0-46ae-8a42-f7e2d473f5c2</id>
-			<name>Overwatch Mask</name>
-			<page>73</page>
-			<translate>Overwatch-Maske</translate>
-		</gear>
-		<gear>
-			<id>f11b2c82-6dbb-4e32-831f-1387fff2274c</id>
-			<name>Program Carrier</name>
-			<page>73</page>
-			<translate>Programmträger</translate>
-		</gear>
-		<gear>
-			<id>4ab02099-2d3c-437f-bdba-26ec919283c3</id>
-			<name>Self-Destruct</name>
-			<page>73</page>
-			<translate>Selbstzerstörung</translate>	
-		</gear>
-		<gear>
-			<id>ec2a95d8-0c4a-459b-85b3-420174c09d5e</id>
-			<name>Vectored Signal Filter</name>
-			<page>73</page>
-			<translate>Gerichteter Signalfilter</translate>
-		</gear>
-		<!-- End Region -->
+			<!-- Region Cyberdeck Modules -->
+			<gear>
+				<id>b9b50b8f-de23-4953-b25d-45aaa6a9952f</id>
+				<name>Hardening</name>
+				<page>73</page>
+				<translate>Härte</translate>
+			</gear>
+			<gear>
+				<id>7355616d-5d79-4d0a-96f2-5ca4095fcabf</id>
+				<name>Induction Receiver</name>
+				<page>73</page>
+				<translate>Induktionsempfänger</translate>
+			</gear>
+			<gear>
+				<id>8706c98d-b53b-4a29-b21b-a921030ae801</id>
+				<name>Multidimensional Coprocessor</name>
+				<page>73</page>
+				<translate>Multidimensionaler Koprozessor</translate>
+			</gear>
+			<gear>
+				<id>9604bbf8-49a0-46ae-8a42-f7e2d473f5c2</id>
+				<name>Overwatch Mask</name>
+				<page>73</page>
+				<translate>Overwatch-Maske</translate>
+			</gear>
+			<gear>
+				<id>f11b2c82-6dbb-4e32-831f-1387fff2274c</id>
+				<name>Program Carrier</name>
+				<page>73</page>
+				<translate>Programmträger</translate>
+			</gear>
+			<gear>
+				<id>4ab02099-2d3c-437f-bdba-26ec919283c3</id>
+				<name>Self-Destruct</name>
+				<page>73</page>
+				<translate>Selbstzerstörung</translate>	
+			</gear>
+			<gear>
+				<id>ec2a95d8-0c4a-459b-85b3-420174c09d5e</id>
+				<name>Vectored Signal Filter</name>
+				<page>73</page>
+				<translate>Gerichteter Signalfilter</translate>
+			</gear>
+			<!-- End Region -->
 			<gear>
 				<id>c56554d1-4102-446f-8d3e-acd0c7404c3a</id>
 				<name>Certified Credstick, Standard</name>
@@ -8706,26 +8706,26 @@
 			</gear>
 			<gear translated="True">
 				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
-				<name>DocWagon Contract, Basic</name>
-				<translate>DocWagon-Vertrag, Standard</translate>
+				<name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Standard (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
-				<name>DocWagon Contract, Gold</name>
-				<translate>DocWagon-Vertrag, Gold</translate>
+				<name>DocWagon Contract, Gold (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Gold (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
-				<name>DocWagon Contract, Platinum</name>
-				<translate>DocWagon-Vertrag, Platin</translate>
+				<name>DocWagon Contract, Platinum (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Platin (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
-				<name>DocWagon Contract, Super-Platinum</name>
-				<translate>DocWagon-Vertrag, Superplatin</translate>
+				<name>DocWagon Contract, Super-Platinum (1 Year Advance Payment)</name>
+				<translate>DocWagon-Vertrag, Superplatin (Einjährige Vorleistung)</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
@@ -9444,7 +9444,7 @@
 			</gear>
 			<gear translated="True">
 				<id>2e98e2af-6a0e-4b2f-a573-1766552b4ba4</id>
-				<name>Personaflix</name>
+				<name>Personafix</name>
 				<translate>Personafix</translate>
 				<page>415</page>
 			</gear>
@@ -9573,6 +9573,30 @@
 				<name>Dangerous Area</name>
 				<translate>gefährliche Gegend</translate>
 				<page>374</page>
+			</quality>
+			<quality translated="True">
+				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
+				<name>DocWagon Contract, Basic</name>
+				<translate>DocWagon-Vertrag, Standard</translate>
+				<page>454</page>
+			</quality>
+			<quality translated="True">
+				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
+				<name>DocWagon Contract, Gold</name>
+				<translate>DocWagon-Vertrag, Gold</translate>
+				<page>454</page>
+			</quality>
+			<quality translated="True">
+				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
+				<name>DocWagon Contract, Platinum</name>
+				<translate>DocWagon-Vertrag, Platin</translate>
+				<page>454</page>
+			</quality>
+			<quality translated="True">
+				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
+				<name>DocWagon Contract, Super-Platinum</name>
+				<translate>DocWagon-Vertrag, Superplatin</translate>
+				<page>454</page>
 			</quality>
 		</qualities>
 	</chummer>
@@ -12426,6 +12450,7 @@
 			<category translate="Hackingprogramme">Hacking Programs</category>
 			<category translate="PI-Tac" translated="True">PI-Tac</category>
 			<category translate="Software" translated="True">Software</category>
+			<category translate="Fortgeschrittene Programme" translated="True">Advanced Programs</category>
 		</categories>
 		<programs>
 			<program>
@@ -12625,6 +12650,172 @@
 				<name>PI-Tac Level III (ComPac-Esprit General)</name>
 				<translate>PI-Tac Stufe III (ComPac-Esprit General)</translate>
 			</program>
+			<!-- Region AI Advanced Programs -->
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Abduction</name>
+				<translate>Ableitung</translate>
+				<page>167</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Authority</name>
+				<translate>Autorität</translate>
+				<page>167</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Cascade</name>
+				<translate>Angriffskaskade</translate>
+				<page>167</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Eguchi Smile</name>
+				<translate>Eguchi-Lächeln</translate>
+				<page>167</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Fnord</name>
+				<translate>Fnord</translate>
+				<page>168</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Medic</name>
+				<translate>Medic</translate>
+				<page>168</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Nyetworking</name>
+				<translate>Njetzwerken</translate>
+				<page>169</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Poke</name>
+				<translate>Poke</translate>
+				<page>169</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Psychotropic Biofeedback</name>
+				<translate>Psychotrpes Biofeedback</translate>
+				<page>169</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Rootkit</name>
+				<translate>Rootkit</translate>
+				<page>170</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Rust</name>
+				<translate>Rost</translate>
+				<page>170</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Shunt</name>
+				<translate>Verlagern</translate>
+				<page>170</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Spotter</name>
+				<translate>Feuerleitung</translate>
+				<page>168</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Teergrube</name>
+				<translate>Teergrube</translate>
+				<page>170</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>Uncertainty</name>
+				<translate>Störfall</translate>
+				<page>170</page>
+			</program>
+			<program>
+				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+				<name>WTLM</name>
+				<translate>Natürlicher Gang</translate>
+				<page>168</page>
+			</program>
+			<!-- End Region -->
+			<!-- Region Autosofts -->
+			<program>
+				<id>012d2de2-79cb-4f3b-9571-47c8b550a505</id>
+				<name>Clearsight Autosoft</name>
+				<translate>Clearsight Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>434e08f4-43c1-4684-8b65-c55f5db61405</id>
+				<name>Electronic Warfare Autosoft</name>
+				<translate>Elektronische Kriegsführung Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>f4c2f78b-1659-469d-acf0-7264c8c5c65f</id>
+				<name>[Model] Evasion Autosoft</name>
+				<translate>Ausweichen [Modell] Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>e9110525-4261-4626-b765-8668eec04fd3</id>
+				<name>[Model] Maneuvering Autosoft</name>
+				<translate>Manövrieren [Modell] Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>9255a84b-b146-4998-bb17-36c5d6b4fa7d</id>
+				<name>[Model] Stealth Autosoft</name>
+				<translate>Stealth [Modell] Autosoft</translate>
+				<page>267</page>
+			</program>
+			<program>
+				<id>052220bd-c15e-41e6-8455-d3a7c5c8e639</id>
+				<name>[Weapon] Targeting Autosoft</name>
+				<translate>Zielerfassung [Waffe] Autosoft</translate>
+				<page></page>
+			</program>
+			<program>
+				<id>0cc0ac2e-542d-4762-bd8c-70e734d96be1</id>
+				<name>Smartsoft</name>
+				<translate>Smartsoft</translate>
+				<page>134</page>
+			</program>
+			<program>
+				<id>37334b00-4143-4587-bffa-85b7f96c59bb</id>
+				<name>Group Autosoft</name>
+				<translate>Gruppierung Autosoft</translate>
+				<page>134</page>
+			</program>
+			<program>
+				<id>1310e977-beee-46f6-afce-91d851d89dc4</id>
+				<name>Skill Autosoft</name>
+				<translate>Fertigkeit Autosoft</translate>
+				<page>134</page>
+			</program>
+			<program>
+				<id>c52e0caa-d520-4f4b-ae02-f741ca1bf356</id>
+				<name>Skill Autosoft (Restricted)</name>
+				<translate>Fertigkeit Autosoft (Eingeschränkt)</translate>
+				<page></page>
+			</program>
+			<program>
+				<id>af2fcad7-0ef5-454a-aac7-64c9ad495654</id>
+				<name>[Weapon] Melee Autosoft</name>
+				<translate>[Waffe] Nahkampf Autosoft</translate>
+				<page>134</page>
+			</program>
+			<!-- End Region -->
 		</programs>
 	</chummer>
 	<chummer file="qualities.xml">
@@ -12697,7 +12888,7 @@
 			<quality>
 				<id>db579224-99c7-48e0-84ab-77a987a84f4a</id>
 				<name>Double Jointed</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Gummigelenke</translate>
 			</quality>
 			<quality>
@@ -12831,14 +13022,14 @@
 			<quality>
 				<id>225f0d31-8c03-4283-9a22-558ab01a6c47</id>
 				<name>Natural Athlete</name>
-		<page>84</page>
-		<translate>Bewegungstalent</translate>
+				<page>84</page>
+				<translate>Bewegungstalent</translate>
 			</quality>
 			<quality>
 				<id>52648a83-1d2a-4b04-b7fc-ee5a62bce4f7</id>
 				<name>Natural Hardening</name>
-		<page>85</page>
-		<translate>Natürliche Härte</translate>
+				<page>85</page>
+				<translate>Natürliche Härte</translate>
 			</quality>
 			<quality>
 				<id>8d558134-210d-4c96-b487-021a44409075</id>
@@ -12861,7 +13052,7 @@
 			<quality>
 				<id>291efdb6-a8b8-49ce-b2be-72f9d3f8a243</id>
 				<name>Quick Healer</name>
-		<page>85</page>
+				<page>85</page>
 				<translate>Schnellheilung</translate>
 			</quality>
 			<quality>
@@ -13229,49 +13420,49 @@
 			<quality>
 				<id>c6939a14-58c0-4168-b936-8124fd09ffe6</id>
 				<name>Focused Concentration (Rating 3)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 3)</translate>
 			</quality>
 			<quality>
 				<id>79979e99-6776-4c93-b202-b630fabf3b30</id>
 				<name>Focused Concentration (Rating 4)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 4)</translate>
 			</quality>
 			<quality>
 				<id>0e911cb1-da5c-4117-ae20-ffbf7f607c7d</id>
 				<name>Focused Concentration (Rating 5)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 5)</translate>
 			</quality>
 			<quality>
 				<id>90ce7689-1dd8-437b-98ad-f10207380684</id>
 				<name>Focused Concentration (Rating 6)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 6)</translate>
 			</quality>
 			<quality>
 				<id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
 				<name>Gearhead</name>
-		<page>85</page>
+				<page>85</page>
 				<translate>Rennpilot</translate>
 			</quality>
 			<quality>
 				<id>0f3a0971-1cc5-47d6-a32d-d098ecdfb4d9</id>
 				<name>Indomitable (Mental)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Durchsetzungskraft (Mental)</translate>
 			</quality>
 			<quality>
 				<id>58e6a651-cdd7-4144-a2cc-4cee24526e92</id>
 				<name>Indomitable (Physical)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Durchsetzungskraft (Physisch)</translate>
 			</quality>
 			<quality>
 				<id>b9f1dbeb-1728-4250-a066-4773f758fe6a</id>
 				<name>Indomitable (Social)</name>
-		<page>84</page>
+				<page>84</page>
 				<translate>Durchsetzungskraft (Sozial)</translate>
 			</quality>
 			<quality>
@@ -13352,61 +13543,61 @@
 			<quality>
 				<id>cfdc255a-bb46-4d9c-8960-e4181455f4e3</id>
 				<name>Allergy (Uncommon, Extreme)</name>
-		<page>88</page>
-		<translate>Allergie (Selten, extrem)</translate>
+				<page>88</page>
+				<translate>Allergie (Selten, extrem)</translate>
 			</quality>
 			<quality>
 				<id>8a40007a-9876-4998-a7c9-047248cfbc52</id>
 				<name>Allergy (Common, Extreme)</name>
-		<page>88</page>
-		<translate>Allergie (Häufig, extrem)</translate>
+				<page>88</page>
+				<translate>Allergie (Häufig, extrem)</translate>
 			</quality>
 			<quality>
 				<id>dda02333-10e3-4295-9392-691ff3a7bd4a</id>
 				<name>Code of Honor</name>
-		<page>89</page>
+				<page>89</page>
 				<translate>Ehrenkodex</translate>
 			</quality>
 			<quality>
 				<id>0cf25fda-725b-49fd-a8cf-de589e938065</id>
 				<name>Insomnia (Basic)</name>
-		<page>92</page>
+				<page>92</page>
 				<translate>Schlaflosigkeit (einfach)</translate>
 			</quality>
 			<quality>
 				<id>149e6bf7-a6b4-4893-b755-4d983372079c</id>
 				<name>Insomnia (Full)</name>
-		<page>92</page>
+				<page>92</page>
 				<translate>Schlaflosigkeit (voll)</translate>
 			</quality>
 			<quality>
 				<id>c9cd05ad-cd3c-451e-8285-e0fb1d95ebc1</id>
 				<name>Loss of Confidence</name>
-		<page>96</page>
+				<page>96</page>
 				<translate>Verunsichert</translate>
 			</quality>
 			<quality>
 				<id>e00623e1-54b0-4a91-b234-3c7e141deef4</id>
 				<name>SINner (Corporate)</name>
-		<page>93</page>
+				<page>93</page>
 				<translate>SIN-Mensch (Konzernbürger)</translate>
 			</quality>
 			<quality>
 				<id>9ac85feb-ae1e-4996-8514-3570d411e1d5</id>
 				<name>SINner (National)</name>
-		<page>93</page>
+				<page>93</page>
 				<translate>SIN-Mensch (Staatlich)</translate>
 			</quality>
 			<quality>
 				<id>318d2edd-833b-48c5-a3e1-343bf03848a5</id>
 				<name>SINner (Corporate Limited)</name>
-		<page>93</page>
-		<translate>SIN-Mensch (Eingeschränkte Konzern)</translate>
+				<page>93</page>
+				<translate>SIN-Mensch (Eingeschränkte Konzern)</translate>
 			</quality>
 			<quality>
 				<id>8ba2830a-3f10-4877-9752-93be051b205b</id>
 				<name>Social Stress</name>
-		<page>94</page>
+				<page>94</page>
 				<translate>Sozialstress</translate>
 			</quality>
 			<quality>
@@ -13442,7 +13633,7 @@
 			<quality>
 				<id>e96c7280-b9b0-4112-8b65-a3568c7ca13e</id>
 				<name>Unsteady Hands</name>
-		<page>91</page>
+				<page>91</page>
 				<translate>Händezittern</translate>
 			</quality>
 			<quality>
@@ -14213,10 +14404,10 @@
 				<specs>
 					<spec translate="Holdout">Holdouts</spec>
 					<spec translate="Revolver">Revolvers</spec>
-				<spec translate="Halbautomatik">Semi-Automatics</spec>
-				<spec translate="Taser">Tasers</spec>
-			</specs>
-	  </skill>
+					<spec translate="Halbautomatik">Semi-Automatics</spec>
+					<spec translate="Taser">Tasers</spec>
+				</specs>
+			</skill>
 			<skill>
 				<id>3a38bbcf-38b0-435b-98f2-4ce8c50e8490</id>
 				<name>Registering</name>
@@ -14441,7 +14632,7 @@
 			<skill>
 				<id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
 				<name>Impersonation</name>
-		<page>139</page>
+				<page>139</page>
 				<translate>Verkörperung</translate>
 				<specs>
 					<spec translate="Zwerg">Dwarf</spec>
@@ -14454,7 +14645,7 @@
 			<skill>
 				<id>53f96d6a-363b-4c14-be1d-68e74930c67b</id>
 				<name>Performance</name>
-		<page>139</page>
+				<page>139</page>
 				<translate>Vorführung</translate>
 				<specs>
 					<spec translate="Schauspiel">Acting</spec>
@@ -14478,7 +14669,7 @@
 			<skill>
 				<id>9cff9aa7-d092-4f89-8b7b-3ab835818874</id>
 				<name>Sneaking</name>
-		<page>133</page>
+				<page>133</page>
 				<translate>Schleichen</translate>
 				<specs>
 					<spec translate="Wüste">Desert</spec>
@@ -19775,13 +19966,13 @@
 				<id>d57d2c64-1f61-4f5f-a465-8ce0dfacec6a</id>
 				<name>Smartgun System, Internal</name>
 				<page>435</page>
-		<translate>Smartgunsystem, intern</translate>
+				<translate>Smartgunsystem, intern</translate>
 			</accessory>
 			<accessory>
 				<id>b3562903-b1c6-4300-9f6e-25e0102aa69b</id>
 				<name>Smartgun System, External</name>
 				<page>435</page>
-		<translate>Smartgunsystem, extern</translate>
+				<translate>Smartgunsystem, extern</translate>
 			</accessory>
 			<accessory>
 				<id>3c329adb-7c13-4d2c-b25c-49be89173fa1</id>
@@ -20746,8 +20937,8 @@
 				<translate>Matrix Initiative</translate>
 			</improvement>
 			<improvement>
-				<id>matrixinitiativepassadd</id>
-				<name>Matrix Initiative Passes</name>
+				<id>matrixinitiativediceadd</id>
+				<name>Matrix Initiative Dice</name>
 				<translate>Matrix Initiativedurchgänge</translate>
 			</improvement>
 			<improvement>
@@ -20988,8 +21179,8 @@
 			</priority>
 			<priority translated="True">
 				<id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
-				<name>C - Human, Dwarf, Elf, or Ork</name>
-				<translate>C - Mensch, Zwerg, Elf oder Ork</translate>
+				<name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
+				<translate>C - Mensch, Zwerg, Elf, Ork oder K.I.</translate>
 			</priority>
 			<priority translated="True">
 				<id>255da2ba-8d21-4a73-9f81-37156901db72</id>
@@ -21028,28 +21219,28 @@
 			</priority>
 			<priority translated="True">
 				<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
-				<name>A - 24 Attributes</name>
-				<translate>A - 24 Attribute</translate>
+				<name>A - 24 (12) Attributes</name>
+				<translate>A - 24 (12) Attribute</translate>
 			</priority>
 			<priority translated="True">
 				<id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
-				<name>B - 20 Attributes</name>
-				<translate>B - 20 Attribute</translate>
+				<name>B - 20 (10) Attributes</name>
+				<translate>B - 20 (10) Attribute</translate>
 			</priority>
 			<priority translated="True">
 				<id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
-				<name>C - 16 Attributes</name>
-				<translate>C - 16 Attribute</translate>
+				<name>C - 16 (8) Attributes</name>
+				<translate>C - 16 (8) Attribute</translate>
 			</priority>
 			<priority translated="True">
 				<id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
-				<name>D - 14 Attributes</name>
-				<translate>D - 14 Attribute</translate>
+				<name>D - 14 (7) Attributes</name>
+				<translate>D - 14 (7) Attribute</translate>
 			</priority>
 			<priority translated="True">
 				<id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
-				<name>E - 12 Attributes</name>
-				<translate>E - 12 Attribute</translate>
+				<name>E - 12 (6) Attributes</name>
+				<translate>E - 12 (6) Attribute</translate>
 			</priority>
 			<priority translated="True">
 				<id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>

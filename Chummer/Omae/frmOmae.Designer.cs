@@ -39,7 +39,7 @@
 			this.cmdUpload = new System.Windows.Forms.Button();
 			this.cmdSearch = new System.Windows.Forms.Button();
 			this.panOmae = new System.Windows.Forms.Panel();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.cmdPasswordReset = new System.Windows.Forms.Button();
 			this.cmdMyAccount = new System.Windows.Forms.Button();
 			this.cmdUploadLanguage = new System.Windows.Forms.Button();
@@ -601,7 +601,7 @@
 		private System.Windows.Forms.Button cmdUpload;
 		private System.Windows.Forms.Button cmdSearch;
 		private System.Windows.Forms.Panel panOmae;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.Panel panLogin;
 		private System.Windows.Forms.Panel panLoggedIn;
 		private System.Windows.Forms.Label lblLoggedIn;

@@ -38,7 +38,7 @@
             this.chkDiscountedGeas = new System.Windows.Forms.CheckBox();
             this.lblDiscountLabel = new System.Windows.Forms.Label();
             this.imgNotes = new System.Windows.Forms.PictureBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
             this.SuspendLayout();
@@ -213,7 +213,7 @@
 		private System.Windows.Forms.CheckBox chkDiscountedGeas;
 		private System.Windows.Forms.Label lblDiscountLabel;
 		private System.Windows.Forms.PictureBox imgNotes;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         public System.Windows.Forms.NumericUpDown nudRating;
 
     }

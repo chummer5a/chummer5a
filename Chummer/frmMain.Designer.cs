@@ -27,7 +27,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+            this.DoubleBuffered = true;
+            this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,6 +40,7 @@
 			this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuFilePrintMultiple = new System.Windows.Forms.ToolStripMenuItem();
 			this.printSetupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.mnuClearUnpinnedItems = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuMURSep = new System.Windows.Forms.ToolStripSeparator();
 			this.mnuStickyMRU0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuStickyMRU1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,6 +69,7 @@
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
+			this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,9 +89,8 @@
 			this.printPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.tabForms = new System.Windows.Forms.TabControl();
-			this.mnuClearUnpinnedItems = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -219,6 +221,15 @@
 			this.printSetupToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.printSetupToolStripMenuItem.Text = "Print Setup";
 			this.printSetupToolStripMenuItem.Visible = false;
+			// 
+			// mnuClearUnpinnedItems
+			// 
+			this.mnuClearUnpinnedItems.Image = global::Chummer.Properties.Resources.delete;
+			this.mnuClearUnpinnedItems.Name = "mnuClearUnpinnedItems";
+			this.mnuClearUnpinnedItems.Size = new System.Drawing.Size(195, 22);
+			this.mnuClearUnpinnedItems.Tag = "Menu_Main_ClearUnpinnedItems";
+			this.mnuClearUnpinnedItems.Text = "Clear Unpinned Items";
+			this.mnuClearUnpinnedItems.Click += new System.EventHandler(this.mnuClearUnpinnedItems_Click);
 			// 
 			// mnuMURSep
 			// 
@@ -436,6 +447,7 @@
             this.toolStripSeparator5,
             this.optionsToolStripMenuItem,
             this.mnuToolsUpdate,
+            this.mnuRestart,
             this.mnuToolsOmae});
 			this.toolsMenu.Name = "toolsMenu";
 			this.toolsMenu.Size = new System.Drawing.Size(47, 20);
@@ -474,6 +486,15 @@
 			this.mnuToolsUpdate.Tag = "Menu_Main_Update";
 			this.mnuToolsUpdate.Text = "Check for Updates";
 			this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
+			// 
+			// mnuRestart
+			// 
+			this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
+			this.mnuRestart.Name = "mnuRestart";
+			this.mnuRestart.Size = new System.Drawing.Size(171, 22);
+			this.mnuRestart.Tag = "Button_Update_RestartChummer";
+			this.mnuRestart.Text = "Restart Chummer";
+			this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
 			// 
 			// mnuToolsOmae
 			// 
@@ -667,15 +688,6 @@
 			this.tabForms.Visible = false;
 			this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
 			// 
-			// mnuClearUnpinnedItems
-			// 
-			this.mnuClearUnpinnedItems.Name = "mnuClearUnpinnedItems";
-			this.mnuClearUnpinnedItems.Size = new System.Drawing.Size(195, 22);
-			this.mnuClearUnpinnedItems.Text = "Clear Unpinned Items";
-			this.mnuClearUnpinnedItems.Tag = "Menu_Main_ClearUnpinnedItems";
-			this.mnuClearUnpinnedItems.Image = global::Chummer.Properties.Resources.delete;
-			this.mnuClearUnpinnedItems.Click += new System.EventHandler(this.mnuClearUnpinnedItems_Click);
-			// 
 			// frmMain
 			// 
 			this.AllowDrop = true;
@@ -691,6 +703,7 @@
 			this.Name = "frmMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Chummer5";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_Closing);
 			this.Load += new System.EventHandler(this.frmMain_Load);
 			this.MdiChildActivate += new System.EventHandler(this.frmMain_MdiChildActivate);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmMain_DragDrop);
@@ -734,7 +747,7 @@
 		private System.Windows.Forms.ToolStripButton tsbPrint;
 		private System.Windows.Forms.ToolStripButton printPreviewToolStripButton;
 		private System.Windows.Forms.ToolStripButton helpToolStripButton;
-		private System.Windows.Forms.ToolTip toolTip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip toolTip;
 		private System.Windows.Forms.ToolStripMenuItem mnuToolsUpdate;
 		private System.Windows.Forms.ToolStripButton tsbSave;
 		private System.Windows.Forms.ToolStripMenuItem mnuHelpRevisionHistory;
@@ -766,6 +779,7 @@
 		private System.Windows.Forms.ToolStripMenuItem mnuToolsOmae;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpDumpshock;
 		private System.Windows.Forms.ToolStripMenuItem mnuClearUnpinnedItems;
+		private System.Windows.Forms.ToolStripMenuItem mnuRestart;
 	}
 }
 

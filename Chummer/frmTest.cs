@@ -40,7 +40,7 @@ namespace Chummer
 
 		private void cmdTest_Click(object sender, EventArgs e)
 		{
-			txtOutput.Text = "";
+			txtOutput.Text = string.Empty;
 			switch (cboTest.Text)
 			{
 				case "armor.xml":
@@ -97,15 +97,15 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
-						int objValue = objTemp.TotalAccel;
+                        string objValue = objTemp.TotalAccel;
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAccel\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAccel\r\n";
 					}
 					try
 					{
@@ -113,7 +113,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\r\n";
 					}
 					try
 					{
@@ -121,7 +121,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\r\n";
 					}
 					try
 					{
@@ -129,15 +129,15 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalHandling\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalHandling\r\n";
 					}
 					try
 					{
-						int objValue = objTemp.TotalSpeed;
+						string objValue = objTemp.TotalSpeed;
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalSpeed\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalSpeed\r\n";
 					}
 					try
 					{
@@ -145,12 +145,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAvail\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 
@@ -163,14 +163,14 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					VehicleMod objTemp = new VehicleMod(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, 1);
+					objTemp.Create(objXmlGear, objTempNode, 1, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -178,7 +178,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -186,12 +186,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedSlots\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedSlots\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -222,7 +222,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -230,7 +230,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAP\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAP\r\n";
 					}
 					try
 					{
@@ -238,7 +238,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -246,7 +246,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalRC\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalRC\r\n";
 					}
 					try
 					{
@@ -254,7 +254,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalReach\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalReach\r\n";
 					}
 					try
 					{
@@ -262,7 +262,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAmmo\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedAmmo\r\n";
 					}
 					try
 					{
@@ -270,7 +270,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedConcealability\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedConcealability\r\n";
 					}
 					try
 					{
@@ -278,12 +278,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedDamage\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedDamage\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 
@@ -296,14 +296,14 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					WeaponAccessory objTemp = new WeaponAccessory(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, "", 0);
+					objTemp.Create(objXmlGear, objTempNode, new Tuple<string, string>("" , string.Empty), 0, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\r\n";
 					}
 					try
 					{
@@ -311,12 +311,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -339,14 +339,15 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					Armor objTemp = new Armor(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, null, 0);
+					List<Weapon> objWeapons = new List<Weapon>();
+					objTemp.Create(objXmlGear, objTempNode, null, 0, objWeapons);
 					try
 					{
 						int objValue = objTemp.TotalCost;
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -354,7 +355,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalArmor\r\n";
 					}
 					try
 					{
@@ -362,7 +363,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -370,12 +371,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 
@@ -397,7 +398,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -405,12 +406,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -434,7 +435,7 @@ namespace Chummer
 					Gear objTemp = new Gear(objCharacter);
 					List<Weapon> lstWeapons = new List<Weapon>();
 					List<TreeNode> lstNodes = new List<TreeNode>();
-					objTemp.Create(objXmlGear, objCharacter, objTempNode, 1, lstWeapons, lstNodes, "Blades");
+					objTemp.Create(objXmlGear, objCharacter, objTempNode, 1, lstWeapons, lstNodes);
 					try
 					{
 						int objValue = objTemp.TotalCost;
@@ -442,7 +443,7 @@ namespace Chummer
 					catch
 					{
 						if (objXmlGear["category"].InnerText != "Mook")
-							txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+							txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -450,7 +451,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -458,7 +459,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedArmorCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedArmorCapacity\r\n";
 					}
 					try
 					{
@@ -466,7 +467,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 					try
 					{
@@ -475,19 +476,19 @@ namespace Chummer
 					catch
 					{
 						if (objXmlGear["category"].InnerText != "Mook")
-							txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\n";
+							txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
 
 		private void TestCyberware(string strFile)
 		{
-			string strPrefix = "";
+			string strPrefix = string.Empty;
 			Improvement.ImprovementSource objSource = new Improvement.ImprovementSource();
 			if (strFile == "bioware.xml")
 			{
@@ -517,14 +518,16 @@ namespace Chummer
 					Cyberware objTemp = new Cyberware(objCharacter);
 					List<Weapon> lstWeapons = new List<Weapon>();
 					List<TreeNode> lstNodes = new List<TreeNode>();
-					objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes);
+                    List<Vehicle> objVehicles = new List<Vehicle>();
+                    List<TreeNode> objVehicleNodes = new List<TreeNode>();
+                    objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
 					try
 					{
 						int objValue = objTemp.TotalCost;
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalCost\r\n";
 					}
 					try
 					{
@@ -532,7 +535,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\r\n";
 					}
 					try
 					{
@@ -540,7 +543,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAgility\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAgility\r\n";
 					}
 					try
 					{
@@ -548,7 +551,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalBody\r\n";
 					}
 					try
 					{
@@ -556,7 +559,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalStrength\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalStrength\r\n";
 					}
 					try
 					{
@@ -564,7 +567,7 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCapacity\r\n";
 					}
 					try
 					{
@@ -572,12 +575,12 @@ namespace Chummer
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedESS\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedESS\r\n";
 					}
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -605,7 +608,7 @@ namespace Chummer
 				}
 				catch
 				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
+					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
 				}
 			}
 		}
@@ -644,17 +647,15 @@ namespace Chummer
 						_objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["intmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["intaug"].InnerText, intForce, 0));
 						_objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["logmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["logaug"].InnerText, intForce, 0));
 						_objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["wilmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["wilaug"].InnerText, intForce, 0));
-						_objCharacter.INI.AssignLimits(ExpressionToString(objXmlMetatype["inimin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["iniaug"].InnerText, intForce, 0));
 						_objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["magmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["magaug"].InnerText, intForce, 0));
 						_objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resaug"].InnerText, intForce, 0));
 						_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgaug"].InnerText, intForce, 0));
 						_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
-					}
+                        _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
+                    }
 					else
 					{
 						int intMinModifier = -3;
-						if (objXmlMetatype["category"].InnerText == "Mutant Critters")
-							intMinModifier = 0;
 						_objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 3));
 						_objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 3));
 						_objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 3));
@@ -663,12 +664,12 @@ namespace Chummer
 						_objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 3));
 						_objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 3));
 						_objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 3));
-						_objCharacter.INI.AssignLimits(ExpressionToString(objXmlMetatype["inimin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["iniaug"].InnerText, intForce, 0));
 						_objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 3));
 						_objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 3));
 						_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3));
 						_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
-					}
+                        _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 3));
+                    }
 
 					// If we're working with a Critter, set the Attributes to their default values.
 					if (strFile == "critters.xml")
@@ -685,7 +686,8 @@ namespace Chummer
 						_objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
 						_objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
 						_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
-					}
+                        _objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0));
+                    }
 
 					// Sprites can never have Physical Attributes or WIL.
 					if (objXmlMetatype["name"].InnerText.EndsWith("Sprite"))
@@ -694,14 +696,11 @@ namespace Chummer
 						_objCharacter.AGI.AssignLimits("0", "0", "0");
 						_objCharacter.REA.AssignLimits("0", "0", "0");
 						_objCharacter.STR.AssignLimits("0", "0", "0");
-						_objCharacter.WIL.AssignLimits("0", "0", "0");
-						_objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
-						_objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
 					}
 
 					_objCharacter.Metatype = objXmlMetatype["name"].InnerText;
 					_objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerText;
-					_objCharacter.Metavariant = "";
+					_objCharacter.Metavariant = string.Empty;
 					_objCharacter.MetatypeBP = 400;
 
 					if (objXmlMetatype["movement"] != null)
@@ -721,7 +720,7 @@ namespace Chummer
 						List<Weapon> objWeapons = new List<Weapon>();
 						List<TreeNode> objWeaponNodes = new List<TreeNode>();
 						Quality objQuality = new Quality(_objCharacter);
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlQualityItem.Attributes["select"] != null)
 							strForceValue = objXmlQualityItem.Attributes["select"].InnerText;
 						QualitySource objSource = new QualitySource();
@@ -738,7 +737,7 @@ namespace Chummer
 						List<Weapon> objWeapons = new List<Weapon>();
 						List<TreeNode> objWeaponNodes = new List<TreeNode>();
 						Quality objQuality = new Quality(_objCharacter);
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlQualityItem.Attributes["select"] != null)
 							strForceValue = objXmlQualityItem.Attributes["select"].InnerText;
 						QualitySource objSource = new QualitySource();
@@ -771,7 +770,7 @@ namespace Chummer
 						XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
 						TreeNode objNode = new TreeNode();
 						CritterPower objPower = new CritterPower(_objCharacter);
-						string strForcedValue = "";
+						string strForcedValue = string.Empty;
 						int intRating = 0;
 
 						if (objXmlPower.Attributes["rating"] != null)
@@ -883,7 +882,7 @@ namespace Chummer
 						int intRating = 0;
 						if (objXmlComplexForm.Attributes["rating"] != null)
 							intRating = Convert.ToInt32(ExpressionToString(objXmlComplexForm.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlComplexForm.Attributes["select"] != null)
 							strForceValue = objXmlComplexForm.Attributes["select"].InnerText;
                         XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
@@ -900,7 +899,7 @@ namespace Chummer
 						int intRating = 0;
 						if (objXmlGear.Attributes["rating"] != null)
 							intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-						string strForceValue = "";
+						string strForceValue = string.Empty;
 						if (objXmlGear.Attributes["select"] != null)
 							strForceValue = objXmlGear.Attributes["select"].InnerText;
 						XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
@@ -915,17 +914,10 @@ namespace Chummer
 						objGear.Cost10 = "0";
 						_objCharacter.Gear.Add(objGear);
 					}
-
-					// If this is a Mutant Critter, count up the number of Skill points they start with.
-					if (_objCharacter.MetatypeCategory == "Mutant Critters")
-					{
-						foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							_objCharacter.MutantCritterBaseSkills += objSkill.Rating;
-					}
 				}
 				catch
 				{
-					txtOutput.Text += _objCharacter.Metatype + " general failure\n";
+					txtOutput.Text += _objCharacter.Metatype + " general failure\r\n";
 				}
 			}
 		}
@@ -939,18 +931,17 @@ namespace Chummer
 		/// <returns></returns>
 		public string ExpressionToString(string strIn, int intForce, int intOffset)
 		{
-			int intValue = 0;
+			int intValue = 1;
 			XmlDocument objXmlDocument = new XmlDocument();
 			XPathNavigator nav = objXmlDocument.CreateNavigator();
 			XPathExpression xprAttribute = nav.Compile(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
 			// This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
 			try
 			{
-				intValue = Convert.ToInt32(nav.Evaluate(xprAttribute).ToString());
+			    int.TryParse(nav.Evaluate(xprAttribute).ToString(), out intValue);
 			}
-			catch
+			catch (XPathException)
 			{
-				intValue = 1;
 			}
 			intValue += intOffset;
 			if (intForce > 0)

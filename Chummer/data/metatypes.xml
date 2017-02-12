@@ -110,9 +110,9 @@
 					<inimin>2</inimin>
 					<inimax>12</inimax>
 					<iniaug>20</iniaug>
-					<edgmin>1</edgmin>
-					<edgmax>6</edgmax>
-					<edgaug>6</edgaug>
+					<edgmin>2</edgmin>
+					<edgmax>7</edgmax>
+					<edgaug>7</edgaug>
 					<magmin>1</magmin>
 					<magmax>6</magmax>
 					<magaug>6</magaug>
@@ -122,6 +122,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Shiva Arms (1 Pair)</quality>
@@ -180,6 +183,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>2/1/0</sprint>
@@ -235,6 +241,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -291,6 +300,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -349,6 +361,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -392,9 +407,9 @@
 					<inimin>2</inimin>
 					<inimax>13</inimax>
 					<iniaug>21</iniaug>
-					<edgmin>2</edgmin>
-					<edgmax>7</edgmax>
-					<edgaug>7</edgaug>
+					<edgmin>1</edgmin>
+					<edgmax>6</edgmax>
+					<edgaug>6</edgaug>
 					<magmin>1</magmin>
 					<magmax>6</magmax>
 					<magaug>6</magaug>
@@ -404,6 +419,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -462,6 +480,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>1/1/0</sprint>
@@ -520,6 +541,12 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
+					<bonus>
+						<lifestylecost>20</lifestylecost>
+					</bonus>
 					<qualities>
 						<positive>
 							<quality>Arcane Arrester</quality>
@@ -530,7 +557,7 @@
 						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>54</page>
+					<page>89</page>
 				</metavariant>
 				<metavariant>
 					<name>Hanuman</name>
@@ -574,21 +601,25 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>				
+					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
+					<bonus>
+						<lifestylecost>20</lifestylecost>
+					</bonus>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
-							<quality select="AGI">Metagenetic Improvement</quality>
 							<quality>Monkey Paws</quality>
 							<quality>Functional Tail (Prehensile)</quality>
 						</positive>
 						<negative>
-							<quality>Distinctive Style</quality>
 							<quality>Unusual Hair</quality>
 						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>55</page>
+					<page>89</page>
 				</metavariant>
 				<metavariant>
 					<name>Koborokuru</name>
@@ -632,7 +663,13 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>				
+					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
+					<bonus>
+						<lifestylecost>20</lifestylecost>
+					</bonus>	
 					<qualities>
 						<positive>
 							<quality>Celerity</quality>
@@ -640,12 +677,11 @@
 							<quality>Thermographic Vision</quality>
 						</positive>
 						<negative>
-							<quality>Distinctive Style</quality>
 							<quality>Unusual Hair</quality>
 						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>53</page>
+					<page>90</page>
 				</metavariant>
 				<metavariant>
 					<name>Menehune</name>
@@ -689,19 +725,20 @@
 					<resaug>6</resaug>
 					<essmin>0</essmin>
 					<essmax>6</essmax>
-					<essaug>6</essaug>					
+					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>		
 					<qualities>
 						<positive>
-							<quality>Resistance to Pathogens/Toxins</quality>
+							<quality>Resistance to Pathogens</quality>
 							<quality>Thermographic Vision</quality>
 							<quality>Underwater Vision</quality>
+							<quality>Webbed Digits</quality>
 						</positive>
-						<negative>
-							<quality>Distinctive Style</quality>
-						</negative>
 					</qualities>
 					<source>RF</source>
-					<page>54</page>
+					<page>90</page>
 				</metavariant>
 			</metavariants>	  
 		</metatype>
@@ -749,6 +786,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>2/1/0</sprint>
@@ -804,6 +844,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -861,6 +904,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -915,6 +961,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -970,6 +1019,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
@@ -977,7 +1029,6 @@
 						</positive>
 					</qualities>
 					<karma>50</karma>
-
 					<bonus />
 					<source>RF</source>
 					<page>104</page>
@@ -1028,6 +1079,9 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>1/1/0</sprint>
@@ -1037,7 +1091,7 @@
 				</positive>
 			</qualities>
 			<bonus>
-				<armor>1</armor>
+				<armor group="0">1</armor>
 				<reach>1</reach>
 				<lifestylecost>100</lifestylecost>
 			</bonus>
@@ -1087,7 +1141,13 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
+						<positive>
+							<quality>Thermographic Vision</quality>
+						</positive>
 						<negative>
 							<quality>Cyclopean Eye</quality>
 						</negative>
@@ -1143,6 +1203,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1200,6 +1263,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1257,6 +1323,9 @@
 					<essmin>0</essmin>
 					<essmax>6</essmax>
 					<essaug>6</essaug>
+					<depmin>0</depmin>
+					<depmax>0</depmax>
+					<depaug>0</depaug>
 					<qualities>
 						<positive>
 							<quality>Thermographic Vision</quality>
@@ -1317,20 +1386,20 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>4/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>4/1/0</sprint>
 			<bonus>
-				<addattribute>
+				<enableattribute>
 					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<lifestylecost>100</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive>
@@ -1339,9 +1408,6 @@
 					<quality>Natural Weapon: Kick (Centaur)</quality> 
 					<quality>Magic Sense</quality>
 				</positive>
-				<negative>
-					<quality removable="true">Uneducated</quality>
-				</negative>
 			</qualities>
 			<powers>
 				<power>Search</power>
@@ -1394,21 +1460,21 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>1/1/0</sprint>
 			<bonus>
 				<armor>8</armor>
-				<addattribute>
+				<enableattribute>
 					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<lifestylecost>150</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive>
@@ -1473,20 +1539,21 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>1/1/2</walk>
 			<run>2/0/6</run>
 			<sprint>1/1/2</sprint>
 			<bonus>
-				<addattribute>
+				<enableattribute>
 					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<unlockskills name="Assensing">Name</unlockskills>
+				<lifestylecost>100</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive> 
@@ -1498,7 +1565,7 @@
 			</qualities>
 			<powers>
 				<power>Concealment</power>
-				<power>Vanishing</power>
+				<power select="Upon Death">Vanishing</power>
 			</powers>
 			<source>RF</source>
 			<page>99</page>
@@ -1547,20 +1614,20 @@
 			<essmin>0</essmin>
 			<essmax>6</essmax>
 			<essaug>6</essaug>
+			<depmin>0</depmin>
+			<depmax>0</depmax>
+			<depaug>0</depaug>
 			<walk>2/1/0</walk>
 			<run>4/0/0</run>
 			<sprint>2/2/0</sprint>
 			<bonus>
-				<addattribute>
+				<enableattribute>
 					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<lifestylecost>100</lifestylecost>
 			</bonus>
 			<qualities>
 				<negative>
@@ -1581,6 +1648,7 @@
 			<name>A.I.</name>
 			<category>Metasapient</category>
 			<karma>180</karma>
+			<halveattributepoints />
 			<bodmin>0</bodmin>
 			<bodmax>0</bodmax>
 			<bodaug>0</bodaug>
@@ -1637,17 +1705,21 @@
 				<positive>
 					<quality>Animal Empathy</quality>
 					<quality>Aptitude</quality>
-					<quality>Brand Loyalty</quality>
+					<quality>Brand Loyalty (Manufacturer)</quality>
+					<quality>Brand Loyalty (Product)</quality>
 					<quality>Bilingual</quality>
 					<quality>Chatty</quality>
 					<quality>Codeslinger</quality>
-					<quality>College Educatation</quality>
+					<quality>College Education</quality>
+					<quality>College Education.RF</quality>
 					<quality>Data Anomaly</quality>
 					<quality>Designer</quality>
 					<quality>Exceptional Entity</quality>
 					<quality>Fade to Black</quality>
-					<quality>Fame</quality>
-					<quality>Membership</quality>
+					<quality>Fame: Local</quality>
+					<quality>Fame: National</quality>
+					<quality>Fame: Megacorporate</quality>
+					<quality>Fame: Global</quality>
 					<quality>First Impression</quality>
 					<quality>Friends in High Places</quality>
 					<quality>Gearhead</quality>
@@ -1656,14 +1728,19 @@
 					<quality>Golden Screwdriver</quality>
 					<quality>Guts</quality>
 					<quality>Hello World!</quality>
-					<quality>High Pain Tolerance</quality>
+					<quality>High Pain Tolerance (Rating 1)</quality>
+					<quality>High Pain Tolerance (Rating 2)</quality>
+					<quality>High Pain Tolerance (Rating 3)</quality>
 					<quality>Home Ground</quality>
 					<quality>I C U</quality>
-					<quality>Indomitable</quality>
+					<quality>Indomitable (Mental)</quality>
+					<quality>Indomitable (Physical)</quality>
+					<quality>Indomitable (Social)</quality>
 					<quality>Inherent Program</quality>
 					<quality>Improved Restoration</quality>
 					<quality>Inspired</quality>
 					<quality>Juryrigger</quality>
+					<quality>Legendary Rep</quality>
 					<quality>Linguist</quality>
 					<quality>Low Profile</quality>
 					<quality>Lucky</quality>
@@ -1671,71 +1748,94 @@
 					<quality>Munge</quality>
 					<quality>Ninja Vanish</quality>
 					<quality>Overclocker</quality>
-					<quality>Perceptive</quality>
+					<quality>Perceptive I</quality>
+					<quality>Perceptive II</quality>
 					<quality>Photographic Memory</quality>
 					<quality>Pilot Origins (Rating 1)</quality>
 					<quality>Pilot Origins (Rating 2)</quality>
 					<quality>Pilot Origins (Rating 3)</quality>
-					<quality>Prime Data-Haven</quality>
+					<quality>Prime Datahaven Membership</quality>
 					<quality>Quick Healer</quality>
 					<quality>Redundancy</quality>
 					<quality>Restricted Gear</quality>
 					<quality>Sapper</quality>
-					<quality>Sensor Upgrade</quality>
+					<quality>Sensor Upgrade</quality>					
+					<quality>Sense of Direction</quality>
+					<quality>Sensei</quality>
+					<quality>Sharpshooter</quality>
 					<quality>Snooper</quality>
+					<quality>Solid Rep</quality>
 					<quality>Speed Reading</quality>
 					<quality>Strive For Perfection</quality>
-					<quality>Steely-Eyed Wheelman</quality>
-					<quality>Sense of Direction</quality>
-					<quality>Sharpshooter</quality>
-					<quality>Sensei</quality>
+					<quality>Steely Eyed Wheelman</quality>
 					<quality>Virtual Stability</quality>
-					<quality>Solid/Legendary Rep</quality>
 					<quality>Trustworthy</quality>
 					<quality>Vehicle Empathy</quality>
 					<quality>Technical School Education</quality>
 				</positive>
 				<negative>
 					<quality>Bad Luck</quality>
-					<quality>Low Pain Tolerance</quality>
 					<quality>Bad Rep</quality>
-					<quality>Loss of Confidence</quality>
 					<quality>Code of Honor</quality>
-					<quality>Pacifist</quality>
+					<quality>Code of Honor: Like a Boss</quality>
+					<quality>Code of Honor: Avenging Angel</quality>
 					<quality>Codeblock</quality>
-					<quality>Persnickety Renter</quality>
 					<quality>Combat Paralysis</quality>
-					<quality>Prank Warrior</quality>
 					<quality>Corrupter</quality>
-					<quality>Prejudiced</quality>
 					<quality>Curiosity Killed the Cat</quality>
-					<quality>Real World Naiveté</quality>
 					<quality>Data Liberator</quality>
-					<quality>Records On File</quality>
-					<quality>Day Job</quality>
-					<quality>Signature</quality>
+					<quality>Day Job (10 hrs)</quality>
+					<quality>Day Job (20 hrs)</quality>
+					<quality>Day Job (40 hrs)</quality>
 					<quality>Did You Just Call Me Dumb?</quality>
-					<quality>SINner</quality>
 					<quality>Distinctive Style</quality>
-					<quality>Uneducated</quality>
 					<quality>Driven</quality>
-					<quality>Uncouth</quality>
 					<quality>Easily Exploitable</quality>
-					<quality>Vendetta</quality>
 					<quality>Fragmentation</quality>
-					<quality>Wanted</quality>
 					<quality>Incompetent</quality>
+					<quality>Loss of Confidence</quality>
+					<quality>Low Pain Tolerance</quality>
+					<quality>Pacifist I</quality>
+					<quality>Pacifist II</quality>
+					<quality>Persnickety Renter</quality>
+					<quality>Prank Warrior</quality>
+					<quality>Prejudiced (Common, Biased)</quality>
+					<quality>Prejudiced (Common, Outspoken)</quality>
+					<quality>Prejudiced (Common, Radical)</quality>
+					<quality>Prejudiced (Specific, Biased)</quality>
+					<quality>Prejudiced (Specific, Outspoken)</quality>
+					<quality>Prejudiced (Specific, Radical)</quality>
+					<quality>Real World Naiveté</quality>
+					<quality>Records on File</quality>
+					<quality>Signature</quality>
+					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Criminal)</quality>
+					<quality>SINner (National)</quality>
+					<quality>Uncouth</quality>
+					<quality>Uneducated</quality>
+					<quality>Vendetta</quality>
+					<quality>Wanted</quality>
 					<quality>Wanted by GOD</quality>
 				</negative>
 			</qualityrestriction>
+			<bonus>
+				<enabletab>
+					<name>advanced programs</name>
+				</enabletab>
+				<enableattribute>
+					<name>DEP</name>
+				</enableattribute>
+			</bonus>
 			<movement>Special</movement>
 			<source>DT</source>
-			<page>88</page>
+			<page>135</page>
 			<metavariants>
 				<metavariant>
 					<name>E-Ghost</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -1783,17 +1883,21 @@
 						<positive>
 							<quality>Animal Empathy</quality>
 							<quality>Aptitude</quality>
-							<quality>Brand Loyalty</quality>
+							<quality>Brand Loyalty (Manufacturer)</quality>
+							<quality>Brand Loyalty (Product)</quality>
 							<quality>Bilingual</quality>
 							<quality>Chatty</quality>
 							<quality>Codeslinger</quality>
-							<quality>College Educatation</quality>
+							<quality>College Education</quality>
+							<quality>College Education.RF</quality>
 							<quality>Data Anomaly</quality>
 							<quality>Designer</quality>
 							<quality>Exceptional Entity</quality>
 							<quality>Fade to Black</quality>
-							<quality>Fame</quality>
-							<quality>Membership</quality>
+							<quality>Fame: Local</quality>
+							<quality>Fame: National</quality>
+							<quality>Fame: Megacorporate</quality>
+							<quality>Fame: Global</quality>
 							<quality>First Impression</quality>
 							<quality>Friends in High Places</quality>
 							<quality>Gearhead</quality>
@@ -1802,14 +1906,19 @@
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
 							<quality>Hello World!</quality>
-							<quality>High Pain Tolerance</quality>
+							<quality>High Pain Tolerance (Rating 1)</quality>
+							<quality>High Pain Tolerance (Rating 2)</quality>
+							<quality>High Pain Tolerance (Rating 3)</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
-							<quality>Indomitable</quality>
+							<quality>Indomitable (Mental)</quality>
+							<quality>Indomitable (Physical)</quality>
+							<quality>Indomitable (Social)</quality>
 							<quality>Inherent Program</quality>
 							<quality>Improved Restoration</quality>
 							<quality>Inspired</quality>
 							<quality>Juryrigger</quality>
+							<quality>Legendary Rep</quality>
 							<quality>Linguist</quality>
 							<quality>Low Profile</quality>
 							<quality>Lucky</quality>
@@ -1817,60 +1926,74 @@
 							<quality>Munge</quality>
 							<quality>Ninja Vanish</quality>
 							<quality>Overclocker</quality>
-							<quality>Perceptive</quality>
+							<quality>Perceptive I</quality>
+							<quality>Perceptive II</quality>
 							<quality>Photographic Memory</quality>
 							<quality>Pilot Origins (Rating 1)</quality>
 							<quality>Pilot Origins (Rating 2)</quality>
 							<quality>Pilot Origins (Rating 3)</quality>
-							<quality>Prime Data-Haven</quality>
+							<quality>Prime Datahaven Membership</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
-							<quality>Sensor Upgrade</quality>
+							<quality>Sensor Upgrade</quality>					
+							<quality>Sense of Direction</quality>
+							<quality>Sensei</quality>
+							<quality>Sharpshooter</quality>
 							<quality>Snooper</quality>
+							<quality>Solid Rep</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
-							<quality>Steely-Eyed Wheelman</quality>
-							<quality>Sense of Direction</quality>
-							<quality>Sharpshooter</quality>
-							<quality>Sensei</quality>
+							<quality>Steely Eyed Wheelman</quality>
 							<quality>Virtual Stability</quality>
-							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
 							<quality>Vehicle Empathy</quality>
 							<quality>Technical School Education</quality>
 						</positive>
 						<negative>
 							<quality>Bad Luck</quality>
-							<quality>Low Pain Tolerance</quality>
 							<quality>Bad Rep</quality>
-							<quality>Loss of Confidence</quality>
 							<quality>Code of Honor</quality>
-							<quality>Pacifist</quality>
+							<quality>Code of Honor: Like a Boss</quality>
+							<quality>Code of Honor: Avenging Angel</quality>
 							<quality>Codeblock</quality>
-							<quality>Persnickety Renter</quality>
 							<quality>Combat Paralysis</quality>
-							<quality>Prank Warrior</quality>
 							<quality>Corrupter</quality>
-							<quality>Prejudiced</quality>
 							<quality>Curiosity Killed the Cat</quality>
-							<quality>Real World Naiveté</quality>
 							<quality>Data Liberator</quality>
-							<quality>Records On File</quality>
-							<quality>Day Job</quality>
-							<quality>Signature</quality>
+							<quality>Day Job (10 hrs)</quality>
+							<quality>Day Job (20 hrs)</quality>
+							<quality>Day Job (40 hrs)</quality>
 							<quality>Did You Just Call Me Dumb?</quality>
-							<quality>SINner</quality>
 							<quality>Distinctive Style</quality>
-							<quality>Uneducated</quality>
 							<quality>Driven</quality>
-							<quality>Uncouth</quality>
 							<quality>Easily Exploitable</quality>
-							<quality>Vendetta</quality>
 							<quality>Fragmentation</quality>
-							<quality>Wanted</quality>
 							<quality>Incompetent</quality>
+							<quality>Loss of Confidence</quality>
+							<quality>Low Pain Tolerance</quality>
+							<quality>Pacifist I</quality>
+							<quality>Pacifist II</quality>
+							<quality>Persnickety Renter</quality>
+							<quality>Prank Warrior</quality>
+							<quality>Prejudiced (Common, Biased)</quality>
+							<quality>Prejudiced (Common, Outspoken)</quality>
+							<quality>Prejudiced (Common, Radical)</quality>
+							<quality>Prejudiced (Specific, Biased)</quality>
+							<quality>Prejudiced (Specific, Outspoken)</quality>
+							<quality>Prejudiced (Specific, Radical)</quality>
+							<quality>Real World Naiveté</quality>
+							<quality>Records on File</quality>
+							<quality>Signature</quality>
+							<quality>SINner (Corporate Limited)</quality>
+							<quality>SINner (Corporate)</quality>
+							<quality>SINner (Criminal)</quality>
+							<quality>SINner (National)</quality>
+							<quality>Uncouth</quality>
+							<quality>Uneducated</quality>
+							<quality>Vendetta</quality>
+							<quality>Wanted</quality>
 							<quality>Wanted by GOD</quality>
 						</negative>
 					</qualityrestriction>
@@ -1887,13 +2010,22 @@
 							<quality>Social Stress</quality>
 						</negative>
 					</qualities>
+					<bonus>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
+						<enableattribute>
+							<name>DEP</name>
+						</enableattribute>
+					</bonus>
 					<source>DT</source>
-					<page>88</page>
+					<page>161</page>
 				</metavariant>
 				<metavariant>
 					<name>Xenosapient</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -1941,17 +2073,21 @@
 						<positive>
 							<quality>Animal Empathy</quality>
 							<quality>Aptitude</quality>
-							<quality>Brand Loyalty</quality>
+							<quality>Brand Loyalty (Manufacturer)</quality>
+							<quality>Brand Loyalty (Product)</quality>
 							<quality>Bilingual</quality>
 							<quality>Chatty</quality>
 							<quality>Codeslinger</quality>
-							<quality>College Educatation</quality>
+							<quality>College Education</quality>
+							<quality>College Education.RF</quality>
 							<quality>Data Anomaly</quality>
 							<quality>Designer</quality>
 							<quality>Exceptional Entity</quality>
 							<quality>Fade to Black</quality>
-							<quality>Fame</quality>
-							<quality>Membership</quality>
+							<quality>Fame: Local</quality>
+							<quality>Fame: National</quality>
+							<quality>Fame: Megacorporate</quality>
+							<quality>Fame: Global</quality>
 							<quality>First Impression</quality>
 							<quality>Friends in High Places</quality>
 							<quality>Gearhead</quality>
@@ -1960,14 +2096,19 @@
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
 							<quality>Hello World!</quality>
-							<quality>High Pain Tolerance</quality>
+							<quality>High Pain Tolerance (Rating 1)</quality>
+							<quality>High Pain Tolerance (Rating 2)</quality>
+							<quality>High Pain Tolerance (Rating 3)</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
-							<quality>Indomitable</quality>
+							<quality>Indomitable (Mental)</quality>
+							<quality>Indomitable (Physical)</quality>
+							<quality>Indomitable (Social)</quality>
 							<quality>Inherent Program</quality>
 							<quality>Improved Restoration</quality>
 							<quality>Inspired</quality>
 							<quality>Juryrigger</quality>
+							<quality>Legendary Rep</quality>
 							<quality>Linguist</quality>
 							<quality>Low Profile</quality>
 							<quality>Lucky</quality>
@@ -1975,60 +2116,74 @@
 							<quality>Munge</quality>
 							<quality>Ninja Vanish</quality>
 							<quality>Overclocker</quality>
-							<quality>Perceptive</quality>
+							<quality>Perceptive I</quality>
+							<quality>Perceptive II</quality>
 							<quality>Photographic Memory</quality>
 							<quality>Pilot Origins (Rating 1)</quality>
 							<quality>Pilot Origins (Rating 2)</quality>
 							<quality>Pilot Origins (Rating 3)</quality>
-							<quality>Prime Data-Haven</quality>
+							<quality>Prime Datahaven Membership</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
-							<quality>Sensor Upgrade</quality>
+							<quality>Sensor Upgrade</quality>					
+							<quality>Sense of Direction</quality>
+							<quality>Sensei</quality>
+							<quality>Sharpshooter</quality>
+							<quality>Snooper</quality>
+							<quality>Solid Rep</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
-							<quality>Steely-Eyed Wheelman</quality>
-							<quality>Sense of Direction</quality>
-							<quality>Sharpshooter</quality>
-							<quality>Sensei</quality>
-							<quality>Snooper</quality>
+							<quality>Steely Eyed Wheelman</quality>
 							<quality>Virtual Stability</quality>
-							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
 							<quality>Vehicle Empathy</quality>
 							<quality>Technical School Education</quality>
 						</positive>
 						<negative>
 							<quality>Bad Luck</quality>
-							<quality>Low Pain Tolerance</quality>
 							<quality>Bad Rep</quality>
-							<quality>Loss of Confidence</quality>
 							<quality>Code of Honor</quality>
-							<quality>Pacifist</quality>
+							<quality>Code of Honor: Like a Boss</quality>
+							<quality>Code of Honor: Avenging Angel</quality>
 							<quality>Codeblock</quality>
-							<quality>Persnickety Renter</quality>
 							<quality>Combat Paralysis</quality>
-							<quality>Prank Warrior</quality>
 							<quality>Corrupter</quality>
-							<quality>Prejudiced</quality>
 							<quality>Curiosity Killed the Cat</quality>
-							<quality>Real World Naiveté</quality>
 							<quality>Data Liberator</quality>
-							<quality>Records On File</quality>
-							<quality>Day Job</quality>
-							<quality>Signature</quality>
+							<quality>Day Job (10 hrs)</quality>
+							<quality>Day Job (20 hrs)</quality>
+							<quality>Day Job (40 hrs)</quality>
 							<quality>Did You Just Call Me Dumb?</quality>
-							<quality>SINner</quality>
 							<quality>Distinctive Style</quality>
-							<quality>Uneducated</quality>
 							<quality>Driven</quality>
-							<quality>Uncouth</quality>
 							<quality>Easily Exploitable</quality>
-							<quality>Vendetta</quality>
 							<quality>Fragmentation</quality>
-							<quality>Wanted</quality>
 							<quality>Incompetent</quality>
+							<quality>Loss of Confidence</quality>
+							<quality>Low Pain Tolerance</quality>
+							<quality>Pacifist I</quality>
+							<quality>Pacifist II</quality>
+							<quality>Persnickety Renter</quality>
+							<quality>Prank Warrior</quality>
+							<quality>Prejudiced (Common, Biased)</quality>
+							<quality>Prejudiced (Common, Outspoken)</quality>
+							<quality>Prejudiced (Common, Radical)</quality>
+							<quality>Prejudiced (Specific, Biased)</quality>
+							<quality>Prejudiced (Specific, Outspoken)</quality>
+							<quality>Prejudiced (Specific, Radical)</quality>
+							<quality>Real World Naiveté</quality>
+							<quality>Records on File</quality>
+							<quality>Signature</quality>
+							<quality>SINner (Corporate Limited)</quality>
+							<quality>SINner (Corporate)</quality>
+							<quality>SINner (Criminal)</quality>
+							<quality>SINner (National)</quality>
+							<quality>Uncouth</quality>
+							<quality>Uneducated</quality>
+							<quality>Vendetta</quality>
+							<quality>Wanted</quality>
 							<quality>Wanted by GOD</quality>
 						</negative>
 					</qualityrestriction>
@@ -2045,13 +2200,22 @@
 							<quality select="Original Programming">Driven</quality>
 						</negative>
 					</qualities>
+					<bonus>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
+						<enableattribute>
+							<name>DEP</name>
+						</enableattribute>
+					</bonus>
 					<source>DT</source>
-					<page>88</page>
+					<page>135</page>
 				</metavariant>
 				<metavariant>
 					<name>Protosapient</name>
 					<category>Metavariant</category>
 					<karma>180</karma>
+					<halveattributepoints />
 					<bodmin>0</bodmin>
 					<bodmax>0</bodmax>
 					<bodaug>0</bodaug>
@@ -2098,17 +2262,21 @@
 						<positive>
 							<quality>Animal Empathy</quality>
 							<quality>Aptitude</quality>
-							<quality>Brand Loyalty</quality>
+							<quality>Brand Loyalty (Manufacturer)</quality>
+							<quality>Brand Loyalty (Product)</quality>
 							<quality>Bilingual</quality>
 							<quality>Chatty</quality>
 							<quality>Codeslinger</quality>
-							<quality>College Educatation</quality>
+							<quality>College Education</quality>
+							<quality>College Education.RF</quality>
 							<quality>Data Anomaly</quality>
 							<quality>Designer</quality>
 							<quality>Exceptional Entity</quality>
 							<quality>Fade to Black</quality>
-							<quality>Fame</quality>
-							<quality>Membership</quality>
+							<quality>Fame: Local</quality>
+							<quality>Fame: National</quality>
+							<quality>Fame: Megacorporate</quality>
+							<quality>Fame: Global</quality>
 							<quality>First Impression</quality>
 							<quality>Friends in High Places</quality>
 							<quality>Gearhead</quality>
@@ -2117,14 +2285,19 @@
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
 							<quality>Hello World!</quality>
-							<quality>High Pain Tolerance</quality>
+							<quality>High Pain Tolerance (Rating 1)</quality>
+							<quality>High Pain Tolerance (Rating 2)</quality>
+							<quality>High Pain Tolerance (Rating 3)</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
-							<quality>Indomitable</quality>
+							<quality>Indomitable (Mental)</quality>
+							<quality>Indomitable (Physical)</quality>
+							<quality>Indomitable (Social)</quality>
 							<quality>Inherent Program</quality>
 							<quality>Improved Restoration</quality>
 							<quality>Inspired</quality>
 							<quality>Juryrigger</quality>
+							<quality>Legendary Rep</quality>
 							<quality>Linguist</quality>
 							<quality>Low Profile</quality>
 							<quality>Lucky</quality>
@@ -2132,70 +2305,78 @@
 							<quality>Munge</quality>
 							<quality>Ninja Vanish</quality>
 							<quality>Overclocker</quality>
-							<quality>Perceptive</quality>
+							<quality>Perceptive I</quality>
+							<quality>Perceptive II</quality>
 							<quality>Photographic Memory</quality>
 							<quality>Pilot Origins (Rating 1)</quality>
 							<quality>Pilot Origins (Rating 2)</quality>
 							<quality>Pilot Origins (Rating 3)</quality>
-							<quality>Prime Data-Haven</quality>
+							<quality>Prime Datahaven Membership</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
-							<quality>Sensor Upgrade</quality>
+							<quality>Sensor Upgrade</quality>					
+							<quality>Sense of Direction</quality>
+							<quality>Sensei</quality>
+							<quality>Sharpshooter</quality>
 							<quality>Snooper</quality>
+							<quality>Solid Rep</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
-							<quality>Steely-Eyed Wheelman</quality>
-							<quality>Sense of Direction</quality>
-							<quality>Sharpshooter</quality>
-							<quality>Sensei</quality>
+							<quality>Steely Eyed Wheelman</quality>
 							<quality>Virtual Stability</quality>
-							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
 							<quality>Vehicle Empathy</quality>
 							<quality>Technical School Education</quality>
 						</positive>
 						<negative>
 							<quality>Bad Luck</quality>
-							<quality>Low Pain Tolerance</quality>
 							<quality>Bad Rep</quality>
-							<quality>Loss of Confidence</quality>
 							<quality>Code of Honor</quality>
-							<quality>Pacifist</quality>
+							<quality>Code of Honor: Like a Boss</quality>
+							<quality>Code of Honor: Avenging Angel</quality>
 							<quality>Codeblock</quality>
-							<quality>Persnickety Renter</quality>
 							<quality>Combat Paralysis</quality>
-							<quality>Prank Warrior</quality>
 							<quality>Corrupter</quality>
-							<quality>Prejudiced</quality>
 							<quality>Curiosity Killed the Cat</quality>
-							<quality>Real World Naiveté</quality>
 							<quality>Data Liberator</quality>
-							<quality>Records On File</quality>
-							<quality>Day Job</quality>
-							<quality>Signature</quality>
+							<quality>Day Job (10 hrs)</quality>
+							<quality>Day Job (20 hrs)</quality>
+							<quality>Day Job (40 hrs)</quality>
 							<quality>Did You Just Call Me Dumb?</quality>
-							<quality>SINner</quality>
 							<quality>Distinctive Style</quality>
-							<quality>Uneducated</quality>
 							<quality>Driven</quality>
-							<quality>Uncouth</quality>
 							<quality>Easily Exploitable</quality>
-							<quality>Vendetta</quality>
 							<quality>Fragmentation</quality>
-							<quality>Wanted</quality>
 							<quality>Incompetent</quality>
+							<quality>Loss of Confidence</quality>
+							<quality>Low Pain Tolerance</quality>
+							<quality>Pacifist I</quality>
+							<quality>Pacifist II</quality>
+							<quality>Persnickety Renter</quality>
+							<quality>Prank Warrior</quality>
+							<quality>Prejudiced (Common, Biased)</quality>
+							<quality>Prejudiced (Common, Outspoken)</quality>
+							<quality>Prejudiced (Common, Radical)</quality>
+							<quality>Prejudiced (Specific, Biased)</quality>
+							<quality>Prejudiced (Specific, Outspoken)</quality>
+							<quality>Prejudiced (Specific, Radical)</quality>
+							<quality>Real World Naiveté</quality>
+							<quality>Records on File</quality>
+							<quality>Signature</quality>
+							<quality>SINner (Corporate Limited)</quality>
+							<quality>SINner (Corporate)</quality>
+							<quality>SINner (Criminal)</quality>
+							<quality>SINner (National)</quality>
+							<quality>Uncouth</quality>
+							<quality>Uneducated</quality>
+							<quality>Vendetta</quality>
+							<quality>Wanted</quality>
 							<quality>Wanted by GOD</quality>
 						</negative>
 					</qualityrestriction>
 					<movement>Special</movement>
-					<qualityrestriction>
-						<positive>
-						</positive>
-						<negative>
-						</negative>
-					</qualityrestriction>
 					<qualities>
 						<positive>
 							<quality>Home Ground</quality>
@@ -2210,8 +2391,16 @@
 							<quality select="Original Programming">Driven</quality>
 						</negative>
 					</qualities>
+					<bonus>
+						<enableattribute>
+							<name>DEP</name>
+						</enableattribute>
+						<enabletab>
+							<name>advanced programs</name>
+						</enabletab>
+					</bonus>
 					<source>DT</source>
-					<page>88</page>
+					<page>135</page>
 				</metavariant>
 			</metavariants>
 		</metatype>		

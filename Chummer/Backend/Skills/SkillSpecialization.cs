@@ -49,7 +49,7 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _name);
 			if(_translated != null) objWriter.WriteElementString(GlobalOptions.Instance.Language, _translated);
-			if(_free) objWriter.WriteElementString("free", "");
+			if(_free) objWriter.WriteElementString("free", string.Empty);
 			objWriter.WriteEndElement();
 		}
 
@@ -74,7 +74,7 @@ namespace Chummer
 		{
 
 			objWriter.WriteStartElement("skillspecialization");
-			objWriter.WriteElementString("name", Name);
+			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteEndElement();
 		}
 
@@ -93,9 +93,17 @@ namespace Chummer
 		/// <summary>
 		/// Skill Specialization's name.
 		/// </summary>
-		public string Name
+		public string DisplayName
 		{
 			get { return _translator.Read(_name, ref _translated); }
+		}
+
+		/// <summary>
+		/// Skill Specialization's name.
+		/// </summary>
+		public string Name
+		{
+			get { return _name; }
 		}
 
 		/// <summary>

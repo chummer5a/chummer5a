@@ -10,8 +10,8 @@ namespace Chummer.Debugging
 	class ExceptionHeatMap
 	{
 		Dictionary<string, int> _map = new Dictionary<string, int>();
-			
-		public void OnException(object sender, FirstChanceExceptionEventArgs e)  
+
+		public void OnException(object sender, FirstChanceExceptionEventArgs e)
 		{
 			//Notes down the line number of every first chance exception.
 			//Then counts the occurences. Should make it easier to find what throws the most exceptions
@@ -20,13 +20,14 @@ namespace Chummer.Debugging
 			StackFrame frame = trace.GetFrame(0);
 			string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
 
-			if (_map.ContainsKey(heat))
+		    int intTmp;
+			if (_map.TryGetValue(heat, out intTmp))
 			{
-				_map[heat]++;
+				_map[heat] += intTmp + 1;
 			}
 			else
 			{
-				_map[heat] = 1;
+                _map.Add(heat, 1);
 			}
 		}
 
@@ -39,7 +40,7 @@ namespace Chummer.Debugging
 				select i;
 
 			foreach (KeyValuePair<string, int> exception in exceptions)
-			{ 
+			{
 				builder.Append('\t'); builder.Append('\t');
 				lenght = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), lenght);
 				builder.Append(exception.Value.ToString($"D{lenght}"));

@@ -37,15 +37,16 @@ namespace Chummer
 			try
 			{
 				txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"));
-				txtRevisionHistory.SelectionStart = 0;
-				txtRevisionHistory.SelectionLength = 0;
 			}
 			catch
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_History_FileNotFound"), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				this.Close();
+				Close();
+                return;
 			}
-		}
+            txtRevisionHistory.SelectionStart = 0;
+            txtRevisionHistory.SelectionLength = 0;
+        }
 		#endregion
 	}
 }
