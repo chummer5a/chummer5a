@@ -1,4 +1,5 @@
-﻿using Chummer.helpers;
+﻿using System.Windows.Forms;
+using Chummer.helpers;
 
 namespace Chummer
 {
@@ -110,16 +111,9 @@ namespace Chummer
 			this.lblSpellDefenceDirectSoakManaLabel = new System.Windows.Forms.Label();
 			this.lblSpellDefenceIndirectSoakLabel = new System.Windows.Forms.Label();
 			this.lblSpellDefenceIndirectDodgeLabel = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
 			this.lblAttributesAug = new System.Windows.Forms.Label();
 			this.lblAttributesBase = new System.Windows.Forms.Label();
 			this.lblAttributesMetatype = new System.Windows.Forms.Label();
-			this.lblAttributes = new System.Windows.Forms.Label();
-			this.lblPublicAware = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
 			this.lblMovementLabel = new System.Windows.Forms.Label();
 			this.cmsMartialArts = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsMartialArtsAddAdvantage = new System.Windows.Forms.ToolStripMenuItem();
@@ -171,7 +165,28 @@ namespace Chummer
 			this.tsVehicleSensorAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddNexus = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddWeapon = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsVehicleAddWeaponWeapon = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmdIncreasePowerPoints = new Button();
+            this.cmdIncreaseLifestyleMonths = new Button();
+            this.cmdDecreaseLifestyleMonths = new Button();
+            this.chkArmorEquipped = new CheckBox();
+            this.cmdArmorIncrease = new Button();
+            this.cmdArmorDecrease = new Button();
+            this.chkWeaponAccessoryInstalled = new CheckBox();
+            this.cmdWeaponMoveToVehicle = new Button();
+            this.cmdGearMoveToVehicle = new Button();
+            this.cmdWeaponBuyAmmo = new Button();
+            this.cmdGearReduceQty = new Button();
+            this.cmdVehicleMoveToInventory = new Button();
+            this.cmdVehicleGearReduceQty = new Button();
+            this.cmdBurnStreetCred = new Button();
+            this.cmdGearMergeQty = new Button();
+            this.cmdGearSplitQty = new Button();
+            this.cmdGearIncreaseQty = new Button();
+            this.chkVehicleWeaponAccessoryInstalled = new CheckBox();
+            this.lblNotoriety = new Label();
+            this.lblStreetCred = new Label();
+            this.lblFoci = new Label();
+            this.tsVehicleAddWeaponWeapon = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddWeaponAccessory = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddUnderbarrelWeapon = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleName = new System.Windows.Forms.ToolStripMenuItem();
@@ -445,13 +460,13 @@ namespace Chummer
 			this.tabSkills = new System.Windows.Forms.TabPage();
 			this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
 			this.tabLimits = new System.Windows.Forms.TabPage();
-			this.label7 = new System.Windows.Forms.Label();
+			this.lblAstralLabel = new System.Windows.Forms.Label();
 			this.lblAstral = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.lblSocialLimitLabel = new System.Windows.Forms.Label();
 			this.lblSocial = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
+			this.lblMentalLimitLabel = new System.Windows.Forms.Label();
 			this.lblMental = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
 			this.lblPhysical = new System.Windows.Forms.Label();
 			this.cmdAddLimitModifier = new System.Windows.Forms.Button();
 			this.treLimit = new Chummer.helpers.TreeView();
@@ -1167,8 +1182,6 @@ namespace Chummer
 			this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.cboAttributeFilter = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1830,17 +1843,6 @@ namespace Chummer
 			this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
 			this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectDodgeLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(460, 32);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(37, 13);
-			this.label5.TabIndex = 101;
-			this.label5.Tag = "String_Karma";
-			this.label5.Text = "Karma";
-			this.tipTooltip.SetToolTip(this.label5, "Base Attribute value.");
-			// 
 			// lblAttributesAug
 			// 
 			this.lblAttributesAug.AutoSize = true;
@@ -1886,19 +1888,6 @@ namespace Chummer
 			this.tipTooltip.SetToolTip(this.lblAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
         "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
         " character creation.");
-			// 
-			// lblPublicAware
-			// 
-			this.cmdImproveDEP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.cmdImproveDEP.Image = global::Chummer.Properties.Resources.add;
-			this.cmdImproveDEP.Location = new System.Drawing.Point(203, 286);
-			this.cmdImproveDEP.Name = "cmdImproveDEP";
-			this.cmdImproveDEP.Size = new System.Drawing.Size(24, 24);
-			this.cmdImproveDEP.TabIndex = 77;
-			this.cmdImproveDEP.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.tipTooltip.SetToolTip(this.cmdImproveDEP, "Burn a point of Edge");
-			this.cmdImproveDEP.UseVisualStyleBackColor = true;
-			this.cmdImproveDEP.Click += new System.EventHandler(this.cmdImproveDEP_Click);
 			// 
 			// lblAttributesMetatype
 			// 
@@ -4432,10 +4421,7 @@ namespace Chummer
 			// tabCommon
 			// 
 			this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabCommon.Controls.Add(this.label8);
-			this.tabCommon.Controls.Add(this.cboAttributeFilter);
 			this.tabCommon.Controls.Add(this.pnlAttributes);
-			this.tabCommon.Controls.Add(this.label5);
 			this.tabCommon.Controls.Add(this.lblAttributesAug);
 			this.tabCommon.Controls.Add(this.lblAttributesBase);
 			this.tabCommon.Controls.Add(this.lblAttributesMetatype);
@@ -4820,518 +4806,6 @@ namespace Chummer
 			this.lblMetatypeLabel.Tag = "Label_Metatype";
 			this.lblMetatypeLabel.Text = "Metatype:";
 			// 
-			// panAttributes
-			// 
-			this.panAttributes.Controls.Add(this.cmdImproveDEP);
-			this.panAttributes.Controls.Add(this.lblDEP);
-			this.panAttributes.Controls.Add(this.lblDEPAug);
-			this.panAttributes.Controls.Add(this.lblDEPMetatype);
-			this.panAttributes.Controls.Add(this.lblDEPLabel);
-			this.panAttributes.Controls.Add(this.cmdImproveRES);
-			this.panAttributes.Controls.Add(this.cmdImproveMAG);
-			this.panAttributes.Controls.Add(this.cmdImproveBOD);
-			this.panAttributes.Controls.Add(this.cmdImproveAGI);
-			this.panAttributes.Controls.Add(this.cmdImproveREA);
-			this.panAttributes.Controls.Add(this.cmdImproveSTR);
-			this.panAttributes.Controls.Add(this.cmdImproveCHA);
-			this.panAttributes.Controls.Add(this.cmdImproveINT);
-			this.panAttributes.Controls.Add(this.cmdImproveLOG);
-			this.panAttributes.Controls.Add(this.cmdImproveWIL);
-			this.panAttributes.Controls.Add(this.cmdImproveEDG);
-			this.panAttributes.Controls.Add(this.cmdBurnEdge);
-			this.panAttributes.Controls.Add(this.lblRES);
-			this.panAttributes.Controls.Add(this.lblMAG);
-			this.panAttributes.Controls.Add(this.lblEDG);
-			this.panAttributes.Controls.Add(this.lblWIL);
-			this.panAttributes.Controls.Add(this.lblLOG);
-			this.panAttributes.Controls.Add(this.lblINT);
-			this.panAttributes.Controls.Add(this.lblCHA);
-			this.panAttributes.Controls.Add(this.lblSTR);
-			this.panAttributes.Controls.Add(this.lblREA);
-			this.panAttributes.Controls.Add(this.lblAGI);
-			this.panAttributes.Controls.Add(this.lblBOD);
-			this.panAttributes.Controls.Add(this.lblRESAug);
-			this.panAttributes.Controls.Add(this.lblMAGAug);
-			this.panAttributes.Controls.Add(this.lblEDGAug);
-			this.panAttributes.Controls.Add(this.lblWILAug);
-			this.panAttributes.Controls.Add(this.lblLOGAug);
-			this.panAttributes.Controls.Add(this.lblINTAug);
-			this.panAttributes.Controls.Add(this.lblCHAAug);
-			this.panAttributes.Controls.Add(this.lblSTRAug);
-			this.panAttributes.Controls.Add(this.lblREAAug);
-			this.panAttributes.Controls.Add(this.lblAGIAug);
-			this.panAttributes.Controls.Add(this.lblBODAug);
-			this.panAttributes.Controls.Add(this.lblRESMetatype);
-			this.panAttributes.Controls.Add(this.lblRESLabel);
-			this.panAttributes.Controls.Add(this.lblMAGMetatype);
-			this.panAttributes.Controls.Add(this.lblMAGLabel);
-			this.panAttributes.Controls.Add(this.lblEDGMetatype);
-			this.panAttributes.Controls.Add(this.lblEDGLabel);
-			this.panAttributes.Controls.Add(this.lblWILMetatype);
-			this.panAttributes.Controls.Add(this.lblWILLabel);
-			this.panAttributes.Controls.Add(this.lblLOGMetatype);
-			this.panAttributes.Controls.Add(this.lblLOGLabel);
-			this.panAttributes.Controls.Add(this.lblINTMetatype);
-			this.panAttributes.Controls.Add(this.lblINTLabel);
-			this.panAttributes.Controls.Add(this.lblCHAMetatype);
-			this.panAttributes.Controls.Add(this.lblCHALabel);
-			this.panAttributes.Controls.Add(this.lblSTRMetatype);
-			this.panAttributes.Controls.Add(this.lblSTRLabel);
-			this.panAttributes.Controls.Add(this.lblREAMetatype);
-			this.panAttributes.Controls.Add(this.lblREALabel);
-			this.panAttributes.Controls.Add(this.lblAGIMetatype);
-			this.panAttributes.Controls.Add(this.lblBODLabel);
-			this.panAttributes.Controls.Add(this.lblAGILabel);
-			this.panAttributes.Controls.Add(this.lblBODMetatype);
-			this.panAttributes.Location = new System.Drawing.Point(288, 48);
-			this.panAttributes.Name = "panAttributes";
-			this.panAttributes.Size = new System.Drawing.Size(324, 315);
-			this.panAttributes.TabIndex = 6;
-			// 
-			// lblDEP
-			// 
-			this.lblDEP.AutoSize = true;
-			this.lblDEP.Enabled = false;
-			this.lblDEP.Location = new System.Drawing.Point(124, 292);
-			this.lblDEP.Name = "lblDEP";
-			this.lblDEP.Size = new System.Drawing.Size(19, 13);
-			this.lblDEP.TabIndex = 76;
-			this.lblDEP.Text = "[0]";
-			// 
-			// lblDEPAug
-			// 
-			this.lblDEPAug.AutoSize = true;
-			this.lblDEPAug.Enabled = false;
-			this.lblDEPAug.Location = new System.Drawing.Point(169, 292);
-			this.lblDEPAug.Name = "lblDEPAug";
-			this.lblDEPAug.Size = new System.Drawing.Size(19, 13);
-			this.lblDEPAug.TabIndex = 75;
-			this.lblDEPAug.Text = "[0]";
-			// 
-			// lblDEPMetatype
-			// 
-			this.lblDEPMetatype.AutoSize = true;
-			this.lblDEPMetatype.Enabled = false;
-			this.lblDEPMetatype.Location = new System.Drawing.Point(271, 292);
-			this.lblDEPMetatype.Name = "lblDEPMetatype";
-			this.lblDEPMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblDEPMetatype.TabIndex = 74;
-			this.lblDEPMetatype.Text = "0 / 0 (0)";
-			// 
-			// lblDEPLabel
-			// 
-			this.lblDEPLabel.AutoSize = true;
-			this.lblDEPLabel.Enabled = false;
-			this.lblDEPLabel.Location = new System.Drawing.Point(3, 292);
-			this.lblDEPLabel.Name = "lblDEPLabel";
-			this.lblDEPLabel.Size = new System.Drawing.Size(67, 13);
-			this.lblDEPLabel.TabIndex = 73;
-			this.lblDEPLabel.Text = "Depth (DEP)";
-			// 
-			// lblRES
-			// 
-			this.lblRES.AutoSize = true;
-			this.lblRES.Enabled = false;
-			this.lblRES.Location = new System.Drawing.Point(124, 267);
-			this.lblRES.Name = "lblRES";
-			this.lblRES.Size = new System.Drawing.Size(19, 13);
-			this.lblRES.TabIndex = 54;
-			this.lblRES.Text = "[0]";
-			// 
-			// lblMAG
-			// 
-			this.lblMAG.AutoSize = true;
-			this.lblMAG.Enabled = false;
-			this.lblMAG.Location = new System.Drawing.Point(124, 241);
-			this.lblMAG.Name = "lblMAG";
-			this.lblMAG.Size = new System.Drawing.Size(19, 13);
-			this.lblMAG.TabIndex = 53;
-			this.lblMAG.Text = "[0]";
-			// 
-			// lblEDG
-			// 
-			this.lblEDG.AutoSize = true;
-			this.lblEDG.Location = new System.Drawing.Point(124, 215);
-			this.lblEDG.Name = "lblEDG";
-			this.lblEDG.Size = new System.Drawing.Size(19, 13);
-			this.lblEDG.TabIndex = 52;
-			this.lblEDG.Text = "[0]";
-			// 
-			// lblWIL
-			// 
-			this.lblWIL.AutoSize = true;
-			this.lblWIL.Location = new System.Drawing.Point(124, 189);
-			this.lblWIL.Name = "lblWIL";
-			this.lblWIL.Size = new System.Drawing.Size(19, 13);
-			this.lblWIL.TabIndex = 51;
-			this.lblWIL.Text = "[0]";
-			// 
-			// lblLOG
-			// 
-			this.lblLOG.AutoSize = true;
-			this.lblLOG.Location = new System.Drawing.Point(124, 163);
-			this.lblLOG.Name = "lblLOG";
-			this.lblLOG.Size = new System.Drawing.Size(19, 13);
-			this.lblLOG.TabIndex = 50;
-			this.lblLOG.Text = "[0]";
-			// 
-			// lblINT
-			// 
-			this.lblINT.AutoSize = true;
-			this.lblINT.Location = new System.Drawing.Point(124, 137);
-			this.lblINT.Name = "lblINT";
-			this.lblINT.Size = new System.Drawing.Size(19, 13);
-			this.lblINT.TabIndex = 49;
-			this.lblINT.Text = "[0]";
-			// 
-			// lblCHA
-			// 
-			this.lblCHA.AutoSize = true;
-			this.lblCHA.Location = new System.Drawing.Point(124, 111);
-			this.lblCHA.Name = "lblCHA";
-			this.lblCHA.Size = new System.Drawing.Size(19, 13);
-			this.lblCHA.TabIndex = 48;
-			this.lblCHA.Text = "[0]";
-			// 
-			// lblSTR
-			// 
-			this.lblSTR.AutoSize = true;
-			this.lblSTR.Location = new System.Drawing.Point(124, 85);
-			this.lblSTR.Name = "lblSTR";
-			this.lblSTR.Size = new System.Drawing.Size(19, 13);
-			this.lblSTR.TabIndex = 47;
-			this.lblSTR.Text = "[0]";
-			// 
-			// lblREA
-			// 
-			this.lblREA.AutoSize = true;
-			this.lblREA.Location = new System.Drawing.Point(124, 59);
-			this.lblREA.Name = "lblREA";
-			this.lblREA.Size = new System.Drawing.Size(19, 13);
-			this.lblREA.TabIndex = 46;
-			this.lblREA.Text = "[0]";
-			// 
-			// lblAGI
-			// 
-			this.lblAGI.AutoSize = true;
-			this.lblAGI.Location = new System.Drawing.Point(124, 33);
-			this.lblAGI.Name = "lblAGI";
-			this.lblAGI.Size = new System.Drawing.Size(19, 13);
-			this.lblAGI.TabIndex = 45;
-			this.lblAGI.Text = "[0]";
-			// 
-			// lblBOD
-			// 
-			this.lblBOD.AutoSize = true;
-			this.lblBOD.Location = new System.Drawing.Point(124, 7);
-			this.lblBOD.Name = "lblBOD";
-			this.lblBOD.Size = new System.Drawing.Size(19, 13);
-			this.lblBOD.TabIndex = 44;
-			this.lblBOD.Text = "[0]";
-			// 
-			// lblRESAug
-			// 
-			this.lblRESAug.AutoSize = true;
-			this.lblRESAug.Enabled = false;
-			this.lblRESAug.Location = new System.Drawing.Point(169, 267);
-			this.lblRESAug.Name = "lblRESAug";
-			this.lblRESAug.Size = new System.Drawing.Size(19, 13);
-			this.lblRESAug.TabIndex = 43;
-			this.lblRESAug.Text = "[0]";
-			// 
-			// lblMAGAug
-			// 
-			this.lblMAGAug.AutoSize = true;
-			this.lblMAGAug.Enabled = false;
-			this.lblMAGAug.Location = new System.Drawing.Point(169, 241);
-			this.lblMAGAug.Name = "lblMAGAug";
-			this.lblMAGAug.Size = new System.Drawing.Size(19, 13);
-			this.lblMAGAug.TabIndex = 42;
-			this.lblMAGAug.Text = "[0]";
-			// 
-			// lblEDGAug
-			// 
-			this.lblEDGAug.AutoSize = true;
-			this.lblEDGAug.Location = new System.Drawing.Point(169, 215);
-			this.lblEDGAug.Name = "lblEDGAug";
-			this.lblEDGAug.Size = new System.Drawing.Size(19, 13);
-			this.lblEDGAug.TabIndex = 41;
-			this.lblEDGAug.Text = "[0]";
-			// 
-			// lblWILAug
-			// 
-			this.lblWILAug.AutoSize = true;
-			this.lblWILAug.Location = new System.Drawing.Point(169, 189);
-			this.lblWILAug.Name = "lblWILAug";
-			this.lblWILAug.Size = new System.Drawing.Size(19, 13);
-			this.lblWILAug.TabIndex = 40;
-			this.lblWILAug.Text = "[0]";
-			// 
-			// lblLOGAug
-			// 
-			this.lblLOGAug.AutoSize = true;
-			this.lblLOGAug.Location = new System.Drawing.Point(169, 163);
-			this.lblLOGAug.Name = "lblLOGAug";
-			this.lblLOGAug.Size = new System.Drawing.Size(19, 13);
-			this.lblLOGAug.TabIndex = 39;
-			this.lblLOGAug.Text = "[0]";
-			// 
-			// lblINTAug
-			// 
-			this.lblINTAug.AutoSize = true;
-			this.lblINTAug.Location = new System.Drawing.Point(169, 137);
-			this.lblINTAug.Name = "lblINTAug";
-			this.lblINTAug.Size = new System.Drawing.Size(19, 13);
-			this.lblINTAug.TabIndex = 38;
-			this.lblINTAug.Text = "[0]";
-			// 
-			// lblCHAAug
-			// 
-			this.lblCHAAug.AutoSize = true;
-			this.lblCHAAug.Location = new System.Drawing.Point(169, 111);
-			this.lblCHAAug.Name = "lblCHAAug";
-			this.lblCHAAug.Size = new System.Drawing.Size(19, 13);
-			this.lblCHAAug.TabIndex = 37;
-			this.lblCHAAug.Text = "[0]";
-			// 
-			// lblSTRAug
-			// 
-			this.lblSTRAug.AutoSize = true;
-			this.lblSTRAug.Location = new System.Drawing.Point(169, 85);
-			this.lblSTRAug.Name = "lblSTRAug";
-			this.lblSTRAug.Size = new System.Drawing.Size(19, 13);
-			this.lblSTRAug.TabIndex = 36;
-			this.lblSTRAug.Text = "[0]";
-			// 
-			// lblREAAug
-			// 
-			this.lblREAAug.AutoSize = true;
-			this.lblREAAug.Location = new System.Drawing.Point(169, 59);
-			this.lblREAAug.Name = "lblREAAug";
-			this.lblREAAug.Size = new System.Drawing.Size(19, 13);
-			this.lblREAAug.TabIndex = 35;
-			this.lblREAAug.Text = "[0]";
-			// 
-			// lblAGIAug
-			// 
-			this.lblAGIAug.AutoSize = true;
-			this.lblAGIAug.Location = new System.Drawing.Point(169, 33);
-			this.lblAGIAug.Name = "lblAGIAug";
-			this.lblAGIAug.Size = new System.Drawing.Size(19, 13);
-			this.lblAGIAug.TabIndex = 34;
-			this.lblAGIAug.Text = "[0]";
-			// 
-			// lblBODAug
-			// 
-			this.lblBODAug.AutoSize = true;
-			this.lblBODAug.Location = new System.Drawing.Point(169, 7);
-			this.lblBODAug.Name = "lblBODAug";
-			this.lblBODAug.Size = new System.Drawing.Size(19, 13);
-			this.lblBODAug.TabIndex = 33;
-			this.lblBODAug.Text = "[0]";
-			// 
-			// lblRESMetatype
-			// 
-			this.lblRESMetatype.AutoSize = true;
-			this.lblRESMetatype.Enabled = false;
-			this.lblRESMetatype.Location = new System.Drawing.Point(271, 267);
-			this.lblRESMetatype.Name = "lblRESMetatype";
-			this.lblRESMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblRESMetatype.TabIndex = 32;
-			this.lblRESMetatype.Text = "0 / 0 (0)";
-			// 
-			// lblRESLabel
-			// 
-			this.lblRESLabel.AutoSize = true;
-			this.lblRESLabel.Enabled = false;
-			this.lblRESLabel.Location = new System.Drawing.Point(3, 267);
-			this.lblRESLabel.Name = "lblRESLabel";
-			this.lblRESLabel.Size = new System.Drawing.Size(93, 13);
-			this.lblRESLabel.TabIndex = 30;
-			this.lblRESLabel.Text = "Resonance (RES)";
-			// 
-			// lblMAGMetatype
-			// 
-			this.lblMAGMetatype.AutoSize = true;
-			this.lblMAGMetatype.Enabled = false;
-			this.lblMAGMetatype.Location = new System.Drawing.Point(271, 241);
-			this.lblMAGMetatype.Name = "lblMAGMetatype";
-			this.lblMAGMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblMAGMetatype.TabIndex = 29;
-			this.lblMAGMetatype.Text = "0 / 0 (0)";
-			// 
-			// lblMAGLabel
-			// 
-			this.lblMAGLabel.AutoSize = true;
-			this.lblMAGLabel.Enabled = false;
-			this.lblMAGLabel.Location = new System.Drawing.Point(3, 241);
-			this.lblMAGLabel.Name = "lblMAGLabel";
-			this.lblMAGLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblMAGLabel.TabIndex = 27;
-			this.lblMAGLabel.Text = "Magic (MAG)";
-			// 
-			// lblEDGMetatype
-			// 
-			this.lblEDGMetatype.AutoSize = true;
-			this.lblEDGMetatype.Location = new System.Drawing.Point(271, 215);
-			this.lblEDGMetatype.Name = "lblEDGMetatype";
-			this.lblEDGMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblEDGMetatype.TabIndex = 26;
-			this.lblEDGMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblEDGLabel
-			// 
-			this.lblEDGLabel.AutoSize = true;
-			this.lblEDGLabel.Location = new System.Drawing.Point(3, 215);
-			this.lblEDGLabel.Name = "lblEDGLabel";
-			this.lblEDGLabel.Size = new System.Drawing.Size(64, 13);
-			this.lblEDGLabel.TabIndex = 24;
-			this.lblEDGLabel.Text = "Edge (EDG)";
-			// 
-			// lblWILMetatype
-			// 
-			this.lblWILMetatype.AutoSize = true;
-			this.lblWILMetatype.Location = new System.Drawing.Point(271, 189);
-			this.lblWILMetatype.Name = "lblWILMetatype";
-			this.lblWILMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblWILMetatype.TabIndex = 23;
-			this.lblWILMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblWILLabel
-			// 
-			this.lblWILLabel.AutoSize = true;
-			this.lblWILLabel.Location = new System.Drawing.Point(3, 189);
-			this.lblWILLabel.Name = "lblWILLabel";
-			this.lblWILLabel.Size = new System.Drawing.Size(82, 13);
-			this.lblWILLabel.TabIndex = 21;
-			this.lblWILLabel.Text = "Willpower (WIL)";
-			// 
-			// lblLOGMetatype
-			// 
-			this.lblLOGMetatype.AutoSize = true;
-			this.lblLOGMetatype.Location = new System.Drawing.Point(271, 163);
-			this.lblLOGMetatype.Name = "lblLOGMetatype";
-			this.lblLOGMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblLOGMetatype.TabIndex = 20;
-			this.lblLOGMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblLOGLabel
-			// 
-			this.lblLOGLabel.AutoSize = true;
-			this.lblLOGLabel.Location = new System.Drawing.Point(3, 163);
-			this.lblLOGLabel.Name = "lblLOGLabel";
-			this.lblLOGLabel.Size = new System.Drawing.Size(64, 13);
-			this.lblLOGLabel.TabIndex = 18;
-			this.lblLOGLabel.Text = "Logic (LOG)";
-			// 
-			// lblINTMetatype
-			// 
-			this.lblINTMetatype.AutoSize = true;
-			this.lblINTMetatype.Location = new System.Drawing.Point(271, 137);
-			this.lblINTMetatype.Name = "lblINTMetatype";
-			this.lblINTMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblINTMetatype.TabIndex = 17;
-			this.lblINTMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblINTLabel
-			// 
-			this.lblINTLabel.AutoSize = true;
-			this.lblINTLabel.Location = new System.Drawing.Point(3, 137);
-			this.lblINTLabel.Name = "lblINTLabel";
-			this.lblINTLabel.Size = new System.Drawing.Size(71, 13);
-			this.lblINTLabel.TabIndex = 15;
-			this.lblINTLabel.Text = "Intuition (INT)";
-			// 
-			// lblCHAMetatype
-			// 
-			this.lblCHAMetatype.AutoSize = true;
-			this.lblCHAMetatype.Location = new System.Drawing.Point(271, 111);
-			this.lblCHAMetatype.Name = "lblCHAMetatype";
-			this.lblCHAMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblCHAMetatype.TabIndex = 14;
-			this.lblCHAMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblCHALabel
-			// 
-			this.lblCHALabel.AutoSize = true;
-			this.lblCHALabel.Location = new System.Drawing.Point(3, 111);
-			this.lblCHALabel.Name = "lblCHALabel";
-			this.lblCHALabel.Size = new System.Drawing.Size(81, 13);
-			this.lblCHALabel.TabIndex = 12;
-			this.lblCHALabel.Text = "Charisma (CHA)";
-			// 
-			// lblSTRMetatype
-			// 
-			this.lblSTRMetatype.AutoSize = true;
-			this.lblSTRMetatype.Location = new System.Drawing.Point(271, 85);
-			this.lblSTRMetatype.Name = "lblSTRMetatype";
-			this.lblSTRMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblSTRMetatype.TabIndex = 11;
-			this.lblSTRMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblSTRLabel
-			// 
-			this.lblSTRLabel.AutoSize = true;
-			this.lblSTRLabel.Location = new System.Drawing.Point(3, 85);
-			this.lblSTRLabel.Name = "lblSTRLabel";
-			this.lblSTRLabel.Size = new System.Drawing.Size(78, 13);
-			this.lblSTRLabel.TabIndex = 9;
-			this.lblSTRLabel.Text = "Strength (STR)";
-			// 
-			// lblREAMetatype
-			// 
-			this.lblREAMetatype.AutoSize = true;
-			this.lblREAMetatype.Location = new System.Drawing.Point(271, 59);
-			this.lblREAMetatype.Name = "lblREAMetatype";
-			this.lblREAMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblREAMetatype.TabIndex = 8;
-			this.lblREAMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblREALabel
-			// 
-			this.lblREALabel.AutoSize = true;
-			this.lblREALabel.Location = new System.Drawing.Point(3, 59);
-			this.lblREALabel.Name = "lblREALabel";
-			this.lblREALabel.Size = new System.Drawing.Size(81, 13);
-			this.lblREALabel.TabIndex = 6;
-			this.lblREALabel.Text = "Reaction (REA)";
-			// 
-			// lblAGIMetatype
-			// 
-			this.lblAGIMetatype.AutoSize = true;
-			this.lblAGIMetatype.Location = new System.Drawing.Point(271, 33);
-			this.lblAGIMetatype.Name = "lblAGIMetatype";
-			this.lblAGIMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblAGIMetatype.TabIndex = 5;
-			this.lblAGIMetatype.Text = "1 / 6 (9)";
-			// 
-			// lblBODLabel
-			// 
-			this.lblBODLabel.AutoSize = true;
-			this.lblBODLabel.Location = new System.Drawing.Point(3, 7);
-			this.lblBODLabel.Name = "lblBODLabel";
-			this.lblBODLabel.Size = new System.Drawing.Size(63, 13);
-			this.lblBODLabel.TabIndex = 0;
-			this.lblBODLabel.Text = "Body (BOD)";
-			// 
-			// lblAGILabel
-			// 
-			this.lblAGILabel.AutoSize = true;
-			this.lblAGILabel.Location = new System.Drawing.Point(3, 33);
-			this.lblAGILabel.Name = "lblAGILabel";
-			this.lblAGILabel.Size = new System.Drawing.Size(61, 13);
-			this.lblAGILabel.TabIndex = 3;
-			this.lblAGILabel.Text = "Agility (AGI)";
-			// 
-			// lblBODMetatype
-			// 
-			this.lblBODMetatype.AutoSize = true;
-			this.lblBODMetatype.Location = new System.Drawing.Point(271, 7);
-			this.lblBODMetatype.Name = "lblBODMetatype";
-			this.lblBODMetatype.Size = new System.Drawing.Size(45, 13);
-			this.lblBODMetatype.TabIndex = 2;
-			this.lblBODMetatype.Text = "1 / 6 (9)";
-			// 
 			// lblAttributes
 			// 
 			this.lblAttributes.AutoSize = true;
@@ -5365,13 +4839,13 @@ namespace Chummer
 			// tabLimits
 			// 
 			this.tabLimits.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabLimits.Controls.Add(this.label7);
+			this.tabLimits.Controls.Add(this.lblAstralLabel);
 			this.tabLimits.Controls.Add(this.lblAstral);
-			this.tabLimits.Controls.Add(this.label3);
+			this.tabLimits.Controls.Add(this.lblSocialLimitLabel);
 			this.tabLimits.Controls.Add(this.lblSocial);
-			this.tabLimits.Controls.Add(this.label4);
+			this.tabLimits.Controls.Add(this.lblMentalLimitLabel);
 			this.tabLimits.Controls.Add(this.lblMental);
-			this.tabLimits.Controls.Add(this.label6);
+			this.tabLimits.Controls.Add(this.lblPhysicalLimitLabel);
 			this.tabLimits.Controls.Add(this.lblPhysical);
 			this.tabLimits.Controls.Add(this.cmdAddLimitModifier);
 			this.tabLimits.Controls.Add(this.treLimit);
@@ -5382,15 +4856,15 @@ namespace Chummer
 			this.tabLimits.TabIndex = 16;
 			this.tabLimits.Text = "Limits";
 			// 
-			// label7
+			// lblAstralLabel
 			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(323, 112);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(33, 13);
-			this.label7.TabIndex = 87;
-			this.label7.Tag = "Node_Astral";
-			this.label7.Text = "Astral";
+			this.lblAstralLabel.AutoSize = true;
+			this.lblAstralLabel.Location = new System.Drawing.Point(323, 112);
+			this.lblAstralLabel.Name = "lblAstralLabel";
+			this.lblAstralLabel.Size = new System.Drawing.Size(33, 13);
+			this.lblAstralLabel.TabIndex = 87;
+			this.lblAstralLabel.Tag = "Node_Astral";
+			this.lblAstralLabel.Text = "Astral";
 			// 
 			// lblAstral
 			// 
@@ -5401,15 +4875,15 @@ namespace Chummer
 			this.lblAstral.TabIndex = 88;
 			this.lblAstral.Text = "[0]";
 			// 
-			// label3
+			// lblSocialLimitLabel
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(323, 86);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(36, 13);
-			this.label3.TabIndex = 85;
-			this.label3.Tag = "Node_Social";
-			this.label3.Text = "Social";
+			this.lblSocialLimitLabel.AutoSize = true;
+			this.lblSocialLimitLabel.Location = new System.Drawing.Point(323, 86);
+			this.lblSocialLimitLabel.Name = "lblSocialLimitLabel";
+			this.lblSocialLimitLabel.Size = new System.Drawing.Size(36, 13);
+			this.lblSocialLimitLabel.TabIndex = 85;
+			this.lblSocialLimitLabel.Tag = "Node_Social";
+			this.lblSocialLimitLabel.Text = "Social";
 			// 
 			// lblSocial
 			// 
@@ -5420,15 +4894,15 @@ namespace Chummer
 			this.lblSocial.TabIndex = 86;
 			this.lblSocial.Text = "[0]";
 			// 
-			// label4
+			// LimitLabel
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(323, 60);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(39, 13);
-			this.label4.TabIndex = 83;
-			this.label4.Tag = "Node_Mental";
-			this.label4.Text = "Mental";
+			this.lblMentalLimitLabel.AutoSize = true;
+			this.lblMentalLimitLabel.Location = new System.Drawing.Point(323, 60);
+			this.lblMentalLimitLabel.Name = "lblMentalLimitLabel";
+			this.lblMentalLimitLabel.Size = new System.Drawing.Size(39, 13);
+			this.lblMentalLimitLabel.TabIndex = 83;
+			this.lblMentalLimitLabel.Tag = "Node_Mental";
+			this.lblMentalLimitLabel.Text = "Mental";
 			// 
 			// lblMental
 			// 
@@ -5441,13 +4915,13 @@ namespace Chummer
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(323, 34);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(46, 13);
-			this.label6.TabIndex = 81;
-			this.label6.Tag = "Node_Physical";
-			this.label6.Text = "Physical";
+			this.lblPhysicalLimitLabel.AutoSize = true;
+			this.lblPhysicalLimitLabel.Location = new System.Drawing.Point(323, 34);
+			this.lblPhysicalLimitLabel.Name = "lblPhysicalLimitLabel";
+			this.lblPhysicalLimitLabel.Size = new System.Drawing.Size(46, 13);
+			this.lblPhysicalLimitLabel.TabIndex = 81;
+			this.lblPhysicalLimitLabel.Tag = "Node_Physical";
+			this.lblPhysicalLimitLabel.Text = "Physical";
 			// 
 			// lblPhysical
 			// 
@@ -13827,28 +13301,6 @@ namespace Chummer
 			this.tsAIProgramNotes.Text = "&Notes";
 			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
             // 
-            // cboAttributeFilter
-            // 
-            this.cboAttributeFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboAttributeFilter.FormattingEnabled = true;
-            this.cboAttributeFilter.Location = new System.Drawing.Point(738, 235);
-            this.cboAttributeFilter.Name = "cboAttributeFilter";
-            this.cboAttributeFilter.Size = new System.Drawing.Size(114, 21);
-            this.cboAttributeFilter.TabIndex = 103;
-            this.cboAttributeFilter.SelectedIndexChanged += new System.EventHandler(this.cboAttributeFilter_SelectedIndexChanged);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(654, 238);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(51, 13);
-            this.label8.TabIndex = 104;
-            this.label8.Tag = "Label_SumtoTenAttributes";
-            this.label8.Text = "Attributes";
-            this.tipTooltip.SetToolTip(this.label8, "Signal of the Node the A.I. currently resides on.");
-            this.label8.Visible = false;
-            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14367,10 +13819,10 @@ namespace Chummer
         private System.Windows.Forms.Label lblQualityBP;
         private System.Windows.Forms.Label lblQualityBPLabel;
         private System.Windows.Forms.Label lblQualitySource;
-        private System.Windows.Forms.Label lblQualitySourceLabel;
+        private Label lblQualitySourceLabel;
         private System.Windows.Forms.Button cmdDeleteQuality;
         private System.Windows.Forms.Button cmdAddQuality;
-        private TreeView treQualities;
+        private helpers.TreeView treQualities;
         private System.Windows.Forms.Label lblAttributesAug;
         private System.Windows.Forms.Label lblMysticAdeptAssignment;
         private System.Windows.Forms.Label lblAttributesBase;
@@ -14379,23 +13831,10 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetatype;
         private System.Windows.Forms.Label lblMetatypeLabel;
         private System.Windows.Forms.Panel panAttributes;
-        private System.Windows.Forms.Button cmdImproveDEP;
         internal System.Windows.Forms.Label lblDEP;
         internal System.Windows.Forms.Label lblDEPAug;
         internal System.Windows.Forms.Label lblDEPMetatype;
         internal System.Windows.Forms.Label lblDEPLabel;
-        private System.Windows.Forms.Button cmdImproveRES;
-        private System.Windows.Forms.Button cmdImproveMAG;
-        private System.Windows.Forms.Button cmdImproveBOD;
-        private System.Windows.Forms.Button cmdImproveAGI;
-        private System.Windows.Forms.Button cmdImproveREA;
-        private System.Windows.Forms.Button cmdImproveSTR;
-        private System.Windows.Forms.Button cmdImproveCHA;
-        private System.Windows.Forms.Button cmdImproveINT;
-        private System.Windows.Forms.Button cmdImproveLOG;
-        private System.Windows.Forms.Button cmdImproveWIL;
-        private System.Windows.Forms.Button cmdImproveEDG;
-        private System.Windows.Forms.Button cmdBurnEdge;
         internal System.Windows.Forms.Label lblRES;
         internal System.Windows.Forms.Label lblMAG;
         internal System.Windows.Forms.Label lblEDG;
@@ -14444,22 +13883,22 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabSkills;
         private UI.Skills.SkillsTabUserControl tabSkillsUc;
         private System.Windows.Forms.TabPage tabLimits;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblAstralLabel;
         private System.Windows.Forms.Label lblAstral;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblSocialLimitLabel;
         private System.Windows.Forms.Label lblSocial;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblMentalLimitLabel;
         private System.Windows.Forms.Label lblMental;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblPhysicalLimitLabel;
         private System.Windows.Forms.Label lblPhysical;
         private System.Windows.Forms.Button cmdAddLimitModifier;
-        private TreeView treLimit;
+        private helpers.TreeView treLimit;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
         private System.Windows.Forms.TabPage tabMartialArts;
         private SplitButton cmdAddMartialArt;
         private System.Windows.Forms.Label lblMartialArtSource;
         private System.Windows.Forms.Label lblMartialArtSourceLabel;
-        private TreeView treMartialArts;
+        private helpers.TreeView treMartialArts;
         private System.Windows.Forms.Button cmdDeleteMartialArt;
         private System.Windows.Forms.TabPage tabMagician;
         private System.Windows.Forms.ComboBox cboSpiritManipulation;
@@ -14502,7 +13941,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSpellCategoryLabel;
         private System.Windows.Forms.Label lblSpellDescriptors;
         private System.Windows.Forms.Label lblSpellDescriptorsLabel;
-        private TreeView treSpells;
+        private helpers.TreeView treSpells;
         private System.Windows.Forms.Button cmdDeleteSpell;
         private System.Windows.Forms.Button cmdAddSpirit;
         private System.Windows.Forms.Label lblSpirits;
@@ -14542,7 +13981,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblFadingAttributes;
         private System.Windows.Forms.Label lblFadingAttributesLabel;
         private System.Windows.Forms.Label lblStreamLabel;
-        private TreeView treComplexForms;
+        private helpers.TreeView treComplexForms;
         private System.Windows.Forms.Button cmdDeleteComplexForm;
         private System.Windows.Forms.Label lblComplexForms;
         private System.Windows.Forms.Button cmdAddSprite;
@@ -14571,14 +14010,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblCritterPowerCategoryLabel;
         private System.Windows.Forms.Label lblCritterPowerName;
         private System.Windows.Forms.Label lblCritterPowerNameLabel;
-        private TreeView treCritterPowers;
+        private helpers.TreeView treCritterPowers;
         private System.Windows.Forms.TabPage tabAdvancedPrograms;
         private System.Windows.Forms.Button cmdAddAIProgram;
         private System.Windows.Forms.Label lblAIProgramsRequires;
         private System.Windows.Forms.Label lblAIProgramsRequiresLabel;
         private System.Windows.Forms.Label lblAIProgramsSource;
         private System.Windows.Forms.Label lblAIProgramsSourceLabel;
-        private TreeView treAIPrograms;
+        private helpers.TreeView treAIPrograms;
         private System.Windows.Forms.Button cmdDeleteAIProgram;
         private System.Windows.Forms.Label lblAIProgramsAdvancedPrograms;
         private System.Windows.Forms.TabPage tabInitiation;
@@ -14679,7 +14118,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberwareCategoryLabel;
         private System.Windows.Forms.Label lblCyberwareName;
         private System.Windows.Forms.Label lblCyberwareNameLabel;
-        private TreeView treCyberware;
+        private helpers.TreeView treCyberware;
         private SplitButton cmdAddCyberware;
         private SplitButton cmdDeleteCyberware;
         private System.Windows.Forms.TabPage tabStreetGear;
@@ -14696,7 +14135,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblLifestyleSource;
         private System.Windows.Forms.Label lblLifestyleSourceLabel;
         private System.Windows.Forms.Label lblLifestyleCostLabel;
-        private TreeView treLifestyles;
+        private helpers.TreeView treLifestyles;
         private System.Windows.Forms.Label lblLifestyleCost;
         private System.Windows.Forms.Button cmdDeleteLifestyle;
         private System.Windows.Forms.Label lblLifestyleMonthsLabel;
@@ -14729,7 +14168,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblArmorCost;
         private System.Windows.Forms.Label lblArmorCostLabel;
         private System.Windows.Forms.Label lblArmorAvail;
-        private TreeView treArmor;
+        private helpers.TreeView treArmor;
         private System.Windows.Forms.Label lblArmorAvailLabel;
         private System.Windows.Forms.Button cmdArmorIncrease;
         private System.Windows.Forms.Button cmdArmorDecrease;
@@ -14777,7 +14216,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponSourceLabel;
         private System.Windows.Forms.Label lblWeaponAmmo;
         private System.Windows.Forms.Label lblWeaponAmmoLabel;
-        private TreeView treWeapons;
+        private helpers.TreeView treWeapons;
         private System.Windows.Forms.Label lblWeaponMode;
         private System.Windows.Forms.Label lblWeaponModeLabel;
         private System.Windows.Forms.Label lblWeaponNameLabel;
@@ -14797,8 +14236,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponRC;
         private System.Windows.Forms.Label lblWeaponAvailLabel;
         private System.Windows.Forms.Button cmdRollWeapon;
-        private System.Windows.Forms.Button cmdWeaponMoveToVehicle;
-        private System.Windows.Forms.Button cmdWeaponBuyAmmo;
+        private System.Windows.Forms.Button cmdWeaponMoveToVehicle = new Button();
+        private System.Windows.Forms.Button cmdWeaponBuyAmmo = new Button();
         private SplitButton cmdAddWeapon;
         private SplitButton cmdDeleteWeapon;
         private SplitButton cmdFireWeapon;
@@ -14869,12 +14308,12 @@ namespace Chummer
         private System.Windows.Forms.Label lblGearName;
         private System.Windows.Forms.Label lblGearNameLabel;
         private System.Windows.Forms.Label lblGearRatingLabel;
-        private TreeView treGear;
+        private helpers.TreeView treGear;
         private System.Windows.Forms.Button cmdGearMoveToVehicle;
-        private System.Windows.Forms.Button cmdGearMergeQty;
-        private System.Windows.Forms.Button cmdGearSplitQty;
-        private System.Windows.Forms.Button cmdGearIncreaseQty;
-        private System.Windows.Forms.Button cmdGearReduceQty;
+        private System.Windows.Forms.Button cmdGearMergeQty = new Button();
+        private System.Windows.Forms.Button cmdGearSplitQty = new Button();
+        private System.Windows.Forms.Button cmdGearIncreaseQty = new Button();
+        private System.Windows.Forms.Button cmdGearReduceQty = new Button();
         private SplitButton cmdAddGear;
         private SplitButton cmdDeleteGear;
         private System.Windows.Forms.TabPage tabPets;
@@ -15052,7 +14491,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleAccelLabel;
         private System.Windows.Forms.Label lblVehicleHandling;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
-        private TreeView treVehicles;
+        private helpers.TreeView treVehicles;
         private System.Windows.Forms.Button cmdRollVehicleWeapon;
         private System.Windows.Forms.Button cmdVehicleMoveToInventory;
         private System.Windows.Forms.Button cmdVehicleGearReduceQty;
@@ -15140,17 +14579,18 @@ namespace Chummer
         private System.Windows.Forms.Label lblImprovementValue;
         private System.Windows.Forms.Label lblImprovementType;
         private System.Windows.Forms.Label lblImprovementTypeLabel;
-        private TreeView treImprovements;
+        private helpers.TreeView treImprovements;
         private System.Windows.Forms.Button cmdAddImprovement;
         private System.Windows.Forms.ContextMenuStrip cmsAdvancedProgram;
         private System.Windows.Forms.ToolStripMenuItem tsAddAdvancedProgramOption;
         private System.Windows.Forms.ToolStripMenuItem tsAIProgramNotes;
-		private ComboBox cboHandedness;
+		private helpers.ComboBox cboHandedness;
 		private System.Windows.Forms.Label lblHandedness;
         private System.Windows.Forms.Label lblMugshotDimensions;
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.CheckBox chkIsMainMugshot;
-	}
+        private FlowLayoutPanel pnlAttributes;
+    }
 }
 

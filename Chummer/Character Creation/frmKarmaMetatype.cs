@@ -656,24 +656,6 @@ namespace Chummer
                     _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, intMaxModifier));
 				}
 
-				// If we're working with a Critter, set the Attributes to their default values.
-				if (_strXmlFile == "critters.xml" && objXmlMetatype != null)
-				{
-					_objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 0));
-					_objCharacter.AGI.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 0));
-					_objCharacter.REA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 0));
-					_objCharacter.STR.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 0));
-					_objCharacter.CHA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 0));
-					_objCharacter.INT.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 0));
-					_objCharacter.LOG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 0));
-					_objCharacter.WIL.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 0));
-					_objCharacter.MAG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 0));
-					_objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 0));
-					_objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 0));
-					_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0));
-					_objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, 0));
-					}
-
 				// If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
 				if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
 					cboMetavariant.SelectedValue = "Human";

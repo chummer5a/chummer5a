@@ -158,11 +158,27 @@ namespace Chummer
 
 		// Attributes.
         public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-        private Dictionary<string, CharacterAttrib> _attributes;
+        private Dictionary<string, CharacterAttrib> _attributes = new Dictionary<string, CharacterAttrib>();
+        
+        private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
+        private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
+        private CharacterAttrib _attREA = new CharacterAttrib("REA");
+        private CharacterAttrib _attSTR = new CharacterAttrib("STR");
+        private CharacterAttrib _attCHA = new CharacterAttrib("CHA");
+        private CharacterAttrib _attINT = new CharacterAttrib("INT");
+        private CharacterAttrib _attLOG = new CharacterAttrib("LOG");
+        private CharacterAttrib _attWIL = new CharacterAttrib("WIL");
+        private CharacterAttrib _attINI = new CharacterAttrib("INI");
+        private CharacterAttrib _attEDG = new CharacterAttrib("EDG");
+        private CharacterAttrib _attMAG = new CharacterAttrib("MAG");
+        private CharacterAttrib _attRES = new CharacterAttrib("RES");
+        private CharacterAttrib _attESS = new CharacterAttrib("ESS");
+        private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
 
-		// Shapeshifter Attributes.
 
-		private bool _blnMAGEnabled = false;
+        // Shapeshifter Attributes.
+
+        private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnDEPEnabled = false;
         private bool _blnGroupMember = false;
@@ -294,14 +310,6 @@ namespace Chummer
             RES._objCharacter = this;
             ESS._objCharacter = this;
 			DEP._objCharacter = this;
-			ShifterBOD._objCharacter = this;
-			ShifterAGI._objCharacter = this;
-			ShifterREA._objCharacter = this;
-			ShifterSTR._objCharacter = this;
-			ShifterCHA._objCharacter = this;
-			ShifterINT._objCharacter = this;
-			ShifterLOG._objCharacter = this;
-			ShifterWIL._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
 			SkillsSection = new SkillsSection(this);
@@ -551,20 +559,6 @@ namespace Chummer
 			{
                 objAttribute.Value.Save(objWriter);
             }
-
-	        if (_strMetatypeCategory == "Shapeshifter" && _blnCreated)
-	        {
-				objWriter.WriteStartElement("shapeshifter");
-				ShifterBOD.Save(objWriter);
-				ShifterAGI.Save(objWriter);
-				ShifterREA.Save(objWriter);
-				ShifterSTR.Save(objWriter);
-				ShifterCHA.Save(objWriter);
-				ShifterINT.Save(objWriter);
-				ShifterLOG.Save(objWriter);
-				ShifterWIL.Save(objWriter);
-				objWriter.WriteEndElement();
-			}
             // </attributes>
             objWriter.WriteEndElement();
 
@@ -1201,67 +1195,84 @@ namespace Chummer
 			Timekeeper.Start("load_char_attrib");
             // Attributes.
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"BOD\"]");
-            _attBOD.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attBOD.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"AGI\"]");
-            _attAGI.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attAGI.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
-            _attREA.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attREA.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
-            _attSTR.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attSTR.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
-            _attCHA.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attCHA.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
-            _attINT.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attINT.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
-            _attLOG.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attLOG.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
-            _attWIL.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attWIL.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
-            _attINI.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attINI.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
-            _attEDG.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attEDG.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
-            _attMAG.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attMAG.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
-            _attRES.Load(objXmlCharacter);
+            if (objXmlCharacter != null)
+            {
+                _attRES.Load(objXmlCharacter);
+            }
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
-            _attESS.Load(objXmlCharacter);
-
-	        if (_blnCreated && _strMetatypeCategory == "Shapeshifter")
-	        {
-		        // Attributes.
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"BOD\"]");
-		        ShifterBOD.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"AGI\"]");
-		        ShifterAGI.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"REA\"]");
-		        ShifterREA.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"STR\"]");
-		        ShifterSTR.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"CHA\"]");
-		        ShifterCHA.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"INT\"]");
-		        ShifterINT.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"LOG\"]");
-		        ShifterLOG.Load(objXmlCharacter);
-		        objXmlCharacter =
-			        objXmlDocument.SelectSingleNode("/character/attributes/shapeshifter/attribute[name = \"WIL\"]");
-		        ShifterWIL.Load(objXmlCharacter);
-	        }
-	        // A.I. Attributes.
-			try
-			{
-                objAttribute.Value.Load(objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"" + objAttribute.Key + "\"]"));
+            if (objXmlCharacter != null)
+            {
+                _attESS.Load(objXmlCharacter);
             }
 
-	        Timekeeper.Finish("load_char_attrib");
+            // A.I. Attributes.
+            try
+            {
+                objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
+                if (objXmlCharacter != null)
+                {
+                    _attDEP.Load(objXmlCharacter);
+                }
+            }
+            catch
+            {
+            }
+            Timekeeper.Finish("load_char_attrib");
 			Timekeeper.Start("load_char_misc2");
 
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
@@ -2126,10 +2137,18 @@ namespace Chummer
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
-            foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
-			{
-                objAttribute.Value.Print(objWriter, objAttribute.Key == "ESS" ? Essence.ToString(GlobalOptions.CultureInfo) : string.Empty);
-            }
+            _attBOD.Print(objWriter);
+            _attAGI.Print(objWriter);
+            _attREA.Print(objWriter);
+            _attSTR.Print(objWriter);
+            _attCHA.Print(objWriter);
+            _attINT.Print(objWriter);
+            _attLOG.Print(objWriter);
+            _attWIL.Print(objWriter);
+            _attINI.Print(objWriter);
+            _attEDG.Print(objWriter);
+            _attMAG.Print(objWriter);
+            _attRES.Print(objWriter);
 
             // </attributes>
             objWriter.WriteEndElement();
@@ -3909,12 +3928,51 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         public CharacterAttrib GetAttribute(string strAttribute)
         {
-            CharacterAttrib objReturnAttrib;
-            if (!_attributes.TryGetValue(strAttribute, out objReturnAttrib))
+            switch (strAttribute)
             {
-                _attributes.TryGetValue(strAttribute.Replace("Base", string.Empty), out objReturnAttrib);
+                case "BOD":
+                case "BODBase":
+                    return _attBOD;
+                case "AGI":
+                case "AGIBase":
+                    return _attAGI;
+                case "REA":
+                case "REABase":
+                    return _attREA;
+                case "STR":
+                case "STRBase":
+                    return _attSTR;
+                case "CHA":
+                case "CHABase":
+                    return _attCHA;
+                case "INT":
+                case "INTBase":
+                    return _attINT;
+                case "LOG":
+                case "LOGBase":
+                    return _attLOG;
+                case "WIL":
+                case "WILBase":
+                    return _attWIL;
+                case "INI":
+                    return _attINI;
+                case "EDG":
+                case "EDGBase":
+                    return _attEDG;
+                case "MAG":
+                case "MAGBase":
+                    return _attMAG;
+                case "RES":
+                case "RESBase":
+                    return _attRES;
+                case "DEP":
+                case "DEPBase":
+                    return _attDEP;
+                case "ESS":
+                    return _attESS;
+                default:
+                    return _attBOD;
             }
-            return objReturnAttrib;
         }
 
 		public CharacterAttrib.AttributeCategory ActiveAttributeCategory { get; set; }
@@ -3926,10 +3984,6 @@ namespace Chummer
         {
             get
             {
-	            if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-	            {
-		            return ShifterBOD ?? _attBOD;
-	            }
 	            return _attBOD;
             }
         }
@@ -3941,10 +3995,6 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterAGI ?? _attAGI;
-				}
 				return _attAGI;
             }
         }
@@ -3956,10 +4006,6 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterREA ?? _attREA;
-				}
 				return _attREA;
             }
         }
@@ -3971,10 +4017,6 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterSTR ?? _attSTR;
-				}
 				return _attSTR;
             }
         }
@@ -3986,10 +4028,6 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterCHA ?? _attCHA;
-				}
 				return _attCHA;
             }
         }
@@ -4001,10 +4039,6 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterINT ?? _attINT;
-				}
 				return _attINT;
             }
         }
@@ -4016,10 +4050,6 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterLOG ?? _attLOG;
-				}
 				return _attLOG;
             }
         }
@@ -4031,53 +4061,9 @@ namespace Chummer
         {
             get
             {
-				if (ActiveAttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-				{
-					return ShifterBOD ?? _attWIL;
-				}
 				return _attWIL;
             }
         }
-
-		/// <summary>
-		/// Body (BOD) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterBOD { get; set; } = new CharacterAttrib("BOD", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Agility (AGI) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterAGI { get; set; } = new CharacterAttrib("AGI", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Reaction (REA) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterREA { get; set; } = new CharacterAttrib("REA", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Strength (STR) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterSTR { get; set; } = new CharacterAttrib("STR", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Charisma (CHA) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterCHA { get; set; } = new CharacterAttrib("CHA", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Intuition (INT) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterINT { get; set; } = new CharacterAttrib("INT", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Logic (LOG) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterLOG { get; set; } = new CharacterAttrib("LOG", CharacterAttrib.AttributeCategory.Shapeshifter);
-
-	    /// <summary>
-		/// Willpower (WIL) CharacterAttribute.
-		/// </summary>
-		public CharacterAttrib ShifterWIL { get; set; } = new CharacterAttrib("WIL", CharacterAttrib.AttributeCategory.Shapeshifter);
 
 	    /// <summary>
 		/// Initiative (INI) CharacterAttribute.
@@ -4097,7 +4083,7 @@ namespace Chummer
         {
             get
             {
-                return _attributes["EDG"];
+                return _attEDG;
             }
         }
 
@@ -4108,7 +4094,7 @@ namespace Chummer
         {
             get
             {
-                return _attributes["MAG"];
+                return _attMAG;
             }
         }
 
@@ -4117,32 +4103,23 @@ namespace Chummer
         /// </summary>
         public CharacterAttrib RES
         {
-            get
-            {
-                return _attributes["RES"];
-            }
+            get { return _attRES; }
 		}
-
-		/// <summary>
-		/// Depth (DEP) Attribute.
-		/// </summary>
-		public CharacterAttrib DEP
+        
+        /// <summary>
+        /// Depth (DEP) Attribute.
+        /// </summary>
+        public CharacterAttrib DEP
 		{
-			get
-			{
-				return _attributes["DEP"];
-			}
-		}
+            get { return _attDEP; }
+        }
 
 		/// <summary>
 		/// Essence (ESS) Attribute.
 		/// </summary>
         public CharacterAttrib ESS
         {
-            get
-            {
-                return _attributes["ESS"];
-            }
+            get { return _attESS; }
         }
 
         /// <summary>

@@ -516,25 +516,6 @@ namespace Chummer
 			// to UpdateCharacterInformation();
 			MetatypeSelected();
 
-			if (_objCharacter.MetatypeCategory == "Shapeshifter")
-			{
-				List<ListItem> lstCategories = new List<ListItem>();
-				ListItem objFilter = new ListItem();
-				objFilter.Name = "Standard";
-				objFilter.Value = "Standard";
-				lstCategories.Add(objFilter);
-				objFilter = new ListItem();
-				objFilter.Name = "Shapeshifter";
-				objFilter.Value = "Shapeshifter";
-				lstCategories.Add(objFilter);
-				objSort = new SortListItem();
-				lstCategories.Sort(objSort.Compare);
-				cboAttributeFilter.ValueMember = "Value";
-				cboAttributeFilter.DisplayMember = "Name";
-				cboAttributeFilter.DataSource = lstCategories;
-				cboAttributeFilter.SelectedValue = "Standard";
-			}
-
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
 			int intCharacterMAG = _objCharacter.MAG.TotalValue;
 			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
@@ -3322,26 +3303,6 @@ namespace Chummer
 		#endregion
 
 		#region SpellDefense Events
-
-		private void nudResponse_ValueChanged(object sender, EventArgs e)
-		{
-			_objCharacter.Response = Convert.ToInt32(nudResponse.Value);
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void nudSignal_ValueChanged(object sender, EventArgs e)
-		{
-			_objCharacter.Signal = Convert.ToInt32(nudSignal.Value);
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-
 		private void UpdateSpellDefence()
 		{
 			// Update the Spell Defence labels.
@@ -24303,7 +24264,6 @@ namespace Chummer
 			tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
 			tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
 			tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
-			tipTooltip.SetToolTip(cmdBurnEdge, LanguageManager.Instance.GetString("Tip_CommonBurnEdge"));
 			// Spells Tab.
 			tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.Instance.GetString("Tip_DiceRoller"));
 			tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.Instance.GetString("Tip_DiceRoller"));
@@ -26786,20 +26746,6 @@ namespace Chummer
 		{
 			if (_blnLoading) return;
 			_objCharacter.PrimaryArm = cboHandedness.SelectedValue.ToString();
-        }
-        private void cboAttributeFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading) return;
-            switch (cboAttributeFilter.SelectedValue.ToString())
-            {
-                case "Standard":
-                    _objCharacter.ActiveAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
-                    break;
-                case "Shapeshifter":
-                    _objCharacter.ActiveAttributeCategory = CharacterAttrib.AttributeCategory.Shapeshifter;
-                    break;
-            }
-            BuildAttributePanel();
         }
 
         private void BuildAttributePanel()

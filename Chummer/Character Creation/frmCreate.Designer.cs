@@ -1,5 +1,7 @@
 ﻿using Chummer.helpers;
 using System;
+using Chummer.UI.Attributes;
+using Chummer.UI.Shared;
 
 namespace Chummer
 {
@@ -11025,6 +11027,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.Label lblMugshotDimensions;
-	}
+        private System.Windows.Forms.FlowLayoutPanel pnlAttributes;
+    }
 }
 

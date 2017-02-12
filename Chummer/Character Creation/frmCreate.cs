@@ -1050,25 +1050,6 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.EndsWith("Sprite"))
-            {
-                lblRatingLabel.Visible = true;
-                lblRating.Visible = true;
-                lblSystemLabel.Visible = true;
-                lblSystem.Visible = true;
-                lblFirewallLabel.Visible = true;
-                lblFirewall.Visible = true;
-                lblResponseLabel.Visible = true;
-                nudResponse.Visible = true;
-                nudResponse.Enabled = true;
-                nudResponse.Value = _objCharacter.Response;
-                lblSignalLabel.Visible = true;
-                nudSignal.Visible = true;
-                nudSignal.Enabled = true;
-                nudSignal.Value = _objCharacter.Signal;
-            }
-
             mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
 
             if (_objCharacter.MetatypeCategory == "Cyberzombie")
@@ -1482,28 +1463,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            // Change to the status of DEP being enabled.
-            lblDEPLabel.Enabled = _objCharacter.DEPEnabled;
-            lblDEPAug.Enabled = _objCharacter.DEPEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
-            {
-                nudDEP.Enabled = _objCharacter.DEPEnabled;
-            }
-            nudKDEP.Enabled = _objCharacter.DEPEnabled;
-            lblDEPMetatype.Enabled = _objCharacter.DEPEnabled;
-
-            if (_objCharacter.DEPEnabled)
-            {
-                nudDEP.Minimum = _objCharacter.DEP.MetatypeMinimum;
-                nudDEP.Maximum = _objCharacter.DEP.MetatypeMaximum;
-                nudKDEP.Maximum = _objCharacter.DEP.MetatypeMaximum;
-            }
-            else
-            {
-                // Put DEP back to the Metatype minimum.
-                nudDEP.Value = nudDEP.Minimum;
-                nudKDEP.Value = nudKDEP.Minimum;
-            }
+            //TODO: Is this method still required?
         }
 
         private void objCharacter_AdeptTabEnabledChanged(object sender)
@@ -16078,36 +16038,6 @@ namespace Chummer
             return blnSaved;
         }
 
-        /// <summary>
-		/// Generate a Shapeshifter's metahuman form Attributes. 
-		/// </summary>
-		private void GenerateShapeshifterAttributes()
-		{
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("metatypes.xml");
-			XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metavariant + "\"]");
-			if (objNode == null) return;
-			List<CharacterAttrib> lstAttributes = new List<CharacterAttrib>
-			{
-				_objCharacter.ShifterBOD,
-				_objCharacter.ShifterAGI,
-				_objCharacter.ShifterSTR,
-				_objCharacter.ShifterREA,
-				_objCharacter.ShifterINT,
-				_objCharacter.ShifterLOG,
-				_objCharacter.ShifterCHA,
-				_objCharacter.ShifterWIL
-			};
-			foreach (CharacterAttrib objAttribute in lstAttributes)
-			{
-				string strAbbrev = objAttribute.Abbrev.ToLower();
-				objAttribute.MetatypeMinimum = Convert.ToInt32(objNode[strAbbrev + "min"].InnerText);
-				objAttribute.MetatypeMaximum = Convert.ToInt32(objNode[strAbbrev + "max"].InnerText);
-				objAttribute.MetatypeAugmentedMaximum = Convert.ToInt32(objNode[strAbbrev + "aug"].InnerText);
-				objAttribute.Base = _objCharacter.GetAttribute(objAttribute.Abbrev).Base;
-				objAttribute.Karma = _objCharacter.GetAttribute(objAttribute.Abbrev).Karma;
-			}
-		}
-
 		/// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
@@ -16137,12 +16067,6 @@ namespace Chummer
                 if (_objCharacter.RESEnabled)
                     _objCharacter.RES.Value += _objCharacter.EssencePenalty;
             }*/
-
-			// If the character is a shapeshifter, generate their meta
-			if (_objCharacter.MetatypeCategory == "Shapeshifter")
-			{
-				GenerateShapeshifterAttributes();
-            }
 
             // Create an Expense Entry for Starting Nuyen.
             ExpenseLogEntry objNuyen = new ExpenseLogEntry();

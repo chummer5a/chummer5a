@@ -1109,12 +1109,6 @@ namespace Chummer
 	                }
                         break;
                     case Improvement.ImprovementType.Attribute:
-                        CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
-                        if (objImprovement.Minimum > 0)
-	                {
-                            objChangedAttribute.Value -= objImprovement.Minimum;
-	                }
-
                         // Determine if access to any Special Attributes have been lost.
                         if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
                         {
