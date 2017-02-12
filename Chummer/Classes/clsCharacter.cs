@@ -280,20 +280,20 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            _attBOD._objCharacter = this;
-            _attAGI._objCharacter = this;
-            _attREA._objCharacter = this;
-            _attSTR._objCharacter = this;
-            _attCHA._objCharacter = this;
-            _attINT._objCharacter = this;
-            _attLOG._objCharacter = this;
-            _attWIL._objCharacter = this;
-            _attINI._objCharacter = this;
-            _attEDG._objCharacter = this;
-            _attMAG._objCharacter = this;
-            _attRES._objCharacter = this;
-            _attESS._objCharacter = this;
-			_attDEP._objCharacter = this;
+            BOD._objCharacter = this;
+            AGI._objCharacter = this;
+            REA._objCharacter = this;
+            STR._objCharacter = this;
+            CHA._objCharacter = this;
+            INT._objCharacter = this;
+            LOG._objCharacter = this;
+            WIL._objCharacter = this;
+            INI._objCharacter = this;
+            EDG._objCharacter = this;
+            MAG._objCharacter = this;
+            RES._objCharacter = this;
+            ESS._objCharacter = this;
+			DEP._objCharacter = this;
 			ShifterBOD._objCharacter = this;
 			ShifterAGI._objCharacter = this;
 			ShifterREA._objCharacter = this;
