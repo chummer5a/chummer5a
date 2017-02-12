@@ -51,12 +51,9 @@ namespace Chummer
 
 		private void cmdDelete_Click(object sender, EventArgs e)
 		{
-			try
+			if (treCharacters.SelectedNode != null)
 			{
 				treCharacters.SelectedNode.Remove();
-			}
-			catch
-			{
 			}
 		}
 
@@ -126,9 +123,9 @@ namespace Chummer
 			cmdSelectCharacter.Width = intWidth;
 			cmdPrint.Width = intWidth;
 			cmdDelete.Width = intWidth;
-			this.Width = cmdPrint.Left + cmdPrint.Width + 19;
+			Width = cmdPrint.Left + cmdPrint.Width + 19;
 
-			prgProgress.Width = this.Width - prgProgress.Left - 19;
+			prgProgress.Width = Width - prgProgress.Left - 19;
 		}
 		#endregion
 	}

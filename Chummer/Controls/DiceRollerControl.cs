@@ -41,11 +41,11 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(this.nudThreshold.Value);
+                return Convert.ToInt32(nudThreshold.Value);
             }
             set
             {
-                this.nudThreshold.Value = value;
+                nudThreshold.Value = value;
             }
         }
 
@@ -56,11 +56,11 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(this.nudGremlins.Value);
+                return Convert.ToInt32(nudGremlins.Value);
             }
             set
             {
-                this.nudGremlins.Value = value;
+                nudGremlins.Value = value;
             }
         }
 
@@ -71,11 +71,11 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(this.nudDice.Value);
+                return Convert.ToInt32(nudDice.Value);
             }
             set
             {
-                this.nudDice.Value = value;
+                nudDice.Value = value;
             }
         }
 
@@ -91,8 +91,8 @@ namespace Chummer
         {
             get
             {
-                return (EdgeUses)this.cboEdgeUse.SelectedItem == default(EdgeUses) ? EdgeUses.None :
-                (EdgeUses)this.cboEdgeUse.SelectedItem;
+                return (EdgeUses)cboEdgeUse.SelectedItem == default(EdgeUses) ? EdgeUses.None :
+                (EdgeUses)cboEdgeUse.SelectedItem;
             }
             set
             {
@@ -100,7 +100,7 @@ namespace Chummer
                 {
                     case EdgeUses.CloseCall: break;
                     case EdgeUses.SeizeTheInit: break;
-                    default: this.cboEdgeUse.SelectedItem = value; break;
+                    default: cboEdgeUse.SelectedItem = value; break;
                 }
             }
         }
@@ -114,11 +114,11 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(this.nudLimit.Value);
+                return Convert.ToInt32(nudLimit.Value);
             }
             set
             {
-                this.nudLimit.Value = value;
+                nudLimit.Value = value;
             }
         }
 
@@ -127,10 +127,10 @@ namespace Chummer
         public DiceRollerControl()
         {
             InitializeComponent();
-            this.nudDice.Maximum = Int32.MaxValue;
-            this.nudGremlins.Maximum = Int32.MaxValue;
-            this.nudLimit.Maximum = Int32.MaxValue;
-            this.nudThreshold.Maximum = Int32.MaxValue;
+            nudDice.Maximum = Int32.MaxValue;
+            nudGremlins.Maximum = Int32.MaxValue;
+            nudLimit.Maximum = Int32.MaxValue;
+            nudThreshold.Maximum = Int32.MaxValue;
             List<EdgeUses> edge = new List<EdgeUses>() 
             { 
                 EdgeUses.None, 
@@ -139,8 +139,10 @@ namespace Chummer
                 EdgeUses.Blitz, 
                 EdgeUses.DeadManTrigger
             };
-            this.cboEdgeUse.DataSource = edge;
-            this.EdgeUse = EdgeUses.None;
+            cboEdgeUse.BeginUpdate();
+            cboEdgeUse.DataSource = edge;
+            cboEdgeUse.EndUpdate();
+            EdgeUse = EdgeUses.None;
         }
 
         #region Event Handling
@@ -148,13 +150,13 @@ namespace Chummer
         {
             // TODO roll the dice
             List<int> results = new List<int>();
-            for (int i = 0; i < this.NumberOfDice; i++)
+            for (int i = 0; i < NumberOfDice; i++)
             {
                 int val = _random.Next(1, 7);
                 results.Add(val);
 
                 // check for pushing the limit
-                if ((this.EdgeUse == EdgeUses.PushTheLimit || this.chkRuleOf6.Checked) && val == 6)
+                if ((EdgeUse == EdgeUses.PushTheLimit || chkRuleOf6.Checked) && val == 6)
                 {
                     int edgeRoll = _random.Next(1, 7);
                     results.Add(edgeRoll);
@@ -178,20 +180,20 @@ namespace Chummer
 
             // calculate the 1 (and 2's)
             int glitches = 0;
-            if (this.chkRushJob.Checked)
+            if (chkRushJob.Checked)
                 results.ForEach(x => { if (x == 1 || x == 2) glitches++;});
             else
                 results.ForEach(x => { if (x == 1) glitches++;});
 
             // calculate if we glitched or critically glitched (using gremlins)
             bool glitch = false, criticalGlitch = false;
-            glitch = glitches + this.Gremlins > 0 && results.Count / (glitches + this.Gremlins) < 2;
+            glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
 
             if (glitch && hits == 0)
                 criticalGlitch = true;
             int limitAppliedHits = hits;
-            if (this.Limit > 0 && !(this.EdgeUse == EdgeUses.PushTheLimit))
-                limitAppliedHits = hits > this.Limit ? this.Limit : hits;
+            if (Limit > 0 && !(EdgeUse == EdgeUses.PushTheLimit))
+                limitAppliedHits = hits > Limit ? Limit : hits;
             
             // show the results
             // we have not gone over our limit
@@ -207,39 +209,39 @@ namespace Chummer
             if (hits == 0 && !glitch)
                 sb.Append("Results: 0 Hits.");   // we have no hits and no glitches
 
-            if (this.Threshold > 0)
-                if (hits >= this.Threshold || limitAppliedHits >= this.Threshold)
-                    this.lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
+            if (Threshold > 0)
+                if (hits >= Threshold || limitAppliedHits >= Threshold)
+                    lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
 
 
-            this.lblResults.Text = sb.ToString();
+            lblResults.Text = sb.ToString();
 
             // now populate the text box
             sb = new StringBuilder();
             // apply limit modifiers
             results.ForEach(x => { sb.Append(x.ToString()); sb.Append(", "); });
             sb.Length -= 2; // remove trailing comma
-            this.txtResults.Text = sb.ToString();
+            txtResults.Text = sb.ToString();
         }
 
         private void nudDice_ValueChanged(object sender, EventArgs e)
         {
-            this.NumberOfDice = Convert.ToInt32(this.nudDice.Value);
+            NumberOfDice = Convert.ToInt32(nudDice.Value);
         }
 
         private void nudThreshold_ValueChanged(object sender, EventArgs e)
         {
-            this.Threshold = Convert.ToInt32(this.nudThreshold.Value);
+            Threshold = Convert.ToInt32(nudThreshold.Value);
         }
 
         private void nudGremlins_ValueChanged(object sender, EventArgs e)
         {
-            this.Gremlins = Convert.ToInt32(this.nudGremlins.Value);
+            Gremlins = Convert.ToInt32(nudGremlins.Value);
         }
 
         private void nudLimit_ValueChanged(object sender, EventArgs e)
         {
-            this.Limit = Convert.ToInt32(this.nudLimit.Value);
+            Limit = Convert.ToInt32(nudLimit.Value);
         }
         #endregion
     }

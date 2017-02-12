@@ -30,12 +30,12 @@ namespace Chummer
 {
     public partial class frmSelectArt : Form
     {
-        private string _strSelectedItem = "";
+        private string _strSelectedItem = string.Empty;
 
         private Mode _objMode = Mode.Art;
         private string _strNode = "art";
         private string _strRoot = "arts";
-        private string _strCategory = "";
+        private string _strCategory = string.Empty;
 
         private readonly Character _objCharacter;
 
@@ -71,24 +71,24 @@ namespace Chummer
             // Update the window title if needed.
             if (_objMode == Mode.Enhancement)
             {
-                this.Text = LanguageManager.Instance.GetString("Title_SelectEnhancement");
+                Text = LanguageManager.Instance.GetString("Title_SelectEnhancement");
                 chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectEnhancement_LimitList");
             }
             else if (_objMode == Mode.Enchantment)
             {
-                this.Text = LanguageManager.Instance.GetString("Title_SelectEnchantment");
+                Text = LanguageManager.Instance.GetString("Title_SelectEnchantment");
                 chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectEnchantment_LimitList");
             }
             else if (_objMode == Mode.Ritual)
             {
-                this.Text = LanguageManager.Instance.GetString("Title_SelectRitual");
+                Text = LanguageManager.Instance.GetString("Title_SelectRitual");
                 chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectRitual_LimitList");
             }
 
-            foreach (Label objLabel in this.Controls.OfType<Label>())
+            foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = "";
+                    objLabel.Text = string.Empty;
             }
 
             BuildList();
@@ -96,7 +96,7 @@ namespace Chummer
 
         private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstArt.Text == "")
+            if (string.IsNullOrEmpty(lstArt.Text))
                 return;
 
             // Retireve the information for the selected piece of Cyberware.
@@ -118,12 +118,12 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
-        private void lstArt_DoubleClick(object sender, System.EventArgs e)
+        private void lstArt_DoubleClick(object sender, EventArgs e)
         {
-            if (lstArt.Text != "")
+            if (!string.IsNullOrEmpty(lstArt.Text))
                 AcceptForm();
         }
 
@@ -279,10 +279,12 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstArts.Sort(objSort.Compare);
+            lstArt.BeginUpdate();
             lstArt.DataSource = null;
             lstArt.ValueMember = "Value";
             lstArt.DisplayMember = "Name";
             lstArt.DataSource = lstArts;
+            lstArt.EndUpdate();
         }
 
         /// <summary>
@@ -290,7 +292,7 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (lstArt.Text == "")
+            if (string.IsNullOrEmpty(lstArt.Text))
                 return;
 
             _strSelectedItem = lstArt.SelectedValue.ToString();
@@ -309,7 +311,7 @@ namespace Chummer
             if (!RequirementMet(objXmlMetamagic, true))
                 return;
 
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         /// <summary>
@@ -323,8 +325,8 @@ namespace Chummer
             if (_objCharacter.IgnoreRules)
                 return true;
 
-            string strParent = "";
-            string strChild = "";
+            string strParent = string.Empty;
+            string strChild = string.Empty;
             if (_objMode == Mode.Art)
             {
                 strParent = "arts";
@@ -344,7 +346,7 @@ namespace Chummer
             if (objXmlCheckMetamagic.InnerXml.Contains("<required>"))
             {
                 bool blnRequirementMet = true;
-                string strRequirement = "";
+                string strRequirement = string.Empty;
                 if (objXmlCheckMetamagic.InnerXml.Contains("<allof>"))
                 {
                     strRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
@@ -444,7 +446,7 @@ namespace Chummer
 
                 // Quality requirements.
                 bool blnQualityFound = false;
-                string strQualityRequirement = "";
+                string strQualityRequirement = string.Empty;
                 if (objXmlCheckMetamagic.SelectNodes("required/allof/quality").Count == 0)
                     blnQualityFound = true;
                 else
@@ -528,8 +530,8 @@ namespace Chummer
 
                 if (!blnRequirementMet)
                 {
-                    string strMessage = "";
-                    string strTitle = "";
+                    string strMessage = string.Empty;
+                    string strTitle = string.Empty;
 
                     if (_objMode == Mode.Art)
                     {
@@ -565,9 +567,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
-
     }
 }

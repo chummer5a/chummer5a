@@ -31,8 +31,8 @@ namespace Chummer
 		private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
 
 		// Error message constants.
-		private readonly string NO_CONNECTION_MESSAGE = "";
-		private readonly string NO_CONNECTION_TITLE = "";
+		private readonly string NO_CONNECTION_MESSAGE = string.Empty;
+		private readonly string NO_CONNECTION_TITLE = string.Empty;
 
 		private string _strUserName;
 		private int _intDataID = 0;
@@ -77,14 +77,14 @@ namespace Chummer
 		private void cmdUpload_Click(object sender, EventArgs e)
 		{
 			// Make sure a name has been entered.
-			if (txtName.Text == "")
+			if (string.IsNullOrEmpty(txtName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_DataName"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_DataName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 
 			// Make sure there is at least some sort of description.
-			if (txtDescription.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtDescription.Text.Trim()))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_OameUpload_DataDescription"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_DataDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -149,11 +149,11 @@ namespace Chummer
 			for (int i = 0; i <= lstSource.Count - 1; i++)
 			{
 				string strSource = lstSource[i];
-				if (strSource != "")
+				if (!string.IsNullOrEmpty(strSource))
 				{
 					XmlNode objNode = objXmlBooks.SelectSingleNode("/chummer/books/book[code = \"" + strSource + "\"]");
 					if (objNode != null)
-						lstSource[i] = "";
+						lstSource[i] = string.Empty;
 				}
 			}
 
@@ -168,24 +168,24 @@ namespace Chummer
 					for (int i = 0; i <= lstSource.Count - 1; i++)
 					{
 						string strSource = lstSource[i];
-						if (strSource != "")
+						if (!string.IsNullOrEmpty(strSource))
 						{
 							XmlNode objBookNode = objXmlCustom.SelectSingleNode("/chummer/books/book[code = \"" + strSource + "\"]");
 							if (objBookNode != null)
-								lstSource[i] = "";
+								lstSource[i] = string.Empty;
 						}
 					}
 				}
 			}
 
 			// With all of the books checked, run through the list one more time and display an error if there are still any that were not found.
-			string strMessage = "";
+			string strMessage = string.Empty;
 			foreach (string strSource in lstSource)
 			{
-				if (strSource != "")
+				if (!string.IsNullOrEmpty(strSource))
 					strMessage += "\n\t" + strSource;
 			}
-			if (strMessage != string.Empty)
+			if (!string.IsNullOrEmpty(strMessage))
 			{
 				MessageBox.Show("The following sourcebooks could not be found in the core data files or any of the data files you have selected:" + strMessage);
 				return;
@@ -193,7 +193,7 @@ namespace Chummer
 
 			// Everything is OK, so zip up the selected files.
 			List<string> lstFiles = new List<string>();
-			string strFilesIncluded = "";
+			string strFilesIncluded = string.Empty;
 			foreach (TreeNode objNode in treFiles.Nodes)
 			{
 				if (objNode.Checked)
@@ -238,7 +238,7 @@ namespace Chummer
 			txtName.Enabled = true;
 
 			if (blnSuccess)
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 
 			//_objOmaeHelper.DecompressMultiple(bytFile);
 		}
@@ -250,9 +250,9 @@ namespace Chummer
 			int intWidth = Math.Max(lblDescriptionLabel.Width, lblNameLabel.Width);
 
 			txtName.Left = lblNameLabel.Left + intWidth + 6;
-			txtName.Width = this.Width - txtName.Left - 16;
+			txtName.Width = Width - txtName.Left - 16;
 			txtDescription.Left = lblDescriptionLabel.Left + intWidth + 6;
-			txtDescription.Width = this.Width - txtDescription.Left - 16;
+			txtDescription.Width = Width - txtDescription.Left - 16;
 		}
 		#endregion
 	}

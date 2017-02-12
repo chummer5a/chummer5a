@@ -34,7 +34,7 @@
 			this.lblName = new System.Windows.Forms.Label();
 			this.lblGroupRating = new System.Windows.Forms.Label();
 			this.btnCareerIncrease = new System.Windows.Forms.Button();
-			this.tipToolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipToolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			this.SuspendLayout();
@@ -120,6 +120,6 @@
 		private System.Windows.Forms.Label lblName;
 		private System.Windows.Forms.Label lblGroupRating;
 		private System.Windows.Forms.Button btnCareerIncrease;
-		private System.Windows.Forms.ToolTip tipToolTip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipToolTip;
 	}
 }

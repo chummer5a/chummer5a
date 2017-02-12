@@ -17,13 +17,14 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.Windows.Forms;
+﻿using System.Linq;
+﻿using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmSelectText : Form
     {
-        private string _strReturnValue = "";
+        private string _strReturnValue = string.Empty;
 
 		#region Control Events
 		public frmSelectText()
@@ -34,20 +35,28 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strReturnValue = txtValue.Text;
-            this.DialogResult = DialogResult.OK;
+			if (PreventXPathErrors && txtValue.Text.Contains('"'))
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			else
+			{
+				_strReturnValue = txtValue.Text;
+				DialogResult = DialogResult.OK;
+			}
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void frmSelectText_Shown(object sender, EventArgs e)
 		{
-			// If the field is pre-populated, immediately click OK.
-			if (txtValue.Text != "")
-				cmdOK_Click(sender, e);
+		    if (DefaultString != null)
+		    {
+		        txtValue.Text = DefaultString;
+		    }
 		}		
 		#endregion
 
@@ -77,6 +86,9 @@ namespace Chummer
                 lblDescription.Text = value;
             }
         }
-		#endregion
+
+		public bool PreventXPathErrors { get; internal set; }
+        public string DefaultString { get; internal set; }
+        #endregion
     }
 }

@@ -27,11 +27,10 @@ namespace Chummer
 	public partial class PetControl : UserControl
 	{
 		private Contact _objContact;
-		private CommonFunctions functions = new CommonFunctions();
 
 		// Events.
-		public event DeleteContactHandler DeleteContact;
-		public event FileNameChangedHandler FileNameChanged;
+		public Action<object> DeleteContact;
+		public Action<object> FileNameChanged;
 
 		#region Control Events
 		public PetControl()
@@ -43,17 +42,17 @@ namespace Chummer
 
 		private void PetControl_Load(object sender, EventArgs e)
 		{
-			this.Width = cmdDelete.Left + cmdDelete.Width;
-			lblMetatype.Text = "";
+			Width = cmdDelete.Left + cmdDelete.Width;
+			lblMetatype.Text = string.Empty;
 
-			if (_objContact.FileName != string.Empty)
+			if (!string.IsNullOrEmpty(_objContact.FileName))
 			{
 				// Load the character to get their Metatype.
 				Character objPet = new Character();
 				objPet.FileName = _objContact.FileName;
 				objPet.Load();
 				lblMetatype.Text = objPet.Metatype;
-				if (objPet.Metavariant != string.Empty)
+				if (!string.IsNullOrEmpty(objPet.Metavariant))
 					lblMetatype.Text += " (" + objPet.Metavariant + ")";
 				objPet = null;
 			}
@@ -74,7 +73,7 @@ namespace Chummer
 		private void imgLink_Click(object sender, EventArgs e)
 		{
 			// Determine which options should be shown based on the FileName value.
-			if (_objContact.FileName != "")
+			if (!string.IsNullOrEmpty(_objContact.FileName))
 			{
 				tsAttachCharacter.Visible = false;
 				tsContactOpen.Visible = true;
@@ -98,7 +97,7 @@ namespace Chummer
 			if (!File.Exists(_objContact.FileName))
 			{
 				// If the file doesn't exist, use the relative path if one is available.
-				if (_objContact.RelativeFileName == "")
+				if (string.IsNullOrEmpty(_objContact.RelativeFileName))
 					blnError = true;
 				else
 				{
@@ -153,7 +152,7 @@ namespace Chummer
 				objPet.FileName = _objContact.FileName;
 				objPet.Load();
 				lblMetatype.Text = objPet.Metatype;
-				if (objPet.Metavariant != string.Empty)
+				if (!string.IsNullOrEmpty(objPet.Metavariant))
 					lblMetatype.Text += " (" + objPet.Metavariant + ")";
 				objPet = null;
 
@@ -172,10 +171,10 @@ namespace Chummer
 			// Remove the file association from the Contact.
 			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_RemoveCharacterAssociation"), LanguageManager.Instance.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 			{
-				_objContact.FileName = "";
-				_objContact.RelativeFileName = "";
+				_objContact.FileName = string.Empty;
+				_objContact.RelativeFileName = string.Empty;
 				tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkFile"));
-				lblMetatype.Text = "";
+				lblMetatype.Text = string.Empty;
 				FileNameChanged(this);
 			}
 		}
@@ -189,9 +188,9 @@ namespace Chummer
 			if (frmContactNotes.DialogResult == DialogResult.OK)
 				_objContact.Notes = frmContactNotes.Notes;
 
-			string strTooltip = "";
+			string strTooltip = string.Empty;
 			strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
-			if (_objContact.Notes != string.Empty)
+			if (!string.IsNullOrEmpty(_objContact.Notes))
 				strTooltip += "\n\n" + _objContact.Notes;
 			tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 		}

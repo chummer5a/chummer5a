@@ -32,14 +32,14 @@ namespace Chummer
 		private List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
 		// Error message constants.
-		private readonly string NO_CONNECTION_MESSAGE = "";
-		private readonly string NO_CONNECTION_TITLE = "";
+		private readonly string NO_CONNECTION_MESSAGE = string.Empty;
+		private readonly string NO_CONNECTION_TITLE = string.Empty;
 
 		private string _strUserName;
-		private string _strCharacterName = "";
-		private string _strMetatype = "";
-		private string _strMetavariant = "";
-		private string _strQualities = "";
+		private string _strCharacterName = string.Empty;
+		private string _strMetatype = string.Empty;
+		private string _strMetavariant = string.Empty;
+		private string _strQualities = string.Empty;
 		private int _intCharacterID = 0;
 		private int _intCharacterType = 0;
 		private int _intCreated = 0;
@@ -95,7 +95,7 @@ namespace Chummer
 			cboCharacterTypes.ValueMember = "Value";
 			cboCharacterTypes.DisplayMember = "Name";
 
-			string strName = "";
+			string strName = string.Empty;
 			foreach (ListItem objItem in _lstCharacterTypes)
 			{
 				if (objItem.Value == _intCharacterType.ToString())
@@ -119,7 +119,7 @@ namespace Chummer
 			}
 
 			// Clear the file path field.
-			txtFilePath.Text = "";
+			txtFilePath.Text = string.Empty;
 
 			// Make sure a .chum5 file was selected.
 			if (!openFileDialog.FileName.EndsWith(".chum5"))
@@ -142,7 +142,7 @@ namespace Chummer
 
 			// Make sure the character is named.
 			_strCharacterName = _objCharacter.Alias;
-			if (_strCharacterName.Trim() == "" || _strCharacterName == "Unnamed Character")
+			if (string.IsNullOrEmpty(_strCharacterName.Trim()) || _strCharacterName == "Unnamed Character")
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_UnnamedCharacter"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_UnnamedCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -156,7 +156,7 @@ namespace Chummer
 			{
 				_strQualities += objQuality.Name + "|";
 			}
-			if (_strQualities != "")
+			if (!string.IsNullOrEmpty(_strQualities))
 				_strQualities = _strQualities.Substring(0, _strQualities.Length - 1);
 			// Make sure the Qualities list doesn't exceed 4,000 characters.
 			if (_strQualities.Length > 4000)
@@ -168,9 +168,9 @@ namespace Chummer
 			// If everything checks out, populate the file path filed and character name.
 			txtFilePath.Text = openFileDialog.FileName;
 			cboCharacterName.Items.Clear();
-			if (_objCharacter.Name != string.Empty)
+			if (!string.IsNullOrEmpty(_objCharacter.Name))
 				cboCharacterName.Items.Add(_objCharacter.Name);
-			if (_objCharacter.Alias != string.Empty)
+			if (!string.IsNullOrEmpty(_objCharacter.Alias))
 				cboCharacterName.Items.Add(_objCharacter.Alias);
 			cboCharacterName.SelectedIndex = 0;
 		}
@@ -180,14 +180,14 @@ namespace Chummer
 			bool blnSuccess = false;
 
 			// Make sure a file has been selected.
-			if (txtFilePath.Text == "")
+			if (string.IsNullOrEmpty(txtFilePath.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_SelectFile"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 
 			// Make sure there is at least some sort of description.
-			if (txtDescription.Text.Trim() == "")
+			if (string.IsNullOrEmpty(txtDescription.Text.Trim()))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_CharacterDescription"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_CharacterDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -230,7 +230,7 @@ namespace Chummer
 			txtDescription.Enabled = true;
 
 			if (blnSuccess)
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 		}
 		#endregion
 

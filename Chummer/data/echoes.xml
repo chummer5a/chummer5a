@@ -171,5 +171,26 @@
       <source>DT</source>
       <page>59</page>
     </echo>
+		<echo>
+			<id>cee8e3bc-447b-4a67-9752-15e3e104e57d</id>
+			<name>Contaminate</name>
+			<limit>no</limit>
+			<source>DTD</source>
+			<page>165</page>
+		</echo>
+		<echo>
+			<id>a0966081-2534-4fc4-a2e6-504b4ecf9756</id>
+			<name>Siphon</name>
+			<limit>no</limit>
+			<source>DTD</source>
+			<page>165</page>
+		</echo>
+		<echo>
+			<id>2fe27536-4de7-49c1-a933-8d9a65604533</id>
+			<name>Pryon</name>
+			<limit>no</limit>
+			<source>DTD</source>
+			<page>165</page>
+		</echo>
   </echoes>
 </chummer>

@@ -35,6 +35,9 @@
       <name>Astral Perception</name>
       <points>1</points>
       <adeptway>.5</adeptway>
+			<bonus>
+				<unlockskills name="Assensing">Name</unlockskills>
+			</bonus>
       <levels>no</levels>
       <limit>1</limit>
       <source>SR5</source>
@@ -142,6 +145,12 @@
         <selectskill>
           <val>Rating</val>
           <applytorating>yes</applytorating>
+					<skillcategories>
+						<category>Combat Active</category>
+						<category>Technical Active</category>
+						<category>Social Active</category>
+						<category>Vehicle Active</category>
+					</skillcategories>
         </selectskill>
       </bonus>
       <source>SR5</source>
@@ -979,7 +988,7 @@
       <levels>no</levels>
       <limit>1</limit>
       <source>SG</source>
-      <page>1</page>
+      <page>157</page>
     </power>
     <power>
       <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
@@ -989,9 +998,10 @@
       <levels>no</levels>
       <limit>1</limit>
       <source>SG</source>
-      <page>1</page>
+      <page>157</page>
     </power>
    <power>
+		<id>89f8d4a8-a769-4a3c-9009-f0371e42daf8</id>
       <name>Demara</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
@@ -1001,6 +1011,7 @@
       <page>23</page>
     </power>
     <power>
+		<id>57e7de72-6155-486b-9269-caebedfb34fe</id>
       <name>Eidetic Sense Memory</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
@@ -1010,6 +1021,7 @@
       <page>23</page>
     </power>
     <power>
+		<id>51755f26-c5d4-461d-bd59-496a45b03e6b</id>
       <name>Enthralling Performance</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
@@ -1019,6 +1031,7 @@
       <page>23</page>
     </power>
     <power>
+		<id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
       <name>Heightened Concern</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
@@ -1028,6 +1041,7 @@
       <page>23</page>
     </power>
     <power>
+		<id>d75638f3-be99-4f65-b61f-ea8b4b249f92</id>
       <name>Indomitable Will</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1037,6 +1051,7 @@
       <page>23</page>
     </power>
 	<power>
+		<id>bde8c111-b429-4283-87ca-9d3a2afc0215</id>
       <name>Iron Gut</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1046,6 +1061,7 @@
       <page>23</page>
     </power>    
 	<power>
+		<id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
       <name>Iron Lungs</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1055,6 +1071,7 @@
       <page>23</page>
     </power>    
 	<power>
+		<id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
       <name>Iron Will</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
@@ -1064,6 +1081,7 @@
       <page>23</page>
     </power>    
 	<power>
+		<id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
       <name>Keratin Control</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>
@@ -1073,6 +1091,7 @@
       <page>24</page>
     </power>	
 	<power>
+		<id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
       <name>Living Focus</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
@@ -1082,6 +1101,7 @@
       <page>24</page>
     </power>
 	<power>
+		<id>29761d0e-072e-48a9-afc6-6154af8b2262</id>
       <name>Maintain Warmth</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1091,6 +1111,7 @@
       <page>24</page>
     </power>
 	<power>
+		<id>35a76113-84fb-4f9d-b47d-f7fb491e6285</id>
       <name>Memory Displacement</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1100,6 +1121,7 @@
       <page>24</page>
     </power>
 	<power>
+		<id>57cea4cd-754b-4fcd-8711-75721b1edc15</id>
       <name>Piercing Senses</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1109,6 +1131,7 @@
       <page>24</page>
     </power>	
 	<power>
+		<id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
       <name>Power Swimming</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
@@ -1118,6 +1141,7 @@
       <page>24</page>
     </power>
 	<power>
+		<id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
       <name>Rooting</name>
       <points>.25</points>
       <adeptway>0</adeptway>
@@ -1127,6 +1151,7 @@
       <page>24</page>
     </power>
 	<power>
+		<id>300edbf6-1943-4f4e-87eb-7379ccef8ed5</id>
       <name>Supernatural Toughness</name>
       <points>1</points>
       <adeptway>0.5</adeptway>
@@ -1148,7 +1173,7 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<unlockskills>Spellcasting</unlockskills>
+				<unlockskills name="Spellcasting">Name</unlockskills>
 				<selectspell ignorerequirements ="true" />
 			</bonus>
 			<source>HT</source>
@@ -1220,6 +1245,46 @@
 			<page>160</page>
 			<id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
 		</power>
+		<!-- Region Cutting Aces -->
+		<power>
+			<id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
+			<name>Lie Detector</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>1</limit>
+			<bonus>
+				<judgeintentions>Rating</judgeintentions>
+			</bonus>
+			<source>CA</source>
+			<page>153</page>
+		</power>
+		<power>
+			<id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
+			<name>Osmosis</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>1</limit>
+			<required>
+        		<oneof>
+          			<power>Mimic</power>
+        		</oneof>
+      		</required>
+			<source>CA</source>
+			<page>153</page>
+		</power>
+		<power>
+			<id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
+			<name>Ventriloquism</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<source>CA</source>
+			<page>153</page>
+		</power>
+		<!-- End Region -->
   </powers>
   <enhancements>
     <enhancement>

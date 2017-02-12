@@ -11,7 +11,7 @@ namespace Chummer
 	public partial class frmSelectSpec : Form
 	{
 		private readonly Skill _objSkill;
-		private string _strForceItem = "";
+		private string _strForceItem = string.Empty;
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
 		#region Control Events
@@ -46,7 +46,7 @@ namespace Chummer
 			// Populate the Skill's Specializations (if any).
 			ListItem objItem = new ListItem();
 			objItem.Value = "Custom";
-			objItem.Name = "";
+			objItem.Name = string.Empty;
 			lstItems.Add(objItem);
 			foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
 			{
@@ -76,16 +76,17 @@ namespace Chummer
 					}
 				}
 			}
-			// Populate the lists.
-			cboSpec.DataSource = lstItems;
+            // Populate the lists.
+            cboSpec.BeginUpdate();
 			cboSpec.ValueMember = "Value";
 			cboSpec.DisplayMember = "Name";
+            cboSpec.DataSource = lstItems;
 
-			// If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-			if (cboSpec.Items.Count == 1 && AllowAutoSelect)
+            // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
+            if (cboSpec.Items.Count == 1 && AllowAutoSelect)
 				AcceptForm();
 
-			if (_strForceItem != string.Empty)
+			if (!string.IsNullOrEmpty(_strForceItem))
 			{
 				cboSpec.SelectedIndex = cboSpec.FindStringExact(_strForceItem);
 				if (cboSpec.SelectedIndex != -1)
@@ -105,11 +106,12 @@ namespace Chummer
 					AcceptForm();
 				}
 			}
-		}
+            cboSpec.EndUpdate();
+        }
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -158,16 +160,11 @@ namespace Chummer
 		{
 			get
 			{
-				try
+				if (cboSpec.SelectedValue != null && cboSpec.SelectedValue.ToString() != "Custom")
 				{
-					string strReturn = cboSpec.SelectedValue.ToString();
-					if (cboSpec.SelectedValue.ToString() == "Custom")
-					{
-						strReturn = cboSpec.Text;
-					}
-					return strReturn;
+					return cboSpec.SelectedValue.ToString();
 				}
-				catch
+				else
 				{
 					return cboSpec.Text;
 				}
@@ -207,13 +204,13 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
 		{
 			cboSpec.Left = lblAmmoLabel.Left + lblAmmoLabel.Width + 6;
-			cboSpec.Width = this.Width - cboSpec.Left - 19;
+			cboSpec.Width = Width - cboSpec.Left - 19;
 		}
 		#endregion
 	}

@@ -4310,6 +4310,86 @@
 			<page>192</page>
 			<id>bc8e70a9-2af6-4728-836d-daf19d5c61d4</id>
 		</spell>
+		<spell>
+			<id>1f10cb4f-67d6-4193-b897-1a7f5ab67c2a</id>
+			<name>Corps Cadavre</name>
+			<descriptor>Minion</descriptor>
+			<category>Rituals</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>0</damage>
+			<duration>Special</duration>
+			<dv>Special</dv>
+			<source>HT</source>
+			<page>129</page>
+		</spell>
+		<spell>
+			<id>bd2bfef0-9de4-4870-9822-cdd504f7560f</id>
+			<name>Zombie</name>
+			<descriptor>Minion</descriptor>
+			<category>Rituals</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>0</damage>
+			<duration>Special</duration>
+			<dv>Special</dv>
+			<source>HT</source>
+			<page>131</page>
+		</spell>
+		<!-- End Region -->
+		<!-- Region Cutting Aces -->
+		<spell>
+			<id>d0f89025-7573-47d2-accf-48f2a7d7a03d</id>
+			<name>Incubus</name>
+			<descriptor>Realistic, Multi-Sense</descriptor>
+			<category>Illusion</category>
+			<type>M</type>
+			<range>LOS</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-3</dv>
+			<source>CA</source>
+			<page>153</page>
+		</spell>
+		<spell>
+			<id>a2f9abc1-f4f0-4247-a9eb-5f0916212b91</id>
+			<name>Incubus Shroud</name>
+			<descriptor>Realistic, Multi-Sense, Area</descriptor>
+			<category>Illusion</category>
+			<type>M</type>
+			<range>LOS (A)</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-1</dv>
+			<source>CA</source>
+			<page>153</page>
+		</spell>
+		<spell>
+			<id>750efc53-02df-4d67-b5df-0abf2ab7e70d</id>
+			<name>Rewind</name>
+			<descriptor>Mental</descriptor>
+			<category>Manipulation</category>
+			<type>M</type>
+			<range>LOS</range>
+			<damage>0</damage>
+			<duration>P</duration>
+			<dv>F</dv>
+			<source>CA</source>
+			<page>153</page>
+		</spell>
+		<spell>
+			<id>08863013-48b9-4c7f-9bb1-25951b984dc1</id>
+			<name>Consistency</name>
+			<descriptor>Psychic</descriptor>
+			<category>Detection</category>
+			<type>M</type>
+			<range>LOS</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>F-3</dv>
+			<source>CA</source>
+			<page>153</page>
+		</spell>
 		<!-- End Region -->
   </spells>
 </chummer>
