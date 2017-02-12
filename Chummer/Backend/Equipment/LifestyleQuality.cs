@@ -30,6 +30,7 @@ namespace Chummer.Backend.Equipment
 		private string _strAltName = string.Empty;
 		private string _strAltPage = string.Empty;
 		private bool _blnFree;
+        private string _strTooltipSource;
 
         #region Helper Methods
 		/// <summary>
@@ -355,6 +356,18 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
+        public string SourceTooltip
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(_strTooltipSource)) return _strTooltipSource;
+                XmlDocument objBookDocument = XmlManager.Instance.Load("books.xml");
+                XmlNode objXmlBook = objBookDocument.SelectSingleNode("/chummer/books/book[code = \"" + _strSource + "\"]");
+                _strTooltipSource = $"{objXmlBook["name"].InnerText} {LanguageManager.Instance.GetString("String_Page")} {Page}";
+                return _strTooltipSource;
+            }
+        }
+
 		/// <summary>
 		/// Page Number.
 		/// </summary>
@@ -421,7 +434,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return Free ? 0 : _intLP;
+				return Free || FreeByLifestyle ? 0 : _intLP;
 			}
 			set
 			{

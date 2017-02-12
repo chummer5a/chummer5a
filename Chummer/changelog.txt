@@ -47,6 +47,8 @@ Application Changes:
 - Fixed possible crashes caused by critters, metavariants, or metatypes not properly having all attributes defined.
 - Fixed cases where Essence loss would affect Depth rating in Career mode.
 - Fixed possible crash caused by changing to a metatype without a Depth rating.
+- Lifestyle Qualities now cache their source tooltip
+- Basic quality of life improvements in the Advanced Lifestyle window, such as indications for built-in qualities, displaying if a quality's cost is discounted by the lifestyle type, and disabled the delete button for free qualities. 
 
 Data Changes:
 
@@ -75,6 +77,8 @@ New Strings:
 
 - Checkbox_Option_PrioritySpellsAsAdeptPowers
 - Checkbox_Options_Live_CustomData
+- Label_SelectAdvancedLifestyle_UnusedLP
+- String_LifestyleFreeNuyen
 
 Changed Strings:
 

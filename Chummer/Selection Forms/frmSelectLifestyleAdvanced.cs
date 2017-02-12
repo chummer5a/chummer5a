@@ -18,7 +18,8 @@
  */
  ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+  using System.Drawing;
+  using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 ﻿﻿using Chummer.Backend.Equipment;
@@ -99,8 +100,12 @@ namespace Chummer
 				        ToolTipText = objQuality.Notes
 				    };
 
+                    if (objQuality.OriginSource == QualitySource.BuiltIn)
+                    {
+                        objNode.ForeColor = SystemColors.GrayText;
+                    }
 
-				    if (objQuality.Type == QualityType.Positive)
+                    if (objQuality.Type == QualityType.Positive)
 					{
 						treLifestyleQualities.Nodes[0].Nodes.Add(objNode);
 						treLifestyleQualities.Nodes[0].Expand();
@@ -124,10 +129,11 @@ namespace Chummer
 				        Name = objQuality.Name,
 				        Text = objQuality.DisplayName,
 				        Tag = objQuality.InternalId,
-				        ToolTipText = objQuality.Notes
-				    };
+				        ToolTipText = objQuality.Notes,
+                        ForeColor = SystemColors.GrayText
+                    };
 
-				    treLifestyleQualities.Nodes[3].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[3].Nodes.Add(objNode);
 					treLifestyleQualities.Nodes[3].Expand();
 					_objLifestyle.FreeGrids.Add(objQuality);
 				}
@@ -424,18 +430,17 @@ namespace Chummer
             {
                 return;
             }
-			LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-			objQuality =
+			LifestyleQuality objQuality =
 			        CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
 				        _objLifestyle.LifestyleQualities) ??
                     CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
 					        _objLifestyle.FreeGrids);
-			string strBook = objQuality.Source;
-			string strPage = objQuality.Page;
 			lblQualityLp.Text = objQuality.LP.ToString();
-			lblQualitySource.Text = strBook + " " + strPage;
-			tipTooltip.SetToolTip(lblQualitySource, strBook + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
-		}
+		    lblQualityCost.Text = $"{objQuality.Cost:###,###,##0¥}";
+			lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page}";
+			tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
+            cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.FreeByLifestyle);
+        }
 
 		private void lblQualitySource_Click(object sender, EventArgs e)
 		{

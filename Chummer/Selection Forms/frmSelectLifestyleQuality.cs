@@ -146,10 +146,14 @@ namespace Chummer
             }
             if (objXmlQuality["cost"] != null)
 			{
-				if (chkFree.Checked)
+                if (chkFree.Checked)
 				{
 					lblCost.Text = LanguageManager.Instance.GetString("Checkbox_Free");
 				}
+                else if (objXmlQuality["allowed"]?.InnerText.Contains(_strSelectedLifestyle) == true)
+                {
+                    lblCost.Text = LanguageManager.Instance.GetString("String_LifestyleFreeNuyen");
+                }
 				else
 				{
 					lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));

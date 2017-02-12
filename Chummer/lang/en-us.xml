@@ -2614,7 +2614,11 @@
 			<key>String_LifestyleName</key>
 			<text>Enter a new name for this Lifestyle (or blank to remove).</text>
 		</string>
-		<string>
+    <string>
+      <key>String_LifestyleFreeNuyen</key>
+      <text>Covered by Lifestyle level</text>
+    </string>
+    <string>
 			<key>String_GearName</key>
 			<text>Enter a new name for this Gear (or blank to remove).</text>
 		</string>
@@ -6969,8 +6973,8 @@ Do you want to continue?</text>
 			<text>Security:</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_TotalLP</key>
-			<text>Total LP:</text>
+			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
+			<text>Unused LP:</text>
 		</string>
 		<string>
 			<key>Message_SelectAdvancedLifestyle_LifestyleName</key>
