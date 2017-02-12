@@ -3,12 +3,20 @@
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:include href="xt.TitleName.xslt"/>
 	
-	<xsl:template match="/characters">
+	<xsl:template match="/characters/character">
+		<xsl:variable name="TitleName">
+			<xsl:call-template name="TitleName">
+				<xsl:with-param name="name" select="name"/>
+				<xsl:with-param name="alias" select="alias"/>
+			</xsl:call-template>
+		</xsl:variable>
+
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 			<head>
 				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
-				<title>Game Master Characters</title>
+				<title><xsl:value-of select="$TitleName" /></title>
 				<style type="text/css">
 					*
 					{
@@ -62,7 +70,6 @@
 				</style>
 			</head>
 			<body>
-				<xsl:for-each select="character">
 					<table width="100%" cellspacing="0" cellpadding="2" border="0" style="border: solid 2px #000000;">
 						<tr>
 							<td>
@@ -443,14 +450,14 @@
 									</xsl:for-each></p>
 								</xsl:if>
 								
-								<xsl:if test="techprograms/techprogram">
+								<xsl:if test="complexforms/complexform">
 									<p><strong>Complex Forms: </strong>
-									<xsl:for-each select="techprograms/techprogram">
+									<xsl:for-each select="complexforms/complexform">
 										<xsl:sort select="name" />
 										<xsl:value-of select="name" />
 										<xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-										<xsl:text> </xsl:text><xsl:value-of select="rating" />
-										<xsl:if test="programoptions/programoption">
+                    <xsl:text> </xsl:text>(<xsl:value-of select="target" />, <xsl:value-of select="duration" />, <xsl:value-of select="fv" />)
+                    <xsl:if test="programoptions/programoption">
 											(<xsl:for-each select="programoptions/programoption">
 												<xsl:sort select="name" />
 												<xsl:value-of select="name" />
@@ -461,6 +468,31 @@
 										<xsl:if test="position() != last()">, </xsl:if>
 									</xsl:for-each></p>
 								</xsl:if>
+
+                <xsl:if test="aiprograms/aiprogram">
+                  <p>
+                    <strong>AI Programs and Advanced Programs: </strong>
+                    <xsl:for-each select="aiprograms/aiprogram">
+                      <xsl:sort select="name" />
+                      <xsl:value-of select="name" />
+                      <xsl:if test="extra != ''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
+                      <xsl:if test="programoptions/programoption">
+                        (<xsl:for-each select="programoptions/programoption">
+                          <xsl:sort select="name" />
+                          <xsl:value-of select="name" />
+                          <xsl:if test="rating &gt; 0">
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="rating" />
+                          </xsl:if>
+                          <xsl:if test="position() != last()">, </xsl:if>
+                        </xsl:for-each>)
+                      </xsl:if>
+                      <xsl:if test="position() != last()">, </xsl:if>
+                    </xsl:for-each>
+                  </p>
+                </xsl:if>
 								
 								<xsl:if test="cyberwares/cyberware">
 									<p><strong>Cyberware/Bioware: </strong>
@@ -503,7 +535,6 @@
 							</td>
 						</tr>
 					</table>
-				</xsl:for-each>
 			</body>
 		</html>
 	</xsl:template>

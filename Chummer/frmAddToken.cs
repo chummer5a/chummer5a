@@ -38,8 +38,8 @@ namespace Chummer
         {
             InitializeComponent();
             //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-            this.CenterToParent();
-            this.parentControl = init;
+            CenterToParent();
+            parentControl = init;
             
         }
 
@@ -74,10 +74,10 @@ namespace Chummer
                     return; // we obviously cannot init
                 }
 
-                this.nudInit.Value = Int32.Parse(objCharacter.InitiativePasses);
-                this.txtName.Text = objCharacter.Name;
-                this.nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
-                this._character = objCharacter;
+                nudInit.Value = objCharacter.InitiativeDice;
+                txtName.Text = objCharacter.Name;
+                nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
+                _character = objCharacter;
             }
         }
 
@@ -88,7 +88,7 @@ namespace Chummer
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         /// <summary>
@@ -98,25 +98,25 @@ namespace Chummer
         /// <param name="e"></param>
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (this._character != null)
+            if (_character != null)
             {
-                this._character.InitRoll = this.chkAutoRollInit.Checked ? new Random().Next((int)this.nudInit.Value, ((int)this.nudInit.Value) * 6) + ((int)this.nudInitStart.Value) : Int32.MinValue;
-                this._character.InitialInit = (int)this.nudInitStart.Value;
-                this._character.Delayed = false;
-                this._character.InitPasses = (int)this.nudInit.Value;
-                this._character.Name = this.txtName.Text;
+                _character.InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue;
+                _character.InitialInit = (int)nudInitStart.Value;
+                _character.Delayed = false;
+                _character.InitPasses = (int)nudInit.Value;
+                _character.Name = txtName.Text;
             }
             else
-                this._character = new Character()
+                _character = new Character()
                 {
-                    Name = this.txtName.Text,
-                    InitPasses = (int)this.nudInit.Value,
-                    InitRoll = this.chkAutoRollInit.Checked ? new Random().Next((int)this.nudInit.Value, ((int)this.nudInit.Value) * 6) + ((int)this.nudInitStart.Value) : Int32.MinValue,
+                    Name = txtName.Text,
+                    InitPasses = (int)nudInit.Value,
+                    InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue,
                     Delayed = false,
-                    InitialInit = (int)this.nudInitStart.Value
+                    InitialInit = (int)nudInitStart.Value
                 };
-            this.parentControl.AddToken(this._character);
-            this.Close();
+            parentControl.AddToken(_character);
+            Close();
         }
     }
 }

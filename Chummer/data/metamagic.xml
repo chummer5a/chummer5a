@@ -20,6 +20,7 @@
 <chummer>
   <version>0</version>
   <metamagics>
+    <!-- Region SR5 -->
     <metamagic>
       <id>03bdecec-6142-4b24-8aaa-0a0827c3eb78</id>
       <name>Adept Centering</name>
@@ -134,6 +135,8 @@
       <source>SR5</source>
       <page>326</page>
     </metamagic>
+    <!-- End Region -->
+    <!-- Region Street Grimoire -->
     <metamagic>
       <id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
       <name>Sympathetic Linking</name>
@@ -495,8 +498,48 @@
       </required>
       <source>SG</source>
       <page>159</page>
+    </metamagic>    <metamagic>
+      <id>d220ba19-5259-4d12-a61e-49c751640b4b</id>
+      <name>Sacrifice</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Blood Magic</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>90</page>
+    </metamagic>
+    <metamagic>
+      <id>94998ad1-956f-4c04-bb3f-f4464170bf32</id>
+      <name>Power Bleed</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <art>Blood Magic</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>90</page>
+    </metamagic>
+    <metamagic>
+      <id>866592b7-b652-4270-b696-4a8020b62b12</id>
+      <name>Cannibalize</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <art>Blood Magic</art>
+					<metamagic>Sacrifice</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>90</page>
     </metamagic>
   </metamagics>
+  <!-- End Region -->
   <arts>
     <art>
       <id>5b922bcf-4114-4c49-a4f3-0f3dcb45dd2f</id>
@@ -599,6 +642,12 @@
       <name>Sensing</name>
       <source>SG</source>
       <page>155</page>
+    </art>
+    <art>
+      <id>d28fb2f1-e0e6-4ca6-8e26-43d1487d612a</id>
+      <name>Blood Magic</name>
+      <source>SG</source>
+      <page>89</page>
     </art>
   </arts>
 </chummer>

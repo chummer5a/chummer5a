@@ -58,7 +58,7 @@ namespace Chummer
         {
             _controls = new List<Control>(collection);
         }
-        
+
         /// <summary>
         /// Has the mouse allready left the group of controls once?
         /// </summary>
@@ -96,7 +96,6 @@ namespace Chummer
             //If it have allready left we don't want to check again
             if(_left) return;
 
-            
             foreach (Control control in _controls)
             {
                 //Check if the mouse is inside any control
@@ -111,21 +110,16 @@ namespace Chummer
               //remove everything we have a listner on. Might not be necesary but afraid of GC leak
              //Anybody can test this by uncommenting the lines below and triggering 100000 of those
             //then checking if memory usage changed
-            foreach (var control in _controls)
+            foreach (Control control in _controls)
             {
                 control.MouseLeave -= control_MouseLeave;
-            } 
+            }
 
             //Don't call if nothing suscribed
-            if (OnAllLeave != null)
-            {
-                OnAllLeave(sender, e);
-            }
+            OnAllLeave?.Invoke(sender, e);
 
             //As we don't call after this we don't need to store references to potential dead controls
             _controls.Clear();
         }
-
-        
     }
 }

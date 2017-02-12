@@ -35,14 +35,14 @@ namespace Chummer
         /// </summary>
         public InitiativeUserControl InitUC
         {
-            get { return this.ucInit; }
+            get { return ucInit; }
         }
         #endregion
 
         public frmInitiative()
         {
             InitializeComponent();
-            this.CenterToParent();
+            CenterToParent();
         }
     }
 }

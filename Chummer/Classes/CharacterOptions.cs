@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Microsoft.Win32;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -14,10 +15,11 @@ namespace Chummer
 		private readonly Character _character;
 		private string _strFileName = "default.xml";
 		private string _strName = "Default Settings";
-		private string _strImageFolder = "";
+		private string _strImageFolder = string.Empty;
+        private readonly RegistryKey _objBaseChummerKey;
 
-		// Settings.
-		private bool _blnAllow2ndMaxAttribute;
+        // Settings.
+        private bool _blnAllow2ndMaxAttribute;
 		private bool _blnAllowAttributePointsOnExceptional;
 		private bool _blnAllowBiowareSuites;
 		private bool _blnAllowCustomTransgenics;
@@ -57,8 +59,6 @@ namespace Chummer
 		private bool _blnExtendAnyDetectionSpell;
 		private bool _blnFreeContactsMultiplierEnabled;
 	    private bool _blnDroneArmorMultiplierEnabled;
-		private bool _blnFreeKarmaContacts;
-		private bool _blnFreeKarmaKnowledge;
 		private bool _blnFreeKnowledgeMultiplierEnabled;
 		private bool _blnFreeSpiritPowerPointsMAG;
 		private bool _blnIgnoreArmorEncumbrance = true;
@@ -103,8 +103,8 @@ namespace Chummer
 		private bool _automaticBackstory = true;
 		
 		private readonly XmlDocument _objBookDoc = new XmlDocument();
-		private string _strBookXPath = "";
-		private string _strExcludeLimbSlot = "";
+		private string _strBookXPath = string.Empty;
+		private string _strExcludeLimbSlot = string.Empty;
 
 		// BP variables.
 		private int _intBPActiveSkill = 4;
@@ -148,9 +148,11 @@ namespace Chummer
 		private int _intKarmaSpecialization = 7;
 		private int _intKarmaSpell = 5;
 		private int _intKarmaSpirit = 1;
+        private int _intKarmaNewAIProgram = 5;
+        private int _intKarmaNewAIAdvancedProgram = 8;
 
-		// Karma Foci variables.
-		private int _intKarmaAlchemicalFocus = 3;
+        // Karma Foci variables.
+        private int _intKarmaAlchemicalFocus = 3;
 		private int _intKarmaBanishingFocus = 2;
 		private int _intKarmaBindingFocus = 2;
 		private int _intKarmaCenteringFocus = 3;
@@ -175,13 +177,16 @@ namespace Chummer
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
+		private bool _blnFreeMartialArtSpecialization;
+	    private bool _blnPrioritySpellsAsAdeptPowers;
 
-	    #region Initialization, Save, and Load Methods
-		public CharacterOptions(Character character)
+        #region Initialization, Save, and Load Methods
+        public CharacterOptions(Character character)
 		{
 			_character = character;
-			// Create the settings directory if it does not exist.
-			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+		    _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+            // Create the settings directory if it does not exist.
+            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
 			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
@@ -223,7 +228,7 @@ namespace Chummer
 			// <recentimagefolder />
 			if (!String.IsNullOrEmpty(_strImageFolder))
 			{
-				objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
+				objWriter.WriteElementString("recentimagefolder", _strImageFolder);
 			}
 			// <confirmdelete />
 			objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString());
@@ -283,10 +288,6 @@ namespace Chummer
             objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
 			// <usetotalvalueforcontacts />
 			objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
-			// <freekarmaknowledge />
-			objWriter.WriteElementString("freekarmacontacts", _blnFreeKarmaContacts.ToString());
-			// <freekarmaknowledge />
-			objWriter.WriteElementString("freekarmaknowledge", _blnFreeKarmaKnowledge.ToString());
 			// <nosinglearmorencumbrance />
 			objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
 			// <ignorearmorencumbrance />
@@ -396,8 +397,12 @@ namespace Chummer
 			objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
 			// <autobackstory />
 			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
-			// <usecalculatedpublicawareness />
-			objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
+			// <freemartialartspecialization />
+			objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
+            // <priorityspellsasadeptpowers />
+            objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
+            // <usecalculatedpublicawareness />
+            objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
 			// <bpcost>
 			objWriter.WriteStartElement("bpcost");
 			// <bpattribute />
@@ -459,8 +464,12 @@ namespace Chummer
 			objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString());
 			// <karmaimprovecomplexform />
 			objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString());
-			// <karmanuyenper />
-			objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
+            // <karmanewaiprogram />
+            objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString());
+            // <karmanewaiadvancedprogram />
+            objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString());
+            // <karmanuyenper />
+            objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
 			// <karmacontact />
 			objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString());
 			// <karmaenemy />
@@ -553,572 +562,439 @@ namespace Chummer
 			_strFileName = strFileName;
 			string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
 			XmlDocument objXmlDocument = new XmlDocument();
-			try
+			// Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
+			if (File.Exists(strFilePath))
+            {
+                try
+                {
+                    objXmlDocument.Load(strFilePath);
+                }
+                catch (NotSupportedException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+			else
 			{
-				// Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
-				if (File.Exists(strFilePath))
-					objXmlDocument.Load(strFilePath);
+				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+				{
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
 				else
 				{
-					if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-					{
-						MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return false;
-					}
-					else
-					{
-						_strFileName = "default.xml";
-						objXmlDocument.Load(strFilePath);
-					}
+					_strFileName = "default.xml";
+					objXmlDocument.Load(strFilePath);
 				}
 			}
-			catch
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
+			
 			XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
 			// Setting name.
-			_strName = objXmlDocument.SelectSingleNode("/settings/name").InnerText;
+			_strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
 			// Most recent image folder location used.
-			objXmlNode.TryGetField("recentimagefolder", out _strImageFolder);
+			objXmlNode.TryGetStringFieldQuickly("recentimagefolder", ref _strImageFolder);
 			// Confirm delete.
-			objXmlNode.TryGetField("confirmdelete", out _blnConfirmDelete);
+			objXmlNode.TryGetBoolFieldQuickly("confirmdelete", ref _blnConfirmDelete);
 			// License Restricted items.
-			objXmlNode.TryGetField("licenserestricted", out _blnLicenseRestrictedItems);
+			objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
 			// Confirm Karama ExpenseTryGetField
-			objXmlNode.TryGetField("confirmkarmaexpense", out _blnConfirmKarmaExpense);
+			objXmlNode.TryGetBoolFieldQuickly("confirmkarmaexpense", ref _blnConfirmKarmaExpense);
 			// Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-			objXmlNode.TryGetField("printzeroratingskills", out _blnPrintSkillsWithZeroRating);
+			objXmlNode.TryGetBoolFieldQuickly("printzeroratingskills", ref _blnPrintSkillsWithZeroRating);
 			// More Lethal Gameplay.
-			objXmlNode.TryGetField("morelethalgameplay", out _blnMoreLethalGameplay);
+			objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
 			// Spirit Force Based on Total MAG.
-			objXmlNode.TryGetField("spiritforcebasedontotalmag", out _blnSpiritForceBasedOnTotalMAG);
+			objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
 			// Skill Defaulting Includes Modifers.
-			objXmlNode.TryGetField("skilldefaultingincludesmodifiers", out _blnSkillDefaultingIncludesModifiers);
+			objXmlNode.TryGetBoolFieldQuickly("skilldefaultingincludesmodifiers", ref _blnSkillDefaultingIncludesModifiers);
 			// Enforce Skill Maximum Modified Rating.
-			objXmlNode.TryGetField("enforceskillmaximummodifiedrating", out _blnEnforceSkillMaximumModifiedRating);
+			objXmlNode.TryGetBoolFieldQuickly("enforceskillmaximummodifiedrating", ref _blnEnforceSkillMaximumModifiedRating);
 			// Cap Skill Rating.
-			objXmlNode.TryGetField("capskillrating", out _blnCapSkillRating);
+			objXmlNode.TryGetBoolFieldQuickly("capskillrating", ref _blnCapSkillRating);
 			// Print Expenses.
-			objXmlNode.TryGetField("printexpenses", out _blnPrintExpenses);
+			objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
 			// Nuyen per Build Point
-			objXmlNode.TryGetField("nuyenperbp", out _intNuyenPerBP);
+			objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
 			// Knucks use Unarmed
-			objXmlNode.TryGetField("knucksuseunarmed", out _blnKnucksUseUnarmed);
+			objXmlNode.TryGetBoolFieldQuickly("knucksuseunarmed", ref _blnKnucksUseUnarmed);
 			// Allow Initiation in Create Mode
-			objXmlNode.TryGetField("allowinitiationincreatemode", out _blnAllowInitiationInCreateMode);
+			objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
 			// Use Points on Broken Groups
-			objXmlNode.TryGetField("usepointsonbrokengroups", out _blnUsePointsOnBrokenGroups);
+			objXmlNode.TryGetBoolFieldQuickly("usepointsonbrokengroups", ref _blnUsePointsOnBrokenGroups);
 			// Don't Double the Cost of purchasing Qualities in Career Mode
-			objXmlNode.TryGetField("dontdoublequalities", out _blnDontDoubleQualityPurchaseCost);
+			objXmlNode.TryGetBoolFieldQuickly("dontdoublequalities", ref _blnDontDoubleQualityPurchaseCost);
 			// Don't Double the Cost of removing Qualities in Career Mode
-			objXmlNode.TryGetField("dontdoublequalityrefunds", out _blnDontDoubleQualityRefundCost);
+			objXmlNode.TryGetBoolFieldQuickly("dontdoublequalityrefunds", ref _blnDontDoubleQualityRefundCost);
 			// Ignore Art Requirements from Street Grimoire
-			objXmlNode.TryGetField("ignoreart", out _blnIgnoreArt);
+			objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
 			// Use Cyberleg Stats for Movement
-			objXmlNode.TryGetField("cyberlegmovement", out _blnCyberlegMovement);
+			objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
 			// Allow a 2nd Max Attribute
-			objXmlNode.TryGetField("allow2ndmaxattribute", out _blnAllow2ndMaxAttribute);
+			objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref _blnAllow2ndMaxAttribute);
 			// Allow using Attribute Points with Exceptional Attribute
-			objXmlNode.TryGetField("allowattributepointsonexceptional", out _blnAllowAttributePointsOnExceptional);
+			objXmlNode.TryGetBoolFieldQuickly("allowattributepointsonexceptional", ref _blnAllowAttributePointsOnExceptional);
 			// Free Contacts Multiplier
-			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
+			objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
 			// Free Contacts use Total Value instead of Value
-			objXmlNode.TryGetField("usetotalvalueforcontacts", out _blnUseTotalValueForFreeContacts);
+			objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref _blnUseTotalValueForFreeContacts);
 			// Free Contacts Multiplier Enabled
-			objXmlNode.TryGetField("freecontactsmultiplierenabled", out _blnFreeContactsMultiplierEnabled);
+			objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref _blnFreeContactsMultiplierEnabled);
             // Drone Armor Multiplier Enabled
-		    objXmlNode.TryGetField("dronearmormultiplierenabled", out _blnDroneArmorMultiplierEnabled);
+		    objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
             // Drone Armor Multiplier Value
-		    objXmlNode.TryGetField("dronearmorflatnumber", out _intDroneArmorMultiplier);
+		    objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
 			// Free Knowledge Multiplier Enabled
-			objXmlNode.TryGetField("freekarmaknowledgemultiplierenabled", out _blnFreeKnowledgeMultiplierEnabled);
-			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
-			objXmlNode.TryGetField("freekarmacontacts", out _blnFreeKarmaContacts);
-			// Karma Free Knowledge
-			objXmlNode.TryGetField("freekarmaknowledge", out _blnFreeKarmaKnowledge);
+			objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref _blnFreeKnowledgeMultiplierEnabled);
+			objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
 			// Free Knowledge uses Total Value instead of Value
-			objXmlNode.TryGetField("usetotalvalueforknowledge", out _blnUseTotalValueForFreeKnowledge);
+			objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref _blnUseTotalValueForFreeKnowledge);
 			// Free Contacts Multiplier
-			objXmlNode.TryGetField("freekarmaknowledgemultiplier", out _intFreeKnowledgeMultiplier);
+			objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref _intFreeKnowledgeMultiplier);
 			// No Single Armor Encumbrance
-			objXmlNode.TryGetField("nosinglearmorencumbrance", out _blnNoSingleArmorEncumbrance);
+			objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
 			// Ignore Armor Encumbrance
-			objXmlNode.TryGetField("ignorearmorencumbrance", out _blnIgnoreArmorEncumbrance);
+			objXmlNode.TryGetBoolFieldQuickly("ignorearmorencumbrance", ref _blnIgnoreArmorEncumbrance);
 			// Alternate Armor Encumbrance (BOD+STR)
-			objXmlNode.TryGetField("alternatearmorencumbrance", out _blnAlternateArmorEncumbrance);
+			objXmlNode.TryGetBoolFieldQuickly("alternatearmorencumbrance", ref _blnAlternateArmorEncumbrance);
 			// Essence Loss Reduces Maximum Only.
-			objXmlNode.TryGetField("esslossreducesmaximumonly", out _blnESSLossReducesMaximumOnly);
+			objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
 			// Allow Skill Regrouping.
-			objXmlNode.TryGetField("allowskillregrouping", out _blnAllowSkillRegrouping);
+			objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
 			// Metatype Costs Karma.
-			objXmlNode.TryGetField("metatypecostskarma", out _blnMetatypeCostsKarma);
+			objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
 			// Metatype Costs Karma Multiplier.
-			objXmlNode.TryGetField("metatypecostskarmamultiplier", out _intMetatypeCostMultiplier);
+			objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
 			// Limb Count.
-			objXmlNode.TryGetField("limbcount", out _intLimbCount);
+			objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
 			// Exclude Limb Slot.
-			objXmlNode.TryGetField("excludelimbslot", out _strExcludeLimbSlot);
+			objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
 			// Allow Cyberware Essence Cost Discounts.
-			objXmlNode.TryGetField("allowcyberwareessdiscounts", out _blnAllowCyberwareESSDiscounts);
+			objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
 			// Strength Affects Recoil.
-			objXmlNode.TryGetField("strengthaffectsrecoil", out _blnStrengthAffectsRecoil);
+			objXmlNode.TryGetBoolFieldQuickly("strengthaffectsrecoil", ref _blnStrengthAffectsRecoil);
 			// Use Maximum Armor Modifications.
-			objXmlNode.TryGetField("maximumarmormodifications", out _blnMaximumArmorModifications);
+			objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
 			// Use Armor Suit Capacity.
-			objXmlNode.TryGetField("armorsuitcapacity", out _blnArmorSuitCapacity);
+			objXmlNode.TryGetBoolFieldQuickly("armorsuitcapacity", ref _blnArmorSuitCapacity);
 			// Allow Armor Degredation.
-			objXmlNode.TryGetField("armordegredation", out _blnArmorDegradation);
+			objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
 			// Automatically add Copy Protection Program Option.
-			objXmlNode.TryGetField("automaticcopyprotection", out _blnAutomaticCopyProtection);
+			objXmlNode.TryGetBoolFieldQuickly("automaticcopyprotection", ref _blnAutomaticCopyProtection);
 			// Automatically add Registration Program Option.
-			objXmlNode.TryGetField("automaticregistration", out _blnAutomaticRegistration);
+			objXmlNode.TryGetBoolFieldQuickly("automaticregistration", ref _blnAutomaticRegistration);
 			// Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-			objXmlNode.TryGetField("ergonomicprogramlimit", out _blnErgonomicProgramsLimit);
+			objXmlNode.TryGetBoolFieldQuickly("ergonomicprogramlimit", ref _blnErgonomicProgramsLimit);
 			// Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
-			objXmlNode.TryGetField("specialkarmacostbasedonshownvalue", out _blnSpecialKarmaCostBasedOnShownValue);
+			objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue", ref _blnSpecialKarmaCostBasedOnShownValue);
 			// Allow more than 35 BP in Positive Qualities.
-			objXmlNode.TryGetField("exceedpositivequalities", out _blnExceedPositiveQualities);
+			objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
 
-		    objXmlNode.TryGetField("mysaddppcareer", out _mysaddPpCareer);
+		    objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _mysaddPpCareer);
 
-			// Allow more than 35 BP in Negative Qualities.
-			objXmlNode.TryGetField("exceednegativequalities", out _blnExceedNegativeQualities);
+			// Grant a free specialization when taking a martial art.
+			objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
+            // Can spend spells from Magic priority as power points
+            objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
+            // Allow more than 35 BP in Negative Qualities.
+            objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
-			objXmlNode.TryGetField("exceednegativequalitieslimit", out _blnExceedNegativeQualitiesLimit);
+			objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesLimit);
 			// Whether or not Restricted items have their cost multiplied.
-			objXmlNode.TryGetField("multiplyrestrictedcost", out _blnMultiplyRestrictedCost);
+			objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
 			// Whether or not Forbidden items have their cost multiplied.
-			objXmlNode.TryGetField("multiplyforbiddencost", out _blnMultiplyForbiddenCost);
+			objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
 			// Restricted cost multiplier.
-			objXmlNode.TryGetField("restrictedcostmultiplier", out _intRestrictedCostMultiplier);
+			objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
 			// Forbidden cost multiplier.
-			objXmlNode.TryGetField("forbiddencostmultiplier", out _intForbiddenCostMultiplier);
+			objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
 			// Number of decimal places to round to when calculating Essence.
-			objXmlNode.TryGetField("essencedecimals", out _intEssenceDecimals);
+			objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref _intEssenceDecimals);
 			// Whether or not Capacity limits should be enforced.
-			objXmlNode.TryGetField("enforcecapacity", out _blnEnforceCapacity);
+			objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
 			// Whether or not Recoil modifiers are restricted (AR 148).
-			objXmlNode.TryGetField("restrictrecoil", out _blnRestrictRecoil);
+			objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
 			// Whether or not characters can exceed putting 50% of their points into Attributes.
-			objXmlNode.TryGetField("allowexceedattributebp", out _blnAllowExceedAttributeBP);
+			objXmlNode.TryGetBoolFieldQuickly("allowexceedattributebp", ref _blnAllowExceedAttributeBP);
 			// Whether or not character are not restricted to the number of points they can invest in Nuyen.
-			objXmlNode.TryGetField("unrestrictednuyen", out _blnUnrestrictedNuyen);
+			objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
 			// Whether or not a Commlink's Response should be calculated based on the number of programms it has running.
-			objXmlNode.TryGetField("calculatecommlinkresponse", out _blnCalculateCommlinkResponse);
+			objXmlNode.TryGetBoolFieldQuickly("calculatecommlinkresponse", ref _blnCalculateCommlinkResponse);
 			// Whether or not Stacked Foci can go a combined Force higher than 6.
-			objXmlNode.TryGetField("allowhigherstackedfoci", out _blnAllowHigherStackedFoci);
+			objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
 			// Whether or not Complex Forms are treated as Spell for BP/Karma costs.
-			objXmlNode.TryGetField("alternatecomplexformcost", out _blnAlternateComplexFormCost);
+			objXmlNode.TryGetBoolFieldQuickly("alternatecomplexformcost", ref _blnAlternateComplexFormCost);
 			// Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-			objXmlNode.TryGetField("alternatematrixattribute", out _blnAlternateMatrixAttribute);
+			objXmlNode.TryGetBoolFieldQuickly("alternatematrixattribute", ref _blnAlternateMatrixAttribute);
 			// Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
-			objXmlNode.TryGetField("alloweditpartofbaseweapon", out _blnAllowEditPartOfBaseWeapon);
+			objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
 			// Whether or not the user can mark any piece of Bioware as being Transgenic.
-			objXmlNode.TryGetField("allowcustomtransgenics", out _blnAllowCustomTransgenics);
+			objXmlNode.TryGetBoolFieldQuickly("allowcustomtransgenics", ref _blnAllowCustomTransgenics);
 			// Whether or not the user may buy qualities.
-			objXmlNode.TryGetField("maybuyqualities", out _blnMayBuyQualities);
+			objXmlNode.TryGetBoolFieldQuickly("maybuyqualities", ref _blnMayBuyQualities);
 			// Whether or not contact points are used instead of fixed contacts.
-			objXmlNode.TryGetField("usecontactpoints", out _blnUseContactPoints);
+			objXmlNode.TryGetBoolFieldQuickly("usecontactpoints", ref _blnUseContactPoints);
 			// Whether or not the user can break Skill Groups while in Create Mode.
-			objXmlNode.TryGetField("breakskillgroupsincreatemode", out _blnStrictSkillGroupsInCreateMode);
+			objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
 			// Whether or not any Detection Spell can be taken as Extended range version.
-			objXmlNode.TryGetField("extendanydetectionspell", out _blnExtendAnyDetectionSpell);
+			objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
 			// Whether or not dice rolling id allowed for Skills.
-			objXmlNode.TryGetField("allowskilldicerolling", out _blnAllowSkillDiceRolling);
+			objXmlNode.TryGetBoolFieldQuickly("allowskilldicerolling", ref _blnAllowSkillDiceRolling);
             // Whether or not cyberlimbs are used for augmeneted attribute calculation.
-		    objXmlNode.TryGetField("dontusecyberlimbcalculation", out _blnDontUseCyberlimbCalculation);
+		    objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
 			// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-			objXmlNode.TryGetField("alternatemetatypeattributekarma", out _blnAlternateMetatypeAttributeKarma);
+			objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
 			// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-			objXmlNode.TryGetField("createbackuponcareer", out _blnCreateBackupOnCareer);
+			objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
 			// Whether or not the alternate uses for the Leadership Skill should be printed.
-			objXmlNode.TryGetField("printleadershipalternates", out _blnPrintLeadershipAlternates);
+			objXmlNode.TryGetBoolFieldQuickly("printleadershipalternates", ref _blnPrintLeadershipAlternates);
 			// Whether or not the alternate uses for the Arcana Skill should be printed.
-			objXmlNode.TryGetField("printarcanaalternates", out _blnPrintArcanaAlternates);
+			objXmlNode.TryGetBoolFieldQuickly("printarcanaalternates", ref _blnPrintArcanaAlternates);
 			// Whether or not Notes should be printed.
-			objXmlNode.TryGetField("printnotes", out _blnPrintNotes);
+			objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
 			// Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
-			objXmlNode.TryGetField("allowobsolescentupgrade", out _blnAllowObsolescentUpgrade);
+			objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
 			// Whether or not Bioware Suites can be created and added.
-			objXmlNode.TryGetField("allowbiowaresuites", out _blnAllowBiowareSuites);
+			objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
 			// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-			objXmlNode.TryGetField("freespiritpowerpointsmag", out _blnFreeSpiritPowerPointsMAG);
+			objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
 			// House rule: Whether or not Special Attributes count towards the maximum 50% Karma allowed for Attributes during karma gen.
-			objXmlNode.TryGetField("specialattributekarmalimit", out _blnSpecialAttributeKarmaLimit);
+			objXmlNode.TryGetBoolFieldQuickly("specialattributekarmalimit", ref _blnSpecialAttributeKarmaLimit);
 			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
-			objXmlNode.TryGetField("technomancerallowautosoft", out _blnTechnomancerAllowAutosoft);
+			objXmlNode.TryGetBoolFieldQuickly("technomancerallowautosoft", ref _blnTechnomancerAllowAutosoft);
 			// Optional Rule: Whether Life Modules should automatically create a character back story.
-			objXmlNode.TryGetField("autobackstory", out _automaticBackstory);
+			objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
 			// House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
-			objXmlNode.TryGetField("usecalculatedpublicawareness", out _blnUseCalculatedPublicAwareness);
+			objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
 
 			objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
 			// Attempt to populate the BP vlaues.
-			objXmlNode.TryGetField("bpattribute", out _intBPAttribute);
-			objXmlNode.TryGetField("bpattributemax", out _intBPAttributeMax);
-			objXmlNode.TryGetField("bpcontact", out _intBPContact);
-			objXmlNode.TryGetField("bpmartialart", out _intBPMartialArt);
-			objXmlNode.TryGetField("bpmartialartmaneuver", out _intBPMartialArtManeuver);
-			objXmlNode.TryGetField("bpskillgroup", out _intBPSkillGroup);
-			objXmlNode.TryGetField("bpactiveskill", out _intBPActiveSkill);
-			objXmlNode.TryGetField("bpactiveskillspecialization", out _intBPActiveSkillSpecialization);
-			objXmlNode.TryGetField("bpknowledgeskill", out _intBPKnowledgeSkill);
-			objXmlNode.TryGetField("bpspell", out _intBPSpell);
-			objXmlNode.TryGetField("bpfocus", out _intBPFocus);
-			objXmlNode.TryGetField("bpspirit", out _intBPSpirit);
-			objXmlNode.TryGetField("bpcomplexform", out _intBPComplexForm);
-			objXmlNode.TryGetField("bpcomplexformoption", out _intBPComplexFormOption);
+			objXmlNode.TryGetInt32FieldQuickly("bpattribute", ref _intBPAttribute);
+			objXmlNode.TryGetInt32FieldQuickly("bpattributemax", ref _intBPAttributeMax);
+			objXmlNode.TryGetInt32FieldQuickly("bpcontact", ref _intBPContact);
+			objXmlNode.TryGetInt32FieldQuickly("bpmartialart", ref _intBPMartialArt);
+			objXmlNode.TryGetInt32FieldQuickly("bpmartialartmaneuver", ref _intBPMartialArtManeuver);
+			objXmlNode.TryGetInt32FieldQuickly("bpskillgroup", ref _intBPSkillGroup);
+			objXmlNode.TryGetInt32FieldQuickly("bpactiveskill", ref _intBPActiveSkill);
+			objXmlNode.TryGetInt32FieldQuickly("bpactiveskillspecialization", ref _intBPActiveSkillSpecialization);
+			objXmlNode.TryGetInt32FieldQuickly("bpknowledgeskill", ref _intBPKnowledgeSkill);
+			objXmlNode.TryGetInt32FieldQuickly("bpspell", ref _intBPSpell);
+			objXmlNode.TryGetInt32FieldQuickly("bpfocus", ref _intBPFocus);
+			objXmlNode.TryGetInt32FieldQuickly("bpspirit", ref _intBPSpirit);
+			objXmlNode.TryGetInt32FieldQuickly("bpcomplexform", ref _intBPComplexForm);
+			objXmlNode.TryGetInt32FieldQuickly("bpcomplexformoption", ref _intBPComplexFormOption);
 
 			objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
 			// Attempt to populate the Karma values.
-			objXmlNode.TryGetField("karmaattribute", out _intKarmaAttribute);
-			objXmlNode.TryGetField("karmaquality", out _intKarmaQuality);
-			objXmlNode.TryGetField("karmaspecialization", out _intKarmaSpecialization);
-			objXmlNode.TryGetField("karmanewknowledgeskill", out _intKarmaNewKnowledgeSkill);
-			objXmlNode.TryGetField("karmanewactiveskill", out _intKarmaNewActiveSkill);
-			objXmlNode.TryGetField("karmanewskillgroup", out _intKarmaNewSkillGroup);
-			objXmlNode.TryGetField("karmaimproveknowledgeskill", out _intKarmaImproveKnowledgeSkill);
-			objXmlNode.TryGetField("karmaimproveactiveskill", out _intKarmaImproveActiveSkill);
-			objXmlNode.TryGetField("karmaimproveskillgroup", out _intKarmaImproveSkillGroup);
-			objXmlNode.TryGetField("karmaspell", out _intKarmaSpell);
-			objXmlNode.TryGetField("karmanewcomplexform", out _intKarmaNewComplexForm);
-			objXmlNode.TryGetField("karmaimprovecomplexform", out _intKarmaImproveComplexForm);
-			objXmlNode.TryGetField("karmanuyenper", out _intKarmaNuyenPer);
-			objXmlNode.TryGetField("karmacontact", out _intKarmaContact);
-			objXmlNode.TryGetField("karmaenemy", out _intKarmaEnemy);
-			objXmlNode.TryGetField("karmacarryover", out _intKarmaCarryover);
-			objXmlNode.TryGetField("karmaspirit", out _intKarmaSpirit);
-			objXmlNode.TryGetField("karmamaneuver", out _intKarmaManeuver);
-			objXmlNode.TryGetField("karmainitiation", out _intKarmaInitiation);
-			objXmlNode.TryGetField("karmametamagic", out _intKarmaMetamagic);
-			objXmlNode.TryGetField("karmacomplexformoption", out _intKarmaComplexFormOption);
-			objXmlNode.TryGetField("karmajoingroup", out _intKarmaJoinGroup);
-			objXmlNode.TryGetField("karmaleavegroup", out _intKarmaLeaveGroup);
-			objXmlNode.TryGetField("karmacomplexformskillsoft", out _intKarmaComplexFormSkillfot);
-			objXmlNode.TryGetField("karmaenhancement", out _intKarmaEnhancement);
+			objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
+			objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
+			objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+			objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
+			objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
+			objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
+			objXmlNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
+			objXmlNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
+			objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
+			objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
+			objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
+			objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
+            objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
+            objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
+            objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
+			objXmlNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
+			objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
+			objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
+			objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
+			objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
+			objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+			objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
+			objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
+			objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
+			objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
+			objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
+			objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
 			
 			// Attempt to load the Karma costs for Foci.
-			objXmlNode.TryGetField("karmaalchemicalfocus", out _intKarmaAlchemicalFocus);
-			objXmlNode.TryGetField("karmabanishingfocus", out _intKarmaBanishingFocus);
-			objXmlNode.TryGetField("karmabindingfocus", out _intKarmaBindingFocus);
-			objXmlNode.TryGetField("karmacenteringfocus", out _intKarmaCenteringFocus);
-			objXmlNode.TryGetField("karmacounterspellingfocus", out _intKarmaCounterspellingFocus);
-			objXmlNode.TryGetField("karmadisenchantingfocus", out _intKarmaDisenchantingFocus);
-			objXmlNode.TryGetField("karmaflexiblesignaturefocus", out _intKarmaFlexibleSignatureFocus);
-			objXmlNode.TryGetField("karmamaskingfocus", out _intKarmaMaskingFocus);
-			objXmlNode.TryGetField("karmapowerfocus", out _intKarmaPowerFocus);
-			objXmlNode.TryGetField("karmaqifocus", out _intKarmaQiFocus);
-			objXmlNode.TryGetField("karmaritualspellcastingfocus", out _intKarmaRitualSpellcastingFocus);
-			objXmlNode.TryGetField("karmaspellcastingfocus", out _intKarmaSpellcastingFocus);
-			objXmlNode.TryGetField("karmaspellshapingfocus", out _intKarmaSpellShapingFocus);
-			objXmlNode.TryGetField("karmasummoningfocus", out _intKarmaSummoningFocus);
-			objXmlNode.TryGetField("karmasustainingfocus", out _intKarmaSustainingFocus);
-			objXmlNode.TryGetField("karmaweaponfocus", out _intKarmaWeaponFocus);
-
+			objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
+			objXmlNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
 
 			// Load Books.
 			_lstBooks.Clear();
 			foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/settings/books/book"))
 				_lstBooks.Add(objXmlBook.InnerText);
+            RecalculateBookXPath();
 
-			// Load default build settings.
-			objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
-			objXmlNode.TryGetField("buildmethod", out _strBuildMethod);
-			objXmlNode.TryGetField("buildpoints", out _intBuildPoints);
-			objXmlNode.TryGetField("availability", out _intAvailability);
+            // Load default build settings.
+            objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
+			objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
+			objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+			objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
 
-			return true;
+            return true;
 		}
-		#endregion
+        #endregion
 
-		#region Properties and Methods
-		/// <summary>
-		/// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-		/// </summary>
-		private void LoadFromRegistry()
-		{
-			// Confirm delete.
-			try
-			{
-				_blnConfirmDelete = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("confirmdelete").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("confirmdelete");
-			}
-			catch
-			{
-			}
+        #region Properties and Methods
+        /// <summary>
+        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
+        {
+            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
+            if (objRegistryResult != null)
+            {
+                bool blnTemp;
+                if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
+                    blnStorage = blnTemp;
+                _objBaseChummerKey.DeleteValue(strBoolName);
+            }
+        }
 
-			// Confirm Karama Expense.
-			try
-			{
-				_blnConfirmKarmaExpense = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("confirmkarmaexpense").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("confirmkarmaexpense");
-			}
-			catch
-			{
-			}
+        /// <summary>
+        /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private void LoadInt32FromRegistry(ref int intStorage, string strBoolName)
+        {
+            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
+            if (objRegistryResult != null)
+            {
+                int intTemp;
+                if (int.TryParse(objRegistryResult.ToString(), out intTemp))
+                    intStorage = intTemp;
+                _objBaseChummerKey.DeleteValue(strBoolName);
+            }
+        }
 
-			// Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-			try
-			{
-				_blnPrintSkillsWithZeroRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printzeroratingskills").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("printzeroratingskills");
-			}
-			catch
-			{
-			}
+        /// <summary>
+        /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private void LoadFromRegistry()
+        {
+            if (_objBaseChummerKey == null)
+                return;
+            // Confirm delete.
+            LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete");
 
-			// More Lethal Gameplay.
-			try
-			{
-				_blnMoreLethalGameplay = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("morelethalgameplay").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("morelethalgameplay");
-			}
-			catch
-			{
-			}
+            // Confirm Karama Expense.
+            LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense");
 
-			// Spirit Force Based on Total MAG.
-			try
-			{
-				_blnSpiritForceBasedOnTotalMAG = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("spiritforcebasedontotalmag").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("spiritforcebasedontotalmag");
-			}
-			catch
-			{
-			}
+            // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
+            LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills");
 
-			// Skill Defaulting Includes Modifers.
-			try
-			{
-				_blnSkillDefaultingIncludesModifiers = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("skilldefaultingincludesmodifiers").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("skilldefaultingincludesmodifiers");
-			}
-			catch
-			{
-			}
+            // More Lethal Gameplay.
+            LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay");
 
-			// Enforce Skill Maximum Modified Rating.
-			try
-			{
-				_blnEnforceSkillMaximumModifiedRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("enforceskillmaximummodifiedrating").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("enforceskillmaximummodifiedrating");
-			}
-			catch
-			{
-			}
+            // Spirit Force Based on Total MAG.
+            LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag");
 
-			// Cap Skill Rating.
-			try
-			{
-				_blnCapSkillRating = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("capskillrating").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("capskillrating");
-			}
-			catch
-			{
-			}
+            // Skill Defaulting Includes Modifers.
+            LoadBoolFromRegistry(ref _blnSkillDefaultingIncludesModifiers, "skilldefaultingincludesmodifiers");
 
-			// Print Expenses.
-			try
-			{
-				_blnPrintExpenses = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("printexpenses").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("printexpenses");
-			}
-			catch
-			{
-			}
+            // Enforce Skill Maximum Modified Rating.
+            LoadBoolFromRegistry(ref _blnEnforceSkillMaximumModifiedRating, "enforceskillmaximummodifiedrating");
 
-			// Nuyen per Build Point
-			try
-			{
-				_intNuyenPerBP = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("nuyenperbp").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("nuyenperbp");
-			}
-			catch
-			{
-			}
+            // Cap Skill Rating.
+            LoadBoolFromRegistry(ref _blnCapSkillRating, "capskillrating");
 
-			// Free Contacts Multiplier Enabled
-			try
-			{
-				_blnFreeContactsMultiplierEnabled = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontactsmultiplierenabled").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontactsmultiplierenabled");
-			}
-			catch
-			{
-			}
+            // Print Expenses.
+            LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
 
-			// Free Contacts Multiplier Value
-			try
-			{
-				_intFreeContactsMultiplier = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontactsmultiplier").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontactsmultiplier");
-			}
-			catch
-			{
-			}
+            // Nuyen per Build Point
+            LoadInt32FromRegistry(ref _intNuyenPerBP, "nuyenperbp");
 
-			// Free Knowledge Multiplier Enabled
-			try
-			{
-				_blnFreeKnowledgeMultiplierEnabled = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledgemultiplierenabled").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledgemultiplierenabled");
-			}
-			catch
-			{
-			}
-			// Free Knowledge Multiplier Value
-			try
-			{
-				_intFreeKnowledgeMultiplier = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledgemultiplier").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledgemultiplier");
-			}
-			catch
-			{
-			}
+            // Free Contacts Multiplier Enabled
+            LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled");
 
-			// Karma Free Knowledge Multiplier Enabled
-			try
-			{
-				_blnFreeKnowledgeMultiplierEnabled = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freeknowledgemultiplierenabled").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freeknowledgemultiplierenabled");
-			}
-			catch
-			{
-			}
-			// Karma Free Knowledge
-			try
-			{
-				_blnFreeKarmaContacts = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontacts").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontacts");
-			}
-			catch
-			{
-			}
-			// Karma Free Knowledge
-			try
-			{
-				_blnFreeKarmaKnowledge = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledge").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledge");
-			}
-			catch
-			{
-			}
+            // Free Contacts Multiplier Value
+            LoadInt32FromRegistry(ref _intFreeContactsMultiplier, "freekarmacontactsmultiplier");
 
-			// No Single Armor Encumbrance
-			try
-			{
-				_blnNoSingleArmorEncumbrance = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("nosinglearmorencumbrance").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("nosinglearmorencumbrance");
-			}
-			catch
-			{
-			}
+            // Free Knowledge Multiplier Enabled
+            LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freekarmaknowledgemultiplierenabled");
 
-			// Essence Loss Reduces Maximum Only.
-			try
-			{
-				_blnESSLossReducesMaximumOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("esslossreducesmaximumonly").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("esslossreducesmaximumonly");
-			}
-			catch
-			{
-			}
+            // Free Knowledge Multiplier Value
+            LoadInt32FromRegistry(ref _intFreeKnowledgeMultiplier, "freekarmaknowledgemultiplier");
 
-			// Allow Skill Regrouping.
-			try
-			{
-				_blnAllowSkillRegrouping = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("allowskillregrouping").ToString());
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("allowskillregrouping");
-			}
-			catch
-			{
-			}
+            // Karma Free Knowledge Multiplier Enabled
+            LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled");
+
+            // No Single Armor Encumbrance
+            LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance");
+
+            // Essence Loss Reduces Maximum Only.
+            LoadBoolFromRegistry(ref _blnESSLossReducesMaximumOnly, "esslossreducesmaximumonly");
+
+            // Allow Skill Regrouping.
+            LoadBoolFromRegistry(ref _blnAllowSkillRegrouping, "allowskillregrouping");
 
 			// Attempt to populate the Karma values.
-			try
-			{
-				_intKarmaAttribute = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaattribute").ToString());
-				_intKarmaQuality = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaquality").ToString());
-				_intKarmaSpecialization = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspecialization").ToString());
-				_intKarmaNewKnowledgeSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewknowledgeskill").ToString());
-				_intKarmaNewActiveSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewactiveskill").ToString());
-				_intKarmaNewSkillGroup = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewskillgroup").ToString());
-				_intKarmaImproveKnowledgeSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimproveknowledgeskill").ToString());
-				_intKarmaImproveActiveSkill = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimproveactiveskill").ToString());
-				_intKarmaImproveSkillGroup = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimproveskillgroup").ToString());
-				_intKarmaSpell = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspell").ToString());
-				_intKarmaEnhancement = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenhancement").ToString());
-				_intKarmaNewComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanewcomplexform").ToString());
-				_intKarmaImproveComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimprovecomplexform").ToString());
-				_intKarmaNuyenPer = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanuyenper").ToString());
-				_intKarmaContact = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacontact").ToString());
-				_intKarmaEnemy = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenemy").ToString());
-				_intKarmaCarryover = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacarryover").ToString());
-				_intKarmaSpirit = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspirit").ToString());
-				_intKarmaManeuver = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmamaneuver").ToString());
-				_intKarmaInitiation = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmainitiation").ToString());
-				_intKarmaMetamagic = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmametamagic").ToString());
-				_intKarmaComplexFormOption = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacomplexformoption").ToString());
-				// Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaattribute");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaquality");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaspecialization");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewknowledgeskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewactiveskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewskillgroup");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimproveknowledgeskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimproveactiveskill");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimproveskillgroup");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaspell");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanewcomplexform");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaimprovecomplexform");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmanuyenper");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmacontact");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmacarryover");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmaspirit");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmamaneuver");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmainitiation");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmametamagic");
-				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("karmacomplexformoption");
-			}
-			catch
-			{
-			}
+            LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute");
+            LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality");
+            LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization");
+            LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill");
+            LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill");
+            LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup");
+            LoadInt32FromRegistry(ref _intKarmaImproveKnowledgeSkill, "karmaimproveknowledgeskill");
+            LoadInt32FromRegistry(ref _intKarmaImproveActiveSkill, "karmaimproveactiveskill");
+            LoadInt32FromRegistry(ref _intKarmaImproveSkillGroup, "karmaimproveskillgroup");
+            LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell");
+            LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement");
+            LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform");
+            LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform");
+            LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram");
+            LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram");
+            LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper");
+            LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact");
+            LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy");
+            LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover");
+            LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit");
+            LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver");
+            LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation");
+            LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic");
+            LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption");
 
 			// Retrieve the sourcebooks that are in the Registry.
-			string strBookList = "";
-			try
+			string strBookList;
+            object objBooksKeyValue = _objBaseChummerKey.GetValue("books");
+            if (objBooksKeyValue != null)
 			{
-				strBookList = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("books").ToString();
+				strBookList = objBooksKeyValue.ToString();
 			}
-			catch
+			else
 			{
 				// We were unable to get the Registry key which means the book options have not been saved yet, so create the default values.
 				strBookList = "Shadowrun 5th Edition";
-				RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-				objRegistry.SetValue("books", strBookList);
+                _objBaseChummerKey.SetValue("books", strBookList);
 			}
 			string[] strBooks = strBookList.Split(',');
 
-			XmlDocument objXmlDocument = new XmlDocument();
-			objXmlDocument = XmlManager.Instance.Load("books.xml");
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
 
 			foreach (string strBookCode in strBooks)
 			{
 				XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-				try
+				if (objXmlBook?["code"] != null)
 				{
 					_lstBooks.Add(objXmlBook["code"].InnerText);
 				}
-				catch
-				{
-				}
 			}
+            RecalculateBookXPath();
 
-			// Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-			Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("books");
+            // Delete the Registry keys ones the values have been retrieve since they will no longer be used.
+            _objBaseChummerKey.DeleteValue("books");
 		}
 
 		/// <summary>
@@ -1127,41 +1003,32 @@ namespace Chummer
 		/// <param name="strCode">Book code to convert.</param>
 		public string BookFromCode(string strCode)
 		{
-			string strReturn = "";
-			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				strReturn = objXmlBook["name"].InnerText;
-			}
-			catch
-			{
-			}
-			return strReturn;
-		}
+		    if (!string.IsNullOrWhiteSpace(strCode))
+		    {
+		        XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["name"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+            }
+            return string.Empty;
+        }
 
 		/// <summary>
 		/// Book code (using the translated version if applicable).
 		/// </summary>
 		/// <param name="strCode">Book code to search for.</param>
-		public string LanguageBookShort(string strCode)
+		public string LanguageBookShort(string strCode = "")
 		{
-			if (strCode == "")
-				return "";
-
-			string strReturn = "";
-			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				if (objXmlBook["altcode"] != null)
-					strReturn = objXmlBook["altcode"].InnerText;
-				else
-					strReturn = strCode;
-			}
-			catch
-			{
-			}
-			return strReturn;
-		}
+			if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["altcode"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+                return strCode;
+            }
+            return string.Empty;
+        }
 
 		/// <summary>
 		/// Determine the book's original code by using the alternate code.
@@ -1169,15 +1036,16 @@ namespace Chummer
 		/// <param name="strCode">Alternate code to look for.</param>
 		public string BookFromAltCode(string strCode)
 		{
-			if (strCode == "")
-				return "";
-
-			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
-			if (objXmlBook == null)
-				return strCode;
-			else
-				return objXmlBook["code"].InnerText;
-		}
+            if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["code"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+                return strCode;
+            }
+            return string.Empty;
+        }
 
 		/// <summary>
 		/// Book name (using the translated version if applicable).
@@ -1185,22 +1053,20 @@ namespace Chummer
 		/// <param name="strCode">Book code to search for.</param>
 		public string LanguageBookLong(string strCode)
 		{
-			if (strCode == "")
-				return "";
-
-			string strReturn = "";
-			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				if (objXmlBook["translate"] != null)
-					strReturn = objXmlBook["translate"].InnerText;
-				else
-					strReturn = objXmlBook["name"].InnerText;
-			}
-			catch
-			{
-			}
-			return strReturn;
+			if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                if (objXmlBook != null)
+                {
+                    string strReturn = objXmlBook["translate"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
+                    strReturn = objXmlBook["name"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
+                }
+            }
+            return string.Empty;
 		}
 
 		/// <summary>
@@ -1209,16 +1075,14 @@ namespace Chummer
 		/// <param name="strCode">Book code to search for.</param>
 		public bool BookEnabled(string strCode)
 		{
-			bool blnReturn = false;
 			foreach (string strBook in _lstBooks)
 			{
 				if (strBook == strCode)
 				{
-					blnReturn = true;
-					break;
+				    return true;
 				}
 			}
-			return blnReturn;
+			return false;
 		}
 
 		/// <summary>
@@ -1226,41 +1090,59 @@ namespace Chummer
 		/// </summary>
 		public string BookXPath()
 		{
-			if (_strBookXPath != "")
-				return _strBookXPath;
+            string strPath = _strBookXPath;
+            if (!string.IsNullOrEmpty(_strBookXPath))
+		    {
+                if (GlobalOptions.Instance.MissionsOnly)
+                {
+                    strPath += " and not(nomission)";
+                }
 
-			string strPath = "(";
-
-			foreach (string strBook in _lstBooks)
-			{
-				if (strBook != "")
-					strPath += "source = \"" + strBook + "\" or ";
-			}
-			strPath = strPath.Substring(0, strPath.Length - 4) + ")";
-
-			if (GlobalOptions.Instance.MissionsOnly)
-			{
-				strPath += " and not(nomission)";
-			}
-
-			if (!GlobalOptions.Instance.Dronemods)
-			{
-				strPath += " and not(optionaldrone)";
-			}
-			_strBookXPath = strPath;
-			
+                if (!GlobalOptions.Instance.Dronemods)
+                {
+                    strPath += " and not(optionaldrone)";
+                }
+            }
+            else
+            {
+                if (GlobalOptions.Instance.MissionsOnly)
+                {
+                    strPath += "not(nomission)";
+                    if (!GlobalOptions.Instance.Dronemods)
+                    {
+                        strPath += " and not(optionaldrone)";
+                    }
+                }
+                else if (!GlobalOptions.Instance.Dronemods)
+                {
+                    strPath += "not(optionaldrone)";
+                }
+            }
 			return strPath;
 		}
 
-		public List<string> BookLinq()
-		{
-			return _lstBooks;
-		}
-
-		/// <summary>
-		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// <summary>
+		/// XPath query used to filter items based on the user's selected source books.
 		/// </summary>
-		public bool PrintSkillsWithZeroRating
+		public void RecalculateBookXPath()
+        {
+            _strBookXPath = "(";
+
+            foreach (string strBook in _lstBooks)
+            {
+                if (!string.IsNullOrWhiteSpace(strBook))
+                    _strBookXPath += "source = \"" + strBook + "\" or ";
+            }
+            if (_strBookXPath.Length >= 4)
+                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+            else
+                _strBookXPath = string.Empty;
+        }
+
+        /// <summary>
+        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// </summary>
+        public bool PrintSkillsWithZeroRating
 		{
 			get
 			{
@@ -1607,37 +1489,6 @@ namespace Chummer
                 _blnDroneArmorMultiplierEnabled = value;
             }
         }
-
-
-        /// <summary>
-        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-        /// </summary>
-        public bool FreeKarmaContacts
-		{
-			get
-			{
-				return _blnFreeKarmaContacts;
-			}
-			set
-			{
-				_blnFreeKarmaContacts = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		public bool FreeKarmaKnowledge
-		{
-			get
-			{
-				return _blnFreeKarmaKnowledge;
-			}
-			set
-			{
-				_blnFreeKarmaKnowledge = value;
-			}
-		}
 
 		/// <summary>
 		/// Whether or not the multiplier for Free Knowledge points are used.
@@ -2944,10 +2795,40 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Amount of Nueyn objtained per Karma point.
+        /// <summary>
+		/// Karma cost for a new AI Program
 		/// </summary>
-		public int KarmaNuyenPer
+		public int KarmaNewAIProgram
+        {
+            get
+            {
+                return _intKarmaNewAIProgram;
+            }
+            set
+            {
+                _intKarmaNewAIProgram = value;
+            }
+        }
+
+        /// <summary>
+		/// Karma cost for a new AI Advanced Program
+		/// </summary>
+		public int KarmaNewAIAdvancedProgram
+        {
+            get
+            {
+                return _intKarmaNewAIAdvancedProgram;
+            }
+            set
+            {
+                _intKarmaNewAIAdvancedProgram = value;
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nueyn objtained per Karma point.
+        /// </summary>
+        public int KarmaNuyenPer
 		{
 			get
 			{
@@ -3436,9 +3317,39 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// 
+		/// Whether Martial Arts grant a free specialisation in a skill. 
 		/// </summary>
-		public string RecentImageFolder
+		public bool FreeMartialArtSpecialization
+		{
+			get
+			{
+				return _blnFreeMartialArtSpecialization;
+			}
+			set
+			{
+				_blnFreeMartialArtSpecialization = value;
+			}
+		}
+
+        /// <summary>
+		/// Whether Spells from Magic Priority can also be spent on power points. 
+		/// </summary>
+		public bool PrioritySpellsAsAdeptPowers
+        {
+            get
+            {
+                return _blnPrioritySpellsAsAdeptPowers;
+            }
+            set
+            {
+                _blnPrioritySpellsAsAdeptPowers = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string RecentImageFolder
 		{
 			get
 			{
@@ -3449,6 +3360,7 @@ namespace Chummer
 				_strImageFolder = value;
 			}
 		}
+
 		#endregion
 
 	}

@@ -41,9 +41,9 @@ namespace Chummer
         {
             get
             {
-                if (frmPlayerDashboard._instance == null)
-                    frmPlayerDashboard._instance = new frmPlayerDashboard();
-                return frmPlayerDashboard._instance;
+                if (_instance == null)
+                    _instance = new frmPlayerDashboard();
+                return _instance;
             }
         }
 
@@ -51,9 +51,9 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-            this.CenterToParent();
+            CenterToParent();
             // auto hide the form at creation
-            this.Hide();
+            Hide();
         }
 
         #endregion
@@ -70,14 +70,14 @@ namespace Chummer
 
         public DiceRollerControl DiceRoller
         {
-            get { return this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
+            get { return tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
         }
         #endregion
 
         #region Events
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         #endregion
@@ -89,15 +89,15 @@ namespace Chummer
          */
         private void UpdateTabs()
         {
-            this.tabControl.TabPages.Add(DashBoardPages.CM.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Skills.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Vassels.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Vehicles.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Dice.ToString());
+            tabControl.TabPages.Add(DashBoardPages.CM.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Skills.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Vassels.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Vehicles.ToString());
+            tabControl.TabPages.Add(DashBoardPages.Dice.ToString());
 
             // setup the controls for each tab
-            this.tabControl.TabPages[(int)DashBoardPages.CM].Controls.Add(new ConditionMonitorUserControl());
-            this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls.Add(new DiceRollerControl());
+            tabControl.TabPages[(int)DashBoardPages.CM].Controls.Add(new ConditionMonitorUserControl());
+            tabControl.TabPages[(int)DashBoardPages.Dice].Controls.Add(new DiceRollerControl());
         }
 
         private void UpdateControls()
@@ -105,16 +105,16 @@ namespace Chummer
             // tosses the character information relevant to each character
             #region Condition Monitor
             ConditionMonitorUserControl uc =
-                this.tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
-            uc.MaxPhysical = this.CurrentNPC.PhysicalCM;
-            uc.MaxStun = this.CurrentNPC.StunCM;
+                tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
+            uc.MaxPhysical = CurrentNPC.PhysicalCM;
+            uc.MaxStun = CurrentNPC.StunCM;
             uc.Physical = uc.MaxPhysical;
             uc.Stun = uc.MaxStun;
             #endregion
 
             #region Dice Roller
             DiceRollerControl dice =
-                this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
+                tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
             //dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
             #endregion
         }

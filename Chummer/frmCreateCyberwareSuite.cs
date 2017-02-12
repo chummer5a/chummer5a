@@ -44,7 +44,7 @@ namespace Chummer
 			else
 			{
 				_strType = "bioware";
-				this.Text = LanguageManager.Instance.GetString("Title_CreateBiowareSuite");
+				Text = LanguageManager.Instance.GetString("Title_CreateBiowareSuite");
 			}
 
 			txtFileName.Text = "custom_" + _strType + ".xml";
@@ -53,13 +53,13 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			// Make sure the suite and file name fields are populated.
-			if (txtName.Text == "")
+			if (string.IsNullOrEmpty(txtName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberwareSuite_SuiteName"), LanguageManager.Instance.GetString("MessageTitle_CyberwareSuite_SuiteName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 
-			if (txtFileName.Text == "")
+			if (string.IsNullOrEmpty(txtFileName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberwareSuite_FileName"), LanguageManager.Instance.GetString("MessageTitle_CyberwareSuite_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -126,7 +126,7 @@ namespace Chummer
 					objXmlCyberware.WriteContentTo(objWriter);
 			}
 
-			string strGrade = "";
+			string strGrade = string.Empty;
 			// Determine the Grade of Cyberware.
 			foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 			{
@@ -194,18 +194,18 @@ namespace Chummer
 			objStream.Close();
 
 			MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberwareSuite_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.Instance.GetString("MessageTitle_CyberwareSuite_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void frmCreateCyberwareSuite_Load(object sender, EventArgs e)
 		{
 			txtName.Left = lblName.Left + lblName.Width + 6;
-			txtName.Width = this.Width - txtName.Left - 19;
+			txtName.Width = Width - txtName.Left - 19;
 			txtFileName.Left = txtName.Left;
 			txtFileName.Width = txtName.Width;
 		}

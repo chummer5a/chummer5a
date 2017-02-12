@@ -25,7 +25,7 @@ namespace Chummer
 	{
 		private static int _intWidth = 534;
 		private static int _intHeight = 278;
-		private readonly bool _blnLoading = false;
+		private readonly bool _blnLoading;
 
 		#region Control Events
 		public frmNotes()
@@ -33,20 +33,20 @@ namespace Chummer
 			InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			_blnLoading = true;
-			this.Width = _intWidth;
-			this.Height = _intHeight;
+			Width = _intWidth;
+			Height = _intHeight;
 			_blnLoading = false;
 		}
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape)
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 
 			if (e.Control && e.KeyCode == Keys.A)
 			{
@@ -61,8 +61,8 @@ namespace Chummer
 			if (_blnLoading)
 				return;
 
-			_intWidth = this.Width;
-			_intHeight = this.Height;
+			_intWidth = Width;
+			_intHeight = Height;
 		}
 		#endregion
 
