@@ -18936,7 +18936,7 @@ namespace Chummer
 		private void lstNuyen_DoubleClick(object sender, EventArgs e)
 		{
             ListViewItem objItem;
-            if (lstKarma.SelectedItems != null && lstKarma.SelectedItems.Count > 0)
+            if (lstNuyen.SelectedItems != null && lstNuyen.SelectedItems.Count > 0)
             {
                 objItem = lstNuyen.SelectedItems[0];
             }
