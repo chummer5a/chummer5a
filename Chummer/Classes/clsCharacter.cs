@@ -1777,6 +1777,8 @@ namespace Chummer
             objWriter.WriteElementString("priorityskill2", _strSkill2);
             // <priorityskillgroup />
             objWriter.WriteElementString("priorityskillgroup", _strSkillGroup);
+            // <handedness />
+            objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from having a self-terminated title tag which causes browser to not rendering anything.
             // <name />
@@ -2083,9 +2085,9 @@ namespace Chummer
 			}
 
             // Matrix Initiative (AR).
-            objWriter.WriteElementString("matrixinit", MatrixInitiative);
-			objWriter.WriteElementString("matrixinitdice", MatrixInitiativeDice.ToString());
-			objWriter.WriteElementString("matrixinitvalue", MatrixInitiativeValue.ToString());
+            objWriter.WriteElementString("matrixarinit", MatrixInitiative);
+			objWriter.WriteElementString("matrixarinitdice", MatrixInitiativeDice.ToString());
+			objWriter.WriteElementString("matrixarinitvalue", MatrixInitiativeValue.ToString());
 
 			// Matrix Initiative (Cold).
             objWriter.WriteElementString("matrixcoldinit", MatrixInitiativeCold);
