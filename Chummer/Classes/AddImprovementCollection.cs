@@ -4268,7 +4268,57 @@ namespace Chummer.Classes
 			}
 		}
 
-		public void addskillspecialization(XmlNode bonusNode)
+
+
+        public void selectquality(XmlNode bonusNode)
+        {
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            List<ListItem> lstQualities = new List<ListItem>();
+            string strForceValue = string.Empty;
+            frmSelectItem frmPickItem = new frmSelectItem();
+            foreach (XmlNode objXmlAddQuality in bonusNode.SelectNodes("quality"))
+            {
+                if (objXmlAddQuality.Attributes["select"] != null)
+                    strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
+                bool blnAddQuality = _objCharacter.Qualities.All(objCharacterQuality => objCharacterQuality.Name != objXmlAddQuality.InnerText || objCharacterQuality.Extra != strForceValue);
+
+                // Make sure the character does not yet have this Quality.
+
+                if (blnAddQuality)
+                {
+                    XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objXmlQuality["name"].InnerText;
+                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                    lstQualities.Add(objItem);
+                }
+            }
+            frmPickItem.GeneralItems = lstQualities;
+            frmPickItem.ShowDialog();
+
+            // Don't do anything else if the form was canceled.
+            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                return;
+            XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
+            TreeNode objAddQualityNode = new TreeNode();
+            Quality objAddQuality = new Quality(_objCharacter);
+
+            bool blnFree = bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]")?.Attributes?["contributetobp"] == null ||
+                            (bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]")?.Attributes?["contributetobp"]?.InnerText.ToLower() != "true");
+
+            strForceValue = bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]")?.Attributes?["select"].InnerText;
+            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, null, null, strForceValue);
+            if (blnFree)
+            {
+                objAddQuality.BP = 0;
+                objAddQuality.ContributeToLimit = false;
+            }
+            _objCharacter.Qualities.Add(objAddQuality);
+            CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName,
+            Improvement.ImprovementType.SpecificQuality, _strUnique);
+        }
+
+        public void addskillspecialization(XmlNode bonusNode)
 		{
 			
 			Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
