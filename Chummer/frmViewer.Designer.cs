@@ -75,6 +75,7 @@ namespace Chummer
             this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
+            this.tsSaveAsXml.Click += new EventHandler(this.tsSaveAsXml_Click);
             // 
             // tsSaveAsPdf
             // 
@@ -82,7 +83,7 @@ namespace Chummer
             this.tsSaveAsPdf.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
             this.tsSaveAsPdf.Text = "Save as PDF";
-            this.tsSaveAsPdf.Click += new EventHandler(this.cmdSavePDF_Click);
+            this.tsSaveAsPdf.Click += new EventHandler(this.tsSaveAsPdf_Click);
             // 
             // cmsPrintButton
             // 
