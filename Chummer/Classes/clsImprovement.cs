@@ -1078,22 +1078,13 @@ namespace Chummer
 	                Guid guid = Guid.Parse(objImprovement.ImprovedName);
 	                _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
 	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
-                }
-
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute)
-                {
-                    CharacterAttrib objChangedAttribute = null;
-                    switch (objImprovement.ImprovedName)
-                    {
-                        case "AGI":
-                            objChangedAttribute = _objCharacter.AGI;
-                            break;
+                        break;
                     case Improvement.ImprovementType.Attribute:
-                        CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
-                    if (objImprovement.Minimum > 0)
-                    {
-                        objChangedAttribute.Value -= objImprovement.Minimum;
-                    }
+                            CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
+                        if (objImprovement.Minimum > 0)
+                        {
+                            objChangedAttribute.Value -= objImprovement.Minimum;
+                        }
 
                 // Determine if access to any Special Attributes have been lost.
                         if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)

@@ -7412,7 +7412,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshPowers();
             RefreshContacts();
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
 			_blnIsDirty = true;
@@ -7601,7 +7600,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshPowers();
             RefreshContacts();
 
 			_blnIsDirty = true;
@@ -20653,224 +20651,240 @@ namespace Chummer
 		}
         }
 
-		/// <summary>
-		/// Refresh the information for the currently displayed piece of Cyberware.
-		/// </summary>
-		public void RefreshSelectedCyberware()
-		{
-			cboCyberwareGearAttack.Visible = false;
-			cboCyberwareGearSleaze.Visible = false;
-			cboCyberwareGearDataProcessing.Visible = false;
-			cboCyberwareGearFirewall.Visible = false;
-			cboCyberwareGearOverclocker.Visible = false;
-            lblCyberDeviceRating.Visible = false;
-			lblCyberDeviceRatingLabel.Visible = false;
-			lblCyberAttackLabel.Visible = false;
-			lblCyberSleazeLabel.Visible = false;
-			lblCyberDataProcessingLabel.Visible = false;
-			lblCyberFirewallLabel.Visible = false;
+	    /// <summary>
+	    /// Refresh the information for the currently displayed piece of Cyberware.
+	    /// </summary>
+	    public void RefreshSelectedCyberware()
+	    {
+	        cboCyberwareGearAttack.Visible = false;
+	        cboCyberwareGearSleaze.Visible = false;
+	        cboCyberwareGearDataProcessing.Visible = false;
+	        cboCyberwareGearFirewall.Visible = false;
+	        cboCyberwareGearOverclocker.Visible = false;
+	        lblCyberDeviceRating.Visible = false;
+	        lblCyberDeviceRatingLabel.Visible = false;
+	        lblCyberAttackLabel.Visible = false;
+	        lblCyberSleazeLabel.Visible = false;
+	        lblCyberDataProcessingLabel.Visible = false;
+	        lblCyberFirewallLabel.Visible = false;
 
-			if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
-			{
-				lblCyberwareName.Text = string.Empty;
-				lblCyberwareCategory.Text = string.Empty;
-				lblCyberwareRating.Text = string.Empty;
-				lblCyberwareAvail.Text = string.Empty;
-				lblCyberwareCost.Text = string.Empty;
-				lblCyberwareCapacity.Text = string.Empty;
-				lblCyberwareEssence.Text = string.Empty;
-				lblCyberwareSource.Text = string.Empty;
-				tipTooltip.SetToolTip(lblCyberwareSource, null);
-                lblCyberlimbAGI.Visible = false;
-                lblCyberlimbAGILabel.Visible = false;
-                lblCyberlimbSTR.Visible = false;
-                lblCyberlimbSTRLabel.Visible = false;
-                return;
-			}
-            Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
-				// Locate the selected piece of Cyberware.
-			if (objCyberware != null)
-			{
-				_blnSkipRefresh = true;
-				lblCyberwareName.Text = objCyberware.DisplayNameShort;
-				lblCyberwareCategory.Text = objCyberware.DisplayCategory;
-				string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
-				string strPage = objCyberware.Page;
-				lblCyberwareSource.Text = strBook + " " + strPage;
-				tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
-				lblCyberwareRating.Text = objCyberware.Rating.ToString();
+	        if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
+	        {
+	            lblCyberwareName.Text = string.Empty;
+	            lblCyberwareCategory.Text = string.Empty;
+	            lblCyberwareRating.Text = string.Empty;
+	            lblCyberwareAvail.Text = string.Empty;
+	            lblCyberwareCost.Text = string.Empty;
+	            lblCyberwareCapacity.Text = string.Empty;
+	            lblCyberwareEssence.Text = string.Empty;
+	            lblCyberwareSource.Text = string.Empty;
+	            tipTooltip.SetToolTip(lblCyberwareSource, null);
+	            lblCyberlimbAGI.Visible = false;
+	            lblCyberlimbAGILabel.Visible = false;
+	            lblCyberlimbSTR.Visible = false;
+	            lblCyberlimbSTRLabel.Visible = false;
+	            return;
+	        }
+	        Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(),
+	            _objCharacter.Cyberware);
+	        // Locate the selected piece of Cyberware.
+	        if (objCyberware != null)
+	        {
+	            _blnSkipRefresh = true;
+	            lblCyberwareName.Text = objCyberware.DisplayNameShort;
+	            lblCyberwareCategory.Text = objCyberware.DisplayCategory;
+	            string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
+	            string strPage = objCyberware.Page;
+	            lblCyberwareSource.Text = strBook + " " + strPage;
+	            tipTooltip.SetToolTip(lblCyberwareSource,
+	                _objOptions.LanguageBookLong(objCyberware.Source) + " " +
+	                LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
+	            lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
-				lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
+	            lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
 
-                if (objCyberware.Category.Equals("Cyberlimb"))
-                {
-                    lblCyberlimbAGI.Visible = true;
-                    lblCyberlimbAGILabel.Visible = true;
-                    lblCyberlimbSTR.Visible = true;
-                    lblCyberlimbSTRLabel.Visible = true;
+	            if (objCyberware.Category.Equals("Cyberlimb"))
+	            {
+	                lblCyberlimbAGI.Visible = true;
+	                lblCyberlimbAGILabel.Visible = true;
+	                lblCyberlimbSTR.Visible = true;
+	                lblCyberlimbSTRLabel.Visible = true;
 
-                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
-                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
-                    lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
-                    lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
-                }
-                else
-                {
-                    lblCyberlimbAGI.Visible = false;
-                    lblCyberlimbAGILabel.Visible = false;
-                    lblCyberlimbSTR.Visible = false;
-                    lblCyberlimbSTRLabel.Visible = false;
-                }
+	                lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
+	                lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
+	                lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
+	                lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
+	            }
+	            else
+	            {
+	                lblCyberlimbAGI.Visible = false;
+	                lblCyberlimbAGILabel.Visible = false;
+	                lblCyberlimbSTR.Visible = false;
+	                lblCyberlimbSTRLabel.Visible = false;
+	            }
 
-                if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-				{
-					// Locate the selected Cyberware.
-					TreeNode objCyberwareNode = new TreeNode();
-					objCyberwareNode = treCyberware.SelectedNode;
-					tabCyberwareCM.Visible = true;
-					if (treCyberware.SelectedNode.Level > 1)
-					{
-						while (objCyberwareNode.Level > 1)
-						{
-							objCyberwareNode = objCyberwareNode.Parent;
-							tabCyberwareCM.Visible = false;
-						}
-					}
-					else
-					{
-						tabCyberwareCM.Visible = true;
-					}
+	            if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+	            {
+	                // Locate the selected Cyberware.
+	                TreeNode objCyberwareNode = new TreeNode();
+	                objCyberwareNode = treCyberware.SelectedNode;
+	                tabCyberwareCM.Visible = true;
+	                if (treCyberware.SelectedNode.Level > 1)
+	                {
+	                    while (objCyberwareNode.Level > 1)
+	                    {
+	                        objCyberwareNode = objCyberwareNode.Parent;
+	                        tabCyberwareCM.Visible = false;
+	                    }
+	                }
+	                else
+	                {
+	                    tabCyberwareCM.Visible = true;
+	                }
 
-					// Hide any unused CM boxes.
-					_blnSkipRefresh = true;
-					foreach (CheckBox objMatrixCM in tabCyberwareMatrixCM.Controls.OfType<CheckBox>())
-					{
-						if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objCyberware.MatrixCM)
-						{
-							if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objCyberware.MatrixCMFilled)
-								objMatrixCM.Checked = true;
-							else
-								objMatrixCM.Checked = false;
+	                // Hide any unused CM boxes.
+	                _blnSkipRefresh = true;
+	                foreach (CheckBox objMatrixCM in tabCyberwareMatrixCM.Controls.OfType<CheckBox>())
+	                {
+	                    if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objCyberware.MatrixCM)
+	                    {
+	                        if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objCyberware.MatrixCMFilled)
+	                            objMatrixCM.Checked = true;
+	                        else
+	                            objMatrixCM.Checked = false;
 
-							objMatrixCM.Visible = true;
-						}
-						else
-						{
-							objMatrixCM.Checked = false;
-							objMatrixCM.Visible = false;
-							objMatrixCM.Text = string.Empty;
-						}
-					}
-				}
-				else
-				{
-					tabCyberwareCM.Visible = false;
-				}
-				_blnSkipRefresh = false;
+	                        objMatrixCM.Visible = true;
+	                    }
+	                    else
+	                    {
+	                        objMatrixCM.Checked = false;
+	                        objMatrixCM.Visible = false;
+	                        objMatrixCM.Text = string.Empty;
+	                    }
+	                }
+	            }
+	            else
+	            {
+	                tabCyberwareCM.Visible = false;
+	            }
+	            _blnSkipRefresh = false;
 
-				lblCyberwareAvail.Text = objCyberware.TotalAvail;
-				lblCyberwareCost.Text = $"{objCyberware.TotalCost:###,###,##0¥}";
-				lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" + objCyberware.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
-				lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(GlobalOptions.CultureInfo);
-				UpdateCharacterInfo();
-			}
-			else
-			{
-				// Locate the selected piece of Gear.
-				Cyberware objFoundCyberware = new Cyberware(_objCharacter);
-				Gear objGear = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objFoundCyberware);
-				
-                if (objGear != null)
-                {
-                    cboCyberwareGearAttack.BeginUpdate();
-                    cboCyberwareGearSleaze.BeginUpdate();
-                    cboCyberwareGearDataProcessing.BeginUpdate();
-                    cboCyberwareGearFirewall.BeginUpdate();
-				if (objGear.GetType() == typeof(Commlink))
-				{
-					Commlink objCommlink = (Commlink)objGear;
-					lblGearDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
-					_blnSkipRefresh = true;
-					chkActiveCommlink.Checked = objCommlink.IsActive;
-					_blnSkipRefresh = false;
-					List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+	            lblCyberwareAvail.Text = objCyberware.TotalAvail;
+	            lblCyberwareCost.Text = $"{objCyberware.TotalCost:###,###,##0¥}";
+	            lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
+	                                        objCyberware.CapacityRemaining.ToString() + " " +
+	                                        LanguageManager.Instance.GetString("String_Remaining") + ")";
+	            lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(GlobalOptions.CultureInfo);
+	            UpdateCharacterInfo();
+	        }
+	        else
+	        {
+	            // Locate the selected piece of Gear.
+	            Cyberware objFoundCyberware = new Cyberware(_objCharacter);
+	            Gear objGear = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(),
+	                _objCharacter.Cyberware, out objFoundCyberware);
 
-					cboCyberwareGearAttack.BindingContext = new BindingContext();
-					cboCyberwareGearAttack.ValueMember = "Value";
-					cboCyberwareGearAttack.DisplayMember = "Name";
-					cboCyberwareGearAttack.DataSource = objASDF;
-					cboCyberwareGearAttack.SelectedIndex = 0;
-					cboCyberwareGearSleaze.BindingContext = new BindingContext();
-					cboCyberwareGearSleaze.ValueMember = "Value";
-					cboCyberwareGearSleaze.DisplayMember = "Name";
-					cboCyberwareGearSleaze.DataSource = objASDF;
-					cboCyberwareGearSleaze.SelectedIndex = 1;
-					cboCyberwareGearDataProcessing.BindingContext = new BindingContext();
-					cboCyberwareGearDataProcessing.ValueMember = "Value";
-					cboCyberwareGearDataProcessing.DisplayMember = "Name";
-					cboCyberwareGearDataProcessing.DataSource = objASDF;
-					cboCyberwareGearDataProcessing.SelectedIndex = 2;
-					cboCyberwareGearFirewall.BindingContext = new BindingContext();
-					cboCyberwareGearFirewall.ValueMember = "Value";
-					cboCyberwareGearFirewall.DisplayMember = "Name";
-					cboCyberwareGearFirewall.DataSource = objASDF;
-					cboCyberwareGearFirewall.SelectedIndex = 3;
-					lblCyberDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
+	            if (objGear != null)
+	            {
+	                cboCyberwareGearAttack.BeginUpdate();
+	                cboCyberwareGearSleaze.BeginUpdate();
+	                cboCyberwareGearDataProcessing.BeginUpdate();
+	                cboCyberwareGearFirewall.BeginUpdate();
+	                if (objGear.GetType() == typeof(Commlink))
+	                {
+	                    Commlink objCommlink = (Commlink) objGear;
+	                    lblGearDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
+	                    _blnSkipRefresh = true;
+	                    chkActiveCommlink.Checked = objCommlink.IsActive;
+	                    _blnSkipRefresh = false;
+	                    List<string> objASDF = new List<string>()
+	                    {
+	                        objCommlink.Attack.ToString(),
+	                        objCommlink.Sleaze.ToString(),
+	                        objCommlink.DataProcessing.ToString(),
+	                        objCommlink.Firewall.ToString()
+	                    };
 
-					cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
-					lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
-					cboCyberwareGearAttack.Visible = true;
-					cboCyberwareGearSleaze.Visible = true;
-					cboCyberwareGearDataProcessing.Visible = true;
-					cboCyberwareGearFirewall.Visible = true;
-					lblCyberDeviceRating.Visible = true;
-					lblCyberDeviceRatingLabel.Visible = true;
-					lblCyberAttackLabel.Visible = true;
-					lblCyberSleazeLabel.Visible = true;
-					lblCyberDataProcessingLabel.Visible = true;
-					lblCyberFirewallLabel.Visible = true;
+	                    cboCyberwareGearAttack.BindingContext = new BindingContext();
+	                    cboCyberwareGearAttack.ValueMember = "Value";
+	                    cboCyberwareGearAttack.DisplayMember = "Name";
+	                    cboCyberwareGearAttack.DataSource = objASDF;
+	                    cboCyberwareGearAttack.SelectedIndex = 0;
+	                    cboCyberwareGearSleaze.BindingContext = new BindingContext();
+	                    cboCyberwareGearSleaze.ValueMember = "Value";
+	                    cboCyberwareGearSleaze.DisplayMember = "Name";
+	                    cboCyberwareGearSleaze.DataSource = objASDF;
+	                    cboCyberwareGearSleaze.SelectedIndex = 1;
+	                    cboCyberwareGearDataProcessing.BindingContext = new BindingContext();
+	                    cboCyberwareGearDataProcessing.ValueMember = "Value";
+	                    cboCyberwareGearDataProcessing.DisplayMember = "Name";
+	                    cboCyberwareGearDataProcessing.DataSource = objASDF;
+	                    cboCyberwareGearDataProcessing.SelectedIndex = 2;
+	                    cboCyberwareGearFirewall.BindingContext = new BindingContext();
+	                    cboCyberwareGearFirewall.ValueMember = "Value";
+	                    cboCyberwareGearFirewall.DisplayMember = "Name";
+	                    cboCyberwareGearFirewall.DataSource = objASDF;
+	                    cboCyberwareGearFirewall.SelectedIndex = 3;
+	                    lblCyberDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
 
-					if (objCommlink.Category != "Commlink Upgrade")
-						chkActiveCommlink.Visible = true;
-				}
-				else
-				{
-					lblCyberDeviceRating.Text = objGear.DeviceRating.ToString();
-					chkActiveCommlink.Visible = false;
-					cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
-					lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
-					cboCyberwareGearAttack.Visible = false;
-					cboCyberwareGearSleaze.Visible = false;
-					cboCyberwareGearDataProcessing.Visible = false;
-					cboCyberwareGearFirewall.Visible = false;
-					lblCyberDeviceRatingLabel.Visible = true;
-                    lblGearAttackLabel.Visible = false;
-					lblGearSleazeLabel.Visible = false;
-					lblGearDataProcessingLabel.Visible = false;
-					lblGearFirewallLabel.Visible = false;
-				}
-                    cboCyberwareGearAttack.EndUpdate();
-                    cboCyberwareGearSleaze.EndUpdate();
-                    cboCyberwareGearDataProcessing.EndUpdate();
-                    cboCyberwareGearFirewall.EndUpdate();
+	                    cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+	                    lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+	                    cboCyberwareGearAttack.Visible = true;
+	                    cboCyberwareGearSleaze.Visible = true;
+	                    cboCyberwareGearDataProcessing.Visible = true;
+	                    cboCyberwareGearFirewall.Visible = true;
+	                    lblCyberDeviceRating.Visible = true;
+	                    lblCyberDeviceRatingLabel.Visible = true;
+	                    lblCyberAttackLabel.Visible = true;
+	                    lblCyberSleazeLabel.Visible = true;
+	                    lblCyberDataProcessingLabel.Visible = true;
+	                    lblCyberFirewallLabel.Visible = true;
 
-				_blnSkipRefresh = true;
-				lblCyberwareName.Text = objGear.DisplayNameShort;
-				lblCyberwareCategory.Text = objGear.DisplayCategory;
-				lblCyberwareAvail.Text = objGear.TotalAvail(true);
-                    lblCyberwareCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
-				lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
-				lblCyberwareEssence.Text = "0";
-                    lblCyberwareGrade.Text = string.Empty;
-				lblCyberwareRating.Text = objGear.Rating.ToString();
-				string strBook = _objOptions.LanguageBookShort(objGear.Source);
-				string strPage = objGear.Page;
-				lblCyberwareSource.Text = strBook + " " + strPage;
-				tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
-			}
-        }
+	                    if (objCommlink.Category != "Commlink Upgrade")
+	                        chkActiveCommlink.Visible = true;
+	                }
+	                else
+	                {
+	                    lblCyberDeviceRating.Text = objGear.DeviceRating.ToString();
+	                    chkActiveCommlink.Visible = false;
+	                    cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+	                    lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+	                    cboCyberwareGearAttack.Visible = false;
+	                    cboCyberwareGearSleaze.Visible = false;
+	                    cboCyberwareGearDataProcessing.Visible = false;
+	                    cboCyberwareGearFirewall.Visible = false;
+	                    lblCyberDeviceRatingLabel.Visible = true;
+	                    lblGearAttackLabel.Visible = false;
+	                    lblGearSleazeLabel.Visible = false;
+	                    lblGearDataProcessingLabel.Visible = false;
+	                    lblGearFirewallLabel.Visible = false;
+	                }
+	                cboCyberwareGearAttack.EndUpdate();
+	                cboCyberwareGearSleaze.EndUpdate();
+	                cboCyberwareGearDataProcessing.EndUpdate();
+	                cboCyberwareGearFirewall.EndUpdate();
 
-        public void RefreshAIPrograms()
+	                _blnSkipRefresh = true;
+	                lblCyberwareName.Text = objGear.DisplayNameShort;
+	                lblCyberwareCategory.Text = objGear.DisplayCategory;
+	                lblCyberwareAvail.Text = objGear.TotalAvail(true);
+	                lblCyberwareCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
+	                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() +
+	                                            " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+	                lblCyberwareEssence.Text = "0";
+	                lblCyberwareGrade.Text = string.Empty;
+	                lblCyberwareRating.Text = objGear.Rating.ToString();
+	                string strBook = _objOptions.LanguageBookShort(objGear.Source);
+	                string strPage = objGear.Page;
+	                lblCyberwareSource.Text = strBook + " " + strPage;
+	                tipTooltip.SetToolTip(lblCyberwareSource,
+	                    _objOptions.LanguageBookLong(objGear.Source) + " " +
+	                    LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+	            }
+	        }
+	    }
+
+	    public void RefreshAIPrograms()
         {
             treAIPrograms.Nodes[0].Nodes.Clear();
 

@@ -257,7 +257,7 @@ namespace Chummer.UI.Skills
 				if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
 				{
 					// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-					intMAG = ObjCharacter.MAGAdept;
+					intMAG = ObjCharacter.MysticAdeptPowerPoints;
 				}
 				else
 				{

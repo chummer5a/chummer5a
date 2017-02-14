@@ -1,4 +1,7 @@
-﻿using Chummer.helpers;
+﻿using System.Windows.Forms;
+using Chummer.UI.Skills;
+using ComboBox = Chummer.helpers.ComboBox;
+using TreeView = Chummer.helpers.TreeView;
 
 namespace Chummer
 {
@@ -15461,6 +15464,23 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.CheckBox chkIsMainMugshot;
-	}
+        private PowersTabUserControl tabPowerUc;
+        private TreeNode treeNode27;
+        private TreeNode treeNode28;
+        private TreeNode treeNode29;
+        private TreeNode treeNode30;
+        private TreeNode treeNode31;
+        private TreeNode treeNode32;
+        private TreeNode treeNode33;
+        private TreeNode treeNode34;
+        private TreeNode treeNode35;
+        private TreeNode treeNode36;
+        private TreeNode treeNode37;
+        private TreeNode treeNode38;
+        private TreeNode treeNode39;
+        private TreeNode treeNode40;
+        private TreeNode treeNode41;
+        private TreeNode treeNode42;
+    }
 }
 
