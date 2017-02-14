@@ -67,7 +67,7 @@
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSeats = new System.Windows.Forms.Label();
@@ -505,7 +505,7 @@
             this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
             this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
             this.lblVehicleSeatsLabel.TabIndex = 39;
-            this.lblVehicleSeatsLabel.Tag = "Label_Seat";
+            this.lblVehicleSeatsLabel.Tag = "Label_Seats";
             this.lblVehicleSeatsLabel.Text = "Seats:";
             // 
             // lblVehicleSeats
@@ -621,7 +621,7 @@
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
 		private System.Windows.Forms.Label lblTest;
 		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label lblVehicleSeatsLabel;
         private System.Windows.Forms.Label lblVehicleSeats;

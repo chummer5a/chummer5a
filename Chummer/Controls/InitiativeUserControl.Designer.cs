@@ -399,7 +399,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "InitiativeUserControl";
             this.Size = new System.Drawing.Size(420, 265);
-            this.Tag = "";
+            this.Tag = string.Empty;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();

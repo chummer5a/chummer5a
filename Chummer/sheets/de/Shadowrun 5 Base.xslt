@@ -464,10 +464,10 @@
 										<strong>Aktionsfertigkeiten</strong>
 										<table width="100%" cellspacing="0" cellpadding="0" border="0">
 											<tr>
-												<td width="50%">
+												<td width="45%">
 													<strong>Fertigkeit</strong>
 												</td>
-												<td width="10%" style="text-align:center;">
+												<td width="15%" style="text-align:center;">
 													<strong>Pool</strong>
 												</td>
 												<td width="10%" style="text-align:center;">
@@ -487,10 +487,10 @@
 										<strong>Aktionsfertigkeiten</strong>
 										<table width="100%" cellspacing="0" cellpadding="0" border="0">
 											<tr>
-												<td width="50%">
+												<td width="45%">
 													<strong>Fertigkeit</strong>
 												</td>
-												<td width="10%" style="text-align:center;">
+												<td width="15%" style="text-align:center;">
 													<strong>Pool</strong>
 												</td>
 												<td width="10%" style="text-align:center;">
@@ -510,10 +510,10 @@
 										<strong>Wissensfertigkeiten</strong>
 										<table width="100%" cellspacing="0" cellpadding="0" border="0">
 											<tr>
-												<td width="50%">
+												<td width="45%">
 													<strong>Fertigkeit</strong>
 												</td>
-												<td width="10%" style="text-align:center;">
+												<td width="15%" style="text-align:center;">
 													<strong>Pool</strong>
 												</td>
 												<td width="10%" style="text-align:center;">
@@ -547,9 +547,9 @@
 				</div>
 				
 				<div class="block" id="LimitsBlock">
-					<table width="100%" cellspacing="0" cellpadding="0" class="tableborder">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0">
 						<tr>
-							<td width="100%">
+							<td width="100%" class="tableborder">
 								<table width="100%" cellspacing="0" cellpadding="0" border="0">
 									<tr>
 										<td width="25%" style="text-align:center;" valign="top">
@@ -1296,6 +1296,40 @@
 				</table>
 				</div>
 					</xsl:if>
+
+        <xsl:if test="aiprograms/aiprogram">
+          <div class="block" id="AIProgramBlock">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td>
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0"
+										class="tableborder">
+                    <tr>
+                      <td width="40%">
+                        <strong>Bezeichnung</strong>
+                      </td>
+                      <td width="40%">
+                        <strong>Braucht Programm</strong>
+                      </td>
+                      <td width="20%" style="text-align:center;"> </td>
+                    </tr>
+                    <xsl:call-template name="aiprograms"/>
+                    <tr>
+                      <td class="rowsummary" colspan="3">
+                        KI Programme und fortgeschrittene Programme
+                        <span class="rowsummarybutton" onClick="showhide(this,'AIProgramBlock');" colspan="1">Zeigen: Ja</span>
+                        <span class="rowsummarybutton" onClick="zalomit(this,'AIProgramBlock');" colspan="1">Seitenumbruch: Nein</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td class="hseparator"/>
+              </tr>
+            </table>
+          </div>
+        </xsl:if>
 					
 					<xsl:if test="martialarts/martialart">
 				<div class="block" id="MartialArtsBlock">
@@ -1574,6 +1608,87 @@
 				</table>
 				</div>
 					</xsl:if>
+
+        <xsl:if test="hasothermugshots = 'yes'">
+          <div class="block" id="OtherMugshotsBlock">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td width="100%" class="tableborder">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                    <tr>
+                      <td width="33%" style="text-align:center;">
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                          <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
+                            <tr>
+                              <td width="100%" style="text-align:center;">
+                                <img>
+                                  <xsl:attribute name="src">
+                                    data:image/png;base64,<xsl:value-of select='stringbase64' />
+                                  </xsl:attribute>
+                                </img>
+                              </td>
+                            </tr>
+                          </xsl:for-each>
+                        </table>
+                      </td>
+                      <td width="33%" style="text-align:center;">
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                          <xsl:if test="count(othermugshots/mugshot[position() mod 3 = 2]) = 0">
+                            <tr>
+                              <td></td>
+                            </tr>
+                          </xsl:if>
+                          <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
+                            <tr>
+                              <td width="100%" style="text-align:center;">
+                                <img>
+                                  <xsl:attribute name="src">
+                                    data:image/png;base64,<xsl:value-of select='stringbase64' />
+                                  </xsl:attribute>
+                                </img>
+                              </td>
+                            </tr>
+                          </xsl:for-each>
+                        </table>
+                      </td>
+                      <td width="33%" style="text-align:center;">
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
+                          <xsl:if test="count(othermugshots/mugshot[position() mod 3 = 0]) = 0">
+                            <tr>
+                              <td></td>
+                            </tr>
+                          </xsl:if>
+                          <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
+                            <tr>
+                              <td width="100%" style="text-align:center;">
+                                <img>
+                                  <xsl:attribute name="src">
+                                    data:image/png;base64,<xsl:value-of select='stringbase64' />
+                                  </xsl:attribute>
+                                </img>
+                              </td>
+                            </tr>
+                          </xsl:for-each>
+                        </table>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="rowsummary" colspan="3">
+                        Andere Portraiten
+                        <span class="rowsummarybutton" onClick="showhide(this,'NotesBlock');" colspan="1">Zeigen: Ja</span>
+                        <span class="rowsummarybutton" onClick="zalomit(this,'NotesBlock');" colspan="1">Seitenumbruch: Nein</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td class="hseparator"/>
+              </tr>
+            </table>
+          </div>
+        </xsl:if>
 					
 					<xsl:if test="notes != ''">
 				<div class="block" id="NotesBlock">
@@ -1726,7 +1841,7 @@
 																<xsl:if test="position() mod 2 != 1">
 																	<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 																</xsl:if>
-																<td colspan="4" class="notesrow">
+																<td colspan="6" class="notesrow">
 																	<xsl:call-template name="PreserveLineBreaks">
 																		<xsl:with-param name="text" select="notes" />
 																	</xsl:call-template>
@@ -1940,7 +2055,7 @@
 										<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 									</xsl:if>
 									<td></td>
-									<td style="text-align:center;" valign="top">S: <xsl:value-of select="ranges/short" /></td>
+									<td style="text-align:center;" valign="top">K: <xsl:value-of select="ranges/short" /></td>
 									<td style="text-align:center;" valign="top">M: <xsl:value-of select="ranges/medium" /></td>
 									<td style="text-align:center;" valign="top">L: <xsl:value-of select="ranges/long" /></td>
 									<td style="text-align:center;" valign="top">E: <xsl:value-of select="ranges/extreme" /></td>
@@ -2008,7 +2123,7 @@
 										<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
 									</xsl:if>
 									<td></td>
-									<td style="text-align:center;" valign="top">S: <xsl:value-of select="ranges/short" /></td>
+									<td style="text-align:center;" valign="top">K: <xsl:value-of select="ranges/short" /></td>
 									<td style="text-align:center;" valign="top">M: <xsl:value-of select="ranges/medium" /></td>
 									<td style="text-align:center;" valign="top">L: <xsl:value-of select="ranges/long" /></td>
 									<td style="text-align:center;" valign="top">E: <xsl:value-of select="ranges/extreme" /></td>
@@ -2895,6 +3010,58 @@
 								</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
+
+  <xsl:template name="aiprograms">
+    <xsl:for-each select="aiprograms/aiprogram">
+      <xsl:sort select="name"/>
+      <tr>
+        <xsl:if test="position() mod 2 != 1">
+          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+        </xsl:if>
+        <td width="40%">
+          <xsl:value-of select="name"/>
+          <xsl:if test="extra != ''">
+            (<xsl:value-of select="extra"/>)
+          </xsl:if>
+          <xsl:if test="programoptions/programoption">
+            (<xsl:for-each
+             select="programoptions/programoption">
+              <xsl:sort select="name"/>
+              <xsl:value-of select="name"/>
+              <xsl:if test="rating &gt; 0">
+                <xsl:text> </xsl:text>
+                <xsl:value-of
+									select="rating"/>
+              </xsl:if>
+              <xsl:if test="position() != last()">; </xsl:if>
+            </xsl:for-each>)
+          </xsl:if>
+        </td>
+        <td width="40%">
+          <xsl:if test="requiresprogram != ''">
+            <xsl:value-of select="requiresprogram"/>
+          </xsl:if>
+        </td>
+        <td width="20%" style="text-align:center;">
+          <xsl:value-of select="source"/>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="page"/>
+        </td>
+      </tr>
+      <xsl:if test="notes != ''">
+        <tr>
+          <xsl:if test="position() mod 2 != 1">
+            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+          </xsl:if>
+          <td colspan="4" class="notesrow">
+            <xsl:call-template name="PreserveLineBreaks">
+              <xsl:with-param name="text" select="notes"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
 	
 	<xsl:template name="martialarts">
 		<xsl:for-each select="martialarts/martialart">
@@ -2993,7 +3160,7 @@
 										<strong>SM</strong>
 									</td>
 									<td width="7%" style="text-align:center;">
-										<strong>Seats</strong>
+										<strong>Sitze</strong>
 									</td>
 									<td width="6%" style="text-align:center;">
 										<strong>G-Stuf.</strong>

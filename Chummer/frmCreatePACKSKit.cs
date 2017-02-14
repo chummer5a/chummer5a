@@ -43,13 +43,13 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
 			// Make sure the kit and file name fields are populated.
-			if (txtName.Text == "")
+			if (string.IsNullOrEmpty(txtName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 
-			if (txtFileName.Text == "")
+			if (string.IsNullOrEmpty(txtFileName.Text))
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -175,7 +175,7 @@ namespace Chummer
 						if (objQuality.Type == QualityType.Positive)
 						{
 							objWriter.WriteStartElement("quality");
-							if (objQuality.Extra != "")
+							if (!string.IsNullOrEmpty(objQuality.Extra))
 								objWriter.WriteAttributeString("select", objQuality.Extra);
 							objWriter.WriteValue(objQuality.Name);
 							objWriter.WriteEndElement();
@@ -195,7 +195,7 @@ namespace Chummer
 						if (objQuality.Type == QualityType.Negative)
 						{
 							objWriter.WriteStartElement("quality");
-							if (objQuality.Extra != "")
+							if (!string.IsNullOrEmpty(objQuality.Extra))
 								objWriter.WriteAttributeString("select", objQuality.Extra);
 							objWriter.WriteValue(objQuality.Name);
 							objWriter.WriteEndElement();
@@ -214,7 +214,7 @@ namespace Chummer
 			{
 				int intNuyenBP = Convert.ToInt32(_objCharacter.NuyenBP);
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-					intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.Instance.CultureInfo) / 2.0);
+					intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.InvariantCultureInfo) / 2.0);
 				objWriter.WriteElementString("nuyenbp", intNuyenBP.ToString());
 			}
 
@@ -223,39 +223,39 @@ namespace Chummer
 			{
 				// <skills>
 				objWriter.WriteStartElement("skills");
-				
-				//TODO: Figure out what this did?
-				// Active Skills.
-				//foreach (Skill objSkill in _objCharacter.Skills)
-				//{
-				//	if (!objSkill.KnowledgeSkill && !objSkill.IsGrouped && objSkill.Rating > 0)
-				//	{
-				//		// <skill>
-				//		objWriter.WriteStartElement("skill");
-				//		objWriter.WriteElementString("name", objSkill.Name);
-				//		objWriter.WriteElementString("rating", objSkill.Rating.ToString());
-				//		if (objSkill.Specialization != "")
-				//			objWriter.WriteElementString("spec", objSkill.Specialization);
-				//		// </skill>
-				//		objWriter.WriteEndElement();
-				//	}
-				//}  
 
-				// Skill Groups.
-				//foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-				//{
-				//	if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
-				//	{
-				//		// <skillgroup>
-				//		objWriter.WriteStartElement("skillgroup");
-				//		objWriter.WriteElementString("name", objSkillGroup.Name);
-				//		objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
-				//		// </skillgroup>
-				//		objWriter.WriteEndElement();
-				//	}
-				//}
-				// </skills>
-				objWriter.WriteEndElement();
+                //TODO: Figure out what this did?
+                // Active Skills.
+                //foreach (Skill objSkill in _objCharacter.Skills)
+                //{
+                //	if (!objSkill.KnowledgeSkill && !objSkill.IsGrouped && objSkill.Rating > 0)
+                //	{
+                //		// <skill>
+                //		objWriter.WriteStartElement("skill");
+                //		objWriter.WriteElementString("name", objSkill.Name);
+                //		objWriter.WriteElementString("rating", objSkill.Rating.ToString());
+                //		if (!string.IsNullOrEmpty(objSkill.Specialization))
+                //			objWriter.WriteElementString("spec", objSkill.Specialization);
+                //		// </skill>
+                //		objWriter.WriteEndElement();
+                //	}
+                //}  
+
+                // Skill Groups.
+                //foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
+                //{
+                //	if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
+                //	{
+                //		// <skillgroup>
+                //		objWriter.WriteStartElement("skillgroup");
+                //		objWriter.WriteElementString("name", objSkillGroup.Name);
+                //		objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
+                //		// </skillgroup>
+                //		objWriter.WriteEndElement();
+                //	}
+                //}
+                // </skills>
+                objWriter.WriteEndElement();
 			}
 
 			// Export Knowledge Skills.
@@ -272,7 +272,7 @@ namespace Chummer
 						objWriter.WriteStartElement("skill");
 						objWriter.WriteElementString("name", objSkill.Name);
 						objWriter.WriteElementString("rating", objSkill.Rating.ToString());
-						if (objSkill.Specialization != "")
+						if (!string.IsNullOrEmpty(objSkill.Specialization))
 							objWriter.WriteElementString("spec", objSkill.Specialization);
 						objWriter.WriteElementString("category", objSkill.SkillCategory);
 						// </skill>
@@ -320,7 +320,7 @@ namespace Chummer
 				foreach (Spell objSpell in _objCharacter.Spells)
 				{
 					objWriter.WriteStartElement("spell");
-					if (objSpell.Extra != "")
+					if (!string.IsNullOrEmpty(objSpell.Extra))
 						objWriter.WriteAttributeString("select", objSpell.Extra);
 					objWriter.WriteValue(objSpell.Name);
 					objWriter.WriteEndElement();
@@ -449,7 +449,7 @@ namespace Chummer
 					objWriter.WriteStartElement("lifestyle");
 					objWriter.WriteElementString("name", objLifestyle.Name);
 					objWriter.WriteElementString("months", objLifestyle.Months.ToString());
-					if (objLifestyle.BaseLifestyle != "")
+					if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
 					{
 						// This is an Advanced Lifestyle, so write out its properties.
 						objWriter.WriteElementString("cost", objLifestyle.Cost.ToString());
@@ -694,12 +694,12 @@ namespace Chummer
 			objStream.Close();
 
 			MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 		#endregion
 
@@ -721,7 +721,7 @@ namespace Chummer
 					// <gear>
 					objWriter.WriteStartElement("gear");
 					objWriter.WriteStartElement("name");
-					if (objGear.Extra != "")
+					if (!string.IsNullOrEmpty(objGear.Extra))
 						objWriter.WriteAttributeString("select", objGear.Extra);
 					objWriter.WriteValue(objGear.Name);
 					objWriter.WriteEndElement();
@@ -744,9 +744,9 @@ namespace Chummer
 		{
 			int intWidth = Math.Max(lblNameLabel.Width, lblFileNameLabel.Width);
 			txtName.Left = lblNameLabel.Left + intWidth + 6;
-			txtName.Width = this.Width - txtName.Left - 19;
+			txtName.Width = Width - txtName.Left - 19;
 			txtFileName.Left = lblFileNameLabel.Left + intWidth + 6;
-			txtFileName.Width = this.Width - txtFileName.Left - 19;
+			txtFileName.Width = Width - txtFileName.Left - 19;
 		}
 		#endregion
 	}

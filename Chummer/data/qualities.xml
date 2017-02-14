@@ -846,7 +846,9 @@
 			<name>My Country, Right or Wrong</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>AP</source>
 			<page>17</page>
 		</quality>
@@ -1658,7 +1660,9 @@
 			<name>Scorched</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>SR5</source>
 			<page>83</page>
 		</quality>
@@ -1759,7 +1763,9 @@
 			<name>Social Stress</name>
 			<karma>-8</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>SR5</source>
 			<page>85</page>
@@ -2535,7 +2541,9 @@
 			<name>Disgraced</name>
 			<karma>2</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -2915,7 +2923,10 @@
 			<name>Sensei</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selectcontact />
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>149</page>
 		</quality>
@@ -3347,7 +3358,9 @@
 			<name>Big Regret</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>153</page>
@@ -3475,7 +3488,9 @@
 			<name>Day Job (10 hrs)</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<forbidden>
 				<oneof>
@@ -3491,7 +3506,9 @@
 			<name>Day Job (20 hrs)</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<forbidden>
 				<oneof>
@@ -3507,7 +3524,9 @@
 			<name>Day Job (40 hrs)</name>
 			<karma>-15</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<forbidden>
 				<oneof>
@@ -3589,7 +3608,9 @@
 			<name>Driven</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>154</page>
@@ -3599,7 +3620,9 @@
 			<name>Emotional Attachment</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>154</page>
 		</quality>
@@ -3623,7 +3646,9 @@
 			<name>Flashbacks I</name>
 			<karma>-7</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>155</page>
@@ -3633,7 +3658,9 @@
 			<name>Flashbacks II</name>
 			<karma>-15</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<nomission />
 			<source>RF</source>
 			<page>155</page>
@@ -4764,7 +4791,9 @@
 			<name>Signature</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>159</page>
 		</quality>
@@ -5810,6 +5839,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+      <metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<id>556c2599-ae97-44ff-98aa-442af1c9c6d4</id>
@@ -6747,7 +6777,7 @@
 						<quality>Infected: Wendigo</quality>
 					</oneof>
 				</required>
-				<value>-10</value>
+				<value>10</value>
 			</costdiscount>
 			<source>RF</source>
 			<page>119</page>
@@ -6909,6 +6939,7 @@
 				<oneof>
 					<quality>Feathers</quality>
 					<quality>Scales</quality>
+					<quality>Unusual Hair</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -7052,6 +7083,11 @@
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
+			<forbidden>
+				<oneof>
+					<quality>Mood Hair</quality>
+				</oneof>
+			</forbidden>
 			<source>RF</source>
 			<page>122</page>
 			<metagenetic>yes</metagenetic>
@@ -7262,7 +7298,7 @@
 					</replaceattribute>
 					<replaceattribute>
 						<name>CHA</name>
-						<min>1</min>
+						<min>3</min>
 						<max>9</max>
 					</replaceattribute>
 				</replaceattributes>
@@ -9076,7 +9112,7 @@
 						<quality>Mystic Adept</quality>
 					</oneof>
 				</required>
-				<discount>-10</discount>
+				<value>-10</value>
 			</costdiscount>
 			<category>Positive</category>
 			<bonus>
@@ -9235,7 +9271,7 @@
 						<quality>Mystic Adept</quality>
 					</oneof>
 				</required>
-				<discount>-10</discount>
+				<value>-10</value>
 			</costdiscount>
 			<category>Positive</category>
 			<bonus>
@@ -9604,6 +9640,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+          <metatype>Human</metatype>
 					<metatypecategory>Metasapient</metatypecategory>
 					<metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -9629,6 +9666,262 @@
 			<page>140</page>
 		</quality>
 		<quality>
+			<id>3c746778-bec5-4b9b-a1a4-62ac6eb98342</id>
+			<name>Infected: Sukuyan (Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>27</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Salt">Dietary Requirement</power>
+					<power select="Wood">Vulnerability</power>
+				</critterpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HT</source>
+			<page>127</page>
+		</quality>
+		<quality>
+			<id>735aee59-2236-43e4-b618-9b9923513597</id>
+			<name>Infected: Sukuyan (Non-Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<replaceattributes>
+					<replaceattribute>
+						<name>BOD</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>AGI</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>REA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>STR</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>WIL</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>LOG</name>
+						<min>1</min>
+						<max>6</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>INT</name>
+						<min>1</min>
+						<max>7</max>
+					</replaceattribute>
+					<replaceattribute>
+						<name>CHA</name>
+						<min>1</min>
+						<max>8</max>
+					</replaceattribute>
+				</replaceattributes>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+			<critterpowers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power>Dual Natured</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Salt">Dietary Requirement</power>
+				<power select="Wood">Vulnerability</power>
+			</critterpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+          <metatype>Human</metatype>
+					<metatypecategory>Metasapient</metatypecategory>
+					<metatypecategory>Shapeshifter</metatypecategory>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed Combat</useskill>
+					<accuracy>Physical</accuracy>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HT</source>
+			<page>127</page>
+		</quality>
+		<quality>
 			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
 			<name>Infected: Wendigo</name>
 			<contributetolimit>no</contributetolimit>
@@ -9642,7 +9935,7 @@
 						<quality>Mystic Adept</quality>
 					</oneof>
 				</required>
-				<discount>-10</discount>
+				<value>-10</value>
 			</costdiscount>
 			<bonus>
 				<enableattribute>
@@ -9790,26 +10083,6 @@
 		<!-- End Region -->
 		<!-- Region Data Trails-->
 		<!--Region Data Trails Positive Qualities -->
-		<quality>
-			<id>5878014A-B7FB-45BC-859A-A22F907B0EA8</id>
-			<name>Chatty</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>1</value>
-					<condition>Limited to Communication via AR or VR</condition>
-				</limitmodifier>
-			</bonus>
-			<required>
-				<oneof>
-					<metatype>A.I.</metatype>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>146</page>
-		</quality>
 		<quality>
 			<id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
 			<name>Data Anomaly</name>
@@ -10115,9 +10388,42 @@
 			<id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
 			<name>Exceptional Entity</name>
 			<karma>25</karma>
-			<implemented>False</implemented>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>INT</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>WIL</name>
+					<max>3</max>
+				</specificattribute>
+				<specificattribute>
+					<name>DEP</name>
+					<max>99</max>
+				</specificattribute>
+				<selectattributes>
+					<selectattribute>
+						<excludeattribute>EDG</excludeattribute>
+						<excludeattribute>MAG</excludeattribute>
+						<excludeattribute>RES</excludeattribute>
+						<excludeattribute>DEP</excludeattribute>
+						<excludeattribute>BOD</excludeattribute>
+						<excludeattribute>AGI</excludeattribute>
+						<excludeattribute>STR</excludeattribute>
+						<excludeattribute>REA</excludeattribute>
+						<max>96</max>
+					</selectattribute>
+				</selectattributes>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>
@@ -10147,7 +10453,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<selecttext />
+				<selectinherentaiprogram />
 			</bonus>
 			<required>
 				<oneof>
@@ -10357,7 +10663,7 @@
 		<!-- Region Negative AI Qualities -->
 		<quality>
 			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
-			<name>Corruptor</name>
+			<name>Corrupter</name>
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
@@ -10396,6 +10702,7 @@
 					<name>ESS</name>
 					<val>-1</val>
 				</specificattribute>
+				<selecttext />
 			</bonus>
 			<required>
 				<oneof>
@@ -10410,7 +10717,9 @@
 			<name>Persnickety Renter</name>
 			<karma>-6</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>A.I.</metatype>
@@ -10434,6 +10743,7 @@
 			<page>152</page>
 		</quality>
 		<!-- End Region-->
+    <!-- End Region -->
 		<!-- Region Chrome Flesh -->
 		<!--Region Chrome Flesh Positive Qualities -->
 		<quality>
@@ -10504,6 +10814,12 @@
 			<category>Positive</category>
 			<bonus>
 				<prototypetranshuman>1</prototypetranshuman>
+        <selectquality>
+          <quality>Wanted</quality>
+          <quality>Allergy (Common, Mild)</quality>
+          <quality>Astral Beacon</quality>
+          <quality>Insomnia (Basic)</quality>
+        </selectquality>
 			</bonus>
 			<source>CF</source>
 			<page>54</page>
@@ -11042,6 +11358,15 @@
 		<!-- End Region -->
 		<!-- End Region -->
 		<!-- Region Howling Shadows -->
+    <quality>
+      <id>e132257f-14d8-4e5a-9f20-ae6af29649d5</id>
+      <name>Latent Dracomorphosis</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>HS</source>
+      <page>164</page>
+    </quality>
 		<quality>
 			<id>3a8006d6-72c2-4655-9200-45ec21cad760</id>
 			<name>Dracoform (Eastern Drake)</name>
@@ -11089,6 +11414,7 @@
 					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Claws</name>
@@ -11147,6 +11473,7 @@
 					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Horns</name>
@@ -11213,6 +11540,7 @@
 					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Tail</name>
@@ -11275,6 +11603,7 @@
 					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Fangs</name>
@@ -11290,6 +11619,290 @@
 			<source>HS</source>
 			<page>163</page>
 		</quality>
+		<!-- End Region -->
+		<!-- Region Cutting Aces -->
+		<!-- Region Positive Qualities -->
+		<quality>
+			<id>e1662684-d100-439b-9719-ba6a9e594e95</id>
+			<name>Alibi</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>8c3408e1-0161-40a8-88c7-a920437bdb5e</id>
+			<name>Closer</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>d11a5ccd-f48b-46ed-89cc-4580a62c63ad</id>
+			<name>Cynic</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>919cc565-a5b6-4eda-addb-afa2e293af24</id>
+			<name>Empathic Listener</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<swapskillattribute>
+					<attribute>INT</attribute>
+					<limittoskill>Etiquette</limittoskill>
+				</swapskillattribute>
+			</bonus>
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>42664f89-f8f1-4ccb-bd95-06ef0e451d47</id>
+			<name>Good Looking and Knows It</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>96ab453c-6a4a-4f53-8553-1b9cf272af72</id>
+			<name>Groupthink</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>150</page>
+		</quality>
+		<quality>
+			<id>2c1aff52-95e2-43f5-98ea-c653c66b7ee7</id>
+			<name>Honest Face</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>bf5ea495-0b6d-4ce5-87a8-3de0c43b7be6</id>
+			<name>Innocuous</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>41416949-62eb-4638-9457-fd7e833cea58</id>
+			<name>Master Debater</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<swapskillspecattribute>
+					<attribute>LOG</attribute>
+					<limittoskill>Negotiation</limittoskill>
+					<spec>Diplomacy</spec>
+				</swapskillspecattribute>
+			</bonus>
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>f138a414-f318-4404-a0a3-b7aaec022317</id>
+			<name>Memory Palace</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus>
+				<memory>1</memory>
+			</bonus>
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>38bb885a-0cb4-43f2-a3a0-3d46a87455d0</id>
+			<name>Method Actor</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>1ef1c539-9873-4bcb-bbb0-cff114e02375</id>
+			<name>Mnemonic Vault</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<quality>Memory Palace</quality>
+				</oneof>
+			</required>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>8e0dd838-dbc4-4e5c-a0f1-e3ade21338a6</id>
+			<name>Watch the Suit</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<!-- End Region -->
+		<!-- Region Negative Qualities -->
+		<quality>
+			<id>74c43bb0-5eef-4100-80b4-f80bd901866a</id>
+			<name>Alpha Junkie</name>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>d9f0f912-fc95-4267-bed2-8d3fcc67846b</id>
+			<name>Designated Omega</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus>
+				<specificskill>
+					<name>Leadership</name>
+					<bonus>-2</bonus>
+				</specificskill>
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
+			<name>Dishevelled</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>93bdc421-a7c8-44e9-9f6a-9c316638c889</id>
+			<name>Favored (Common Target, Biased)</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>4de3693d-687e-4d49-a2f9-b9f6bd21aa91</id>
+			<name>Favored (Common Target, Outspoken)</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>3fdb7c0d-ddaa-4f70-ae04-1f5a8e4a50c5</id>
+			<name>Favored (Common Target, Fanatic)</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>7d8b0ea0-dead-41f9-b409-9e10b9d63728</id>
+			<name>Favored (Specific Target, Biased)</name>
+			<karma>-3</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>9920918e-dfd3-4a19-96b6-59ddebc8b286</id>
+			<name>Favored (Specific Target, Outspoken)</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>276403f7-ebb9-45dc-bfaf-868ddad16afa</id>
+			<name>Favored (Specific Target, Fanatic)</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>85aeb12b-e630-4ea8-87b8-283be9d14234</id>
+			<name>One Born Every Minute</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>7653cadb-0092-4a94-9a17-9329fb4f6041</id>
+			<name>Social Appearance Anxiety</name>
+			<karma>-3</karma>
+			<limit>3</limit>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>c41e83a2-1a36-4b97-b286-5fbc6510d3d7</id>
+			<name>The Goat</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<quality>
+			<id>106cc6bf-ba42-457e-9451-92ea2da38fbd</id>
+			<name>Ugly And Doesn't Care</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<val>-1</val>
+					<max>-1</max>
+				</specificattribute>
+			</bonus>
+			<source>CA</source>
+			<page>152</page>
+		</quality>
+		<!-- End Region -->
 		<!-- End Region -->
 	</qualities>
 </chummer>

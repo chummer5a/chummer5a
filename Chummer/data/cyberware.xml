@@ -363,8 +363,11 @@
 			<allowgear>
 				<gearcategory>Vision Devices</gearcategory>
 			</allowgear>
+			<allowsubsystems>
+				<category>Eyeware</category>
+			</allowsubsystems>
 			<subsystems>
-				<subsystem>Eyeware</subsystem>
+				<subsystem>Image Link</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>453</page>
@@ -490,8 +493,11 @@
 			<capacity>Rating * 4</capacity>
 			<avail>Rating * 3</avail>
 			<cost>FixedValues(3000,4500,7500,11000)</cost>
+			<allowsubsystems>
+				<category>Earware</category>
+			</allowsubsystems>
 			<subsystems>
-				<subsystem>Earware</subsystem>
+				<subsystem>Sound Link</subsystem>
 			</subsystems>
 			<source>SR5</source>
 			<page>453</page>
@@ -806,12 +812,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -833,12 +841,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -859,12 +869,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -885,12 +897,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -911,12 +925,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -937,12 +953,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -963,12 +981,14 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -989,12 +1009,14 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Headware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1016,12 +1038,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1043,12 +1067,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1069,12 +1095,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1095,12 +1123,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1121,12 +1151,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1147,12 +1179,14 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1173,12 +1207,14 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Bodyware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1199,12 +1235,13 @@
 					<physical>1</physical>
 				</conditionmonitor>
 			</bonus>
-			<subsystems>
-				<subsystem>Headware</subsystem>
-				<subsystem>Cyberlimb Enhancement</subsystem>
-				<subsystem>Cyberlimb Accessory</subsystem>
-				<subsystem>Cyber Implant Weapon</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Headware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+			</allowsubsystems>
 			<source>SR5</source>
 			<page>456</page>
 		</cyberware>
@@ -1230,6 +1267,11 @@
 			<rating>MaximumSTR</rating>
 			<minrating>MinimumSTR</minrating>
 			<ess>0</ess>
+			<forbidden>
+				<oneof>
+					<metatype>Pixie</metatype>
+				</oneof>
+			</forbidden>
 			<capacity>[0]</capacity>
 			<avail>+Rating - MinRating</avail>
 			<cost>(Rating - MinRating) * 5000</cost>
@@ -2198,7 +2240,7 @@
 			<name>Small LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.05</ess>
-			<capacity>1</capacity>
+			<capacity>[1]</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
 			<source>CF</source>
@@ -2209,7 +2251,7 @@
 			<name>Medium LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.1</ess>
-			<capacity>2</capacity>
+			<capacity>[2]</capacity>
 			<avail>4</avail>
 			<cost>500</cost>
 			<source>CF</source>
@@ -2555,6 +2597,7 @@
 			<capacity>[5]</capacity>
 			<avail>8</avail>
 			<cost>8000</cost>
+			<addvehicle>Remote Cyberhand</addvehicle>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2765,6 +2808,14 @@
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Headware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+			</allowsubsystems>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2784,6 +2835,9 @@
 			<id>b4394ee8-0490-4a56-8b30-8503351a3c58</id>
 			<name>Liminal Body, Centaur</name>
 			<category>Cyberlimb</category>
+			<limbslot>leg</limbslot>
+			<limbslotcount>2</limbslotcount>
+			<inheritattributes />
 			<ess>3</ess>
 			<capacity>80</capacity>
 			<avail>12</avail>
@@ -2791,19 +2845,50 @@
 			<bonus>
 				<movementpercent>100</movementpercent>
 			</bonus>
-			<allowgear>
-				<gearcategory>Sensors</gearcategory>
-			</allowgear>
 			<subsystems>
-				<subsystem>Cyberlimb</subsystem>
+				<subsystem>Centaur Full Leg</subsystem>
+				<subsystem>Centaur Full Leg</subsystem>
+				<subsystem>Centaur Full Leg</subsystem>
+				<subsystem>Centaur Full Leg</subsystem>
 			</subsystems>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
 		<cyberware>
-			<id>6ea02e91-9787-4a9d-ad6f-5e1af6b54bdb</id>
-			<name>Liminal Body, Wheeled</name>
+			<id>8af5027d-a504-484e-8089-c542a95d4831</id>
+			<name>Centaur Full Leg</name>
+			<hide />
 			<category>Cyberlimb</category>
+			<limbslot>leg</limbslot>
+			<ess>3</ess>
+			<capacity>20</capacity>
+			<avail>12</avail>
+			<cost>0</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
+			<bonus>
+				<conditionmonitor>
+					<physical>1</physical>
+				</conditionmonitor>
+			</bonus>
+			<allowsubsystems>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+				<category>Headware</category>
+			</allowsubsystems>
+			<source>CF</source>
+			<page>87</page>
+		</cyberware>
+		<cyberware>
+			<id>6ea02e91-9787-4a9d-ad6f-5e1af6b54bdb</id>
+			<name>Liminal Body, Wheeled (Full)</name>
+			<category>Cyberlimb</category>
+			<limbslot>leg</limbslot>
+			<limbslotcount>2</limbslotcount>
 			<ess>2.5</ess>
 			<capacity>40</capacity>
 			<avail>8</avail>
@@ -2814,13 +2899,23 @@
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>
+			<allowsubsystems>
+				<category>Headware</category>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+			</allowsubsystems>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
 		<cyberware>
 			<id>e2aedbc2-188e-4efb-9616-bd271d9a9122</id>
-			<name>Liminal Body, Tank</name>
+			<name>Liminal Body, Tank (Full)</name>
 			<category>Cyberlimb</category>
+			<limbslot>leg</limbslot>
+			<limbslotcount>2</limbslotcount>
 			<ess>3</ess>
 			<capacity>60</capacity>
 			<avail>12R</avail>
@@ -2828,6 +2923,14 @@
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>
+			<allowsubsystems>
+				<category>Headware</category>
+				<category>Bodyware</category>
+				<category>Cosmetic Enhancement</category>
+				<category>Cyberlimb Enhancement</category>
+				<category>Cyberlimb Accessory</category>
+				<category>Cyber Implant Weapon</category>
+			</allowsubsystems>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
@@ -3573,8 +3676,17 @@
 			<name>Stirrup Interface</name>
 			<category>Special Biodrone Cyberware</category>
 			<rating>3</rating>
-			<ess>3.2 + Rating</ess>
+			<ess>2.2 + Rating</ess>
 			<capacity>0</capacity>
+      <bonus>
+        <initiative precedence="0">FixedValues(3,6,9)</initiative>
+        <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
+        <skillwire>Rating * 2</skillwire>
+        <specificattribute>
+          <name precedence="0">REA</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
 			<avail>FixedValues(15R,21R,28R)</avail>
 			<cost>FixedValues(45000,135000,220000)</cost>
 			<source>HS</source>

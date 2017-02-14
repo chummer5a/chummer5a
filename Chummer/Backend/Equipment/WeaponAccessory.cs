@@ -9,33 +9,33 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Weapon Accessory.
 	/// </summary>
-	public class WeaponAccessory
-	{
+	public class WeaponAccessory : INamedItemWithGuid
+    {
 		private Guid _guiID = new Guid();
 		private readonly Character _objCharacter;
 		private XmlNode _nodAllowGear;
 		private List<Gear> _lstGear = new List<Gear>();
 		private Weapon _objParent;
-		private string _strName = "";
-		private string _strMount = "";
-		private string _strExtraMount = "";
-		private string _strRC = "";
-		private string _strDamage = "";
-		private string _strDamageType = "";
-		private string _strDamageReplace = "";
-		private string _strFireMode = "";
-		private string _strFireModeReplace = "";
-		private string _strAPReplace = "";
-		private string _strAP = "";
-		private string _strConceal = "";
-		private string _strAvail = "";
-		private string _strCost = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strNotes = "";
-		private string _strAltName = "";
-		private string _strAltPage = "";
-		private string _strDicePool = "";
+		private string _strName = string.Empty;
+		private string _strMount = string.Empty;
+		private string _strExtraMount = string.Empty;
+		private string _strRC = string.Empty;
+		private string _strDamage = string.Empty;
+		private string _strDamageType = string.Empty;
+		private string _strDamageReplace = string.Empty;
+		private string _strFireMode = string.Empty;
+		private string _strFireModeReplace = string.Empty;
+		private string _strAPReplace = string.Empty;
+		private string _strAP = string.Empty;
+		private string _strConceal = string.Empty;
+		private string _strAvail = string.Empty;
+		private string _strCost = string.Empty;
+		private string _strSource = string.Empty;
+		private string _strPage = string.Empty;
+		private string _strNotes = string.Empty;
+		private string _strAltName = string.Empty;
+		private string _strAltPage = string.Empty;
+		private string _strDicePool = string.Empty;
 		private int _intAccuracy = 0;
 		private int _intRating = 0;
 		private int _intRCGroup = 0;
@@ -46,12 +46,12 @@ namespace Chummer.Backend.Equipment
 		private bool _blnIncludedInWeapon = false;
 		private bool _blnInstalled = true;
 		private int _intAccessoryCostMultiplier = 1;
-		private string _strExtra = "";
+		private string _strExtra = string.Empty;
 		private int _intRangeBonus = 0;
 		private int _intSuppressive = 0;
 		private int _intFullBurst = 0;
-		private string _strAddMode = "";
-		private string _strAmmoReplace = "";
+		private string _strAddMode = string.Empty;
+		private string _strAmmoReplace = string.Empty;
 		private int _intAmmoBonus = 0;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -67,39 +67,74 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
 		/// <param name="intRating">Rating of the Weapon Accessory.</param>
-		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string[] strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlAccessory, TreeNode objNode, Tuple<string, string> strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
 		{
-			_strName = objXmlAccessory["name"].InnerText;
-			_strMount = strMount[0];
-            _strExtraMount = strMount[1];
+            objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
+            _strMount = strMount.Item1;
+            _strExtraMount = strMount.Item2;
             _intRating = intRating;
-			_strAvail = objXmlAccessory["avail"].InnerText;
-			_strCost = objXmlAccessory["cost"].InnerText;
-			_strSource = objXmlAccessory["source"].InnerText;
-			_strPage = objXmlAccessory["page"].InnerText;
+            objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
+            // Check for a Variable Cost.
+            if (blnSkipCost)
+                _strCost = "0";
+            else if (objXmlAccessory["cost"] != null)
+            {
+                if (objXmlAccessory["cost"].InnerText.StartsWith("Variable"))
+                {
+                    int intMin = 0;
+                    int intMax = 0;
+                    string strCost = objXmlAccessory["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString();
+                    }
+                }
+                else
+                    _strCost = objXmlAccessory["cost"].InnerText;
+            }
+
+            objXmlAccessory.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlAccessory.TryGetStringFieldQuickly("page", ref _strPage);
 			_nodAllowGear = objXmlAccessory["allowgear"];
-			objXmlAccessory.TryGetField("rc", out _strRC, "");
-			objXmlAccessory.TryGetField("rcdeployable", out _blnDeployable);
-			objXmlAccessory.TryGetField("rcgroup", out _intRCGroup);
-			objXmlAccessory.TryGetField("conceal", out _strConceal, "");
-			objXmlAccessory.TryGetField("ammoslots", out _intAmmoSlots);
-			objXmlAccessory.TryGetField("ammoreplace", out _strAmmoReplace, "");
-			objXmlAccessory.TryGetField("accuracy", out _intAccuracy);
-			objXmlAccessory.TryGetField("dicepool", out _strDicePool,"");
-			objXmlAccessory.TryGetField("damagetype", out _strDamageType,"");
-			objXmlAccessory.TryGetField("damage", out _strDamage, "");
-			objXmlAccessory.TryGetField("damagereplace", out _strDamageReplace, "");
-			objXmlAccessory.TryGetField("firemode", out _strFireMode, "");
-			objXmlAccessory.TryGetField("firemodereplace", out _strFireModeReplace, "");
-			objXmlAccessory.TryGetField("ap", out _strAP,"");
-			objXmlAccessory.TryGetField("apreplace", out _strAPReplace,"");
-			objXmlAccessory.TryGetField("addmode", out _strAddMode,"");
-			objXmlAccessory.TryGetField("fullburst", out _intFullBurst);
-			objXmlAccessory.TryGetField("suppressive", out _intSuppressive);
-			objXmlAccessory.TryGetField("rangebonus", out _intRangeBonus);
-			objXmlAccessory.TryGetField("extra", out _strExtra, "");
-			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
-			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
+			objXmlAccessory.TryGetStringFieldQuickly("rc", ref _strRC);
+			objXmlAccessory.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
+			objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
+			objXmlAccessory.TryGetStringFieldQuickly("conceal", ref _strConceal);
+			objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+			objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
+			objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+			objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
+			objXmlAccessory.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
+			objXmlAccessory.TryGetStringFieldQuickly("damage", ref _strDamage);
+			objXmlAccessory.TryGetStringFieldQuickly("damagereplace", ref _strDamageReplace);
+			objXmlAccessory.TryGetStringFieldQuickly("firemode", ref _strFireMode);
+			objXmlAccessory.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
+			objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
+			objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
+			objXmlAccessory.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+			objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
+			objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+			objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
+			objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
+			objXmlAccessory.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+			objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
 
             // Add any Gear that comes with the Weapon Accessory.
             if (objXmlAccessory["gears"] != null && blnCreateChildren)
@@ -108,7 +143,7 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlAccessoryGear in objXmlAccessory.SelectNodes("gears/usegear"))
                 {
                     intRating = 0;
-                    string strForceValue = "";
+                    string strForceValue = string.Empty;
                     if (objXmlAccessoryGear.Attributes["rating"] != null)
                         intRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
                     if (objXmlAccessoryGear.Attributes["select"] != null)
@@ -167,7 +202,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
 			objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
 			objWriter.WriteElementString("conceal", _strConceal);
-			if (_strDicePool != "")
+			if (!string.IsNullOrEmpty(_strDicePool))
 				objWriter.WriteElementString("dicepool", _strDicePool);
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
@@ -224,41 +259,37 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCopy">Whether another node is being copied.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_strMount = objNode["mount"].InnerText;
-			objNode.TryGetField("extramount", out _strExtraMount, "");
-			_strRC = objNode["rc"].InnerText;
-			objNode.TryGetField("rating", out _intRating,0);
-			objNode.TryGetField("rcgroup", out _intRCGroup, 0);
-			objNode.TryGetField("accuracy", out _intAccuracy, 0);
-			objNode.TryGetField("rating", out _intRating, 0);
-			objNode.TryGetField("rating", out _intRating, 0);
-			objNode.TryGetField("conceal", out _strConceal, "0");
-			objNode.TryGetField("rcdeployable", out _blnDeployable);
-			_strAvail = objNode["avail"].InnerText;
-			_strCost = objNode["cost"].InnerText;
-			_blnIncludedInWeapon = Convert.ToBoolean(objNode["included"].InnerText);
-			objNode.TryGetField("installed", out _blnInstalled, true);
-			try
-			{
-				_nodAllowGear = objNode["allowgear"];
-			}
-			catch
-			{
-			}
-			_strSource = objNode["source"].InnerText;
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+            }
+            else
+            {
+                _guiID = Guid.Parse(objNode["guid"].InnerText);
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("mount", ref _strMount);
+            objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
+            objNode.TryGetStringFieldQuickly("rc", ref _strRC);
+			objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+			objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
+			objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+			objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+			objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
+			objNode.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
+			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+			_nodAllowGear = objNode["allowgear"];
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
 
-			objNode.TryGetField("page", out _strPage, "0");
-			objNode.TryGetField("dicepool", out _strDicePool, "0");
-			
-			if (objNode.InnerXml.Contains("ammoslots"))
-			{
-				objNode.TryGetField("ammoslots", out _intAmmoSlots, 0);  //TODO: Might work if 0 -> 1
-			}
+			objNode.TryGetStringFieldQuickly("page", ref _strPage);
+			objNode.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
 
+            objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
 
-			if (objNode.InnerXml.Contains("<gears>"))
+            if (objNode.InnerXml.Contains("<gears>"))
 			{
 				XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
 				foreach (XmlNode nodChild in nodChildren)
@@ -281,8 +312,8 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 			}
-			objNode.TryGetField("notes", out _strNotes, "");
-			objNode.TryGetField("discountedcost", out _blnDiscountCost, false);
+			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -290,53 +321,24 @@ namespace Chummer.Backend.Equipment
 				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + _strName + "\"]");
 				if (objAccessoryNode != null)
 				{
-					if (objAccessoryNode["translate"] != null)
-						_strAltName = objAccessoryNode["translate"].InnerText;
-					if (objAccessoryNode["altpage"] != null)
-						_strAltPage = objAccessoryNode["altpage"].InnerText;
+                    objAccessoryNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objAccessoryNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 			}
-			if (objNode["damage"] != null)
-			{
-				_strDamage = objNode["damage"].InnerText;
-			}
-			if (objNode["damagetype"] != null)
-			{
-				_strDamageType = objNode["damagetype"].InnerText;
-			}
-			if (objNode["damagereplace"] != null)
-			{
-				_strDamageReplace = objNode["damagereplace"].InnerText;
-			}
-			if (objNode["firemode"] != null)
-			{
-				_strFireMode = objNode["firemode"].InnerText;
-			}
-			if (objNode["firemodereplace"] != null)
-			{
-				_strFireModeReplace = objNode["firemodereplace"].InnerText;
-			}
-
-			if (objNode["ap"] != null)
-			{
-				_strAP = objNode["ap"].InnerText;
-			}
-			if (objNode["apreplace"] != null)
-			{
-				_strAPReplace = objNode["apreplace"].InnerText;
-			}
-			objNode.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
-			objNode.TryGetField("addmode", out _strAddMode);
-			objNode.TryGetField("fullburst", out _intFullBurst,0);
-			objNode.TryGetField("suppressive", out _intSuppressive,0);
-			objNode.TryGetField("rangebonus", out _intRangeBonus,0);
-			objNode.TryGetField("extra", out _strExtra,"");
-			objNode.TryGetField("ammobonus", out _intAmmoBonus,0);
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-			}
+            objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            objNode.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
+            objNode.TryGetStringFieldQuickly("damagereplace", ref _strDamageReplace);
+            objNode.TryGetStringFieldQuickly("firemode", ref _strFireMode);
+            objNode.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
+            objNode.TryGetStringFieldQuickly("ap", ref _strAP);
+            objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
+			objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
+			objNode.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+			objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
+			objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+			objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
+			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+			objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
 		}
 
 		/// <summary>
@@ -559,11 +561,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+				if (!string.IsNullOrEmpty(_strAltName))
+					return _strAltName;
 
-				return strReturn;
+				return _strName;
 			}
 		}
 
@@ -574,9 +575,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = DisplayNameShort;
-
-				return strReturn;
+				return DisplayNameShort;
 			}
 		}
 
@@ -651,15 +650,15 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strConceal = "";
+					string strConceal = string.Empty;
 					string strCostExpression = _strConceal;
 
 					strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strConceal);
-					double dblConceal = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					double dblConceal = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intReturn = Convert.ToInt32(dblConceal);
 				}
-				else if (_strConceal != "")
+				else if (!string.IsNullOrEmpty(_strConceal))
 				{
 					intReturn = Convert.ToInt32(_strConceal);
 				}
@@ -742,11 +741,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
+				if (!string.IsNullOrEmpty(_strAltPage))
+					return _strAltPage;
 
-				return strReturn;
+				return _strPage;
 			}
 			set
 			{
@@ -808,8 +806,8 @@ namespace Chummer.Backend.Equipment
 			{
 				// If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
 				
-				string strCalculated = "";
-				string strReturn = "";
+				string strCalculated = string.Empty;
+				string strReturn = string.Empty;
 
 				if (_strAvail.Contains("Rating"))
 				{
@@ -817,7 +815,7 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strAvail = "";
+					string strAvail = string.Empty;
 					string strAvailExpr = _strAvail;
 
 					if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
@@ -832,18 +830,16 @@ namespace Chummer.Backend.Equipment
 				else
 				{
 					// Just a straight cost, so return the value.
-					string strAvail = "";
 					if (_strAvail.Contains("F") || _strAvail.Contains("R"))
 					{
-						strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
-						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + strAvail;
+						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
 					}
 					else
 						strCalculated = Convert.ToInt32(_strAvail).ToString();
 				}
 
 				int intAvail = 0;
-				string strAvailText = "";
+				string strAvailText = string.Empty;
 				if (strCalculated.Contains("F") || strCalculated.Contains("R"))
 				{
 					strAvailText = strCalculated.Substring(strCalculated.Length - 1);
@@ -930,7 +926,7 @@ namespace Chummer.Backend.Equipment
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-				string strCost = "";
+				string strCost = string.Empty;
 				string strCostExpression = _strCost;
 
 				strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
@@ -939,7 +935,7 @@ namespace Chummer.Backend.Equipment
 				intReturn = (Convert.ToInt32(nav.Evaluate(xprCost).ToString()) * _objParent.CostMultiplier);
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
 				// Add in the cost of any Gear the Weapon Accessory has attached to it.
 				foreach (Gear objGear in _lstGear)
@@ -964,20 +960,20 @@ namespace Chummer.Backend.Equipment
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-					string strCost = "";
+					string strCost = string.Empty;
 					string strCostExpression = _strCost;
 
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					strCost = strCost.Replace("Weapon Cost", _objParent.Cost.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
 					intReturn = Convert.ToInt32(dblCost);
 				}
 				else
 					intReturn = Convert.ToInt32(_strCost) * _objParent.CostMultiplier;
 
 				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
+					intReturn = intReturn * 9 / 10;
 
 				return intReturn;
 			}
@@ -990,12 +986,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intReturn = 0;
+				if (!string.IsNullOrEmpty(_strDicePool))
+					return Convert.ToInt32(_strDicePool);
 
-				if (_strDicePool != string.Empty)
-					intReturn = Convert.ToInt32(_strDicePool);
-
-				return intReturn;
+				return 0;
 			}
 		}
 

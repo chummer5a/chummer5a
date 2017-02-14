@@ -50,8 +50,10 @@
             this.cboCategory = new System.Windows.Forms.ComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cmdOKAdd = new System.Windows.Forms.Button();
+            this.lblKarma = new System.Windows.Forms.Label();
+            this.lblKarmaLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudCritterPowerRating)).BeginInit();
             this.SuspendLayout();
             // 
@@ -296,6 +298,25 @@
             this.cmdOKAdd.UseVisualStyleBackColor = true;
             this.cmdOKAdd.Click += new System.EventHandler(this.cmdOKAdd_Click);
             // 
+            // lblKarma
+            // 
+            this.lblKarma.AutoSize = true;
+            this.lblKarma.Location = new System.Drawing.Point(409, 219);
+            this.lblKarma.Name = "lblKarma";
+            this.lblKarma.Size = new System.Drawing.Size(43, 13);
+            this.lblKarma.TabIndex = 23;
+            this.lblKarma.Text = "[Karma]";
+            // 
+            // lblKarmaLabel
+            // 
+            this.lblKarmaLabel.AutoSize = true;
+            this.lblKarmaLabel.Location = new System.Drawing.Point(351, 219);
+            this.lblKarmaLabel.Name = "lblKarmaLabel";
+            this.lblKarmaLabel.Size = new System.Drawing.Size(40, 13);
+            this.lblKarmaLabel.TabIndex = 22;
+            this.lblKarmaLabel.Tag = "Label_Karma";
+            this.lblKarmaLabel.Text = "Karma:";
+            // 
             // frmSelectCritterPower
             // 
             this.AcceptButton = this.cmdOK;
@@ -303,6 +324,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(529, 311);
+            this.Controls.Add(this.lblKarma);
+            this.Controls.Add(this.lblKarmaLabel);
             this.Controls.Add(this.cmdOKAdd);
             this.Controls.Add(this.lblPowerPoints);
             this.Controls.Add(this.lblPowerPointsLabel);
@@ -363,7 +386,9 @@
 		private System.Windows.Forms.ComboBox cboCategory;
 		private System.Windows.Forms.Label lblPowerPoints;
 		private System.Windows.Forms.Label lblPowerPointsLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.Button cmdOKAdd;
-	}
+        private System.Windows.Forms.Label lblKarma;
+        private System.Windows.Forms.Label lblKarmaLabel;
+    }
 }

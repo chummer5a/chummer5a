@@ -66,11 +66,13 @@ namespace Chummer
 	        lstBuildMethod.Add(objPriority);
             lstBuildMethod.Add(objKarma);
             lstBuildMethod.Add(objSumtoTen);
-            cboBuildMethod.DataSource = lstBuildMethod;
+            cboBuildMethod.BeginUpdate();
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
+            cboBuildMethod.DataSource = lstBuildMethod;
 
             cboBuildMethod.SelectedValue = _objOptions.BuildMethod;
+            cboBuildMethod.EndUpdate();
             nudKarma.Value = _objOptions.BuildPoints;
             nudMaxAvail.Value = _objOptions.Availability;
 	        
@@ -80,18 +82,14 @@ namespace Chummer
 			XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
 
             // Populate the Gameplay Options list.
-            string strDefault = "";
+            string strDefault = string.Empty;
             XmlNodeList objXmlGameplayOptionList = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption");
 			
 			foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
             {
                 string strName = objXmlGameplayOption["name"].InnerText;
-                try
-                {
-                    if (objXmlGameplayOption["default"].InnerText == "yes")
-                        strDefault = strName;
-                }
-                catch { }
+                if (objXmlGameplayOption["default"]?.InnerText == "yes")
+                    strDefault = strName;
                 ListItem lstGameplay = new ListItem();
                 cboGamePlay.Items.Add(strName);
             }
@@ -140,13 +138,13 @@ namespace Chummer
 			_objCharacter.GameplayOptionQualityLimit = intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             _objCharacter.MaximumAvailability = Convert.ToInt32(nudMaxAvail.Value);
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -209,7 +207,7 @@ namespace Chummer
 
         private void frmSelectBuildMethod_Load(object sender, EventArgs e)
         {
-            this.Height = cmdOK.Bottom + 40;
+            Height = cmdOK.Bottom + 40;
             cboBuildMethod_SelectedIndexChanged(this, e);
         }
         #endregion

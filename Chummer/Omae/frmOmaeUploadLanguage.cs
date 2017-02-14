@@ -30,8 +30,8 @@ namespace Chummer
 		private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
 
 		// Error message constants.
-		private readonly string NO_CONNECTION_MESSAGE = "";
-		private readonly string NO_CONNECTION_TITLE = "";
+		private readonly string NO_CONNECTION_MESSAGE = string.Empty;
+		private readonly string NO_CONNECTION_TITLE = string.Empty;
 		private const string MESSAGE_SUCCESS = "Language file was successfully uploaded.";
 		private const string MESSAGE_UNAUTHORIZED = "You are not authorized to upload files for this language.";
 		private const string MESSAGE_INVALID_FILE = "This is not a valid Chummer language file.";
@@ -70,7 +70,7 @@ namespace Chummer
 			}
 
 			// Clear the file path field.
-			txtFilePath.Text = "";
+			txtFilePath.Text = string.Empty;
 
 			// Make sure a .chum5 file was selected.
 			if (!openFileDialog.FileName.EndsWith(".xml"))
@@ -97,7 +97,7 @@ namespace Chummer
 		private void cmdUpload_Click(object sender, EventArgs e)
 		{
 			// Make sure a file has been selected.
-			if (txtFilePath.Text == "")
+			if (string.IsNullOrEmpty(txtFilePath.Text))
 			{
 				MessageBox.Show("Please select a language file to upload.", "No Language File Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;

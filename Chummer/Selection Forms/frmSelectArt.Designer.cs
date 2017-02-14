@@ -35,7 +35,7 @@
             this.lstArt = new System.Windows.Forms.ListBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // chkLimitList
@@ -148,6 +148,6 @@
         private System.Windows.Forms.ListBox lstArt;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.ToolTip tipTooltip;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
     }
 }

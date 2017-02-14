@@ -25,9 +25,9 @@ namespace Chummer
 {
 	public partial class frmSelectProgramOption : Form
 	{
-		private string _strSelectedOption = "";
-		private string _strProgramName = "";
-		private string _strProgramCategory = "";
+		private string _strSelectedOption = string.Empty;
+		private string _strProgramName = string.Empty;
+		private string _strProgramCategory = string.Empty;
 		private List<string> _lstTags = new List<string>();
 
 		private bool _blnAddAgain = false;
@@ -81,10 +81,12 @@ namespace Chummer
 			}
 			SortListItem objSort = new SortListItem();
 			lstOption.Sort(objSort.Compare);
-			lstOptions.ValueMember = "Value";
+            lstOptions.BeginUpdate();
+            lstOptions.ValueMember = "Value";
 			lstOptions.DisplayMember = "Name";
 			lstOptions.DataSource = lstOption;
-		}
+            lstOptions.EndUpdate();
+        }
 
 		private void lstOptions_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -102,19 +104,18 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstOptions.Text != "")
+			if (!string.IsNullOrEmpty(lstOptions.Text))
 				AcceptForm();
 		}
 
 		private void lstOptions_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstOptions.Text != "")
-				AcceptForm();
-		}
+            cmdOK_Click(sender, e);
+        }
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -192,7 +193,7 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			_strSelectedOption = lstOptions.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
@@ -204,8 +205,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

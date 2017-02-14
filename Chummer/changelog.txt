@@ -1,16 +1,83 @@
-Build 189
+Build 191
 
 Application Changes:
 
-- Fixed an issue caused by missing Depth values for certain metatypes. 
-- Fixed an issue with default specialisations not translating properly. 
-- Fixed an issue that caused drones using the modification rules from Rigger 5 to lose their Armour Rating. 
-- Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus. 
+- Fixed an issue with Restricted Gear not correctly applying to weapons with attachments. 
+- Fixed an issue with the Sensor (Drone) vehicle modification that caused a crash.
+- Removed the controls for creating Stacked Foci, as their rules aren't currently in SR5. 
+- Refactored some Lifestyle calculations and properties to not read from XML; created a shim to save these values into the lifestyle and assosicated qualities during the load process for old characters.
+- Removed the ability to add Roommates to a lifestyle that's allocated as a Trust Fund lifestyle. This will not affect existing characters. 
+- Added reminder text to the LP and Cost labels for Lifestyle qualities to indicate whether a quality is Free from something or other (Usually just the Free checkbox)
+- Per errata for Run Faster, the following changes have been made:
+	- The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu.
+	- Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed.
+- Fixed an issue with moving Changelings into career mode.
+- Brought all projects to the same, .NET 4.5.2 target sku.
+- Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
+- Made a mass attempt to remove unconditional try-catch blocks because they make debugging a pain and are slower if they can be replaced by a simple conditional.
+- Updated the program's icon with 128x128 and 256x256 versions.
+- Introduced extra helper functions for options retrieval from registry values and for fast fetching of certain variable types from XML nodes.
+- Added a house rule where priority points for spells on Mystic Adepts can also be used to gain power points.
+- Added an option to allow live updating of custom data from the customdata directory. Enabling this option allows the program to load custom data from the customdata directory in a way identical that actually does not reset cached copies, but it increases load times significantly.
+- Fixed a bug where cancelling the option saving confirmation message would still save options.
+- Made performance improvements, thanks primarily to static code analysis, mainly to the load speed of characters and the skills tab (load times reduced by ca. 10-20% depending on the screen/tab).
+- Fixed a crash related to loading characters with no mugshots.
+- Fixed the bug where flipping through mugshots in career mode would change the default mugshot.
+- Updated the Updated control with code tweaks and separate buttons for downloading the latest version and installing it (the latter restarts the program).
+- Unified controls for the Most Recently Used characters lists and optimized some of the code behind maintaining them.
+- Fixed Chummer5 updater not actually updating properly for many systems.
+- Unified Attribute handling for characters into a dictionary.
+- Increased use of static functions for increased portability and performance.
+- Removed attributes and controls that were holdovers from SR4e (e.g. Response, Signal, Initiative as a separate attribute, etc.).
+- Fixed multiple minor possible crashes if data was entered in an incorrect format.
+- Removed some 4e references to Mystic Adepts having to split their magic between being an Adept and a Magician. Fixed some weird behaviour with Spirit Force maximums related to this. 
+- Fixed some issues related to localized number formats.
+- Added a basic Autosave feature to save backup files to the saves\autosave folder. By default this will save every five minutes, if the character is 'dirty', ie has had non-saved changes made.
+- Removed redundant code that caused duplication of costs for Advanced Lifestyle qualities.
+- Essence costs are now properly displayed in all forms using both the computer's localisation and rounded to the decimal points set in the options menu.
+- Fixed an issue that prevented the creation of metavariant critters. 
+- Suppressed a crash when attempting to load characters marked as UTF-16 Encoded.
+- Fixed problems related to the calculation of lifestyle quality costs for advanced lifestyles.
+- Added the ability for life module 'versions' to be filtered based on their source. Specifically, this hides the Trade School Shop version of Community College in Rigger 5 if you don't have the book enabled.
+- Fixed a logic issue with the skillgrouplevel improvement that prevented the value from defaulting to 1. 
+- Added the ability for critters to receive skill groups when created. 
+- Altered the Availability Check method when moving to Career mode to show the item that Restricted Gear was used on, if any.
+- Fixed the behaviour of FixedValues on the SelectCyberware form to work with career mode markups. 
+- Fixed the basic lifestyle form to properly populate the names. 
+- Fixed possible crashes caused by critters, metavariants, or metatypes not properly having all attributes defined.
+- Fixed cases where Essence loss would affect Depth rating in Career mode.
+- Fixed possible crash caused by changing to a metatype without a Depth rating.
+- Lifestyle Qualities now cache their source tooltip
+- Basic quality of life improvements in the Advanced Lifestyle window, such as indications for built-in qualities, displaying if a quality's cost is discounted by the lifestyle type, and disabled the delete button for free qualities. 
+- Fixed behaviour of the critter creator to properly handle knowledge skills. Fixes #1432.
+- Added method (selectquality) to provide Prototype Transhuman with the required qualities. 
+- Renamed the print strings matrixinit, matrixinitdice and matrixinitvalues to matrixarinit, matrixarinitdice and matrixarinitvalue, respectively. 
+- Added the PrimaryArm character attribute to the print method. 
 - Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
-Data Changes: 
+Data Changes:
 
-- Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
+- Removed incorrect (per RAW) Distinctive Style qualities for the Dwarf metavariants.
+- Applied missing lifestyle cost increases for the Dwarf metavariants. 
+- Fixed a crash when selecting the Pirate Captain and Urban Brawler Life Modules. 
+- Fixed the Capacity of the Directional Microphone Sensor Function to be based on Rating. 
+- Fixed the Addon Category of the Bug Promotional Pen to be Sensors, instead of Sensor Functions. 
+- Corrected the allowed subsystems for the Chemical Gland bioware.
+- Per errata for Run Faster, the following changes have been made:
+	- The Infected: Banshee quality's CHA minimum has been set to 3, instead of 1.
+	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively.
+	- The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+	- Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+- Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons. 
+- Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
+- Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
+- Fixed in incorrect ESS cost for the Stirrup Interface cyberware. 
+- Remote Cyberhand cyberware now adds a Remote Cyberhand drone, similar to the Ocular Drone.  
+- Fixed incorrect useskill settings for several exotic weapons. 
+- Fixed cost discount syntax for the Wendigo and Mutaqua qualities. 
+- Added a missing metagenic flag for the Greasy Skin quality.
+- Removed Undeducated quality from Centaurs, per undocumented Run Faster changes. 
+- Fixed incorrect pricing for the Lion's Roar cologne. 
 - Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
 
 New Strings:
@@ -19,6 +86,258 @@ New Strings:
 - Power_SortAction
 - String_PowerFilterRatingAboveZero
 - String_PowerFilterRatingZero
+- Checkbox_Option_PrioritySpellsAsAdeptPowers
+- Checkbox_Options_Live_CustomData
+- Label_SelectAdvancedLifestyle_UnusedLP
+- String_LifestyleFreeNuyen
+
+Changed Strings:
+
+- Message_NoExtraKarma
+
+Build 190
+
+Application Changes:
+
+- Fixed an issue with the Spirit Control that prevented all spirits from being available.
+- Fixed an issue with Vehicle Mod pricing for drones with 0 BOD being charged as though their body was 2, rather than 0.5.
+- Fixed missing Karma summaries for skills in Create Mode. 
+- Fixed an issue with Custom magical traditions. 
+- Fixed an issue with creating an Ally Spirit. Fixes #1308.
+- Added logic to suppress some warnings about missing books for objects that don't have a Source entry. 
+- Suppressed an error when rendering the skills display.
+- Fixed the configuration of the discountcost quality node to properly work for negative qualities and allow selecting Adept Powers for discounts.
+- Fixed an issue with searching for qualities using both the text and numerical filters. 
+- Fixed a calculation issue with Armour Encumbrance that prevented Custom Fit (Stack) items from counting properly. 
+- Added support for critter powers to cost karma.
+- Renaming an item will now prepopulate the current name. 
+- Added proper quantity listings for child items attached to gear, such as ammo in a duffel bag. 
+- Fixed an issue with checking character quality limits in Karmagen. 
+- Altered the LanguageManager GetString method to return the key string in case of failure. Should assist with troubleshooting language faults without causing hard crashes.
+- Added a dropdown on the Character Info tab to set your character's left/right-handedness.
+- Added the ability for characters to have multiple mugshots.
+- Fixed an issue where integrated cyberware/bioware subsystems and the field to determine what subsystems can be added used the same set of XML tags. This also re-allows cyberware and bioware to come with integrated subsystems.
+- Added the ability for cyberware/bioware to derive attributes from its children.
+- Added the ability for cyberlimbs to count as more than one slot (e.g. liminal body counts as two slots for Legs).
+- Corrected handling of Redliner for Liminal Body, especially Liminal Body Centaur.
+- Fixed an issue where the cost of cyberware/bioware grandchildren subsystems had their costs ignored.
+- Added code to prevent a crash if the PDF application/web browser has not been specified. 
+- Fixed an issue with Depth not updating properly when changing to and/or from a Depth-enabled metatype.
+- Fixed the metatype cost label in the sidebar not updating properly when loading characters with non-karma build methods and creating characters in life module build methods.
+- Fixed an issue with some Depth-linked improvements not being handled properly.
+- Improvements now have a "target" member string.
+- Optimized the improvement removal code for size, readability, and portability.
+- Fixed the improvement for swapping the attributes of a skill. The results of such an improvement show up in the skill's dice tooltip.
+- Added an improvement for the swapping of attributes of a skill for a particular specialization. The results of such an improvement show up in the skill's dice tooltip.
+- Corrected the Condition Monitors of vehicles to use modified values for Body and Device Rating instead of only base values.
+- Corrected the Speed and Handling of vehicles to use modified values for Body instead of only base values.
+- Corrected the Device Rating of vehicles to be generated from Pilot rating instead of a base value of 3.
+- Optimized away some leftovers from SR4a that were taking up CPU time and lines.
+- Performed minor speed optimizations related to rounding of integer division results.
+- Fixed a crash when creating a piece of cyberware at a rating above its maximum or below its minimum.
+- Fixed some validation issues when moving a character to career mode if they own items that have built-in accessories or mods that exceed the availability limit. 
+- Fixed the behaviour of the Knowledge Skill custom Improvement type to properly load existing knowledge skills. 
+- Changed the VehicleMod class to properly have a Parent Vehicle for modding purposes. In practical terms, this prevents an issue with Drone Attribute modifications not having their minimum rating set to Attribute +1.
+- Fixed the behaviour of the SelectSkill improvement to allow filtering based on multiple categories. Properly filters the behaviour of the Improved Ability power to not show Magical Active skills. 
+- Added a proof-of-concept Print-to-PDF functionality into the Print window. TODO: Progress bar for saving, configurable options for margins and such. 
+- Fixed an error that caused missing custom books to not show their code if the book was not found. 
+- Increased functionality for the Export Window; there is now a window shown that contains the exported text. You can copy this text directly into wherever you need to export it, rather than saving the file and exporting. 
+- Suppressed a crash if a character is printed that has an Exotic weapon but does not have the relevant skill for that weapon. 
+
+Data Changes:
+
+- Added missing SpellCategory improvements for the various Spellcasting foci. 
+- Altered the Sense Link critter/spirit power to properly refer to SR5 instead of Street Magic. 
+- Added missing Depth minimums for all critters. 
+- Corrected missing Capacity for the Sensor Collar from Howling Shadows. 
+- Corrected machine pistols and submachineguns to not have Under mounts. 
+- Added a missing detonator cap gear item.
+- Added missing restrictions for the Vampire and Sukuyan infected qualities. 
+- Re-added the Headware category to all cyberlimbs, per RAW.
+- Removed the Radar Sensor gear item, as there's no RAW that Radar is a valid Sensor Function in 5th Edition.
+- Corrected issues with the sourcebooks of the Keratin Control and Living Focus powers.
+- Allowed Partial Cyberskull to receive the same cyberware subsystems as a full cyberskull.
+- Liminal Body Centaur now comes with four full cyberlegs.
+- Fixed the Dual-Natured critter power to provide access to Assensing. 
+- Fixed incorrect cost discount for the Astral Hazing quality.
+- Vintage quality now properly doubles accessory cost and is mutually exclusive with electronic accessories.
+- Peak-Discharge Battery Packs no longer appear in the list of available accessories for weapons that cannot use them.
+- Added an item for an Optical Imaging Scope, just like how there is one for Optical Binoculars in the gear section.
+- Improved Range Finder now properly requires a Smartgun accessory.
+- Corrected Ammo Drone to come standard with a rating 2 Maneuvering Autosoft.
+- Added a vehicle mod for the illegal Reloading Drone autosoft for reloading forbidden weapons that costs 250.
+- Added an entry for a Smart Wig with an integrated Trode Net that costs 100 extra.
+- Added an improvement for the Intimidation limit bonus for Voice Warper.
+- Master Debater and Empathic Listener now have their effects represented in skill dice pool tooltips.
+- Cybereyes and cyberears now come standard with Image Link and Sound Link respectively.
+- Validated critters.xml against XSD style template, fixed an issue that caused sprites to not load. 
+- Fixed the ability for cyberlimbs to install Cosmetic Cyberware.
+- Fixed missing Capacity values for LED Tattoos.
+- Fixed an incorrect book and page reference for the Great Mother mentor spirit.
+- Fixed page references for the AI metatype and variants. 
+- Added an additional Export method for the JSON format; this is intended to support integration with the Roll20 character sheet created by Darkxryo on Reddit's /r/Shadowrun. For further details, please see this link: https://www.reddit.com/r/Shadowrun/comments/5ok5qe/roll20_charactersheet_chummer_import
+- Added support for using HTML in tooltips.  Currently only supported on labels, so not accessible by most user content yet. 
+
+Custom Content Additions:
+
+- Added the Radar Sensor gear item into an optional file called custom_radarsensorfunction_gear.xml, as there's no RAW that Radar is a valid Sensor Function in 5th Edition. Copy into the Data folder to use this.
+- Added an override file for preventing cyberlimbs from having Headware, called override_cyberlimbheadware_cyberware.xml. Copy into the Data folder to use this.
+
+Sheet Changes:
+
+- Added proper quantity listings for child items attached to gear in the basic Shadowrun character sheets. 
+- Added a section to the basic Shadowrun and Fancy Blocks character sheets for additional mugshots.
+
+New Strings: 
+
+- String_SkillFilterNoSkillGroup
+- String_SkillFilterBrokenSkillGroup
+- String_ExpensePurchaseCritterPower
+- Label_Handedness
+- Label_MugshotDimensions
+- Label_InitiativeDice
+
+Changed Strings: 
+
+- Label_OtherIP
+
+
+Build 189
+
+Application Changes:
+
+- Fixed an issue caused by missing Depth values for certain metatypes. 
+- Fixed an issue with default specialisations not translating properly. 
+- Fixed an issue that caused drones using the modification rules from Rigger 5 to lose their Armour Rating. 
+- Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus. 
+- Fixed an issue with printing skills not correctly showing translated strings. 
+- Added a metatype filter for selecting cyberware that will prevent Pixies from taking Customised Strength on their cyberlimbs, as it breaks everything awfully. 
+- Fixed an issue with Spell Defence Tooltips.
+- Fixed behaviour of the Change Priority Selection menu to properly preserve metavariant settings. 
+- Made minor performance improvements to the Select Gear screen.
+- Added a dedicated class, screen tab, character sheet boxes, option menu entries, a bunch of extra helper functions, and supplements to existing methods to handle AI programs and advanced programs.
+- Corrected the karma cost for increasing Depth rating to 10 + (new rating x 5) from (new rating x5).
+- Fixed an oversight where reducing essence would also lower Depth.
+- Added the ability for Talents priorities to forbid or require a specific talent entry by selected metatype, metatype category, and/or metavariant.
+- Added the ability to create AIs with priority generation.
+- Corrected a bug where critter Matrix entities would not have their physical attribute maximums forced to 0.
+- Matrix entities can now only add Essence Hole and Essence Antihole cyberware, and cannot add any other type of 'ware.
+- Added the ability for any metatype or critter to use the quality restrictions system that is used for AIs.
+- The Priority selection screen will now display the selected metatype qualities if no metavarient is selected.
+- The MainController class now inherits the CharacterShared class.
+- Added the ability for an improvement to remove the cyberware tab through the disabletab bonus (currently unused).
+- Added the ability for an improvement to add an AI program.
+- Added the ability for an improvement to add either a Common Program or a Hacking Program as an AI program.
+- Added the ability for a metatype to receive only half points from attribute priority.
+- Added the enableattribute, replaceattribute, enabletab, cyberseeker, blockskillgroupdefaulting, attributelevel, skilllevel, knowsoft and specificpower to the Custom Improvement Manager. 
+- Fixed an issue in which vehicles and weapons in creation mode wouldn't properly be marked as free. if selected to do so. 
+- Removed a segment of code from the attribute load method that caused MAG burnouts to load their base value from karma for some reason. 
+- Added a reminder to the knowledge skills section that custom skills and specializations can always be written in.
+- Implemented Drone Attribute Downgrades.
+- Fixed an issue in which skill group points would not populate properly on load for life modules.
+- Added display logic to show how many slots a given vehicle mod will consume.
+- Fixed a bug where Handling Downgrade would increase OffroadHandling instead of decrasing.
+- Fixed a Bug where Off-Road Suspension wouldn't increase OffroadHandling.
+- Added missing qualities allowed for A.I.s.
+- Restricted Quality search for A.I. characters to qualities allowed for A.I.s.
+- Added automatic typo correction for the Corrupter quality.
+- Fixed a bug, where Chummer would crash when adding an AI program with a different category selected.
+- Fixed a bug, where Karma costs for Ai programs weren't saved.
+- Gave all advanced AI programs unique UUIDs instead of all sharing one with the browse common program.
+- Added a new operation to XML node filtering, "exists", which simply checks whether a specific node exists.
+- Using Swap Quality in Career Mode now allows the use of the Don't Double Purchase/Refund optional rules for qualities. 
+- Basic lifestyle qualities are now filtered based on selected books.
+- Added filter and sort options for knowledge skills. 
+- Added some logic to prevent crashes if the Character Roster watch folder is deleted. 
+- Added drag-drop functionality to the character roster to enable more easily marking a character as a favourite.
+- Fixed an issue with life modules not properly adding qualities.
+- Fixed vehicle mod cost modifiers not being taken into account in Create mode.
+- Slighlty increased performance and portability for code related to vehicle mod costs.
+- Added a new lifestyle quality enum for Contracts and added handling code of lifestyle qualities of this enum.
+- Fixed a bug where non-Contract lifestyle qualities with a flat cost (e.g. Special Work Area) would not have their costs affected by cost multipliers (note: Extra Secure is the only multiplier that does not affect asset costs, as it is explicitly stated so in Run Faster).
+- Fixed issues related to Trust Fund covering the incorrect amount of lifestyle costs in certain scenarios involving multipliers. 
+- Fixed an issue that prevented the last knowledgskill in the Skills tab from being rendered. 
+- Added an optional rule to allow martial arts to automatically grant a free specialisation.
+- Implemented maximum Attributes for drones.
+- Added optional rule for using the maximum drone attribute rule for Pilot.
+- Variable costs are now properly supported on Armor Mods, Weapons, and Weapon Accessories.
+- Added the ability for a lifestyle quality to only modify the base cost of the lifestyle, i.e. the cost without extra entertainment assets, instead of the extra asset costs factored in.
+- Fixed a bug, where Chummer would crash when trying to add a Lifestyle quality to an advanced lifestyle on an A.I. character.
+- Added the ability to add contacts via improvements that are not read-only at character generation.
+- Gear can now have a cost based on the total cost of its children.
+- Modified the Commlink class so that it always executes the methods of its parent Gear class in its overriden methods wherever applicable (greatly improves code portability, as any changes to Gear's methods will be used by Commlink's methods).
+- Fixed a crash caused by searching for a weapon to attach to a vehicle weapon mount. 
+- Corrected A.I. quality restrictions.
+Data Changes: 
+
+- Added several cosmetic standard upgrades to vehicles from Rigger 5.0.
+- Fixed default specialisations for the Small Unit Tactics skills.
+- Fixed the ability for Pixies to receive the Assensing skill without requiring a quality like Magician.
+- Corrected the name of the Decryption and Crash hacking programs from Decrypt and Crash'.
+- Separated Autosofts into the different types detailed in the core rulebook and Rigger 5.0 instead of having them all covered under one entry.
+- Corrected the identification of complex forms for some character sheets.
+- Reconfigured programs.xml to be used for AI programs and advanced programs instead of SR4 complex forms.
+- Fixed Exceptional Entity; its "no limit on X attribute" is implemented by increasing the maximum value of that attribute by 100 (hacky, but it works).
+- Corrected Persnickety Renter to have a text field where the home device type for the quality can be specified.
+- Added AI quality restrictions to the protosapient critter entries.
+- Added entries for the AI programs and advanced programs that protosapient critters come with by default.
+- Removed the duplicate entry for the Chatty quality.
+- Updated Inherent Program quality so that it allows the player to choose a program from a list rather than type one in.
+- Updated Fragmentation quality so that it allows the player to specify the negative psychological quality that it exhibits.
+- Fixed an issue with the Santeria and Obeah traditions from Hard Targets. 
+- Altered the naming convention for traditions.xml to explicitly refer to the spirit type instead of using array enumeration to figure out what they're supposed to be. 
+- Added added MCT Roto-Drone with new stats from german Rigger 5.0 (Aspahltkrieger).
+- Added Expanded Ammunition Bay Weapon Mount addons.
+- Removed duplicate entries for the Corporation: Ares Macrotechnology and Shadow Community knowledge skills.
+- Added entries for the following languages based on Run Faster: Yiddish, Athabaskan, Anishinaabe, Iroquoian, Eskimo-Aleut, Uto-Aztecan, Zuni, Salish, Tlingit, and Tsimshianic.
+- Corrected all Corporate knowledge skills to Academic, as per Run Faster.
+- Corrected Military knowledge skill to Professional, as per core rulebook and Run Faster.
+- Added entries for the following knowledge skills from Run Faster: Farming, Foster System, Critters, Strategy, DIY, Mechanics, Fashion Design (the Professional version of Fashion), Crook Hangouts, Administration, Magical Law, Drones (removed the spec from Vehicles), Law Enforcement Procedures (separate from Security Procedures), Lone Star Procedures, Codes, Black Markets, National Threats, Government Procedures, Security Procedures, Smuggler Safehouses, Smuggler Routes, Blade Design, Gun Trivia, Magical Theory (Street), Magical Security, Megacorp Law (Street), Charity Shelters, Alchemy (Professional), Telesma, Foreign Military, NAN Military, Peacekeepers, Military Vehicles, Tir Military Vehicles, Matrix Threats, Psychology, Sociology, Philosophy, Journalism.
+- Fixed incorrect references to the Pilot Anthroform skill.
+- Fixed missing skill bonuses for the High School life module. 
+- Fixed weapon mods with useskill-reliant filtering not working for weapons without a useskill tag, but whose weapon category would be covered by the skill specified in useskill.
+- Fixed most Improvised Weapons using the Exotic Melee Weapon skill instead of the Clubs or Blades skills (Blades for weapons that can only be used by stabbing), and also fixed the Hammer/Sledgehammer and Pool Cue improvised weapons not being eligible for the Hammers and Staves specializations respectively within Clubs.
+- Implemented the Latent Dracomorphosis quality from Howling Shadows. This is achieved by using the Swap Quality function in Career Mode. 
+- Added an underbarrel grenade launcher to weapons.xml, and to the Matilda drone. 
+- Added contact types, knowledge skill specializations, and critters from Hard Targets.
+- Added entries for Fab Sensor, Fab Sensor Upkeep, Infected: Sukuyan, Corps Cadavre ritual, Zombie ritual, Máquina Conversion vehicle mod, Dynamic Tension Bow, and Collapsible Traditional Bow accessory from Hard Targets.
+- Added a weapon entry for Stimtouch Hosiery similar to how Grapple Gun adds a weapon entry.
+- Added extra filtering conditions to all Advanced Safety System accessories, Shock Pad, Concealed Quick-Draw Holster, Trigger Removal, and Smartgun System (both Internal and External) so that they do show up in even fewer invalid cases.
+- Added selection text fields to the following qualities: My Country Right or Wrong, Scorched, Social Stress, Disgraced, Sensei, Big Regret, Day Job, Driven, Emotional Attachment, Flashbacks, and Signature. Also added a contact selection field for Sensei.
+- Added content from Cutting Aces. 
+- Altered the behaviour of martial arts to only grant a free specialization if an optional rule is enabled. 
+- Added missing Active Skill specializations based on SR4a20th and rules for specializing for specific actions.
+- Added knowledge skills and knowledge skill specializations based on Market Panic and Chrome Flesh.
+- Fixed Accessories for the new Cutting Aces Weapons.
+
+New Strings:
+
+- Tip_RemainingModCapacity
+- Message_DroneIllegalDowngrade
+- String_ExpenseLearnProgram
+- Message_DeleteAIProgram
+- Checkbox_SelectAIProgram_LimitList
+- MessageTitle_SelectAIProgram_AdvancedProgramRequirement
+- Message_SelectAIProgram_AdvancedProgramRequirement
+- Title_SelectAIProgram
+- Node_SelectedAIPrograms
+- String_Requires
+- Button_AddProgram
+- Label_AIProgramsAdvancedPrograms
+- Tab_AdvancedPrograms
+- Label_Options_NewAIAdvancedProgram
+- Label_Options_NewAIProgram
+- Label_SummaryAIAdvancedPrograms
+- Label_SummaryAINormalPrograms
+- String_KnowledgeSkillFilterAll
+- String_KnowledgeSkillFilterRatingAboveZero
+- String_KnowledgeSkillFilterTotalRatingAboveZero
+- String_KnowledgeSkillFilterRatingZero
+- Treenode_Roster_FavouriteCharacters
+- Treenode_Roster_RecentCharacters
+- Treenode_Roster_WatchFolder
+- Checkbox_Option_FreeMartialArtSpecialization
+- Checkbox_Options_Dronemods_Pilot
 
 Build 188
 
@@ -5317,4 +5636,3 @@ Build 32
 - added support for Armor Modifications
 - added support for Cyberweapons
 - added support for Weapon Accessories
-

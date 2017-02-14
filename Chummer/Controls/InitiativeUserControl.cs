@@ -35,15 +35,15 @@ namespace Chummer
         /// </summary>
         public event EventHandler CurrentCharacterChanged
         {
-            add { this.chkBoxChummer.SelectedValueChanged += value; }
-            remove { this.chkBoxChummer.SelectedValueChanged -= value; }
+            add { chkBoxChummer.SelectedValueChanged += value; }
+            remove { chkBoxChummer.SelectedValueChanged -= value; }
         }
         #endregion
 
         private List<Character> characters;
         private int index;
         private int round;
-        private bool finishedCombatTurn;
+        private bool _finishedCombatTurn;
         private int totalChummersWithNoInit;
 
         /// <summary>
@@ -52,13 +52,12 @@ namespace Chummer
         public InitiativeUserControl()
         {
             InitializeComponent();
-            this.characters = new List<Character>();
-            this.lblRound.Text = this.lblRound.Text.Split(' ')[0] + " 1";
-            this.round = 1;
-            this.finishedCombatTurn = false;
+            characters = new List<Character>();
+            lblRound.Text = lblRound.Text.Split(' ')[0] + " 1";
+            round = 1;
 
             // setup the list of chummers to show 
-            this.chkBoxChummer.DisplayMember = "DisplayInit";
+            chkBoxChummer.DisplayMember = "DisplayInit";
         }
 
         #region Events
@@ -76,15 +75,15 @@ namespace Chummer
         private void btnRemove_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
             else
             {
-                int index = this.chkBoxChummer.SelectedIndex;
-                this.chkBoxChummer.Items.RemoveAt(index);
-                if (this.chkBoxChummer.Items.Count > 0)
-                    this.chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
-                this.characters.RemoveAt(index);
+                int index = chkBoxChummer.SelectedIndex;
+                chkBoxChummer.Items.RemoveAt(index);
+                if (chkBoxChummer.Items.Count > 0)
+                    chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
+                characters.RemoveAt(index);
             }
         }
 
@@ -94,10 +93,10 @@ namespace Chummer
         private void btnMinusInit1_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
-                this.ApplyInitChange(-1);
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+                ApplyInitChange(-1);
             else
                 MessageBox.Show("unable to go beyond 0");
         }
@@ -108,10 +107,10 @@ namespace Chummer
         private void btnMinus5Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll - 5 >= 0)
-                this.ApplyInitChange(-5);
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 5 >= 0)
+                ApplyInitChange(-5);
             else
                 MessageBox.Show("unable to go beyond 0");
         }
@@ -122,10 +121,10 @@ namespace Chummer
         private void btnMinus10Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
-                this.ApplyInitChange(-10);
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+                ApplyInitChange(-10);
             else
                 MessageBox.Show("unable to go beyond 0");
         }
@@ -136,10 +135,10 @@ namespace Chummer
         private void btnAdd1Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
-                this.ApplyInitChange(1);
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+                ApplyInitChange(1);
             else
                 MessageBox.Show("unable to go beyond 0");
         }
@@ -149,10 +148,10 @@ namespace Chummer
         private void btnAdd5Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
-                this.ApplyInitChange(5);
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+                ApplyInitChange(5);
             else
                 MessageBox.Show("unable to go beyond 0");
         }
@@ -163,10 +162,10 @@ namespace Chummer
         private void btnAdd10Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
-                this.ApplyInitChange(10);
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+                ApplyInitChange(10);
             else
                 MessageBox.Show("unable to go beyond 0");
         }
@@ -184,45 +183,45 @@ namespace Chummer
          */
         private void btnNext_Click(object sender, EventArgs e)
         {
-            if (this.finishedCombatTurn)
+            if (_finishedCombatTurn)
                 return; // cannot go to "next"
-            if (this.index == this.characters.Count - this.totalChummersWithNoInit)
+            if (index == characters.Count - totalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
-                this.lblRound.Text = "Round " + (this.round++ + 1);
+                lblRound.Text = "Round " + (round++ + 1);
                 // reset the the round with a minus ten on all
                 int _index = -1;
-                for (int i = 0; i < this.characters.Count; i++)
+                for (int i = 0; i < characters.Count; i++)
                 {
-                    if (this.characters[i].InitRoll > 0)
+                    if (characters[i].InitRoll > 0)
                     {
-                        this.chkBoxChummer.SelectedIndex = i;
-                        this.ApplyInitChange(-10);
+                        chkBoxChummer.SelectedIndex = i;
+                        ApplyInitChange(-10);
                         _index = i;
                     }
                 }
 
                 if (_index == -1)
-                    this.finishedCombatTurn = true;
+                    _finishedCombatTurn = true;
 
-                this.index = 0;
+                index = 0;
             }
             else
             {
                 // setup the next chummer to go
-                while (this.index < this.characters.Count && this.characters[this.index].InitRoll <= 0)
-                    this.index++;
+                while (index < characters.Count && characters[index].InitRoll <= 0)
+                    index++;
 
                 // check if there are no more chummer's which can move
-                if (this.index == this.characters.Count)
+                if (index == characters.Count)
                 {
-                    this.finishedCombatTurn = true;
-                    this.index = 0;
+                    _finishedCombatTurn = true;
+                    index = 0;
                     return; // we are finished
                 }
 
-                this.chkBoxChummer.SelectedIndex = this.index;
-                this.index = this.index + 1;
+                chkBoxChummer.SelectedIndex = index;
+                index = index + 1;
             }
         }
 
@@ -231,12 +230,12 @@ namespace Chummer
          */
         private void btnSort_Click(object sender, EventArgs e)
         {
-            this.characters = this.characters.OrderByDescending(o => o.InitRoll).ToList<Character>();
-            this.chkBoxChummer.Items.Clear();
-            foreach (Character character in this.characters)
-                this.chkBoxChummer.Items.Add(character);
+            characters = characters.OrderByDescending(o => o.InitRoll).ToList<Character>();
+            chkBoxChummer.Items.Clear();
+            foreach (Character character in characters)
+                chkBoxChummer.Items.Add(character);
 
-            this.index = 0;
+            index = 0;
         }
 
         /*
@@ -245,21 +244,21 @@ namespace Chummer
         private void btnDelay_Click(object sender, EventArgs e)
         {
             // make sure a chummer is selected
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("please select a chummer");
-            else if (this.characters[this.chkBoxChummer.SelectedIndex].InitRoll < 1)
+            else if (characters[chkBoxChummer.SelectedIndex].InitRoll < 1)
                 MessageBox.Show("unable to delay chummer with no init");
             else
             {
-                int index = this.chkBoxChummer.SelectedIndex;
-                Character character = this.characters[index];
+                int index = chkBoxChummer.SelectedIndex;
+                Character character = characters[index];
 
                 // update the position of the chummer to the next highest initative - 1 in regards to other delayed characters
                 // i.e. if the chummer delaying has 29 init and their is a chummer with 30 init, move the delayed chummer above it
-                int tempIndex = this.characters.Count - 1;
-                for (int i = 0; i < this.characters.Count; i++)
+                int tempIndex = characters.Count - 1;
+                for (int i = 0; i < characters.Count; i++)
                 {
-                    if (this.characters[i].InitRoll < this.characters[index].InitRoll && this.characters[index].Delayed)
+                    if (characters[i].InitRoll < characters[index].InitRoll && characters[index].Delayed)
                     {
                         // we have found the first (since it's sorted) chummer with a larger value init roll\
                         tempIndex = i;
@@ -267,8 +266,8 @@ namespace Chummer
                     }
                 }
 
-                this.characters.RemoveAt(index);
-                this.characters.Insert(tempIndex, character);
+                characters.RemoveAt(index);
+                characters.Insert(tempIndex, character);
                 // back up one for indexing purposes
                 this.index--;
                 ResetListBoxChummers();
@@ -282,35 +281,35 @@ namespace Chummer
         {
             // for every checked character, we re-roll init
             Random random = new Random();
-            for (int i = 0; i < this.characters.Count; i++)
+            for (int i = 0; i < characters.Count; i++)
             {
-                if (this.chkBoxChummer.CheckedIndices.Contains(i))
-                    this.characters[i].InitRoll = random.Next(this.characters[i].InitPasses, this.characters[i].InitPasses * 6) + this.characters[i].InitialInit;
+                if (chkBoxChummer.CheckedIndices.Contains(i))
+                    characters[i].InitRoll = random.Next(characters[i].InitPasses, characters[i].InitPasses * 6) + characters[i].InitialInit;
             }
 
             // query for new initiatives
-            for (int j = 0; j < this.characters.Count; j++)
+            for (int j = 0; j < characters.Count; j++)
             {
-                if (this.chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
+                if (chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
                 {
                     frmInitRoller frmHits = new frmInitRoller();
-                    frmHits.Text = "Initiative: " + this.characters[j].Name;
+                    frmHits.Text = "Initiative: " + characters[j].Name;
                     frmHits.Description = "initiative result";
-                    frmHits.Dice = this.characters[j].InitPasses;
+                    frmHits.Dice = characters[j].InitPasses;
                     frmHits.ShowDialog(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
                         return;   // we decided not to actually change the initiative
-                    this.characters[j].InitRoll = frmHits.Result + this.characters[j].InitialInit;
+                    characters[j].InitRoll = frmHits.Result + characters[j].InitialInit;
                 }
             }
 
-            this.ResetListBoxChummers();
-            this.finishedCombatTurn = false;
-            this.index = 0;
-            this.round = 1;
-            this.lblRound.Text = "Round 1";
-            this.totalChummersWithNoInit = 0;
+            ResetListBoxChummers();
+            _finishedCombatTurn = false;
+            index = 0;
+            round = 1;
+            lblRound.Text = "Round 1";
+            totalChummersWithNoInit = 0;
         }
 
         /*
@@ -320,32 +319,32 @@ namespace Chummer
         {
             // confirm if we are delaying the selected chummer, if we are, ask user if they
             // wish for the chummer to perform a delayed action
-            if (this.chkBoxChummer.SelectedIndex < 0)
+            if (chkBoxChummer.SelectedIndex < 0)
                 return;
-            int index = this.chkBoxChummer.SelectedIndex;
-            if (this.characters[index].Delayed && index != this.index)
+            int index = chkBoxChummer.SelectedIndex;
+            if (characters[index].Delayed && index != this.index)
             {
                 DialogResult result = MessageBox.Show("Would you like the chummer to perform a delayed action?", "Delayed Action", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     // un-delay character, and lock it in the current location
-                    Character character = this.characters[index];
+                    Character character = characters[index];
                     character.Delayed = false;
 
                     // place the chummer as the current chummer
-                    this.characters.RemoveAt(index);
-                    this.characters.Insert(this.index, character);
+                    characters.RemoveAt(index);
+                    characters.Insert(this.index, character);
 
                     ResetListBoxChummers();
                 }
             }
-            else if (this.characters[index].Delayed && index == this.index)
+            else if (characters[index].Delayed && index == this.index)
             {
                 // it is the chummers turn and we should just turn off the delayed action
-                Character character = this.characters[index];
+                Character character = characters[index];
                 character.Delayed = false;
-                this.characters[index] = character;
-                this.chkBoxChummer.Items[index] = this.characters[index];
+                characters[index] = character;
+                chkBoxChummer.Items[index] = characters[index];
             }
         }
 
@@ -358,19 +357,19 @@ namespace Chummer
             if (e.Button == MouseButtons.Right)
             {
                 // confirm we are selecting a chummer
-                if (this.chkBoxChummer.SelectedItem == null)
+                if (chkBoxChummer.SelectedItem == null)
                     MessageBox.Show("Please select a chummer before right-clicking");
 
                 frmInitRoller frmHits = new frmInitRoller();
-                frmHits.Dice = this.characters[this.chkBoxChummer.SelectedIndex].InitPasses;
+                frmHits.Dice = characters[chkBoxChummer.SelectedIndex].InitPasses;
                 frmHits.ShowDialog(this);
 
                 if (frmHits.DialogResult != DialogResult.OK)
                     return;   // we decided not to actually change the initiative
 
-                this.characters[this.chkBoxChummer.SelectedIndex].InitRoll = frmHits.Result;
+                characters[chkBoxChummer.SelectedIndex].InitRoll = frmHits.Result;
 
-                this.chkBoxChummer.Items[this.chkBoxChummer.SelectedIndex] = this.characters[this.chkBoxChummer.SelectedIndex];
+                chkBoxChummer.Items[chkBoxChummer.SelectedIndex] = characters[chkBoxChummer.SelectedIndex];
             }
         }
         #endregion
@@ -379,7 +378,7 @@ namespace Chummer
         /// <summary>
         /// The current character in the chain of initiatives
         /// </summary>
-        public Character CurrentCharacter { get { return this.characters[index]; } }
+        public Character CurrentCharacter { get { return characters[index]; } }
 
         /// <summary>
         /// Add's the token to the initiative chain
@@ -402,8 +401,8 @@ namespace Chummer
                 character.InitRoll = frmHits.Result + character.InitialInit;
             }
 
-            this.characters.Add(character);
-            this.chkBoxChummer.Items.Add(character);
+            characters.Add(character);
+            chkBoxChummer.Items.Add(character);
         }
 
         /*
@@ -413,20 +412,20 @@ namespace Chummer
         private void ApplyInitChange(int value)
         {
             // check if we have selected a chummer in the list
-            if (this.chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.SelectedItem == null)
                 MessageBox.Show("Please Select a Chummer to remove");
             else
             {
                 // pull the simple character out
-                int index = this.chkBoxChummer.SelectedIndex;
-                this.characters[index].InitRoll += value;
+                int index = chkBoxChummer.SelectedIndex;
+                characters[index].InitRoll += value;
 
                 // if negative or 0 init add to the count
-                if (this.characters[index].InitRoll < 1)
-                    this.totalChummersWithNoInit++;
+                if (characters[index].InitRoll < 1)
+                    totalChummersWithNoInit++;
 
-                this.ResetListBoxChummers();
-                this.chkBoxChummer.SelectedIndex = index;
+                ResetListBoxChummers();
+                chkBoxChummer.SelectedIndex = index;
             }
         }
 
@@ -435,9 +434,9 @@ namespace Chummer
          */
         private void ResetListBoxChummers()
         {
-            this.chkBoxChummer.Items.Clear();
-            foreach (Character aCharacter in this.characters)
-                this.chkBoxChummer.Items.Add(aCharacter);
+            chkBoxChummer.Items.Clear();
+            foreach (Character aCharacter in characters)
+                chkBoxChummer.Items.Add(aCharacter);
         }
         #endregion
     }

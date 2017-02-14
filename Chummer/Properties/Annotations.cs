@@ -374,6 +374,7 @@ namespace Chummer.Annotations
   /// which should not be removed and so is treated as used.
   /// </summary>
   [MeansImplicitUse(ImplicitUseTargetFlags.WithMembers)]
+  [AttributeUsage(AttributeTargets.All)]
   public sealed class PublicAPIAttribute : Attribute
   {
     public PublicAPIAttribute() { }

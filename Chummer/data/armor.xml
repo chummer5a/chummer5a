@@ -2446,6 +2446,93 @@
 			<page>185</page>
 		</armor>
 		<!-- End Region -->
+		<!-- Region Cutting Aces -->
+		<armor>
+			<id>c38ca685-f333-4529-93e8-a8248df52e64</id>
+			<name>Team Jersey (Licensed)</name>
+			<category>Specialty Armor</category>
+			<armor>8</armor>
+			<armorcapacity>8</armorcapacity>
+			<avail>4</avail>
+			<cost>750</cost>
+			<bonus>
+				<selecttext />
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Fans of Sports Team</condition>
+				</limitmodifier>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+					<condition>Rivals of Sports Team</condition>
+				</limitmodifier>
+			</bonus>
+			<source>CA</source>
+			<page>136</page>
+		</armor>
+		<armor>
+			<id>6adcc6aa-cb83-434f-b9a4-2c263f738829</id>
+			<name>Team Jersey (Unlicensed)</name>
+			<category>Specialty Armor</category>
+			<armor>6</armor>
+			<armorcapacity>6</armorcapacity>
+			<avail>2</avail>
+			<cost>500</cost>
+			<bonus>
+				<selecttext />
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Fans of Sports Team</condition>
+				</limitmodifier>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+					<condition>Rivals of Sports Team</condition>
+				</limitmodifier>
+			</bonus>
+			<source>CA</source>
+			<page>136</page>
+		</armor>
+		<armor>
+			<id>b9554fe8-fc04-4746-8f5f-32d5ee9053be</id>
+			<name>Ares Briefcase Shield</name>
+			<category>Armor</category>
+			<armor>+4</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>14R</avail>
+			<cost>1800</cost>
+			<addweapon>Ares Briefcase Shield</addweapon>
+			<source>CA</source>
+			<page>136</page>
+		</armor>
+		<armor>
+			<id>c9424dfb-1e01-4073-995a-7935efc1894d</id>
+			<name>Catsuit</name>
+			<category>Specialty Armor</category>
+			<armor>9</armor>
+			<armorcapacity>10</armorcapacity>
+			<avail>6</avail>
+			<cost>900</cost>
+			<source>CA</source>
+			<page>136</page>
+		</armor>
+		<armor>
+			<id>f22a86ba-e660-4c32-a998-d04def23d287</id>
+			<name>Scout's Tux</name>
+			<category>Specialty Armor</category>
+			<armor>8</armor>
+			<armorcapacity>6</armorcapacity>
+			<avail>10</avail>
+			<bonus>
+				<sociallimit>1</sociallimit>
+			</bonus>
+			<cost>2000</cost>
+			<source>CA</source>
+			<page>136</page>
+		</armor>
+		<!-- End Region -->
 	</armors>
 	<mods>
 		<!-- Region Shadowrun 5 -->
@@ -3136,6 +3223,32 @@
 			<cost>700</cost>
 			<source>HT</source>
 			<page>185</page>
+		</mod>
+		<!-- End Region -->
+		<!-- Region Cutting Aces -->
+		<mod>
+			<id>151d8957-aeb1-4fda-af19-35f4c9c602e1</id>
+			<name>Voidblack Coating</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>1</maxrating>
+			<armorcapacity>[6]</armorcapacity>
+			<avail>14F</avail>
+			<cost>3000</cost>
+			<source>CA</source>
+			<page>138</page>
+		</mod>
+		<mod>
+			<id>851f226f-2116-4001-8937-408d4570396e</id>
+			<name>AR Fashion</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>1</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>CA</source>
+			<page>138</page>
 		</mod>
 		<!-- End Region -->
 	</mods>

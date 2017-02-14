@@ -51,7 +51,7 @@
 			this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
 			this.lblTest = new System.Windows.Forms.Label();
 			this.lblTestLabel = new System.Windows.Forms.Label();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -387,7 +387,7 @@
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
 		private System.Windows.Forms.Label lblTest;
 		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
 	}
 }

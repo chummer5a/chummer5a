@@ -26,10 +26,10 @@ namespace Chummer
 {
     public partial class frmSelectProgram : Form
     {
-        private string _strSelectedProgram = "";
+        private string _strSelectedProgram = string.Empty;
 
 		private bool _blnAddAgain = false;
-		private string _strLimitCategory = "";
+		private string _strLimitCategory = string.Empty;
 		private readonly Character _objCharacter;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -47,10 +47,10 @@ namespace Chummer
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
         	// Load the Programs information.
@@ -136,31 +136,23 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-			try
+			if (trePrograms.SelectedNode != null && trePrograms.SelectedNode.Level > 0)
 			{
-				if (trePrograms.SelectedNode.Level > 0)
-					AcceptForm();
-			}
-			catch
-			{
+				AcceptForm();
 			}
         }
 
         private void trePrograms_DoubleClick(object sender, EventArgs e)
         {
-			try
-			{
-				if (trePrograms.SelectedNode.Level > 0)
-					AcceptForm();
-			}
-			catch
-			{
-			}
+            if (trePrograms.SelectedNode != null && trePrograms.SelectedNode.Level > 0)
+            {
+                AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -180,7 +172,7 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 			foreach (XmlNode objXmlCategory in objXmlNodeList)
 			{
-				if (_strLimitCategory == "" || _strLimitCategory == objXmlCategory.InnerText)
+				if (string.IsNullOrEmpty(_strLimitCategory) || _strLimitCategory == objXmlCategory.InnerText)
 				{
 					if (objXmlCategory.InnerText != "Skillsofts" && objXmlCategory.InnerText != "Autosoft" || (objXmlCategory.InnerText == "Skillsofts" && _blnBiowireEnabled) || (objXmlCategory.InnerText == "Autosoft" && _objCharacter.Options.TechnomancerAllowAutosoft))
 					{
@@ -242,26 +234,20 @@ namespace Chummer
 			}
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
+                if (trePrograms.SelectedNode != null)
+                {
 					trePrograms.SelectedNode = trePrograms.SelectedNode.NextVisibleNode;
 					if (trePrograms.SelectedNode == null)
 						trePrograms.SelectedNode = trePrograms.Nodes[0];
 				}
-				catch
-				{
-				}
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
+                if (trePrograms.SelectedNode != null)
+                {
 					trePrograms.SelectedNode = trePrograms.SelectedNode.PrevVisibleNode;
-					if (trePrograms.SelectedNode == null)
+					if (trePrograms.SelectedNode == null && trePrograms.Nodes.Count > 0)
 						trePrograms.SelectedNode = trePrograms.Nodes[trePrograms.Nodes.Count - 1].LastNode;
-				}
-				catch
-				{
 				}
 			}
 		}
@@ -304,7 +290,7 @@ namespace Chummer
 		private void AcceptForm()
         {
             _strSelectedProgram = trePrograms.SelectedNode.Tag.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
 		private void MoveControls()
@@ -325,8 +311,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

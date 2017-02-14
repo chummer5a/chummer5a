@@ -24,6 +24,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
 using System.ComponentModel;
+ using PdfSharp.Pdf;
 
 namespace Chummer
 {
@@ -33,7 +34,6 @@ namespace Chummer
 		private XmlDocument _objCharacterXML = new XmlDocument();
 		private string _strSelectedSheet = "Shadowrun 5";
 		private bool _blnLoading = false;
-		
 		#region Control Events
 		public frmViewer()
 		{
@@ -52,78 +52,77 @@ namespace Chummer
 			List<ListItem> lstFiles = new List<ListItem>();
 			// Populate the XSLT list with all of the XSL files found in the sheets directory.
 			string sheetsDirectoryPath = Path.Combine(Application.StartupPath, "sheets");
-			foreach (string strFile in Directory.GetFiles(sheetsDirectoryPath))
-			{
-				// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-				if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-				{
-					string strFileName = Path.GetFileNameWithoutExtension(strFile);
-					ListItem objItem = new ListItem();
-					objItem.Value = strFileName;
-					objItem.Name = strFileName;
-					lstFiles.Add(objItem);
+		    if (Directory.Exists(sheetsDirectoryPath))
+		    {
+		        foreach (string strFile in Directory.GetFiles(sheetsDirectoryPath))
+		        {
+		            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+		            if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+		            {
+		                string strFileName = Path.GetFileNameWithoutExtension(strFile);
+		                ListItem objItem = new ListItem();
+		                objItem.Value = strFileName;
+		                objItem.Name = strFileName;
+		                lstFiles.Add(objItem);
 
-					//cboXSLT.Items.Add(strFileName);
-				}
-			}
+		                //cboXSLT.Items.Add(strFileName);
+		            }
+		        }
+		    }
 
-			try
-			{
-				// Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
-					string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-					string languageDirectoryPath = Path.Combine(Application.StartupPath, "sheets", GlobalOptions.Instance.Language);
+		    // Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
+            if (GlobalOptions.Instance.Language != "en-us")
+            {
+                XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
+                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name")?.InnerText;
+                string languageDirectoryPath = Path.Combine(Application.StartupPath, "sheets", GlobalOptions.Instance.Language);
 
-					foreach (string strFile in Directory.GetFiles(languageDirectoryPath))
-					{
-						// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-						if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-						{
-							string strFileName = Path.GetFileNameWithoutExtension(strFile);
-							ListItem objItem = new ListItem();
-							objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
-							objItem.Name = strLanguage + ": " + strFileName;
-							lstFiles.Add(objItem);
-						}
-					}
-				}
-			}
-			catch
-			{
-			}
+                if (Directory.Exists(languageDirectoryPath))
+                {
+                    foreach (string strFile in Directory.GetFiles(languageDirectoryPath))
+                    {
+                        // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                        if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+                        {
+                            string strFileName = Path.GetFileNameWithoutExtension(strFile);
+                            ListItem objItem = new ListItem();
+                            objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
+                            objItem.Name = strLanguage + ": " + strFileName;
+                            lstFiles.Add(objItem);
+                        }
+                    }
+                }
+            }
 
-			try
-			{
-				// Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-				string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
-				foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
-				{
-					// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-					if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-					{
-						string strFileName = Path.GetFileNameWithoutExtension(strFile);
-						ListItem objItem = new ListItem();
-						objItem.Value = Path.Combine("omae", strFileName);
-						objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
-						lstFiles.Add(objItem);
-					}
-				}
-			}
-			catch
-			{
-			}
+            // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
+            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+		    if (Directory.Exists(omaeDirectoryPath))
+		    {
+		        foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
+		        {
+		            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+		            if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+		            {
+		                string strFileName = Path.GetFileNameWithoutExtension(strFile);
+		                ListItem objItem = new ListItem();
+		                objItem.Value = Path.Combine("omae", strFileName);
+		                objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
+		                lstFiles.Add(objItem);
+		            }
+		        }
+		    }
 
-			cboXSLT.ValueMember = "Value";
+            cboXSLT.BeginUpdate();
+            cboXSLT.ValueMember = "Value";
 			cboXSLT.DisplayMember = "Name";
 			cboXSLT.DataSource = lstFiles;
 
 			cboXSLT.SelectedValue = _strSelectedSheet;
 			// If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-			if (cboXSLT.Text == "")
+			if (string.IsNullOrEmpty(cboXSLT.Text))
 				cboXSLT.SelectedValue = "Shadowrun 5";
-			GenerateOutput();
+            cboXSLT.EndUpdate();
+            GenerateOutput();
 			_blnLoading = false;
 		}
 
@@ -150,31 +149,28 @@ namespace Chummer
 		private void cmdSaveHTML_Click(object sender, EventArgs e)
 		{
 			// Save the generated output as HTML.
-			string strSaveFile = "";
 			SaveFileDialog1.Filter = "HTML Page|*.htm";
 			SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsHtml");
 			SaveFileDialog1.ShowDialog();
-			strSaveFile = SaveFileDialog1.FileName;
+            string strSaveFile = SaveFileDialog1.FileName;
 
-			if (strSaveFile == "")
+			if (string.IsNullOrEmpty(strSaveFile))
 				return;
 
 			TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8);
 			objWriter.Write(webBrowser1.DocumentText);
 			objWriter.Close();
-
 		}
 
-		private void cmdSaveXML_Click(object sender, EventArgs e)
+		private void tsSaveAsXml_Click(object sender, EventArgs e)
 		{
 			// Save the printout XML generated by the character.
-			string strSaveFile = "";
 			SaveFileDialog1.Filter = "XML File|*.xml";
 			SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsXml");
 			SaveFileDialog1.ShowDialog();
-			strSaveFile = SaveFileDialog1.FileName;
+			string strSaveFile = SaveFileDialog1.FileName;
 
-			if (strSaveFile == "")
+			if (string.IsNullOrEmpty(strSaveFile))
 				return;
 
 			_objCharacterXML.Save(strSaveFile);
@@ -182,14 +178,17 @@ namespace Chummer
 
 		private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			// Remove the mugshots directory when the form closes.
-			try
+            // Remove the mugshots directory when the form closes.
+            string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+            if (Directory.Exists(mugshotsDirectoryPath))
 			{
-				string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
-                Directory.Delete(mugshotsDirectoryPath, true);
-			}
-			catch
-			{
+			    try
+			    {
+                    Directory.Delete(mugshotsDirectoryPath, true);
+                }
+			    catch (IOException)
+			    {
+			    }
 			}
 
 			// Clear the reference to the character's Print window.
@@ -207,22 +206,30 @@ namespace Chummer
 		/// </summary>
 		private void GenerateOutput()
 		{
-			XslCompiledTransform objXSLTransform = new XslCompiledTransform();
-			try
-			{
-				objXSLTransform.Load(Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl"));
-			}
-			catch(Exception ex)
-			{
-				string strReturn = string.Format("Error attempting to load {0}\n", _strSelectedSheet);
-				Log.Enter(strReturn);
-				Log.Error("ERROR Message = " + ex.Message);
-				strReturn += ex.Message;
-				MessageBox.Show(strReturn);
-				return;
-			}
+		    string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
+		    if (!File.Exists(strXslPath))
+		    {
+                string strReturn = string.Format("File not found when attempting to load {0}\n", _strSelectedSheet);
+                Log.Enter(strReturn);
+                MessageBox.Show(strReturn);
+                return;
+            }
+		    XslCompiledTransform objXSLTransform = new XslCompiledTransform();
+		    try
+		    {
+		        objXSLTransform.Load(strXslPath);
+		    }
+		    catch (Exception ex)
+		    {
+		        string strReturn = string.Format("Error attempting to load {0}\n", _strSelectedSheet);
+		        Log.Enter(strReturn);
+		        Log.Error("ERROR Message = " + ex.Message);
+		        strReturn += ex.Message;
+		        MessageBox.Show(strReturn);
+		        return;
+		    }
 
-			MemoryStream objStream = new MemoryStream();
+		    MemoryStream objStream = new MemoryStream();
 			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
 
 			objXSLTransform.Transform(_objCharacterXML, null, objWriter);
@@ -308,14 +315,29 @@ namespace Chummer
 			int intWidth = cmdPrint.Width;
 			cmdPrint.AutoSize = false;
 			cmdPrint.Width = intWidth + 20;
+			cmdSaveHTML.Left = cmdPrint.Right + 6;
 		}
-		#endregion
 
-		#region Properties
-		/// <summary>
-		/// Character's XmlDocument.
-		/// </summary>
-		public XmlDocument CharacterXML
+        private void tsSaveAsPdf_Click(object sender, EventArgs e)
+        {
+            // Save the generated output as PDF.
+            SaveFileDialog1.Filter = "PDF|*.pdf";
+            SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsPdf");
+            SaveFileDialog1.ShowDialog();
+            string strSaveFile = SaveFileDialog1.FileName;
+
+			if (strSaveFile == "")
+				return;
+			PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
+			objpdf.Save(strSaveFile);
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Character's XmlDocument.
+        /// </summary>
+        public XmlDocument CharacterXML
 		{
 			set
 			{
@@ -363,5 +385,5 @@ namespace Chummer
 					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
 			}
 		}
-	}
+    }
 }

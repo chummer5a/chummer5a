@@ -15,7 +15,7 @@ namespace Chummer.Skills
 		{
 			return skill.DisplayName;
 		}
-		
+
 		public static string GetDisplayCategory(this Skill skill)
 		{
 			return skill.DisplayCategory;

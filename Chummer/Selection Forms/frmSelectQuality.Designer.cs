@@ -44,7 +44,7 @@
             this.chkMetagenetic = new System.Windows.Forms.CheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkNotMetagenetic = new System.Windows.Forms.CheckBox();
             this.nudMinimumBP = new System.Windows.Forms.NumericUpDown();
             this.nudValueBP = new System.Windows.Forms.NumericUpDown();
@@ -374,7 +374,7 @@
 		private System.Windows.Forms.CheckBox chkMetagenetic;
 		private System.Windows.Forms.TextBox txtSearch;
 		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkNotMetagenetic;
         private System.Windows.Forms.NumericUpDown nudMinimumBP;
         private System.Windows.Forms.NumericUpDown nudValueBP;

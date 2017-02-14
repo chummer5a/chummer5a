@@ -41,7 +41,7 @@
             this.lblChoice2 = new System.Windows.Forms.Label();
             this.cboChoice1 = new System.Windows.Forms.ComboBox();
             this.cboChoice2 = new System.Windows.Forms.ComboBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // lblDisadvantage
@@ -222,6 +222,6 @@
 		private System.Windows.Forms.Label lblChoice2;
 		private System.Windows.Forms.ComboBox cboChoice1;
 		private System.Windows.Forms.ComboBox cboChoice2;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 	}
 }

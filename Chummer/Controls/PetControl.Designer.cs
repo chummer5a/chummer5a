@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.txtContactName = new System.Windows.Forms.TextBox();
 			this.cmdDelete = new System.Windows.Forms.Button();
 			this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -187,7 +187,7 @@
 		#endregion
 
 		private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 		private System.Windows.Forms.PictureBox imgLink;
 		private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
 		private System.Windows.Forms.TextBox txtContactName;

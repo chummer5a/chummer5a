@@ -902,7 +902,7 @@
 			<name>Extra Secure</name>
 			<lp>1</lp>
 			<category>Positive</category>
-			<multiplier>20</multiplier>
+			<multiplierbaseonly>20</multiplierbaseonly>
 			<source>SR5</source>
 			<page>370</page>
 		</quality>
@@ -1399,6 +1399,107 @@
 			<lp>0</lp>
 			<source>SFB</source>
 			<page>20</page>
+		</quality>
+	<!-- End Region -->
+	<!-- Region Cutting Aces -->
+		<quality>
+			<id>b722458f-b0af-45c4-b5c7-b3c7e2ef48f6</id>
+			<name>AR Fashion Subscription, Casual</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>25</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>fc4d530e-a832-4437-b022-cdf35a22fc78</id>
+			<name>AR Fashion Subscription, Business</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>100</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>1607bf0d-1a75-4582-8496-ffd92289f2b3</id>
+			<name>AR Fashion Subscription, Formal</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>500</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>da100dfd-dcaa-4b1a-a76e-ad38539612a4</id>
+			<name>AR Fashion Subscription, Designer</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>1500</cost>
+			<source>CA</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<id>190ba01c-f04e-45a8-a0d1-d6fd073d61c1</id>
+			<name>CarnivoreGold</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
+		</quality>
+		<quality>
+			<id>fe33b1e6-ad0f-44e4-b156-7c435f335682</id>
+			<name>MonaLisa</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
+		</quality>
+		<quality>
+			<id>eeb6f3b7-70b3-478b-88c6-af47bb233b44</id>
+			<name>Pheromone Detection</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
+		</quality>
+		<quality>
+			<id>7417c7e7-8940-47cf-9bd2-9f7193b5fbbf</id>
+			<name>Speech Template Comparison</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
+		</quality>
+		<quality>
+			<id>49b01e13-4228-4390-a0c3-ffb6c6276e49</id>
+			<name>Target Tracking Software</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
+		</quality>
+		<quality>
+			<id>d5239d1e-04ef-47a6-8065-a1559559a669</id>
+			<name>Thermal Mood Reading</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
+		</quality>
+		<quality>
+			<id>c5eef5c6-288a-47c0-8d2a-42353a896077</id>
+			<name>Vocal Tension Lie Detection</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<cost>250</cost>
+			<source>CA</source>
+			<page>144</page>
 		</quality>
 	<!-- End Region -->
 	</qualities>

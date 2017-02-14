@@ -21,7 +21,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-﻿using System.Runtime.InteropServices;
+ using System.Runtime;
+ using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
 ﻿using Chummer.Backend.Debugging;
@@ -31,82 +32,84 @@ namespace Chummer
 {
 	static class Program
 	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
+        private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
+	    private static Mutex _objGlobalMutex;
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
 		static void Main()
 		{
-			Stopwatch sw = Stopwatch.StartNew();
-			//If debuging and launched from other place (Bootstrap), launch debugger
-			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
-			{
-				Debugger.Launch();
-			}
-	        sw.TaskEnd("dbgchk");
-			//Various init stuff (that mostly "can" be removed as they serve 
-			//debugging more than function
+		    using (_objGlobalMutex = new Mutex(false, @"Global\" + strChummerGuid))
+		    {
+		        ProfileOptimization.SetProfileRoot(Application.StartupPath);
+		        ProfileOptimization.StartProfile("chummerprofile");
+		        Stopwatch sw = Stopwatch.StartNew();
+		        //If debuging and launched from other place (Bootstrap), launch debugger
+		        if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
+		        {
+		            Debugger.Launch();
+		        }
+		        sw.TaskEnd("dbgchk");
+		        //Various init stuff (that mostly "can" be removed as they serve 
+		        //debugging more than function
 
 
-			//Needs to be called before Log is setup, as it moves where log might be.
-			FixCwd();
+		        //Needs to be called before Log is setup, as it moves where log might be.
+		        FixCwd();
 
 
-	        sw.TaskEnd("fixcwd");
-			//Log exceptions that is caught. Wanting to know about this cause of performance
-	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
-			AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
-			
+		        sw.TaskEnd("fixcwd");
+		        //Log exceptions that is caught. Wanting to know about this cause of performance
+		        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+		        AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
 
-			sw.TaskEnd("appdomain 2");
+		        sw.TaskEnd("appdomain 2");
 
-	        string info =
-		        $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
-			
-	        sw.TaskEnd("infogen");
+		        string info =
+		            $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
+		        sw.TaskEnd("infogen");
 
-			Log.Info( info);
-			
-	        sw.TaskEnd("infoprnt");
+		        Log.Info(info);
+		        sw.TaskEnd("infoprnt");
 
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+		        Application.EnableVisualStyles();
+		        Application.SetCompatibleTextRenderingDefault(false);
 
-
-	        sw.TaskEnd("languagefreestartup");
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-			// Make sure the default language has been loaded before attempting to open the Main Form.
+		        sw.TaskEnd("languagefreestartup");
+		        LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+		        // Make sure the default language has been loaded before attempting to open the Main Form.
 
 #if !DEBUG
-			AppDomain.CurrentDomain.UnhandledException += (o, e) =>
-			{
-				Exception ex = e.ExceptionObject as Exception;
-				if(ex != null)
-					CrashHandler.WebMiniDumpHandler(ex);
+		AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+		{
+			Exception ex = e.ExceptionObject as Exception;
+			if(ex != null)
+				CrashHandler.WebMiniDumpHandler(ex);
 
-				//main.Hide();
-				//main.ShowInTaskbar = false;
-			};
+			//main.Hide();
+			//main.ShowInTaskbar = false;
+		};
 #endif
 
-	        sw.TaskEnd("Startup");
-			if (LanguageManager.Instance.Loaded)
-			{
-				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+		        sw.TaskEnd("Startup");
+		        if (LanguageManager.Instance.Loaded)
+		        {
+		            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-				frmMain main = new frmMain();
-				Application.Run(main);
-			}
-			else
-			{
-				Application.Exit();
-			}
+		            frmMain main = new frmMain();
+		            Application.Run(main);
+		        }
+		        else
+		        {
+		            Application.Exit();
+		        }
 
-			string ExceptionMap = heatmap.GenerateInfo();
-			Log.Info(ExceptionMap);
+		        Log.Info(heatmap.GenerateInfo());
+		    }
 		}
 
-		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
+		static readonly ExceptionHeatMap heatmap = new ExceptionHeatMap();
 
 		static void FixCwd()
 		{
@@ -124,5 +127,10 @@ namespace Chummer
 
 			Environment.CurrentDirectory = Application.StartupPath;
 		}
+
+	    public static Mutex GlobalChummerMutex
+	    {
+	        get { return _objGlobalMutex; }
+	    }
 	}
 }

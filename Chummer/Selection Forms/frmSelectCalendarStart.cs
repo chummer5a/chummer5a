@@ -53,7 +53,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void nudMonth_ValueChanged(object sender, EventArgs e)
@@ -94,7 +94,7 @@ namespace Chummer
 			if (intMonth > 9)
 				_intSelectedWeek++;
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()

@@ -18,6 +18,7 @@
  */
 ﻿using System;
 using System.Xml;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -54,7 +55,10 @@ namespace Chummer
 		QuickeningMetamagic = 22,
         AddPowerPoint = 23,
         AddSpecialization = 24,
-	}
+        AddAIProgram = 25,
+        AddAIAdvancedProgram = 26,
+        AddCritterPower = 27
+    }
 
 	public enum NuyenExpenseType
 	{
@@ -90,7 +94,7 @@ namespace Chummer
 		private NuyenExpenseType _objNuyenExpenseType;
 		private string _strObjectId;
 		private int _intQty = 0;
-		private string _strExtra = "";
+		private string _strExtra = string.Empty;
 
 		#region Helper Methods
 		/// <summary>
@@ -100,7 +104,7 @@ namespace Chummer
 		public KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
 		{
 			KarmaExpenseType result;
-			return KarmaExpenseType.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
+			return Enum.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
 		}
 
 		/// <summary>
@@ -110,7 +114,7 @@ namespace Chummer
 		public NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
 		{
 			NuyenExpenseType result;
-			return NuyenExpenseType.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
+			return Enum.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
 		}
 		#endregion
 
@@ -164,11 +168,15 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
-			_objKarmaExpenseType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
-			_objNuyenExpenseType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
-			_strObjectId = objNode["objectid"].InnerText;
-			_intQty = Convert.ToInt32(objNode["qty"].InnerText);
-			_strExtra = objNode["extra"].InnerText;
+            if (objNode == null)
+                return;
+            if (objNode["karmatype"] != null)
+			    _objKarmaExpenseType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
+            if (objNode["nuyentype"] != null)
+                _objNuyenExpenseType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
+            objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
+            objNode.TryGetInt32FieldQuickly("qty", ref _intQty);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
 		}
 		
 		#endregion
@@ -259,7 +267,7 @@ namespace Chummer
 		private Guid _guiID = new Guid();
 		private DateTime _datDate = new DateTime();
 		private int _intAmount = 0;
-		private string _strReason = "";
+		private string _strReason = string.Empty;
 		private ExpenseType _objExpenseType;
 		private bool _blnRefund = false;
 		private ExpenseUndo _objUndo;
@@ -358,29 +366,19 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_intAmount = Convert.ToInt32(objNode["amount"].InnerText);
-			_strReason = objNode["reason"].InnerText;
-			_objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
-			try
-			{
-				_blnRefund = Convert.ToBoolean(objNode["refund"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				if (objNode["undo"] != null)
-				{
-					_objUndo = new ExpenseUndo();
-					_objUndo.Load(objNode["undo"]);
-				}
-			}
-			catch
-			{
-			}
-		}
+			_datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            objNode.TryGetInt32FieldQuickly("amount", ref _intAmount);
+            objNode.TryGetStringFieldQuickly("reason", ref _strReason);
+            if (objNode["type"] != null)
+			    _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
+            objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
+
+            if (objNode["undo"] != null)
+            {
+                _objUndo = new ExpenseUndo();
+                _objUndo.Load(objNode["undo"]);
+            }
+        }
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.
@@ -389,7 +387,7 @@ namespace Chummer
 		public void Print(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("expense");
-			objWriter.WriteElementString("date", _datDate.ToString());
+			objWriter.WriteElementString("date", _datDate.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("amount", _intAmount.ToString());
 			objWriter.WriteElementString("reason", _strReason);
 			objWriter.WriteElementString("type", _objExpenseType.ToString());

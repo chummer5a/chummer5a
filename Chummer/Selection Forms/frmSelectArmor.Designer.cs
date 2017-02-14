@@ -57,7 +57,7 @@
 			this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
 			this.lblTest = new System.Windows.Forms.Label();
 			this.lblTestLabel = new System.Windows.Forms.Label();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.lblArmorValue = new System.Windows.Forms.Label();
 			this.lblArmorValueLabel = new System.Windows.Forms.Label();
 			this.dgvArmor = new System.Windows.Forms.DataGridView();
@@ -602,7 +602,7 @@
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
 		private System.Windows.Forms.Label lblTest;
 		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Label lblArmorValue;
         private System.Windows.Forms.Label lblArmorValueLabel;
         private System.Windows.Forms.DataGridView dgvArmor;

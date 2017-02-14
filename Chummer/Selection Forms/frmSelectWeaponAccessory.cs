@@ -18,7 +18,8 @@
  */
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+ using System.Globalization;
+ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -28,13 +29,13 @@ namespace Chummer
 {
 	public partial class frmSelectWeaponAccessory : Form
 	{
-		private string _strSelectedAccessory = "";
+		private string _strSelectedAccessory = string.Empty;
 		private int _intMarkup = 0;
 
-		private string _strAllowedMounts = "";
+		private string _strAllowedMounts = string.Empty;
 		private int _intWeaponCost = 0;
 		private int _intRating = 0;
-        private string _strCurrentWeaponName = "";
+        private string _strCurrentWeaponName = string.Empty;
 		private bool _blnAddAgain = false;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -57,10 +58,10 @@ namespace Chummer
 
 		private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
 		{
-            foreach (Label objLabel in this.Controls.OfType<Label>())
+            foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
 			List<ListItem> lstAccessories = new List<ListItem>();
@@ -72,10 +73,10 @@ namespace Chummer
 
             // Populate the Accessory list.
             string[] strAllowed = _strAllowedMounts.Split('/');
-			string strMount = "";
+			string strMount = string.Empty;
             foreach (string strAllowedMount in strAllowed)
 			{
-				if (strAllowedMount != "")
+				if (!string.IsNullOrEmpty(strAllowedMount))
 					strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
 			}
 			strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
@@ -89,7 +90,7 @@ namespace Chummer
 					{
 						if (strAllowed.Length > 1)
 						{
-							foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => strItem != ""))
+							foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
 							{
 								if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
 								{
@@ -104,7 +105,7 @@ namespace Chummer
                     if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["forbidden"]["weapondetails"], false))
+                        if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
                         {
                             goto NextItem;
                         }
@@ -112,7 +113,7 @@ namespace Chummer
                     if (objXmlAccessory["required"]?["weapondetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (!Chummer.Backend.XmlNodeExtensions.processFilterOperationNode(objXmlWeaponNode, objXmlAccessory["required"]["weapondetails"], false))
+                        if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
                         {
                             goto NextItem;
                         }
@@ -123,13 +124,13 @@ namespace Chummer
                         XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
                         //Add to set for O(N log M) runtime instead of O(N * M)
 
-                        HashSet<String> objForbiddenAccessory = new HashSet<String>();
+                        HashSet<string> objForbiddenAccessory = new HashSet<string>();
                         foreach (XmlNode node in objXmlForbiddenList)
                         {
                             objForbiddenAccessory.Add(node.InnerText);
                         }
 
-                        foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                        if (_lstAccessories.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
                         {
                             goto NextItem;
                         }
@@ -137,28 +138,23 @@ namespace Chummer
 
                     if (objXmlAccessory["required"]?["oneof"] != null)
 					{
-						boolCanAdd = false;
 						XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
 						//Add to set for O(N log M) runtime instead of O(N * M)
 
-						HashSet<String> objRequiredAccessory = new HashSet<String>();
+						HashSet<string> objRequiredAccessory = new HashSet<string>();
 						foreach (XmlNode node in objXmlRequiredList)
 						{
 							objRequiredAccessory.Add(node.InnerText);
 						}
 
-						foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
-						{
-							boolCanAdd = true;
-                            break;
-						}
+					    boolCanAdd = _lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name));
 					}
 
 					if (!boolCanAdd)
 						continue;
 					ListItem objItem = new ListItem();
-					objItem.Value = objXmlAccessory["name"].InnerText;
-					objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objXmlAccessory["name"].InnerText;
+					objItem.Value = objXmlAccessory["name"]?.InnerText;
+					objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
 					lstAccessories.Add(objItem);
                 NextItem:;
 				}
@@ -167,10 +163,12 @@ namespace Chummer
 
 			SortListItem objSort = new SortListItem();
 			lstAccessories.Sort(objSort.Compare);
-			lstAccessory.ValueMember = "Value";
+            lstAccessory.BeginUpdate();
+            lstAccessory.ValueMember = "Value";
 			lstAccessory.DisplayMember = "Name";
 			lstAccessory.DataSource = lstAccessories;
-		}
+            lstAccessory.EndUpdate();
+        }
 
 		private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -179,19 +177,18 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (lstAccessory.Text != "")
+			if (!string.IsNullOrEmpty(lstAccessory.Text))
 				AcceptForm();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void lstAccessory_DoubleClick(object sender, EventArgs e)
 		{
-			if (lstAccessory.Text != "")
-				AcceptForm();
+			cmdOK_Click(sender, e);
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -244,40 +241,43 @@ namespace Chummer
 		{
 			// Retrieve the information for the selected Accessory.
 			XmlNode objXmlAccessory = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + lstAccessory.SelectedValue + "\"]");
+		    if (objXmlAccessory == null)
+		        return;
 
 			if (objXmlAccessory.InnerXml.Contains("<rc>"))
 			{
 				lblRC.Visible = true;
 				lblRCLabel.Visible = true;
-				lblRC.Text = objXmlAccessory["rc"].InnerText;
+				lblRC.Text = objXmlAccessory["rc"]?.InnerText;
 			}
 			else
 			{
 				lblRC.Visible = false;
 				lblRCLabel.Visible = false;
 			}
-			if (Convert.ToInt32(objXmlAccessory["rating"].InnerText) > 0)
+			int intMaxRating;
+			if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out intMaxRating) && intMaxRating > 1)
 			{
 				nudRating.Enabled = true;
 				nudRating.Visible = true;
 				lblRatingLabel.Visible = true;
-				nudRating.Maximum = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
-            }
+				nudRating.Maximum = intMaxRating;
+			}
 			else
 			{
-				nudRating.Value = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
+				nudRating.Enabled = false;
 				nudRating.Visible = false;
 				lblRatingLabel.Visible = false;
 			}
 			List<string> strMounts = new List<string>();
-			foreach (string strItem in (objXmlAccessory["mount"].InnerText.Split('/')))
+			foreach (string strItem in objXmlAccessory["mount"]?.InnerText?.Split('/'))
 			{
 				strMounts.Add(strItem);
 			}
 			strMounts.Add("None");
 
 			List<string> strAllowed = new List<string>();
-			foreach (string strItem in (_strAllowedMounts.Split('/')))
+			foreach (string strItem in _strAllowedMounts.Split('/'))
 			{
 				strAllowed.Add(strItem);
 			}
@@ -285,7 +285,7 @@ namespace Chummer
 			cboMount.Items.Clear();
 			foreach (string strCurrentMount in strMounts)
 			{
-				if (strCurrentMount != "")
+				if (!string.IsNullOrEmpty(strCurrentMount))
 				{
                     foreach (string strAllowedMount in strAllowed)
                     {
@@ -309,23 +309,17 @@ namespace Chummer
             List<string> strExtraMounts = new List<string>();
             if (objXmlAccessory.InnerXml.Contains("<extramount>"))
             {
-                foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')))
+                foreach (string strItem in objXmlAccessory["extramount"]?.InnerText?.Split('/'))
                 {
                     strExtraMounts.Add(strItem);
                 }
             }
             strExtraMounts.Add("None");
 
-            List<string> strExtraAllowed = new List<string>();
-            foreach (string strItem in (_strAllowedMounts.Split('/')))
-            {
-                strExtraAllowed.Add(strItem);
-            }
-            strExtraAllowed.Add("None");
             cboExtraMount.Items.Clear();
             foreach (string strCurrentMount in strExtraMounts)
             {
-                if (strCurrentMount != "")
+                if (!string.IsNullOrEmpty(strCurrentMount))
                 {
                     foreach (string strAllowedMount in strAllowed)
                     {
@@ -345,62 +339,100 @@ namespace Chummer
                 cboExtraMount.Enabled = true;
             }
             cboExtraMount.SelectedIndex = 0;
-            if ((cboMount.SelectedItem.ToString() != "None") && (cboExtraMount.SelectedItem.ToString() != "None")
-                && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+            if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
+                && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
                 cboExtraMount.SelectedIndex += 1;
+            XPathNavigator nav = _objXmlDocument.CreateNavigator();
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvail = "";
-			string strAvailExpr = objXmlAccessory["avail"].InnerText;
-			XPathExpression xprAvail;
-			XPathNavigator nav = _objXmlDocument.CreateNavigator();
-			if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
-			{
-				strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-				// Remove the trailing character if it is "F" or "R".
-				strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-			}
-			try
-			{
-				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
-				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
-			}
-			catch
-			{
-				lblAvail.Text = objXmlAccessory["avail"].InnerText;
-			}
-			lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-			string strCost = objXmlAccessory["cost"].InnerText;
-			strCost = strCost.Replace("Weapon Cost", _intWeaponCost.ToString()).Replace("Rating", nudRating.Value.ToString());
-			if (chkFreeItem.Checked)
-				strCost = "0";
+            string strAvail = string.Empty;
+			string strAvailExpr = objXmlAccessory["avail"]?.InnerText;
+            if (!string.IsNullOrWhiteSpace(strAvailExpr))
+		    {
+                lblAvail.Text = strAvailExpr;
+		        if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" ||
+		            strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+		        {
+		            strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+		            // Remove the trailing character if it is "F" or "R".
+		            strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+		        }
+		        try
+		        {
+		            XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)));
+		            int intTmp;
+                    if (int.TryParse(nav.Evaluate(xprAvail)?.ToString(), out intTmp))
+                        lblAvail.Text = intTmp.ToString() + strAvail;
+		        }
+		        catch (XPathException)
+		        {
+		        }
+		    }
+            else
+                lblAvail.Text = "";
+            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+		    if (!chkFreeItem.Checked)
+		    {
+		        string strCost = "0";
+		        if (objXmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
+		            strCost = strCost.Replace("Weapon Cost", _intWeaponCost.ToString())
+		                .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
+		        if (strCost.StartsWith("Variable"))
+		        {
+		            int intMin = 0;
+		            int intMax = int.MaxValue;
+		            strCost = strCost.Replace("Variable", string.Empty).Trim("()".ToCharArray());
+		            if (strCost.Contains("-"))
+		            {
+		                string[] strValues = strCost.Split('-');
+		                int.TryParse(strValues[0], out intMin);
+		                int.TryParse(strValues[1], out intMax);
+		            }
+		            else
+		                int.TryParse(strCost.Replace("+", string.Empty), out intMin);
 
-			if (strCost.Contains("Variable"))
-			{
-				lblCost.Text = strCost;
-				lblTest.Text = "";
-			}
-			else
-			{
-				XPathExpression xprCost = nav.Compile(strCost);
-				int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+		            if (intMax == int.MaxValue)
+		            {
+		                lblCost.Text = $"{intMin:###,###,##0¥+}";
+		            }
+		            else
+		                lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
 
-				// Apply any markup.
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-				intCost = Convert.ToInt32(dblCost);
+		            lblTest.Text = _objCharacter.AvailTest(intMin, lblAvail.Text);
+		        }
+		        else
+		        {
+		            double dblCost = 0;
+		            try
+		            {
+		                XPathExpression xprCost = nav.Compile(strCost);
+		                dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+		            }
+		            catch (XPathException)
+		            {
+		            }
 
-				lblCost.Text = String.Format("{0:###,###,##0¥}", intCost);
-				lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
-			}
+		            // Apply any markup.
+		            dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+		            int intCost = Convert.ToInt32(dblCost);
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlAccessory["source"].InnerText);
-			string strPage = objXmlAccessory["page"].InnerText;
-			if (objXmlAccessory["altpage"] != null)
-				strPage = objXmlAccessory["altpage"].InnerText;
+		            lblCost.Text = $"{intCost:###,###,##0¥}";
+		            lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+		        }
+		    }
+		    else
+		    {
+                lblCost.Text = $"{0:###,###,##0¥}";
+                lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
+            }
+
+		    string strBookCode = objXmlAccessory["source"]?.InnerText;
+            string strBook = _objCharacter.Options.LanguageBookShort(strBookCode);
+			string strPage = objXmlAccessory["page"]?.InnerText;
+		    objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
 			lblSource.Text = strBook + " " + strPage;
 
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlAccessory["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 		}
 		#endregion
 
@@ -430,11 +462,11 @@ namespace Chummer
 		/// <summary>
 		/// Mount that was selected in the dialogue.
 		/// </summary>
-		public string[] SelectedMount
+		public Tuple<string, string> SelectedMount
 		{
 			get
 			{
-				return new string[] { cboMount.SelectedItem.ToString(), cboExtraMount.SelectedItem.ToString()};
+				return new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
 			}
 		}
 
@@ -445,7 +477,15 @@ namespace Chummer
 		{
 			get
 			{
-				return nudRating.Value.ToString();
+				if (nudRating.Enabled)
+				{
+					return nudRating.Value.ToString(GlobalOptions.CultureInfo);
+				}
+				else
+				{
+					// Display Rating for items without one as 0
+					return 0.ToString(GlobalOptions.CultureInfo);
+				}
 			}
 		}
 
@@ -545,10 +585,10 @@ namespace Chummer
         private void AcceptForm()
 		{
 			_strSelectedAccessory = lstAccessory.SelectedValue.ToString();
-			_intRating = Convert.ToInt32(nudRating.Value.ToString());
-			_intMarkup = Convert.ToInt32(nudMarkup.Value);
+            int.TryParse(nudRating.Value.ToString(GlobalOptions.CultureInfo), out _intRating);
+            int.TryParse(nudMarkup.Value.ToString(GlobalOptions.CultureInfo), out _intMarkup);
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
@@ -573,8 +613,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 
         private void cboMount_SelectedIndexChanged(object sender, EventArgs e)

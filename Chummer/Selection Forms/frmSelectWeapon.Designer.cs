@@ -67,7 +67,7 @@
 			this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
 			this.lblTest = new System.Windows.Forms.Label();
 			this.lblTestLabel = new System.Windows.Forms.Label();
-			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.lblWeaponAccuracy = new System.Windows.Forms.Label();
 			this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
 			this.dgvWeapons = new System.Windows.Forms.DataGridView();
@@ -770,7 +770,7 @@
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
 		private System.Windows.Forms.Label lblTest;
 		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Label lblWeaponAccuracy;
         private System.Windows.Forms.Label lblWeaponAccuracyLabel;
         private System.Windows.Forms.DataGridView dgvWeapons;

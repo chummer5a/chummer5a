@@ -35,7 +35,7 @@
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // cmdOKAdd
@@ -147,6 +147,6 @@
 		private System.Windows.Forms.Button cmdOK;
 		private System.Windows.Forms.Label lblSource;
 		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
+		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
 	}
 }

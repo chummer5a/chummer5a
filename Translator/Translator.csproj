@@ -8,7 +8,8 @@
     <AssemblyName>Translator</AssemblyName>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Translator</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -44,9 +45,10 @@
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>true</AutoGen>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTimeSharedInput>true</DesignTimeSharedInput>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\Settings.cs">
       <AutoGen>false</AutoGen>
@@ -76,6 +78,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

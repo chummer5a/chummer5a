@@ -26,12 +26,12 @@ namespace Chummer
 {
     public partial class frmSelectSpell : Form
     {
-        private string _strSelectedSpell = "";
+        private string _strSelectedSpell = string.Empty;
 
 		private bool _blnAddAgain = false;
 	    private bool _blnIgnoreRequirements = false;
-		private string _strLimitCategory = "";
-		private string _strForceSpell = "";
+		private string _strLimitCategory = string.Empty;
+		private string _strForceSpell = string.Empty;
 		private List<TreeNode> _lstExpandCategories;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -53,16 +53,16 @@ namespace Chummer
         private void frmSelectSpell_Load(object sender, EventArgs e)
         {
 			// If a value is forced, set the name of the spell and accept the form.
-			if (_strForceSpell != "")
+			if (!string.IsNullOrEmpty(_strForceSpell))
 			{
 				_strSelectedSpell = _strForceSpell;
-				this.DialogResult = DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
 
-			foreach (Label objLabel in this.Controls.OfType<Label>())
+			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
+					objLabel.Text = string.Empty;
 			}
 
         	// Load the Spells information.
@@ -72,7 +72,7 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 			foreach (XmlNode objXmlCategory in objXmlNodeList)
 			{
-				if (_strLimitCategory == "" || _strLimitCategory == objXmlCategory.InnerText)
+				if (string.IsNullOrEmpty(_strLimitCategory) || _strLimitCategory == objXmlCategory.InnerText)
 				{
 					TreeNode nodCategory = new TreeNode();
 					nodCategory.Tag = objXmlCategory.InnerText;
@@ -87,22 +87,19 @@ namespace Chummer
 
 			// Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is diabled.
 			chkExtended.Visible = _objCharacter.Options.ExtendAnyDetectionSpell;
-			string strAdditionalFilter = "";
+			string strAdditionalFilter = string.Empty;
 			if (_objCharacter.Options.ExtendAnyDetectionSpell)
 				strAdditionalFilter = "not(contains(name, \", Extended\"))";
 
             // Populate the Spell list.
-			if (_strLimitCategory != "")
+			if (!string.IsNullOrEmpty(_strLimitCategory))
 				objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[category = \"" + _strLimitCategory + "\" and " + strAdditionalFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
-			else
-			{
-				if (strAdditionalFilter == string.Empty)
-					objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[" + _objCharacter.Options.BookXPath() + "]");
-				else
-					objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[" + strAdditionalFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
-			}
+			else if (string.IsNullOrEmpty(strAdditionalFilter))
+                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[" + _objCharacter.Options.BookXPath() + "]");
+            else
+                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[" + strAdditionalFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
 
-			treSpells.TreeViewNodeSorter = new SortByName();
+            treSpells.TreeViewNodeSorter = new SortByName();
             treSpells.SelectedNode = treSpells.Nodes[0];
             foreach (XmlNode objXmlSpell in objXmlNodeList)
             {
@@ -171,7 +168,7 @@ namespace Chummer
                     // Add the Spell to the Category node.
                     nodParent.Nodes.Add(nodSpell);
 
-                    if (_strLimitCategory != "")
+                    if (!string.IsNullOrEmpty(_strLimitCategory))
                         nodParent.Expand();
                 }
             }
@@ -190,7 +187,7 @@ namespace Chummer
 				}
 			}
 
-			if (_strLimitCategory != "")
+			if (!string.IsNullOrEmpty(_strLimitCategory))
 				txtSearch.Enabled = false;
         }
 
@@ -204,7 +201,7 @@ namespace Chummer
 
 				string[] strDescriptorsIn = objXmlSpell["descriptor"].InnerText.Split(',');
 				
-				string strDescriptors = "";
+				string strDescriptors = string.Empty;
 				bool blnExtendedFound = false;
 				foreach (string strDescriptor in strDescriptorsIn)
 				{
@@ -254,7 +251,7 @@ namespace Chummer
                     strDescriptors += LanguageManager.Instance.GetString("String_DescAlchemicalPreparation") + ", ";
 
                 // Remove the trailing comma.
-				if (strDescriptors != string.Empty)
+				if (!string.IsNullOrEmpty(strDescriptors))
 					strDescriptors = strDescriptors.Substring(0, strDescriptors.Length - 2);
 				lblDescriptors.Text = strDescriptors;
 
@@ -309,7 +306,7 @@ namespace Chummer
 						lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
 						break;
 					default:
-						lblDamage.Text = "";
+						lblDamage.Text = string.Empty;
 						break;
 				}
 
@@ -326,13 +323,13 @@ namespace Chummer
 					int intPos = strDV.IndexOf(')') + 1;
 					string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
 					strDV = strDV.Remove(intPos, strDV.Length - intPos);
-					if (strAfter == string.Empty)
+					if (string.IsNullOrEmpty(strAfter))
 						strAfter = "+2";
 					else
 					{
 						int intValue = Convert.ToInt32(strAfter) + 2;
 						if (intValue == 0)
-							strAfter = "";
+							strAfter = string.Empty;
 						else if (intValue > 0)
 							strAfter = "+" + intValue.ToString();
 						else
@@ -439,13 +436,9 @@ namespace Chummer
 						}
 					}
 				}
-				try
+				if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0)
 				{
-					if (treSpells.SelectedNode.Level > 0)
-						AcceptForm();
-				}
-				catch
-				{
+                    AcceptForm();
 				}
 			}
 		}
@@ -454,7 +447,7 @@ namespace Chummer
         {
 	        if (treSpells.SelectedNode.Level > 0)
 	        {
-				this.ExpandedCategories = null;
+				ExpandedCategories = null;
 		        cmdOK_Click(sender, e);
 	        }
 		}
@@ -462,12 +455,12 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
 			_lstExpandCategories = null;
-			this.DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
         }
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
-			string strAdditionalFilter = "";
+			string strAdditionalFilter = string.Empty;
 			if (_objCharacter.Options.ExtendAnyDetectionSpell)
 				strAdditionalFilter = " and ((not(contains(name, \", Extended\"))))";
 			
@@ -480,7 +473,7 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 			foreach (XmlNode objXmlCategory in objXmlNodeList)
 			{
-				if (_strLimitCategory == "" || _strLimitCategory == objXmlCategory.InnerText)
+				if (string.IsNullOrEmpty(_strLimitCategory) || _strLimitCategory == objXmlCategory.InnerText)
 				{
 					TreeNode nodCategory = new TreeNode();
 					nodCategory.Tag = objXmlCategory.InnerText;
@@ -566,7 +559,7 @@ namespace Chummer
 					_lstExpandCategories.Add(objNode);
 				}
 			}
-			this.ExpandedCategories = _lstExpandCategories;
+			ExpandedCategories = _lstExpandCategories;
 			cmdOK_Click(sender, e);
 		}
 
@@ -579,26 +572,20 @@ namespace Chummer
 			}
 			if (e.KeyCode == Keys.Down)
 			{
-				try
-				{
+                if (treSpells.SelectedNode != null)
+                {
 					treSpells.SelectedNode = treSpells.SelectedNode.NextVisibleNode;
 					if (treSpells.SelectedNode == null)
 						treSpells.SelectedNode = treSpells.Nodes[0];
 				}
-				catch
-				{
-				}
 			}
 			if (e.KeyCode == Keys.Up)
 			{
-				try
-				{
+                if (treSpells.SelectedNode != null)
+                {
 					treSpells.SelectedNode = treSpells.SelectedNode.PrevVisibleNode;
-					if (treSpells.SelectedNode == null)
+					if (treSpells.SelectedNode == null && treSpells.Nodes.Count > 0)
 						treSpells.SelectedNode = treSpells.Nodes[treSpells.Nodes.Count - 1].LastNode;
-				}
-				catch
-				{
 				}
 			}
 		}
@@ -725,7 +712,7 @@ namespace Chummer
         private void AcceptForm()
         {
 			_strSelectedSpell = treSpells.SelectedNode.Tag.ToString();
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
@@ -799,8 +786,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
         }
 	}
 }

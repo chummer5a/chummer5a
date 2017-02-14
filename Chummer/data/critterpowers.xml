@@ -21,6 +21,7 @@
 	<version>0</version>
 	<categories>
 		<category>Allowed Optional Powers</category>
+    <category>Drake</category>
 		<category>Echoes</category>
 		<category>Emergent</category>
 		<category>Free Spirit</category>
@@ -37,10 +38,10 @@
 			<category>Mundane</category>
 			<type>M</type>
 			<action>Simple</action>
-			<range>MAG x 10</range>
+			<range>MAG x 50</range>
 			<duration>Always</duration>
-			<source>SM</source>
-			<page>54</page>
+			<source>SG</source>
+			<page>198</page>
 		</power>
 		<power>
 			<id>99af5d63-9f6a-4a32-9bf6-9b8500a3c64c</id>
@@ -143,6 +144,9 @@
 			<type>P</type>
 			<action>Auto</action>
 			<range>Self</range>
+			<bonus>
+				<unlockskills name="Assensing">Name</unlockskills>
+			</bonus>
 			<duration>Always</duration>
 			<source>SR5</source>
 			<page>395</page>
@@ -1635,7 +1639,7 @@
 				<livingpersona>
 					<response>1</response>
 				</livingpersona>
-				<matrixinitiativepassadd>1</matrixinitiativepassadd>
+				<matrixinitiativediceadd>1</matrixinitiativediceadd>
 			</bonus>
 			<source>SR4</source>
 			<page>244</page>
@@ -1894,7 +1898,7 @@
 				<livingpersona>
 					<response>1</response>
 				</livingpersona>
-				<matrixinitiativepassadd>1</matrixinitiativepassadd>
+				<matrixinitiativediceadd>1</matrixinitiativediceadd>
 			</bonus>
 			<source>UN</source>
 			<page>147</page>
@@ -2353,5 +2357,368 @@
 			<source>HS</source>
 			<page>186</page>
 		</power>
+    
+    <!-- Region Drake Optional Powers -->
+    <power>
+      <id>31ad1e6d-3e95-42cc-af61-5b59c8e745e6</id>
+      <name>Dracoform Mastery</name>
+      <category>Drake Optional Powers</category>
+      <type>P</type>
+      <action>Special</action>
+      <range>Self</range>
+      <duration>Instant</duration>
+      <karma>50</karma>
+      <source>HS</source>
+      <page>190</page>
+    </power>
+    <power>
+      <id>dafb81bd-7b92-487a-a739-465c69bcefcd</id>
+      <name>Adaptive Coloration</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>edd8b53d-ada6-4106-b8ef-111b5cb1fb40</id>
+      <name>Natural Weapon</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Touch</range>
+      <duration>Instant</duration>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>185aa4ff-7975-4d06-8fbc-52a07caeb9e2</id>
+      <name>Animal Control</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <duration>Sustained</duration>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>79bb0c32-985c-47c8-a6ba-a9666884599f</id>
+      <name>Compulsion</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <duration>Sustained</duration>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>afa7c218-9171-4354-b694-14b1cecd93ff</id>
+      <name>Corrosive Spit</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <duration>Special</duration>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>4aef932e-2d0f-4226-b00e-19c5398641bd</id>
+      <name>Dragonspeech</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>LOS</range>
+      <duration>Instant</duration>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>dba6b163-0466-4fa1-998a-0a5ac74edba9</id>
+      <name>Enhanced Sense (Wide Band Hearing)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <karma>3</karma>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>27488146-76d0-454c-b375-a63ccc492b70</id>
+      <name>Enhanced Sense (Low Light Vision)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <karma>3</karma>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>0ed08f78-92bc-4cb3-94aa-10311b65edd4</id>
+      <name>Enhanced Sense (Smell)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <karma>3</karma>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>ba3c227f-5436-45a7-97b3-8a56e010902a</id>
+      <name>Enhanced Sense (Thermographic Vision)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <karma>3</karma>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>dd6b0eda-44a9-4411-b471-d78e76f495fb</id>
+      <name>Fear</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <karma>9</karma>
+      <duration>Special</duration>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>eda3036b-441c-45bf-9e97-aac7cdd87054</id>
+      <name>Flight</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <karma>14</karma>
+      <bonus />
+      <!-- //TODO: Implement an improvement that adds flight -->
+      <forbidden>
+        <oneof>
+          <quality>Dracoform (Sea Drake)</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Dracoform (Western Drake)</quality>
+        </oneof>
+      </required>
+      <duration>Special</duration>
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>1c2b88fd-d2bb-4a82-ad8f-a51164ad34c9</id>
+      <name>Additional Additional Natural Weapon (Claws)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Touch</range>
+      <duration>Instant</duration>
+      <bonus />
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>b5dfe517-a722-4503-be5d-9fdd7a5653c4</id>
+      <name>Additional Natural Weapon (Fangs)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Touch</range>
+      <duration>Instant</duration>
+      <bonus />
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>82fea3f7-8e46-4a6a-a7fd-f5dc74046dac</id>
+      <name>Additional Natural Weapon (Tail)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Touch</range>
+      <duration>Instant</duration>
+      <bonus />
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>c8384789-1127-4846-bc28-3a6922b825a9</id>
+      <name>Additional Natural Weapon (Horns)</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Touch</range>
+      <duration>Instant</duration>
+      <bonus />
+      <source>HS</source>
+      <page>164</page>
+    </power>
+    <power>
+      <id>947047a8-632f-4d05-84a0-873e994be07c</id>
+      <name>Heavy Scales</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <karma>14</karma>
+      <bonus>
+        <critterpowerlevels>
+          <power>
+            <name>Hardened Armor</name>
+            <val>2</val>
+          </power>
+        </critterpowerlevels>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Dracoform (Western Drake)</quality>
+        </oneof>
+      </required>
+      <duration>Special</duration>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>aebc05d5-43a8-4710-884e-feafa108d4c2</id>
+      <name>Improved Natural Armor</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <karma>16</karma>
+      <bonus>
+        <critterpowerlevels>
+          <power>
+            <name>Hardened Armor</name>
+            <val>1</val>
+          </power>
+          <power>
+            <name>Hardened Mystic Armor</name>
+            <val>1</val>
+          </power>
+        </critterpowerlevels>
+      </bonus>
+      <duration>Special</duration>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>eda3036b-441c-45bf-9e97-aac7cdd87054</id>
+      <name>Magical Flight</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <karma>14</karma>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+        </oneof>
+      </required>
+      <duration>Special</duration>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>dfb8200f-709c-4208-a72f-5a08de55de40</id>
+      <name>Influence</name>
+      <category>Drake</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>LOS</range>
+      <duration>Instant</duration>
+      <karma>9</karma>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>61a58161-f28d-49fb-b24d-e04588f6cdd5</id>
+      <name>Noxious Breath</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <karma>9</karma>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>a28ec7c9-809e-48cc-8c28-c90634754842</id>
+      <name>Resistance to Pathogens and Toxins</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <karma>8</karma>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>283f5a56-3d53-4155-8a85-63248e4d7cdc</id>
+      <name>Tail Stinger</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <required>
+        <oneof>
+          <quality>Dracoform (Feathered Drake)</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>5a08fa16-afcb-4fc9-b772-12a8f3dc96a8</id>
+      <name>Transcend Form</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <karma>25</karma>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <power>
+      <id>96eab5ca-4d3b-4b5a-a8dd-5430c0513d31</id>
+      <name>Venom</name>
+      <category>Drake</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <karma>9</karma>
+      <source>HS</source>
+      <page>165</page>
+    </power>
+    <!-- End Region -->
 	</powers>
 </chummer>

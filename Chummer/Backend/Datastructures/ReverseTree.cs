@@ -9,19 +9,19 @@ namespace Chummer.Datastructures
 	/// </summary>
 	internal class ReverseTree<T> : IEnumerable<T>
 	{
-		private T self;
-		private ReverseTree<T> parent = null;
-		private ReverseTree<T> root = null;
-		private ReverseTree<T>[] children;
-		private Dictionary<T, ReverseTree<T>> seachDictionary = new Dictionary<T, ReverseTree<T>>();
+		private readonly T _self;
+		private ReverseTree<T> _parent;
+		private ReverseTree<T> _root;
+		//private ReverseTree<T>[] _children;
+		private Dictionary<T, ReverseTree<T>> _seachDictionary = new Dictionary<T, ReverseTree<T>>();
 		public ReverseTree(T self, params ReverseTree<T>[] children)
 		{
-			this.self = self;
-			seachDictionary.Add(self, this);
+			_self = self;
+			_seachDictionary.Add(self, this);
 
 			foreach (ReverseTree<T> child in children)
 			{
-				child.parent = this;
+				child._parent = this;
 				child.setRoot(this);
 			}
 		}
@@ -30,30 +30,32 @@ namespace Chummer.Datastructures
 
 		private void setRoot(ReverseTree<T> root)
 		{
-			if (children != null)
+            /*
+			if (_children != null)
 			{
-				foreach (ReverseTree<T> reverseTree in children)
+				foreach (ReverseTree<T> reverseTree in _children)
 				{
 					reverseTree.setRoot(root);
 				}
 			}
-			this.root = root;
-			foreach (KeyValuePair<T, ReverseTree<T>> keyValuePair in seachDictionary)
+            */
+			_root = root;
+			foreach (KeyValuePair<T, ReverseTree<T>> keyValuePair in _seachDictionary)
 			{
-				root.seachDictionary.Add(keyValuePair.Key, keyValuePair.Value);
+				root._seachDictionary.Add(keyValuePair.Key, keyValuePair.Value);
 			}
-			seachDictionary = root.seachDictionary;
+			_seachDictionary = root._seachDictionary;
 		}
 
 		public ReverseTree<T> Find(T key)
 		{
-			ReverseTree<T> ret;
-			if (seachDictionary.TryGetValue(key, out ret))
-			{
-				return ret;
-			}
+            ReverseTree<T> objRet;
+            if (!_seachDictionary.TryGetValue(key, out objRet))
+            {
+                objRet = new ReverseTree<T>(key); // single tree with only key
+            }
 
-			return new ReverseTree<T>(key); // single tree with only key
+            return objRet;
 		}
 
 		/// <summary>
@@ -66,11 +68,11 @@ namespace Chummer.Datastructures
 		{
 			ReverseTree<T> current = this;
 
-			yield return current.self;
-			while (current.parent != null)
+			yield return current._self;
+			while (current._parent != null)
 			{
-				current = current.parent;
-				yield return current.self;
+				current = current._parent;
+				yield return current._self;
 			}
 
 		}

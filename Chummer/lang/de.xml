@@ -2457,6 +2457,10 @@
       <key>Label_FreeKnowledgeSkills</key>
       <text>Verbleibende freie Punkte für Wissensfertigkeiten:</text>
     </string>
+	<string>
+		<key>Label_CustomKnowledgeSkillsReminder</key>
+		<text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
+	</string>
     <string>
       <key>Button_AddSkill</key>
       <text>Fertigkeit hinzufügen</text>
@@ -3045,7 +3049,11 @@
     </string>
     <string>
       <key>Label_Mugshot</key>
-      <text>Portrait: (210px x 310px)</text>
+      <text>Portrait:</text>
+    </string>
+	<string>
+      <key>Label_MugshotDimensions</key>
+      <text>210px x 310px</text>
     </string>
     <string>
       <key>Checkbox_Created</key>
@@ -4387,6 +4395,14 @@
       <key>Checkbox_Options_MetatypesCostKarma</key>
       <text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
     </string>
+	<string>
+		<key>Checkbox_Options_Dronemods</key>
+		<text>Drohnenmodifikationsregeln benutzen (R5 128)</text>
+	</string>
+	<string>
+		<key>Checkbox_Options_Dronemods_Pilot</key>
+		<text>Beschränke maximales Pilot Attribut</text>
+	</string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
       <text>Kostenlose Connectionpunkte: CHA x </text>
@@ -7555,6 +7571,75 @@
 		<key>Label_SpellDefenceManipPhysical</key>
 		<text>Manipulation - Körperlich</text>
 	</string>
+	<!-- Advanced Programs Region -->
+		<string>
+			<key>Label_SummaryAINormalPrograms</key>
+			<text>Normale Programme</text>
+		</string>
+		<string>
+			<key>Label_SummaryAIAdvancedPrograms</key>
+			<text>Fortgeschrittene Programme</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIProgram</key>
+			<text>Neues Programm (KI)</text>
+		</string>
+		<string>
+			<key>Label_Options_NewAIAdvancedProgram</key>
+			<text>Neues fortgeschrittene Programm (KI)</text>
+		</string>
+		<!-- Advanced Programs Tab -->
+		<string>
+			<key>Tab_AdvancedPrograms</key>
+			<text>Fortgeschrittene Programme</text>
+		</string>
+		<string>
+			<key>Label_AIProgramsAdvancedPrograms</key>
+			<text>KI Programme und fortgeschrittene Programme</text>
+		</string>
+		<string>
+			<key>Button_AddProgram</key>
+			<text>Programm hinzufügen</text>
+		</string>
+		<string>
+			<key>String_Requires</key>
+			<text>Benötigt:</text>
+		</string>
+		<string>
+			<key>Node_SelectedAIPrograms</key>
+			<text>Ausgewählte KI Programme und fortgeschrittene Programme</text>
+		</string>
+		<!-- End Region-->
+		<!-- Select AI Program Window -->
+		<string>
+			<key>Title_SelectAIProgram</key>
+			<text>KI Programm oder fortgeschrittenes Programm auswählen</text>
+		</string>
+		<string>
+			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgenden Programme müssen gelernt werden: </text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+			<text>Anforderung des fortgeschrittenen Programm</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectAIProgram_LimitList</key>
+			<text>Nur Fortgeschrittene Programme anzeigen, die ich wählen kann.</text>
+		</string>
+		<string>
+			<key>Message_DeleteAIProgram</key>
+			<text>Möchten Sie dieses Programm wirklich löschen?</text>
+		</string>
+		<!-- End Region -->
+		<string>
+			<key>String_ExpenseLearnProgram</key>
+			<text>Erlernte KI Programme</text>
+		</string>
 	<!-- End Region -->
+	<string>
+			<key>Message_DroneIllegalDowngrade</key>
+			<text>Die folgenden {0} Drohnen haben Downgrades durch die Attribute zu weit gesenkt werden:</text>
+		</string>
   </strings>
 </chummer>
