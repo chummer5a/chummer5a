@@ -51,6 +51,8 @@ Application Changes:
 - Basic quality of life improvements in the Advanced Lifestyle window, such as indications for built-in qualities, displaying if a quality's cost is discounted by the lifestyle type, and disabled the delete button for free qualities. 
 - Fixed behaviour of the critter creator to properly handle knowledge skills. Fixes #1432.
 - Added method (selectquality) to provide Prototype Transhuman with the required qualities. 
+- Renamed the print strings matrixinit, matrixinitdice and matrixinitvalues to matrixarinit, matrixarinitdice and matrixarinitvalue, respectively. 
+- Added the PrimaryArm character attribute to the 
 
 Data Changes:
 
