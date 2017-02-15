@@ -7671,7 +7671,23 @@ Do you want to continue?</text>
 			<key>Message_SelectQuality_QualityRequirement</key>
 			<text>You do not meet the requirements for this Quality. You must meet at least one of the following criteria:</text>
 		</string>
-		<string>
+    <string>
+      <key>Message_SelectQuality_RequireESSBelow</key>
+      <text>Essence below {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSAbove</key>
+      <text>Essence above {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeBelow</key>
+      <text>Less then {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeAbove</key>
+      <text>At least {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
 			<key>MessageTitle_SelectQuality_QualityRequirement</key>
 			<text>Quality Requirement</text>
 		</string>

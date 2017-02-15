@@ -82,6 +82,10 @@ New Strings:
 - Checkbox_Options_Live_CustomData
 - Label_SelectAdvancedLifestyle_UnusedLP
 - String_LifestyleFreeNuyen
+- Message_SelectQuality_RequireESSBelow
+- Message_SelectQuality_RequireESSAbove
+- Message_SelectQuality_RequireESSGradeBelow
+- Message_SelectQuality_RequireESSGradeAbove
 
 Changed Strings:
 
