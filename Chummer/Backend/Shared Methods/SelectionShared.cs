@@ -39,7 +39,7 @@ namespace Chummer.Backend.Shared_Methods
                 }
                 else
                 {
-                    switch (objXmlNode.Attributes?["type"].InnerText)
+                    switch (objXmlNode.Attributes?["type"]?.InnerText)
                     {
                         //Included as an example, unused as of 15/02/17
                         case "cyberware":
