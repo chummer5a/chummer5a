@@ -39,9 +39,8 @@ namespace Chummer
 		private List<ListItem> _lstCategory = new List<ListItem>();
 
 		private static string _strSelectCategory = string.Empty;
-        
-	    private SelectionShared Shared;
-		#region Control Events
+
+	    #region Control Events
 		public frmSelectQuality(Character objCharacter)
 		{
 			InitializeComponent();
@@ -271,15 +270,9 @@ namespace Chummer
 		/// <summary>
 		/// A Quality the character has that should be ignored for checking Fobidden requirements (which would prevent upgrading/downgrading a Quality).
 		/// </summary>
-		public string IgnoreQuality
-		{
-			set
-			{
-				_strIgnoreQuality = value;
-			}
-		}
+		public string IgnoreQuality { get; set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Whether or not the user wants to add another item after this one.
 		/// </summary>
 		public bool AddAgain
@@ -364,7 +357,7 @@ namespace Chummer
 
                     if (objXmlQuality["hide"] == null && blnQualityAllowed)
                     {
-                        if (!chkLimitList.Checked || (chkLimitList.Checked && Shared.RequirementsMet(objXmlQuality,false,_objCharacter)))
+                        if (!chkLimitList.Checked || (chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality,false,_objCharacter, IgnoreQuality)))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlQuality["name"]?.InnerText;
@@ -444,16 +437,13 @@ namespace Chummer
                     }
 					if (blnQualityAllowed)
 					{
-                        if (!chkLimitList.Checked || (chkLimitList.Checked && Shared.RequirementsMet(objXmlQuality, false, _objCharacter)))
+                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, IgnoreQuality))
                         {
                             if (objXmlQuality["hide"] == null)
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objXmlQuality["name"].InnerText;
-                                if (objXmlQuality["translate"] != null)
-                                    objItem.Name = objXmlQuality["translate"].InnerText;
-                                else
-                                    objItem.Name = objXmlQuality["name"].InnerText;
+                                objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
 
                                 lstQuality.Add(objItem);
                             }
@@ -500,7 +490,7 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
 			_strSelectCategory = objNode["category"]?.InnerText;
 
-			if (!Shared.RequirementsMet(objNode, false, _objCharacter))
+			if (!SelectionShared.RequirementsMet(objNode, false, _objCharacter, IgnoreQuality))
 				return;
 			DialogResult = DialogResult.OK;
 		}
