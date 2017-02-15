@@ -1306,7 +1306,7 @@ namespace Chummer
         } 
         #endregion
 
-
+        #region Text Functions
         /// <summary>
         /// Word wraps the given text to fit within the specified width.
         /// </summary>
@@ -1381,5 +1381,8 @@ namespace Chummer
             // Return length of text before whitespace
             return i + 1;
         }
+        #endregion
+
+
 	}
 }

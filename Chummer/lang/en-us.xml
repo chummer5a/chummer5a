@@ -2614,7 +2614,7 @@
 			<key>String_LifestyleName</key>
 			<text>Enter a new name for this Lifestyle (or blank to remove).</text>
 		</string>
-		<string>
+    <string>
       <key>String_LifestyleFreeNuyen</key>
       <text>Covered by Lifestyle level</text>
     </string>
@@ -2686,7 +2686,7 @@
 			<key>String_SkillFilterRatingZero</key>
 			<text>Show Active Skills Rating = 0</text>
 		</string>
-		<string>
+    <string>
       <key>String_SkillFilterNoSkillGroup</key>
       <text>Show ungrouped Active Skills</text>
     </string>
@@ -2907,7 +2907,7 @@
 			<key>String_ExpenseSoldVehicleCyberware</key>
 			<text>Sold Vehicle Cyberware Plugin</text>
 		</string>
-		<string>
+    <string>
       <key>String_ExpensePurchaseCritterPower</key>
       <text>Purchased Critter Power</text>
     </string>
@@ -7696,6 +7696,22 @@ Do you want to continue?</text>
 			<text>You do not meet the requirements for this Quality. You must meet at least one of the following criteria:</text>
 		</string>
 		<string>
+      <key>Message_SelectQuality_RequireESSBelow</key>
+      <text>Essence below {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSAbove</key>
+      <text>Essence above {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeBelow</key>
+      <text>Less then {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeAbove</key>
+      <text>At least {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
 			<key>MessageTitle_SelectQuality_QualityRequirement</key>
 			<text>Quality Requirement</text>
 		</string>
@@ -7921,7 +7937,7 @@ Do you want to continue?</text>
 			<key>Button_Viewer_SaveAsHtml</key>
 			<text>Save as HTML</text>
 		</string>
-		<string>
+    <string>
       <key>Button_Viewer_SaveAsPdf</key>
       <text>Save as PDF</text>
     </string>
