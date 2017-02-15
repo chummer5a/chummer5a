@@ -1286,6 +1286,7 @@
 				</skilllevel>
 				<skillgrouplevel>
 					<name>Firearms</name>
+					<val>1</val>
 				</skillgrouplevel>
 				<skilllevel>
 					<name>Leadership</name>
@@ -1335,10 +1336,10 @@
 					<name>CHA</name>
 					<val>1</val>
 				</attributelevel>
-				<skilllevel>
+				<skillgrouplevel>
 					<name>Athletics</name>
 					<val>1</val>
-				</skilllevel>
+				</skillgrouplevel>
 				<skilllevel>
 					<name>Computer</name>
 					<val>2</val>
@@ -1454,7 +1455,7 @@
 					<name>Longarms</name>
 				</skilllevel>
 				<skillgrouplevel>
-					<name>Outdoor</name>
+					<name>Outdoors</name>
 					<val>1</val>
 				</skillgrouplevel>
 				<skilllevel>
