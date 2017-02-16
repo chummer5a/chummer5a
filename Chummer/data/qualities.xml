@@ -10812,6 +10812,12 @@
 			<category>Positive</category>
 			<bonus>
 				<prototypetranshuman>1</prototypetranshuman>
+        <selectquality>
+          <quality>Wanted</quality>
+          <quality>Allergy (Common, Mild)</quality>
+          <quality>Astral Beacon</quality>
+          <quality>Insomnia (Basic)</quality>
+        </selectquality>
 			</bonus>
 			<source>CF</source>
 			<page>54</page>
