@@ -63,7 +63,7 @@ namespace Chummer
 		private bool _blnFreeSpiritPowerPointsMAG;
 		private bool _blnIgnoreArmorEncumbrance = true;
 		private bool _blnIgnoreArt;
-		private bool _blnKnucksUseUnarmed;
+		private bool _blnUnarmedImprovementsApplyToWeapons;
 		private bool _blnLicenseRestrictedItems;
 		private bool _blnMaximumArmorModifications;
 		private bool _blnMayBuyQualities;
@@ -252,8 +252,8 @@ namespace Chummer
 			objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
 			// <nuyenperbp />
 			objWriter.WriteElementString("nuyenperbp", _intNuyenPerBP.ToString());
-			// <knucksuseunarmed />
-			objWriter.WriteElementString("knucksuseunarmed", _blnKnucksUseUnarmed.ToString());
+			// <UnarmedImprovementsApplyToWeapons />
+			objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
 			// <allowinitiationincreatemode />
 			objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString());
 			// <usepointsonbrokengroups />
@@ -617,7 +617,7 @@ namespace Chummer
 			// Nuyen per Build Point
 			objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
 			// Knucks use Unarmed
-			objXmlNode.TryGetBoolFieldQuickly("knucksuseunarmed", ref _blnKnucksUseUnarmed);
+			objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
 			// Allow Initiation in Create Mode
 			objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
 			// Use Points on Broken Groups
@@ -1275,17 +1275,17 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Contacts equal to CHA * 2.
+		/// Whether or not UnarmedAP and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
 		/// </summary>
-		public bool KnucksUseUnarmed
+		public bool UnarmedImprovementsApplyToWeapons
 		{
 			get
 			{
-				return _blnKnucksUseUnarmed;
+				return _blnUnarmedImprovementsApplyToWeapons;
 			}
 			set
 			{
-				_blnKnucksUseUnarmed = value;
+				_blnUnarmedImprovementsApplyToWeapons = value;
 			}
 		}
 

@@ -53,6 +53,7 @@ Application Changes:
 - Added method (selectquality) to provide Prototype Transhuman with the required qualities. 
 - Renamed the print strings matrixinit, matrixinitdice and matrixinitvalues to matrixarinit, matrixarinitdice and matrixarinitvalue, respectively. 
 - Added the PrimaryArm character attribute to the 
+- Altered the houserule 'Knucks Use Unarmed Combat Bonuses' to apply to any weapon that uses the Unarmed Combat skill. The houserule has been renamed and will be disabled by default. Please note that this currently effects ALL weapons that are in that category; exclusion for weapons like Shock Gloves will come in a later patch. 
 
 Data Changes:
 
@@ -88,11 +89,12 @@ New Strings:
 - Message_SelectQuality_RequireESSAbove
 - Message_SelectQuality_RequireESSGradeBelow
 - Message_SelectQuality_RequireESSGradeAbove
+- Tip_OptionsUnarmedSkillImprovements
+- Checkbox_Options_UnarmedSkillImprovements
 
 Changed Strings:
 
 - Message_NoExtraKarma
-
 Build 190
 
 Application Changes:

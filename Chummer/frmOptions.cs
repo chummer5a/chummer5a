@@ -135,7 +135,7 @@ namespace Chummer
                     chkKnowledgeMultiplier.Enabled = true;
             _characterOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
             _characterOptions.IgnoreArt = chkIgnoreArt.Checked;
-            _characterOptions.KnucksUseUnarmed = chkKnucks.Checked;
+            _characterOptions.UnarmedImprovementsApplyToWeapons = chkUnarmedSkillImprovements.Checked;
             _characterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
             _characterOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
             _characterOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
@@ -267,6 +267,7 @@ namespace Chummer
             chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
             if (!chkExceedNegativeQualitiesLimit.Enabled)
                 chkExceedNegativeQualitiesLimit.Checked = false;
+            OptionsChanged(sender,e);
         }
 
         private void chkContactMultiplier_CheckedChanged(object sender, EventArgs e)
@@ -296,6 +297,7 @@ namespace Chummer
             {
                 nudDroneArmorMultiplier.Value = 2;
             }
+            OptionsChanged(sender, e);
         }
 
         private void cmdRestoreDefaultsKarma_Click(object sender, EventArgs e)
@@ -625,7 +627,7 @@ namespace Chummer
 			chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
 			chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
 			chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;
-			chkKnucks.Checked = _characterOptions.KnucksUseUnarmed;
+			chkUnarmedSkillImprovements.Checked = _characterOptions.UnarmedImprovementsApplyToWeapons;
 			chkLicenseEachRestrictedItem.Checked = _characterOptions.LicenseRestricted;
 			chkMaximumArmorModifications.Checked = _characterOptions.MaximumArmorModifications;
 			chkMayBuyQualities.Checked = _characterOptions.MayBuyQualities;
@@ -936,7 +938,7 @@ namespace Chummer
 		private void SetToolTips()
         {
             const int width = 50;
-            tipTooltip.SetToolTip(chkKnucks, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
+            tipTooltip.SetToolTip(chkUnarmedSkillImprovements, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUnarmedSkillImprovements"), width));
             tipTooltip.SetToolTip(chkIgnoreArt, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
             tipTooltip.SetToolTip(chkCyberlegMovement, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
             tipTooltip.SetToolTip(chkDontDoubleQualityPurchases, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualityPurchases"), width));

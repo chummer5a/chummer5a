@@ -1391,14 +1391,10 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-			if ((_strName == "Knucks") && _objCharacter.Options.KnucksUseUnarmed)
-			{
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDV && objImprovement.Enabled)
-						intImprove += objImprovement.Value;
-				}
-			}
+			else if (Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
+            {
+                intImprove += _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedDV);
+            }
 			bool blnDamageReplaced = false;
 
 			// Add in the DV bonus from any Weapon Mods.
@@ -1992,62 +1988,39 @@ namespace Chummer.Backend.Equipment
 						Vehicle objFoundVehicle;
 						objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
 					}
-					if (objGear != null)
-					{
-						if (objGear.WeaponBonus != null)
-						{
-							// Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-							if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
-							{
-								// Armor-Piercing Flechettes (and any other that might come along that does not explicitly add +5 AP) should instead reduce
-								// the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
-								if (_strDamage.Contains("(f)") && objGear.Name.Contains("Flechette"))
-								{
-									intAP -= 5;
-								}
-								else
-								{
-									// Change the Weapon's Damage Type.
-									if (objGear.WeaponBonus["apreplace"] != null)
-									{
-										blnAPReplaced = true;
-										strAP = objGear.WeaponBonus["apreplace"].InnerText;
-									}
-									// Adjust the Weapon's Damage.
-									if (objGear.WeaponBonus["ap"] != null)
-										intAP += Convert.ToInt32(objGear.WeaponBonus["ap"].InnerText);
-								}
-							}
-						}
-					}
+				    if (objGear?.WeaponBonus != null)
+				    {
+				        // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
+				        if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
+				        {
+				            // Armor-Piercing Flechettes (and any other that might come along that does not explicitly add +5 AP) should instead reduce
+				            // the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
+				            if (_strDamage.Contains("(f)") && objGear.Name.Contains("Flechette"))
+				            {
+				                intAP -= 5;
+				            }
+				            else
+				            {
+				                // Change the Weapon's Damage Type.
+				                if (objGear.WeaponBonus["apreplace"] != null)
+				                {
+				                    blnAPReplaced = true;
+				                    strAP = objGear.WeaponBonus["apreplace"].InnerText;
+				                }
+				                // Adjust the Weapon's Damage.
+				                if (objGear.WeaponBonus["ap"] != null)
+				                    intAP += Convert.ToInt32(objGear.WeaponBonus["ap"].InnerText);
+				            }
+				        }
+				    }
 
-					if (_objCharacter != null)
+				    if (_objCharacter != null)
 					{
 						// Add any UnarmedAP bonus for the Unarmed Attack item.
-						if (_strName == "Unarmed Attack")
+						if (_strName == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
 						{
-							foreach (Improvement objImprovement in _objCharacter.Improvements)
-							{
-								if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedAP && objImprovement.Enabled)
-									intAP += objImprovement.Value;
-							}
+						    intAP += _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedAP);
 						}
-						//TODO: There should probably be a method to enable this for ANY weapon the user wants to use.
-						// This should also add any UnarmedAP bonus to Unarmed physical weapons if the option is enabled.
-						if ((_strName == "Knucks") && _objCharacter.Options.KnucksUseUnarmed)
-						{
-							foreach (Improvement objImprovement in _objCharacter.Improvements)
-							{
-								if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedAP && objImprovement.Enabled)
-									intAP += objImprovement.Value;
-							}
-						}
-					}
-					// If this is an Unarmed Cyberware Weapon (belongs to the Cyberware category), add the Unarmed AP bonus an Adept may have.
-					if (_strCategory == "Cyberware")
-					{
-						ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-						intAP += objImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedAP);
 					}
 				}
 
