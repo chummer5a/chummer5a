@@ -5,7 +5,10 @@ namespace Chummer.Backend.Options
 {
     public interface IGroupLayoutProvider
     {
-        LayoutRenderInfo PerformLayout(List<LayoutLineInfo> contents);
+
+        List<int> ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null);
+        LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents, List<int> preComputedLayoutSpacing);
+        LayoutOptionsContainer LayoutOptions { get; set; }
     }
 
     public class LayoutLineInfo
@@ -27,5 +30,12 @@ namespace Chummer.Backend.Options
         public Size Size { get; set; }
         public string Text { get; set; }
         public FontStyle Style { get; set; }
+    }
+
+    public class LayoutOptionsContainer
+    {
+        public int Linespacing { get; set; } = 6;
+        public int ControlMargin { get; set; } = 3;
+        public Font Font { get; set; }
     }
 }

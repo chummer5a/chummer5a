@@ -42,18 +42,27 @@ namespace Chummer
 		{
 		    Stopwatch sw = Stopwatch.StartNew();
 			//If debuging and launched from other place (Bootstrap), launch debugger
-			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
+		    string[] cmd = Environment.GetCommandLineArgs();
+
+            if (cmd.Contains("/debug"))
 			{
 			    Debugging = true;
-				try{Debugger.Launch();}catch{}
-			}
-	        sw.TaskEnd("dbgchk");
-			//Various init stuff (that mostly "can" be removed as they serve 
-			//debugging more than function
+                if (!Debugger.IsAttached)
+                {
+
+                    try { Debugger.Launch(); } catch { }
+                }
+            }
+
+		    
+
+            sw.TaskEnd("dbgchk");
+            //Various init stuff (that mostly "can" be removed as they serve 
+            //debugging more than function
 
 
-			//Needs to be called before Log is setup, as it moves where log might be.
-			FixCwd();
+            //Needs to be called before Log is setup, as it moves where log might be.
+            FixCwd();
 
 
 	        sw.TaskEnd("fixcwd");

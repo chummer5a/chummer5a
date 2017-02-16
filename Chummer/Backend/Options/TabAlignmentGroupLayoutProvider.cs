@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Point = System.Drawing.Point;
 
@@ -17,10 +18,51 @@ namespace Chummer.Backend.Options
      */
     public class TabAlignmentGroupLayoutProvider : IGroupLayoutProvider
     {
+        //The layout procedure is rather simple (in theory).  It interprents multiple \t inside text and makes sure every
+        //tab accros multiple lines share same end
+        //Basically the same as normal text tab, but instead of having a defined lenght in spaces, it findes
+        //the minimum possible accross all, without exeeding it
+        //In other words, after every \t the next following character will align on all lines
+
+
         /// <summary>
         /// Various tweakable settings that can be changed
         /// </summary>
         public LayoutOptionsContainer LayoutOptions { get; set; } = new LayoutOptionsContainer();
+
+        public List<int> ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null)
+        {
+            //Keeps the mimumum size required for each tab.
+            List<int> alignmentLenghts = additonalConformTarget ?? new List<int>();
+            //Loop over every line in the layout and calculate how big elements need to be
+            foreach (LayoutLineInfo line in contents)
+            {
+                string[] alignmentPieces = line.LayoutString.Split(new[] { "\\t" }, StringSplitOptions.None);
+                Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
+
+                //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
+                //If a previous size requirement for that tab count is already found, take the biggest one
+                //Otherwise store a new one
+                for (int i = 0; i < alignmentPieces.Length - 1; i++)
+                {
+                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
+                    if (alignmentLenghts.Count > i)
+                    {
+
+                        alignmentLenghts[i] = Math.Max(
+                            alignmentLenghts[i],
+                            (int)rendergarget.MeasureString(alignmentPieces[i], LayoutOptions.Font, Big, StringFormat.GenericTypographic).Width);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Creating new align on \"{alignmentPieces[i]}\"{i}");
+                        alignmentLenghts.Add(ElementSize(rendergarget, alignmentPieces[i], line.ControlSize, line.ControlOffset).Width);
+                    }
+                }
+            }
+
+            return alignmentLenghts;
+        }
 
         /// <summary>
         /// Transforms a list of LayoutLineInfo that contains a size of a control element and supporting text into a
@@ -30,51 +72,21 @@ namespace Chummer.Backend.Options
         /// </summary>
         /// <param name="contents"></param>
         /// <returns></returns>
-        public LayoutRenderInfo PerformLayout(List<LayoutLineInfo> contents)
+        public LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents, List<int> preComputedLayoutSpacing)
         {
             //Create the container with all return information
             LayoutRenderInfo ret = new LayoutRenderInfo(){ControlLocations = new List<Point>(), TextLocations = new List<TextRenderInfo>()};
 
-            //The layout procedure is rather simple. It interprents multiple \t inside text and makes sure every
-            //tab accros multiple lines share same end
-            //Basically the same as normal text tab, but instead of having a defined lenght in spaces, it findes
-            //the minimum possible accross all, without exeeding it
-            //In other words, after every \t the next following character will align on all lines
+            
 
-            //Keeps the mimumum size required for each tab.
-            List<int> alignmentLenghts = new List<int>();
-            //Loop over every line in the layout and calculate how big elements need to be
-            foreach (LayoutLineInfo line in contents)
-            {
-                string[] alignmentPieces = line.LayoutString.Split(new []{"\\t"}, StringSplitOptions.None);
-                Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
 
-                //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
-                //If a previous size requirement for that tab count is already found, take the biggest one
-                //Otherwise store a new one
-                for (int i = 0; i < alignmentPieces.Length-1; i++)
-                {
-                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
-                    if (alignmentLenghts.Count > i)
-                    {
-
-                        alignmentLenghts[i] = Math.Max(
-                            alignmentLenghts[i],
-                            ElementSize(alignmentPieces[i], line.ControlSize, line.ControlOffset).Width);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Creating new align on \"{alignmentPieces[i]}\"{i}");
-                        alignmentLenghts.Add(ElementSize(alignmentPieces[i], line.ControlSize, line.ControlOffset).Width);
-                    }
-                }
-            }
 
             //After previous loop alignmentLenghts contain the the size of each group.
             //The following lines convert this to pixel offsets for each group
 
             //First group should start at 0, not reservering a free space to house a duplicate for first group.
-            alignmentLenghts.Insert(0,0);
+            List<int> alignmentLenghts = new List<int> { 0 };
+            alignmentLenghts.AddRange(preComputedLayoutSpacing);
             Console.WriteLine(string.Join(", ", alignmentLenghts));
 
             //Then add the sum of all prievious elements to all elements, convering lenghts to starting indexes
@@ -108,8 +120,8 @@ namespace Chummer.Backend.Options
 
 
                         string[] sides = alignmentPieces[i].Split(split, 2, StringSplitOptions.None);
-                        Size size = ElementSize(sides[0], Size.Empty, Point.Empty);
-                        Size size2 = ElementSize(sides[1], Size.Empty, Point.Empty);
+                        Size size = ElementSize(renderGraphics, sides[0], Size.Empty, Point.Empty);
+                        Size size2 = ElementSize(renderGraphics, sides[1], Size.Empty, Point.Empty);
 
                         Console.WriteLine($"text left = {alignmentLenghts[i]} + {size.Width} + {line.ControlSize.Width} + {LayoutOptions.ControlMargin} * 2");
 
@@ -136,7 +148,7 @@ namespace Chummer.Backend.Options
                     else
                     {
                         //No control included makes it simple. Calculate size, add it and advance size counter
-                        Size size = ElementSize(alignmentPieces[i], Size.Empty, Point.Empty);
+                        Size size = ElementSize(renderGraphics, alignmentPieces[i], Size.Empty, Point.Empty);
                         TextRenderInfo tri = new TextRenderInfo
                         {
                             Location = new Point(alignmentLenghts[i], lineTop),
@@ -165,37 +177,36 @@ namespace Chummer.Backend.Options
             return ret;
         }
 
+        private readonly SizeF Big = new SizeF(int.MaxValue, int.MaxValue);
         private string[] split = new[] {"{}"};
-        private Size ElementSize(string textMaybeEmbeddedControl, Size controlSize, Point controlOffset)
+        private Size ElementSize(Graphics g, string textMaybeEmbeddedControl, Size controlSize, Point controlOffset)
         {
+            if(string.IsNullOrWhiteSpace(textMaybeEmbeddedControl)) return Size.Empty;
+
             //Either calculate the size of text, or black magic to calculate the size of control and 2 pieces of text to suround it
             if (textMaybeEmbeddedControl.Contains("{}"))
             {
                 string[] sides = textMaybeEmbeddedControl.Split(split, 2, StringSplitOptions.None);
 
-                Size s1, s2;
-                s1 = TextRenderer.MeasureText(sides[0], Control.DefaultFont);
-                s2 = TextRenderer.MeasureText(sides[1], Control.DefaultFont);
+                SizeF s1, s2;
+                s1 = g.MeasureString(sides[0], LayoutOptions.Font, Big, StringFormat.GenericTypographic);
+                s2 = g.MeasureString(sides[1], LayoutOptions.Font, Big, StringFormat.GenericTypographic);
 
                 //TODO: this should be how far the total element goes outside the upper left cornor of the text. Any that the control goes over should be ignored.
                 //Probably confused because i don't quite see what controlOffset.X means
-                int height = Math.Max(s1.Height, controlSize.Height - Math.Min(0, controlOffset.Y));
-                int width = controlSize.Width + s1.Width + s2.Width; //Probably sane way
+                float height = Math.Max(s1.Height, controlSize.Height - Math.Min(0, controlOffset.Y));
+                float width = controlSize.Width + s1.Width + s2.Width; //Probably sane way
                 Console.WriteLine($"Calculated width = {width} from {controlSize.Width} +{s1.Width} + {s2.Width} \"{textMaybeEmbeddedControl}\"");
-                return new Size(width /*-5*/, height);
+                return new Size((int)width, (int)height);
             }
             else
             {
-                Size s = TextRenderer.MeasureText(textMaybeEmbeddedControl, Control.DefaultFont);
+                SizeF s = g.MeasureString(textMaybeEmbeddedControl, LayoutOptions.Font, Big, StringFormat.GenericTypographic);
                 //s.Width -= 5;
-                return s;
+                return new Size((int)s.Width, (int)s.Height);
             }
         }
 
-        public class LayoutOptionsContainer
-        {
-            public int Linespacing { get; set; } = 6;
-            public int ControlMargin { get; set; } = 3;
-        }
+        
     }
 }

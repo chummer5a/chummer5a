@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
 using Chummer.Backend.Options;
@@ -13,7 +14,10 @@ namespace Chummer.UI.Options
     public class OptionRender : UserControl
     {
         private readonly IGroupLayoutProvider _defaultGroupLayoutProvider;
-
+        private List<PreRenderGroup> preRenderData = null;
+        private List<LayoutRenderInfo> renderData = null;
+        private List<int> sharedLayoutSpacing;
+        
         public List<IOptionWinFromControlFactory> Factories { get; set; }
 
         public OptionRender() : this(new TabAlignmentGroupLayoutProvider())
@@ -31,92 +35,130 @@ namespace Chummer.UI.Options
             AutoScroll = true;
             Size = new System.Drawing.Size(484, 354);
 
+            _defaultGroupLayoutProvider.LayoutOptions.Font = Font;
+
         }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            Stopwatch sw = Stopwatch.StartNew();
+            //We don't quite know what has changed, so for now i'm just going to redo everything.
+            //If a profiler points this out as a performance problem someday, lots of stuff can probably be cached.
+            //Can probably also restrict drawing arear...
+
+            PointF offset = new PointF(5, 5);
+
+            if (renderData == null)
+            {
+                sharedLayoutSpacing = new List<int>();
+                renderData = new List<LayoutRenderInfo>();
+
+                foreach (PreRenderGroup preRenderGroup in preRenderData)
+                {
+                    _defaultGroupLayoutProvider.ComputeLayoutSpacing(
+                        e.Graphics,
+                        preRenderGroup.Lines,
+                        sharedLayoutSpacing
+                    );
+                }
+
+                foreach (PreRenderGroup preRenderGroup in preRenderData)
+                {
+                    LayoutRenderInfo renderGroup = _defaultGroupLayoutProvider.PerformLayout(e.Graphics,
+                        preRenderGroup.Lines, sharedLayoutSpacing);
+
+                    for (int i = 0; i < preRenderGroup.Controls.Count; i++)
+                    {
+                        preRenderGroup.Controls[i].Location =
+                            new System.Drawing.Point(renderGroup.ControlLocations[i].X + (int) offset.X,
+                                renderGroup.ControlLocations[i].Y + (int) offset.Y);
+                    }
+
+                    renderData.Add(renderGroup);
+                }
+                //In theory: Get sizes of each preRenderGroup (job for _defaultGroupLayoutProvider)
+                //and make a "big" layout class do a layout of each group
+
+                //This would be the location of each layoutgroup, but such thing don't exist...
+
+                sw.TaskEnd("Render setup");
+            }
+
+
+            foreach (LayoutRenderInfo renderGroup in renderData)
+            {
+                foreach (TextRenderInfo renderInfo in renderGroup.TextLocations)
+                {
+                    e.Graphics.DrawString(renderInfo.Text, GetCachedFont(renderInfo.Style), new SolidBrush(ForeColor), new PointF(renderInfo.Location.X + offset.X, renderInfo.Location.Y + offset.Y), StringFormat.GenericTypographic);
+                }
+            }
+
+            sw.TaskEnd("Render");
+
+        }
+
+
 
         public void SetContents(List<OptionRenderItem> contents)
         {
             if (contents.Count == 0)
             {
-                Controls.Clear();
+                if (Controls.Count > 0) CleanOldContents();
                 return;
             }
+
             bool oldVis = Visible;
             Visible = false;
-            Controls.Clear();
             //TODO: Better support for any RenderItems that isnt EntryProxy
 
-            List<OptionItem> entries = contents.OfType<OptionItem>().ToList();
-            ControlGroup layouted = PerformGroupLayout(entries, _defaultGroupLayoutProvider);
+            List<OptionItem> entries = contents
+                .OfType<OptionItem>()
+                .Where(o => Factories.Any(x => x.IsSupported(o)))
+                .ToList();
 
-            for (int i = 0; i < layouted.Controlls.Count; i++)
+
+            List<Control> controls = entries
+                .Select(
+                    o => Factories
+                        .First(f => f.IsSupported(o))
+                        .Construct(o)
+                ).ToList();
+
+            foreach (Control control in controls)
             {
-                if (Program.Debugging)
-                {
-                    layouted.Controlls[i].Control.BackColor = ColorUtilities.RandomLightColor();
-                }
-
-                System.Drawing.Point p = layouted.Controlls[i].Point;
-                p.Offset(5,5);
-                Controls.Add(layouted.Controlls[i].Control);
-                layouted.Controlls[i].Control.Location = p;
+                Controls.Add(control);
             }
 
+            preRenderData = new List<PreRenderGroup>()
+            {
+                new PreRenderGroup
+                {
+                    Controls = controls,
+                    Lines = entries.Select((x, i) => new LayoutLineInfo
+                    {
+                        ControlOffset = controls[i].Location,
+                        ControlSize = controls[i].Size,
+                        LayoutString = x.DisplayString
+                    }).ToList()
+                }
+            };
 
             Visible = oldVis;
+            this.Invalidate();
         }
 
-        private ControlGroup PerformGroupLayout(List<OptionItem> items, IGroupLayoutProvider layoutProvider)
+        private void CleanOldContents()
         {
-            ControlGroup ret = new ControlGroup();
-            List<Control> controls = items.Select(item => Factories.First(fac => fac.IsSupported(item)).Construct(item)).ToList();
+            Controls.Clear();
 
-            List<LayoutLineInfo> info = items
-                .Select((entry, index) => new LayoutLineInfo
-                {
-                    ControlSize = controls[index].Size,
-                    ControlOffset = controls[index].Location,
-                    LayoutString = entry.DisplayString
-                })
-                .ToList();
-
-            LayoutRenderInfo renderInfo = layoutProvider.PerformLayout(info);
-
-            ret.Controlls = renderInfo.ControlLocations
-                .Select((e, i) => new ControlGroup.ControlPoint(){Control = controls[i], Point = e})
-                .ToList();
-
-            foreach (TextRenderInfo textInfo in renderInfo.TextLocations)
-            {
-                //TODO: Remove BackColor assignment
-                //Set for debugging purposes to make it easy to see where the labels are.
-                Label label = new Label
-                {
-                    Text = textInfo.Text,
-                    Width = textInfo.Size.Width,
-                    Height = textInfo.Size.Height
-                };
-
-                if (textInfo.Style != FontStyle.Regular)
-                {
-                    label.Font = GetCachedFont(textInfo.Style);
-                }
-                ret.Controlls.Add(new ControlGroup.ControlPoint(){Control = label, Point = textInfo.Location});
-            }
-
-            System.Drawing.Point upperLeft = new System.Drawing.Point(
-                ret.Controlls.Min(x => x.Point.X),
-                ret.Controlls.Min(x => x.Point.Y)
-            );
-
-            ret.Bounds = new Rectangle(
-                upperLeft.X,
-                upperLeft.Y,
-                ret.Controlls.Max(x => x.Point.X + x.Control.Width) - upperLeft.X,
-                ret.Controlls.Max(x => x.Point.Y + x.Control.Height) - upperLeft.Y
-            );
-
-            return ret;
+            preRenderData.Clear();
+            preRenderData = null;
+            renderData.Clear();
+            sharedLayoutSpacing.Clear();
         }
+
 
         private readonly Dictionary<FontStyle, Font> _fontCache = new Dictionary<FontStyle, Font>();
         private Font GetCachedFont(FontStyle textInfoStyle)
@@ -130,6 +172,14 @@ namespace Chummer.UI.Options
             font = new Font(Font, textInfoStyle);
             _fontCache[textInfoStyle] = font;
             return font;
+        }
+
+
+        class PreRenderGroup
+        {
+            public List<Control> Controls { get; set; }
+            public List<LayoutLineInfo> Lines { get; set; }
+
         }
     }
 
