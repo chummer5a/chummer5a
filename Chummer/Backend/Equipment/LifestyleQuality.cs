@@ -434,7 +434,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return Free || FreeByLifestyle ? 0 : _intLP;
+				return Free ? 0 : _intLP;
 			}
 			set
 			{
@@ -510,7 +510,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public int Cost
 		{
-			get { return (Free || FreeByLifestyle) ? 0 : _intCost; }
+			get { return Free || FreeByLifestyle ? 0 : _intCost; }
 			set { _intCost = value; }
 		}
 
@@ -519,7 +519,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public bool Free
 		{
-			get { return _blnFree; }
+			get { return _blnFree || OriginSource == QualitySource.BuiltIn; }
 			set { _blnFree = value; }
 		}
 

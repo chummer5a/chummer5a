@@ -7998,6 +7998,39 @@
 			<source>R5</source>
 			<page>152</page>
 		</mod>
+    <mod>
+      <id>7eb3fa91-2774-490d-8ce2-8472daa4ae91</id>
+      <name>Spike Strip</name>
+      <category>All</category>
+      <rating>0</rating>
+      <slots>0</slots>
+      <avail>8R</avail>
+      <cost>200</cost>
+      <source>R5</source>
+      <page>152</page>
+    </mod>
+    <mod>
+      <id>e81d0225-ca52-487e-8681-0d4a97482c50</id>
+      <name>Zapper Strip</name>
+      <category>All</category>
+      <rating>0</rating>
+      <slots>0</slots>
+      <avail>12R</avail>
+      <cost>2500</cost>
+      <source>R5</source>
+      <page>152</page>
+    </mod>
+    <mod>
+      <id>8cc0dcc0-e5d0-46a4-8b61-a9e0ee1fe3f6</id>
+      <name>Tracking Strip</name>
+      <category>All</category>
+      <rating>0</rating>
+      <slots>0</slots>
+      <avail>8R</avail>
+      <cost>600</cost>
+      <source>R5</source>
+      <page>153</page>
+    </mod>
 		<mod>
 			<id>f7926ae0-bba6-4de0-964d-f535a8adeed5</id>
 			<name>Off-Road Tires</name>

@@ -439,7 +439,7 @@ namespace Chummer
 		    lblQualityCost.Text = $"{objQuality.Cost:###,###,##0¥}";
 			lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page}";
 			tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
-            cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.FreeByLifestyle);
+            cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
         }
 
 		private void lblQualitySource_Click(object sender, EventArgs e)

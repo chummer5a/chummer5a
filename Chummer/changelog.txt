@@ -78,6 +78,7 @@ Data Changes:
 - Added a missing metagenic flag for the Greasy Skin quality.
 - Removed Undeducated quality from Centaurs, per undocumented Run Faster changes. 
 - Fixed incorrect pricing for the Lion's Roar cologne. 
+- Added missing Road Strips from Rigger 5.0.
 
 New Strings: 
 
