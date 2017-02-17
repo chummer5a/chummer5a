@@ -3000,7 +3000,7 @@ namespace Chummer
                     {
                         xprResult = null;
                     }
-                    if (xprResult != null)
+                    if (xprResult != null && _strDV != "Special")
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString())));
                         // Drain cannot be lower than 2.

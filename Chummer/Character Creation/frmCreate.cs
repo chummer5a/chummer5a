@@ -136,6 +136,23 @@ namespace Chummer
             TreeView objTree = (TreeView)sender;
             objTree.SelectedNode = objTree.HitTest(e.X, e.Y).Node;
             //}
+            if (Form.ModifierKeys == Keys.Control)
+            {
+                if (!objTree.SelectedNode.IsExpanded)
+                {
+                    foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
+                    {
+                        objNode.ExpandAll();
+                    }
+                }
+                else
+                {
+                    foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
+                    {
+                        objNode.Collapse();
+                    }
+                }
+            }
         }
 
         private void frmCreate_Load(object sender, EventArgs e)
