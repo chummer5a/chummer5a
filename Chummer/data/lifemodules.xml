@@ -6949,10 +6949,10 @@
 					<val>1</val>
 				</knowledgeskilllevel>
 				<nuyenamt>16000</nuyenamt>
-				<addqualities>
-					<!--todo: choose biocompatibility type-->
-					<addquality>Biocompatability (Cyberware)</addquality>
-				</addqualities>
+				<selectquality>
+          <quality>Biocompatability (Cyberware)</quality>
+          <quality>Biocompatability (Bioware)</quality>
+				</selectquality>
 			</bonus>
 			<!--todo: Special: 16,000 nuyen in augmentations-->
 			<story>$real grew up a lab rat, used by mad scientists to test augmentations. On one hand, $real essence was irreparably shredded. On the other hand free ware! Score!</story>

@@ -81,6 +81,7 @@ Data Changes:
 - Removed Undeducated quality from Centaurs, per undocumented Run Faster changes. 
 - Fixed incorrect pricing for the Lion's Roar cologne. 
 - Added missing Road Strips from Rigger 5.0.
+- Added a choice between BioCompatibility (Cyberware) and BioCompatibility (Bioware) to the Test Subject life module. 
 
 New Strings: 
 
