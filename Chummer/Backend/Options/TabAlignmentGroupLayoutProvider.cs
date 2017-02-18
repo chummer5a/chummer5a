@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Point = System.Drawing.Point;
 
@@ -18,6 +19,11 @@ namespace Chummer.Backend.Options
      */
     public class TabAlignmentGroupLayoutProvider : IGroupLayoutProvider
     {
+        private class LineInfo
+        {
+            public int Parts { get; set; }
+            public int ControlIndex { get; set; } = -1;
+        }
         //The layout procedure is rather simple (in theory).  It interprents multiple \t inside text and makes sure every
         //tab accros multiple lines share same end
         //Basically the same as normal text tab, but instead of having a defined lenght in spaces, it findes
@@ -32,11 +38,60 @@ namespace Chummer.Backend.Options
 
         public List<int> ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null)
         {
-            //Keeps the mimumum size required for each tab.
             List<int> alignmentLenghts = additonalConformTarget ?? new List<int>();
-            //Loop over every line in the layout and calculate how big elements need to be
+            StringBuilder builder = new StringBuilder();
+            List<LineInfo> controlIndex = new List<LineInfo>();
+            List<CharacterRange> ranges = new List<CharacterRange>();
+            List<Region> regions = new List<Region>();
+            StringFormat format = new StringFormat();
+            int count;
             foreach (LayoutLineInfo line in contents)
             {
+                string[] alignmentPieces = line.LayoutString.Split(new[] { "\\t" }, StringSplitOptions.None);
+                LineInfo currentLine = new LineInfo
+                {
+                    Parts = alignmentPieces.Length
+                };
+
+                for (int i = 0; i < alignmentPieces.Length - 1; i++)
+                {
+                    if (alignmentPieces[i].Contains("{}"))
+                    {
+                        currentLine.ControlIndex = i + 1;
+                        currentLine.Parts++;
+                        string[] sides = alignmentPieces[i].Split(split, 2, StringSplitOptions.None);
+
+                        ranges.Add(new CharacterRange(builder.Length, sides[0].Length));
+                        builder.AppendLine(alignmentPieces[i]);
+                        UpdateRegions(builder, regions, ranges, format, rendergarget);
+
+                        ranges.Add(new CharacterRange(builder.Length, sides[1].Length));
+                        builder.AppendLine(alignmentPieces[i]);
+                        UpdateRegions(builder, regions, ranges, format, rendergarget);
+                    }
+                    else
+                    {
+                        ranges.Add(new CharacterRange(builder.Length, alignmentPieces[i].Length));
+                        builder.AppendLine(alignmentPieces[i]);
+                        UpdateRegions(builder, regions, ranges, format, rendergarget);
+                    }
+
+                }
+                controlIndex.Add(currentLine);
+            }
+
+
+            UpdateRegions(builder, regions, ranges, format, rendergarget, force:true);
+
+
+
+
+            //Keeps the mimumum size required for each tab.
+            //Loop over every line in the layout and calculate how big elements need to be
+            int regionCount = 0;
+            for (int j = 0; j < contents.Count; j++)
+            {
+                LayoutLineInfo line = contents[j];
                 string[] alignmentPieces = line.LayoutString.Split(new[] { "\\t" }, StringSplitOptions.None);
                 Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
 
@@ -46,22 +101,38 @@ namespace Chummer.Backend.Options
                 for (int i = 0; i < alignmentPieces.Length - 1; i++)
                 {
                     Console.WriteLine("Processing {0}", alignmentPieces[i]);
+                    RectangleF rect = regions[regionCount++].GetBounds(rendergarget);
+                    float size = rect.Width;
+                    if (controlIndex[j].ControlIndex == 1)
+                    {
+                        size += line.ControlSize.Width + regions[regionCount++].GetBounds(rendergarget).Width;
+                    }
                     if (alignmentLenghts.Count > i)
                     {
 
-                        alignmentLenghts[i] = Math.Max(
-                            alignmentLenghts[i],
-                            (int)rendergarget.MeasureString(alignmentPieces[i], LayoutOptions.Font, Big, StringFormat.GenericTypographic).Width);
+                        alignmentLenghts[i] = Math.Max(alignmentLenghts[i], (int)size);
                     }
                     else
                     {
-                        Console.WriteLine($"Creating new align on \"{alignmentPieces[i]}\"{i}");
-                        alignmentLenghts.Add(ElementSize(rendergarget, alignmentPieces[i], line.ControlSize, line.ControlOffset).Width);
+                        alignmentLenghts.Add((int)size);
                     }
                 }
             }
 
             return alignmentLenghts;
+        }
+
+        private void UpdateRegions(StringBuilder builder, List<Region> regions, List<CharacterRange> ranges, StringFormat format, Graphics target, bool force = false)
+        {
+            if (ranges.Count == 32 || force)
+            {
+                format.SetMeasurableCharacterRanges(ranges.ToArray());
+                regions.AddRange(target.MeasureCharacterRanges(builder.ToString(), LayoutOptions.Font,
+                    new RectangleF(0, 0, float.MaxValue, float.MaxValue), format));
+
+                builder.Clear();
+                ranges.Clear();
+            }
         }
 
         /// <summary>
