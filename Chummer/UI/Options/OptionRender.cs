@@ -41,51 +41,15 @@ namespace Chummer.UI.Options
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            PointF offset = new PointF(5, 5);
+            Stopwatch sw = Stopwatch.StartNew();
             base.OnPaint(e);
 
-            Stopwatch sw = Stopwatch.StartNew();
+            sw.TaskEnd("base");
+
             //We don't quite know what has changed, so for now i'm just going to redo everything.
             //If a profiler points this out as a performance problem someday, lots of stuff can probably be cached.
             //Can probably also restrict drawing arear...
-
-            PointF offset = new PointF(5, 5);
-
-            if (renderData == null)
-            {
-                sharedLayoutSpacing = new List<int>();
-                renderData = new List<LayoutRenderInfo>();
-
-                foreach (PreRenderGroup preRenderGroup in preRenderData)
-                {
-                    _defaultGroupLayoutProvider.ComputeLayoutSpacing(
-                        e.Graphics,
-                        preRenderGroup.Lines,
-                        sharedLayoutSpacing
-                    );
-                }
-
-                foreach (PreRenderGroup preRenderGroup in preRenderData)
-                {
-                    LayoutRenderInfo renderGroup = _defaultGroupLayoutProvider.PerformLayout(e.Graphics,
-                        preRenderGroup.Lines, sharedLayoutSpacing);
-
-                    for (int i = 0; i < preRenderGroup.Controls.Count; i++)
-                    {
-                        preRenderGroup.Controls[i].Location =
-                            new System.Drawing.Point(renderGroup.ControlLocations[i].X + (int) offset.X,
-                                renderGroup.ControlLocations[i].Y + (int) offset.Y);
-                    }
-
-                    renderData.Add(renderGroup);
-                }
-                //In theory: Get sizes of each preRenderGroup (job for _defaultGroupLayoutProvider)
-                //and make a "big" layout class do a layout of each group
-
-                //This would be the location of each layoutgroup, but such thing don't exist...
-
-                sw.TaskEnd("Render setup");
-            }
-
 
             foreach (LayoutRenderInfo renderGroup in renderData)
             {
@@ -103,6 +67,7 @@ namespace Chummer.UI.Options
 
         public void SetContents(List<OptionRenderItem> contents)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             if (contents.Count == 0)
             {
                 if (Controls.Count > 0) CleanOldContents();
@@ -112,6 +77,8 @@ namespace Chummer.UI.Options
             bool oldVis = Visible;
             Visible = false;
             //TODO: Better support for any RenderItems that isnt EntryProxy
+
+            sw.TaskEnd("Initial");
 
             List<OptionItem> entries = contents
                 .OfType<OptionItem>()
@@ -126,10 +93,14 @@ namespace Chummer.UI.Options
                         .Construct(o)
                 ).ToList();
 
+            sw.TaskEnd("CreateControl");
+
             foreach (Control control in controls)
             {
                 Controls.Add(control);
             }
+
+            sw.TaskEnd("AddControl");
 
             preRenderData = new List<PreRenderGroup>()
             {
@@ -145,8 +116,16 @@ namespace Chummer.UI.Options
                 }
             };
 
+            sw.TaskEnd("PreRender");
+
+            SetupLayout();
+
+            sw.TaskEnd("Layout");
+
             Visible = oldVis;
             this.Invalidate();
+
+            sw.TaskEnd("Last");
         }
 
         private void CleanOldContents()
@@ -159,6 +138,42 @@ namespace Chummer.UI.Options
             sharedLayoutSpacing.Clear();
         }
 
+
+        void SetupLayout()
+        {
+            PointF offset = new PointF(5, 5);
+            Graphics g = this.CreateGraphics();
+            sharedLayoutSpacing = new List<int>();
+            renderData = new List<LayoutRenderInfo>();
+
+            foreach (PreRenderGroup preRenderGroup in preRenderData)
+            {
+                _defaultGroupLayoutProvider.ComputeLayoutSpacing(
+                    g                    ,
+                    preRenderGroup.Lines,
+                    sharedLayoutSpacing
+                );
+            }
+
+            foreach (PreRenderGroup preRenderGroup in preRenderData)
+            {
+                LayoutRenderInfo renderGroup = _defaultGroupLayoutProvider.PerformLayout(g,
+                    preRenderGroup.Lines, sharedLayoutSpacing);
+
+                for (int i = 0; i < preRenderGroup.Controls.Count; i++)
+                {
+                    preRenderGroup.Controls[i].Location =
+                        new System.Drawing.Point(renderGroup.ControlLocations[i].X + (int) offset.X,
+                            renderGroup.ControlLocations[i].Y + (int) offset.Y);
+                }
+
+                renderData.Add(renderGroup);
+            }
+            //In theory: Get sizes of each preRenderGroup (job for _defaultGroupLayoutProvider)
+            //and make a "big" layout class do a layout of each group
+
+            //This would be the location of each layoutgroup, but such thing don't exist...
+        }
 
         private readonly Dictionary<FontStyle, Font> _fontCache = new Dictionary<FontStyle, Font>();
         private Font GetCachedFont(FontStyle textInfoStyle)
