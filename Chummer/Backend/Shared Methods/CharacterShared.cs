@@ -201,13 +201,13 @@ namespace Chummer
 			// Update the Condition Monitor labels.
 			lblPhysical.Text = intCMPhysical.ToString();
 			lblStun.Text = intCMStun.ToString();
-			string strCM = "8 + (BOD/2)(" + ((intBOD + 1)/2).ToString() + ")";
+			string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 				         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM).ToString() + ")";
 			tipTooltip.SetToolTip(lblPhysical, strCM);
-			strCM = "8 + (WIL/2)(" + ((intWIL + 1) / 2).ToString() + ")";
-			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
+			strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
+            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 				         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
 			tipTooltip.SetToolTip(lblStun, strCM);
@@ -271,16 +271,16 @@ namespace Chummer
 				nudKATT.Maximum = objAttribute.TotalMaximum;
 				nudKATT.Value = objAttribute.Karma;
 			}
-			lblATTMetatype.Text = string.Format("{0} / {1} ({2})", objAttribute.TotalMinimum, objAttribute.TotalMaximum,
-				objAttribute.TotalAugmentedMaximum);
+			lblATTMetatype.Text =
+			    $"{objAttribute.TotalMinimum} / {objAttribute.TotalMaximum} ({objAttribute.TotalAugmentedMaximum})";
 			if (objAttribute.HasModifiers)
 			{
-				lblATTAug.Text = string.Format("{0} ({1})", objAttribute.Value, objAttribute.TotalValue);
+				lblATTAug.Text = $"{objAttribute.Value} ({objAttribute.TotalValue})";
 				tipTooltip.SetToolTip(lblATTAug, objAttribute.ToolTip());
 			}
 			else
 			{
-				lblATTAug.Text = string.Format("{0}", objAttribute.Value);
+				lblATTAug.Text = $"{objAttribute.Value}";
 				tipTooltip.SetToolTip(lblATTAug, string.Empty);
 			}
 		}
@@ -299,27 +299,30 @@ namespace Chummer
             lblMental.Text = _objCharacter.LimitMental.ToString();
             lblSocial.Text = _objCharacter.LimitSocial.ToString();
 
-            string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
-            string strMental = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
-            string strSocial = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeESSShort"), _objCharacter.Essence.ToString(GlobalOptions.CultureInfo));
+            string strPhysical =
+                $"({_objCharacter.STR.DisplayAbbrev} [{_objCharacter.STR.TotalValue}] * 2) + {_objCharacter.BOD.DisplayAbbrev} [{_objCharacter.BOD.TotalValue}] + {_objCharacter.REA.DisplayAbbrev} [{_objCharacter.REA.TotalValue}] / 3";
+            string strMental =
+                $"({_objCharacter.LOG.DisplayAbbrev} [{_objCharacter.LOG.TotalValue}] * 2) + {_objCharacter.INT.DisplayAbbrev} [{_objCharacter.INT.TotalValue}] + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] / 3";
+            string strSocial =
+                $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence.ToString(GlobalOptions.CultureInfo)}] / 3";
 
-		    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+		    foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(
+                objLoopImprovment => (objLoopImprovment.ImproveType == Improvement.ImprovementType.PhysicalLimit 
+                || objLoopImprovment.ImproveType == Improvement.ImprovementType.SocialLimit 
+                || objLoopImprovment.ImproveType == Improvement.ImprovementType.MentalLimit) && objLoopImprovment.Enabled))
 		    {
-		        if (objLoopImprovement.Enabled)
-		        {
 		            switch (objLoopImprovement.ImproveType)
 		            {
                         case Improvement.ImprovementType.PhysicalLimit:
-		                    strPhysical += " + " + _objCharacter.GetObjectName(objLoopImprovement) + " (" + objLoopImprovement.Value.ToString() + ")";
+		                    strPhysical += $" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})";
                             break;
                         case Improvement.ImprovementType.MentalLimit:
-                            strMental += " + " + _objCharacter.GetObjectName(objLoopImprovement) + " (" + objLoopImprovement.Value.ToString() + ")";
+                            strMental += $" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})";
                             break;
                         case Improvement.ImprovementType.SocialLimit:
-                            strSocial += " + " + _objCharacter.GetObjectName(objLoopImprovement) + " (" + objLoopImprovement.Value.ToString() + ")";
+                            strSocial += $" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})";
                             break;
                     }
-		        }
 		    }
 
             tipTooltip.SetToolTip(lblPhysical, strPhysical);

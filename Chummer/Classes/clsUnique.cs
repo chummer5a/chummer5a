@@ -50,6 +50,8 @@ namespace Chummer
         private int _intBase = 0;
         private int _intKarma = 0;
 		private string _strAbbrev;
+	    private string _strDisplayAbbrev;
+	    private string _strDisplayName;
 		public Character _objCharacter;
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -776,16 +778,46 @@ namespace Chummer
 				return _strAbbrev;
 			}
 		}
-		#endregion
 
-		#region Methods
-		/// <summary>
-		/// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
-		/// </summary>
-		/// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
-		/// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
-		/// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
-		public void AssignLimits(string strMin, string strMax, string strAug)
+        /// <summary>
+        /// Translated abbreviation of the attribute.
+        /// </summary>
+	    public string DisplayAbbrev
+	    {
+	        get
+	        {
+                if (string.IsNullOrWhiteSpace(_strDisplayAbbrev))
+                {
+                    _strDisplayAbbrev = LanguageManager.Instance.GetString($"String_Attribute{Abbrev}Short");
+                }
+	            return _strDisplayAbbrev;
+	        }
+        }
+
+        /// <summary>
+        /// Translated name of the attribute.
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strDisplayName))
+                {
+                    _strDisplayName = LanguageManager.Instance.GetString($"String_Attribute{Abbrev}Long");
+                }
+                return _strDisplayName;
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
+        /// </summary>
+        /// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        public void AssignLimits(string strMin, string strMax, string strAug)
 		{
 		    int intTmp;
 		    int.TryParse(strMin, out intTmp);

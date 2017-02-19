@@ -2296,13 +2296,13 @@ namespace Chummer.Backend.Equipment
 
 				intRCBase += intStrRC + 1; 
 				intRCFull += intStrRC + 1;
-				strRCTip += " + " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + "[" + _objCharacter.STR.TotalValue.ToString() + "/3 = " + intStrRC.ToString() + "]";
+				strRCTip += $" + {_objCharacter.STR.DisplayAbbrev} [{_objCharacter.STR.TotalValue}] /3 = {intStrRC}]";
                 // If the full RC is not higher than the base, only the base value is shown.
                 strRC = intRCBase.ToString();
                 if (intRCFull > intRCBase)
 				{
-					strRC += " (" + intRCFull.ToString() + ")";
-				}
+					strRC += $" ({intRCFull})";
+                }
 
 				_strRCTip = strRCTip;
 

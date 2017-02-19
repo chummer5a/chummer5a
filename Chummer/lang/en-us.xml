@@ -758,6 +758,18 @@
 			<key>String_StackedFocus</key>
 			<text>Stacked Focus</text>
 		</string>
+    <string>
+      <key>String_Initiative</key>
+      <text>{0} +{1}d6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiative</key>
+      <text>{0} + DP +{1}d6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiativeLong</key>
+      <text>{0} + Data Processing +{1}d6</text>
+    </string>
 		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>
@@ -4920,7 +4932,7 @@ Do you want to continue?</text>
 		<string>
 			<key>Tip_OtherCareerKarma</key>
 			<text>The amount of Karma the character has accumulated over their career.</text>
-		</string>
+		</string>s
 		<!-- End Region-->
 		<!-- Region Condition Monitor Tab -->
 		<string>
@@ -4965,6 +4977,10 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Spell Defence Tab-->
+    <string>
+      <key>String_SpellResistanceDice</key>
+      <text>Spell Resistance Dice</text>
+    </string>
 		<string>
 			<key>Label_CounterspellingDice</key>
 			<text>Counterspelling Dice</text>
@@ -7574,7 +7590,7 @@ Do you want to continue?</text>
 			<text>Select a Program Option</text>
 		</string>
 		<!-- End Region-->
-		<!-- Advanced Programs Tab -->
+		<!-- Region Advanced Programs Tab -->
 		<string>
 			<key>Tab_AdvancedPrograms</key>
 			<text>Advanced Programs</text>
@@ -7596,7 +7612,7 @@ Do you want to continue?</text>
 			<text>Selected AI Programs and Advanced Programs</text>
 		</string>
 		<!-- End Region-->
-		<!-- Select AI Program Window -->
+		<!-- Region Select AI Program Window -->
 		<string>
 			<key>Title_SelectAIProgram</key>
 			<text>Select AI Program or Advanced Program</text>

@@ -954,15 +954,12 @@ namespace Chummer
 
                 // Update the Drain CharacterAttribute Value.
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
+			    string strDrain = lblDrainAttributes.Text;
+                foreach (string strAttribute in Character.AttributeStrings)
+                {
+                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                    strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
+                }
                 int intDrain = 0;
                 try
 				{
@@ -984,15 +981,12 @@ namespace Chummer
 
                 // Update the Fading CharacterAttribute Value.
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strFading = lblFadingAttributes.Text.Replace(_objCharacter.BOD.Abbrev, _objCharacter.BOD.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.AGI.Abbrev, _objCharacter.AGI.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.REA.Abbrev, _objCharacter.REA.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.STR.Abbrev, _objCharacter.STR.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.CHA.Abbrev, _objCharacter.CHA.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.INT.Abbrev, _objCharacter.INT.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.LOG.Abbrev, _objCharacter.LOG.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.WIL.Abbrev, _objCharacter.WIL.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.RES.Abbrev, _objCharacter.RES.TotalValue.ToString());
+			    string strFading = lblFadingAttributes.Text;
+                foreach (string strAttribute in Character.AttributeStrings)
+                {
+                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                    strFading = strFading.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
+                }
                 int intFading = 0;
                 try
 				{
@@ -3761,141 +3755,116 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
-		private void UpdateSpellDefence()
-		{
-			// Update the Spell Defence labels.
-			string strSpellTooltip = string.Empty;
-			//Indirect Dodge
-			lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ") + " +
-							  LanguageManager.Instance.GetString("String_AttributeREAShort") + "(" + _objCharacter.REA.TotalValue.ToString() + ")";
-			tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
-			//Indirect Soak
-			lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.TotalArmorRating.ToString() + ") + " +
-							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")";
-			tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
-			//Direct Soak - Mana
-			lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
-			//Direct Soak - Physical
-			lblSpellDefenceDirectSoakPhysical.Text = (_objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
-			//Detection Spells
-			lblSpellDefenceDetection.Text =
-				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
-			//Decrease Attribute - BOD
-			lblSpellDefenceDecAttBOD.Text =
-				(_objCharacter.BOD.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
-			//Decrease Attribute - AGI
-			lblSpellDefenceDecAttAGI.Text =
-				(_objCharacter.AGI.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
-			//Decrease Attribute - REA
-			lblSpellDefenceDecAttREA.Text =
-				(_objCharacter.REA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
-			//Decrease Attribute - STR
-			lblSpellDefenceDecAttSTR.Text =
-				(_objCharacter.STR.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
-			//Decrease Attribute - CHA
-			lblSpellDefenceDecAttCHA.Text =
-				(_objCharacter.CHA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
-			//Decrease Attribute - INT
-			lblSpellDefenceDecAttINT.Text =
-				(_objCharacter.INT.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
-			//Decrease Attribute - LOG
-			lblSpellDefenceDecAttLOG.Text =
-				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
-			//Decrease Attribute - WIL
-			lblSpellDefenceDecAttWIL.Text =
-				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
-			//Illusion - Mana
-			lblSpellDefenceIllusionMana.Text =
-				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
-			//Illusion - Physical
-			lblSpellDefenceIllusionPhysical.Text =
-				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
-			//Manipulation - Mental
-			lblSpellDefenceManipMental.Text =
-				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() +
-							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
-			//Manipulation - Physical
-			lbllSpellDefenceManipPhysical.Text =
-				(_objCharacter.STR.TotalValue + _objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
-			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
-							  LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")" +
-							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")" +
-							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
-			tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
-		}
+        private void UpdateSpellDefence()
+        {
+            // Update the Spell Defence labels.
+            string strSpellTooltip = string.Empty;
+            string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
+            string strCounterSpelling = LanguageManager.Instance.GetString("Label_CounterspellingDice");
+            string strSpellResistance = LanguageManager.Instance.GetString("String_SpellResistanceDice");
+            //Indirect Dodge
+            lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
+            strSpellTooltip = $"{strModifiers}: " +
+                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue})";
+            tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
+            //Indirect Soak
+            lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
+            strSpellTooltip = $"{strModifiers}: " +
+                              $"{LanguageManager.Instance.GetString("Tip_Armor")} ({_objCharacter.TotalArmorRating}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
+            tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
+            //Direct Soak - Mana
+            lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: " +
+                              $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
+            //Direct Soak - Physical
+            lblSpellDefenceDirectSoakPhysical.Text = (_objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
+            //Detection Spells
+            lblSpellDefenceDetection.Text =
+                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: " +
+                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) " +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
+            //Decrease Attribute - BOD
+            lblSpellDefenceDecAttBOD.Text =
+                (_objCharacter.BOD.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
+            //Decrease Attribute - AGI
+            lblSpellDefenceDecAttAGI.Text =
+                (_objCharacter.AGI.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.AGI.DisplayAbbrev} ({_objCharacter.AGI.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
+            //Decrease Attribute - REA
+            lblSpellDefenceDecAttREA.Text =
+                (_objCharacter.REA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
+            //Decrease Attribute - STR
+            lblSpellDefenceDecAttSTR.Text =
+                (_objCharacter.STR.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({_objCharacter.STR.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
+            //Decrease Attribute - CHA
+            lblSpellDefenceDecAttCHA.Text =
+                (_objCharacter.CHA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
+            //Decrease Attribute - INT
+            lblSpellDefenceDecAttINT.Text =
+                (_objCharacter.INT.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
+            //Decrease Attribute - LOG
+            lblSpellDefenceDecAttLOG.Text =
+                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
+            //Decrease Attribute - WIL
+            lblSpellDefenceDecAttWIL.Text =
+                (_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
+            //Illusion - Mana
+            lblSpellDefenceIllusionMana.Text =
+                (_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
+            //Illusion - Physical
+            lblSpellDefenceIllusionPhysical.Text =
+                (_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
+            //Manipulation - Mental
+            lblSpellDefenceManipMental.Text =
+                (_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
+            //Manipulation - Physical
+            lbllSpellDefenceManipPhysical.Text =
+                (_objCharacter.STR.TotalValue + _objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({_objCharacter.BOD.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+            tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
+        }
 
-		private void nudCounterspellingDice_Changed(object sender, EventArgs e)
+        private void nudCounterspellingDice_Changed(object sender, EventArgs e)
 		{
 			UpdateSpellDefence();
 		}
@@ -15750,7 +15719,7 @@ namespace Chummer
 				objLifestyle.SetInternalId(strGuid);
 				objLifestyle.Months = intMonths;
 				_objCharacter.Lifestyles[intPosition] = objLifestyle;
-				treLifestyles.SelectedNode.Text = objLifestyle.DisplayNameShort;
+				treLifestyles.SelectedNode.Text = objLifestyle.DisplayName;
 				RefreshSelectedLifestyle();
 				UpdateCharacterInfo();
 			}
@@ -17878,15 +17847,13 @@ namespace Chummer
 
                     objXmlDocument = new XmlDocument();
                     nav = objXmlDocument.CreateNavigator();
-                    string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
+				    string strDrain = lblDrainAttributes.Text;
+
+                    foreach (string strAttribute in Character.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                        strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
+                    }
                     int intDrain = 0;
                     try
 					{
@@ -17898,15 +17865,13 @@ namespace Chummer
 					}
                     intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
 
-                    strTip = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")");
-                    strTip = strTip.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), LanguageManager.Instance.GetString("String_AttributeMAGShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")");
+				    strTip = lblDrainAttributes.Text;
+
+                    foreach (string strAttribute in Character.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                        strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+                    }
 
                     if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance) != 0)
                         strTip += " + " + LanguageManager.Instance.GetString("Tip_Skill_DicePoolModifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance).ToString() + ")";
@@ -18546,16 +18511,17 @@ namespace Chummer
                 cboSpiritIllusion.Visible = false;
                 cboSpiritManipulation.Visible = false;
 
-                lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("BOD", LanguageManager.Instance.GetString("String_AttributeBODShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("AGI", LanguageManager.Instance.GetString("String_AttributeAGIShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("REA", LanguageManager.Instance.GetString("String_AttributeREAShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("STR", LanguageManager.Instance.GetString("String_AttributeSTRShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("CHA", LanguageManager.Instance.GetString("String_AttributeCHAShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("INT", LanguageManager.Instance.GetString("String_AttributeINTShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("LOG", LanguageManager.Instance.GetString("String_AttributeLOGShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("WIL", LanguageManager.Instance.GetString("String_AttributeWILShort"));
-                lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("MAG", LanguageManager.Instance.GetString("String_AttributeMAGShort"));
+                string strDrain = objXmlTradition["drain"].InnerText;
+                strDrain = strDrain.Replace("BOD", _objCharacter.BOD.DisplayAbbrev);
+                strDrain = strDrain.Replace("AGI", _objCharacter.AGI.DisplayAbbrev);
+                strDrain = strDrain.Replace("REA", _objCharacter.REA.DisplayAbbrev);
+                strDrain = strDrain.Replace("STR", _objCharacter.STR.DisplayAbbrev);
+                strDrain = strDrain.Replace("CHA", _objCharacter.CHA.DisplayAbbrev);
+                strDrain = strDrain.Replace("INT", _objCharacter.INT.DisplayAbbrev);
+                strDrain = strDrain.Replace("LOG", _objCharacter.LOG.DisplayAbbrev);
+                strDrain = strDrain.Replace("WIL", _objCharacter.WIL.DisplayAbbrev);
+                strDrain = strDrain.Replace("MAG", _objCharacter.MAG.DisplayAbbrev);
+                lblDrainAttributes.Text = strDrain;
                 _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
 
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls)
@@ -18584,17 +18550,14 @@ namespace Chummer
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("streams.xml");
 
 			XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboStream.SelectedValue + "\"]");
-			lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("BOD", LanguageManager.Instance.GetString("String_AttributeBODShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("AGI", LanguageManager.Instance.GetString("String_AttributeAGIShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("REA", LanguageManager.Instance.GetString("String_AttributeREAShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("STR", LanguageManager.Instance.GetString("String_AttributeSTRShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("CHA", LanguageManager.Instance.GetString("String_AttributeCHAShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("INT", LanguageManager.Instance.GetString("String_AttributeINTShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("LOG", LanguageManager.Instance.GetString("String_AttributeLOGShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("WIL", LanguageManager.Instance.GetString("String_AttributeWILShort"));
-			lblFadingAttributes.Text = lblFadingAttributes.Text.Replace("RES", LanguageManager.Instance.GetString("String_AttributeRESShort"));
-			_objCharacter.TechnomancerStream = cboStream.SelectedValue.ToString();
+            string strDrain = objXmlTradition["drain"].InnerText;
+            foreach (string strAttribute in Character.AttributeStrings)
+            {
+                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+            }
+            lblFadingAttributes.Text = strDrain;
+            _objCharacter.TechnomancerStream = cboStream.SelectedValue.ToString();
 
 			foreach (SpiritControl objSpriteControl in panSprites.Controls)
 				objSpriteControl.RebuildSpiritList(cboStream.SelectedValue.ToString());
@@ -20841,59 +20804,56 @@ namespace Chummer
 				// Skill Limits
 				RefreshLimits(lblPhysical, lblMental, lblSocial, lblAstral, tipTooltip);
 
-				// Initiative.
-				lblINI.Text = _objCharacter.Initiative;
-                string strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
+                // Initiative.
+                lblINI.Text = _objCharacter.Initiative;
+                string strInitText = LanguageManager.Instance.GetString("String_Initiative");
+                string strMatrixInitText = LanguageManager.Instance.GetString("String_MatrixInitiativeLong");
+                string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
+                string strInit = $"{_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.Value}) + {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.Value})";
                 if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
                     strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
-                strInit += " + (" + _objCharacter.InitiativeDice.ToString() + "d6)";
-                tipTooltip.SetToolTip(lblINI, strInit);
+                tipTooltip.SetToolTip(lblINI, strInitText.Replace("{0}", strInit).Replace("{1}", _objCharacter.InitiativeDice.ToString()));
 
-				// Astral Initiative.
-				lblAstralINI.Visible = _objCharacter.MAGEnabled;
-				if (_objCharacter.MAGEnabled)
+                // Astral Initiative.
+                lblAstralINI.Visible = _objCharacter.MAGEnabled;
+                if (_objCharacter.MAGEnabled)
                 {
                     lblAstralINI.Text = _objCharacter.AstralInitiative;
-                    strInit = "INT (" + _objCharacter.INT.TotalValue.ToString() + ") x 2";
+                    strInit = $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.Value}) x 2";
                     if (_objCharacter.INT.AttributeModifiers > 0)
-                        strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INT.AttributeModifiers).ToString() + ")";
-                    strInit += " + 2d6";
-                    tipTooltip.SetToolTip(lblAstralINI, strInit);
+                        strInit += $"{strModifiers} ({_objCharacter.INT.AttributeModifiers})";
+                    tipTooltip.SetToolTip(lblAstralINI, strInitText.Replace("{0}", strInit).Replace("{1}", _objCharacter.AstralInitiativeDice.ToString()));
                 }
 
                 // Matrix Initiative (AR).
                 lblMatrixINI.Text = _objCharacter.MatrixInitiative;
-                strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
+                strInit = $"{_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.Value}) + {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.Value})";
                 if (_objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
-                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.REA.AttributeModifiers + _objCharacter.INT.AttributeModifiers).ToString() + ")";
-                strInit += " + 1d6";
-                tipTooltip.SetToolTip(lblMatrixINI, strInit);
+                    strInit += $"{strModifiers} ({_objCharacter.REA.AttributeModifiers + _objCharacter.INT.AttributeModifiers})";
+                tipTooltip.SetToolTip(lblMatrixINI, strInitText.Replace("{0}", strInit).Replace("{1}", _objCharacter.InitiativeDice.ToString()));
 
                 // Matrix Initiative (Cold).
                 lblMatrixINICold.Text = _objCharacter.MatrixInitiativeCold;
-                strInit = "Data Processing + INT (" + _objCharacter.INT.TotalValue.ToString() + ")";
+                strInit = strMatrixInitText.Replace("{0}", _objCharacter.INT.Value.ToString()).Replace("{1}", _objCharacter.MatrixInitiativeColdDice.ToString());
                 if (_objCharacter.INT.AttributeModifiers > 0)
-                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INT.AttributeModifiers).ToString() + ")";
-                strInit += " + 3d6";
+                    strInit += $"{strModifiers} ({_objCharacter.INT.AttributeModifiers})";
                 tipTooltip.SetToolTip(lblMatrixINICold, strInit);
 
                 // Matrix Initiative (Hot).
                 lblMatrixINIHot.Text = _objCharacter.MatrixInitiativeHot;
-                strInit = "Data Processing + INT (" + _objCharacter.INT.TotalValue.ToString() + ")";
+                strInit = strMatrixInitText.Replace("{0}", _objCharacter.INT.Value.ToString()).Replace("{1}", _objCharacter.MatrixInitiativeHotDice.ToString());
                 if (_objCharacter.INT.AttributeModifiers > 0)
-                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INT.AttributeModifiers).ToString() + ")";
-                strInit += " + 4d6";
+                    strInit += $"{strModifiers} ({_objCharacter.INT.AttributeModifiers})";
                 tipTooltip.SetToolTip(lblMatrixINIHot, strInit);
 
                 // Rigger Initiative.
                 lblRiggingINI.Text = _objCharacter.Initiative;
-                strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
+                strInit = $"{_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.Value}) + {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.Value})";
                 if (_objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
-                    strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.REA.AttributeModifiers + _objCharacter.INT.AttributeModifiers).ToString() + ")";
-                strInit += " + 1d6";
-                tipTooltip.SetToolTip(lblRiggingINI, strInit);
+                    strInit += $"{strModifiers} ({_objCharacter.REA.AttributeModifiers + _objCharacter.INT.AttributeModifiers})";
+                tipTooltip.SetToolTip(lblRiggingINI, strInitText.Replace("{0}", strInit).Replace("{1}", _objCharacter.InitiativeDice.ToString()));
 
-				if (_objCharacter.AdeptEnabled)
+                if (_objCharacter.AdeptEnabled)
 					CalculatePowerPoints();
 				if ((_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter) || _objCharacter.MetatypeCategory.EndsWith("Spirits"))
 				{
@@ -20921,36 +20881,36 @@ namespace Chummer
 				lblSwim.Text = _objCharacter.Swim;
 				lblFly.Text = _objCharacter.Fly;
 
-				// Special CharacterAttribute-Only Test.
-				lblComposure.Text = _objCharacter.Composure.ToString();
-				strTip = "WIL (" + _objCharacter.WIL.TotalValue.ToString() + ") + CHA (" + _objCharacter.CHA.TotalValue.ToString() + ")";
-				tipTooltip.SetToolTip(lblComposure, strTip);
-				lblJudgeIntentions.Text = _objCharacter.JudgeIntentions.ToString();
-				strTip = "INT (" + _objCharacter.INT.TotalValue.ToString() + ") + CHA (" + _objCharacter.CHA.TotalValue.ToString() + ")";
-				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions) != 0)
-					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions).ToString() + ")";
-				tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
-				lblLiftCarry.Text = _objCharacter.LiftAndCarry.ToString();
-				strTip = "STR (" + _objCharacter.STR.TotalValue.ToString() + ") + BOD (" + _objCharacter.BOD.TotalValue.ToString() + ")";
-				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry) != 0)
-					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry).ToString() + ")";
-				strTip += "\n" + LanguageManager.Instance.GetString("Tip_LiftAndCarry").Replace("{0}", (_objCharacter.STR.TotalValue * 15).ToString()).Replace("{1}", (_objCharacter.STR.TotalValue * 10).ToString());
-				tipTooltip.SetToolTip(lblLiftCarry, strTip);
-				lblMemory.Text = _objCharacter.Memory.ToString();
-				strTip = "LOG (" + _objCharacter.LOG.TotalValue.ToString() + ") + WIL (" + _objCharacter.WIL.TotalValue.ToString() + ")";
-				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Memory) != 0)
-					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory).ToString() + ")";
-				tipTooltip.SetToolTip(lblMemory, strTip);
+                // Special CharacterAttribute-Only Test.
+                lblComposure.Text = _objCharacter.Composure.ToString();
+                strTip = $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) + {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue})";
+                tipTooltip.SetToolTip(lblComposure, strTip);
+                lblJudgeIntentions.Text = _objCharacter.JudgeIntentions.ToString();
+                strTip = $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue})";
+                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions) != 0)
+                    strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions).ToString() + ")";
+                tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
+                lblLiftCarry.Text = _objCharacter.LiftAndCarry.ToString();
+                strTip = $"{_objCharacter.STR.DisplayAbbrev} ({_objCharacter.STR.TotalValue}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
+                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry) != 0)
+                    strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry).ToString() + ")";
+                strTip += "\n" + LanguageManager.Instance.GetString("Tip_LiftAndCarry").Replace("{0}", (_objCharacter.STR.TotalValue * 15).ToString()).Replace("{1}", (_objCharacter.STR.TotalValue * 10).ToString());
+                tipTooltip.SetToolTip(lblLiftCarry, strTip);
+                lblMemory.Text = _objCharacter.Memory.ToString();
+                strTip = $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) + {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue})";
+                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Memory) != 0)
+                    strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory).ToString() + ")";
+                tipTooltip.SetToolTip(lblMemory, strTip);
 
-				// Career Karma.
-				lblCareerKarma.Text = $"{_objCharacter.CareerKarma:###,###,##0}";
+                // Career Karma.
+                lblCareerKarma.Text = $"{_objCharacter.CareerKarma:###,###,##0}";
 
 				// Career Nuyen.
 				lblCareerNuyen.Text = $"{_objCharacter.CareerNuyen:###,###,##0¥}";
 
 				// Update Damage Resistance Pool.
 				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) + _objCharacter.TotalArmorRating).ToString();
-				strTip = LanguageManager.Instance.GetString("String_AttributeBODShort") + " + " + LanguageManager.Instance.GetString("Tip_Armor");
+				strTip = $"{_objCharacter.BOD.DisplayAbbrev} + {LanguageManager.Instance.GetString("Tip_Armor")}";
 				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) != 0)
 					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance).ToString() + ")";
 				tipTooltip.SetToolTip(lblCMDamageResistancePool, strTip);
@@ -24920,22 +24880,22 @@ namespace Chummer
 			}
 			tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.Instance.GetString("Tip_BurnStreetCred"));
 
-			// CharacterAttribute Labels.
-			lblBODLabel.Text = LanguageManager.Instance.GetString("String_AttributeBODLong") + " (" + LanguageManager.Instance.GetString("String_AttributeBODShort") + ")";
-			lblAGILabel.Text = LanguageManager.Instance.GetString("String_AttributeAGILong") + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + ")";
-			lblREALabel.Text = LanguageManager.Instance.GetString("String_AttributeREALong") + " (" + LanguageManager.Instance.GetString("String_AttributeREAShort") + ")";
-			lblSTRLabel.Text = LanguageManager.Instance.GetString("String_AttributeSTRLong") + " (" + LanguageManager.Instance.GetString("String_AttributeSTRShort") + ")";
-			lblCHALabel.Text = LanguageManager.Instance.GetString("String_AttributeCHALong") + " (" + LanguageManager.Instance.GetString("String_AttributeCHAShort") + ")";
-			lblINTLabel.Text = LanguageManager.Instance.GetString("String_AttributeINTLong") + " (" + LanguageManager.Instance.GetString("String_AttributeINTShort") + ")";
-			lblLOGLabel.Text = LanguageManager.Instance.GetString("String_AttributeLOGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeLOGShort") + ")";
-			lblWILLabel.Text = LanguageManager.Instance.GetString("String_AttributeWILLong") + " (" + LanguageManager.Instance.GetString("String_AttributeWILShort") + ")";
-			lblEDGLabel.Text = LanguageManager.Instance.GetString("String_AttributeEDGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeEDGShort") + ")";
-			lblMAGLabel.Text = LanguageManager.Instance.GetString("String_AttributeMAGLong") + " (" + LanguageManager.Instance.GetString("String_AttributeMAGShort") + ")";
-			lblRESLabel.Text = LanguageManager.Instance.GetString("String_AttributeRESLong") + " (" + LanguageManager.Instance.GetString("String_AttributeRESShort") + ")";
+            // CharacterAttribute Labels.
+            lblBODLabel.Text = $"{_objCharacter.BOD.DisplayName} ({_objCharacter.BOD.DisplayAbbrev})";
+            lblAGILabel.Text = $"{_objCharacter.AGI.DisplayName} ({_objCharacter.AGI.DisplayAbbrev})";
+            lblREALabel.Text = $"{_objCharacter.REA.DisplayName} ({_objCharacter.REA.DisplayAbbrev})";
+            lblSTRLabel.Text = $"{_objCharacter.STR.DisplayName} ({_objCharacter.STR.DisplayAbbrev})";
+            lblCHALabel.Text = $"{_objCharacter.CHA.DisplayName} ({_objCharacter.CHA.DisplayAbbrev})";
+            lblINTLabel.Text = $"{_objCharacter.INT.DisplayName} ({_objCharacter.INT.DisplayAbbrev})";
+            lblLOGLabel.Text = $"{_objCharacter.LOG.DisplayName} ({_objCharacter.LOG.DisplayAbbrev})";
+            lblWILLabel.Text = $"{_objCharacter.WIL.DisplayName} ({_objCharacter.WIL.DisplayAbbrev})";
+            lblEDGLabel.Text = $"{_objCharacter.EDG.DisplayName} ({_objCharacter.EDG.DisplayAbbrev})";
+            lblMAGLabel.Text = $"{_objCharacter.MAG.DisplayName} ({_objCharacter.MAG.DisplayAbbrev})";
+            lblRESLabel.Text = $"{_objCharacter.RES.DisplayName} ({_objCharacter.RES.DisplayAbbrev})";
 
-			// Reposition controls based on their new sizes.
-			// Common Tab.
-			txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
+            // Reposition controls based on their new sizes.
+            // Common Tab.
+            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
 			txtAlias.Width = lblMetatypeLabel.Left - 6 - txtAlias.Left;
 			cmdSwapQuality.Left = cmdAddQuality.Left + cmdAddQuality.Width + 6;
 			cmdDeleteQuality.Left = cmdSwapQuality.Left + cmdSwapQuality.Width + 6;
@@ -27026,16 +26986,13 @@ namespace Chummer
                 return;
 
             _objCharacter.TraditionDrain = cboDrain.Text;
-            lblDrainAttributes.Text = cboDrain.Text;
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("BOD", LanguageManager.Instance.GetString("String_AttributeBODShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("AGI", LanguageManager.Instance.GetString("String_AttributeAGIShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("REA", LanguageManager.Instance.GetString("String_AttributeREAShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("STR", LanguageManager.Instance.GetString("String_AttributeSTRShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("CHA", LanguageManager.Instance.GetString("String_AttributeCHAShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("INT", LanguageManager.Instance.GetString("String_AttributeINTShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("LOG", LanguageManager.Instance.GetString("String_AttributeLOGShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("WIL", LanguageManager.Instance.GetString("String_AttributeWILShort"));
-            lblDrainAttributes.Text = lblDrainAttributes.Text.Replace("MAG", LanguageManager.Instance.GetString("String_AttributeMAGShort"));
+            string strDrain = cboDrain.Text;
+            foreach (string strAttribute in Character.AttributeStrings)
+            {
+                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
+            }
+            lblDrainAttributes.Text = strDrain;
 
             UpdateCharacterInfo();
 

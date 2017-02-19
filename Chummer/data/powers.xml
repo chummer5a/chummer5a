@@ -378,6 +378,9 @@
       <name>Spell Resistance</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
+      <bonus>
+        <spellresistance>Rating</spellresistance>
+      </bonus>
       <levels>yes</levels>
       <limit>1</limit>
       <source>SR5</source>

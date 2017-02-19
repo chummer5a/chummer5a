@@ -82,6 +82,8 @@ Data Changes:
 - Fixed incorrect pricing for the Lion's Roar cologne. 
 - Added missing Road Strips from Rigger 5.0.
 - Added a choice between BioCompatibility (Cyberware) and BioCompatibility (Bioware) to the Test Subject life module. 
+- Added Spell Resistance improvement type to qualities and powers that required it. Characters with the Spell Resistance power, Magic Resistance or Arcane Arrester qualities should use the Reapply Improvements menu option to gain these bonuses. 
+- Localised all references to d6 in tooltips and such. 
 
 New Strings: 
 

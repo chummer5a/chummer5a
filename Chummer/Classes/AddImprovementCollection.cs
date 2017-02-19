@@ -102,6 +102,13 @@ namespace Chummer.Classes
             Log.Info("selecttext: " + SelectedValue);
         }
 
+	    public void spellresistance(XmlNode bonusNode)
+	    {
+	        Log.Info("spellresistance");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, string.Empty,
+                ValueToInt(bonusNode.InnerText, _intRating));
+        }
+
 	    public void enableattribute(XmlNode bonusNode)
 		{
 			Log.Info("enableattribute");
