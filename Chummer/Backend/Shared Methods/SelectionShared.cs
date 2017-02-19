@@ -29,55 +29,50 @@ namespace Chummer.Backend.Shared_Methods
             XmlDocument objCritterDocument = XmlManager.Instance.Load("critters.xml");
             XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
             // See if the character already has this Quality and whether or not multiple copies are allowed.
-            bool blnAllowMultiple = false;
             if (objXmlNode == null) return false;
-            if (objXmlNode["limit"] != null)
+            if (objXmlNode["limit"]?.InnerText != "no")
             {
-                if (objXmlNode["limit"]?.InnerText == "no")
+                switch (objXmlNode.Name)
                 {
-                    blnAllowMultiple = true;
-                }
-                else
-                {
-                    switch (objXmlNode.Attributes?["type"]?.InnerText)
-                    {
-                        //Included as an example, unused as of 15/02/17
-                        case "cyberware":
+                    //Included as an example, unused as of 15/02/17
+                    case "cyberware":
                         {
                             int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
                             int intCount =
                                 objCharacter.Cyberware.Count(objItem => objItem.Name == objXmlNode["name"]?.InnerText);
-                            if (intCount < intLimit)
+                            if (intCount > intLimit && objCharacter.Cyberware.Any(
+                                    objItem =>
+                                        objItem.Name == objXmlNode["name"]?.InnerText))
                             {
-                                blnAllowMultiple = true;
+                                if (blnShowMessage)
+                                    MessageBox.Show(
+                                        LanguageManager.Instance.GetString("Message_SelectQuality_QualityLimit"),
+                                        LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityLimit"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return false;
                             }
                             break;
                         }
-                        //Current behaviour default is for qualities to default to empty; saves data entry.
-                        default:
+                    case "quality":
                         {
                             int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
                             int intCount =
                                 objCharacter.Qualities.Count(objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            if (intCount < intLimit)
+                            if (intCount > intLimit &&
+                                objCharacter.Qualities.Any(
+                                    objItem =>
+                                        objItem.Name == objXmlNode["name"]?.InnerText &&
+                                        objItem.Name != strIgnoreQuality))
                             {
-                                blnAllowMultiple = true;
+                                if (blnShowMessage)
+                                    MessageBox.Show(
+                                        LanguageManager.Instance.GetString("Message_SelectQuality_QualityLimit"),
+                                        LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityLimit"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return false;
                             }
                             break;
                         }
-                    }
-                }
-            }
-            if (!blnAllowMultiple)
-            {
-                // Multiples aren't allowed, so make sure the character does not already have it.
-                if (objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlNode["name"]?.InnerText && objQuality.Name != strIgnoreQuality))
-                {
-                    if (blnShowMessage)
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectQuality_QualityLimit"),
-                            LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityLimit"),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return false;
                 }
             }
 

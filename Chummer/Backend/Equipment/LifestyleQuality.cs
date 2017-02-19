@@ -87,6 +87,7 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             if (objXmlLifestyleQuality["category"] != null)
 			    _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
 			_objLifestyleQualitySource = objLifestyleQualitySource;
