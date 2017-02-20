@@ -34,25 +34,6 @@ namespace Chummer.Backend.Shared_Methods
             {
                 switch (objXmlNode.Name)
                 {
-                    //Included as an example, unused as of 15/02/17
-                    case "cyberware":
-                        {
-                            int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
-                            int intCount =
-                                objCharacter.Cyberware.Count(objItem => objItem.Name == objXmlNode["name"]?.InnerText);
-                            if (intCount > intLimit && objCharacter.Cyberware.Any(
-                                    objItem =>
-                                        objItem.Name == objXmlNode["name"]?.InnerText))
-                            {
-                                if (blnShowMessage)
-                                    MessageBox.Show(
-                                        LanguageManager.Instance.GetString("Message_SelectQuality_QualityLimit"),
-                                        LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityLimit"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                return false;
-                            }
-                            break;
-                        }
                     case "quality":
                         {
                             int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);

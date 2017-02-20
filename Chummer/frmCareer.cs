@@ -7998,7 +7998,7 @@ namespace Chummer
 		private void cmdAddWeek_Click(object sender, EventArgs e)
 		{
 			CalendarWeek objWeek = new CalendarWeek();
-			if (_objCharacter.Calendar != null && _objCharacter.Calendar.Last() != null)
+			if (_objCharacter.Calendar != null && _objCharacter.Calendar.LastOrDefault() != null)
 			{
 				objWeek.Year = _objCharacter.Calendar.Last().Year;
 				objWeek.Week = _objCharacter.Calendar.Last().Week;
@@ -8107,7 +8107,7 @@ namespace Chummer
 		{
 			// Find the first date.
 			CalendarWeek objStart;
-			if (_objCharacter.Calendar != null && _objCharacter.Calendar.First() != null)
+			if (_objCharacter.Calendar != null && _objCharacter.Calendar.FirstOrDefault() != null)
 			{
 				 objStart = _objCharacter.Calendar.First();
 			}
