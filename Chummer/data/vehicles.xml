@@ -7561,6 +7561,7 @@
 			</subsystems>
 			<slots>1</slots>
 			<avail>0</avail>
+      <conditionmonitor>1</conditionmonitor>
 			<cost>7500</cost>
 			<required>
 				<vehicledetails>
@@ -7584,6 +7585,7 @@
 			</subsystems>
 			<slots>1</slots>
 			<avail>0</avail>
+      <conditionmonitor>1</conditionmonitor>
 			<cost>10000</cost>
 			<required>
 				<vehicledetails>
@@ -7607,6 +7609,7 @@
 			</subsystems>
 			<slots>1</slots>
 			<avail>0</avail>
+      <conditionmonitor>1</conditionmonitor>
 			<cost>1500</cost>
 			<required>
 				<vehicledetails>

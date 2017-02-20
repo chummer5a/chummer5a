@@ -56,6 +56,7 @@ Application Changes:
 - Altered the houserule 'Knucks Use Unarmed Combat Bonuses' to apply to any weapon that uses the Unarmed Combat skill. The houserule has been renamed and will be disabled by default. Please note that this currently effects ALL weapons that are in that category; exclusion for weapons like Shock Gloves will come in a later patch. 
 - Fixed behaviour of Lifestyle Names to properly show the name of the lifestyle type and the given lifestyle name.
 - UI Improvement: Control-clicking on a TreeNode will cause the node to expand or collapse all the treenodes below it. 
+- Added a ConditionMonitor property to vehicle mods, used for Drone Arm ConditionMonitor improvements. Vehicles with existing drone arms will need to have the arms removed and replaced. 
 
 Data Changes:
 
@@ -101,6 +102,11 @@ New Strings:
 Changed Strings:
 
 - Message_NoExtraKarma
+
+Changes Sheets:
+
+- Removed a sort for Expanses that caused incorrect sorting behaviour in 'Shadowrun 5' sheets. 
+
 Build 190
 
 Application Changes:

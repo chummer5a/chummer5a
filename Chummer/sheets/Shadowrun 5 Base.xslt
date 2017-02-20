@@ -2015,7 +2015,6 @@
 												</tr>
 												<xsl:for-each
 												select="expenses/expense[type = 'Karma']">
-												<xsl:sort select="date"/>
 												<tr>
 												<td>
 												<xsl:value-of select="date"/>
@@ -2056,7 +2055,6 @@
 												</tr>
 												<xsl:for-each
 												select="expenses/expense[type = 'Nuyen']">
-												<xsl:sort select="date"/>
 												<tr>
 												<td>
 												<xsl:value-of select="date"/>
