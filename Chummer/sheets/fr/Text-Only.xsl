@@ -24,8 +24,8 @@
 				<br />Mouvement: <xsl:value-of select="movement" />
 				<br />Karma: <xsl:value-of select="totalkarma" />
 				<br />Crédibilité: <xsl:value-of select="totalstreetcred" />
-				<br />Notoriété: <xsl:value-of select="totalnotoriety" />
-				<br />Public Awareness: <xsl:value-of select="totalpublicawareness" />
+				<br />Rumeur: <xsl:value-of select="totalnotoriety" />
+				<br />Renommée: <xsl:value-of select="totalpublicawareness" />
 				<br /><xsl:value-of select="metatype" />
 				<xsl:if test="metavariant != ''">
 					(<xsl:value-of select="metavariant" />)
@@ -40,10 +40,10 @@
 				<xsl:if test="height != '' or weight != ''">
 					<br />
 					<xsl:if test="height != ''">
-						Height <xsl:value-of select="height" /><xsl:text> </xsl:text>
+						Taille <xsl:value-of select="height" /><xsl:text> </xsl:text>
 					</xsl:if>
 					<xsl:if test="weight != ''">
-						Weight <xsl:value-of select="weight" />
+						Poids <xsl:value-of select="weight" />
 					</xsl:if>
 				</xsl:if>
 				<br />Sang-Froid: <xsl:value-of select="composure" />
@@ -248,7 +248,7 @@
 
         <xsl:if test="aiprograms/aiprogram">
           <br />
-          <br />== IA Programmes et Programmes Avancés ==
+          <br />== Programmes IA et Programmes Avancés ==
           <xsl:call-template name="aiprograms" />
         </xsl:if>
 
