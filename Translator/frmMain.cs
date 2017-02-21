@@ -96,7 +96,7 @@ namespace Translator
 			string str1 = string.Concat(_strPath, "lang\\", lower, "_data.xml");
 			_objDataDoc.Save(str1);
 			_objDoc = new XmlDocument();
-			XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t")};
+			//XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t")};
 			xmlDeclaration = _objDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
 			_objDoc.AppendChild(xmlDeclaration);
 			xmlNodes = _objDoc.CreateElement("chummer");
