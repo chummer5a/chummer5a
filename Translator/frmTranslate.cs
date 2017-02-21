@@ -1,8 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -15,35 +18,24 @@ namespace Translator
         private readonly XmlDocument _objDoc = new XmlDocument();
         private string _strCode = string.Empty;
         private string _strPath = string.Empty;
-        private DataGridViewTextBoxColumn english;
-        private DataGridViewTextBoxColumn key;
-        private DataGridViewTextBoxColumn sectionBook;
-        private DataGridViewTextBoxColumn sectionEnglish;
-        private DataGridViewTextBoxColumn sectionPage;
-        private DataGridViewTextBoxColumn sectionText;
-        private DataGridViewCheckBoxColumn sectionTranslated;
-        private DataGridViewTextBoxColumn text;
-        private DataGridViewCheckBoxColumn Translated;
-// -= DeCodEx =- 
-// -= DeCodEx =-         private TextBox txtSearch;
-
-        private readonly XmlWriterSettings xwsSettings = new XmlWriterSettings();
-        private string _language = string.Empty;
 
         public frmTranslate()
         {
             InitializeComponent();
-            xwsSettings.IndentChars = "\t";
-            xwsSettings.Indent = true;
-            xwsSettings.NewLineChars = "\n";
         }
 
-        public string Language
+        public string Language { get; set; }
+
+        #region Control Events
+        private void chkOnlyTranslation_CheckedChanged(object sender, EventArgs e)
         {
-            get { return _language; }
-            set { _language = value; }
+            if (cboFile.Text == "Strings")
+            {
+                LoadStrings();
+                return;
+            }
+            LoadSection();
         }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (dgvSection.Visible)
@@ -122,16 +114,6 @@ namespace Translator
 
         private void cboSection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadSection();
-        }
-
-        private void chkOnlyTranslation_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cboFile.Text == "Strings")
-            {
-                LoadStrings();
-                return;
-            }
             LoadSection();
         }
 
@@ -308,7 +290,7 @@ namespace Translator
             List<string> strs = new List<string>();
             Text = string.Concat("Translating ", Language);
             SetPath();
-            LoadLanaguageFiles();
+            LoadLanguageFiles();
             cboFile.Items.Add("Strings");
             foreach (XmlNode xmlNodes in _objDataDoc.SelectNodes("/chummer/chummer"))
             {
@@ -321,192 +303,20 @@ namespace Translator
                 cboFile.Items.Add(str);
             cboFile.SelectedIndex = 0;
         }
-
-        private void InitializeComponent()
+        private void txtSearch_GotFocus(object sender, EventArgs e)
         {
-            var dataGridViewCellStyle = new DataGridViewCellStyle();
-            var dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            var dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            cboFile = new ComboBox();
-            dgvTranslate = new DataGridView();
-            key = new DataGridViewTextBoxColumn();
-            english = new DataGridViewTextBoxColumn();
-            text = new DataGridViewTextBoxColumn();
-            Translated = new DataGridViewCheckBoxColumn();
-            cboSection = new ComboBox();
-            chkOnlyTranslation = new CheckBox();
-            dgvSection = new DataGridView();
-            sectionEnglish = new DataGridViewTextBoxColumn();
-            sectionText = new DataGridViewTextBoxColumn();
-            sectionBook = new DataGridViewTextBoxColumn();
-            sectionPage = new DataGridViewTextBoxColumn();
-            sectionTranslated = new DataGridViewCheckBoxColumn();
-            btnSearch = new Button();
-            txtSearch = new TextBox();
-            ((ISupportInitialize) dgvTranslate).BeginInit();
-            ((ISupportInitialize) dgvSection).BeginInit();
-            SuspendLayout();
-            cboFile.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboFile.FormattingEnabled = true;
-            cboFile.Location = new Point(12, 12);
-            cboFile.Name = "cboFile";
-            cboFile.Size = new Size(218, 21);
-            cboFile.TabIndex = 0;
-            cboFile.SelectedIndexChanged += cboFile_SelectedIndexChanged;
-            dgvTranslate.AllowUserToAddRows = false;
-            dgvTranslate.AllowUserToDeleteRows = false;
-            dgvTranslate.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvTranslate.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            var columns = new DataGridViewColumnCollection(dgvTranslate);
-            DataGridViewColumn[] translated = {key, english, text, Translated};
-            columns.AddRange(translated);
-            dgvTranslate.Location = new Point(12, 39);
-            dgvTranslate.MultiSelect = false;
-            dgvTranslate.Name = "dgvTranslate";
-            dgvTranslate.RowHeadersVisible = false;
-            dgvTranslate.Size = new Size(1197, 476);
-            dgvTranslate.TabIndex = 7;
-            dgvTranslate.CellValueChanged += dgvTranslate_CellValueChanged;
-            dgvTranslate.Sorted += dgvTranslate_Sorted;
-            dgvTranslate.KeyDown += dgvTranslate_KeyDown;
-            key.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            key.DataPropertyName = "key";
-            dataGridViewCellStyle.WrapMode = DataGridViewTriState.True;
-            key.DefaultCellStyle = dataGridViewCellStyle;
-            key.HeaderText = "Key";
-            key.Name = "key";
-            key.ReadOnly = true;
-            key.Width = 300;
-            english.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            english.DataPropertyName = "english";
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            english.DefaultCellStyle = dataGridViewCellStyle1;
-            english.HeaderText = "English";
-            english.Name = "english";
-            english.ReadOnly = true;
-            english.Width = 400;
-            text.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            text.DataPropertyName = "text";
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            text.DefaultCellStyle = dataGridViewCellStyle2;
-            text.HeaderText = "Text";
-            text.Name = "text";
-            text.Width = 400;
-            Translated.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            Translated.DataPropertyName = "translated";
-            Translated.HeaderText = "Translated";
-            Translated.Name = "Translated";
-            Translated.SortMode = DataGridViewColumnSortMode.Automatic;
-            Translated.Width = 70;
-            cboSection.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboSection.FormattingEnabled = true;
-            cboSection.Location = new Point(236, 12);
-            cboSection.Name = "cboSection";
-            cboSection.Size = new Size(218, 21);
-            cboSection.TabIndex = 1;
-            cboSection.Visible = false;
-            cboSection.SelectedIndexChanged += cboSection_SelectedIndexChanged;
-            chkOnlyTranslation.AutoSize = true;
-            chkOnlyTranslation.Location = new Point(460, 14);
-            chkOnlyTranslation.Name = "chkOnlyTranslation";
-            chkOnlyTranslation.Size = new Size(199, 17);
-            chkOnlyTranslation.TabIndex = 2;
-            chkOnlyTranslation.Text = "Only Show Text Needing Translation";
-            chkOnlyTranslation.UseVisualStyleBackColor = true;
-            chkOnlyTranslation.CheckedChanged += chkOnlyTranslation_CheckedChanged;
-            dgvSection.AllowUserToAddRows = false;
-            dgvSection.AllowUserToDeleteRows = false;
-            dgvSection.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvSection.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            DataGridViewColumnCollection dataGridViewColumnCollections = dgvSection.Columns;
-            DataGridViewColumn[] dataGridViewColumnArray =
-            {
-                sectionEnglish, sectionText, sectionBook, sectionPage,
-                sectionTranslated
-            };
-            dataGridViewColumnCollections.AddRange(dataGridViewColumnArray);
-            dgvSection.Location = new Point(12, 39);
-            dgvSection.MultiSelect = false;
-            dgvSection.Name = "dgvSection";
-            dgvSection.RowHeadersVisible = false;
-            dgvSection.Size = new Size(1197, 476);
-            dgvSection.TabIndex = 5;
-            dgvSection.Visible = false;
-            dgvSection.CellValueChanged += dgvSection_CellValueChanged;
-            dgvSection.Sorted += dgvSection_Sorted;
-            dgvSection.KeyDown += dgvSection_KeyDown;
-            dgvSection.CellMouseUp += dgvSection_CellMouseUp;
-            sectionEnglish.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            sectionEnglish.DataPropertyName = "english";
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            sectionEnglish.DefaultCellStyle = dataGridViewCellStyle3;
-            sectionEnglish.HeaderText = "English";
-            sectionEnglish.Name = "sectionEnglish";
-            sectionEnglish.ReadOnly = true;
-            sectionEnglish.Width = 480;
-            sectionText.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            sectionText.DataPropertyName = "text";
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            sectionText.DefaultCellStyle = dataGridViewCellStyle4;
-            sectionText.HeaderText = "Text";
-            sectionText.Name = "sectionText";
-            sectionText.Width = 480;
-            sectionBook.DataPropertyName = "book";
-            sectionBook.HeaderText = "Book";
-            sectionBook.Name = "sectionBook";
-            sectionBook.ReadOnly = true;
-            sectionBook.Width = 70;
-            sectionPage.DataPropertyName = "page";
-            sectionPage.HeaderText = "Page";
-            sectionPage.Name = "sectionPage";
-            sectionPage.Width = 70;
-            sectionTranslated.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            sectionTranslated.DataPropertyName = "translated";
-            sectionTranslated.HeaderText = "Translated";
-            sectionTranslated.Name = "sectionTranslated";
-            sectionTranslated.SortMode = DataGridViewColumnSortMode.Automatic;
-            sectionTranslated.Width = 70;
-            btnSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSearch.Location = new Point(1134, 10);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(75, 23);
-            btnSearch.TabIndex = 4;
-            btnSearch.Text = "Search";
-            btnSearch.UseVisualStyleBackColor = true;
-            btnSearch.Click += btnSearch_Click;
-            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txtSearch.Location = new Point(962, 12);
-            txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(166, 20);
-            txtSearch.TabIndex = 3;
-            txtSearch.KeyPress += txtSearch_KeyPressed;
-            txtSearch.GotFocus += txtSearch_GotFocus;
-            AutoScaleDimensions = new SizeF(6f, 13f);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1221, 527);
-            Controls.Add(txtSearch);
-            Controls.Add(btnSearch);
-            Controls.Add(chkOnlyTranslation);
-            Controls.Add(cboSection);
-            Controls.Add(cboFile);
-            Controls.Add(dgvSection);
-            Controls.Add(dgvTranslate);
-            KeyPreview = true;
-            Name = "frmTranslate";
-            ShowInTaskbar = false;
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Translating";
-            Load += frmTranslate_Load;
-            KeyDown += frmTranslate_KeyDown;
-            ((ISupportInitialize) dgvTranslate).EndInit();
-            ((ISupportInitialize) dgvSection).EndInit();
-            ResumeLayout(false);
-            PerformLayout();
+            txtSearch.SelectAll();
         }
 
-        private void LoadLanaguageFiles()
+        private void txtSearch_KeyPressed(object sender, KeyPressEventArgs e)
+        {
+            if ((e.KeyChar == '\r') && !txtSearch.AcceptsReturn)
+                btnSearch.PerformClick();
+        }
+        #endregion
+
+        #region Methods
+        private void LoadLanguageFiles()
         {
             _strCode = Language.Substring(Language.IndexOf("(") + 1, 2);
             _objDoc.Load(string.Concat(_strPath, "lang\\", _strCode, ".xml"));
@@ -553,7 +363,7 @@ namespace Translator
                         str = childNode["page"].InnerText;
                     try
                     {
-                        string[] strArrays = {"/chummer/", cboSection.Text, "/*[name=\"", innerText, "\"]"};
+                        string[] strArrays = { "/chummer/", cboSection.Text, "/*[name=\"", innerText, "\"]" };
                         XmlNode xmlNodes = xmlDocument.SelectSingleNode(string.Concat(strArrays));
                         if (xmlNodes != null)
                             str1 = xmlNodes["source"].InnerText;
@@ -568,7 +378,7 @@ namespace Translator
                 if ((!chkOnlyTranslation.Checked || !(innerText == innerText1)) && chkOnlyTranslation.Checked)
                     continue;
                 DataRowCollection rows = dataTable.Rows;
-                object[] objArray = {innerText, innerText1, str1, str, flag};
+                object[] objArray = { innerText, innerText1, str1, str, flag };
                 rows.Add(objArray);
             }
             var dataSet = new DataSet("strings");
@@ -626,7 +436,7 @@ namespace Translator
                     if ((chkOnlyTranslation.Checked && (str == innerText1)) || !chkOnlyTranslation.Checked)
                     {
                         DataRowCollection rows = dataTable.Rows;
-                        object[] objArray = {innerText, innerText1, str, flag};
+                        object[] objArray = { innerText, innerText1, str, flag };
                         rows.Add(objArray);
                     }
                 }
@@ -657,22 +467,13 @@ namespace Translator
                 _frmTranslate._strPath = string.Concat(_frmTranslate._strPath, "\\");
             }
         }
+        #endregion
 
-        private void txtSearch_GotFocus(object sender, EventArgs e)
-        {
-            txtSearch.SelectAll();
-        }
-
-        private void txtSearch_KeyPressed(object sender, KeyPressEventArgs e)
-        {
-            if ((e.KeyChar == '\r') && !txtSearch.AcceptsReturn)
-                btnSearch.PerformClick();
-        }
-
-        private void Save(XmlDocument objXmlDocument,bool blnData = true)
+        private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
             string strPath = string.Empty;
             strPath = string.Concat(_strPath, "lang\\", _strCode, blnData ? "_data.xml" : ".xml");
+            XmlWriterSettings xwsSettings = new XmlWriterSettings { IndentChars = ("\t") };
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 objXmlDocument.Save(xwWriter);
