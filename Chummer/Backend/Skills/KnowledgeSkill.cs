@@ -219,7 +219,7 @@ namespace Chummer.Skills
 		public override int CurrentKarmaCost()
 		{
 			int cost = 0;
-			if (HasRelatedBoost())
+			if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
 			{
 				int lower = Base + FreeKarma();
 

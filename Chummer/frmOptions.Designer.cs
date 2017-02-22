@@ -271,6 +271,7 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2774,6 +2775,7 @@
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkEducationQualitiesApplyOnChargenKarma);
             this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
             this.tabHouseRules.Controls.Add(this.chkFreeMartialArtSpecialization);
             this.tabHouseRules.Controls.Add(this.chkMysAdPp);
@@ -2903,7 +2905,7 @@
             // chkUseTotalValueForFreeKnowledge
             // 
             this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
-            this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(458, 76);
+            this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(476, 76);
             this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
             this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(269, 17);
             this.chkUseTotalValueForFreeKnowledge.TabIndex = 23;
@@ -3215,6 +3217,18 @@
             this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
+            // 
+            // chkEducationQualitiesApplyOnChargenKarma
+            // 
+            this.chkEducationQualitiesApplyOnChargenKarma.AutoSize = true;
+            this.chkEducationQualitiesApplyOnChargenKarma.Location = new System.Drawing.Point(8, 348);
+            this.chkEducationQualitiesApplyOnChargenKarma.Name = "chkEducationQualitiesApplyOnChargenKarma";
+            this.chkEducationQualitiesApplyOnChargenKarma.Size = new System.Drawing.Size(381, 17);
+            this.chkEducationQualitiesApplyOnChargenKarma.TabIndex = 32;
+            this.chkEducationQualitiesApplyOnChargenKarma.Tag = "Checkbox_Option_EducationQualitiesApplyOnChargenKarma";
+            this.chkEducationQualitiesApplyOnChargenKarma.Text = "Education qualities give karma discount for knowledge skills in create mode";
+            this.chkEducationQualitiesApplyOnChargenKarma.UseVisualStyleBackColor = true;
+            this.chkEducationQualitiesApplyOnChargenKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // frmOptions
             // 
@@ -3558,5 +3572,6 @@
         private System.Windows.Forms.CheckBox chkDronemodsMaximumPilot;
         private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
         private System.Windows.Forms.CheckBox chkLiveCustomData;
+        private System.Windows.Forms.CheckBox chkEducationQualitiesApplyOnChargenKarma;
     }
 }
