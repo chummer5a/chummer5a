@@ -2660,7 +2660,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
             objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objNode.TryGetStringFieldQuickly("page", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
