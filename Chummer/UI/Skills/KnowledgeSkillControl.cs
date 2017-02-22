@@ -168,5 +168,13 @@ namespace Chummer.UI.Skills
 
             parrent?.UpdateCharacterInfo();
 		}
-	}
+
+        private void cboSpec_TextChanged(object sender, EventArgs e)
+        {
+            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            {
+                chkKarma.Checked = true;
+            }
+        }
+    }
 }
