@@ -59,6 +59,7 @@ Application Changes:
 - Added a ConditionMonitor property to vehicle mods, used for Drone Arm ConditionMonitor improvements. Vehicles with existing drone arms will need to have the arms removed and replaced. 
 - Fixed a bug causing qualities that discount knowledge point costs to also apply the discount to levels obtained with karma. Added a new house rule that re-enables this behavior.
 - Selecting a skill specialization with no points spent in the skill automatically checks the "buy specialization with karma" box.
+- Fixed an issue with the cost calculation for knowledge skills in career mode with Jack of All Trades.
 
 Data Changes:
 

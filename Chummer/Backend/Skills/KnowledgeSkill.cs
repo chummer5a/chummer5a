@@ -257,7 +257,7 @@ namespace Chummer.Skills
 		}
 
 		/// <summary>
-		/// Karma price to upgrade. Returns negative if impossible
+		/// Karma price to upgrade. Returns negative if impossible. Minimum value is always 1.
 		/// </summary>
 		/// <returns>Price in karma</returns>
 		public override int UpgradeKarmaCost()
@@ -280,6 +280,7 @@ namespace Chummer.Skills
                 CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment :
                 (LearnedRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill + adjustment;
 
+		    value = Math.Max(value, 1);
 			if (UneducatedEffect())
                 value *= 2;
 			return value;
