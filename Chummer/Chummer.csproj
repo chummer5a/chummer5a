@@ -1665,23 +1665,11 @@
     <Content Include="sheets\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ConditionMonitor.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\Contacts set.xslt" />
     <Content Include="sheets\Contacts.xsl" />
-    <Content Include="sheets\de\Commlinks.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de\ConditionMonitor.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\de\Dossier.xsl" />
     <Content Include="sheets\de\Fahrzeuge.xsl" />
     <Content Include="sheets\de\Formatieren Nur Text.xsl" />
-    <Content Include="sheets\de\Game Master Summary.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\de\Kalender.xsl" />
     <Content Include="sheets\de\Kommlinks.xsl" />
     <Content Include="sheets\de\Kontakte.xsl" />
@@ -1690,29 +1678,14 @@
     <Content Include="sheets\de\Nur Text.xsl" />
     <Content Include="sheets\de\Schick Blöcke.xsl" />
     <Content Include="sheets\de\Shadowrun 5 %28Bewertet größer 0%29.xsl" />
-    <Content Include="sheets\de\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\de\Shadowrun 5 %28Gruppiert Fähigkeit durch Bewertet%29.xsl" />
     <Content Include="sheets\de\Shadowrun 5 %28Gruppiert Fähigkeit durch Name%29.xsl" />
     <Content Include="sheets\de\Shadowrun 5 %28Kern%29.xsl" />
-    <Content Include="sheets\de\Shadowrun 5 Base.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\de\Shadowrun 5 includes.xslt" />
     <Content Include="sheets\de\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de\Spielleiter Überblick.xsl" />
-    <Content Include="sheets\de\Text-Only.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de\Vehicle Block.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\de\xz.de.xslt" />
     <Content Include="sheets\Dossier set.xslt" />
     <Content Include="sheets\Dossier.xsl">
@@ -1733,53 +1706,23 @@
     <Content Include="sheets\fr\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\ConditionMonitor.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\fr\Contacts.xsl" />
     <Content Include="sheets\fr\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr\Dépenses.xsl" />
-    <Content Include="sheets\fr\Fancy Blocks.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr\Formatted Text-Only.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\fr\Formaté texte seulement.xsl" />
-    <Content Include="sheets\fr\Game Master Summary.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\fr\Remarques.xsl" />
     <Content Include="sheets\fr\Shadowrun 5 %28Coeur%29.xsl" />
     <Content Include="sheets\fr\Shadowrun 5 %28Groupé par nom%29.xsl" />
     <Content Include="sheets\fr\Shadowrun 5 %28Groupé par évaluation%29.xsl" />
     <Content Include="sheets\fr\Shadowrun 5 %28Évaluation plus grand que zéro%29.xsl" />
-    <Content Include="sheets\fr\Shadowrun 5 (Grouped Skills by Name).xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr\Shadowrun 5 (Grouped Skills by Rating).xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr\Shadowrun 5 (Rating greater 0).xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr\Shadowrun 5 Base.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\fr\Shadowrun 5 includes.xslt" />
     <Content Include="sheets\fr\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr\Spielleiter Überblick.xsl" />
-    <Content Include="sheets\fr\Text-Only.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\fr\Texte seulement.xsl" />
-    <Content Include="sheets\fr\Vehicle Block.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\fr\Véhicules.xsl" />
     <Content Include="sheets\fr\xz.fr.xslt" />
     <Content Include="sheets\Game Master Summary set.xslt" />
@@ -1813,9 +1756,6 @@
     <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 Base.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\Shadowrun 5 includes.xslt" />
     <Content Include="sheets\Shadowrun 5 set.xslt" />
     <Content Include="sheets\Shadowrun 5.xsl">
@@ -1823,9 +1763,6 @@
     </Content>
     <Content Include="sheets\Text-Only set.xslt" />
     <Content Include="sheets\Text-Only.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Vehicle Block.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 %28Rating greater 0%29.xsl">
@@ -1856,9 +1793,6 @@
     <Content Include="sheets\xt.Skills.xslt" />
     <Content Include="sheets\xt.Spells.xslt" />
     <Content Include="sheets\xt.TableTitle.xslt" />
-    <Content Include="sheets\xt.TitleName.xslt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sheets\xz.en-us.xslt" />
     <Content Include="Translator.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
