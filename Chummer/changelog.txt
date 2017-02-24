@@ -110,6 +110,7 @@ Changed Strings:
 Changes Sheets:
 
 - Removed a sort for Expanses that caused incorrect sorting behaviour in 'Shadowrun 5' sheets. 
+- Added/replaced translated character sheets, created by Lochabar. 
 
 Build 190
 

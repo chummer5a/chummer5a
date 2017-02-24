@@ -107,11 +107,8 @@ namespace Translator
         {
             if (cboLanguages.SelectedIndex == -1)
                 return;
-            using (var frmTranslate = new frmTranslate())
-            {
-                frmTranslate.Language = cboLanguages.Text;
-                frmTranslate.ShowDialog(this);
-            }
+            var frmTranslate = new frmTranslate {Language = cboLanguages.Text};
+            frmTranslate.ShowDialog();
         }
 
         private void frmMain_Load(object sender, EventArgs e)
