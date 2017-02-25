@@ -60,6 +60,8 @@ Application Changes:
 - Fixed a bug causing qualities that discount knowledge point costs to also apply the discount to levels obtained with karma. Added a new house rule that re-enables this behavior.
 - Selecting a skill specialization with no points spent in the skill automatically checks the "buy specialization with karma" box.
 - Fixed an issue with the cost calculation for knowledge skills in career mode with Jack of All Trades.
+- Refactored the Tradition drain logic to be consolidated into a single method, shared between technomancers and magicians in career and create.  
+- Added technomancer drain attribute calculation.
 
 Data Changes:
 

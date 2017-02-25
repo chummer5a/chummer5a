@@ -221,7 +221,12 @@ namespace Chummer
 			{
                 nudMugshotIndex.Minimum = 1;
                 nudMugshotIndex.Maximum = _objCharacter.Mugshots.Count;
-                nudMugshotIndex.Value = _objCharacter.MainMugshotIndex + 1;
+			    decimal value = _objCharacter.MainMugshotIndex + 1;
+			    if (value > nudMugshotIndex.Maximum)
+			    {
+			        value = nudMugshotIndex.Maximum;
+			    }
+                nudMugshotIndex.Value = value;
             }
             else
             {
@@ -946,65 +951,14 @@ namespace Chummer
 
             UpdateInitiationGradeTree();
 
-			if (!string.IsNullOrEmpty(_objCharacter.MagicTradition))
-			{
-				objXmlDocument = XmlManager.Instance.Load("traditions.xml");
-				XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.MagicTradition + "\"]");
-				lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
-
-                // Update the Drain CharacterAttribute Value.
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-			    string strDrain = lblDrainAttributes.Text;
-                foreach (string strAttribute in Character.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
-                }
-                int intDrain = 0;
-                try
-				{
-					XPathExpression xprDrain = nav.Compile(strDrain);
-					intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
-				}
-				catch (XPathException)
-				{
-				}
-                intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
-                lblDrainAttributesValue.Text = intDrain.ToString();
-            }
-
-			if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
-			{
-				objXmlDocument = XmlManager.Instance.Load("streams.xml");
-				XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.TechnomancerStream + "\"]");
-				lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
-
-                // Update the Fading CharacterAttribute Value.
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-			    string strFading = lblFadingAttributes.Text;
-                foreach (string strAttribute in Character.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    strFading = strFading.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
-                }
-                int intFading = 0;
-                try
-				{
-					XPathExpression xprFading = nav.Compile(strFading);
-					intFading = Convert.ToInt32(nav.Evaluate(xprFading).ToString());
-				}
-                catch (XPathException) { }
-                intFading += _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
-                lblFadingAttributesValue.Text = intFading.ToString();
-            }
-
-			RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
 
 			_blnLoading = false;
 
 			// Select the Magician's Tradition.
 			if (!string.IsNullOrEmpty(_objCharacter.MagicTradition))
 				cboTradition.SelectedValue = _objCharacter.MagicTradition;
+                CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
 
             if (!string.IsNullOrEmpty(_objCharacter.TraditionName))
                 txtTraditionName.Text = _objCharacter.TraditionName;
@@ -1027,12 +981,18 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objCharacter.SpiritManipulation))
                 cboSpiritManipulation.SelectedValue = _objCharacter.SpiritManipulation;
 
-            // Select the Technomancer's Stream.
-			if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
-				cboStream.SelectedValue = _objCharacter.TechnomancerStream;
 
-			// Clear the Dirty flag which gets set when creating a new Character.
-			_blnIsDirty = false;
+
+            // Update the Fading CharacterAttribute Value.
+            if (_objCharacter.RESEnabled)
+            {
+                // Select the Technomancer's Stream.
+                if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
+                    cboStream.SelectedValue = _objCharacter.TechnomancerStream;
+                CalculateTraditionDrain(_objCharacter.TechnomancerFading, _objImprovementManager, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
+            }
+            // Clear the Dirty flag which gets set when creating a new Character.
+            _blnIsDirty = false;
 			UpdateWindowTitle();
 			if (_objCharacter.AdeptEnabled)
 				CalculatePowerPoints();
@@ -1133,8 +1093,7 @@ namespace Chummer
 			Timekeeper.Finish("loading");
 		}
 
-		
-		private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	    private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			//Self implemented one way databinding workaround. Ugly and should probably be done in a better way. (One day...)
 			switch (e?.PropertyName)

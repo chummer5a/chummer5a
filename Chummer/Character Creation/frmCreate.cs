@@ -12285,49 +12285,9 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblSpellDV, objSpell.DVTooltip);
 
                 // Update the Drain CharacterAttribute Value.
-                if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
+                if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(_objCharacter.TraditionDrain))
                 {
-                    string strTip = string.Empty;
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    objXmlDocument = new XmlDocument();
-                    nav = objXmlDocument.CreateNavigator();
-                    string strDrain = lblDrainAttributes.Text;
-                    foreach (string strAttribute in Character.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
-                    }
-                    int intDrain = 0;
-                    try
-                    {
-                        XPathExpression xprDrain = nav.Compile(strDrain);
-                        object objEvaluateResult = nav.Evaluate(xprDrain);
-                        if (objEvaluateResult.GetType() == typeof(Double))
-                        {
-                            intDrain = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(objEvaluateResult.ToString())));
-                        }
-                    }
-                    catch (XPathException) { }
-                    intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
-
-                    strTip = lblDrainAttributes.Text;
-                    foreach (string strAttribute in Character.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
-                    }
-
-                    if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance) != 0)
-                        strTip += " + " + LanguageManager.Instance.GetString("Tip_Skill_DicePoolModifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance).ToString() + ")";
-                    //if (objSpell.Limited)
-                    //{
-                    //    intDrain += 2;
-                    //    strTip += " + " + LanguageManager.Instance.GetString("String_SpellLimited") + " (2)";
-                    //}
-                    lblDrainAttributesValue.Text = intDrain.ToString();
-                    tipTooltip.SetToolTip(lblDrainAttributesValue, strTip);
+                    CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
                 }
 
                 _blnSkipRefresh = false;
@@ -12734,17 +12694,11 @@ namespace Chummer
             if (cboDrain.IsInitalized(_blnLoading))
                 return;
 
-            _objCharacter.TraditionDrain = cboDrain.Text;
-            string strDrain = cboDrain.Text;
+            _objCharacter.TraditionDrain = cboDrain.SelectedValue.ToString();
 
-            foreach (string strAttribute in Character.AttributeStrings)
-            {
-                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
-            }
+            CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
 
-            lblDrainAttributes.Text = strDrain;
-            UpdateCharacterInfo();
+            //UpdateCharacterInfo();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -14631,62 +14585,13 @@ namespace Chummer
                 // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strDrain = lblDrainAttributes.Text;
-                    foreach (string strAttribute in Character.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
-                    }
-                    int intDrain = 0;
-                    try
-                    {
-                        XPathExpression xprDrain = nav.Compile(strDrain);
-                        object objEvaluateResult = nav.Evaluate(xprDrain);
-                        if (objEvaluateResult.GetType() == typeof(Double))
-                        {
-                            intDrain = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(objEvaluateResult.ToString())));
-                        }
-                    }
-                    catch (XPathException) { }
-                    intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
-                    lblDrainAttributesValue.Text = intDrain.ToString();
+                    CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
                 }
 
                 // Update the Fading CharacterAttribute Value.
                 if (_objCharacter.RESEnabled)
                 {
-                    lblFadingAttributes.Text = $"{_objCharacter.RES.DisplayAbbrev} + {_objCharacter.WIL.DisplayAbbrev}";
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strFading = lblFadingAttributes.Text;
-                    foreach (string strAttribute in Character.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strFading = strFading.Replace(objAttrib.DisplayAbbrev,objAttrib.TotalValue.ToString());
-                    }
-                    int intFading = 0;
-                    try
-                    {
-                        XPathExpression xprFading = nav.Compile(strFading);
-                        object objEvaluateResult = nav.Evaluate(xprFading);
-                        if (objEvaluateResult.GetType() == typeof(Double))
-                        {
-                            intFading = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(objEvaluateResult.ToString())));
-                        }
-                    }
-                    catch (XPathException) { }
-                    intFading += _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
-                    lblFadingAttributesValue.Text = intFading.ToString();
-
-                    strTip = lblDrainAttributes.Text;
-                    foreach (string strAttribute in Character.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
-                    }
-                    tipTooltip.SetToolTip(lblFadingAttributesValue, strTip);
+                    CalculateTraditionDrain(_objCharacter.TechnomancerFading, _objImprovementManager, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
                 }
 
                 // Update Living Persona values.

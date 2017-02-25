@@ -184,6 +184,7 @@ namespace Chummer
         private string _strSpiritManipulation = string.Empty;
         // Technomancer Stream.
         private string _strTechnomancerStream = "Default";
+        private string _strTechnomancerFading = "RES + WIL";
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled = 0;
@@ -576,6 +577,7 @@ namespace Chummer
             objWriter.WriteElementString("spiritmanipulation", _strSpiritManipulation);
             // Write the Technomancer Stream.
             objWriter.WriteElementString("stream", _strTechnomancerStream);
+            objWriter.WriteElementString("streamdrain", _strTechnomancerFading);
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
@@ -1189,7 +1191,7 @@ namespace Chummer
             // Attempt to load the Magic Tradition Drain Attributes.
 		    objXmlCharacter.TryGetStringFieldQuickly("traditiondrain", ref _strTraditionDrain);
             // Attempt to load the Magic Tradition Name.
-		    objXmlCharacter.TryGetStringFieldQuickly("raditionname", ref _strTraditionName);
+		    objXmlCharacter.TryGetStringFieldQuickly("traditionname", ref _strTraditionName);
             // Attempt to load the Spirit Combat Name.
 		    objXmlCharacter.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
             // Attempt to load the Spirit Detection Name.
@@ -1202,6 +1204,8 @@ namespace Chummer
 		    objXmlCharacter.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
             // Attempt to load the Technomancer Stream.
 		    objXmlCharacter.TryGetStringFieldQuickly("stream", ref _strTechnomancerStream);
+            // Attempt to load the Technomancer Stream's Fading attributes.
+            objXmlCharacter.TryGetStringFieldQuickly("streamfading", ref _strTechnomancerFading);
 
             // Attempt to load Condition Monitor Progress.
             objXmlCharacter.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
@@ -4140,6 +4144,21 @@ namespace Chummer
             set
             {
                 _strTechnomancerStream = value;
+            }
+        }
+
+        /// <summary>
+        /// Technomancer's Fading Attributes.
+        /// </summary>
+        public string TechnomancerFading
+        {
+            get
+            {
+                return _strTechnomancerFading;
+            }
+            set
+            {
+                _strTechnomancerFading = value;
             }
         }
 
