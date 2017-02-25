@@ -11340,5 +11340,1691 @@
 			<source>SR5</source>
 			<page>1</page>
 		</gear>
+        <!-- SR5 2050 -->
+		<!-- Explosives -->
+		<gear>
+			<id>4320ca43-f04b-471a-a0c9-ae12fce4db4a</id>
+			<name>Detonator, Radio (2050)</name>
+			<category>Explosives</category>
+			<rating>0</rating>
+			<avail>4E</avail>
+			<cost>250</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>079d94d5-117f-4f47-8d10-c35d66e65ff4</id>
+			<name>Detonator, Timer (2050)</name>
+			<category>Explosives</category>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<cost>100</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>4be7aa83-17c2-408d-9fc7-02da1e8233d1</id>
+			<name>Plastic Explosive C-6 (2050)</name>
+			<category>Explosives</category>
+			<rating>6</rating>
+			<minrating>6</minrating>
+			<avail>8F</avail>
+			<cost>80</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>				
+		<gear>
+			<id>af65f401-4008-43e5-b32a-ea8134ccdce1</id>
+			<name>Plastic Explosive C-12 (2050)</name>
+			<category>Explosives</category>
+			<rating>12</rating>
+			<minrating>12</minrating>
+			<avail>10F</avail>
+			<cost>200</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>		
+		<gear>
+			<id>94961a50-9d6a-44b7-bfb2-426be45e60c9</id>
+			<name>Commercial Explosive (2050)</name>
+			<category>Explosives</category>
+			<rating>3</rating>
+			<minrating>3</minrating>
+			<avail>6R</avail>
+			<cost>60</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>		
+		<!-- Missiles -->
+		<gear>
+			<id>579d8a5e-3c1b-4b91-adb0-f9212ae66d0a</id>
+			<name>Missile: Anti-Vehicle (2050)</name>
+			<category>Ammunition</category>
+			<rating>6</rating>
+			<avail>12F</avail>
+			<addweapon>Missile: Anti-Vehicle (2050)</addweapon>
+			<cost>2000+(Rating * 500)</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>d27371aa-248d-4a04-b78e-4eccaddd3f9d</id>
+			<name>Missile: Anti-Personnel (2050)</name>
+			<category>Ammunition</category>
+			<rating>6</rating>
+			<avail>12F</avail>
+			<addweapon>Missile: Anti-Personnel (2050)</addweapon>
+			<cost>1000+(Rating * 500)</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>25177977-8f28-4966-ba61-63627bed8af7</id>
+			<name>Missile: High Explosive (2050)</name>
+			<category>Ammunition</category>
+			<rating>6</rating>
+			<avail>12F</avail>
+			<addweapon>Missile: High Explosive (2050)</addweapon>
+			<cost>1500+(Rating * 500)</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<!-- Rocket -->
+		<gear>
+			<id>1a0f0ea0-5c82-4e99-90bd-28ea390bcbd2</id>
+			<name>Rocket: High Explosive (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<addweapon>Rocket: High Explosive (2050)</addweapon>
+			<cost>1500</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>			
+		<gear>
+			<id>370767a9-5c8d-4ee3-ad2a-78b30b5f53fc</id>
+			<name>Rocket: Anti-Vehicle (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<addweapon>Rocket: Anti-Vehicle (2050)</addweapon>
+			<cost>2000</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>		
+		<gear>
+			<id>c9405bce-6ad0-42d5-9b35-6ce4c892b2ff</id>
+			<name>Rocket: Anti-Personnel (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<addweapon>Rocket: Anti-Personnel (2050)</addweapon>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>		
+		<!-- Grenade -->
+		<gear>
+			<id>f8677b70-16d5-4dd3-b8c1-0ff4024ea928</id>
+			<name>Grenade: Smoke (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>3R</avail>
+			<addweapon>Grenade: Smoke (2050)</addweapon>
+			<cost>30</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>7eb45820-7ef0-4a7c-ba0e-99e4dda66b02</id>
+			<name>Minigrenade: Smoke (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<addweapon>Minigrenade: Smoke (2050)</addweapon>
+			<cost>60</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>		
+		<gear>
+			<id>c89bfb86-ac08-4020-92e4-6ef84209b165</id>
+			<name>Grenade: Offensive (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<addweapon>Grenade: Offensive (2050)</addweapon>
+			<cost>45</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>72979698-fda1-4516-a724-045f97fe824b</id>
+			<name>Minigrenade: Offensive (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<addweapon>Minigrenade: Offensive (2050)</addweapon>
+			<cost>60</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>e014dc28-a2e0-466e-9a38-4aa5cde8d556</id>
+			<name>Grenade: Defensive (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<addweapon>Grenade: Defensive (2050)</addweapon>
+			<cost>45</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<gear>
+			<id>d12aabe8-9ca6-4ce7-9ea3-e9874ea66e6c</id>
+			<name>Minigrenade: Defensive (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<addweapon>Minigrenade: Defensive (2050)</addweapon>
+			<cost>60</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>	
+		<gear>
+			<id>443dd750-a30b-4e60-9464-fe2b65f85889</id>
+			<name>Minigrenade: Shock (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<addweapon>Minigrenade: Shock (2050)</addweapon>
+			<cost>60</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>		
+		<gear>
+			<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
+			<name>Grenade: Shock (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>5F</avail>
+			<addweapon>Grenade: Shock (2050)</addweapon>
+			<costfor>1</costfor>
+			<cost>30</cost>
+			<source>2050</source>
+			<page>191</page>
+		</gear>
+		<!-- Ammo -->
+		<gear>
+			<id>02993005-44f2-4b2c-9e19-6ddb3517a7ee</id>
+			<name>Ammo: Taser Dart (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<costfor>10</costfor>
+			<cost>50</cost>
+			<source>2050</source>
+			<page>190</page>
+		</gear>		
+		<gear>
+			<id>998586de-fd3f-4589-af53-676767f1b1b5</id>
+			<name>Ammo: Assault Cannon (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<costfor>10</costfor>
+			<cost>450</cost>
+			<source>2050</source>
+			<page>190</page>
+		</gear>
+		<gear>
+			<id>83bf8f55-47a6-4780-9223-7b14eddcd5e9</id>
+			<name>Ammo: Injection Darts (2050)</name>
+			<category>Ammunition</category>
+			<addoncategory>Drugs</addoncategory>
+			<addoncategory>Toxins</addoncategory>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<costfor>10</costfor>
+			<cost>200</cost>
+			<source>2050</source>
+			<page>190</page>
+		</gear>
+		<gear>
+			<id>186d9840-4a40-4b80-ba8f-58377a06e180</id>
+			<name>Ammo: Gel Rounds (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<costfor>10</costfor>
+			<cost>30</cost>
+			<weaponbonus>
+				<ap>1</ap>
+				<damagetype>S</damagetype>
+			</weaponbonus>
+			<source>SR5</source>
+			<page>434</page>
+		</gear>
+		<gear>
+			<id>86fc55db-c032-47d5-a981-9a7bc3a85ee4</id>
+			<name>Ammo: Flechette Rounds (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>3R</avail>
+			<costfor>10</costfor>
+			<cost>100</cost>
+			<weaponbonus>
+				<ap>5</ap>
+				<damage>2</damage>
+				<damagetype>P(f)</damagetype>
+			</weaponbonus>
+			<source>2050</source>
+			<page>190</page>
+		</gear>		
+		<gear>
+			<id>0003acf4-25ff-470e-990c-6ea8c056f5b2</id>
+			<name>Ammo: Explosive Rounds (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8R</avail>
+			<costfor>10</costfor>
+			<cost>50</cost>
+			<weaponbonus>
+				<ap>-1</ap>
+				<damage>1</damage>
+			</weaponbonus>
+			<source>2050</source>
+			<page>190</page>
+		</gear>
+		<gear>
+			<id>9c241ebd-fabf-4fc4-a3f7-15653af3082a</id>
+			<name>Ammo: APDS (2050)</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>14F</avail>
+			<costfor>10</costfor>
+			<cost>70</cost>
+			<weaponbonus>
+				<ap>-4</ap>
+			</weaponbonus>
+			<source>2050</source>
+			<page>190</page>
+		</gear>
+		<!-- Wapon Gear -->
+		<gear>
+			<id>91d36fa3-1af7-425a-b4c5-1cdc233dbf8b</id>
+			<name>Concealable Holster (2050)</name>
+			<category>Armor Enhancements</category>
+			<rating>0</rating>
+			<armorcapacity>[4]</armorcapacity>
+			<avail>2</avail>
+			<cost>100</cost>
+			<source>2050</source>
+			<page>189</page>
+		</gear>		
+		<gear>
+			<id>e31b4904-bb36-4016-ab9e-97292e259b0e</id>
+			<name>Smart Goggles (2050)</name>
+			<category>Vision Devices</category>
+			<rating>0</rating>
+			<capacity>2</capacity>
+			<avail>3R</avail>
+			<cost>3000</cost>
+			<source>2050</source>
+			<bonus>
+				<smartlink />
+			</bonus>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>39c072cd-cb03-4145-a699-8f6c7e8fb20e</id>
+			<name>Low Light (2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>60ac70ec-8b62-464d-817d-1d2fd04a8102</id>
+			<name>Thermographic Vision(2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>189</page>
+		</gear>
+		<!-- Magische Ausrüstung -->
+		<gear>
+			<id>e936f8b3-68bd-4e6e-9f46-f135699179b6</id>
+			<name>Counterspelling Focus, Health (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 40000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>d3bff875-6d10-446c-9c3e-79aef9ca125c</id>
+			<name>Counterspelling Focus, Illusion (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 40000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>	
+		<gear>
+			<id>dd9eca5f-3d71-46e8-a4aa-5ff06520dad5</id>
+			<name>Counterspelling Focus, Combat (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 40000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>				
+		<gear>
+			<id>885db7ab-59c6-4129-ad2c-bd0bf92bc2eb</id>
+			<name>Counterspelling Focus, Manipulation (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 40000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>	
+		<gear>
+			<id>dd4a0fa5-771a-4fa7-aca3-4fa6b531c32e</id>
+			<name>Counterspelling Focus, Detection (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 40000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>		
+		<gear>
+			<id>4f47e94c-e6d9-4ec5-b72d-ceb66c4a3548</id>
+			<name>Binding Focus (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 60000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>79867308-6ed3-43d5-adab-8017a4f58649</id>
+			<name>Summoning Focus (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 3)R</avail>
+			<cost>Rating * 60000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>846446e0-a686-4984-929f-8310dd48d5a2</id>
+			<name>Power Focus (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 3)R</avail>
+			<cost>Rating * 105000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>b11333ac-a049-4e6f-b48c-2846b77c9cac</id>
+			<name>Banishing Focus (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 3)R</avail>
+			<cost>Rating * 50000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>e826debe-e201-4eab-a885-9fb824cadb02</id>
+			<name>Weapon Focus (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 3)R</avail>
+			<cost>Rating * 90000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>	
+		<gear>
+			<id>1811a217-7e73-4f23-8d88-0be954b55c9e</id>
+			<name>Spell Lock, Health (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>65ad391a-9baf-4a30-a634-c1fd0717bf71</id>
+			<name>Spell Lock, Illusion (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>e3f6354b-998e-418e-95e2-d4d208eb7a42</id>
+			<name>Spell Lock, Combat (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>34f75c53-38a3-4f93-b8b7-9e55bfb97319</id>
+			<name>Spell Lock, Manipulation (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>6f73bdf1-063c-491f-935a-746b938e93ab</id>
+			<name>Spell Lock, Detection (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>2d7a1b7b-9c9c-4078-85fe-b38f1f36f1d2</id>
+			<name>Spellcasting Focus, Health (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 45000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>13cbd9a8-b1ec-49b3-a243-f40f3246e987</id>
+			<name>Spellcasting Focus, Illusion (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 45000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>186574c3-73f2-4920-9764-7c034d671c11</id>
+			<name>Spellcasting Focus, Combat (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 45000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>6ba3c374-0d8d-4458-81a5-c7f330cecae9</id>
+			<name>Spellcasting Focus, Manipulation (2050)</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 45000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
+			<name>Zauberspruchfocus, Wahrnehmung</name>
+			<category>Foci</category>
+			<rating>18</rating>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 45000</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Magisches Zubehör -->
+		<gear>
+			<id>7358fa13-7af0-4af8-ab91-7283feaa536e</id>
+			<name>Elemental Binding Materials (2050)</name>
+			<category>Magical Supplies</category>
+			<rating>20</rating>
+			<avail>Rating</avail>
+			<cost>Rating * 500</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<gear>
+			<id>72893488-4358-48ee-adca-2f52dea13957</id>
+			<name>Medicine Lodge Materials (2050)</name>
+			<category>Magical Supplies</category>
+			<rating>20</rating>
+			<avail>Rating</avail>
+			<cost>Rating * 500</cost>
+			<source>2050</source>
+			<page>207</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Cyberdecks -->
+		<gear>
+			<id>abf8ac4c-1187-4758-a5b2-d3543bd0e111</id>
+			<name>Radio Shack PCD-100 (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>6200</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>
+		<gear>
+			<id>9ada0e96-a2bb-46d7-9580-089ad18c91eb</id>
+			<name>Allegiance Alpha (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>13200</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>
+		<gear>
+			<id>7038bd1a-8160-4d07-8a2a-c36cb398f123</id>
+			<name>Sony CTY-360 (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>111000</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>
+		<gear>
+			<id>dd0fd7e1-83e3-4748-891e-298172d8cfe0</id>
+			<name>Fuchi Cyber-4 (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>150000</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>		
+		<gear>
+			<id>328b0236-4e49-4706-a852-2846b964736a</id>
+			<name>Fuchi Cyber-6 (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>364000</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>
+		<gear>
+			<id>9863207b-98f0-494c-9cd2-52b961ccc4d9</id>
+			<name>Fuchi Cyber-7 (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>514000</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>
+		<gear>
+			<id>3996ad19-201c-486d-ba02-7648f174ca74</id>
+			<name>Fairlight Excalibur (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>990000</cost>
+			<source>2050</source>
+			<page>169</page>
+		</gear>
+		<!-- Cyberterminal -->
+		<gear>
+			<id>6da6f93e-9422-4028-b610-99f94e8bd8c5</id>
+			<name>Radio Shack DTU-2500, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>620</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>8aeb2ed4-6218-4e3b-9a34-488456765343</id>
+			<name>Microdeck Deckmaster, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>1300</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>828ea25b-d622-43c8-8438-646685551fae</id>
+			<name>Sony R4J, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>11000</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>efe066e1-57bc-4070-bce6-b9afbbbe7181</id>
+			<name>Fuchi Cyber-2, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
+			<name>MTC Sarari-Man, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>37000</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>b128c2b7-7d3b-48bd-9722-17707a2c86c1</id>
+			<name>Renraku Desukuwa-Ku, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>51500</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>45a73c53-cbf1-4b97-b298-6c2edcea5422</id>
+			<name>Fairlight Joyeuse, Terminal (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>450000</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<!-- Gepäck -->
+		<gear>
+			<id>48a88dc3-ed52-4ae2-95a5-73b67e11a0d7</id>
+			<name>Radio Shack PCD-50, Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>3000</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>3c339d11-494a-4068-b068-c69335e26010</id>
+			<name>Microdesk Luggable, Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>6500</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>948c1609-babe-4a45-9fec-cf7fe38b2b07</id>
+			<name>Sony CTY-180, Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>60000</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>793a151c-b720-48e0-8308-6e61547c30cc</id>
+			<name>Fuchi Cyber-3, Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>75000</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>97755c88-a12a-4800-98eb-94bd88c8b3d1</id>
+			<name>Amalgamated Tech. und Tele., Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>364000</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
+			<name>Microtronica Azteca Maletin, Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>250000</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>2d470641-a038-4f94-8027-65b0bd8dda13</id>
+			<name>Fairlight Sharur, Luggage (2050)</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>1</devicerating>
+			<attributearray>0</attributearray>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<programs>0</programs>
+			<avail>0</avail>
+			<cost>499999</cost>
+			<source>2050</source>
+			<page>171</page>
+		</gear>
+		<gear>
+			<id>251c3f92-e2a4-47d7-a70e-df883300917c</id>
+			<name>Binoculars (2050)</name>
+			<category>Vision Devices</category>
+			<rating>0</rating>
+			<capacity>2</capacity>
+			<avail>0</avail>
+			<cost>150</cost>
+			<source>2050</source>
+			<page>193</page>
+			<gears>
+				<usegear>
+					<name>Vision Magnification</name>
+					<category>Vision Enhancements</category>
+					<capacity>0</capacity>
+				</usegear>
+			</gears>
+		</gear>
+		<gear>
+			<id>a2d1c4b9-fb37-4554-a3f1-f787ee045664</id>
+			<name>Binoculars, Optical (2050)</name>
+			<category>Vision Devices</category>
+			<rating>0</rating>
+			<capacity>0</capacity>
+			<avail>0</avail>
+			<cost>150</cost>
+			<source>2050</source>
+			<page>193</page>
+			<gears>
+				<usegear>
+					<name>Vision Magnification</name>
+					<category>Vision Enhancements</category>
+					<capacity>0</capacity>
+				</usegear>
+			</gears>
+		</gear>	
+		<gear>
+			<id>25571ea8-d1b1-4b73-a7d3-a2e1151c789c</id>
+			<name>Binoculars, Thermographic Vision (2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>4</avail>
+			<cost>250</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>	
+		<gear>
+			<id>9755ccab-8fe1-4310-b7f1-87b280b0ec6f</id>
+			<name>Binoculars, Low Light (2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>4</avail>
+			<cost>200</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>903084e8-b22f-42e1-999e-43f209e5376e</id>
+			<name>Goggles (2050)</name>
+			<category>Vision Devices</category>
+			<rating>0</rating>
+			<capacity>3</capacity>
+			<avail>4</avail>
+			<cost>1500</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>dee0e58f-5fcc-4af7-bc60-3d942b6457a3</id>
+			<name>Goggles, Thermographic Vision (2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>6</avail>
+			<cost>700</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>	
+		<gear>
+			<id>52c535c6-1933-4bf3-9467-e94d40db7dfa</id>
+			<name>Goggles, Low Light (2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>6</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>71824fe1-a1ae-4216-bcf1-b85464abee1e</id>
+			<name>Goggles, Vision Magnification (2050)</name>
+			<category>Vision Enhancements</category>
+			<rating>0</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>4</avail>
+			<cost>200</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>a1ef2d73-5e57-4cd9-a6f7-5f0e80f9589b</id>
+			<name>Credstick, Certified (2050)</name>
+			<category>ID/Credsticks</category>
+			<rating>0</rating>
+			<minrating>0</minrating>
+			<avail>0</avail>
+			<cost>25</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>d363dda7-4b9f-4323-b652-77a9ee037356</id>
+			<name>Credstick, Standard (2050)</name>
+			<category>ID/Credsticks</category>
+			<rating>0</rating>
+			<minrating>0</minrating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
+			<name>Credstick, Fake (2050)</name>
+			<category>ID/Credsticks</category>
+			<rating>6</rating>
+			<minrating>0</minrating>
+			<avail>(Rating * 2)F</avail>
+			<cost>Rating * 1000</cost>
+			<source>2050</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>58b5730c-b8e4-4152-a1b3-31329d8a52fb</id>
+			<name>Telecom (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>33984f76-3264-469f-9e6a-7e9b7ce81877</id>
+			<name>Portable Phone (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>73a351f3-eb8d-4e73-b900-354db6cdd911</id>
+			<name>Pocket Secretary (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>3000</cost>
+			<source>2050</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>e4d7649c-60c9-4d62-aadf-900bd13926aa</id>
+			<name>Personal Computer (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<source>2050</source>
+			<page>194</page>
+		</gear>	
+		<gear>
+			<id>3edfa267-972a-44f6-bf81-fde4dfee50b5</id>
+			<name>Data Display (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>4020e774-d6a8-4512-a71e-27abe0a31c92</id>
+			<name>Data Codebreaker (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)R</avail>
+			<cost>(Rating) x 10000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>b852dbe0-50fa-418f-b67a-69d144a7c586</id>
+			<name>Dataline Scanner (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 100</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>e427a6d4-2e52-4cc4-ac6d-74da8584bc30</id>
+			<name>Dataline Tap (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 5000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>e155d77e-3430-45b6-bd10-a717597793e8</id>
+			<name>Data Encryption System (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)R</avail>
+			<cost>(Rating) x 1000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>eea34a5e-1ca6-4e45-8e12-b6ccb24029dd</id>
+			<name>Restraints, Metal (2050)</name>
+			<category>Security Devices</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>50</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>2d17198c-85af-4ea2-9a33-8f20ccb75b97</id>
+			<name>Restraints, Plastic (2050)</name>
+			<category>Security Devices</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>20</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>04fe50d3-0278-466f-9c90-251777623440</id>
+			<name>Squealer (2050)</name>
+			<category>Security Devices</category>
+			<rating>5</rating>
+			<minrating>5</minrating>
+			<avail>6</avail>
+			<cost>100</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>7d84b4c0-ee21-4afb-88e0-b592668e432b</id>
+			<name>Identifcation Scanner, Thumbprint (2050)</name>
+			<category>Security Devices</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 200</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>d2451f12-5148-4153-bcdd-85fed8ea7c7a</id>
+			<name>Identifcation Scanner, Palm Print (2050)</name>
+			<category>Security Devices</category>
+			<rating>6</rating>
+			<avail>(Rating)+1</avail>
+			<cost>(Rating) x 300</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>f14a3b31-48bc-4a2c-86be-6e232339c11f</id>
+			<name>Identifcation Scanner, Retinal (2050)</name>
+			<category>Security Devices</category>
+			<rating>6</rating>
+			<avail>(Rating)+2</avail>
+			<cost>(Rating) x 1000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>26402dc8-911c-471f-a818-0d997662fd60</id>
+			<name>Laser Microphone (2050)</name>
+			<category>Security Devices</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 1500</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>8098a4d0-2636-48d8-bc99-ccddf22ee736</id>
+			<name>Maglocks (2050)</name>
+			<category>Security Devices</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 100</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>f6ec312f-a265-4a1c-b729-d18281c998f2</id>
+			<name>Maglock Passkey (2050)</name>
+			<category>Breaking and Entering Gear</category>
+			<rating>6</rating>
+			<avail>(Rating)F</avail>
+			<cost>(Rating) x 10000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>2f252f42-0cad-4c31-ab10-5147feaa159f</id>
+			<name>Micro-Camcorder (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>6</avail>
+			<cost>2500</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>18640656-e31b-4673-ac00-f5bf5f574511</id>
+			<name>Micro-Recorder (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>6</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>11e1e285-e6db-4f17-b904-36ee3ec51757</id>
+			<name>Micro-Transceiver (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>6</avail>
+			<cost>2500</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>2e00f743-c10a-4ab9-8548-26666c91f411</id>
+			<name>Tracking Signa (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 200</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>e3b53939-a0c8-4c73-8d1e-0e19c9abd968</id>
+			<name>Shotgun Microphone (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 1000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>f89f5119-3a1f-45ec-9119-0c687294e5e2</id>
+			<name>Signal Locator (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 1000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>890fdcd5-f65f-41ed-8b96-9475e5ff7592</id>
+			<name>Voice Identifer (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 2000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>89dfc727-9313-4830-8bd7-929d5b0d2771</id>
+			<name>Voice Mask (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)R</avail>
+			<cost>(Rating) x 3000</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>80588ca3-1fd2-4c44-9c7a-b6a8dfda02ec</id>
+			<name>Bug Scanner (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)</avail>
+			<cost>(Rating) x 500</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>8bcb9d5b-51a1-4ab2-a7b8-c5afe69f3832</id>
+			<name>White Noise Generator (2050)</name>
+			<category>Communications and Countermeasures</category>
+			<rating>6</rating>
+			<avail>(Rating)R</avail>
+			<cost>(Rating) x 1500</cost>
+			<source>2050</source>
+			<page>195</page>
+		</gear>
+		<gear>
+			<id>c589f3ce-f181-4fc3-a344-455798913188</id>
+			<name>Tool Kit (2050)</name>
+			<category>Tools</category>
+			<rating>0</rating>
+			<avail>5</avail>
+			<cost>500</cost>
+			<bonus>
+				<selectskill />
+			</bonus>
+			<source>2050</source>
+			<page>196</page>
+		</gear>
+		<gear>
+			<id>5bc62c65-e4f7-4620-b1f8-9c7bfebeebc1</id>
+			<name>Tool Shop (2050)</name>
+			<category>Tools</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>5000</cost>
+			<bonus>
+				<selectskill />
+			</bonus>
+			<source>2050</source>
+			<page>196</page>
+		</gear>
+		<gear>
+			<id>f58f8f41-cfed-47f6-b319-2f752913ddc3</id>
+			<name>Tool Facility (2050)</name>
+			<category>Tools</category>
+			<rating>0</rating>
+			<avail>14</avail>
+			<cost>100000</cost>
+			<bonus>
+				<selectskill />
+			</bonus>
+			<source>2050</source>
+			<page>196</page>
+		</gear>	
+		<gear>
+			<id>9489bb6d-20c9-44fb-a519-30cafe5bcd9b</id>
+			<name>Atropine (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>5F</avail>
+			<cost>600</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>784e4be1-207b-4ec1-8615-ac1371a62f6b</id>
+			<name>Dikote™ (2050)</name>
+			<category>Chemicals</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>048cf4d7-a946-404b-9c34-2819d5b26c01</id>
+			<name>DMSO (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>2R</avail>
+			<cost>10</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>5379d8ca-43ef-4c82-ba25-79af9ec82199</id>
+			<name>Fugu-5 (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>25</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>03fa8dc2-c858-47e5-bdff-23cd8cfd054a</id>
+			<name>Hyper (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>4V</avail>
+			<cost>180</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>94975837-a10e-41c7-acdd-cb2bda48f372</id>
+			<name>Kamikaze (2050)</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>5R</avail>
+			<cost>50</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>	
+		<gear>
+			<id>d330d798-f3d9-4d8f-b6b9-4474562dfae7</id>
+			<name>Narcoject (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>4E</avail>
+			<cost>50</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>cebb302d-11b8-4115-86f4-1922734df9c7</id>
+			<name>Neuro-Stun VII (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>60</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>ad87341f-15cc-4d61-bfe4-798e62b2c694</id>
+			<name>Cyanide (2050)</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>3V</avail>
+			<cost>360</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>d26c172d-1c3a-4634-ad0d-1f954d8061cb</id>
+			<name>Chemsuit (2050)</name>
+			<category>Survival Gear</category>
+			<rating>6</rating>
+			<avail>Rating</avail>
+			<cost>Rating * 200</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>e1ca60aa-ddd5-4a91-b137-30d06d97f931</id>
+			<name>Respirator (2050)</name>
+			<category>Survival Gear</category>
+			<armorcapacity>[2]</armorcapacity>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>750</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>01dac671-e0e7-47a1-9333-e58672395c6d</id>
+			<name>Survival Kit (2050)</name>
+			<category>Survival Gear</category>
+			<armorcapacity>[6]</armorcapacity>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>100</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>1a5099ae-1991-449c-9e22-d57598daca89</id>
+			<name>Extra Compressed Soy Bars (2050)</name>
+			<category>Survival Gear</category>
+			<rating>0</rating>
+			<costfor>10</costfor>
+			<avail>2</avail>
+			<cost>30</cost>
+			<source>2050</source>
+			<page>197</page>
+		</gear>
+		<gear>
+			<id>9f709868-865a-425e-a16f-63d671eb674b</id>
+			<name>DocWagon Contract, HTR Service (2050)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>1f85edce-3168-45db-91bd-c884575c5a4a</id>
+			<name>DocWagon Contract, Employee Death Compensation (2050)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>acb8e080-2230-4dd0-aadc-2bce088bde93</id>
+			<name>DocWagon Contract, Resuscication Service (2050)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>8000</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>fafbd892-c217-4d1e-87f0-61464f7eaa2d</id>
+			<name>Medkit (2050)</name>
+			<category>Biotech</category>
+			<armorcapacity>[5]</armorcapacity>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>200</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>3</value>
+					<condition>Only for First Aid and Medicine</condition>
+				</limitmodifier>
+			</bonus>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>483ad83d-4cac-4c91-bad8-9e63f01fdbfd</id>
+			<name>Medkit Supplies (2050)</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>50</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>e9d3a44a-4b6e-4f88-aaff-d5bfbf22d20c</id>
+			<name>Stabilization Unit, Standard (2050)</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>12</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>53fbfcb2-252a-4563-8211-108cf78bad98</id>
+			<name>Stabilization Unit, Deluxe (2050)</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>16</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>	
+		<gear>
+			<id>f0e70404-e496-432a-954b-d5260074f2d0</id>
+			<name>Stabilization Unit Supplies (2050)</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>6</avail>
+			<cost>100</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>b2a8d29d-3113-4440-8777-a4c0ace36476</id>
+			<name>Slap Patch, Chem Patch (2050)</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>3</avail>
+			<cost>20</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>f685dd69-b57a-4688-aa2d-8f738d9a06c3</id>
+			<name>Slap Patch, Stim Patch (2050)</name>
+			<category>Biotech</category>
+			<rating>6</rating>
+			<avail>2</avail>
+			<cost>Rating * 25</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>e9f2ed07-2b20-49f4-a788-dee98b0cbb93</id>
+			<name>Slap Patch, Tranq Patch (2050)</name>
+			<category>Biotech</category>
+			<rating>10</rating>
+			<avail>4</avail>
+			<cost>Rating * 20</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>
+		<gear>
+			<id>8a38220d-1949-4c21-8fb3-3e0de27cf6d6</id>
+			<name>Slap Patch, Trauma Patch (2050)</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>400</cost>
+			<source>2050</source>
+			<page>198</page>
+		</gear>		
+		<!-- End -->		
 	</gears>
 </chummer>
