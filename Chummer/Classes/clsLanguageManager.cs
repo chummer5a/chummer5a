@@ -393,21 +393,23 @@ namespace Chummer
             }
         }
 
-		/// <summary>
-		/// Retrieve a string from the language file.
-		/// </summary>
-		/// <param name="strKey">Key to retrieve.</param>
-		public string GetString(string strKey)
+	    /// <summary>
+	    /// Retrieve a string from the language file.
+	    /// </summary>
+	    /// <param name="strKey">Key to retrieve.</param>
+	    /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+	    public string GetString(string strKey, bool blnReturnError = true)
 		{
 		    string strReturn;
             if (_objDictionary.TryGetValue(strKey, out strReturn))
             {
                 return strReturn.Replace("\\n", "\n");
             }
-            else
-            {
-                return "Error finding string for key - " + strKey;
-            }
+		    if (!blnReturnError)
+		    {
+		        return "";
+		    }
+		    return "Error finding string for key - " + strKey;
 		}
 
 		/// <summary>

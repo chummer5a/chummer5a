@@ -2706,7 +2706,7 @@ namespace Chummer.Classes
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 				XmlNode objXmlPower =
 					objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerNameLimit + "\"]");
-				objNewPower.Create(objXmlPower, _manager);
+				objNewPower.Create(objXmlPower, _manager, 0);
 
 				bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 				if (!blnHasPower)
@@ -2763,7 +2763,7 @@ namespace Chummer.Classes
 
 					// If no, add the power and mark it free or give it free levels
 					Power objNewPower = new Power(_objCharacter);
-					objNewPower.Create(objXmlPower, _manager);
+					objNewPower.Create(objXmlPower, _manager,0);
 
 					bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 
