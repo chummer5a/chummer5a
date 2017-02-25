@@ -6,8 +6,8 @@ namespace Chummer.Backend.Options
     public interface IGroupLayoutProvider
     {
 
-        List<int> ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null);
-        LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents, List<int> preComputedLayoutSpacing);
+        object ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null);
+        LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents, List<int> preComputedLayoutSpacing, object CachedCompute);
         LayoutOptionsContainer LayoutOptions { get; set; }
     }
 

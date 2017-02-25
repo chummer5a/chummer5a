@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using Point = System.Drawing.Point;
@@ -36,7 +37,7 @@ namespace Chummer.Backend.Options
         /// </summary>
         public LayoutOptionsContainer LayoutOptions { get; set; } = new LayoutOptionsContainer();
 
-        public List<int> ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null)
+        public object ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null)
         {
             List<int> alignmentLenghts = additonalConformTarget ?? new List<int>();
             StringBuilder builder = new StringBuilder();
@@ -52,27 +53,33 @@ namespace Chummer.Backend.Options
                 {
                     Parts = alignmentPieces.Length
                 };
-
-                for (int i = 0; i < alignmentPieces.Length - 1; i++)
+//Console.WriteLine("Working on big piece \"{0}\" {1}", line.LayoutString, regions.Count + ranges.Count);
+                for (int i = 0; i < alignmentPieces.Length; i++)
                 {
+//                    Console.Write("Working on part \"{0}\"", alignmentPieces[i]);
                     if (alignmentPieces[i].Contains("{}"))
                     {
+//                        Console.WriteLine(" double");
                         currentLine.ControlIndex = i + 1;
                         currentLine.Parts++;
                         string[] sides = alignmentPieces[i].Split(split, 2, StringSplitOptions.None);
 
                         ranges.Add(new CharacterRange(builder.Length, sides[0].Length));
-                        builder.AppendLine(alignmentPieces[i]);
+                        builder.Append(sides[0]);
+                        //builder.Append('\n');
                         UpdateRegions(builder, regions, ranges, format, rendergarget);
 
                         ranges.Add(new CharacterRange(builder.Length, sides[1].Length));
-                        builder.AppendLine(alignmentPieces[i]);
+                        builder.Append(sides[1]);
+                        //builder.Append('\n');
                         UpdateRegions(builder, regions, ranges, format, rendergarget);
                     }
                     else
                     {
+//                        Console.WriteLine(" single");
                         ranges.Add(new CharacterRange(builder.Length, alignmentPieces[i].Length));
-                        builder.AppendLine(alignmentPieces[i]);
+                        builder.Append(alignmentPieces[i]);
+                        //builder.Append('\n');
                         UpdateRegions(builder, regions, ranges, format, rendergarget);
                     }
 
@@ -93,17 +100,18 @@ namespace Chummer.Backend.Options
             {
                 LayoutLineInfo line = contents[j];
                 string[] alignmentPieces = line.LayoutString.Split(new[] { "\\t" }, StringSplitOptions.None);
-                Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
-
+//                Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
+//                Console.WriteLine("content[{0}]", j);
                 //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
                 //If a previous size requirement for that tab count is already found, take the biggest one
                 //Otherwise store a new one
-                for (int i = 0; i < alignmentPieces.Length - 1; i++)
+                for (int i = 0; i < alignmentPieces.Length; i++)
                 {
-                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
+//                    Console.WriteLine("Starting on {0}", regionCount);
+//                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
                     RectangleF rect = regions[regionCount++].GetBounds(rendergarget);
                     float size = rect.Width;
-                    if (controlIndex[j].ControlIndex == 1)
+                    if (alignmentPieces[i].Contains("{}") /*controlIndex[j].ControlIndex == 1 */)
                     {
                         size += line.ControlSize.Width + regions[regionCount++].GetBounds(rendergarget).Width;
                     }
@@ -119,16 +127,28 @@ namespace Chummer.Backend.Options
                 }
             }
 
-            return alignmentLenghts;
+//            Console.WriteLine("Cache count = {0}", regions.Count);
+            return regions;
         }
 
         private void UpdateRegions(StringBuilder builder, List<Region> regions, List<CharacterRange> ranges, StringFormat format, Graphics target, bool force = false)
         {
-            if (ranges.Count == 32 || force)
+            if (ranges.Count >= 32 || force)
             {
                 format.SetMeasurableCharacterRanges(ranges.ToArray());
-                regions.AddRange(target.MeasureCharacterRanges(builder.ToString(), LayoutOptions.Font,
-                    new RectangleF(0, 0, float.MaxValue, float.MaxValue), format));
+                var r = target.MeasureCharacterRanges(builder.ToString(), LayoutOptions.Font,
+                    new RectangleF(0, 0, float.MaxValue, float.MaxValue), format);
+                regions.AddRange(r);
+
+                //Console.WriteLine("=======REGIONS=======");
+                for (var index = 0; index < r.Length; index++)
+                {
+                    Region region = r[index];
+
+                    //Console.WriteLine($"({region.GetBounds(target).Width / ranges[index].Length :0000.00})\t{ranges[index].First},{ranges[index].Length}\"{builder.ToString(ranges[index].First, ranges[index].Length)}\"\t{region.GetBounds(target)}");
+                }
+
+                //Console.WriteLine("=====================");
 
                 builder.Clear();
                 ranges.Clear();
@@ -143,12 +163,21 @@ namespace Chummer.Backend.Options
         /// </summary>
         /// <param name="contents"></param>
         /// <returns></returns>
-        public LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents, List<int> preComputedLayoutSpacing)
+        public LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents,
+            List<int> preComputedLayoutSpacing, object CachedCompute)
         {
-            //Create the container with all return information
-            LayoutRenderInfo ret = new LayoutRenderInfo(){ControlLocations = new List<Point>(), TextLocations = new List<TextRenderInfo>()};
+            int cacheIndex = 0;
+            List<Region> cache = (List<Region>) CachedCompute;
 
-            
+            Console.WriteLine("Cache count = {0}", cache.Count);
+            //Create the container with all return information
+            LayoutRenderInfo ret = new LayoutRenderInfo()
+            {
+                ControlLocations = new List<Point>(),
+                TextLocations = new List<TextRenderInfo>()
+            };
+
+
 
 
 
@@ -156,7 +185,7 @@ namespace Chummer.Backend.Options
             //The following lines convert this to pixel offsets for each group
 
             //First group should start at 0, not reservering a free space to house a duplicate for first group.
-            List<int> alignmentLenghts = new List<int> { 0 };
+            List<int> alignmentLenghts = new List<int> {0};
             alignmentLenghts.AddRange(preComputedLayoutSpacing);
             Console.WriteLine(string.Join(", ", alignmentLenghts));
 
@@ -164,7 +193,7 @@ namespace Chummer.Backend.Options
             for (int i = 1; i < alignmentLenghts.Count; i++)
             {
                 alignmentLenghts[i] += alignmentLenghts[i - 1];
-                Console.WriteLine($"[{i}] <- {alignmentLenghts[i]} added {alignmentLenghts[i - 1]}");
+//                Console.WriteLine($"[{i}] <- {alignmentLenghts[i]} added {alignmentLenghts[i - 1]}");
             }
 
             //LineTop defines the top of the current line, lineButtom keeps track of how far down it goes
@@ -172,32 +201,35 @@ namespace Chummer.Backend.Options
             int lineBottom = 0;
 
             //Perform the actual layout
-            foreach (LayoutLineInfo line in contents)
+            int regionCount = 0;
+            for (int j = 0; j < contents.Count; j++)
             {
-                bool drewControl = false;
-                //How many pixels is already used
                 int lineRight = 0;
-
-                //To perform the alignment, every aligntment piece gets its own text label. Calculate the position of those now
-                string[] alignmentPieces = line.LayoutString.Split(new []{"\\t"}, StringSplitOptions.None);
+                LayoutLineInfo line = contents[j];
+                string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
+                //Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
+//                Console.WriteLine("content[{0}]", j);
+                //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
+                //If a previous size requirement for that tab count is already found, take the biggest one
+                //Otherwise store a new one
+                bool controlRendered = false;
                 for (int i = 0; i < alignmentPieces.Length; i++)
                 {
-                    //{} is to be substituded with a control, to display those inline.
-                    if (!drewControl && alignmentPieces[i].Contains("{}"))
+//                    Console.WriteLine("Starting on {1},{0}", regionCount, j);
+//                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
+                    Size size = ToSize(cache[regionCount++].GetBounds(renderGraphics));
+
+                    if (!controlRendered && alignmentPieces[i].Contains("{}"))
                     {
-                        //As the string has a control inside, we need 2 labels surounding it
-
-                        //calculate the size of the 2 surounding text elements
-
-
                         string[] sides = alignmentPieces[i].Split(split, 2, StringSplitOptions.None);
-                        Size size = ElementSize(renderGraphics, sides[0], Size.Empty, Point.Empty);
-                        Size size2 = ElementSize(renderGraphics, sides[1], Size.Empty, Point.Empty);
-
-                        Console.WriteLine($"text left = {alignmentLenghts[i]} + {size.Width} + {line.ControlSize.Width} + {LayoutOptions.ControlMargin} * 2");
-
-                        //Add the labels. Second calculating involes control size & margin, making it slightly more wonky
-                        ret.TextLocations.Add(new TextRenderInfo{Location = new Point(alignmentLenghts[i], lineTop), Size = size, Text = sides[0]});
+                        Size size2 = ToSize(cache[regionCount++].GetBounds(renderGraphics));
+                        TextRenderInfo tri = new TextRenderInfo
+                        {
+                            Location = new Point(alignmentLenghts[i], lineTop),
+                            Size = size,
+                            Text = sides[0]
+                        };
+                        //Console.WriteLine($"Rendering tri \"{tri.Text}\" at {tri.Location.X},{tri.Location.Y} ({tri.Size.Width},{tri.Size.Height})");
                         ret.TextLocations.Add(new TextRenderInfo
                         {
                             Location =
@@ -207,26 +239,25 @@ namespace Chummer.Backend.Options
                             Size = size2,
                             Text = sides[1]
                         });
+                        ret.TextLocations.Add(tri);
+                        ret.ControlLocations.Add(new Point(
+                            alignmentLenghts[i] + size.Width + LayoutOptions.ControlMargin,
+                            lineTop + line.ControlOffset.Y));
 
-                        //Also save where the control is supposed to be stored
-                        ret.ControlLocations.Add(new Point(alignmentLenghts[i] + size.Width + LayoutOptions.ControlMargin, lineTop + line.ControlOffset.Y));
-                        Console.WriteLine($"c = {alignmentLenghts[i]} + {size.Width} + {LayoutOptions.ControlMargin}");
-
-                        //Find what was biggest and record height
-                        lineBottom = Math.Max(lineBottom, lineTop + Math.Max(size.Height, line.ControlSize.Height - Math.Min(0, line.ControlOffset.Y)));
-                        drewControl = true;
+                        lineBottom = Math.Max(lineBottom,
+                            lineTop + Math.Max(size.Height,
+                                line.ControlSize.Height - Math.Min(0, line.ControlOffset.Y)));
+                        controlRendered = true;
                     }
                     else
                     {
-                        //No control included makes it simple. Calculate size, add it and advance size counter
-                        Size size = ElementSize(renderGraphics, alignmentPieces[i], Size.Empty, Point.Empty);
                         TextRenderInfo tri = new TextRenderInfo
                         {
                             Location = new Point(alignmentLenghts[i], lineTop),
                             Size = size,
                             Text = alignmentPieces[i]
                         };
-                        Console.WriteLine($"Rendering tri \"{tri.Text}\" at {tri.Location.X},{tri.Location.Y} ({tri.Size.Width},{tri.Size.Height})");
+                        //Console.WriteLine($"Rendering tri \"{tri.Text}\" at {tri.Location.X},{tri.Location.Y} ({tri.Size.Width},{tri.Size.Height})");
                         ret.TextLocations.Add(tri);
                         lineBottom = Math.Max(lineBottom, lineTop + size.Height);
 
@@ -234,18 +265,24 @@ namespace Chummer.Backend.Options
                     }
                 }
 
-                //If control was not added, add it last in the line. This is the only case lineRight is acctually read
-                //If we could trust strings we could skip much of this, but crashing due a bad string is bad.
-                if(drewControl == false)
+                if (!controlRendered)
                 {
-                    ret.ControlLocations.Add(new Point(lineRight + LayoutOptions.ControlMargin, lineTop + line.ControlOffset.Y));
-                    lineBottom = Math.Max(lineBottom, lineTop + line.ControlSize.Height - Math.Min(0, line.ControlOffset.Y));
+                    ret.ControlLocations.Add(new Point(lineRight + LayoutOptions.ControlMargin,
+                        lineTop + line.ControlOffset.Y));
                 }
+
+//                Console.WriteLine("EOL {0} -> {1}(+{2})", lineTop, lineBottom + LayoutOptions.Linespacing, (lineBottom + LayoutOptions.Linespacing) - lineTop);
+
 
                 lineTop = lineBottom + LayoutOptions.Linespacing;
             }
-
             return ret;
+        }
+
+        private Size ToSize(RectangleF getBounds)
+        {
+            //Console.WriteLine("Rectangle of {0} {1}", getBounds.Width, getBounds.Height);
+            return new Size((int)getBounds.Width, (int)getBounds.Height);
         }
 
         private readonly SizeF Big = new SizeF(int.MaxValue, int.MaxValue);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
@@ -141,6 +142,7 @@ namespace Chummer.UI.Options
 
         void SetupLayout()
         {
+            Console.WriteLine("Enter");
             PointF offset = new PointF(5, 5);
             Graphics g = this.CreateGraphics();
             sharedLayoutSpacing = new List<int>();
@@ -148,18 +150,21 @@ namespace Chummer.UI.Options
 
             foreach (PreRenderGroup preRenderGroup in preRenderData)
             {
-                _defaultGroupLayoutProvider.ComputeLayoutSpacing(
+                object cache = _defaultGroupLayoutProvider.ComputeLayoutSpacing(
                     g                    ,
                     preRenderGroup.Lines,
                     sharedLayoutSpacing
                 );
+                preRenderGroup.Cache = cache;
             }
 
+            Console.WriteLine("First");
             foreach (PreRenderGroup preRenderGroup in preRenderData)
             {
                 LayoutRenderInfo renderGroup = _defaultGroupLayoutProvider.PerformLayout(g,
-                    preRenderGroup.Lines, sharedLayoutSpacing);
+                    preRenderGroup.Lines, sharedLayoutSpacing, preRenderGroup.Cache);
 
+                Console.WriteLine("Controls = {0}, locations = {1}", preRenderGroup.Controls.Count, renderGroup.ControlLocations.Count);
                 for (int i = 0; i < preRenderGroup.Controls.Count; i++)
                 {
                     preRenderGroup.Controls[i].Location =
@@ -169,6 +174,8 @@ namespace Chummer.UI.Options
 
                 renderData.Add(renderGroup);
             }
+
+            Console.WriteLine("Exit");
             //In theory: Get sizes of each preRenderGroup (job for _defaultGroupLayoutProvider)
             //and make a "big" layout class do a layout of each group
 
@@ -194,7 +201,7 @@ namespace Chummer.UI.Options
         {
             public List<Control> Controls { get; set; }
             public List<LayoutLineInfo> Lines { get; set; }
-
+            public object Cache { get; set; }
         }
     }
 
