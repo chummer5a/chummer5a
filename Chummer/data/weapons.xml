@@ -8720,6 +8720,1613 @@
 			<source>CA</source>
 			<page>137</page>
 		</weapon>
+		<!-- SR5 2050 -->
+		<weapon>
+			<id>50b36198-aeed-4bcb-af46-5e8c18771c47</id>
+			<name>Hand Razors (fixed) (2050)</name>
+			<category>Blades</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>-2</conceal>
+			<spec>Cyber Implants</spec>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>2050</source>
+			<page>203</page>
+		</weapon>
+		<weapon>
+			<id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
+			<name>Hand Razors (retractable) (2050)</name>
+			<category>Blades</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<spec>Cyber Implants</spec>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>2050</source>
+			<page>203</page>
+		</weapon>
+		<weapon>
+			<id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
+			<name>Spurs (fixed) (2050)</name>
+			<category>Blades</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<spec>Cyber Implants</spec>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>2050</source>
+			<page>203</page>
+		</weapon>
+		<weapon>
+			<id>9c003405-8e41-4a2e-bde3-dc67709a71e7</id>
+			<name>Spurs (retractable) (2050)</name>
+			<category>Blades</category>
+			<hide>yes</hide>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<spec>Cyber Implants</spec>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>2050</source>
+			<page>203</page>
+		</weapon>
+		<weapon>
+			<id>5c6a9db2-9518-4a60-a291-8a4041b60a71</id>
+			<name>Cyber Holdout Pistol (2050)</name>
+			<category>Holdouts</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>-6</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>2(m)/6(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>false</allowaccessory>
+			<source>2050</source>
+			<page>204</page>
+		</weapon>
+		<weapon>
+			<id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
+			<name>Cyber Light Pistol (2050)</name>
+			<category>Light Pistols</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>-6</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>10(m)/15(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>falsye</allowaccessory>
+			<source>2050</source>
+			<page>204</page>
+		</weapon>
+		<weapon>
+			<id>7aba7a44-45eb-449f-bd05-5bee308eed3c</id>
+			<name>Cyber Machine Pistol (2050)</name>
+			<category>Machine Pistols</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>-6</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA/BF</mode>
+			<rc>1</rc>
+			<ammo>18(m)/32(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>false</allowaccessory>
+			<source>2050</source>
+			<page>204</page>
+		</weapon>
+		<weapon>
+			<id>dfddf65d-6275-456a-bfd9-8904ab4dc4cd</id>
+			<name>Cyber Heavy Pistol (2050)</name>
+			<category>Heavy Pistols</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>-6</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>8(m)/12(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>false</allowaccessory>
+			<source>2050</source>
+			<page>204</page>
+		</weapon>		
+		<weapon>
+			<id>b75bf551-8ad5-469a-a0ae-7cc4fa62a663</id>
+			<name>Cyber Submachine Gun (2050)</name>
+			<category>Machine Pistols</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>-6</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA/BF</mode>
+			<rc>1</rc>
+			<ammo>18(m)/32(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>false</allowaccessory>
+			<source>2050</source>
+			<page>204</page>
+		</weapon>
+		<weapon>
+			<id>3011640d-c504-4af1-bbb5-25f42492a7ff</id>
+			<name>Cyber Shotgun (2050)</name>
+			<category>Shotguns</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>-6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>12P</damage>
+			<ap>4</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>4(m)/10(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>false</allowaccessory>
+			<source>2050</source>
+			<page>204</page>
+		</weapon>
+		<weapon>
+			<id>09a84b7f-50f0-4889-bae4-16442edbee12</id>
+			<name>Defiance Super Shock (2050)</name>
+			<category>Tasers</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>9S(e)</damage>
+			<ap>-5</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>4(m)</ammo>
+			<avail>3R</avail>
+			<cost>1000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+			<accessory><name>Imaging Scope (2050)</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>a87aa823-732b-4efe-8164-6235bc492ef0</id>
+			<name>Streetline Special (2050)</name>
+			<category>Holdouts</category>
+			<type>Ranged</type>
+			<conceal>-4</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>6(c)</ammo>
+			<avail>4R</avail>
+			<cost>100</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>d9068427-9f9e-4768-be27-cb9c5ee6da13</id>
+			<name>Tiffani Self-Defender (2050)</name>
+			<category>Holdouts</category>
+			<type>Ranged</type>
+			<conceal>-4</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>4(c)</ammo>
+			<avail>2R</avail>
+			<cost>450</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>5f10b28e-bdf2-461f-b751-9de1153200a1</id>
+			<name>Walther Palm Pistol (2050)</name>
+			<category>Holdouts</category>
+			<type>Ranged</type>
+			<conceal>-4</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SS/BF</mode>
+			<rc>0</rc>
+			<ammo>2(b)</ammo>
+			<avail>3R</avail>
+			<cost>200</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>ddfe3423-53c9-44bd-8d4a-f9b88b81a382</id>
+			<name>Ares Light Fire 70 (2050)</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-3</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>7</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>3R</avail>
+			<cost>475</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>f02d5f6e-d317-4559-93ee-48225e5c4017</id>
+			<name>Beretta 200 ST (2050)</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA/BF</mode>
+			<rc>1</rc>
+			<ammo>20(c)</ammo>
+			<avail>5R</avail>
+			<cost>750</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Stock</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>847a9604-0890-4f24-bea2-83d372feef7e</id>
+			<name>Beretta Modell 101T (2050)</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>12(c)</ammo>
+			<avail>4R</avail>
+			<cost>350</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>f8356115-1a00-4ac8-a28a-91655b2075b7</id>
+			<name>Colt America L36 (2050)</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>7</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>11(c)</ammo>
+			<avail>4R</avail>
+			<cost>350</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>132466ad-0ef5-49e2-b453-0e54cf1b31a8</id>
+			<name>Fichetti Security 500 (2050)</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>1</rc>
+			<ammo>10(c)</ammo>
+			<avail>6R</avail>
+			<cost>400</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+			<accessory>
+				<name>Stock</name>
+			</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>21259f65-59a0-4456-be11-cb6f7c5da2c0</id>
+			<name>Fichetti Security 500a (2050)</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA</mode>
+			<rc>1</rc>
+			<ammo>22(c)</ammo>
+			<avail>6R</avail>
+			<cost>450</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+			<accessory>
+				<name>Stock</name>
+			</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>1e5c5537-9d78-45e2-b2ac-68d5622fce4d</id>
+			<name>Ares Crusader MP 6 (2050)</name>
+			<category>Machine Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>SA/BF</mode>
+			<rc>2</rc>
+			<ammo>40(c)</ammo>
+			<avail>5F</avail>
+			<cost>950</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>		
+		<weapon>
+			<id>bc343de1-aa17-4fb8-b3dc-5cd44fc973a1</id>
+			<name>Ceska Black Scorpion (2050)</name>
+			<category>Machine Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>35(c)</ammo>
+			<avail>6R</avail>
+			<cost>270</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Folding Stock</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>ec050588-9a36-468a-aab4-5be80e96ac90</id>
+			<name>Ares Predator (2050)</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>15(c)</ammo>
+			<avail>4R</avail>
+			<cost>450</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>6f88796e-bf03-4d20-b1f0-2d215bb980fb</id>
+			<name>Ares Viper Slivergun (2050)</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>9P(f)</damage>
+			<ap>+4</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>30(c)</ammo>
+			<avail>5R</avail>
+			<cost>600</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Silencer</name>
+			</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>1d1dc9e6-bdad-49f1-b2d6-b968aecf095c</id>
+			<name>Browning Max-Power (2050)</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>10(c)</ammo>
+			<avail>3R</avail>
+			<cost>450</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>36e7b132-6b4d-4932-86e0-9b8a1afe6c00</id>
+			<name>Colt Manhunter (2050)</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>4R</avail>
+			<cost>300</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>cc5538fc-a62b-43b1-9e45-ea1e4c58901b</id>
+			<name>Remington Roomsweeper (2050)</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Semi-Automatics</spec>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>9P(f)</damage>
+			<ap>+4</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>8(m)</ammo>
+			<avail>4R</avail>
+			<cost>300</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>8a455cca-8a94-445b-bff1-e364d6896908</id>
+			<name>Ruger Super Warhawk (2050)</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<spec>Revolvers</spec>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>9P</damage>
+			<ap>-2</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>6(cy)</ammo>
+			<avail>3R</avail>
+			<cost>300</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>459205e8-54bd-44aa-ba25-f7fb8d056d70</id>
+			<name>AK-97 Karabiner (2050)</name>
+			<category>Submachine Guns</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>0</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>30(c)</ammo>
+			<avail>5F</avail>
+			<cost>800</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Folding Stock</name>
+				</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>fe671fb0-85ba-4d10-9fa6-e3dff6c55645</id>
+			<name>Beretta Modell 70 (2050)</name>
+			<category>Submachine Guns</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>0</ap>
+			<mode>BF/FA</mode>
+			<rc>0</rc>
+			<ammo>35(c)</ammo>
+			<avail>5F</avail>
+			<cost>900</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
+				<accessory>	
+					<name>Silencer</name>					
+				</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>5f40d965-f1d4-4b09-a61b-f4b46016a482</id>
+			<name>HK227 (2050)</name>
+			<category>Submachine Guns</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>0</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>28(c)</ammo>
+			<avail>4F</avail>
+			<cost>1500</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Gas-Vent 2 System</name>
+				</accessory>
+				<accessory>	
+					<name>Laser Sight</name>					
+				</accessory>
+				<accessory>
+					<name>Folding Stock</name>
+				</accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>21dffe97-d055-4a8a-99d6-20f65054b522</id>
+			<name>Ingram Smartgun (2050)</name>
+			<category>Submachine Guns</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-</ap>
+			<mode>BF/FA</mode>
+			<rc>0</rc>
+			<ammo>32(c)</ammo>
+			<avail>4F</avail>
+			<cost>950</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Gas-Vent 2 System</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>e80cca4e-3210-4e38-b333-6c1cd42d6b54</id>
+			<name>Uzi III (2050)</name>
+			<category>Submachine Guns</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-</ap>
+			<mode>BF</mode>
+			<rc>0</rc>
+			<ammo>24(c)</ammo>
+			<avail>4F</avail>
+			<cost>600</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>b297c2b3-0cc0-4321-95be-ca6d73e9af03</id>
+			<name>AK-97 (2050)</name>
+			<category>Assault Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-2</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>22(c)</ammo>
+			<avail>3F</avail>
+			<cost>500</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>1a5768a6-012a-4884-9bdd-4f3b32e86aa2</id>
+			<name>AK-98 (2050)</name>
+			<category>Assault Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-2</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>22(c)</ammo>
+			<avail>6F</avail>
+			<cost>2500</cost>
+			<underbarrels>
+				<underbarrel>AK-98 Grenade Launcher</underbarrel>
+			</underbarrels>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>d1e01a1b-9ada-46c7-8007-e49932e6f727</id>
+			<name>Colt M22A2 (2050)</name>
+			<category>Assault Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>9P</damage>
+			<ap>-2</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>40(c)</ammo>
+			<avail>4F</avail>
+			<cost>1600</cost>
+			<underbarrels>
+				<underbarrel>Colt M22A2 Grenade Launcher (2050)</underbarrel>
+			</underbarrels>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>8d399d02-9829-4943-8b60-7c32698c0888</id>
+			<name>Colt M22A2 Grenade Launcher (2050)</name>
+			<category>Underbarrel Weapons</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>Grenade</damage>
+			<ap>-</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>6(m)</ammo>
+			<ammocategory>Grenade Launchers</ammocategory>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Heavy Weapons</useskill>
+			<range>Grenade Launchers</range>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>2f4724d3-4644-411c-998c-b0a12461e508</id>
+			<name>FN HAR (2050)</name>
+			<category>Assault Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-2</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>20(c)</ammo>
+			<avail>4F</avail>
+			<cost>1200</cost>
+			<accessories>
+				<accessory><name>Laser Sight</name></accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Gas-Vent 2 System</name></accessory>
+			</accessories>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>185</page>
+		</weapon>		
+		<weapon>
+			<id>89bfe11e-c916-439d-9abe-937737735af9</id>
+			<name>Ranger Arms SM-3 (2050)</name>
+			<category>Sniper Rifles</category>
+			<type>Ranged</type>
+			<conceal>8</conceal>
+			<accuracy>8</accuracy>
+			<reach>0</reach>
+			<damage>14P</damage>
+			<ap>-5</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>6(m)</ammo>
+			<avail>12F</avail>
+			<cost>4000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Silencer</name></accessory>
+				<accessory><name>Imaging Scope (2050)</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>ae59bc8e-5b56-4dc8-8540-1211f059c4b9</id>
+			<name>Remington 750 (2050)</name>
+			<category>Sniper Rifles</category>
+			<type>Ranged</type>
+			<conceal>8</conceal>
+			<accuracy>7</accuracy>
+			<reach>0</reach>
+			<damage>11P</damage>
+			<ap>-3</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>5(m)</ammo>
+			<avail>3R</avail>
+			<cost>600</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Imaging Scope (2050)</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>38202c82-5580-4746-8639-2ab097a0ff4f</id>
+			<name>Remington 950 (2050)</name>
+			<category>Sniper Rifles</category>
+			<type>Ranged</type>
+			<conceal>8</conceal>
+			<accuracy>7</accuracy>
+			<reach>0</reach>
+			<damage>12P</damage>
+			<ap>-4</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>5(m)</ammo>
+			<avail>3R</avail>
+			<cost>800</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Imaging Scope (2050)</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>50b8bd98-59de-4c1b-acbd-bd24550c91c1</id>
+			<name>Ruger 100 (2050)</name>
+			<category>Sniper Rifles</category>
+			<type>Ranged</type>
+			<conceal>8</conceal>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>11P</damage>
+			<ap>-3</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>5(m)</ammo>
+			<avail>3R</avail>
+			<cost>1300</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Imaging Scope (2050)</name></accessory>
+				<accessory><name>Shock Pad</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>2e2f798a-c3a3-4829-942e-cd7e0952a9e7</id>
+			<name>Walther MA-2100 (2050)</name>
+			<category>Sniper Rifles</category>
+			<type>Ranged</type>
+			<conceal>8</conceal>
+			<accuracy>6</accuracy>
+			<reach>0</reach>
+			<damage>12P</damage>
+			<ap>-3</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>10(m)</ammo>
+			<avail>12F</avail>
+			<cost>6500</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>f82903f3-3f8d-48b8-95db-c8cf1238c7a1</id>
+			<name>Styre AUG-CSL (2050)</name>
+			<category>Assault Rifles</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>0</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>40(c)</ammo>
+			<avail>10F</avail>
+			<cost>4500</cost>
+			<underbarrels>
+				<underbarrel>Styre AUG-CSL SMG (2050)</underbarrel>
+				<underbarrel>Styre AUG-CSL Carbine (2050)</underbarrel>
+				<underbarrel>Styre AUG-CSL Assault Rifles (2050)</underbarrel>
+				<underbarrel>Styre AUG-CSL LMG (2050)</underbarrel>
+			</underbarrels>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>5e116545-08b4-4eae-8dab-6f1546786296</id>
+			<name>Styre AUG-CSL SMG (2050)</name>
+			<category>Submachine Guns</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>0</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>40(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Gas-Vent 1 System</name>
+				</accessory>
+			</accessories>				
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>ef76228b-c339-4262-b8e3-597de652d9b4</id>
+			<name>Styre AUG-CSL Carbine (2050)</name>
+			<category>Sniper Rifles</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>0</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>40(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Gas-Vent 1 System</name>
+				</accessory>
+			</accessories>			
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>4c09761e-d2a2-4958-9113-5b61db145a20</id>
+			<name>Styre AUG-CSL Assault Rifles (2050)</name>
+			<category>Assault Rifles</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>9P</damage>
+			<ap>-2</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>40(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Gas-Vent 1 System</name>
+				</accessory>
+			</accessories>			
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>39a5d782-6537-4b6d-93f9-f5d30d90d8ef</id>
+			<name>Styre AUG-CSL LMG (2050)</name>
+			<category>Light Machine Guns</category>
+			<hide>yes</hide>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-2</ap>
+			<mode>SA/BF/FA</mode>
+			<rc>0</rc>
+			<ammo>40(c)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory>
+					<name>Gas-Vent 1 System</name>
+				</accessory>
+			</accessories>			
+			<source>2050</source>
+			<page>184</page>
+		</weapon>
+		<!-- Grenade -->
+		<weapon>
+			<id>1c4b568b-7591-433f-8618-2ca75fedabb2</id>
+			<name>Grenade: Shock (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>10S (10m Radius)</damage>
+			<ap>-4</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>5F</avail>
+			<cost>30</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Standard Grenade</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>eef0fb7c-572e-49e9-88ee-5f52f0cdea8a</id>
+			<name>Minigrenade: Shock (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<spec>Grenade Launcher</spec>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>10S (10m Radius)</damage>
+			<ap>-4</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8F</avail>
+			<cost>60</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Heavy Weapons</useskill>
+			<range>Grenade Launcher</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>ee5f14ba-32c9-48bb-8c56-bd55665a3ad7</id>
+			<name>Grenade: Defensive (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>16P (-2/m)</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4F</avail>
+			<cost>45</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Standard Grenade</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>2cc3e198-3a4a-444a-86b3-3b44848c0b80</id>
+			<name>Minigrenade: Defensive (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>16P (-2/m)</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8F</avail>
+			<cost>60</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Heavy Weapons</useskill>
+			<range>Grenade Launcher</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>3a8c38e1-6428-43ff-9a34-98932ab26ca9</id>
+			<name>Grenade: Offensive (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>18P(f) (-1/m)</damage>
+			<ap>+5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4F</avail>
+			<cost>35</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Standard Grenade</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>a3005aaf-ae61-48e4-bc08-1915d41c934c</id>
+			<name>Minigrenade: Offensive (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>18P(f) (-1/m)</damage>
+			<ap>+5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8F</avail>
+			<cost>60</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Heavy Weapons</useskill>
+			<range>Grenade Launcher</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>a5212451-eb18-48b6-ba94-bc9e7a8962ea</id>
+			<name>Grenade: Smoke (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(10m Radius)</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>3R</avail>
+			<cost>30</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Standard Grenade</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>8424fc8f-00b2-445f-a023-6ea608425093</id>
+			<name>Minigrenade: Smoke (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(10m Radius)</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>3R</avail>
+			<cost>60</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Heavy Weapons</useskill>
+			<range>Grenade Launcher</range>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>41b3215e-2c3f-4417-a39c-4b3725318b86</id>
+			<name>Rocket: Anti-Personnel (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>23P(f) (-1/m)</damage>
+			<ap>+5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8F</avail>
+			<cost>1000</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>1f62b179-c89e-45d6-b879-2584bcf0b570</id>
+			<name>Rocket: Anti-Vehicle (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>24P (-4/m)</damage>
+			<ap>-4/-10</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8F</avail>
+			<cost>2000</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>435750bb-c9ad-42da-aeda-cc42a401ffda</id>
+			<name>Rocket: High Explosive (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>21P (-2/m)</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8F</avail>
+			<cost>1500</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>2b35b950-a44d-4071-abca-f3fc2d912ba9</id>
+			<name>Missile: Anti-Personnel (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>23P(f) (-1/m)</damage>
+			<ap>+5</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>12F</avail>
+			<cost>1000</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>438a902c-ce97-475d-aa9d-c8b9ef7f6a8b</id>
+			<name>Missile: Anti-Vehicle (2050)</name>
+			<category>Gear</category>
+			<rating>6</rating>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>24P (-4/m)</damage>
+			<ap>-4/-10</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>12F</avail>
+			<cost>2000</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>1194223f-0943-49de-9138-ee8a7ad1636b</id>
+			<name>Missile: High Explosive (2050)</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>21P (-2/m)</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>12F</avail>
+			<cost>1500</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>191</page>
+		</weapon>		
+		<!-- End SR5 2050 -->		
 		<!-- End Region -->
 	</weapons>
 	<accessories>
@@ -10325,6 +11932,274 @@
 			</forbidden>
 			<source>HT</source>
 			<page>197</page>
+		</accessory>
+		<!-- End Region -->
+		<!-- Shadowrun 2050 SR5 -->
+		<accessory>
+			<id>0c2e21a0-4f1d-409d-a33e-cb3d5f0b0897</id>
+			<name>Tripod (2050)</name>
+			<mount>Under</mount>
+			<rcdeployable>True</rcdeployable>
+			<rc>6</rc>
+			<rating>0</rating>
+			<rcgroup>1</rcgroup>
+			<avail>10</avail>
+			<cost>600</cost>
+			<source>2050</source>
+			<page>186</page>
+		</accessory>
+		<accessory>
+			<id>ec157e2d-5868-4652-8cf0-8e30e46fb130</id>
+			<name>Spare Clip (2050)</name>
+			<ammoslots>1</ammoslots>
+			<mount/>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>5</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(c)</ammo>
+						<ammo operation="contains">(d)</ammo>
+					</OR>
+				</weapondetails>
+			</required>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>e632b766-55fb-42bf-8bd3-6c9c46830a29</id>
+			<name>Gas-Vent 2 System (2050)</name>
+			<mount>Barrel</mount>
+			<rc>2</rc>
+			<rating>0</rating>
+			<avail>2R</avail>
+			<cost>450</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>9998a80c-6452-4fcb-9508-66da27eea850</id>
+			<name>Gas-Vent 3 System (2050)</name>
+			<mount>Barrel</mount>
+			<rc>2</rc>
+			<rating>0</rating>
+			<avail>2R</avail>
+			<cost>700</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>ac1e63bd-4cce-44c4-ac65-71831ebaa1d4</id>
+			<name>Grenade Launcher (2050)</name>
+			<mount>Under</mount>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<cost>1700</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="greaterthan">0</conceal>
+				</weapondetails>
+			</required>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>e6b1550c-c392-4e85-b618-04f8a09b8020</id>
+			<name>Gyro Mount, default (2050) </name>
+			<mount>Under</mount>
+			<rc>5</rc>
+			<rating>0</rating>
+			<rcgroup>1</rcgroup>
+			<avail>4</avail>
+			<cost>2500</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>6ed9f566-4696-4436-9d79-4e807fbb2a1f</id>
+			<name>Gyro Mount, Deluxe (2050) </name>
+			<mount>Under</mount>
+			<rc>6</rc>
+			<rating>0</rating>
+			<rcgroup>1</rcgroup>
+			<avail>4</avail>
+			<cost>6000</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>1bf98490-9642-436b-9b7c-fdbd6d5a65f1</id>
+			<name>Laser Sight (2050)</name>
+			<mount>Top/Under</mount>
+			<accuracy>1</accuracy>
+			<rating>0</rating>
+			<avail>6</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>dd5a1cf9-38a6-49a6-9ed5-c7ee79670e4e</id>
+			<name>Silencer (2050)</name>
+			<mount>Barrel</mount>
+			<rating>0</rating>
+			<avail>9F</avail>
+			<cost>500</cost>
+			<forbidden>
+				<weapondetails>
+					<OR>
+						<ammo operation="contains">(cy)</ammo>
+						<spec>Revolvers</spec>
+						<spec2>Revolvers</spec2>
+						<category>Shotguns</category>
+						<spec>Shotguns</spec>
+						<spec2>Shotguns</spec2>
+						<ammocategory>Shotguns</ammocategory>
+						<name>PSK-3 Collapsible Heavy Pistol</name>
+					</OR>
+				</weapondetails>
+			</forbidden>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>57651486-8344-4b4b-af96-780e99cfb015</id>
+			<name>Speed Loader (2050)</name>
+			<ammoslots>1</ammoslots>
+			<mount/>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>10</cost>
+			<required>
+				<weapondetails>
+					<ammo operation="contains">(cy)</ammo>
+				</weapondetails>
+			</required>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>1c8c3432-315b-4365-8a15-31e9427cbff9</id>
+			<name>Shock Pad (2050)</name>
+			<mount/>
+			<rcdeployable>True</rcdeployable>
+			<rc>1</rc>
+			<rating>0</rating>
+			<rcgroup>2</rcgroup>
+			<avail>2</avail>
+			<cost>200</cost>
+			<required>
+				<weapondetails>
+					<OR>
+						<category operation="contains">Rifles</category>
+						<category>Shotguns</category>
+						<category>Light Machine Guns</category>
+						<category>Medium Machine Guns</category>
+						<category>Heavy Machine Guns</category>
+						<category>Underbarrel Weapons</category>
+						<category>Assault Cannons</category>
+						<category>Flamethrowers</category>
+						<category>Laser Weapons</category>
+						<category>Grenade Launchers</category>
+						<category>Missile Launchers</category>
+					</OR>
+				</weapondetails>
+			</required>
+			<forbidden>
+				<oneof>
+					<accessory>Stock Removal</accessory>
+					<accessory>Sawed Off/Shortbarrel and Stock Removal</accessory>
+				</oneof>
+			</forbidden>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>e62964cd-767f-4b10-b456-d87f5a04b64e</id>
+			<name>Smartgun System, Internal (2050)</name>
+			<mount/>
+			<forbidden>
+				<oneof>
+					<accessory>Ceramic/Plasteel Components</accessory>
+					<accessory>Collapsible Traditional Bow</accessory>
+					<accessory>Vintage</accessory>
+				</oneof>
+				<weapondetails>
+					<type>Melee</type>
+				</weapondetails>
+			</forbidden>
+			<accuracy>2</accuracy>
+			<rating>0</rating>
+			<avail>+2R</avail>
+			<cost>Weapon Cost</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>e6058e8b-c4b5-422f-aa2f-d0f23769b094</id>
+			<name>Smartgun System, External (2050)</name>
+			<mount>Top/Under</mount>
+			<forbidden>
+				<oneof>
+					<accessory>Ceramic/Plasteel Components</accessory>
+					<accessory>Collapsible Traditional Bow</accessory>
+					<accessory>Vintage</accessory>
+				</oneof>
+				<weapondetails>
+					<type>Melee</type>
+				</weapondetails>
+			</forbidden>
+			<accuracy>2</accuracy>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<cost>600</cost>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>a465112e-b597-4b39-b2c3-19d1b2fafb09</id>
+			<name>Concealable Holster (2050)</name>
+			<mount/>
+			<rating>0</rating>
+			<conceal>-2</conceal>
+			<avail>2</avail>
+			<cost>100</cost>
+			<required>
+				<weapondetails>
+					<conceal operation="lessthanequals">0</conceal>
+				</weapondetails>
+			</required>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>97de111c-4cf2-4a45-963f-14349b3b9c38</id>
+			<name>Imaging Scope (2050)</name>
+			<mount>Top</mount>
+			<rating>0</rating>
+			<avail>3</avail>
+			<cost>500</cost>
+			<gears>
+				<usegear>Vision Magnification</usegear>
+			</gears>
+			<allowgear>
+				<gearcategory>Vision Enhancements</gearcategory>
+			</allowgear>
+			<source>2050</source>
+			<page>189</page>
+		</accessory>
+		<accessory>
+			<id>605c079d-baeb-422d-9653-9efe595d9dc2</id>
+			<name>Bipod (2050)</name>
+			<mount>Under</mount>
+			<rc>2</rc>
+			<rating>0</rating>
+			<rcgroup>1</rcgroup>
+			<avail>2</avail>
+			<cost>400</cost>
+			<source>2050</source>
+			<page>189</page>
 		</accessory>
 		<!-- End Region -->
 	</accessories>
