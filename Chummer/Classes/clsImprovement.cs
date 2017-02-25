@@ -186,7 +186,8 @@ namespace Chummer
 	        AdeptPowerFreePoints,
             AIProgram,
             CritterPowerLevel,
-            SwapSkillSpecAttribute
+            SwapSkillSpecAttribute,
+            SpellResistance
         }
 
         public enum ImprovementSource

@@ -62,20 +62,20 @@ namespace Chummer
 			// Populate the Powers list.
 			XmlNodeList objXmlPowerList;
 			if (!string.IsNullOrEmpty(_strLimitToPowers))
-				{
-					string strFilter = "(";
-					string[] strValue = _strLimitToPowers.Split(',');
-					foreach (string strPower in strValue)
-						strFilter += "name = \"" + strPower.Trim() + "\" or ";
-					// Remove the trailing " or ".
-					strFilter = strFilter.Substring(0, strFilter.Length - 4);
-					strFilter += ")";
-					objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
-				}
-				else
-				{
-					objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
-				}
+			{
+				string strFilter = "(";
+				string[] strValue = _strLimitToPowers.Split(',');
+				foreach (string strPower in strValue)
+					strFilter += "name = \"" + strPower.Trim() + "\" or ";
+				// Remove the trailing " or ".
+				strFilter = strFilter.Substring(0, strFilter.Length - 4);
+				strFilter += ")";
+				objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
+			}
+			else
+			{
+				objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
+			}
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
 				bool blnAdd = true;
@@ -109,7 +109,7 @@ namespace Chummer
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
             lstPowers.BeginUpdate();
-			lstPowers.DataSource = null;
+            lstPowers.DataSource = null;
 			lstPowers.ValueMember = "Value";
 			lstPowers.DisplayMember = "Name";
 			lstPowers.DataSource = lstPower;
@@ -191,38 +191,38 @@ namespace Chummer
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
             lstPowers.BeginUpdate();
-			lstPowers.DataSource = null;
+            lstPowers.DataSource = null;
 			lstPowers.ValueMember = "Value";
 			lstPowers.DisplayMember = "Name";
 			lstPowers.DataSource = lstPower;
             lstPowers.EndUpdate();
-		}
+        }
 
 		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Down)
 			{
                 if (lstPowers.SelectedIndex + 1 < lstPowers.Items.Count)
-				{
-					lstPowers.SelectedIndex++;
-				}
+                {
+                    lstPowers.SelectedIndex++;
+                }
                 else if (lstPowers.Items.Count > 0)
-				{
-						lstPowers.SelectedIndex = 0;
-					}
-					}
+                {
+                    lstPowers.SelectedIndex = 0;
+                }
+            }
 			if (e.KeyCode == Keys.Up)
 			{
                 if (lstPowers.SelectedIndex - 1 >= 0)
-				{
-					lstPowers.SelectedIndex--;
-				}
+                {
+                    lstPowers.SelectedIndex--;
+                }
                 else if (lstPowers.Items.Count > 0)
-					{
-						lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-					}
-				}
-			}
+                {
+                    lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                }
+            }
+		}
 
 		private void txtSearch_KeyUp(object sender, KeyEventArgs e)
 		{

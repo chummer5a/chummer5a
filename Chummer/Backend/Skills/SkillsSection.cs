@@ -265,7 +265,7 @@ namespace Chummer.Skills
             Dictionary<string, Guid> dicSkills = new Dictionary<string, Guid>();
             foreach (Skill objLoopSkill in Skills)
             {
-                if (objLoopSkill.LearnedRating > 0 && !dicGroups.ContainsKey(objLoopSkill.Name))
+                if (objLoopSkill.LearnedRating > 0 && !dicSkills.ContainsKey(objLoopSkill.Name))
                 {
                     dicSkills.Add(objLoopSkill.Name, objLoopSkill.Id);
                 }

@@ -100,8 +100,8 @@ namespace Chummer
         private string _strGameNotes = string.Empty;
 	    private string _strPrimaryArm = "Right";
 
-		// AI Home Node
-		private bool _blnHasHomeNode = false;
+        // AI Home Node
+        private bool _blnHasHomeNode = false;
 		private string _strHomeNodeCategory = string.Empty;
 		private string _strHomeNodeHandling = string.Empty;
 		private int _intHomeNodePilot = 0;
@@ -184,6 +184,7 @@ namespace Chummer
         private string _strSpiritManipulation = string.Empty;
         // Technomancer Stream.
         private string _strTechnomancerStream = "Default";
+        private string _strTechnomancerFading = "RES + WIL";
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled = 0;
@@ -576,6 +577,7 @@ namespace Chummer
             objWriter.WriteElementString("spiritmanipulation", _strSpiritManipulation);
             // Write the Technomancer Stream.
             objWriter.WriteElementString("stream", _strTechnomancerStream);
+            objWriter.WriteElementString("streamdrain", _strTechnomancerFading);
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
@@ -1189,7 +1191,7 @@ namespace Chummer
             // Attempt to load the Magic Tradition Drain Attributes.
 		    objXmlCharacter.TryGetStringFieldQuickly("traditiondrain", ref _strTraditionDrain);
             // Attempt to load the Magic Tradition Name.
-		    objXmlCharacter.TryGetStringFieldQuickly("raditionname", ref _strTraditionName);
+		    objXmlCharacter.TryGetStringFieldQuickly("traditionname", ref _strTraditionName);
             // Attempt to load the Spirit Combat Name.
 		    objXmlCharacter.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
             // Attempt to load the Spirit Detection Name.
@@ -1202,6 +1204,8 @@ namespace Chummer
 		    objXmlCharacter.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
             // Attempt to load the Technomancer Stream.
 		    objXmlCharacter.TryGetStringFieldQuickly("stream", ref _strTechnomancerStream);
+            // Attempt to load the Technomancer Stream's Fading attributes.
+            objXmlCharacter.TryGetStringFieldQuickly("streamfading", ref _strTechnomancerFading);
 
             // Attempt to load Condition Monitor Progress.
             objXmlCharacter.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
@@ -4144,6 +4148,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Technomancer's Fading Attributes.
+        /// </summary>
+        public string TechnomancerFading
+        {
+            get
+            {
+                return _strTechnomancerFading;
+            }
+            set
+            {
+                _strTechnomancerFading = value;
+            }
+        }
+
+        /// <summary>
         /// Initiate Grade.
         /// </summary>
         public int InitiateGrade
@@ -4325,19 +4344,8 @@ namespace Chummer
         {
             get
             {
-                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
-                // character's ESS while the lower removes half of its cost from the character's ESS.
-                decimal decCyberware = 0m;
-                foreach (Cyberware objCyberware in _lstCyberware)
-                {
-                    if (objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                        decCyberware += objCyberware.CalculatedESS;
-                }
-                // Removed Cyber/Bio discount
-                //if (decCyberware > decBioware)
-                return decCyberware;
-                //else
-                //    return decCyberware / 2;
+                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. 
+                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).Sum(objCyberware => objCyberware.CalculatedESS);
             }
         }
 
@@ -4348,19 +4356,8 @@ namespace Chummer
         {
             get
             {
-                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
-                // character's ESS while the lower removes half of its cost from the character's ESS.
-                decimal decBioware = 0m;
-                foreach (Cyberware objCyberware in _lstCyberware)
-                {
-                    if (objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                        decBioware += objCyberware.CalculatedESS;
-                }
-                // Removed Cyber/Bio discount
-                //if (decCyberware > decBioware)
-                //  return decBioware / 2;
-                //else
-                return decBioware;
+                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. 
+                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).Sum(objCyberware => objCyberware.CalculatedESS);
             }
         }
 
@@ -4371,16 +4368,8 @@ namespace Chummer
         {
             get
             {
-                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
-                // character's ESS while the lower removes half of its cost from the character's ESS.
-                decimal decHole = 0m;
-                foreach (Cyberware objCyberware in _lstCyberware)
-                {
-                    if (objCyberware.Name == "Essence Hole")
-                        decHole += objCyberware.CalculatedESS;
-                }
-
-                return decHole;
+                // Find the total Essence Cost of all Essence Hole objects. 
+                return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").Sum(objCyberware => objCyberware.CalculatedESS);
             }
         }
 
@@ -4414,7 +4403,12 @@ namespace Chummer
         /// </summary>
         public string Initiative
         {
-			get { return $"{InitiativeValue} +{InitiativeDice}d6"; }
+            get
+            {
+                return LanguageManager.Instance.GetString("String_Initiative")
+                    .Replace("{0}", InitiativeValue.ToString())
+                    .Replace("{1}", InitiativeDice.ToString());
+            }
 		}
 
         /// <summary>
@@ -4448,7 +4442,12 @@ namespace Chummer
         /// </summary>
         public string AstralInitiative
         {
-            get { return $"{AstralInitiativeValue} +{AstralInitiativeDice}d6"; }
+            get
+            {
+                return LanguageManager.Instance.GetString("String_Initiative")
+                    .Replace("{0}", AstralInitiativeValue.ToString())
+                    .Replace("{1}", AstralInitiativeDice.ToString());
+            }
 		}
 
 		/// <summary>
@@ -4481,7 +4480,13 @@ namespace Chummer
         /// </summary>
         public string MatrixInitiative
         {
-			get { return $"{MatrixInitiativeValue} +{MatrixInitiativeDice}d6"; }
+            get
+            {
+                return LanguageManager.Instance.GetString("String_Initiative")
+                        .Replace("{0}", MatrixInitiativeValue.ToString())
+                        .Replace("{1}", MatrixInitiativeDice.ToString());
+            }
+
 		}
 
 		/// <summary>
@@ -4544,7 +4549,10 @@ namespace Chummer
 				{
 					return MatrixInitiative;
 				}
-				return $"{MatrixInitiativeColdValue} + DP +{MatrixInitiativeColdDice}d6";
+                return
+                    LanguageManager.Instance.GetString("String_MatrixInitiative")
+                        .Replace("{0}", MatrixInitiativeColdValue.ToString())
+                        .Replace("{1}", MatrixInitiativeColdDice.ToString());
             }
         }
 
@@ -4590,8 +4598,11 @@ namespace Chummer
 				{
 					return MatrixInitiative;
 				}
-				return $"{MatrixInitiativeHotValue} + DP +{MatrixInitiativeHotDice}d6";
-			}
+                return
+                    LanguageManager.Instance.GetString("String_MatrixInitiative")
+                        .Replace("{0}", MatrixInitiativeHotValue.ToString())
+                        .Replace("{1}", MatrixInitiativeHotDice.ToString());
+            }
 		}
 
 		/// <summary>
@@ -4626,6 +4637,17 @@ namespace Chummer
 		#endregion
 		#endregion
 		#endregion
+
+        /// <summary>
+        /// Character's total Spell Resistance from qualities and metatype properties. 
+        /// </summary>
+        public int SpellResistance
+        {
+            get
+            {
+                return _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellResistance);
+            }
+        }
 	    #endregion
 
         #region Special CharacterAttribute Tests
@@ -7052,7 +7074,7 @@ namespace Chummer
 			Improvement.ImprovementType.ReflexRecorderOptimization,
 		};
 
-		//To get when things change in improvementmanager
+        //To get when things change in improvementmanager
 		//Ugly, ugly done, but we cannot get events out of it today
 		// FUTURE REFACTOR HERE
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]

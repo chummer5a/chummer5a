@@ -300,12 +300,15 @@ namespace Chummer
 				switch (objXmlSpell["damage"].InnerText)
 				{
 					case "P":
+				        lblDamageLabel.Visible = true;
 						lblDamage.Text = LanguageManager.Instance.GetString("String_DamagePhysical");
 						break;
 					case "S":
+                        lblDamageLabel.Visible = true;
 						lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
 						break;
 					default:
+                        lblDamageLabel.Visible = false;
 						lblDamage.Text = string.Empty;
 						break;
 				}

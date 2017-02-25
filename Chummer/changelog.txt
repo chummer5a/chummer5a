@@ -1,3 +1,20 @@
+Build 192
+
+Application Changes:
+
+- Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
+
+Data Changes: 
+
+- Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
+
+New Strings: 
+
+- String_PowerFilterAll
+- Power_SortAction
+- String_PowerFilterRatingAboveZero
+- String_PowerFilterRatingZero
+
 Build 191
 
 Application Changes:
@@ -52,8 +69,16 @@ Application Changes:
 - Fixed behaviour of the critter creator to properly handle knowledge skills. Fixes #1432.
 - Added method (selectquality) to provide Prototype Transhuman with the required qualities. 
 - Renamed the print strings matrixinit, matrixinitdice and matrixinitvalues to matrixarinit, matrixarinitdice and matrixarinitvalue, respectively. 
-- Added the PrimaryArm character attribute to the print method. 
-- Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
+- Added the PrimaryArm character attribute to the 
+- Altered the houserule 'Knucks Use Unarmed Combat Bonuses' to apply to any weapon that uses the Unarmed Combat skill. The houserule has been renamed and will be disabled by default. Please note that this currently effects ALL weapons that are in that category; exclusion for weapons like Shock Gloves will come in a later patch. 
+- Fixed behaviour of Lifestyle Names to properly show the name of the lifestyle type and the given lifestyle name.
+- UI Improvement: Control-clicking on a TreeNode will cause the node to expand or collapse all the treenodes below it. 
+- Added a ConditionMonitor property to vehicle mods, used for Drone Arm ConditionMonitor improvements. Vehicles with existing drone arms will need to have the arms removed and replaced. 
+- Fixed a bug causing qualities that discount knowledge point costs to also apply the discount to levels obtained with karma. Added a new house rule that re-enables this behavior.
+- Selecting a skill specialization with no points spent in the skill automatically checks the "buy specialization with karma" box.
+- Fixed an issue with the cost calculation for knowledge skills in career mode with Jack of All Trades.
+- Refactored the Tradition drain logic to be consolidated into a single method, shared between technomancers and magicians in career and create.  
+- Added technomancer drain attribute calculation.
 
 Data Changes:
 
@@ -78,14 +103,13 @@ Data Changes:
 - Added a missing metagenic flag for the Greasy Skin quality.
 - Removed Undeducated quality from Centaurs, per undocumented Run Faster changes. 
 - Fixed incorrect pricing for the Lion's Roar cologne. 
-- Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
+- Added missing Road Strips from Rigger 5.0.
+- Added a choice between BioCompatibility (Cyberware) and BioCompatibility (Bioware) to the Test Subject life module. 
+- Added Spell Resistance improvement type to qualities and powers that required it. Characters with the Spell Resistance power, Magic Resistance or Arcane Arrester qualities should use the Reapply Improvements menu option to gain these bonuses. 
+- Localised all references to d6 in tooltips and such. 
 
-New Strings:
+New Strings: 
 
-- String_PowerFilterAll
-- Power_SortAction
-- String_PowerFilterRatingAboveZero
-- String_PowerFilterRatingZero
 - Checkbox_Option_PrioritySpellsAsAdeptPowers
 - Checkbox_Options_Live_CustomData
 - Label_SelectAdvancedLifestyle_UnusedLP
@@ -94,10 +118,18 @@ New Strings:
 - Message_SelectQuality_RequireESSAbove
 - Message_SelectQuality_RequireESSGradeBelow
 - Message_SelectQuality_RequireESSGradeAbove
+- Tip_OptionsUnarmedSkillImprovements
+- Checkbox_Options_UnarmedSkillImprovements
+- Checkbox_Option_EducationQualitiesApplyOnChargenKarma
 
 Changed Strings:
 
 - Message_NoExtraKarma
+
+Changes Sheets:
+
+- Removed a sort for Expanses that caused incorrect sorting behaviour in 'Shadowrun 5' sheets. 
+- Added/replaced translated character sheets, created by Lochabar. 
 
 Build 190
 

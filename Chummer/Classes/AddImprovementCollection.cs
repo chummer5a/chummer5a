@@ -41,7 +41,7 @@ namespace Chummer.Classes
 		public string SelectedValue;
         public string SelectedTarget = string.Empty;
 
-		private readonly Improvement.ImprovementSource _objImprovementSource;
+        private readonly Improvement.ImprovementSource _objImprovementSource;
 		private readonly string _strUnique;
 		private readonly bool _blnConcatSelectedValue;
 		private readonly string _strFriendlyName;
@@ -102,7 +102,14 @@ namespace Chummer.Classes
             Log.Info("selecttext: " + SelectedValue);
         }
 
-		public void enableattribute(XmlNode bonusNode)
+	    public void spellresistance(XmlNode bonusNode)
+	    {
+	        Log.Info("spellresistance");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, string.Empty,
+                ValueToInt(bonusNode.InnerText, _intRating));
+        }
+
+	    public void enableattribute(XmlNode bonusNode)
 		{
 			Log.Info("enableattribute");
 			if (bonusNode["name"].InnerText == "MAG")
@@ -188,7 +195,7 @@ namespace Chummer.Classes
                         CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                             "enabletab", 0, 0);
                         break;
-					case "critter":
+                    case "critter":
 						_objCharacter.CritterEnabled = true;
 						Log.Info("critter");
 						CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
@@ -222,8 +229,8 @@ namespace Chummer.Classes
             }
         }
 
-		// Select Restricted (select Restricted items for Fake Licenses).
-		public void selectrestricted(XmlNode bonusNode)
+        // Select Restricted (select Restricted items for Fake Licenses).
+        public void selectrestricted(XmlNode bonusNode)
 		{
 			Log.Info("selectrestricted");
 			frmSelectItem frmPickItem = new frmSelectItem();
@@ -813,13 +820,13 @@ namespace Chummer.Classes
             }
             else
 			{
-			// Display the Select Attribute window and record which Skill was selected.
-			frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                // Display the Select Attribute window and record which Skill was selected.
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
                 if (!string.IsNullOrEmpty(_strFriendlyName))
-				frmPickAttribute.Description =
-					LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
-			else
-				frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
+                    frmPickAttribute.Description =
+                        LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
+                else
+                    frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
 
                 if (strLimitValue.Count > 0)
                     frmPickAttribute.LimitToList(strLimitValue);
@@ -889,27 +896,27 @@ namespace Chummer.Classes
         {
             Log.Info("swapskillspecattribute");
             List<string> strLimitValue = new List<string>();
-			if (bonusNode.InnerXml.Contains("<attribute>"))
-			{
-				foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-					strLimitValue.Add(objXmlAttribute.InnerText);
-			}
+            if (bonusNode.InnerXml.Contains("<attribute>"))
+            {
+                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
+                    strLimitValue.Add(objXmlAttribute.InnerText);
+            }
             if (strLimitValue.Count == 1)
                 LimitSelection = strLimitValue.First();
 
             Log.Info("swapskillspecattribute = " + bonusNode.OuterXml.ToString());
 
-			// Check to see if there is only one possible selection because of _strLimitSelection.
+            // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
-				LimitSelection = ForcedValue;
+                LimitSelection = ForcedValue;
 
-			Log.Info("_strForcedValue = " + ForcedValue);
-			Log.Info("_strLimitSelection = " + LimitSelection);
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
 
             if (!string.IsNullOrEmpty(LimitSelection))
-			{
+            {
                 SelectedValue = LimitSelection;
-			}
+            }
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
@@ -923,18 +930,18 @@ namespace Chummer.Classes
                 if (strLimitValue.Count > 0)
                     frmPickAttribute.LimitToList(strLimitValue);
 
-			frmPickAttribute.ShowDialog();
+                frmPickAttribute.ShowDialog();
 
-			// Make sure the dialogue window was not canceled.
-			if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-			{
-				throw new AbortedException();
-			}
+                // Make sure the dialogue window was not canceled.
+                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
 
-			SelectedValue = frmPickAttribute.SelectedAttribute;
+                SelectedValue = frmPickAttribute.SelectedAttribute;
 
-			if (_blnConcatSelectedValue)
-				SourceName += " (" + SelectedValue + ")";
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedValue + ")";
             }
 
             strLimitValue.Clear();
@@ -985,16 +992,16 @@ namespace Chummer.Classes
             {
             }
 
-			Log.Info("_strSelectedValue = " + SelectedValue);
-			Log.Info("SourceName = " + SourceName);
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
 
-			Log.Info("Calling CreateImprovement");
+            Log.Info("Calling CreateImprovement");
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SwapSkillSpecAttribute, _strUnique,
                 0, 1, 0, 0, 0, 0, strSpec, false, SelectedTarget);
-		}
+        }
 
-		// Select a Spell.
-		public void selectspell(XmlNode bonusNode)
+        // Select a Spell.
+        public void selectspell(XmlNode bonusNode)
 		{
 			Log.Info("selectspell");
 			// Display the Select Spell window.
@@ -1105,7 +1112,7 @@ namespace Chummer.Classes
                 CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.AIProgram,
                     _strUnique);
-		}
+            }
         }
 
         // Select an AI program.
@@ -1178,8 +1185,8 @@ namespace Chummer.Classes
             }
         }
 
-		// Select a Contact
-		public void selectcontact(XmlNode bonusNode)
+        // Select a Contact
+        public void selectcontact(XmlNode bonusNode)
 		{
 			Log.Info("selectcontact");
 			XmlNode nodSelect = bonusNode;
@@ -3378,7 +3385,7 @@ namespace Chummer.Classes
 				objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
 				_objCharacter.CritterPowers.Add(objPower);
 			}
-		}
+        }
 
         // Check for Adept Power Points.
         public void critterpowerlevels(XmlNode bonusNode)
@@ -3394,7 +3401,7 @@ namespace Chummer.Classes
             }
         }
 
-		public void publicawareness(XmlNode bonusNode)
+        public void publicawareness(XmlNode bonusNode)
 		{
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
 				ValueToInt(bonusNode.InnerText, 1));
@@ -3571,13 +3578,13 @@ namespace Chummer.Classes
             {
                 objAddQuality.BP = 0;
                 objAddQuality.ContributeToLimit = false;
-			}
+            }
             _objCharacter.Qualities.Add(objAddQuality);
             CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName,
             Improvement.ImprovementType.SpecificQuality, _strUnique);
-		}
+        }
 
-		public void addskillspecialization(XmlNode bonusNode)
+        public void addskillspecialization(XmlNode bonusNode)
 		{
 			
 			Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);

@@ -493,7 +493,10 @@
       <name>Spell Resistance</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-			<levels>true</levels>
+      <bonus>
+        <spellresistance>Rating</spellresistance>
+      </bonus>
+      <levels>true</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -1394,7 +1397,7 @@
       <page>23</page>
     </power>
     <power>
-      <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
+		<id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
       <name>Heightened Concentration</name>
       <points>.5</points>
       <adeptway>0.25</adeptway>

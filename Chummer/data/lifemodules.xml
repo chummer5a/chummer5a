@@ -1286,6 +1286,7 @@
 				</skilllevel>
 				<skillgrouplevel>
 					<name>Firearms</name>
+					<val>1</val>
 				</skillgrouplevel>
 				<skilllevel>
 					<name>Leadership</name>
@@ -1335,10 +1336,10 @@
 					<name>CHA</name>
 					<val>1</val>
 				</attributelevel>
-				<skilllevel>
+				<skillgrouplevel>
 					<name>Athletics</name>
 					<val>1</val>
-				</skilllevel>
+				</skillgrouplevel>
 				<skilllevel>
 					<name>Computer</name>
 					<val>2</val>
@@ -1454,7 +1455,7 @@
 					<name>Longarms</name>
 				</skilllevel>
 				<skillgrouplevel>
-					<name>Outdoor</name>
+					<name>Outdoors</name>
 					<val>1</val>
 				</skillgrouplevel>
 				<skilllevel>
@@ -6948,10 +6949,10 @@
 					<val>1</val>
 				</knowledgeskilllevel>
 				<nuyenamt>16000</nuyenamt>
-				<addqualities>
-					<!--todo: choose biocompatibility type-->
-					<addquality>Biocompatability (Cyberware)</addquality>
-				</addqualities>
+				<selectquality>
+          <quality>Biocompatability (Cyberware)</quality>
+          <quality>Biocompatability (Bioware)</quality>
+				</selectquality>
 			</bonus>
 			<!--todo: Special: 16,000 nuyen in augmentations-->
 			<story>$real grew up a lab rat, used by mad scientists to test augmentations. On one hand, $real essence was irreparably shredded. On the other hand free ware! Score!</story>

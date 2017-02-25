@@ -610,7 +610,7 @@ namespace Chummer.Skills
 					s.Append(")");
 				}
 
-				s.Append($" + {Attribute} ({AttributeModifiers})");
+				s.Append($" + {DisplayAttribute} ({AttributeModifiers})");
 
 				if (Default && !Leveled)
 				{

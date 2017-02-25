@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
@@ -10,40 +6,21 @@ using System.Xml;
 
 namespace Translator
 {
-	public class frmMain : Form
+    public partial class frmMain
 	{
-		private string _strPath = string.Empty;
-
-		private bool _blnDelete = true;
+        private readonly bool _blnDelete = true;
 
 		private XmlDocument _objDataDoc;
 
 		private XmlDocument _objDoc;
-
-		private IContainer components;
-
-		private GroupBox gbxCreate;
-
-		private Button cmdCreate;
-
-		private TextBox txtLanguageCode;
-
-		private Label lblLanguageCode;
-
-		private GroupBox groupBox1;
-
-		private ComboBox cboLanguages;
-
-		private Button cmdEdit;
-
-		private TextBox txtLanguageName;
-
-		private Label label1;
+        private string _strPath = string.Empty;
 
 		public frmMain()
 		{
 			InitializeComponent();
 		}
+
+        #region Control Events
 
 		private void cmdCreate_Click(object sender, EventArgs e)
 		{
@@ -96,7 +73,6 @@ namespace Translator
 			string str1 = string.Concat(_strPath, "lang\\", lower, "_data.xml");
 			_objDataDoc.Save(str1);
 			_objDoc = new XmlDocument();
-			XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t")};
 			xmlDeclaration = _objDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
 			_objDoc.AppendChild(xmlDeclaration);
 			xmlNodes = _objDoc.CreateElement("chummer");
@@ -107,44 +83,33 @@ namespace Translator
 			xmlNodes.AppendChild(xmlNodes1);
 			xmlNodes.AppendChild(xmlNodes2);
 			_objDoc.AppendChild(xmlNodes);
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "lang\\en-US.xml"));
 			XmlNode xmlNodes3 = xmlDocument.SelectSingleNode("/chummer/strings");
-			XmlNode xmlNodes4 = _objDoc.CreateElement("strings");
-			xmlNodes4 = _objDoc.ImportNode(xmlNodes3, true);
+            _objDoc.CreateElement("strings");
+            if (xmlNodes3 != null)
+            {
+                XmlNode xmlNodes4 = _objDoc.ImportNode(xmlNodes3, true);
 			xmlNodes.AppendChild(xmlNodes4);
+            }
 			str1 = string.Concat(_strPath, "lang\\", lower, ".xml");
 			_objDoc.Save(str1);
 
 			LoadLanguageList();
-			frmTranslate _frmTranslate = new frmTranslate()
+            using (var frmTranslate = new frmTranslate())
 			{
-				Language = str
-			};
-			_frmTranslate.ShowDialog(this);
+                frmTranslate.Language = str;
+                frmTranslate.ShowDialog(this);
 		}
+        }
 
 		private void cmdEdit_Click(object sender, EventArgs e)
 		{
 			if (cboLanguages.SelectedIndex == -1)
-			{
 				return;
+            var frmTranslate = new frmTranslate {Language = cboLanguages.Text};
+            frmTranslate.ShowDialog();
 			}
-			frmTranslate _frmTranslate = new frmTranslate()
-			{
-				Language = cboLanguages.Text
-			};
-			_frmTranslate.ShowDialog(this);
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && components != null)
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
 
 		private void frmMain_Load(object sender, EventArgs e)
 		{
@@ -152,140 +117,56 @@ namespace Translator
 			LoadLanguageList();
 		}
 
-		private void InitializeComponent()
-		{
-			gbxCreate = new GroupBox();
-			cmdCreate = new Button();
-			txtLanguageCode = new TextBox();
-			lblLanguageCode = new Label();
-			groupBox1 = new GroupBox();
-			cmdEdit = new Button();
-			cboLanguages = new ComboBox();
-			txtLanguageName = new TextBox();
-			label1 = new Label();
-			gbxCreate.SuspendLayout();
-			groupBox1.SuspendLayout();
-			SuspendLayout();
-			gbxCreate.Controls.Add(txtLanguageName);
-			gbxCreate.Controls.Add(label1);
-			gbxCreate.Controls.Add(cmdCreate);
-			gbxCreate.Controls.Add(txtLanguageCode);
-			gbxCreate.Controls.Add(lblLanguageCode);
-			gbxCreate.Location = new Point(12, 12);
-			gbxCreate.Name = "gbxCreate";
-			gbxCreate.Size = new Size(201, 107);
-			gbxCreate.TabIndex = 0;
-			gbxCreate.TabStop = false;
-			gbxCreate.Text = "Create a Language File";
-			cmdCreate.Location = new Point(103, 71);
-			cmdCreate.Name = "cmdCreate";
-			cmdCreate.Size = new Size(75, 23);
-			cmdCreate.TabIndex = 3;
-			cmdCreate.Text = "Create";
-			cmdCreate.UseVisualStyleBackColor = true;
-			cmdCreate.Click += new EventHandler(cmdCreate_Click);
-			txtLanguageCode.Location = new Point(133, 19);
-			txtLanguageCode.MaxLength = 2;
-			txtLanguageCode.Name = "txtLanguageCode";
-			txtLanguageCode.Size = new Size(45, 20);
-			txtLanguageCode.TabIndex = 1;
-			lblLanguageCode.AutoSize = true;
-			lblLanguageCode.Location = new Point(10, 22);
-			lblLanguageCode.Name = "lblLanguageCode";
-			lblLanguageCode.Size = new Size(83, 13);
-			lblLanguageCode.TabIndex = 143;
-			lblLanguageCode.Tag = string.Empty;
-			lblLanguageCode.Text = "Language Code";
-			groupBox1.Controls.Add(cmdEdit);
-			groupBox1.Controls.Add(cboLanguages);
-			groupBox1.Location = new Point(233, 12);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new Size(201, 107);
-			groupBox1.TabIndex = 146;
-			groupBox1.TabStop = false;
-			groupBox1.Text = "Edit Language File";
-			cmdEdit.Location = new Point(63, 58);
-			cmdEdit.Name = "cmdEdit";
-			cmdEdit.Size = new Size(75, 23);
-			cmdEdit.TabIndex = 5;
-			cmdEdit.Text = "Edit";
-			cmdEdit.UseVisualStyleBackColor = true;
-			cmdEdit.Click += new EventHandler(cmdEdit_Click);
-			cboLanguages.DropDownStyle = ComboBoxStyle.DropDownList;
-			cboLanguages.FormattingEnabled = true;
-			cboLanguages.Location = new Point(40, 19);
-			cboLanguages.Name = "cboLanguages";
-			cboLanguages.Size = new Size(122, 21);
-			cboLanguages.TabIndex = 4;
-			txtLanguageName.Location = new Point(102, 45);
-			txtLanguageName.MaxLength = 100;
-			txtLanguageName.Name = "txtLanguageName";
-			txtLanguageName.Size = new Size(76, 20);
-			txtLanguageName.TabIndex = 2;
-			label1.AutoSize = true;
-			label1.Location = new Point(10, 48);
-			label1.Name = "label1";
-			label1.Size = new Size(86, 13);
-			label1.TabIndex = 146;
-			label1.Tag = string.Empty;
-			label1.Text = "Language Name";
-			AutoScaleDimensions = new SizeF(6f, 13f);
-			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(445, 127);
-			Controls.Add(groupBox1);
-			Controls.Add(gbxCreate);
-			Name = "frmMain";
-			StartPosition = FormStartPosition.CenterScreen;
-			Text = "Chummer Translator";
-			Load += new EventHandler(frmMain_Load);
-			gbxCreate.ResumeLayout(false);
-			gbxCreate.PerformLayout();
-			groupBox1.ResumeLayout(false);
-			ResumeLayout(false);
-		}
+        #endregion Control Events
+
+        #region Methods
 
 		private void LoadLanguageList()
 		{
 			cboLanguages.Items.Clear();
 			foreach (string str in Directory.EnumerateFiles(string.Concat(_strPath, "lang"), "*.xml"))
 			{
-				if ((new FileInfo(str)).Name.Length != 6)
-				{
+                if (new FileInfo(str).Name.Length != 6)
 					continue;
-				}
-				XmlDocument xmlDocument = new XmlDocument();
+                var xmlDocument = new XmlDocument();
 				xmlDocument.Load(str);
-				string innerText = xmlDocument.SelectSingleNode("/chummer/name").InnerText;
-				cboLanguages.Items.Add(innerText);
+                string innerText = xmlDocument.SelectSingleNode("/chummer/name")?.InnerText;
+                if (innerText != null) cboLanguages.Items.Add(innerText);
 			}
 		}
 
 		private void ProcessArmor()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\armor.xml"));
 			string str = "armor.xml";
-			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
+            XmlNodeList xmlNodeList = xmlDocument.SelectNodes("/chummer/categories/category");
+            if (xmlNodeList != null)
+                foreach (XmlNode xmlNodes in xmlNodeList)
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                    string[] innerText =
 				{
+                        "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                        xmlNodes.InnerText, "\"]"
+                    };
+                    if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                    XmlNode xmlNodes1 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes2 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
 						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode("/chummer");
 						XmlAttribute xmlAttribute = _objDataDoc.CreateAttribute("file");
 						xmlAttribute.Value = str;
-						xmlNodes2.Attributes.Append(xmlAttribute);
-						xmlNodes3.AppendChild(xmlNodes2);
+                            xmlNodes2.Attributes?.Append(xmlAttribute);
+                            xmlNodes3?.AppendChild(xmlNodes2);
 					}
 					xmlNodes2.AppendChild(xmlNodes1);
 				}
@@ -293,42 +174,45 @@ namespace Translator
 				innerText1.InnerText = xmlNodes.InnerText;
 				XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("translate");
 				xmlAttribute1.Value = xmlNodes.InnerText;
-				innerText1.Attributes.Append(xmlAttribute1);
+                    innerText1.Attributes?.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
-			}
-			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/armors/armor"))
+            XmlNodeList selectNodes = xmlDocument.SelectNodes("/chummer/armors/armor");
+            if (selectNodes != null)
+                foreach (XmlNode xmlNodes5 in selectNodes)
 			{
-				string str1 = string.Empty;
 				string innerText2 = xmlNodes5["name"].InnerText;
-				str1 = xmlNodes5["id"].InnerText;
+                    string str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/armors/armor[name=\"", innerText2, "\"]" };
+                    string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/armors/armor[name=\"", innerText2, "\"]" };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/armors"));
+                        XmlNode xmlNodes7 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/armors"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("armors");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                            XmlNode xmlNodes8 =
+                                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -352,14 +236,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/armors/armor"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/armors/armor"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/armors/armor[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/armors/armor[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -368,7 +253,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/armors")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/armors"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 			foreach (XmlNode xmlNodes11 in xmlDocument.SelectNodes("/chummer/mods/mod"))
@@ -377,24 +263,24 @@ namespace Translator
 				string str3 = xmlNodes11["name"].InnerText;
 				str2 = xmlNodes11["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/mods/mod[name=\"", str3, "\"]" };
+                string[] strArrays1 = { "/chummer/chummer[@file = \"", str, "\"]/mods/mod[name=\"", str3, "\"]" };
 				XmlNode xmlNodes12 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes12 != null)
 				{
 					if (xmlNodes12["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes12.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes12["id"].InnerText = str2;
 				}
 				else
 				{
-					XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods"));
+                    XmlNode xmlNodes13 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods"));
 					if (xmlNodes13 == null)
 					{
 						xmlNodes13 = _objDataDoc.CreateElement("mods");
-						XmlNode xmlNodes14 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes14 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes14 == null)
 						{
 							xmlNodes14 = _objDataDoc.CreateElement("chummer");
@@ -418,45 +304,51 @@ namespace Translator
 					xmlNodes13.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods/mod"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods/mod"));
+            if (xmlNodeLists2 != null)
 			foreach (XmlNode xmlNodes16 in xmlNodeLists2)
 			{
-				xmlNodes16.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/mods/mod[name = \"", xmlNodes16["name"].InnerText, "\"]")) != null)
-				{
+                    xmlNodes16.Attributes?.RemoveAll();
+                    if (
+                        xmlDocument.SelectSingleNode(string.Concat("/chummer/mods/mod[name = \"",
+                            xmlNodes16["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("exists");
 					xmlAttribute5.Value = "False";
-					xmlNodes16.Attributes.Append(xmlAttribute5);
+                        xmlNodes16.Attributes?.Append(xmlAttribute5);
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods")).RemoveChild(xmlNodes16);
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods"))?.RemoveChild(xmlNodes16);
 				}
 			}
 		}
 
 		private void ProcessBioware()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\bioware.xml"));
 			string str = "bioware.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                string[] innerText =
 				{
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
+                if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -475,39 +367,45 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
-			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/biowares/bioware"))
 			{
 				string str1 = string.Empty;
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/biowares/bioware[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/biowares/bioware[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/biowares"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/biowares"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("biowares");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -531,14 +429,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/biowares/bioware"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/biowares/bioware"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/biowares/bioware[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/biowares/bioware[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -547,7 +446,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/biowares")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/biowares"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 			foreach (XmlNode xmlNodes11 in xmlDocument.SelectNodes("/chummer/grades/grade"))
@@ -565,24 +465,24 @@ namespace Translator
 					xmlNodes11["id"].InnerText = str2;
 				}
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/grades/grade[name=\"", str3, "\"]" };
+                string[] strArrays1 = { "/chummer/chummer[@file = \"", str, "\"]/grades/grade[name=\"", str3, "\"]" };
 				XmlNode xmlNodes12 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes12 != null)
 				{
 					if (xmlNodes12["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes12.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes12["id"].InnerText = str2;
 				}
 				else
 				{
-					XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades"));
+                    XmlNode xmlNodes13 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades"));
 					if (xmlNodes13 == null)
 					{
 						xmlNodes13 = _objDataDoc.CreateElement("grades");
-						XmlNode xmlNodes14 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes14 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes14 == null)
 						{
 							xmlNodes14 = _objDataDoc.CreateElement("chummer");
@@ -606,14 +506,15 @@ namespace Translator
 					xmlNodes13.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades/grade"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades/grade"));
 			foreach (XmlNode xmlNodes16 in xmlNodeLists2)
 			{
 				xmlNodes16.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/grades/grade[name = \"", xmlNodes16["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/grades/grade[name = \"",
+                        xmlNodes16["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("exists");
@@ -622,14 +523,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades")).RemoveChild(xmlNodes16);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades"))
+                        .RemoveChild(xmlNodes16);
 				}
 			}
 		}
 
 		private void ProcessBooks()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\books.xml"));
 			string str = "books.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/books/book"))
@@ -638,24 +540,24 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/books/book[name=\"", innerText1, "\"]" };
+                string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/books/book[name=\"", innerText1, "\"]" };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/books"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/books"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("books");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -677,14 +579,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/books/book"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/books/book"));
 			foreach (XmlNode xmlNodes5 in xmlNodeLists)
 			{
 				xmlNodes5.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/books/book[name = \"", xmlNodes5["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/books/book[name = \"",
+                        xmlNodes5["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -693,14 +596,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/books")).RemoveChild(xmlNodes5);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/books"))
+                        .RemoveChild(xmlNodes5);
 				}
 			}
 		}
 
 		private void ProcessComplexForms()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\complexforms.xml"));
 			string str = "complexforms.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/complexforms/complexform"))
@@ -709,20 +613,24 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/complexforms/complexform[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/complexforms/complexform[name=\"",
+                    innerText1, "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/complexforms"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str,
+                            "\"]/complexforms"));
 					if (xmlNodes2 == null)
 					{
 						XmlNode xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -743,14 +651,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/complexforms/complexform"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/complexforms/complexform"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
 				xmlNodes4.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/complexforms/complexform[name = \"", xmlNodes4["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/complexforms/complexform[name = \"",
+                        xmlNodes4["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -759,29 +668,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/complexforms")).RemoveChild(xmlNodes4);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/complexforms"))
+                        .RemoveChild(xmlNodes4);
 				}
 			}
 		}
 
 		private void ProcessCritterPowers()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\critterpowers.xml"));
 			string str = "critterpowers.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                string[] innerText =
 				{
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
+                if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -800,39 +714,41 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
-			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/powers/power"))
 			{
 				string str1 = string.Empty;
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/powers/power[name=\"", innerText2, "\"]" };
+                string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/powers/power[name=\"", innerText2, "\"]" };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("powers");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -856,14 +772,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers/power"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers/power"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/powers/power[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/powers/power[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -872,29 +789,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 		}
 
 		private void ProcessCritters()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\critters.xml"));
 			string str = "critters.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                string[] innerText =
 				{
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
+                if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -913,39 +835,45 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
-			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/metatypes/metatype"))
 			{
 				string str1 = string.Empty;
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("metatypes");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -969,14 +897,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/metatypes/metatype[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/metatypes/metatype[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -985,29 +914,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 		}
 
 		private void ProcessCyberware()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\cyberware.xml"));
 			string str = "cyberware.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                string[] innerText =
 				{
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
+                if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -1026,39 +960,45 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
-			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/cyberwares/cyberware"))
 			{
 				string str1 = string.Empty;
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/cyberwares/cyberware[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/cyberwares/cyberware[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/cyberwares"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/cyberwares"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("cyberwares");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -1082,14 +1022,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/cyberwares/cyberware"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/cyberwares/cyberware"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/cyberwares/cyberware[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/cyberwares/cyberware[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -1098,7 +1039,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/cyberwares")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/cyberwares"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 			foreach (XmlNode xmlNodes11 in xmlDocument.SelectNodes("/chummer/grades/grade"))
@@ -1107,24 +1049,24 @@ namespace Translator
 				string str3 = xmlNodes11["name"].InnerText;
 				str2 = xmlNodes11["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/grades/grade[name=\"", str3, "\"]" };
+                string[] strArrays1 = { "/chummer/chummer[@file = \"", str, "\"]/grades/grade[name=\"", str3, "\"]" };
 				XmlNode xmlNodes12 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes12 != null)
 				{
 					if (xmlNodes12["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes12.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes12["id"].InnerText = str2;
 				}
 				else
 				{
-					XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades"));
+                    XmlNode xmlNodes13 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades"));
 					if (xmlNodes13 == null)
 					{
 						xmlNodes13 = _objDataDoc.CreateElement("grades");
-						XmlNode xmlNodes14 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes14 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes14 == null)
 						{
 							xmlNodes14 = _objDataDoc.CreateElement("chummer");
@@ -1148,14 +1090,15 @@ namespace Translator
 					xmlNodes13.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades/grade"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades/grade"));
 			foreach (XmlNode xmlNodes16 in xmlNodeLists2)
 			{
 				xmlNodes16.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/grades/grade[name = \"", xmlNodes16["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/grades/grade[name = \"",
+                        xmlNodes16["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("exists");
@@ -1164,13 +1107,16 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades")).RemoveChild(xmlNodes16);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/grades"))
+                        .RemoveChild(xmlNodes16);
 				}
 			}
 			try
 			{
-				XmlNode xmlNodes17 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes18 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/suites"));
+                XmlNode xmlNodes17 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes18 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/suites"));
 				xmlNodes17.RemoveChild(xmlNodes18);
 			}
 			catch
@@ -1180,7 +1126,7 @@ namespace Translator
 
 		private void ProcessEchoes()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\echoes.xml"));
 			string str = "echoes.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/echoes/echo"))
@@ -1189,24 +1135,24 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/echoes/echo[name=\"", innerText1, "\"]" };
+                string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/echoes/echo[name=\"", innerText1, "\"]" };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/echoes"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/echoes"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("echoes");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -1230,14 +1176,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/echoes/echo"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/echoes/echo"));
 			foreach (XmlNode xmlNodes5 in xmlNodeLists)
 			{
 				xmlNodes5.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/echoes/echo[name = \"", xmlNodes5["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/echoes/echo[name = \"",
+                        xmlNodes5["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -1246,29 +1193,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/echoes")).RemoveChild(xmlNodes5);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/echoes"))
+                        .RemoveChild(xmlNodes5);
 				}
 			}
 		}
 
 		private void ProcessGear()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\gear.xml"));
 			string str = "gear.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                string[] innerText =
 				{
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
+                if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -1287,39 +1239,41 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
-			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/gears/gear"))
 			{
 				string str1 = string.Empty;
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/gears/gear[name=\"", innerText2, "\"]" };
+                string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/gears/gear[name=\"", innerText2, "\"]" };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gears"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gears"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("gears");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -1343,14 +1297,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gears/gear"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gears/gear"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/gears/gear[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/gears/gear[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -1359,14 +1314,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gears")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gears"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 		}
 
 		private void ProcessImprovements()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\improvements.xml"));
 			string str = "improvements.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/improvements/improvement"))
@@ -1375,20 +1331,24 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/improvements/improvement[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/improvements/improvement[name=\"",
+                    innerText1, "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/improvements"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str,
+                            "\"]/improvements"));
 					if (xmlNodes2 == null)
 					{
 						XmlNode xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -1409,14 +1369,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/improvements/improvement"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/improvements/improvement"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
 				xmlNodes4.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/improvements/improvement[name = \"", xmlNodes4["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/improvements/improvement[name = \"",
+                        xmlNodes4["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -1425,25 +1386,29 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/improvements")).RemoveChild(xmlNodes4);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/improvements"))
+                        .RemoveChild(xmlNodes4);
 				}
 			}
 		}
 
 		private void ProcessLicenses()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\licenses.xml"));
 			string str = "licenses.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/licenses/license"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/licenses/license[text()=\"", xmlNodes.InnerText, "\"]" };
-				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
+                string[] innerText =
 				{
+                    "/chummer/chummer[@file = \"", str, "\"]/licenses/license[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
+                if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/licenses"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/licenses"));
 				if (xmlNodes1 == null)
 				{
 					XmlNode xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -1461,20 +1426,22 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/licenses/license"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/licenses/license"));
 			foreach (XmlNode xmlNodes3 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/licenses/license[text() = \"", xmlNodes3.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/licenses/license[text() = \"",
+                        xmlNodes3.InnerText, "\"]")) != null)
 					continue;
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/licenses"))
+                    .RemoveChild(xmlNodes3);
 				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/licenses")).RemoveChild(xmlNodes3);
 			}
-		}
 
 		private void ProcessLifestyles()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\lifestyles.xml"));
 			string str = "lifestyles.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle"))
@@ -1483,24 +1450,28 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/lifestyles/lifestyle[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/lifestyles/lifestyle[name=\"", innerText1,
+                    "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/lifestyles"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/lifestyles"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("lifestyles");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -1524,14 +1495,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/lifestyles/lifestyle"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/lifestyles/lifestyle"));
 			foreach (XmlNode xmlNodes5 in xmlNodeLists)
 			{
 				xmlNodes5.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/lifestyles/lifestyle[name = \"", xmlNodes5["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/lifestyles/lifestyle[name = \"",
+                        xmlNodes5["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -1540,7 +1512,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/lifestyles")).RemoveChild(xmlNodes5);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/lifestyles"))
+                        .RemoveChild(xmlNodes5);
 				}
 			}
 			foreach (XmlNode xmlNodes6 in xmlDocument.SelectNodes("/chummer/qualities/quality"))
@@ -1549,20 +1522,19 @@ namespace Translator
 				string str2 = xmlNodes6["name"].InnerText;
 				str1 = xmlNodes6["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/qualities/quality[name=\"", str2, "\"]" };
+                string[] strArrays1 = { "/chummer/chummer[@file = \"", str, "\"]/qualities/quality[name=\"", str2, "\"]" };
 				XmlNode xmlNodes7 = xmlDocument2.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes7 != null)
 				{
 					if (xmlNodes7["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes7.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes7["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities"));
+                    XmlNode xmlNodes8 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities"));
 					if (xmlNodes8 == null)
 					{
 						XmlNode xmlNodes9 = _objDataDoc.CreateElement("chummer");
@@ -1585,14 +1557,15 @@ namespace Translator
 					xmlNodes8.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities/quality"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities/quality"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/qualities/quality[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/qualities/quality[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -1601,13 +1574,16 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 			try
 			{
-				XmlNode xmlNodes11 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes12 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/comforts"));
+                XmlNode xmlNodes11 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes12 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/comforts"));
 				xmlNodes11.RemoveChild(xmlNodes12);
 			}
 			catch
@@ -1615,8 +1591,10 @@ namespace Translator
 			}
 			try
 			{
-				XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes14 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/entertainments"));
+                XmlNode xmlNodes13 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes14 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/entertainments"));
 				xmlNodes13.RemoveChild(xmlNodes14);
 			}
 			catch
@@ -1624,8 +1602,10 @@ namespace Translator
 			}
 			try
 			{
-				XmlNode xmlNodes15 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes16 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/necessities"));
+                XmlNode xmlNodes15 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes16 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/necessities"));
 				xmlNodes15.RemoveChild(xmlNodes16);
 			}
 			catch
@@ -1633,8 +1613,10 @@ namespace Translator
 			}
 			try
 			{
-				XmlNode xmlNodes17 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes18 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/neighborhoods"));
+                XmlNode xmlNodes17 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes18 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/neighborhoods"));
 				xmlNodes17.RemoveChild(xmlNodes18);
 			}
 			catch
@@ -1642,8 +1624,10 @@ namespace Translator
 			}
 			try
 			{
-				XmlNode xmlNodes19 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes20 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/securities"));
+                XmlNode xmlNodes19 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes20 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/securities"));
 				xmlNodes19.RemoveChild(xmlNodes20);
 			}
 			catch
@@ -1653,7 +1637,7 @@ namespace Translator
 
 		private void ProcessMartialArts()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\martialarts.xml"));
 			string str = "martialarts.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/martialarts/martialart"))
@@ -1662,15 +1646,21 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart[name=\"",
+                    innerText1, "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 == null)
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/martialarts"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/martialarts"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("martialarts");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -1699,10 +1689,18 @@ namespace Translator
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart[name=\"", innerText1, "\"]/advantages" };
+                string[] strArrays1 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart[name=\"",
+                    innerText1, "\"]/advantages"
+                };
 				XmlNode xmlNodes5 = xmlDocument2.SelectSingleNode(string.Concat(strArrays1));
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays2 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart[name=\"", innerText1, "\"]" };
+                string[] strArrays2 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart[name=\"",
+                    innerText1, "\"]"
+                };
 				xmlNodes1 = xmlDocument3.SelectSingleNode(string.Concat(strArrays2));
 				try
 				{
@@ -1712,14 +1710,15 @@ namespace Translator
 				{
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/martialarts/martialart"));
 			foreach (XmlNode xmlNodes6 in xmlNodeLists)
 			{
 				xmlNodes6.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/martialarts/martialart[name = \"", xmlNodes6["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/martialarts/martialart[name = \"",
+                        xmlNodes6["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -1728,7 +1727,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/martialarts")).RemoveChild(xmlNodes6);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/martialarts"))
+                        .RemoveChild(xmlNodes6);
 				}
 			}
 			foreach (XmlNode xmlNodes7 in xmlDocument.SelectNodes("/chummer/techniques/technique"))
@@ -1737,23 +1737,27 @@ namespace Translator
 				string str2 = xmlNodes7["name"].InnerText;
 				str1 = xmlNodes7["id"].InnerText;
 				XmlDocument xmlDocument4 = _objDataDoc;
-				string[] strArrays3 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/techniques/technique[name=\"", str2, "\"]" };
+                string[] strArrays3 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/techniques/technique[name=\"", str2,
+                    "\"]"
+                };
 				XmlNode xmlNodes8 = xmlDocument4.SelectSingleNode(string.Concat(strArrays3));
 				if (xmlNodes8 != null)
 				{
 					if (xmlNodes8["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes8.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes8["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes9 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/techniques"));
+                    XmlNode xmlNodes9 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/techniques"));
 					if (xmlNodes9 == null)
 					{
-						XmlNode xmlNodes10 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes10 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes10 == null)
 						{
 							xmlNodes10 = _objDataDoc.CreateElement("chummer");
@@ -1777,14 +1781,15 @@ namespace Translator
 					xmlNodes9.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/techniques/technique"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/techniques/technique"));
 			foreach (XmlNode xmlNodes11 in xmlNodeLists1)
 			{
 				xmlNodes11.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/techniques/technique[name = \"", xmlNodes11["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/techniques/technique[name = \"",
+                        xmlNodes11["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -1793,13 +1798,16 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/techniques")).RemoveChild(xmlNodes11);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/techniques"))
+                        .RemoveChild(xmlNodes11);
 				}
 			}
 			try
 			{
-				XmlNode xmlNodes12 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/maneuvers"));
+                XmlNode xmlNodes12 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes13 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/maneuvers"));
 				xmlNodes12.RemoveChild(xmlNodes13);
 			}
 			catch
@@ -1809,7 +1817,7 @@ namespace Translator
 
 		private void ProcessMentors()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\mentors.xml"));
 			string str = "mentors.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/mentors/mentor"))
@@ -1818,15 +1826,21 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/mentors/mentor[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/mentors/mentor[name=\"", innerText1,
+                    "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 == null)
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mentors"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mentors"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("mentors");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -1865,17 +1879,20 @@ namespace Translator
 					xmlNodes1["disadvantage"].InnerText = xmlNodes["disadvantage"].InnerText;
 				}
 				if (xmlNodes1["choices"] == null)
-				{
 					xmlNodes1.AppendChild(_objDataDoc.CreateElement("choices"));
-				}
-				foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes(string.Concat("/chummer/mentors/mentor[name=\"", innerText1, "\"]/choices/choice")))
+                foreach (
+                    XmlNode xmlNodes5 in
+                    xmlDocument.SelectNodes(string.Concat("/chummer/mentors/mentor[name=\"", innerText1,
+                        "\"]/choices/choice")))
 				{
 					XmlDocument xmlDocument2 = _objDataDoc;
-					object[] item = new object[] { "/chummer/chummer[@file = \"", str, "\"]/mentors/mentor[name=\"", innerText1, "\"]/choices/choice[name=\"", xmlNodes5["name"], "\"]" };
-					if (xmlDocument2.SelectSingleNode(string.Concat(item)) != null)
+                    object[] item =
 					{
+                        "/chummer/chummer[@file = \"", str, "\"]/mentors/mentor[name=\"", innerText1,
+                        "\"]/choices/choice[name=\"", xmlNodes5["name"], "\"]"
+                    };
+                    if (xmlDocument2.SelectSingleNode(string.Concat(item)) != null)
 						continue;
-					}
 					XmlNode xmlNodes6 = _objDataDoc.CreateElement("choice");
 					XmlNode innerText2 = _objDataDoc.CreateElement("name");
 					innerText2.InnerText = xmlNodes5["name"].InnerText;
@@ -1892,14 +1909,15 @@ namespace Translator
 					xmlNodes1["choices"].AppendChild(xmlNodes6);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mentors/mentor"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mentors/mentor"));
 			foreach (XmlNode xmlNodes7 in xmlNodeLists)
 			{
 				xmlNodes7.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/mentors/mentor[name = \"", xmlNodes7["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/mentors/mentor[name = \"",
+                        xmlNodes7["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute2 = _objDataDoc.CreateAttribute("exists");
@@ -1908,14 +1926,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mentors")).RemoveChild(xmlNodes7);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mentors"))
+                        .RemoveChild(xmlNodes7);
 				}
 			}
 		}
 
 		private void ProcessMetamagic()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\metamagic.xml"));
 			string str = "metamagic.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/metamagics/metamagic"))
@@ -1924,24 +1943,28 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/metamagics/metamagic[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/metamagics/metamagic[name=\"", innerText1,
+                    "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metamagics"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metamagics"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("metamagics");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -1965,14 +1988,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metamagics/metamagic"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metamagics/metamagic"));
 			foreach (XmlNode xmlNodes5 in xmlNodeLists)
 			{
 				xmlNodes5.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/metamagics/metamagic[name = \"", xmlNodes5["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/metamagics/metamagic[name = \"",
+                        xmlNodes5["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -1981,7 +2005,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metamagics")).RemoveChild(xmlNodes5);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metamagics"))
+                        .RemoveChild(xmlNodes5);
 				}
 			}
 			foreach (XmlNode xmlNodes6 in xmlDocument.SelectNodes("/chummer/arts/art"))
@@ -1990,23 +2015,23 @@ namespace Translator
 				string str2 = xmlNodes6["name"].InnerText;
 				str1 = xmlNodes6["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/arts/art[name=\"", str2, "\"]" };
+                string[] strArrays1 = { "/chummer/chummer[@file = \"", str, "\"]/arts/art[name=\"", str2, "\"]" };
 				XmlNode xmlNodes7 = xmlDocument2.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes7 != null)
 				{
 					if (xmlNodes7["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes7.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes7["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/arts"));
+                    XmlNode xmlNodes8 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/arts"));
 					if (xmlNodes8 == null)
 					{
-						XmlNode xmlNodes9 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes9 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes9 == null)
 						{
 							xmlNodes9 = _objDataDoc.CreateElement("chummer");
@@ -2030,14 +2055,15 @@ namespace Translator
 					xmlNodes8.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/arts/art"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/arts/art"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/arts/art[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/arts/art[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -2046,29 +2072,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/arts")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/arts"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 		}
 
 		private void ProcessMetatypes()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\metatypes.xml"));
 			string str = "metatypes.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                string[] innerText =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -2087,14 +2118,16 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/metatypes/metatype"))
 			{
@@ -2102,15 +2135,21 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 == null)
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("metatypes");
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -2139,10 +2178,18 @@ namespace Translator
 					xmlNodes6["id"].InnerText = str1;
 				}
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2, "\"]/metavariants" };
+                string[] strArrays1 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2,
+                    "\"]/metavariants"
+                };
 				XmlNode xmlNodes10 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				XmlDocument xmlDocument4 = _objDataDoc;
-				string[] strArrays2 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2, "\"]" };
+                string[] strArrays2 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype[name=\"", innerText2,
+                    "\"]"
+                };
 				xmlNodes6 = xmlDocument4.SelectSingleNode(string.Concat(strArrays2));
 				try
 				{
@@ -2152,14 +2199,15 @@ namespace Translator
 				{
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes/metatype"));
 			foreach (XmlNode xmlNodes11 in xmlNodeLists1)
 			{
 				xmlNodes11.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/metatypes/metatype[name = \"", xmlNodes11["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/metatypes/metatype[name = \"",
+                        xmlNodes11["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -2168,14 +2216,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes")).RemoveChild(xmlNodes11);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/metatypes"))
+                        .RemoveChild(xmlNodes11);
 				}
 			}
 		}
 
 		private void ProcessPowers()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\powers.xml"));
 			string str = "powers.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/powers/power"))
@@ -2184,24 +2233,24 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/powers/power[name=\"", innerText1, "\"]" };
+                string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/powers/power[name=\"", innerText1, "\"]" };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("powers");
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -2225,14 +2274,15 @@ namespace Translator
 					xmlNodes2.AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers/power"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers/power"));
 			foreach (XmlNode xmlNodes5 in xmlNodeLists)
 			{
 				xmlNodes5.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/powers/power[name = \"", xmlNodes5["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/powers/power[name = \"",
+                        xmlNodes5["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -2241,7 +2291,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers")).RemoveChild(xmlNodes5);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/powers"))
+                        .RemoveChild(xmlNodes5);
 				}
 			}
 			foreach (XmlNode xmlNodes6 in xmlDocument.SelectNodes("/chummer/enhancements/enhancement"))
@@ -2250,23 +2301,28 @@ namespace Translator
 				string str2 = xmlNodes6["name"].InnerText;
 				str1 = xmlNodes6["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/enhancements/enhancement[name=\"", str2, "\"]" };
+                string[] strArrays1 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/enhancements/enhancement[name=\"", str2,
+                    "\"]"
+                };
 				XmlNode xmlNodes7 = xmlDocument2.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes7 != null)
 				{
 					if (xmlNodes7["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes7.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes7["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/enhancements"));
+                    XmlNode xmlNodes8 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str,
+                            "\"]/enhancements"));
 					if (xmlNodes8 == null)
 					{
-						XmlNode xmlNodes9 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes9 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes9 == null)
 						{
 							xmlNodes9 = _objDataDoc.CreateElement("chummer");
@@ -2290,14 +2346,15 @@ namespace Translator
 					xmlNodes8.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/enhancements/enhancement"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/enhancements/enhancement"));
 			foreach (XmlNode xmlNodes10 in xmlNodeLists1)
 			{
 				xmlNodes10.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/enhancements/enhancement[name = \"", xmlNodes10["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/enhancements/enhancement[name = \"",
+                        xmlNodes10["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -2306,29 +2363,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/enhancements")).RemoveChild(xmlNodes10);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/enhancements"))
+                        .RemoveChild(xmlNodes10);
 				}
 			}
 		}
 
 		private void ProcessPriorities()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\priorities.xml"));
 			string str = "priorities.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                string[] innerText =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -2347,14 +2409,16 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/priorities/priority"))
 			{
@@ -2362,23 +2426,27 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/priorities/priority[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/priorities/priority[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/priorities"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/priorities"));
 					if (xmlNodes7 == null)
 					{
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -2400,14 +2468,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/priorities/priority"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/priorities/priority"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
 				xmlNodes9.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/priorities/priority[name = \"", xmlNodes9["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/priorities/priority[name = \"",
+                        xmlNodes9["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -2416,7 +2485,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/priorities")).RemoveChild(xmlNodes9);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/priorities"))
+                        .RemoveChild(xmlNodes9);
 				}
 			}
 			foreach (XmlNode xmlNodes10 in xmlDocument.SelectNodes("/chummer/gameplayoptions/gameplayoption"))
@@ -2425,23 +2495,28 @@ namespace Translator
 				string str3 = xmlNodes10["name"].InnerText;
 				str2 = xmlNodes10["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/gameplayoptions/gameplayoption[name=\"", str3, "\"]" };
+                string[] strArrays1 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/gameplayoptions/gameplayoption[name=\"",
+                    str3, "\"]"
+                };
 				XmlNode xmlNodes11 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes11 != null)
 				{
 					if (xmlNodes11["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes11.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes11["id"].InnerText = str2;
 				}
 				else
 				{
-					XmlNode xmlNodes12 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gameplayoptions"));
+                    XmlNode xmlNodes12 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str,
+                            "\"]/gameplayoptions"));
 					if (xmlNodes12 == null)
 					{
-						XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes13 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes13 == null)
 						{
 							xmlNodes13 = _objDataDoc.CreateElement("chummer");
@@ -2463,14 +2538,16 @@ namespace Translator
 					xmlNodes12.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gameplayoptions/gameplayoption"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str,
+                    "\"]/gameplayoptions/gameplayoption"));
 			foreach (XmlNode xmlNodes14 in xmlNodeLists2)
 			{
 				xmlNodes14.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/gameplayoptions/gameplayoption[name = \"", xmlNodes14["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/gameplayoptions/gameplayoption[name = \"",
+                        xmlNodes14["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("exists");
@@ -2479,13 +2556,16 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gameplayoptions")).RemoveChild(xmlNodes14);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/gameplayoptions"))
+                        .RemoveChild(xmlNodes14);
 				}
 			}
 			try
 			{
-				XmlNode xmlNodes15 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes16 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/maneuvers"));
+                XmlNode xmlNodes15 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes16 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/maneuvers"));
 				xmlNodes15.RemoveChild(xmlNodes16);
 			}
 			catch
@@ -2495,22 +2575,26 @@ namespace Translator
 
 		private void ProcessPrograms()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\programs.xml"));
 			string str = "programs.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                string[] innerText =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -2529,14 +2613,16 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/programs/program"))
 			{
@@ -2544,23 +2630,27 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/programs/program[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/programs/program[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/programs"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/programs"));
 					if (xmlNodes7 == null)
 					{
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -2582,14 +2672,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/programs/program"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/programs/program"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
 				xmlNodes9.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/programs/program[name = \"", xmlNodes9["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/programs/program[name = \"",
+                        xmlNodes9["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -2598,13 +2689,16 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/programs")).RemoveChild(xmlNodes9);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/programs"))
+                        .RemoveChild(xmlNodes9);
 				}
 			}
 			try
 			{
-				XmlNode xmlNodes10 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes11 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/options"));
+                XmlNode xmlNodes10 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes11 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/options"));
 				xmlNodes10.RemoveChild(xmlNodes11);
 			}
 			catch
@@ -2614,22 +2708,26 @@ namespace Translator
 
 		private void ProcessQualities()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\qualities.xml"));
 			string str = "qualities.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                string[] innerText =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -2648,14 +2746,16 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/qualities/quality"))
 			{
@@ -2663,23 +2763,27 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/qualities/quality[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/qualities/quality[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities"));
 					if (xmlNodes7 == null)
 					{
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -2701,14 +2805,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities/quality"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities/quality"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
 				xmlNodes9.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/qualities/quality[name = \"", xmlNodes9["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/qualities/quality[name = \"",
+                        xmlNodes9["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -2717,7 +2822,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities")).RemoveChild(xmlNodes9);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/qualities"))
+                        .RemoveChild(xmlNodes9);
 				}
 			}
 		}
@@ -2725,22 +2831,23 @@ namespace Translator
 		private void ProcessSkills()
 		{
 			string[] innerText;
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\skills.xml"));
 			string str = "skills.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                innerText = new[]
+                    {"/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]"};
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -2762,28 +2869,34 @@ namespace Translator
 				innerText1.Attributes.Append(innerText2);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/skillgroups/skillgroup"))
 			{
 				XmlDocument xmlDocument2 = _objDataDoc;
-				innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/skillgroups/skillgroup[text()=\"", xmlNodes5.InnerText, "\"]" };
+                innerText = new[]
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/skillgroups/skillgroup[text()=\"", xmlNodes5.InnerText,
+                    "\"]"
+                };
 				if (xmlDocument2.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes6 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skillgroups"));
+                XmlNode xmlNodes6 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skillgroups"));
 				if (xmlNodes6 == null)
 				{
 					xmlNodes6 = _objDataDoc.CreateElement("skillgroups");
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("chummer");
@@ -2805,14 +2918,16 @@ namespace Translator
 				innerText3.Attributes.Append(innerText4);
 				xmlNodes6.AppendChild(innerText3);
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skillgroups/skillgroup"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skillgroups/skillgroup"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/skillgroups/skillgroup[text() = \"", xmlNodes9.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/skillgroups/skillgroup[text() = \"",
+                        xmlNodes9.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skillgroups")).RemoveChild(xmlNodes9);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skillgroups"))
+                    .RemoveChild(xmlNodes9);
 			}
 			foreach (XmlNode xmlNodes10 in xmlDocument.SelectNodes("/chummer/skills/skill"))
 			{
@@ -2820,14 +2935,16 @@ namespace Translator
 				string str2 = xmlNodes10["name"].InnerText;
 				str1 = xmlNodes10["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/skills/skill[name=\"", str2, "\"]" };
+                innerText = new[] { "/chummer/chummer[@file = \"", str, "\"]/skills/skill[name=\"", str2, "\"]" };
 				XmlNode innerText5 = xmlDocument3.SelectSingleNode(string.Concat(innerText));
 				if (innerText5 == null)
 				{
-					XmlNode xmlNodes11 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skills"));
+                    XmlNode xmlNodes11 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skills"));
 					if (xmlNodes11 == null)
 					{
-						XmlNode xmlNodes12 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes12 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes12 == null)
 						{
 							xmlNodes12 = _objDataDoc.CreateElement("chummer");
@@ -2859,14 +2976,18 @@ namespace Translator
 					item = _objDataDoc.CreateElement("specs");
 					innerText5.AppendChild(item);
 				}
-				foreach (XmlNode xmlNodes13 in xmlDocument.SelectNodes(string.Concat("/chummer/skills/skill[name=\"", str2, "\"]/specs/spec")))
+                foreach (
+                    XmlNode xmlNodes13 in
+                    xmlDocument.SelectNodes(string.Concat("/chummer/skills/skill[name=\"", str2, "\"]/specs/spec")))
 				{
 					XmlDocument xmlDocument4 = _objDataDoc;
-					innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/skills/skill[name=\"", str2, "\"]/specs/spec[text()=\"", xmlNodes13.InnerText, "\"]" };
+                    innerText = new[]
+                    {
+                        "/chummer/chummer[@file = \"", str, "\"]/skills/skill[name=\"", str2,
+                        "\"]/specs/spec[text()=\"", xmlNodes13.InnerText, "\"]"
+                    };
 					if (xmlDocument4.SelectSingleNode(string.Concat(innerText)) != null)
-					{
 						continue;
-					}
 					XmlNode innerText6 = _objDataDoc.CreateElement("spec");
 					innerText6.InnerText = xmlNodes13.InnerText;
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("translate");
@@ -2875,20 +2996,28 @@ namespace Translator
 					item.AppendChild(innerText6);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skills/skill"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skills/skill"));
 			foreach (XmlNode xmlNodes14 in xmlNodeLists2)
-			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/skills/skill[name = \"", xmlNodes14["name"].InnerText, "\"]")) != null)
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/skills/skill[name = \"",
+                        xmlNodes14["name"].InnerText, "\"]")) != null)
 				{
 					XmlDocument xmlDocument5 = _objDataDoc;
-					innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/skills/skill[name = \"", xmlNodes14["name"].InnerText, "\"]/specs/spec" };
+                    innerText = new[]
+                    {
+                        "/chummer/chummer[@file = \"", str, "\"]/skills/skill[name = \"", xmlNodes14["name"].InnerText,
+                        "\"]/specs/spec"
+                    };
 					foreach (XmlNode xmlNodes15 in xmlDocument5.SelectNodes(string.Concat(innerText)))
 					{
-						innerText = new string[] { "/chummer/skills/skill[name = \"", xmlNodes14["name"].InnerText, "\"]/specs/spec[text() = \"", xmlNodes15.InnerText, "\"]" };
+                        innerText = new[]
+                        {
+                            "/chummer/skills/skill[name = \"", xmlNodes14["name"].InnerText,
+                            "\"]/specs/spec[text() = \"", xmlNodes15.InnerText, "\"]"
+                        };
 						if (xmlDocument.SelectSingleNode(string.Concat(innerText)) != null)
-						{
 							continue;
-						}
 						if (!_blnDelete)
 						{
 							XmlAttribute xmlAttribute6 = _objDataDoc.CreateAttribute("exists");
@@ -2909,8 +3038,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skills")).RemoveChild(xmlNodes14);
-				}
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/skills"))
+                        .RemoveChild(xmlNodes14);
 			}
 			foreach (XmlNode xmlNodes16 in xmlDocument.SelectNodes("/chummer/knowledgeskills/skill"))
 			{
@@ -2918,14 +3047,17 @@ namespace Translator
 				string str4 = xmlNodes16["name"].InnerText;
 				str3 = xmlNodes16["id"].InnerText;
 				XmlDocument xmlDocument6 = _objDataDoc;
-				innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill[name=\"", str4, "\"]" };
+                innerText = new[] { "/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill[name=\"", str4, "\"]" };
 				XmlNode innerText7 = xmlDocument6.SelectSingleNode(string.Concat(innerText));
 				if (innerText7 == null)
 				{
-					XmlNode xmlNodes17 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/knowledgeskills"));
+                    XmlNode xmlNodes17 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str,
+                            "\"]/knowledgeskills"));
 					if (xmlNodes17 == null)
 					{
-						XmlNode xmlNodes18 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes18 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes18 == null)
 						{
 							xmlNodes18 = _objDataDoc.CreateElement("chummer");
@@ -2957,14 +3089,19 @@ namespace Translator
 					item1 = _objDataDoc.CreateElement("specs");
 					innerText7.AppendChild(item1);
 				}
-				foreach (XmlNode xmlNodes19 in xmlDocument.SelectNodes(string.Concat("/chummer/knowledgeskills/skill[name=\"", str4, "\"]/specs/spec")))
+                foreach (
+                    XmlNode xmlNodes19 in
+                    xmlDocument.SelectNodes(string.Concat("/chummer/knowledgeskills/skill[name=\"", str4,
+                        "\"]/specs/spec")))
 				{
 					XmlDocument xmlDocument7 = _objDataDoc;
-					innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill[name=\"", str4, "\"]/specs/spec[text()=\"", xmlNodes19.InnerText, "\"]" };
+                    innerText = new[]
+                    {
+                        "/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill[name=\"", str4,
+                        "\"]/specs/spec[text()=\"", xmlNodes19.InnerText, "\"]"
+                    };
 					if (xmlDocument7.SelectSingleNode(string.Concat(innerText)) != null)
-					{
 						continue;
-					}
 					XmlNode innerText8 = _objDataDoc.CreateElement("spec");
 					innerText8.InnerText = xmlNodes19.InnerText;
 					XmlAttribute innerText9 = _objDataDoc.CreateAttribute("translate");
@@ -2973,20 +3110,28 @@ namespace Translator
 					item1.AppendChild(innerText8);
 				}
 			}
-			xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill"));
+            xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill"));
 			foreach (XmlNode xmlNodes20 in xmlNodeLists2)
-			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/knowledgeskills/skill[name = \"", xmlNodes20["name"].InnerText, "\"]")) != null)
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/knowledgeskills/skill[name = \"",
+                        xmlNodes20["name"].InnerText, "\"]")) != null)
 				{
 					XmlDocument xmlDocument8 = _objDataDoc;
-					innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill[name = \"", xmlNodes20["name"].InnerText, "\"]/specs/spec" };
+                    innerText = new[]
+                    {
+                        "/chummer/chummer[@file = \"", str, "\"]/knowledgeskills/skill[name = \"",
+                        xmlNodes20["name"].InnerText, "\"]/specs/spec"
+                    };
 					foreach (XmlNode xmlNodes21 in xmlDocument8.SelectNodes(string.Concat(innerText)))
 					{
-						innerText = new string[] { "/chummer/knowledgeskills/skill[name = \"", xmlNodes20["name"].InnerText, "\"]/specs/spec[text() = \"", xmlNodes21.InnerText, "\"]" };
+                        innerText = new[]
+                        {
+                            "/chummer/knowledgeskills/skill[name = \"", xmlNodes20["name"].InnerText,
+                            "\"]/specs/spec[text() = \"", xmlNodes21.InnerText, "\"]"
+                        };
 						if (xmlDocument.SelectSingleNode(string.Concat(innerText)) != null)
-						{
 							continue;
-						}
 						if (!_blnDelete)
 						{
 							XmlAttribute xmlAttribute9 = _objDataDoc.CreateAttribute("exists");
@@ -3007,29 +3152,33 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/knowledgeskills")).RemoveChild(xmlNodes20);
-				}
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/knowledgeskills"))
+                        .RemoveChild(xmlNodes20);
 			}
 		}
 
 		private void ProcessSpells()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\spells.xml"));
 			string str = "spells.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                string[] innerText =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -3048,14 +3197,16 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/spells/spell"))
 			{
@@ -3063,23 +3214,23 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/spells/spell[name=\"", innerText2, "\"]" };
+                string[] strArrays = { "/chummer/chummer[@file = \"", str, "\"]/spells/spell[name=\"", innerText2, "\"]" };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spells"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spells"));
 					if (xmlNodes7 == null)
 					{
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -3101,14 +3252,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spells/spell"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spells/spell"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
 				xmlNodes9.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/spells/spell[name = \"", xmlNodes9["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/spells/spell[name = \"",
+                        xmlNodes9["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -3117,14 +3269,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spells")).RemoveChild(xmlNodes9);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spells"))
+                        .RemoveChild(xmlNodes9);
 				}
 			}
 		}
 
 		private void ProcessStreams()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\streams.xml"));
 			string str = "streams.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/traditions/tradition"))
@@ -3133,14 +3286,20 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/traditions/tradition[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/traditions/tradition[name=\"", innerText1,
+                    "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 == null)
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions"));
 					if (xmlNodes2 == null)
 					{
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -3169,17 +3328,20 @@ namespace Translator
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				if (xmlNodes1["spirits"] == null)
-				{
 					xmlNodes1.AppendChild(_objDataDoc.CreateElement("spirits"));
-				}
-				foreach (XmlNode xmlNodes4 in xmlDocument.SelectNodes(string.Concat("/chummer/traditions/tradition[name=\"", innerText1, "\"]/spirits/spirit")))
+                foreach (
+                    XmlNode xmlNodes4 in
+                    xmlDocument.SelectNodes(string.Concat("/chummer/traditions/tradition[name=\"", innerText1,
+                        "\"]/spirits/spirit")))
 				{
 					XmlDocument xmlDocument2 = _objDataDoc;
-					object[] item = new object[] { "/chummer/chummer[@file = \"", str, "\"]/traditions/tradition[name=\"", innerText1, "\"]/spirits/spirit[name=\"", xmlNodes4["name"], "\"]" };
+                    object[] item =
+                    {
+                        "/chummer/chummer[@file = \"", str, "\"]/traditions/tradition[name=\"", innerText1,
+                        "\"]/spirits/spirit[name=\"", xmlNodes4["name"], "\"]"
+                    };
 					if (xmlDocument2.SelectSingleNode(string.Concat(item)) != null)
-					{
 						continue;
-					}
 					XmlNode innerText2 = _objDataDoc.CreateElement("spirit");
 					innerText2.InnerText = xmlNodes4.InnerText;
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("translate");
@@ -3188,14 +3350,15 @@ namespace Translator
 					xmlNodes1["spirits"].AppendChild(innerText2);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions/tradition"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions/tradition"));
 			foreach (XmlNode xmlNodes5 in xmlNodeLists)
 			{
 				xmlNodes5.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/traditions/tradition[name = \"", xmlNodes5["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/traditions/tradition[name = \"",
+                        xmlNodes5["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute2 = _objDataDoc.CreateAttribute("exists");
@@ -3204,14 +3367,15 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions")).RemoveChild(xmlNodes5);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions"))
+                        .RemoveChild(xmlNodes5);
 				}
 			}
 		}
 
 		private void ProcessTraditions()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\traditions.xml"));
 			string str = "traditions.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/traditions/tradition"))
@@ -3220,23 +3384,27 @@ namespace Translator
 				string innerText1 = xmlNodes["name"].InnerText;
 				innerText = xmlNodes["id"].InnerText;
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/traditions/tradition[name=\"", innerText1, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/traditions/tradition[name=\"", innerText1,
+                    "\"]"
+                };
 				XmlNode xmlNodes1 = xmlDocument1.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes1 != null)
 				{
 					if (xmlNodes1["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes1.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes1["id"].InnerText = innerText;
 				}
 				else
 				{
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions"));
 					if (xmlNodes2 == null)
 					{
-						XmlNode xmlNodes3 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes3 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes3 == null)
 						{
 							xmlNodes3 = _objDataDoc.CreateElement("chummer");
@@ -3260,14 +3428,15 @@ namespace Translator
 					xmlNodes2.AppendChild(xmlNodes1);
 				}
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions/tradition"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions/tradition"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
 				xmlNodes4.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/traditions/tradition[name = \"", xmlNodes4["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/traditions/tradition[name = \"",
+                        xmlNodes4["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute1 = _objDataDoc.CreateAttribute("exists");
@@ -3276,7 +3445,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions")).RemoveChild(xmlNodes4);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/traditions"))
+                        .RemoveChild(xmlNodes4);
 				}
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/spirits/spirit"))
@@ -3285,23 +3455,27 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/spirits/spirit[name=\"", innerText2, "\"]" };
+                string[] strArrays1 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/spirits/spirit[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode innerText3 = xmlDocument2.SelectSingleNode(string.Concat(strArrays1));
 				if (innerText3 != null)
 				{
 					if (innerText3["id"] != null)
-					{
 						continue;
-					}
 					innerText3.PrependChild(_objDataDoc.CreateElement("id"));
 					innerText3["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes6 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spirits"));
+                    XmlNode xmlNodes6 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spirits"));
 					if (xmlNodes6 == null)
 					{
-						XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes7 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes7 == null)
 						{
 							xmlNodes7 = _objDataDoc.CreateElement("chummer");
@@ -3325,14 +3499,15 @@ namespace Translator
 					xmlNodes6.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spirits/spirit"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spirits/spirit"));
 			foreach (XmlNode xmlNodes8 in xmlNodeLists1)
 			{
 				xmlNodes8.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/spirits/spirit[name = \"", xmlNodes8["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/spirits/spirit[name = \"",
+                        xmlNodes8["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -3341,7 +3516,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spirits")).RemoveChild(xmlNodes8);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/spirits"))
+                        .RemoveChild(xmlNodes8);
 				}
 			}
 			foreach (XmlNode xmlNodes9 in xmlDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
@@ -3350,23 +3526,28 @@ namespace Translator
 				string str3 = xmlNodes9["name"].InnerText;
 				str2 = xmlNodes9["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays2 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/drainattributes/drainattribute[name=\"", str3, "\"]" };
+                string[] strArrays2 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/drainattributes/drainattribute[name=\"",
+                    str3, "\"]"
+                };
 				XmlNode innerText4 = xmlDocument3.SelectSingleNode(string.Concat(strArrays2));
 				if (innerText4 != null)
 				{
 					if (innerText4["id"] != null)
-					{
 						continue;
-					}
 					innerText4.PrependChild(_objDataDoc.CreateElement("id"));
 					innerText4["id"].InnerText = str2;
 				}
 				else
 				{
-					XmlNode xmlNodes10 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/drainattributes"));
+                    XmlNode xmlNodes10 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str,
+                            "\"]/drainattributes"));
 					if (xmlNodes10 == null)
 					{
-						XmlNode xmlNodes11 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes11 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes11 == null)
 						{
 							xmlNodes11 = _objDataDoc.CreateElement("chummer");
@@ -3388,14 +3569,16 @@ namespace Translator
 					xmlNodes10.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/drainattributes/drainattribute"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str,
+                    "\"]/drainattributes/drainattribute"));
 			foreach (XmlNode xmlNodes12 in xmlNodeLists2)
 			{
 				xmlNodes12.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/drainattributes/drainattribute[name = \"", xmlNodes12["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/drainattributes/drainattribute[name = \"",
+                        xmlNodes12["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("exists");
@@ -3404,7 +3587,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/drainattributes")).RemoveChild(xmlNodes12);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/drainattributes"))
+                        .RemoveChild(xmlNodes12);
 				}
 			}
 		}
@@ -3412,22 +3596,23 @@ namespace Translator
 		private void ProcessVehicles()
 		{
 			string[] innerText;
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\vehicles.xml"));
 			string str = "vehicles.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                innerText = new[]
+                    {"/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]"};
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -3446,28 +3631,34 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/modcategories/category"))
 			{
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/modcategories/category[text()=\"", xmlNodes5.InnerText, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/modcategories/category[text()=\"",
+                    xmlNodes5.InnerText, "\"]"
+                };
 				if (xmlDocument2.SelectSingleNode(string.Concat(strArrays)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes6 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/modcategories"));
+                XmlNode xmlNodes6 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/modcategories"));
 				if (xmlNodes6 == null)
 				{
 					xmlNodes6 = _objDataDoc.CreateElement("modcategories");
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes7 == null)
 					{
 						xmlNodes7 = _objDataDoc.CreateElement("chummer");
@@ -3486,19 +3677,23 @@ namespace Translator
 				innerText2.Attributes.Append(innerText3);
 				xmlNodes6.AppendChild(innerText2);
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/modcategories/category"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/modcategories/category"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/modcategories/category[text() = \"", xmlNodes9.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/modcategories/category[text() = \"",
+                        xmlNodes9.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/modcategories")).RemoveChild(xmlNodes9);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/modcategories"))
+                    .RemoveChild(xmlNodes9);
 			}
 			try
 			{
-				XmlNode xmlNodes10 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
-				XmlNode xmlNodes11 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/limits"));
+                XmlNode xmlNodes10 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                XmlNode xmlNodes11 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/limits"));
 				xmlNodes10.RemoveChild(xmlNodes11);
 			}
 			catch
@@ -3510,23 +3705,23 @@ namespace Translator
 				string str2 = xmlNodes12["name"].InnerText;
 				str1 = xmlNodes12["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/vehicles/vehicle[name=\"", str2, "\"]" };
+                string[] strArrays1 = { "/chummer/chummer[@file = \"", str, "\"]/vehicles/vehicle[name=\"", str2, "\"]" };
 				XmlNode xmlNodes13 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes13 != null)
 				{
 					if (xmlNodes13["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes13.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes13["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes14 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/vehicles"));
+                    XmlNode xmlNodes14 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/vehicles"));
 					if (xmlNodes14 == null)
 					{
-						XmlNode xmlNodes15 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes15 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes15 == null)
 						{
 							xmlNodes15 = _objDataDoc.CreateElement("chummer");
@@ -3550,14 +3745,15 @@ namespace Translator
 					xmlNodes14.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/vehicles/vehicle"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/vehicles/vehicle"));
 			foreach (XmlNode xmlNodes16 in xmlNodeLists2)
 			{
 				xmlNodes16.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/vehicles/vehicle[name = \"", xmlNodes16["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/vehicles/vehicle[name = \"",
+                        xmlNodes16["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute4 = _objDataDoc.CreateAttribute("exists");
@@ -3566,7 +3762,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/vehicles")).RemoveChild(xmlNodes16);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/vehicles"))
+                        .RemoveChild(xmlNodes16);
 				}
 			}
 			foreach (XmlNode xmlNodes17 in xmlDocument.SelectNodes("/chummer/mods/mod"))
@@ -3575,23 +3772,23 @@ namespace Translator
 				string str4 = xmlNodes17["name"].InnerText;
 				str3 = xmlNodes17["id"].InnerText;
 				XmlDocument xmlDocument4 = _objDataDoc;
-				innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/mods/mod[name=\"", str4, "\"]" };
+                innerText = new[] { "/chummer/chummer[@file = \"", str, "\"]/mods/mod[name=\"", str4, "\"]" };
 				XmlNode xmlNodes18 = xmlDocument4.SelectSingleNode(string.Concat(innerText));
 				if (xmlNodes18 != null)
 				{
 					if (xmlNodes18["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes18.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes18["id"].InnerText = str3;
 				}
 				else
 				{
-					XmlNode xmlNodes19 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods"));
+                    XmlNode xmlNodes19 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods"));
 					if (xmlNodes19 == null)
 					{
-						XmlNode xmlNodes20 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes20 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes20 == null)
 						{
 							xmlNodes20 = _objDataDoc.CreateElement("chummer");
@@ -3615,14 +3812,15 @@ namespace Translator
 					xmlNodes19.AppendChild(innerText5);
 				}
 			}
-			XmlNodeList xmlNodeLists3 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods/mod"));
+            XmlNodeList xmlNodeLists3 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods/mod"));
 			foreach (XmlNode xmlNodes21 in xmlNodeLists3)
 			{
 				xmlNodes21.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/mods/mod[name = \"", xmlNodes21["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/mods/mod[name = \"",
+                        xmlNodes21["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute6 = _objDataDoc.CreateAttribute("exists");
@@ -3631,29 +3829,34 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods")).RemoveChild(xmlNodes21);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/mods"))
+                        .RemoveChild(xmlNodes21);
 				}
 			}
 		}
 
 		private void ProcessWeapons()
 		{
-			XmlDocument xmlDocument = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 			xmlDocument.Load(string.Concat(_strPath, "data\\weapons.xml"));
 			string str = "weapons.xml";
 			foreach (XmlNode xmlNodes in xmlDocument.SelectNodes("/chummer/categories/category"))
 			{
 				XmlDocument xmlDocument1 = _objDataDoc;
-				string[] innerText = new string[] { "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"", xmlNodes.InnerText, "\"]" };
+                string[] innerText =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/categories/category[text()=\"",
+                    xmlNodes.InnerText, "\"]"
+                };
 				if (xmlDocument1.SelectSingleNode(string.Concat(innerText)) != null)
-				{
 					continue;
-				}
-				XmlNode xmlNodes1 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
+                XmlNode xmlNodes1 =
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"));
 				if (xmlNodes1 == null)
 				{
 					xmlNodes1 = _objDataDoc.CreateElement("categories");
-					XmlNode xmlNodes2 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                    XmlNode xmlNodes2 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 					if (xmlNodes2 == null)
 					{
 						xmlNodes2 = _objDataDoc.CreateElement("chummer");
@@ -3672,14 +3875,16 @@ namespace Translator
 				innerText1.Attributes.Append(xmlAttribute1);
 				xmlNodes1.AppendChild(innerText1);
 			}
-			XmlNodeList xmlNodeLists = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
+            XmlNodeList xmlNodeLists =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories/category"));
 			foreach (XmlNode xmlNodes4 in xmlNodeLists)
 			{
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"", xmlNodes4.InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/categories/category[text() = \"",
+                        xmlNodes4.InnerText, "\"]")) != null)
 					continue;
-				}
-				_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories")).RemoveChild(xmlNodes4);
+                _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/categories"))
+                    .RemoveChild(xmlNodes4);
 			}
 			foreach (XmlNode xmlNodes5 in xmlDocument.SelectNodes("/chummer/weapons/weapon"))
 			{
@@ -3687,23 +3892,27 @@ namespace Translator
 				string innerText2 = xmlNodes5["name"].InnerText;
 				str1 = xmlNodes5["id"].InnerText;
 				XmlDocument xmlDocument2 = _objDataDoc;
-				string[] strArrays = new string[] { "/chummer/chummer[@file = \"", str, "\"]/weapons/weapon[name=\"", innerText2, "\"]" };
+                string[] strArrays =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/weapons/weapon[name=\"", innerText2,
+                    "\"]"
+                };
 				XmlNode xmlNodes6 = xmlDocument2.SelectSingleNode(string.Concat(strArrays));
 				if (xmlNodes6 != null)
 				{
 					if (xmlNodes6["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes6.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes6["id"].InnerText = str1;
 				}
 				else
 				{
-					XmlNode xmlNodes7 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/weapons"));
+                    XmlNode xmlNodes7 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/weapons"));
 					if (xmlNodes7 == null)
 					{
-						XmlNode xmlNodes8 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes8 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes8 == null)
 						{
 							xmlNodes8 = _objDataDoc.CreateElement("chummer");
@@ -3727,14 +3936,15 @@ namespace Translator
 					xmlNodes7.AppendChild(innerText3);
 				}
 			}
-			XmlNodeList xmlNodeLists1 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/weapons/weapon"));
+            XmlNodeList xmlNodeLists1 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/weapons/weapon"));
 			foreach (XmlNode xmlNodes9 in xmlNodeLists1)
 			{
 				xmlNodes9.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/weapons/weapon[name = \"", xmlNodes9["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/weapons/weapon[name = \"",
+                        xmlNodes9["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute3 = _objDataDoc.CreateAttribute("exists");
@@ -3743,7 +3953,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/weapons")).RemoveChild(xmlNodes9);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/weapons"))
+                        .RemoveChild(xmlNodes9);
 				}
 			}
 			foreach (XmlNode xmlNodes10 in xmlDocument.SelectNodes("/chummer/accessories/accessory"))
@@ -3752,23 +3963,27 @@ namespace Translator
 				string str3 = xmlNodes10["name"].InnerText;
 				str2 = xmlNodes10["id"].InnerText;
 				XmlDocument xmlDocument3 = _objDataDoc;
-				string[] strArrays1 = new string[] { "/chummer/chummer[@file = \"", str, "\"]/accessories/accessory[name=\"", str3, "\"]" };
+                string[] strArrays1 =
+                {
+                    "/chummer/chummer[@file = \"", str, "\"]/accessories/accessory[name=\"", str3,
+                    "\"]"
+                };
 				XmlNode xmlNodes11 = xmlDocument3.SelectSingleNode(string.Concat(strArrays1));
 				if (xmlNodes11 != null)
 				{
 					if (xmlNodes11["id"] != null)
-					{
 						continue;
-					}
 					xmlNodes11.PrependChild(_objDataDoc.CreateElement("id"));
 					xmlNodes11["id"].InnerText = str2;
 				}
 				else
 				{
-					XmlNode xmlNodes12 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/accessories"));
+                    XmlNode xmlNodes12 =
+                        _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/accessories"));
 					if (xmlNodes12 == null)
 					{
-						XmlNode xmlNodes13 = _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
+                        XmlNode xmlNodes13 =
+                            _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]"));
 						if (xmlNodes13 == null)
 						{
 							xmlNodes13 = _objDataDoc.CreateElement("chummer");
@@ -3792,14 +4007,15 @@ namespace Translator
 					xmlNodes12.AppendChild(innerText4);
 				}
 			}
-			XmlNodeList xmlNodeLists2 = _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/accessories/accessory"));
+            XmlNodeList xmlNodeLists2 =
+                _objDataDoc.SelectNodes(string.Concat("/chummer/chummer[@file = \"", str, "\"]/accessories/accessory"));
 			foreach (XmlNode xmlNodes14 in xmlNodeLists2)
 			{
 				xmlNodes14.Attributes.RemoveAll();
-				if (xmlDocument.SelectSingleNode(string.Concat("/chummer/accessories/accessory[name = \"", xmlNodes14["name"].InnerText, "\"]")) != null)
-				{
+                if (
+                    xmlDocument.SelectSingleNode(string.Concat("/chummer/accessories/accessory[name = \"",
+                        xmlNodes14["name"].InnerText, "\"]")) != null)
 					continue;
-				}
 				if (!_blnDelete)
 				{
 					XmlAttribute xmlAttribute5 = _objDataDoc.CreateAttribute("exists");
@@ -3808,7 +4024,8 @@ namespace Translator
 				}
 				else
 				{
-					_objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/accessories")).RemoveChild(xmlNodes14);
+                    _objDataDoc.SelectSingleNode(string.Concat("/chummer/chummer[@file = \"", str, "\"]/accessories"))
+                        .RemoveChild(xmlNodes14);
 				}
 			}
 		}
@@ -3823,9 +4040,15 @@ namespace Translator
 			}
 		}
 
+        #endregion Methods
+
+        #region Helpers
+
 		private string ToTitle(string stringIn)
 		{
-			return (new CultureInfo("en-US", false)).TextInfo.ToTitleCase(stringIn);
+            return new CultureInfo("en-US", false).TextInfo.ToTitleCase(stringIn);
 		}
+
+        #endregion Helpers
 	}
 }

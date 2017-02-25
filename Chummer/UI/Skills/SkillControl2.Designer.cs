@@ -137,6 +137,7 @@ namespace Chummer.UI.Skills
             this.cboSpec.Size = new System.Drawing.Size(402, 21);
             this.cboSpec.Sorted = true;
             this.cboSpec.TabIndex = 17;
+            this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
             // 
             // chkKarma
             // 
@@ -205,10 +206,15 @@ namespace Chummer.UI.Skills
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
