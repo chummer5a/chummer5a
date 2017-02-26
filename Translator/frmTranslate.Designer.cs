@@ -1,6 +1,6 @@
 ﻿namespace Translator
 {
-    partial class frmTranslate
+    partial class FrmTranslate
     {
         /// <summary>
         /// Required designer variable.
@@ -242,7 +242,7 @@
             this.Controls.Add(this.cboSection);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.btnSearch);
-            this.Name = "frmTranslate";
+            this.Name = "FrmTranslate";
             this.Text = "frmTranslate";
             this.Load += new System.EventHandler(this.frmTranslate_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTranslate_KeyDown);
