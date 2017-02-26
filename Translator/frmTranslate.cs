@@ -428,7 +428,7 @@ namespace Translator
                     string innerText = xmlNodeEnglish["key"]?.InnerText;
                     string str = xmlNodeEnglish["text"]?.InnerText;
                     XmlNode xmlNodeLocal =
-                        xmlDocument.SelectSingleNode(string.Concat("/chummer/strings/string[key = \"", innerText, "\"]"));
+                        _objTranslationDoc.SelectSingleNode(string.Concat("/chummer/strings/string[key = \"", innerText, "\"]"));
                     if (xmlNodeLocal != null)
                     {
                         string innerText1 = xmlNodeLocal["text"]?.InnerText;
