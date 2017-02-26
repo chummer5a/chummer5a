@@ -3535,7 +3535,7 @@
 			<type>Melee</type>
 			<conceal>10</conceal>
 			<accuracy>3</accuracy>
-			<reach>2</reach>
+			<reach>0</reach>
 			<damage>(STR+2)S</damage>
 			<ap>0</ap>
 			<mode>0</mode>
@@ -3575,7 +3575,7 @@
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>3</accuracy>
-			<reach>2</reach>
+			<reach>0</reach>
 			<damage>(STR+1)P</damage>
 			<ap>0</ap>
 			<mode>0</mode>

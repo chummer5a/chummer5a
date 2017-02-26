@@ -1,3 +1,9 @@
+Build 192
+
+Data Changes:
+
+- Fixed incorrect reach for the Frying Pan and Chair improvised weapons. Fixes #1483.
+
 Build 191
 
 Application Changes:
