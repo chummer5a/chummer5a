@@ -511,9 +511,16 @@
 			<karma>6</karma>
 			<category>Positive</category>
 			<limit>4</limit>
-			<bonus />
+      <bonus>
+        <spellresistance>1</spellresistance>
+      </bonus>
 			<forbidden>
 				<oneof>
+          <metatypecategory>Shapeshifter</metatypecategory>
+          <metatype>Naga</metatype>
+          <metatype>Pixie</metatype>
+          <metatype>Centaur</metatype>
+          <metatype>Sasquatch</metatype>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -535,9 +542,16 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<limit>2</limit>
-			<bonus />
+      <bonus>
+        <spellresistance>2</spellresistance>
+      </bonus>
 			<forbidden>
 				<oneof>
+          <metatypecategory>Shapeshifter</metatypecategory>
+          <metatype>Naga</metatype>
+          <metatype>Pixie</metatype>
+          <metatype>Centaur</metatype>
+          <metatype>Sasquatch</metatype>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -557,9 +571,16 @@
 			<name>Magic Resistance (Rating 3)</name>
 			<karma>18</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <spellresistance>3</spellresistance>
+      </bonus>
 			<forbidden>
 				<oneof>
+          <metatypecategory>Shapeshifter</metatypecategory>
+          <metatype>Naga</metatype>
+          <metatype>Pixie</metatype>
+          <metatype>Centaur</metatype>
+          <metatype>Sasquatch</metatype>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -579,9 +600,16 @@
 			<name>Magic Resistance (Rating 4)</name>
 			<karma>24</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <spellresistance>4</spellresistance>
+      </bonus>
 			<forbidden>
 				<oneof>
+          <metatypecategory>Shapeshifter</metatypecategory>
+          <metatype>Naga</metatype>
+          <metatype>Pixie</metatype>
+          <metatype>Centaur</metatype>
+          <metatype>Sasquatch</metatype>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -4972,7 +5000,9 @@
 			<name>Arcane Arrester</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <spellresistance>2</spellresistance>
+      </bonus>
 			<required>
 				<oneof>
 					<quality>Changeling (Class I SURGE)</quality>
@@ -4998,7 +5028,9 @@
 			<name>Arcane Arrester II</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <spellresistance>4</spellresistance>
+      </bonus>
 			<required>
 				<oneof>
 					<quality>Changeling (Class I SURGE)</quality>
@@ -10812,6 +10844,12 @@
 			<category>Positive</category>
 			<bonus>
 				<prototypetranshuman>1</prototypetranshuman>
+        <selectquality>
+          <quality>Wanted</quality>
+          <quality>Allergy (Common, Mild)</quality>
+          <quality>Astral Beacon</quality>
+          <quality>Insomnia (Basic)</quality>
+        </selectquality>
 			</bonus>
 			<source>CF</source>
 			<page>54</page>

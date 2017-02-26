@@ -797,7 +797,7 @@ namespace Chummer
 			this.treVehicles = new Chummer.helpers.TreeView();
 			this.cmdAddVehicle = new SplitButton();
 			this.tabCharacterInfo = new System.Windows.Forms.TabPage();
-			this.cboHandedness = new Chummer.helpers.ComboBox();
+			this.cboPrimaryArm = new Chummer.helpers.ComboBox();
 			this.lblHandedness = new System.Windows.Forms.Label();
 			this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
 			this.lblNumMugshots = new System.Windows.Forms.Label();
@@ -9285,7 +9285,7 @@ namespace Chummer
 			// tabCharacterInfo
 			// 
 			this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabCharacterInfo.Controls.Add(this.cboHandedness);
+			this.tabCharacterInfo.Controls.Add(this.cboPrimaryArm);
 			this.tabCharacterInfo.Controls.Add(this.lblHandedness);
 			this.tabCharacterInfo.Controls.Add(this.chkIsMainMugshot);
 			this.tabCharacterInfo.Controls.Add(this.lblNumMugshots);
@@ -9336,15 +9336,15 @@ namespace Chummer
 			this.tabCharacterInfo.Tag = "Tab_CharacterInfo";
 			this.tabCharacterInfo.Text = "Character Info";
 			// 
-			// cboHandedness
+			// cboPrimaryArm
 			// 
-			this.cboHandedness.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboHandedness.FormattingEnabled = true;
-			this.cboHandedness.Location = new System.Drawing.Point(730, 61);
-			this.cboHandedness.Name = "cboHandedness";
-			this.cboHandedness.Size = new System.Drawing.Size(100, 21);
-			this.cboHandedness.TabIndex = 93;
-			this.cboHandedness.SelectedIndexChanged += new System.EventHandler(this.cboHandedness_SelectedIndexChanged);
+			this.cboPrimaryArm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPrimaryArm.FormattingEnabled = true;
+			this.cboPrimaryArm.Location = new System.Drawing.Point(730, 61);
+			this.cboPrimaryArm.Name = "cboPrimaryArm";
+			this.cboPrimaryArm.Size = new System.Drawing.Size(100, 21);
+			this.cboPrimaryArm.TabIndex = 93;
+			this.cboPrimaryArm.SelectedIndexChanged += new System.EventHandler(this.cboPrimaryArm_SelectedIndexChanged);
 			// 
 			// lblHandedness
 			// 
@@ -11840,7 +11840,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsAddAdvancedProgramOption;
         private System.Windows.Forms.ToolStripMenuItem tsAIProgramNotes;
 		private System.Windows.Forms.Label lblHandedness;
-		private ComboBox cboHandedness;
+		private ComboBox cboPrimaryArm;
         private System.Windows.Forms.CheckBox chkIsMainMugshot;
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;

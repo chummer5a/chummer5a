@@ -553,7 +553,7 @@ namespace Chummer.Backend.Equipment
 			else
 			{
 				int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) / 3;
-				objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + " " + TotalAgility.ToString() + ", " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + " " + TotalStrength.ToString() + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
+				objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
 			}
 			objWriter.WriteElementString("category", DisplayCategory);
 			objWriter.WriteElementString("ess", CalculatedESS.ToString(GlobalOptions.CultureInfo));

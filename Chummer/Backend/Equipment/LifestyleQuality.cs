@@ -87,6 +87,8 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("basemultiplieronly", ref _intBaseMultiplier);
             if (objXmlLifestyleQuality["category"] != null)
 			    _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
 			_objLifestyleQualitySource = objLifestyleQualitySource;
@@ -434,7 +436,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return Free || FreeByLifestyle ? 0 : _intLP;
+				return Free ? 0 : _intLP;
 			}
 			set
 			{
@@ -510,7 +512,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public int Cost
 		{
-			get { return (Free || FreeByLifestyle) ? 0 : _intCost; }
+			get { return Free || FreeByLifestyle ? 0 : _intCost; }
 			set { _intCost = value; }
 		}
 
@@ -519,7 +521,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public bool Free
 		{
-			get { return _blnFree; }
+			get { return _blnFree || OriginSource == QualitySource.BuiltIn; }
 			set { _blnFree = value; }
 		}
 

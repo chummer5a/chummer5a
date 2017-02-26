@@ -317,7 +317,7 @@ namespace Chummer.Backend.Equipment
 		}
 
 		/// <summary>
-		/// Name.
+		/// Custom Name entered by the user.
 		/// </summary>
 		public string Name
 		{
@@ -338,17 +338,14 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = _strName;
+				string strReturn = _strBaseLifestyle;
 				// Get the translated name if applicable.
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-					if (objNode != null)
-					{
-						if (objNode["translate"] != null)
-							strReturn = objNode["translate"].InnerText;
-					}
+				    if (objNode?["translate"] != null)
+				        strReturn = objNode["translate"].InnerText;
 				}
 
 				return strReturn;
@@ -364,8 +361,8 @@ namespace Chummer.Backend.Equipment
 			{
 				string strReturn = DisplayNameShort;
 
-				if (!string.IsNullOrEmpty(_strLifestyleName))
-					strReturn += " (\"" + _strLifestyleName + "\")";
+				if (!string.IsNullOrEmpty(_strName))
+					strReturn += " (\"" + _strName + "\")";
 
 				return strReturn;
 			}
@@ -399,11 +396,8 @@ namespace Chummer.Backend.Equipment
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-					if (objNode != null)
-					{
-						if (objNode["altpage"] != null)
-							strReturn = objNode["altpage"].InnerText;
-					}
+				    if (objNode?["altpage"] != null)
+				        strReturn = objNode["altpage"].InnerText;
 				}
 
 				return strReturn;

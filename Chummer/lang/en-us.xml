@@ -758,6 +758,18 @@
 			<key>String_StackedFocus</key>
 			<text>Stacked Focus</text>
 		</string>
+    <string>
+      <key>String_Initiative</key>
+      <text>{0} +{1}d6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiative</key>
+      <text>{0} + DP +{1}d6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiativeLong</key>
+      <text>{0} + Data Processing +{1}d6</text>
+    </string>
 		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>
@@ -3519,8 +3531,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Base Attribute value.</text>
 		</string>
 		<string>
-			<key>Tip_OptionsKnucks</key>
-			<text>Allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
+			<key>Tip_OptionsUnarmedSkillImprovements</key>
+			<text>Allows weapons that use the Unarmed Combat skill to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
@@ -4920,7 +4932,7 @@ Do you want to continue?</text>
 		<string>
 			<key>Tip_OtherCareerKarma</key>
 			<text>The amount of Karma the character has accumulated over their career.</text>
-		</string>
+		</string>s
 		<!-- End Region-->
 		<!-- Region Condition Monitor Tab -->
 		<string>
@@ -4965,6 +4977,10 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Spell Defence Tab-->
+    <string>
+      <key>String_SpellResistanceDice</key>
+      <text>Spell Resistance Dice</text>
+    </string>
 		<string>
 			<key>Label_CounterspellingDice</key>
 			<text>Counterspelling Dice</text>
@@ -6539,8 +6555,8 @@ Do you want to continue?</text>
 			<text>Restore Defaults</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_Knucks</key>
-			<text>Knucks Benefit from Unarmed Attack Bonuses</text>
+			<key>Checkbox_Options_UnarmedSkillImprovements</key>
+			<text>Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
@@ -6737,6 +6753,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
 			<text>Allow spending of free spells from Magic Priority as power points</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
+			<text>Education qualities give karma discount for knowledge skills in create mode</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
@@ -7574,7 +7594,7 @@ Do you want to continue?</text>
 			<text>Select a Program Option</text>
 		</string>
 		<!-- End Region-->
-		<!-- Advanced Programs Tab -->
+		<!-- Region Advanced Programs Tab -->
 		<string>
 			<key>Tab_AdvancedPrograms</key>
 			<text>Advanced Programs</text>
@@ -7596,7 +7616,7 @@ Do you want to continue?</text>
 			<text>Selected AI Programs and Advanced Programs</text>
 		</string>
 		<!-- End Region-->
-		<!-- Select AI Program Window -->
+		<!-- Region Select AI Program Window -->
 		<string>
 			<key>Title_SelectAIProgram</key>
 			<text>Select AI Program or Advanced Program</text>
@@ -7671,7 +7691,23 @@ Do you want to continue?</text>
 			<key>Message_SelectQuality_QualityRequirement</key>
 			<text>You do not meet the requirements for this Quality. You must meet at least one of the following criteria:</text>
 		</string>
-		<string>
+    <string>
+      <key>Message_SelectQuality_RequireESSBelow</key>
+      <text>Essence below {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSAbove</key>
+      <text>Essence above {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeBelow</key>
+      <text>Less then {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeAbove</key>
+      <text>At least {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
 			<key>MessageTitle_SelectQuality_QualityRequirement</key>
 			<text>Quality Requirement</text>
 		</string>

@@ -670,6 +670,97 @@
 				<translate>Evo Armadillo Gepanzerter Raumanzug</translate>
 				<page>82</page>
 			</armor>
+<!-- 2050 SR5 Clothing and Armor -->
+			<armor>
+				<id>134e6912-d3b8-47cc-8804-fc02e66a0ee6</id>
+				<name>Form Fitting, Shirt (2050)</name>
+				<translate>Formangepasste Panzerung, Hemd</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>6747e88b-b884-4400-aa33-3ccbbe71f135</id>
+				<name>Form Fitting, Half Suit (2050)</name>
+				<translate>Formangepasste Panzerung, Hemd</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>40544ce0-eee7-4273-80fe-ffa111fa9c35</id>
+				<name>Form Fitting, Full Suit (2050)</name>
+				<translate>Formangepasste Panzerung, Hemd</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>5cc0962f-a803-46a1-b077-a22528da13f6</id>
+				<name>Lined Coat (2050)</name>
+				<translate>Gefütterter Mantel</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>cd1e1725-6c1f-4e15-83ad-e6f30d3d0b6e</id>
+				<name>Helmet (2050)</name>
+				<translate>Helm</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>27b0f29c-87e0-44f1-bff4-00e733b367fb</id>
+				<name>Clothing, Ordinary (2050)</name>
+				<translate>Kleidung, gewöhnlich</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>c4a7c60c-d2e0-419c-bdc8-efabdfa114c1</id>
+				<name>Clothing, Fine (2050)</name>
+				<translate>Kleidung, gut</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>84cf66ad-15e7-48cc-a587-f0716e4b9d4b</id>
+				<name>Clothing, Tres Chic (2050)</name>
+				<translate>Kleidung, Tres Chic</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>11986c47-c928-4a5b-9667-ae4860caeacc</id>
+				<name>Leather, Synthetic (2050)</name>
+				<translate>Kunstlederkleidung</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>7df0bbe3-b616-4942-816d-2b5e57617a38</id>
+				<name>Leather, Real (2050)</name>
+				<translate>Lederkleidung</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>811d9335-d784-4d69-a7de-6551bac37ea8</id>
+				<name>Armor Jacket (2050)</name>
+				<translate>Panzerjacke</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>52f8cc10-655b-4813-b038-f135d6a24786</id>
+				<name>Armor Clothing (2050)</name>
+				<translate>Panzerkleidung</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>bd6dd017-c6b8-4df2-a96f-eb920fc5499d</id>
+				<name>Armor Vest (2050)</name>
+				<translate>Panzerweste</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>4ca1e01b-24bb-42f9-a27d-b284a13e739b</id>
+				<name>Heavy Armor, Full (2050)</name>
+				<translate>Schwere Panzerung, Vollkörper</translate>
+				<page>192</page>
+			</armor>
+			<armor>
+				<id>fc36610c-5a0a-4757-852c-062e59b1a568</id>
+				<name>Heavy Armor, Partial (2050)</name>
+				<translate>Schwere Panzerung, Teilpanzer</translate>
+				<page>192</page>
+			</armor>
 		</armors>
 		<mods>
 			<mod>
@@ -1151,6 +1242,121 @@
 				<name>Tracheal Filter</name>
 				<page>465</page>
 				<translate>Luftröhrenfilter</translate>
+			</bioware>
+		<!-- 2050 SR5 Bioware -->	
+			<bioware>
+				<id>9343f6b7-6d02-4706-aa7d-6c357b22c947</id>
+				<name>Adrenaline Pump (2050)</name>
+				<translate>Adrenalinpumpe</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>b843eb04-8234-4fb4-a33d-87bd369cc8dc</id>
+				<name>Enhanced Articulation (2050)</name>
+				<translate>Hochleistungsgelenke</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>29711788-69f5-4b7a-8dd9-2ed615a448e3</id>
+				<name>Suprathyroid Gland (2050)</name>
+				<translate>Hyperschilddrüse</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>bebdde65-cd72-4690-8436-945312c507ab</id>
+				<name>Tracheal Filter (2050)</name>
+				<translate>Luftröhrenfilter</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>9c66557a-5757-42ee-ac00-a875b7013ad8</id>
+				<name>Tailored Pheromones (2050)</name>
+				<translate>Maßgeschneiderte Pheromone</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>aa992c89-3fc0-47bf-9275-f31acf83a615</id>
+				<name>Mnemonic Enhancer (2050)</name>
+				<translate>Mnemoverstärker</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>0603401c-183d-43e6-902e-fbdcc5a20fc4</id>
+				<name>Muscle Toner (2050)</name>
+				<translate>Muskelstraffung</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>d563a110-b8d8-460c-8fb2-da7d87d033a0</id>
+				<name>Muscle Augmentation (2050)</name>
+				<translate>Muskelverstärkung</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>fd8d10ee-4a08-4e0d-a9a4-eec8f4633467</id>
+				<name>Nephritic Screen (2050)</name>
+				<translate>Nierensieb</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>d52e5797-416f-414a-ba7f-8ba3c6aef35a</id>
+				<name>Orthoskin (2050)</name>
+				<translate>Orthoskin</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>0dcfb784-e30b-4d29-b8a9-46786770c5d0</id>
+				<name>Pathogenic Defense (2050)</name>
+				<translate>Pathogenabwehr</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>20658b19-28c0-4e38-8523-768636510c7b</id>
+				<name>Reflex Recorder (2050)</name>
+				<translate>Reflexrecorder</translate>
+				<page>205</page>
+			</bioware>	
+			<bioware>
+				<id>9300c974-1591-4dca-95d4-53755c27126e</id>
+				<name>Damage Compensators (2050)</name>
+				<translate>Schadenskompensator</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>
+				<name>Pain Editor (2050)</name>
+				<translate>Schmerzeditor</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>596c2f2c-e76e-49db-996b-d05fb56d994d</id>
+				<name>Symbiotes (2050)</name>
+				<translate>Symbionten</translate>
+				<page>205</page>
+			</bioware> 
+			<bioware>
+				<id>418fc791-2ae8-4457-80ec-e89244f1497b</id>
+				<name>Synaptic Accelerator (2050)</name>
+				<translate>Synapsenbeschleuniger</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>7ec6348a-2edd-4629-a984-e88f258e8599</id>
+				<name>Synthacardium (2050)</name>
+				<translate>Synthacardium</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>8cf8dfaa-64b1-4b46-90a1-7fe01a43ad74</id>
+				<name>Platelet Factories (2050)</name>
+				<translate>Thrombozytenfabrik</translate>
+				<page>205</page>
+			</bioware>
+			<bioware>
+				<id>773956b3-427b-4ed0-9510-8db622f01b66</id>
+				<name>Cerebral Booster (2050)</name>
+				<translate>Zerebralbooster</translate>
+				<page>205</page>
 			</bioware>
 		</biowares>
 	</chummer>
@@ -6377,6 +6583,338 @@
 				<translate>Talentbuchse</translate>
 				<page>457</page>
 			</cyberware>
+<!-- 2050 SR5 CYberware -->
+			<cyberware>
+				<id>13ade3a3-1811-4ca6-9937-61dc6cfaccfb</id>
+				<name>Datajack (2050)</name>
+				<page>199</page>
+				<translate>Datenbuchse</translate>
+			</cyberware>
+			<cyberware>
+				<id>5437471e-f0cc-49a6-839d-13218e256bdd</id>
+				<name>Chipjack (2050)</name>
+				<page>199</page>
+				<translate>Chipbuchse</translate>
+			</cyberware>
+			<cyberware>
+				<id>9e961542-91fd-4ea3-bffc-9e19111610bf</id>
+				<name>Cortexbombe (2050)</name>
+				<page>199</page>
+				<translate>Cortexbombe</translate>
+			</cyberware>
+			<cyberware>
+				<id>7cea6881-2fa0-4fa2-ae8d-1013cf957b15</id>
+				<name>Data Lock (2050)</name>
+				<page>199</page>
+				<translate>Datenschloss</translate>
+			</cyberware>
+			<cyberware>
+				<id>d5eb44ac-eaa3-4b8a-9a53-3b8889752a25</id>
+				<name>Radio (2050)</name>
+				<page>199</page>
+				<translate>Funkgerät</translate>
+			</cyberware>
+			<cyberware>
+				<id>908000b8-5c97-402d-947f-bd54768ac5f0</id>
+				<name>Headware Memory (2050)</name>
+				<page>199</page>
+				<translate>Headware-Memory</translate>
+			</cyberware>
+			<cyberware>
+				<id>b12d9c62-ea7e-41de-bafd-88c05ae92b2c</id>
+				<name>Telephone (2050)</name>
+				<page>199</page>
+				<translate>Telefon</translate>
+			</cyberware>
+			<cyberware>
+				<id>bf0b9e14-f771-4490-8868-69e5f488ce68</id>
+				<name>Cybereyes (2050)</name>
+				<page>201</page>
+				<translate>Cyberaugen</translate>
+			</cyberware>
+			<cyberware>
+				<id>3917dd4a-0f77-48c7-bf80-62b90f8f0fff</id>
+				<name>Camera (2050)</name>
+				<page>201</page>
+				<translate>Augenrekorder</translate>
+			</cyberware>
+			<cyberware>
+				<id>f6774ee8-50cb-4524-acd7-2e2357071916</id>
+				<name>Flare Compensation (2050)</name>
+				<page>201</page>
+				<translate>Blitzkompensation</translate>
+			</cyberware>
+			<cyberware>
+				<id>ab435e23-7ff8-4516-942c-cf3467706e50</id>
+				<name>Display Link (2050)</name>
+				<page>201</page>
+				<translate>Displayverbindung</translate>
+			</cyberware>
+			<cyberware>
+				<id>4382ca25-5400-4640-8fcd-a60e0b7e6f81</id>
+				<name>Thermographic (2050)</name>
+				<page>201</page>
+				<translate>Infrarot</translate>
+			</cyberware>
+			<cyberware>
+				<id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
+				<name>Cosmetic Modifcations Eye (2050)</name>
+				<page>201</page>
+				<translate>Kosmetische Augen Modifikation</translate>
+			</cyberware>
+			<cyberware>
+				<id>e9c59df9-9009-4e4a-a257-45eaab5885a4</id>
+				<name>Low-Light (2050)</name>
+				<page>201</page>
+				<translate>Restlichtverstärkung</translate>
+			</cyberware>
+			<cyberware>
+				<id>3904a4cc-d5d4-463a-aab9-7ffc50229389</id>
+				<name>Retinal Duplication (2050)</name>
+				<page>201</page>
+				<translate>Retinaduplikat</translate>
+			</cyberware>
+			<cyberware>
+				<id>9ac9d78f-6a33-4bd1-bb9c-539b487ae618</id>
+				<name>Vision Magnifcation (2050)</name>
+				<page>201</page>
+				<translate>Sichtvergrößerung</translate>
+			</cyberware>
+			<cyberware>
+				<id>c8d6fe4e-f55b-4111-bbbb-ad89b6c99074</id>
+				<name>Cyberears (2050)</name>
+				<page>201</page>
+				<translate>Cyberohren</translate>
+			</cyberware>
+			<cyberware>
+				<id>75f71536-b34a-452e-9045-17ce7ef02daf</id>
+				<name>Hearing Amplifcation (2050)</name>
+				<page>201</page>
+				<translate>Audioverstärker</translate>
+			</cyberware>
+			<cyberware>
+				<id>d48eb2ff-f959-4b0b-a0c2-8bbb82d1c910</id>
+				<name>Damper (2050)</name>
+				<page>201</page>
+				<translate>Dämpfer</translate>
+			</cyberware>
+			<cyberware>
+				<id>9554cf97-b63a-4014-bd73-b020fa33a951</id>
+				<name>Expanded Frequency (2050)</name>
+				<page>201</page>
+				<translate>Erweitere Frequenzen</translate>
+			</cyberware>
+			<cyberware>
+				<id>832c737d-d76a-4a28-9615-c09ae2f1d2aa</id>
+				<name>Sound Recorder (2050)</name>
+				<page>201</page>
+				<translate>Ohr-Rekorder</translate>
+			</cyberware>
+			<cyberware>
+				<id>c6fc9433-b33f-45ac-b05a-6341b4d5accc</id>
+				<name>Cosmetic Modifcations Ear (2050)</name>
+				<page>201</page>
+				<translate>Kosmetische Ohren Modifikation</translate>
+			</cyberware>
+			<cyberware>
+				<id>fd3f6510-e145-492b-8c47-9063ea24da2f</id>
+				<name>Cyberlimb Full Arm , Obvious (2050)</name>
+				<page>203</page>
+				<translate>Ganzer Cyberam, Offensichtlich</translate>
+			</cyberware>
+			<cyberware>
+				<id>4ca30ddc-f990-40bc-bf1f-4789996ae34c</id>
+				<name>Cyberlimb Full Leg , Obvious (2050)</name>
+				<page>203</page>
+				<translate>Ganzes Cyberbein, Offensichtlich</translate>
+			</cyberware>
+			<cyberware>
+				<id>1839428f-b8a2-4461-af47-c821ae808dde</id>
+				<name>Cyberlimb Full Arm, Synthetic (2050)</name>
+				<page>203</page>
+				<translate>Ganzer Cyberarm, Syntetisch</translate>
+			</cyberware>
+			<cyberware>
+				<id>b8d74993-2ae6-4c42-98ef-f72e96415d7b</id>
+				<name>Cyberlimb Full Leg, Synthetic (2050)</name>
+				<page>203</page>
+				<translate>Ganzes Cyberbein, Syntetisch</translate>
+			</cyberware>
+			<cyberware>
+				<id>4415180f-c3a0-4bb9-8580-3ed689ab6863</id>
+				<name>Cyberlimb Customization, Strength (2050)</name>
+				<page>203</page>
+				<translate>Maßgefertigte Cybergliedmaße, Stärke</translate>
+			</cyberware>
+			<cyberware>
+				<id>c6abcc8b-78fb-44a4-a105-450c1b60a57b</id>
+				<name>Cyberlimb Customization, Agility (2050)</name>
+				<page>203</page>
+				<translate>Maßgefertigte Cybergliedmaße, Geschicklichkeit</translate>
+			</cyberware>
+			<cyberware>
+				<id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
+				<name>Cyberlimb Augmentation, Armor (2050)</name>
+				<page>203</page>
+				<translate>Cyberglied-Verstärung, Panzerzng</translate>
+			</cyberware>
+			<cyberware>
+				<id>>55738f72-0344-435d-8f92-b1e16a66c445</id>
+				<name>Cyberlimb Augmentation, Strength (2050)</name>
+				<page>203</page>
+				<translate>Cyberglied-Verstärung, Stärke</translate>
+			</cyberware>
+			<cyberware>
+				<id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
+				<name>Cyberlimb Augmentation, Agility (2050)</name>
+				<page>203</page>
+				<translate>Cyberglied-Verstärung, Geschicklichkeit</translate>
+			</cyberware>
+			<cyberware>
+				<id>c7d7d1cb-2506-4b0d-9ae4-7fb1c1135a82</id>
+				<name>Filtration System, Cybergill (2050)</name>
+				<page>203</page>
+				<translate>Cyberkiemen</translate>
+			</cyberware>
+			<cyberware>
+				<id>c47951dc-b81b-4942-87e3-947ecb9e4d9d</id>
+				<name>Filtration System, Blood (2050)</name>
+				<page>203</page>
+				<translate>Filtersystem, Blut</translate>
+			</cyberware>
+			<cyberware>
+				<id>a541294c-dac9-4e11-b1c0-fbb9e354afe3</id>
+				<name>Dermal Plating (2050)</name>
+				<page>203</page>
+				<translate>Dermalpanzerung</translate>
+			</cyberware>
+			<cyberware>
+				<id>727ca1f1-7547-479e-8365-645ce765a2c6</id>
+				<name>Filtration System, Air (2050)</name>
+				<page>203</page>
+				<translate>Filtersystem, Luft</translate>
+			</cyberware>
+			<cyberware>
+				<id>97d4590d-61b9-4a33-91e7-d5877c2f2ae6</id>
+				<name>Fingertip Compartment (2050)</name>
+				<page>203</page>
+				<translate>Fingerkuppenbehälter</translate>
+			</cyberware>
+			<cyberware>
+				<id>be1f861f-a8ea-4066-b3c8-ebed9844caef</id>
+				<name>Olfactory Booster (2050)</name>
+				<page>203</page>
+				<translate>Geruchsbooster</translate>
+			</cyberware>
+			<cyberware>
+				<id>df427266-60ea-4289-94ee-a30bb46ceb89</id>
+				<name>Cosmetic Modifcations (2050)</name>
+				<page>203</page>
+				<translate>Kosmetische Modifikation</translate>
+			</cyberware>
+			<cyberware>
+				<id>6cd1b94e-a122-469c-8739-ba2a0a5bbae9</id>
+				<name>Muscle Replacement (2050)</name>
+				<page>203</page>
+				<translate>Kunstmusklen</translate>
+			</cyberware>
+			<cyberware>
+				<id>c2a4d517-0f92-4f89-97cc-7aef5ee5d047</id>
+				<name>Hand Razors, Fixed (2050)</name>
+				<page>203</page>
+				<translate>Nagelmesser, fest</translate>
+			</cyberware>
+			<cyberware>
+				<id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
+				<name>Hand Razors, Retractable (2050)</name>
+				<page>203</page>
+				<translate>Nagelmesser, einziehbar</translate>
+			</cyberware>
+			<cyberware>
+				<id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
+				<name>Spur, Fixed (2050)</name>
+				<page>203</page>
+				<translate>Sporn, fest</translate>
+			</cyberware>
+			<cyberware>
+				<id>0ed1c1e6-d938-48b1-bf41-9680d04e237f</id>
+				<name>Spur, Retractable (2050)</name>
+				<page>203</page>
+				<translate>Sporn, einziehbar</translate>
+			</cyberware>
+			<cyberware>
+				<id>1fd9fa93-a617-4261-b0ab-9255a4750fcb</id>
+				<name>Boosted Refexes (2050)</name>
+				<page>203</page>
+				<translate>Reflexbooster</translate>
+			</cyberware>
+			<cyberware>
+				<id>35203a28-d5fa-477f-b2e1-fd6b00aa6649</id>
+				<name>Vehicle Control Rig (2050)</name>
+				<page>203</page>
+				<translate>Riggerkontrolle</translate>
+			</cyberware>
+			<cyberware>
+				<id>72bde95c-31ce-46e4-a44a-488f28c886b7</id>
+				<name>Smartlink (2050)</name>
+				<page>203</page>
+				<translate>Smartlink</translate>
+			</cyberware>
+			<cyberware>
+				<id>20f91caf-b639-4f62-b248-33c0c9fc5134</id>
+				<name>Voice Modulator (2050)</name>
+				<page>203</page>
+				<translate>Stimmenmodulator</translate>
+			</cyberware>
+			<cyberware>
+				<id>7996ff21-d75c-4c5a-8990-1527b22b53b8</id>
+				<name>Voice Modulator, Playback Feature (2050)</name>
+				<page>203</page>
+				<translate>Stimmenmodulator, Abspielfunktion</translate>
+			</cyberware>
+			<cyberware>
+				<id>90ee4cbc-7911-4fe7-b6b3-952eb8ba9a9e</id>
+				<name>Voice Modulator, Second Voiceprint (2050)</name>
+				<page>203</page>
+				<translate>Stimmenmodulator, Zweites Stimmmuster</translate>
+			</cyberware>
+			<cyberware>
+				<id>f06e1949-6416-4015-841e-f3fbaa61a434</id>
+				<name>Cyber Holdout Pistol (2050)</name>
+				<page>204</page>
+				<translate>Cyber Holdout-Pistole</translate>
+			</cyberware>
+			<cyberware>
+				<id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
+				<name>Cyber Light Pistol (2050)</name>
+				<page>204</page>
+				<translate>Leichte Cyber Pistole</translate>
+			</cyberware>
+			<cyberware>
+				<id>ce0e344f-4428-499e-8cb9-f83f9041dc9a</id>
+				<name>Cyber Machine Pistol (2050)</name>
+				<page>204</page>
+				<translate>Cyber Automatikpistole</translate>
+			</cyberware>			
+			<cyberware>
+				<id>acffef6c-d88f-4e80-bfd3-924c516ce6f9</id>
+				<name>Cyber Heavy Pistol (2050)</name>
+				<page>204</page>
+				<translate>Schwere Cyberpistole</translate>
+			</cyberware>
+			<cyberware>
+				<id>f1413ac9-d373-4080-a373-60e5b890b304</id>
+				<name>Cyber Submachine Gun (2050)</name>
+				<page>204</page>
+				<translate>Cyber Machinenpistole</translate>
+			</cyberware>
+			<cyberware>
+				<id>dbf70a83-ce18-4c55-b937-f326392ddee5</id>
+				<name>Cyber Shotgun (2050)</name>
+				<page>204</page>
+				<translate>Cyber Schrotflinte</translate>
+			</cyberware>			
+		<!-- Cyberware end -->
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -9489,6 +10027,834 @@
 				<name>Flashlight, Infrared</name>
 				<translate>Taschenlampe, Infrarot</translate>
 				<page>453</page>
+			</gear>
+			<gear>
+				<id>e31b4904-bb36-4016-ab9e-97292e259b0e</id>
+				<name>Smart Goggles (2050)</name>
+				<page>189</page>
+				<translate>Smartbrille</translate>
+			</gear>
+			<gear>
+				<id>91d36fa3-1af7-425a-b4c5-1cdc233dbf8b</id>
+				<name>Concealable Holster (2050)</name>
+				<page>189</page>
+				<translate>Tarnholster</translate>
+			</gear>
+			<gear>
+				<id>9c241ebd-fabf-4fc4-a3f7-15653af3082a</id>
+				<name>Ammo: APDS (2050)</name>
+				<page>190</page>
+				<translate>Munition: APDS</translate>
+			</gear>
+			<gear>
+				<id>0003acf4-25ff-470e-990c-6ea8c056f5b2</id>
+				<name>Ammo: Explosive Rounds (2050)</name>
+				<page>190</page>
+				<translate>Munition: Explosivgeschosse</translate>
+			</gear>
+			<gear>
+				<id>86fc55db-c032-47d5-a981-9a7bc3a85ee4</id>
+				<name>Ammo: Flechette Rounds (2050)</name>
+				<page>190</page>
+				<translate>Munition: Flechettegeschosse</translate>
+			</gear>
+			<gear>
+				<id>186d9840-4a40-4b80-ba8f-58377a06e180</id>
+				<name>Ammo: Gel Rounds (2050)</name>
+				<page>190</page>
+				<translate>Munition: Gelgeschosse</translate>
+			</gear>
+			<gear>
+				<id>83bf8f55-47a6-4780-9223-7b14eddcd5e9</id>
+				<name>Ammo: Injection Darts (2050)</name>
+				<page>190</page>
+				<translate>Munition: Injektionspfeile</translate>
+			</gear>
+			<gear>
+				<id>998586de-fd3f-4589-af53-676767f1b1b5</id>
+				<name>Ammo: Assault Cannon (2050)</name>
+				<page>190</page>
+				<translate>Munition: Sturmkanone</translate>
+			</gear>	
+			<gear>
+				<id>02993005-44f2-4b2c-9e19-6ddb3517a7ee</id>
+				<name>Ammo: Taser Dart (2050)</name>
+				<page>436</page>
+				<translate>Munition: Taserpfeil</translate>
+			</gear>	
+			<gear>
+				<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
+				<name>Grenade: Shock (2050)</name>
+				<page>191</page>
+				<translate>Granate: Schock</translate>
+			</gear>
+			<gear>
+				<id>443dd750-a30b-4e60-9464-fe2b65f85889</id>
+				<name>Minigrenade: Shock (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Schock</translate>
+			</gear>
+			<gear>
+				<id>e014dc28-a2e0-466e-9a38-4aa5cde8d556</id>
+				<name>Grenade: Defensive (2050)</name>
+				<page>191</page>
+				<translate>Granate: Defensiv</translate>
+			</gear>
+			<gear>
+				<id>d12aabe8-9ca6-4ce7-9ea3-e9874ea66e6c</id>
+				<name>Minigrenade: Defensive (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Defensiv</translate>
+			</gear>
+			<gear>
+				<id>c89bfb86-ac08-4020-92e4-6ef84209b165</id>
+				<name>Grenade: Offensive (2050)</name>
+				<page>191</page>
+				<translate>Granate: Offensiv</translate>
+			</gear>
+			<gear>
+				<id>72979698-fda1-4516-a724-045f97fe824b</id>
+				<name>Minigrenade: Offensive (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Offensiv</translate>
+			</gear>
+			<gear>
+				<id>f8677b70-16d5-4dd3-b8c1-0ff4024ea928</id>
+				<name>Grenade: Smoke (2050)</name>
+				<page>191</page>
+				<translate>Granate: Rauch</translate>
+			</gear>
+			<gear>
+				<id>7eb45820-7ef0-4a7c-ba0e-99e4dda66b02</id>
+				<name>Minigrenade: Smoke (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Rauch</translate>
+			</gear>
+			<gear>
+				<id>c9405bce-6ad0-42d5-9b35-6ce4c892b2ff</id>
+				<name>Rocket: Anti-Personnel (2050)</name>
+				<page>191</page>
+				<translate>Rakete: Anti-Personen</translate>
+			</gear>
+			<gear>
+				<id>370767a9-5c8d-4ee3-ad2a-78b30b5f53fc</id>
+				<name>Rocket: Anti-Vehicle (2050)</name>
+				<page>191</page>
+				<translate>Rakete: Anti-Fahrzeug</translate>
+			</gear>	
+			<gear>
+				<id>1a0f0ea0-5c82-4e99-90bd-28ea390bcbd2</id>
+				<name>Rocket: High Explosive (2050)</name>
+				<page>191</page>
+				<translate>Rakete: Hochexplosiv</translate>
+			</gear>
+			<gear>
+				<id>d27371aa-248d-4a04-b78e-4eccaddd3f9d</id>
+				<name>Missile: Anti-Personnel (2050)</name>
+				<page>191</page>
+				<translate>Missile: Anti-Personen</translate>
+			</gear>
+			<gear>
+				<id>579d8a5e-3c1b-4b91-adb0-f9212ae66d0a</id>
+				<name>Missile: Anti-Vehicle (2050)</name>
+				<page>191</page>
+				<translate>Missile: Anti-Fahrzeug</translate>
+			</gear>	
+			<gear>
+				<id>25177977-8f28-4966-ba61-63627bed8af7</id>
+				<name>Missile: High Explosive (2050)</name>
+				<page>191</page>
+				<translate>Missile: Hochexplosiv</translate>
+			</gear>	
+			<gear>
+				<id>94961a50-9d6a-44b7-bfb2-426be45e60c9</id>
+				<name>Commercial Explosive (2050)</name>
+				<page>191</page>
+				<translate>Kommerzieller Sprengstoff</translate>
+			</gear>
+			<gear>
+				<id>4be7aa83-17c2-408d-9fc7-02da1e8233d1</id>
+				<name>Plastic Explosive C-6 (2050)</name>
+				<page>191</page>
+				<translate>Plastik Sprengstoff C-6</translate>
+			</gear>
+			<gear>
+				<id>af65f401-4008-43e5-b32a-ea8134ccdce1</id>
+				<name>Plastic Explosive C-12 (2050)</name>
+				<page>191</page>
+				<translate>Plastik Sprengstoff C-12</translate>
+			</gear>
+			<gear>
+				<id>4320ca43-f04b-471a-a0c9-ae12fce4db4a</id>
+				<name>Detonator, Radio (2050)</name>
+				<translate>Zünder, Funk</translate>
+				<page>191</page>
+			</gear>
+			<gear>
+				<id>079d94d5-117f-4f47-8d10-c35d66e65ff4</id>
+				<name>Detonator, Timer (2050)</name>
+				<translate>Zünder, Zeit</translate>
+				<page>191</page>
+			</gear>
+			<gear>
+				<id>251c3f92-e2a4-47d7-a70e-df883300917c</id>
+				<name>Binoculars (2050)</name>
+				<page>193</page>
+				<translate>Fernglas</translate>
+			</gear>
+			<gear>
+				<id>a2d1c4b9-fb37-4554-a3f1-f787ee045664</id>
+				<name>Binoculars, Optical (2050)</name>
+				<page>193</page>
+				<translate>Fernglas, optisch</translate>
+			</gear>
+			<gear>
+				<id>25571ea8-d1b1-4b73-a7d3-a2e1151c789c</id>
+				<name>Binoculars, Thermographic Vision (2050)</name>
+				<page>193</page>
+				<translate>Fernglas, Infrarotsicht</translate>
+			</gear>			
+			<gear>
+				<id>9755ccab-8fe1-4310-b7f1-87b280b0ec6f</id>
+				<name>Binoculars, Low Light (2050)</name>
+				<page>193</page>
+				<translate>Fernglas, Restlichtverstärkung</translate>
+			</gear>
+			<gear>
+				<id>903084e8-b22f-42e1-999e-43f209e5376e</id>
+				<name>Goggles (2050)</name>
+				<page>193</page>
+				<translate>Sichtgerät</translate>
+			</gear>			
+			<gear>
+				<id>dee0e58f-5fcc-4af7-bc60-3d942b6457a3</id>
+				<name>Goggles, Thermographic Vision (2050)</name>
+				<page>193</page>
+				<translate>Sichtgerät, Infrarotsicht</translate>
+			</gear>
+			<gear>
+				<id>52c535c6-1933-4bf3-9467-e94d40db7dfa</id>
+				<name>Goggles, Low Light (2050)</name>
+				<page>193</page>
+				<translate>Sichtgerät, Restlichtverstärkung</translate>
+			</gear>			
+			<gear>
+				<id>71824fe1-a1ae-4216-bcf1-b85464abee1e</id>
+				<name>Goggles, Vision Magnification (2050)</name>
+				<page>193</page>
+				<translate>Sichtgerät, Sichtvergrößerung</translate>
+			</gear>
+			<gear>
+				<id>a1ef2d73-5e57-4cd9-a6f7-5f0e80f9589b</id>
+				<name>Credstick, Certified (2050)</name>
+				<page>193</page>
+				<translate>Credstick, beglaubigt</translate>
+			</gear>
+			<gear>
+				<id>d363dda7-4b9f-4323-b652-77a9ee037356</id>
+				<name>Credstick, Standard (2050)</name>
+				<page>193</page>
+				<translate>Credstick, Standard</translate>
+			</gear>	
+			<gear>
+				<id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
+				<name>Credstick, Fake (2050)</name>
+				<page>193</page>
+				<translate>Credstick, gefälscht</translate>
+			</gear>
+			<gear>
+				<id>58b5730c-b8e4-4152-a1b3-31329d8a52fb</id>
+				<name>Telecom (2050)</name>
+				<page>194</page>
+				<translate>Telekom</translate>
+			</gear>
+			<gear>
+				<id>33984f76-3264-469f-9e6a-7e9b7ce81877</id>
+				<name>Portable Phone (2050)</name>
+				<page>194</page>
+				<translate>Funktelefon</translate>
+			</gear>
+			<gear>
+				<id>73a351f3-eb8d-4e73-b900-354db6cdd911</id>
+				<name>Pocket Secretary (2050)</name>
+				<page>194</page>
+				<translate>Taschensekretär</translate>
+			</gear>
+			<gear>
+				<id>e4d7649c-60c9-4d62-aadf-900bd13926aa</id>
+				<name>Personal Computer (2050)</name>
+				<page>194</page>
+				<translate>Personal Computer</translate>
+			</gear>
+			<gear>
+				<id>3edfa267-972a-44f6-bf81-fde4dfee50b5</id>
+				<name>Data Display (2050)</name>
+				<page>194</page>
+				<translate>Datenlesegerät</translate>
+			</gear>
+			<gear>
+				<id>4020e774-d6a8-4512-a71e-27abe0a31c92</id>
+				<name>Data Codebreaker (2050)</name>
+				<page>195</page>
+				<translate>Datendecoder</translate>
+			</gear>
+			<gear>
+				<id>b852dbe0-50fa-418f-b67a-69d144a7c586</id>
+				<name>Dataline Scanner (2050)</name>
+				<page>195</page>
+				<translate>Datenleitungsscanner</translate>
+			</gear>
+			<gear>
+				<id>e427a6d4-2e52-4cc4-ac6d-74da8584bc30</id>
+				<name>Dataline Tap (2050)</name>
+				<page>195</page>
+				<translate>Datenleitungswanze</translate>
+			</gear>
+			<gear>
+				<id>e155d77e-3430-45b6-bd10-a717597793e8</id>
+				<name>Data Encryption System (2050)</name>
+				<page>195</page>
+				<translate>Datenverschlüsselungssystem</translate>
+			</gear>
+			<gear>
+				<id>eea34a5e-1ca6-4e45-8e12-b6ccb24029dd</id>
+				<name>Restraints, Metal (2050)</name>
+				<page>195</page>
+				<translate>Handschellen, Metall</translate>
+			</gear>			
+			<gear>
+				<id>2d17198c-85af-4ea2-9a33-8f20ccb75b97</id>
+				<name>Restraints, Plastic (2050)</name>
+				<page>195</page>
+				<translate>Handschellen, Plastik</translate>
+			</gear>
+			<gear>
+				<id>04fe50d3-0278-466f-9c90-251777623440</id>
+				<name>Squealer (2050)</name>
+				<page>195</page>
+				<translate>Heulboje</translate>
+			</gear>
+			<gear>
+				<id>7d84b4c0-ee21-4afb-88e0-b592668e432b</id>
+				<name>Identifcation Scanner, Thumbprint (2050)</name>
+				<page>195</page>
+				<translate>ID-Scanner, Fingerabdruck</translate>
+			</gear>
+			<gear>
+				<id>d2451f12-5148-4153-bcdd-85fed8ea7c7a</id>
+				<name>Identifcation Scanner, Palm Print (2050)</name>
+				<page>195</page>
+				<translate>ID-Scanner, Handabdruck</translate>
+			</gear>
+			<gear>
+				<id>f14a3b31-48bc-4a2c-86be-6e232339c11f</id>
+				<name>Identifcation Scanner, Retinal (2050)</name>
+				<page>195</page>
+				<translate>ID-Scanner, Retina</translate>
+			</gear>			
+			<gear>
+				<id>26402dc8-911c-471f-a818-0d997662fd60</id>
+				<name>Laser Microphone (2050)</name>
+				<page>195</page>
+				<translate>Lasermikrofon</translate>
+			</gear>
+			<gear>
+				<id>8098a4d0-2636-48d8-bc99-ccddf22ee736</id>
+				<name>Maglocks (2050)</name>
+				<page>195</page>
+				<translate>Magschloss</translate>
+			</gear>
+			<gear>
+				<id>f6ec312f-a265-4a1c-b729-d18281c998f2</id>
+				<name>Maglock Passkey (2050)</name>
+				<page>195</page>
+				<translate>Magschlossknacker</translate>
+			</gear>
+			<gear>
+				<id>2f252f42-0cad-4c31-ab10-5147feaa159f</id>
+				<name>Micro-Camcorder (2050)</name>
+				<page>195</page>
+				<translate>Mikro-Camcorder</translate>
+			</gear>
+			<gear>
+				<id>18640656-e31b-4673-ac00-f5bf5f574511</id>
+				<name>Micro-Recorder (2050)</name>
+				<page>195</page>
+				<translate>Mikro-Rekorder</translate>
+			</gear>
+			<gear>
+				<id>11e1e285-e6db-4f17-b904-36ee3ec51757</id>
+				<name>Micro-Transceiver (2050)</name>
+				<page>195</page>
+				<translate>Mikro-Transceiver</translate>
+			</gear>
+			<gear>
+				<id>2e00f743-c10a-4ab9-8548-26666c91f411</id>
+				<name>Tracking Signa (2050)</name>
+				<page>195</page>
+				<translate>Peilsignal</translate>
+			</gear>
+			<gear>
+				<id>e3b53939-a0c8-4c73-8d1e-0e19c9abd968</id>
+				<name>Shotgun Microphone (2050)</name>
+				<page>195</page>
+				<translate>Pistolenmikrofon</translate>
+			</gear>			
+			<gear>
+				<id>f89f5119-3a1f-45ec-9119-0c687294e5e2</id>
+				<name>Signal Locator (2050)</name>
+				<page>195</page>
+				<translate>Signalorter</translate>
+			</gear>
+			<gear>
+				<id>890fdcd5-f65f-41ed-8b96-9475e5ff7592</id>
+				<name>Voice Identifer (2050)</name>
+				<page>195</page>
+				<translate>Stimmenidenifikator</translate>
+			</gear>
+			<gear>
+				<id>89dfc727-9313-4830-8bd7-929d5b0d2771</id>
+				<name>Voice Mask (2050)</name>
+				<page>195</page>
+				<translate>Stimmmaske</translate>
+			</gear>			
+			<gear>
+				<id>80588ca3-1fd2-4c44-9c7a-b6a8dfda02ec</id>
+				<name>Bug Scanner (2050)</name>
+				<page>195</page>
+				<translate>Wanzenscanner</translate>
+			</gear>
+			<gear>
+				<id>8bcb9d5b-51a1-4ab2-a7b8-c5afe69f3832</id>
+				<name>White Noise Generator (2050)</name>
+				<page>195</page>
+				<translate>White-Noise-Generator</translate>
+			</gear>
+			<gear>
+				<id>c589f3ce-f181-4fc3-a344-455798913188</id>
+				<name>Tool Kit (2050)</name>
+				<page>196</page>
+				<translate>Kiste</translate>
+			</gear>
+			<gear>
+				<id>5bc62c65-e4f7-4620-b1f8-9c7bfebeebc1</id>
+				<name>Tool Shop (2050)</name>
+				<page>196</page>
+				<translate>Laden</translate>
+			</gear>
+			<gear>
+				<id>f58f8f41-cfed-47f6-b319-2f752913ddc3</id>
+				<name>Tool Facility (2050)</name>
+				<page>196</page>
+				<translate>Werkstatt</translate>
+			</gear>
+			<gear>
+				<id>9489bb6d-20c9-44fb-a519-30cafe5bcd9b</id>
+				<name>Atropine (2050)</name>
+				<page>197</page>
+				<translate>Atropin</translate>
+			</gear>
+			<gear>
+				<id>784e4be1-207b-4ec1-8615-ac1371a62f6b</id>
+				<name>Dikote™ (2050)</name>
+				<page>197</page>
+				<translate>Dikote™</translate>
+			</gear>
+			<gear>
+				<id>048cf4d7-a946-404b-9c34-2819d5b26c01</id>
+				<name>DMSO (2050)</name>
+				<page>197</page>
+				<translate>DMSO</translate>
+			</gear>
+			<gear>
+				<id>5379d8ca-43ef-4c82-ba25-79af9ec82199</id>
+				<name>Fugu-5 (2050)</name>
+				<page>197</page>
+				<translate>Fugu-5</translate>
+			</gear>	
+			<gear>
+				<id>03fa8dc2-c858-47e5-bdff-23cd8cfd054a</id>
+				<name>Hyper (2050)</name>
+				<page>197</page>
+				<translate>Hyper</translate>
+			</gear>
+			<gear>
+				<id>94975837-a10e-41c7-acdd-cb2bda48f372</id>
+				<name>Kamikaze (2050)</name>
+				<page>197</page>
+				<translate>Kamikaze</translate>
+			</gear>
+			<gear>
+				<id>d330d798-f3d9-4d8f-b6b9-4474562dfae7</id>
+				<name>Narcoject (2050)</name>
+				<page>197</page>
+				<translate>Narcoject</translate>
+			</gear>
+			<gear>
+				<id>cebb302d-11b8-4115-86f4-1922734df9c7</id>
+				<name>Neuro-Stun VII (2050)</name>
+				<page>197</page>
+				<translate>Neuro-Stun VII</translate>
+			</gear>
+			<gear>
+				<id>ad87341f-15cc-4d61-bfe4-798e62b2c694</id>
+				<name>Cyanide (2050)</name>
+				<page>197</page>
+				<translate>Zyanid</translate>
+			</gear>
+			<gear>
+				<id>d26c172d-1c3a-4634-ad0d-1f954d8061cb</id>
+				<name>Chemsuit (2050)</name>
+				<page>197</page>
+				<translate>Chemoanzug</translate>
+			</gear>
+			<gear>
+				<id>e1ca60aa-ddd5-4a91-b137-30d06d97f931</id>
+				<name>Respirator (2050)</name>
+				<page>197</page>
+				<translate>Atemschutzmaske</translate>
+			</gear>
+			<gear>
+				<id>01dac671-e0e7-47a1-9333-e58672395c6d</id>
+				<name>Survival Kit (2050)</name>
+				<page>197</page>
+				<translate>Survival-Kit</translate>
+			</gear>
+			<gear>
+				<id>1a5099ae-1991-449c-9e22-d57598daca89</id>
+				<name>Extra Compressed Soy Bars (2050)</name>
+				<page>197</page>
+				<translate>Superkomprimierte Soyriegel</translate>
+			</gear>
+			<gear>
+				<id>9f709868-865a-425e-a16f-63d671eb674b</id>
+				<name>DocWagon Contract, HTR Service (2050)</name>
+				<page>198</page>
+				<translate>DocWagon-Vertrag, HTR Einsatz</translate>
+			</gear>
+			<gear>
+				<id>1f85edce-3168-45db-91bd-c884575c5a4a</id>
+				<name>DocWagon Contract, Employee Death Compensation (2050)</name>
+				<page>198</page>
+				<translate>DocWagon-Vertrag, Kompensationszahlung</translate>
+			</gear>
+			<gear>
+				<id>acb8e080-2230-4dd0-aadc-2bce088bde93</id>
+				<name>DocWagon Contract, Resuscication Service (2050)</name>
+				<page>198</page>
+				<translate>DocWagon-Vertrag, Wiederblebung</translate>
+			</gear>
+			<gear>
+				<id>fafbd892-c217-4d1e-87f0-61464f7eaa2d</id>
+				<name>Medkit</name>
+				<page>198</page>
+				<translate>Medkit</translate>
+			</gear>
+			<gear>
+				<id>483ad83d-4cac-4c91-bad8-9e63f01fdbfd</id>
+				<name>Medkit Supplies (2050)</name>
+				<page>198</page>
+				<translate>Medkit-Nachfüllpack</translate>
+			</gear>
+			<gear>
+				<id>e9d3a44a-4b6e-4f88-aaff-d5bfbf22d20c</id>
+				<name>Stabilization Unit, Standard (2050)</name>
+				<page>198</page>
+				<translate>Stabilisierungseinheit, Standard</translate>
+			</gear>
+			<gear>
+				<id>53fbfcb2-252a-4563-8211-108cf78bad98</id>
+				<name>Stabilization Unit, Deluxe (2050)</name>
+				<page>198</page>
+				<translate>Stabilisierungseinheit, Deluxe</translate>
+			</gear>
+			<gear>
+				<id>f0e70404-e496-432a-954b-d5260074f2d0</id>
+				<name>Stabilization Unit Supplies (2050)</name>
+				<page>198</page>
+				<translate>Vorräte für Stabilisierungseinheit</translate>
+			</gear>	
+			<gear>
+				<id>b2a8d29d-3113-4440-8777-a4c0ace36476</id>
+				<name>Slap Patch, Chem Patch (2050)</name>
+				<page>198</page>
+				<translate>Slap Patch, Chem-Patch</translate>
+			</gear>
+			<gear>
+				<id>f685dd69-b57a-4688-aa2d-8f738d9a06c3</id>
+				<name>Slap Patch, Stim Patch (2050)</name>
+				<page>198</page>
+				<translate>Slap Patch, Stim-Patch</translate>
+			</gear>
+			<gear>
+				<id>e9f2ed07-2b20-49f4-a788-dee98b0cbb93</id>
+				<name>Slap Patch, Tranq Patch (2050)</name>
+				<page>198</page>
+				<translate>Slap Patch, Tranq-Patch</translate>
+			</gear>
+			<gear>
+				<id>8a38220d-1949-4c21-8fb3-3e0de27cf6d6</id>
+				<name>Slap Patch, Trauma Patch (2050)</name>
+				<page>198</page>
+				<translate>Slap Patch, Trauma-Patch</translate>
+			</gear>
+			<gear>
+				<id>e936f8b3-68bd-4e6e-9f46-f135699179b6</id>
+				<name>Counterspelling Focus, Health (2050)</name>
+				<page>207</page>
+				<translate>Antimagiefocus, Heilung</translate>
+			</gear>	
+			<gear>
+				<id>d3bff875-6d10-446c-9c3e-79aef9ca125c</id>
+				<name>Counterspelling Focus, Illusion (2050)</name>
+				<page>207</page>
+				<translate>Antimagiefocus, Illusion</translate>
+			</gear>	
+			<gear>
+				<id>dd9eca5f-3d71-46e8-a4aa-5ff06520dad5</id>
+				<name>Counterspelling Focus, Combat (2050)</name>
+				<page>207</page>
+				<translate>Antimagiefocus, Kampf</translate>
+			</gear>	
+			<gear>
+				<id>885db7ab-59c6-4129-ad2c-bd0bf92bc2eb</id>
+				<name>Counterspelling Focus, Manipulation (2050)</name>
+				<page>207</page>
+				<translate>Antimagiefocus, Manipulation</translate>
+			</gear>	
+			<gear>
+				<id>dd4a0fa5-771a-4fa7-aca3-4fa6b531c32e</id>
+				<name></name>
+				<page>207</page>
+				<translate>Antimagiefocus, Wahrnehmung</translate>
+			</gear>	
+			<gear>
+				<id>4f47e94c-e6d9-4ec5-b72d-ceb66c4a3548</id>
+				<name>Binding Focus (2050)</name>
+				<page>207</page>
+				<translate>Bindungsfocus</translate>
+			</gear>	
+			<gear>
+				<id>79867308-6ed3-43d5-adab-8017a4f58649</id>
+				<name>Summoning Focus (2050)</name>
+				<page>207</page>
+				<translate>Herbeirufungsfocus</translate>
+			</gear>	
+			<gear>
+				<id>846446e0-a686-4984-929f-8310dd48d5a2</id>
+				<name>Power Focus (2050)</name>
+				<page>207</page>
+				<translate>Kraftfocus</translate>
+			</gear>	
+			<gear>
+				<id>b11333ac-a049-4e6f-b48c-2846b77c9cac</id>
+				<name>Banishing Focus(2050)</name>
+				<page>207</page>
+				<translate>Verbannungsfocus</translate>
+			</gear>	
+			<gear>
+				<id>e826debe-e201-4eab-a885-9fb824cadb02</id>
+				<name>Weapon Focus (2050)</name>
+				<page>207</page>
+				<translate>Waffenfocus</translate>
+			</gear>	
+			<gear>
+				<id>1811a217-7e73-4f23-8d88-0be954b55c9e</id>
+				<name>Spell Lock, Health (2050)</name>
+				<page>207</page>
+				<translate>Zauberspeicher, Heilung</translate>
+			</gear>	
+			<gear>
+				<id>65ad391a-9baf-4a30-a634-c1fd0717bf71</id>
+				<name>Spell Lock, Illusion (2050)</name>
+				<page>207</page>
+				<translate>Zauberspeicher, Illusion</translate>
+			</gear>	
+			<gear>
+				<id>e3f6354b-998e-418e-95e2-d4d208eb7a42</id>
+				<name>Spell Lock, Combat (2050)</name>
+				<page>207</page>
+				<translate>Zauberspeicher, Kampf</translate>
+			</gear>				
+			<gear>
+				<id>34f75c53-38a3-4f93-b8b7-9e55bfb97319</id>
+				<name>Spell Lock, Manipulation (2050)</name>
+				<page>207</page>
+				<translate>Zauberspeicher, Manipulation</translate>
+			</gear>				
+			<gear>
+				<id>6f73bdf1-063c-491f-935a-746b938e93ab</id>
+				<name>Spell Lock, Detection (2050)</name>
+				<page>207</page>
+				<translate>Zauberspeicher, Wahrnehmung</translate>
+			</gear>
+			<gear>
+				<id>2d7a1b7b-9c9c-4078-85fe-b38f1f36f1d2</id>
+				<name>Spellcasting Focus, Health (2050)</name>
+				<page>207</page>
+				<translate>Zauberspruchfocus, Heilung</translate>
+			</gear>				
+			<gear>
+				<id>13cbd9a8-b1ec-49b3-a243-f40f3246e987</id>
+				<name>Spellcasting Focus, Illusion (2050)</name>
+				<page>207</page>
+				<translate>Zauberspruchfocus, Illusion</translate>
+			</gear>				
+			<gear>
+				<id>186574c3-73f2-4920-9764-7c034d671c11</id>
+				<name>Spellcasting Focus, Combat (2050)</name>
+				<page>207</page>
+				<translate>Zauberspruchfocus, Kampf</translate>
+			</gear>
+			<gear>
+				<id>6ba3c374-0d8d-4458-81a5-c7f330cecae9</id>
+				<name>Spellcasting Focus, Manipulation (2050)</name>
+				<page>207</page>
+				<translate>Zauberspruchfocus, Manipulation</translate>
+			</gear>				
+			<gear>
+				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
+				<name>Spellcasting Focus, Detection (2050)</name>
+				<page>207</page>
+				<translate>Zauberspruchfocus, Wahrnehmung</translate>
+			</gear>				
+			<gear>
+				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
+				<name>Elemental Binding Materials (2050)</name>
+				<page>207</page>
+				<translate>Bindungsmaterial für Elementare</translate>
+			</gear>
+			<gear>
+				<id>72893488-4358-48ee-adca-2f52dea13957</id>
+				<name>Medicine Lodge Materials (2050)</name>
+				<page>207</page>
+				<translate>Materialien für Medizinhütte</translate>
+			</gear>				
+			<gear>
+				<id>abf8ac4c-1187-4758-a5b2-d3543bd0e111</id>
+				<name>Radio Shack PCD-100 (2050)</name>
+				<page>169</page>
+				<translate>Radio Shack PCD-100</translate>
+			</gear>				
+			<gear>
+				<id>9ada0e96-a2bb-46d7-9580-089ad18c91eb</id>
+				<name>Allegiance Alpha (2050)</name>
+				<page>169</page>
+				<translate>Allegiance Alpha</translate>
+			</gear>			
+			<gear>
+				<id>7038bd1a-8160-4d07-8a2a-c36cb398f123</id>
+				<name>Sony CTY-360 (2050)</name>
+				<page>169</page>
+				<translate>Sony CTY-360</translate>
+			</gear>				
+			<gear>
+				<id>dd0fd7e1-83e3-4748-891e-298172d8cfe0</id>
+				<name>Fuchi Cyber-4 (2050)</name>
+				<page>169</page>
+				<translate>Fuchi Cyber-4</translate>
+			</gear>			
+			<gear>
+				<id>328b0236-4e49-4706-a852-2846b964736a</id>
+				<name>Fuchi Cyber-6 (2050)</name>
+				<page>169</page>
+				<translate>Fuchi Cyber-6</translate>
+			</gear>				
+			<gear>
+				<id>9863207b-98f0-494c-9cd2-52b961ccc4d9</id>
+				<name>Fuchi Cyber-7 (2050)</name>
+				<page>169</page>
+				<translate>Fuchi Cyber-7</translate>
+			</gear>
+			<gear>
+				<id>3996ad19-201c-486d-ba02-7648f174ca74</id>
+				<name>Fairlight Excalibur (2050)</name>
+				<page>169</page>
+				<translate>Fairlight Excalibur</translate>
+			</gear>				
+			<gear>
+				<id>6da6f93e-9422-4028-b610-99f94e8bd8c5</id>
+				<name>Radio Shack DTU-2500, Terminal (2050)</name>
+				<page>170</page>
+				<translate>Radio Shack DTU-2500, Terminal</translate>
+			</gear>
+			<gear>
+				<id>8aeb2ed4-6218-4e3b-9a34-488456765343</id>
+				<name>Microdeck Deckmaster, Terminal (2050)</name>
+				<page>170</page>
+				<translate>Microdeck Deckmaster, Terminal</translate>
+			</gear>				
+			<gear>
+				<id>828ea25b-d622-43c8-8438-646685551fae</id>
+				<name>Sony R4J, Terminal (2050)</name>
+				<page>170</page>
+				<translate>Sony R4J, Terminal</translate>
+			</gear>
+			<gear>
+				<id>efe066e1-57bc-4070-bce6-b9afbbbe7181</id>
+				<name>Fuchi Cyber-2, Terminal (2050)</name>
+				<page>170</page>
+				<translate>Fuchi Cyber-2, Terminal</translate>
+			</gear>				
+			<gear>
+				<id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
+				<name>MTC Sarari-Man, Terminal (2050)</name>
+				<page>170</page>
+				<translate>MTC Sarari-Man, Terminal</translate>
+			</gear>
+			<gear>
+				<id>b128c2b7-7d3b-48bd-9722-17707a2c86c1</id>
+				<name>Renraku Desukuwa-Ku, Terminal (2050)</name>
+				<page>170</page>
+				<translate>Renraku Desukuwa-Ku, Terminal</translate>
+			</gear>				
+			<gear>
+				<id>45a73c53-cbf1-4b97-b298-6c2edcea5422</id>
+				<name>Fairlight Joyeuse, Terminal (2050)</name>
+				<page>170</page>
+				<translate>Fairlight Joyeuse, Terminal</translate>
+			</gear>
+			<gear>
+				<id>48a88dc3-ed52-4ae2-95a5-73b67e11a0d7</id>
+				<name>Radio Shack PCD-50, Luggage (2050)</name>
+				<page>171</page>
+				<translate>Radio Shack PCD-50, Gepäck</translate>
+			</gear>				
+			<gear>
+				<id>3c339d11-494a-4068-b068-c69335e26010</id>
+				<name>Microdesk Luggable, Luggage (2050)</name>
+				<page>171</page>
+				<translate>Microdesk Luggable, Gepäck</translate>
+			</gear>
+			<gear>
+				<id>948c1609-babe-4a45-9fec-cf7fe38b2b07</id>
+				<name>Sony CTY-180, Luggage (2050)</name>
+				<page>171</page>
+				<translate>Sony CTY-180, Gepäck</translate>
+			</gear>				
+			<gear>
+				<id>793a151c-b720-48e0-8308-6e61547c30cc</id>
+				<name>Fuchi Cyber-3, Luggage (2050)</name>
+				<page>171</page>
+				<translate>Fuchi Cyber-3, Gepäck</translate>
+			</gear>
+			<gear>
+				<id>97755c88-a12a-4800-98eb-94bd88c8b3d1</id>
+				<name>Amalgamated Tech. und Tele., Luggage (2050)</name>
+				<page>171</page>
+				<translate>Amalgamated Tech. und Tele., Gepäck</translate>
+			</gear>				
+			<gear>
+				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
+				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
+				<page>171</page>
+				<translate>Microtronica Azteca Maletin, Gepäck</translate>
+			</gear>
+			<gear>
+				<id>2d470641-a038-4f94-8027-65b0bd8dda13</id>
+				<name>Fairlight Sharur, Luggage (2050)</name>
+				<page>171</page>
+				<translate>Fairlight Sharur, Gepäck</translate>
 			</gear>
 		</gears>
 	</chummer>
@@ -18166,6 +19532,175 @@
 				<translate>Horizon Flying Eye mit Flashpack und Rauchgranate (Minidrone)</translate>
 				<page>472</page>
 			</vehicle>
+<!-- 2050 SR5 Vehicle -->
+			<vehicle>
+				<id>baac8c9e-5604-4329-9757-f82de25a5d3c</id>
+				<name>Dodge Scoot (2050)</name>
+				<translate>Dodge Scoot</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>cf205096-7a6c-4bf1-99c1-5c24cfff8fb5</id>
+				<name>Yamaha Rapier (2050)</name>
+				<translate>Yamaha Rapier</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>7927db78-1e79-4332-8cc7-4d4db162a68b</id>
+				<name>Harley-Davidson Scorpion (2050)</name>
+				<translate>Harley-Davidson Scorpion</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+				<name>Mitsubishi Runabout (2050)</name>
+				<translate>Mitsubishi Runabout</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+				<name>Chrysler-Nissan Jackrabbit (2050)</name>
+				<translate>Chrysler-Nissan Jackrabbit</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>3d699295-5943-4d9a-8712-006a1dffe4aa</id>
+				<name>Ford Americar (2050)</name>
+				<translate>Ford Americar</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>74265b60-46cf-4c25-b2ff-7ed7364c3961</id>
+				<name>Eurocar Westwind 2000 (2050)</name>
+				<translate>Eurocar Westwind 2000</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>a2581e31-30fa-45de-8d60-ffd3d5a3a5b0</id>
+				<name>Toyota Elite (2050)</name>
+				<translate>Toyota Elite</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>0bd8157d-510f-4920-b8c8-c65cb6e95c4e</id>
+				<name>Mitsubishi Nightsky (2050)</name>
+				<translate>Mitsubishi Nightsky</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>b6d6d319-1b29-4f76-a52c-3fc177a153da</id>
+				<name>Bulldog Step-Van (2050)</name>
+				<translate>Bulldog Step-Van</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>f5511048-ddd7-41dc-abe1-33750779ab8f</id>
+				<name>Samuvani-Criscraft Otter (2050)</name>
+				<translate>Samuvani-Criscraft Otter</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>4cf620da-e273-494d-b2a7-1252cc2de3dd</id>
+				<name>Aztech Nightrunner (2050)</name>
+				<translate>Aztech Nightrunner</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>76f4dc51-66d0-4f6b-bd0a-622ae5fe04e3</id>
+				<name>Sendanko Marlin (2050)</name>
+				<translate>Sendanko Marlin</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>3b7d96d2-9b1b-4eea-8f64-aa63804b1197</id>
+				<name>Cessna C750 (2050)</name>
+				<translate>Cessna C750</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>8e8dfd57-0257-4978-865c-54bc62f80903</id>
+				<name>Lear-Cessna Platinum 1 (2050)</name>
+				<translate>Lear-Cessna Platinum 1</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>c442e6d1-cd77-40f0-926c-3b4771718706</id>
+				<name>Federated-Boeing Commuter (2050)</name>
+				<translate>Federated-Boeing Commuter</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>bc26a329-cf64-4a2d-841a-599f480762ff</id>
+				<name>Hughes Stallion WK-4 (2050)</name>
+				<translate>Hughes Stallion WK-4 (2050)</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>096c56ab-b706-4a68-ae35-163b499f0b7c</id>
+				<name>Ares Dragon (2050)</name>
+				<translate>Ares Dragon</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>26a5632c-8d13-4e63-a4d4-158c9254bf84</id>
+				<name>Hughes Airstar (2050)</name>
+				<translate>Hughes Airstar</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>1e39f946-a56d-4a37-8d55-fe15fdae47cd</id>
+				<name>EFA-Variant (2050)</name>
+				<translate>EFA-Variante</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>84b7f212-4a74-436e-b6f4-d19b8f5fb500</id>
+				<name>GMC-Banshee (2050)</name>
+				<translate>GMC-Banshee</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>82d76453-1823-497f-a48a-128063892787</id>
+				<name>Ares Citymaster (2050)</name>
+				<translate>Ares Citymaster</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>a2e7da3b-2cde-4ab3-9fd5-a19f1e830784</id>
+				<name>Chrysler-Nissan Patrol-1 (2050)</name>
+				<translate>Chrysler-Nissan Patrol-1</translate>
+				<page>210</page>
+			</vehicle>
+			<vehicle>
+				<id>88834716-41e6-4bb8-90e1-3bd16df01753</id>
+				<name>GMC Beachcraft Patroller (2050)</name>
+				<translate>GMC Beachcraft Patroller</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>9f68e8ba-bffa-4bc5-91bf-e6c600910e28</id>
+				<name>GMC Riverine (2050)</name>
+				<translate>GMC Riverine</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>23402e3c-8f96-4e56-a2a4-65cd16a7516d</id>
+				<name>Northrup PRC-42B Wasp (2050)</name>
+				<translate>Northrup PRC-42B Wasp</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>d05f15cc-6a54-4d43-9453-6e56aaf676d6</id>
+				<name>Northrup PRC-44B Yellowjacket (2050)</name>
+				<translate>Northrup PRC-44B Yellowjacket</translate>
+				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>1b843cb9-66b6-4f85-b4a1-888116d23f13</id>
+				<name>Federated-Boeing Eagle (2050)</name>
+				<translate>Federated-Boeing Eagle</translate>
+				<page>208</page>
+			</vehicle>			
 		</vehicles>
 		<mods>
 			<mod>
@@ -18419,9 +19954,8 @@
 			<weapon>
 				<id>60f52b1f-6376-49fc-a746-b811c54197e7</id>
 				<name>Pole Arm</name>
-				<page>
-				</page>
-				<translate>Hellebarde</translate>
+				<page>425</page>
+				<translate>Stangenwaffe</translate>
 			</weapon>
 			<weapon>
 				<id>e85d55b3-06f1-48e0-bbe1-14b833ac4181</id>
@@ -19840,6 +21374,379 @@
 				<translate>Ultimax Rain Forest Carbine</translate>
 				<page>40bf3eed-b239-4521-ac1d-80a4e472451e</page>
 			</weapon>
+			<weapon>
+				<id>50b36198-aeed-4bcb-af46-5e8c18771c47</id>
+				<name>Hand Razors, Fixed (2050)</name>
+				<page>203</page>
+				<translate>Nagelmesser, fest</translate>
+			</weapon>
+			<weapon>
+				<id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
+				<name>Hand Razors, Retractable (2050)</name>
+				<page>203</page>
+				<translate>Nagelmesser, einziehbar</translate>
+			</weapon>
+			<weapon>
+				<id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
+				<name>Spurs, Fixed (2050)</name>
+				<translate>Sporn, fest</translate>
+				<page>203</page>
+			</weapon>
+			<weapon>
+				<id>9c003405-8e41-4a2e-bde3-dc67709a71e7</id>
+				<name>Spurs, Retractable (2050)</name>
+				<translate>Sporn (einziehbar)</translate>
+				<page>203</page>
+			</weapon>
+			<weapon>
+				<id>1c4b568b-7591-433f-8618-2ca75fedabb2</id>
+				<name>Grenade: Shock (2050)</name>
+				<page>191</page>
+				<translate>Granate: Schock</translate>
+			</weapon>
+			<weapon>
+				<id>eef0fb7c-572e-49e9-88ee-5f52f0cdea8a</id>
+				<name>Minigrenade: Shock (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Schock</translate>
+			</weapon>
+			<weapon>
+				<id>ee5f14ba-32c9-48bb-8c56-bd55665a3ad7</id>
+				<name>Grenade: Defensive (2050)</name>
+				<page>191</page>
+				<translate>Granate: Defensiv</translate>
+			</weapon>
+			<weapon>
+				<id>2cc3e198-3a4a-444a-86b3-3b44848c0b80</id>
+				<name>Minigrenade: Defensive (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Defensiv</translate>
+			</weapon>
+			<weapon>
+				<id>3a8c38e1-6428-43ff-9a34-98932ab26ca9</id>
+				<name>Grenade: Offensive (2050)</name>
+				<page>191</page>
+				<translate>Granate: Offensiv</translate>
+			</weapon>
+			<weapon>
+				<id>a3005aaf-ae61-48e4-bc08-1915d41c934c</id>
+				<name>Minigrenade: Offensive (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Offensiv</translate>
+			</weapon>
+			<weapon>
+				<id>a5212451-eb18-48b6-ba94-bc9e7a8962ea</id>
+				<name>Grenade: Smoke (2050)</name>
+				<page>191</page>
+				<translate>Granate: Rauch</translate>
+			</weapon>
+			<weapon>
+				<id>8424fc8f-00b2-445f-a023-6ea608425093</id>
+				<name>Minigrenade: Smoke (2050)</name>
+				<page>191</page>
+				<translate>Minigranate: Rauch</translate>
+			</weapon>
+			<weapon>
+				<id>41b3215e-2c3f-4417-a39c-4b3725318b86</id>
+				<name>Rocket: Anti-Personnel (2050)</name>
+				<page>191</page>
+				<translate>Rakete: Anti-Personen</translate>
+			</weapon>
+			<weapon>
+				<id>1f62b179-c89e-45d6-b879-2584bcf0b570</id>
+				<name>Rocket: Anti-Vehicle (2050)</name>
+				<page>191</page>
+				<translate>Rakete: Anti-Fahrzeug</translate>
+			</weapon>
+			<weapon>
+				<id>435750bb-c9ad-42da-aeda-cc42a401ffda</id>
+				<name>Rocket: High Explosive (2050)</name>
+				<page>191</page>
+				<translate>Rakete: Hochexplosiv</translate>
+			</weapon>
+			<weapon>
+				<id>2b35b950-a44d-4071-abca-f3fc2d912ba9</id>
+				<name>Missile: Anti-Personnel (2050)</name>
+				<page>191</page>
+				<translate>Lenkrakete: Anti-Personen</translate>
+			</weapon>
+			<weapon>
+				<id>438a902c-ce97-475d-aa9d-c8b9ef7f6a8b</id>
+				<name>Missile: Anti-Vehicle (2050)</name>
+				<page>191</page>
+				<translate>Lenkrakete: Anti-Fahrzeug</translate>
+			</weapon>
+			<weapon>
+				<id>1194223f-0943-49de-9138-ee8a7ad1636b</id>
+				<name>Missile: High Explosive (2050)</name>
+				<page>191</page>
+				<translate>Lenkrakete: Hochexplosiv</translate>
+			</weapon>
+			<weapon>
+				<id>5c6a9db2-9518-4a60-a291-8a4041b60a71</id>
+				<name>Cyber Hold-out Pistol (2050)</name>
+				<page>204</page>
+				<translate>Cyber Holdout Pistole</translate>
+			</weapon>
+			<weapon>
+				<id>7aba7a44-45eb-449f-bd05-5bee308eed3c</id>
+				<name>Cyber Machine Pistol (2050)</name>
+				<page>402</page>
+				<translate>Cyber Automatikpistole</translate>
+			</weapon>			
+			<weapon>
+				<id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
+				<name>Cyber Light Pistol (2050)</name>
+				<page>402</page>
+				<translate>Leichte Cyber Pistole</translate>
+			</weapon>
+			<weapon>
+				<id>dfddf65d-6275-456a-bfd9-8904ab4dc4cd</id>
+				<name>Cyber Heavy Pistol (2050)</name>
+				<page>402</page>
+				<translate>Schwere Cyberpistole</translate>
+			</weapon>
+			<weapon>
+				<id>b75bf551-8ad5-469a-a0ae-7cc4fa62a663</id>
+				<name>Cyber Submachine Gun (2050)</name>
+				<page>402</page>
+				<translate>Cyber Machinenpistole</translate>
+			</weapon>
+			<weapon>
+				<id>3011640d-c504-4af1-bbb5-25f42492a7ff</id>
+				<name>Cyber Shotgun (2050)</name>
+				<page>402</page>
+				<translate>Cyber Schrotflinte</translate>
+			</weapon>
+			<weapon>
+				<id>09a84b7f-50f0-4889-bae4-16442edbee12</id>
+				<name>Defiance Super Shock (2050)</name>
+				<page>184</page>
+				<translate>Defiance Super Shock</translate>
+			</weapon>
+			<weapon>
+				<id>a87aa823-732b-4efe-8164-6235bc492ef0</id>
+				<name>Streetline Special (2050)</name>
+				<page>184</page>
+				<translate>Defiance Super Shock</translate>
+			</weapon>
+			<weapon>
+				<id>d9068427-9f9e-4768-be27-cb9c5ee6da13</id>
+				<name>Tiffani Self-Defender (2050)</name>
+				<page>184</page>
+				<translate>Tiffani Self-Defender</translate>
+			</weapon>
+			<weapon>
+				<id>5f10b28e-bdf2-461f-b751-9de1153200a1</id>
+				<name>Walther Palm Pistol (2050)</name>
+				<page>184</page>
+				<translate>Walther Palm Pistol</translate>
+			</weapon>
+			<weapon>
+				<id>ddfe3423-53c9-44bd-8d4a-f9b88b81a382</id>
+				<name>Ares Light Fire 70 (2050)</name>
+				<page>184</page>
+				<translate>Ares Light Fire 70</translate>
+			</weapon>
+			<weapon>
+				<id>f02d5f6e-d317-4559-93ee-48225e5c4017</id>
+				<name>Beretta 200 ST (2050)</name>
+				<page>184</page>
+				<translate>Beretta 200 ST</translate>
+			</weapon>
+			<weapon>
+				<id>847a9604-0890-4f24-bea2-83d372feef7e</id>
+				<name>Beretta Modell 101T (2050)</name>
+				<page>184</page>
+				<translate>Beretta Modell 101T</translate>
+			</weapon>
+			<weapon>
+				<id>f8356115-1a00-4ac8-a28a-91655b2075b7</id>
+				<name>Colt America L36 (2050)</name>
+				<page>184</page>
+				<translate>Colt America L36</translate>
+			</weapon>
+			<weapon>
+				<id>132466ad-0ef5-49e2-b453-0e54cf1b31a8</id>
+				<name>Fichetti Security 500 (2050)</name>
+				<page>184</page>
+				<translate>Fichetti Security 500</translate>
+			</weapon>
+			<weapon>
+				<id>21259f65-59a0-4456-be11-cb6f7c5da2c0</id>
+				<name>Fichetti Security 500a (2050)</name>
+				<page>184</page>
+				<translate>Fichetti Security 500a</translate>
+			</weapon>
+			<weapon>
+				<id>1e5c5537-9d78-45e2-b2ac-68d5622fce4d</id>
+				<name>Ares Crusader MP 6 (2050)</name>
+				<page>184</page>
+				<translate>Ares Crusader MP 6</translate>
+			</weapon>
+			<weapon>
+				<id>bc343de1-aa17-4fb8-b3dc-5cd44fc973a1</id>
+				<name>Ceska Black Scorpion (2050)</name>
+				<page>184</page>
+				<translate>Ceska Black Scorpion</translate>
+			</weapon>
+			<weapon>
+				<id>ec050588-9a36-468a-aab4-5be80e96ac90</id>
+				<name>Ares Predator (2050)</name>
+				<page>185</page>
+				<translate>Ares Predator</translate>
+			</weapon>
+			<weapon>
+				<id>6f88796e-bf03-4d20-b1f0-2d215bb980fb</id>
+				<name>Ares Viper Slivergun (2050)</name>
+				<page>185</page>
+				<translate>Ares Viper Slivergun</translate>
+			</weapon>
+			<weapon>
+				<id>1d1dc9e6-bdad-49f1-b2d6-b968aecf095c</id>
+				<name>Browning Max-Power (2050)</name>
+				<page>185</page>
+				<translate>Browning Max-Power</translate>
+			</weapon>
+			<weapon>
+				<id>36e7b132-6b4d-4932-86e0-9b8a1afe6c00</id>
+				<name>Colt Manhunter (2050)</name>
+				<page>185</page>
+				<translate>Colt Manhunter</translate>
+			</weapon>
+			<weapon>
+				<id>cc5538fc-a62b-43b1-9e45-ea1e4c58901b</id>
+				<name>Remington Roomsweeper (2050)</name>
+				<page>185</page>
+				<translate>Remington Roomsweeper</translate>
+			</weapon>
+			<weapon>
+				<id>8a455cca-8a94-445b-bff1-e364d6896908</id>
+				<name>Ruger Super Warhawk (2050)</name>
+				<page>185</page>
+				<translate>Ruger Super Warhawk</translate>
+			</weapon>
+			<weapon>
+				<id>459205e8-54bd-44aa-ba25-f7fb8d056d70</id>
+				<name>AK-97 Karabiner (2050)</name>
+				<page>185</page>
+				<translate>AK-97 Karabiner</translate>
+			</weapon>
+			<weapon>
+				<id>fe671fb0-85ba-4d10-9fa6-e3dff6c55645</id>
+				<name>Beretta Modell 70 (2050)</name>
+				<page>185</page>
+				<translate>Beretta Modell 70</translate>
+			</weapon>
+			<weapon>
+				<id>5f40d965-f1d4-4b09-a61b-f4b46016a482</id>
+				<name>HK227 (2050)</name>
+				<page>185</page>
+				<translate>HK227</translate>
+			</weapon>
+			<weapon>
+				<id>21dffe97-d055-4a8a-99d6-20f65054b522</id>
+				<name>Ingram Smartgun (2050)</name>
+				<page>185</page>
+				<translate>Ingram Smartgun</translate>
+			</weapon>
+			<weapon>
+				<id>e80cca4e-3210-4e38-b333-6c1cd42d6b54</id>
+				<name>Uzi III (2050)</name>
+				<page>185</page>
+				<translate>Uzi III</translate>
+			</weapon>
+			<weapon>
+				<id>b297c2b3-0cc0-4321-95be-ca6d73e9af03</id>
+				<name>AK-97 (2050)</name>
+				<page>185</page>
+				<translate>AK-97</translate>
+			</weapon>
+			<weapon>
+				<id>1a5768a6-012a-4884-9bdd-4f3b32e86aa2</id>
+				<name>AK-98 (2050)</name>
+				<page>185</page>
+				<translate>AK-98</translate>
+			</weapon>
+			<weapon>
+				<id>d1e01a1b-9ada-46c7-8007-e49932e6f727</id>
+				<name>Colt M22A2 (2050)</name>
+				<page>185</page>
+				<translate>Colt M22A2</translate>
+			</weapon>
+			<weapon>
+				<id>8d399d02-9829-4943-8b60-7c32698c0888</id>
+				<name>Colt M22A2 Grenade Launcher (2050)</name>
+				<page>185</page>
+				<translate>Colt M22A2 Granatwerfer</translate>
+			</weapon>
+			<weapon>
+				<id>2f4724d3-4644-411c-998c-b0a12461e508</id>
+				<name>FN HAR (2050)</name>
+				<page>185</page>
+				<translate>FN HAR</translate>
+			</weapon>
+			<weapon>
+				<id>89bfe11e-c916-439d-9abe-937737735af9</id>
+				<name>Ranger Arms SM-3 (2050)</name>
+				<page>186</page>
+				<translate>Ranger Arms SM-3</translate>
+			</weapon>
+			<weapon>
+				<id>ae59bc8e-5b56-4dc8-8540-1211f059c4b9</id>
+				<name>Remington 750 (2050)</name>
+				<page>186</page>
+				<translate>Remington 750</translate>
+			</weapon>
+			<weapon>
+				<id>38202c82-5580-4746-8639-2ab097a0ff4f</id>
+				<name>Remington 950 (2050)</name>
+				<page>186</page>
+				<translate>Remington 950</translate>
+			</weapon>
+			<weapon>
+				<id>50b8bd98-59de-4c1b-acbd-bd24550c91c1</id>
+				<name>Ruger 100 (2050)</name>
+				<page>186</page>
+				<translate>Ruger 100</translate>
+			</weapon>
+			<weapon>
+				<id>2e2f798a-c3a3-4829-942e-cd7e0952a9e7</id>
+				<name>Walther MA-2100 (2050)</name>
+				<page>186</page>
+				<translate>Walther MA-2100</translate>
+			</weapon>
+			<weapon>
+				<id>f82903f3-3f8d-48b8-95db-c8cf1238c7a1</id>
+				<name>Styre AUG-CSL (2050)</name>
+				<page>184</page>
+				<translate>Styre AUG-CSL</translate>
+			</weapon>
+			<weapon>
+				<id>5e116545-08b4-4eae-8dab-6f1546786296</id>
+				<name>Styre AUG-CSL SMG (2050)</name>
+				<page>184</page>
+				<translate>Styre AUG-CSL MP</translate>
+			</weapon>
+			<weapon>
+				<id>ef76228b-c339-4262-b8e3-597de652d9b4</id>
+				<name>Styre AUG-CSL Carbine (2050)</name>
+				<page>184</page>
+				<translate>Styre AUG-CSL Karabiner</translate>
+			</weapon>
+			<weapon>
+				<id>4c09761e-d2a2-4958-9113-5b61db145a20</id>
+				<name>Styre AUG-CSL Assault Rifles (2050)</name>
+				<page>184</page>
+				<translate>Styre AUG-CSL Sturmgewehr</translate>
+			</weapon>
+			<weapon>
+				<id>39a5d782-6537-4b6d-93f9-f5d30d90d8ef</id>
+				<name>Styre AUG-CSL LMG (2050)</name>
+				<page>184</page>
+				<translate>Styre AUG-CSL LMG</translate>
+			</weapon>			
+			<!-- Weapon end -->			
 		</weapons>
 		<accessories>
 			<accessory>
@@ -20231,6 +22138,103 @@
 				<name>Personalized Grip</name>
 				<translate>Personalized Grip</translate>
 				<page>182</page>
+			</accessory>
+			<!-- 2050 SR5 -->
+			<accessory>
+				<id>0c2e21a0-4f1d-409d-a33e-cb3d5f0b0897</id>
+				<name>Tripod (2050)</name>
+				<page>189</page>
+				<translate>Dreibein</translate>
+			</accessory>
+			<accessory>
+				<id>ec157e2d-5868-4652-8cf0-8e30e46fb130</id>
+				<name>Spare Clip (2050)</name>
+				<translate>Ersatzladestreifen</translate>
+				<page>189</page>
+			</accessory>
+			<accessory>
+				<id>e632b766-55fb-42bf-8bd3-6c9c46830a29</id>
+				<name>Gas-Vent 2 System (2050)</name>
+				<page>189</page>
+				<translate>Gasventilsystem 2</translate>
+			</accessory>
+			<accessory>
+				<id>9998a80c-6452-4fcb-9508-66da27eea850</id>
+				<name>Gas-Vent 3 System (2050)</name>
+				<page>189</page>
+				<translate>Gasventilsystem 3</translate>
+			</accessory>
+			<accessory>
+				<id>ac1e63bd-4cce-44c4-ac65-71831ebaa1d4</id>
+				<name>Grenade Launcher (2050)</name>
+				<translate>Granatwerfer</translate>
+				<page>189</page>
+			</accessory>
+			<accessory>
+				<id>e6b1550c-c392-4e85-b618-04f8a09b8020</id>
+				<name>Gyro Mount, default (2050)</name>
+				<translate>Gyrostabilisator, Standard</translate>
+				<page>189</page>
+			</accessory>
+			<accessory>
+				<id>6ed9f566-4696-4436-9d79-4e807fbb2a1f</id>
+				<name>Gyro Mount, Deluxe (2050)</name>
+				<translate>Gyrostabilisator, Deluxe</translate>
+				<page>189</page>
+			</accessory>
+			<accessory>
+				<id>1bf98490-9642-436b-9b7c-fdbd6d5a65f1</id>
+				<name>Laser Sight (2050)</name>
+				<page>189</page>
+				<translate>Lasermarkierer</translate>
+			</accessory>
+			<accessory>
+				<id>dd5a1cf9-38a6-49a6-9ed5-c7ee79670e4e</id>
+				<name>Silencer (2050)</name>
+				<page>189</page>
+				<translate>Schalldämpfer</translate>
+			</accessory>
+			<accessory>
+				<id>57651486-8344-4b4b-af96-780e99cfb015</id>
+				<name>Speed Loader (2050)</name>
+				<page>189</page>
+				<translate>Schnelllader</translate>
+			</accessory>			
+			<accessory>
+				<id>1c8c3432-315b-4365-8a15-31e9427cbff9</id>
+				<name>Shock Pad (2050)</name>
+				<page>189</page>
+				<translate>Schockpolster</translate>
+			</accessory>
+			<accessory>
+				<id>e62964cd-767f-4b10-b456-d87f5a04b64e</id>
+				<name>Smartgun System, Internal (2050)</name>
+				<page>189</page>
+				<translate>Smartgunsystem, intern</translate>
+			</accessory>
+			<accessory>
+				<id>e6058e8b-c4b5-422f-aa2f-d0f23769b094</id>
+				<name>Smartgun System, External (2050)</name>
+				<page>189</page>
+				<translate>Smartgunsystem, extern</translate>
+			</accessory>
+			<accessory>
+				<id>a465112e-b597-4b39-b2c3-19d1b2fafb09</id>
+				<name>Concealable Holster (2050)</name>
+				<page>189</page>
+				<translate>Tarnholster</translate>
+			</accessory>
+			<accessory>
+				<id>97de111c-4cf2-4a45-963f-14349b3b9c38</id>
+				<name>Imaging Scope (2050)</name>
+				<page>189</page>
+				<translate>Zielfernrohr</translate>
+			</accessory>
+			<accessory>
+				<id>605c079d-baeb-422d-9653-9efe595d9dc2</id>
+				<name>Bipod (2050)</name>
+				<page>189</page>
+				<translate>Zweibein</translate>
 			</accessory>
 		</accessories>
 		<mods>

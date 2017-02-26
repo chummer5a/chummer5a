@@ -63,7 +63,7 @@ namespace Chummer
 		private bool _blnFreeSpiritPowerPointsMAG;
 		private bool _blnIgnoreArmorEncumbrance = true;
 		private bool _blnIgnoreArt;
-		private bool _blnKnucksUseUnarmed;
+		private bool _blnUnarmedImprovementsApplyToWeapons;
 		private bool _blnLicenseRestrictedItems;
 		private bool _blnMaximumArmorModifications;
 		private bool _blnMayBuyQualities;
@@ -101,8 +101,11 @@ namespace Chummer
 		private int _intNuyenPerBP = 2000;
 		private int _intRestrictedCostMultiplier = 1;
 		private bool _automaticBackstory = true;
-		
-		private readonly XmlDocument _objBookDoc = new XmlDocument();
+        private bool _blnFreeMartialArtSpecialization;
+        private bool _blnPrioritySpellsAsAdeptPowers;
+        private bool _blnEducationQualitiesApplyOnChargenKarma;
+
+        private readonly XmlDocument _objBookDoc = new XmlDocument();
 		private string _strBookXPath = string.Empty;
 		private string _strExcludeLimbSlot = string.Empty;
 
@@ -177,8 +180,6 @@ namespace Chummer
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
-		private bool _blnFreeMartialArtSpecialization;
-	    private bool _blnPrioritySpellsAsAdeptPowers;
 
         #region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
@@ -252,8 +253,8 @@ namespace Chummer
 			objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
 			// <nuyenperbp />
 			objWriter.WriteElementString("nuyenperbp", _intNuyenPerBP.ToString());
-			// <knucksuseunarmed />
-			objWriter.WriteElementString("knucksuseunarmed", _blnKnucksUseUnarmed.ToString());
+			// <UnarmedImprovementsApplyToWeapons />
+			objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
 			// <allowinitiationincreatemode />
 			objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString());
 			// <usepointsonbrokengroups />
@@ -401,6 +402,8 @@ namespace Chummer
 			objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
             // <priorityspellsasadeptpowers />
             objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
+            // <educationqualitiesapplyonchargenkarma />
+            objWriter.WriteElementString("educationqualitiesapplyonchargenkarma", _blnEducationQualitiesApplyOnChargenKarma.ToString());
             // <usecalculatedpublicawareness />
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
 			// <bpcost>
@@ -617,7 +620,7 @@ namespace Chummer
 			// Nuyen per Build Point
 			objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
 			// Knucks use Unarmed
-			objXmlNode.TryGetBoolFieldQuickly("knucksuseunarmed", ref _blnKnucksUseUnarmed);
+			objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
 			// Allow Initiation in Create Mode
 			objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
 			// Use Points on Broken Groups
@@ -696,6 +699,8 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
             // Can spend spells from Magic priority as power points
             objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
+            // Education qualities apply to karma costs at chargen
+            objXmlNode.TryGetBoolFieldQuickly("educationqualitiesapplyonchargenkarma", ref _blnEducationQualitiesApplyOnChargenKarma);
             // Allow more than 35 BP in Negative Qualities.
             objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
@@ -1275,17 +1280,17 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Contacts equal to CHA * 2.
+		/// Whether or not UnarmedAP and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
 		/// </summary>
-		public bool KnucksUseUnarmed
+		public bool UnarmedImprovementsApplyToWeapons
 		{
 			get
 			{
-				return _blnKnucksUseUnarmed;
+				return _blnUnarmedImprovementsApplyToWeapons;
 			}
 			set
 			{
-				_blnKnucksUseUnarmed = value;
+				_blnUnarmedImprovementsApplyToWeapons = value;
 			}
 		}
 
@@ -3343,6 +3348,21 @@ namespace Chummer
             set
             {
                 _blnPrioritySpellsAsAdeptPowers = value;
+            }
+        }
+
+        /// <summary>
+		/// Whether education qualities like Linguist also apply their cost halving discount to karma spent at chargen. 
+		/// </summary>
+        public bool EducationQualitiesApplyOnChargenKarma
+        {
+            get
+            {
+                return _blnEducationQualitiesApplyOnChargenKarma;
+            }
+            set
+            {
+                _blnEducationQualitiesApplyOnChargenKarma = value;
             }
         }
 

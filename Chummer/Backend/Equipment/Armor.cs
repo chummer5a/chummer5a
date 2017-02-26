@@ -474,16 +474,13 @@ namespace Chummer.Backend.Equipment
 				XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
 				if (objArmorNode != null)
 				{
-                    objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objArmorNode != null)
-				{
-                    if (objArmorNode.Attributes["translate"] != null)
-                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-                }
+			    if (objArmorNode?.Attributes["translate"] != null)
+			        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
 			}
 		}
 

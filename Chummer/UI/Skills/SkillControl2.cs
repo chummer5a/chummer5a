@@ -315,5 +315,13 @@ namespace Chummer.UI.Skills
         {
             CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
         }
+
+        private void cboSpec_TextChanged(object sender, EventArgs e)
+        {
+            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            {
+                chkKarma.Checked = true;
+            }
+        }
     }
 }

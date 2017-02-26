@@ -2533,6 +2533,174 @@
 			<page>136</page>
 		</armor>
 		<!-- End Region -->
+<!-- 2050 SR5 Clothing and Armor -->
+		<armor>
+			<id>134e6912-d3b8-47cc-8804-fc02e66a0ee6</id>
+			<name>Form Fitting, Shirt (2050)</name>
+			<category>Armor</category>
+			<armor>+1</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>3</avail>
+			<cost>150</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>6747e88b-b884-4400-aa33-3ccbbe71f135</id>
+			<name>Form Fitting, Half Suit (2050)</name>
+			<category>Armor</category>
+			<armor>+2</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>4</avail>
+			<cost>250</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>40544ce0-eee7-4273-80fe-ffa111fa9c35</id>
+			<name>Form Fitting, Full Suit (2050)</name>
+			<category>Armor</category>
+			<armor>+3</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>5</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>5cc0962f-a803-46a1-b077-a22528da13f6</id>
+			<name>Lined Coat (2050)</name>
+			<category>Armor</category>
+			<armor>9</armor>
+			<armorcapacity>9</armorcapacity>
+			<avail>2</avail>
+			<cost>700</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>cd1e1725-6c1f-4e15-83ad-e6f30d3d0b6e</id>
+			<name>Helmet (2050)</name>
+			<category>Armor</category>
+			<armor>+2</armor>
+			<armorcapacity>9</armorcapacity>
+			<avail>12</avail>
+			<cost>200</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>27b0f29c-87e0-44f1-bff4-00e733b367fb</id>
+			<name>Clothing, Ordinary (2050)</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>c4a7c60c-d2e0-419c-bdc8-efabdfa114c1</id>
+			<name>Clothing, Fine (2050)</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>84cf66ad-15e7-48cc-a587-f0716e4b9d4b</id>
+			<name>Clothing, Tres Chic (2050)</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>Variable(1000-100000)</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>11986c47-c928-4a5b-9667-ae4860caeacc</id>
+			<name>Leather, Synthetic (2050)</name>
+			<category>Armor</category>
+			<armor>3</armor>
+			<armorcapacity>3</armorcapacity>
+			<avail>0</avail>
+			<cost>250</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>7df0bbe3-b616-4942-816d-2b5e57617a38</id>
+			<name>Leather, Real (2050)</name>
+			<category>Armor</category>
+			<armor>4</armor>
+			<armorcapacity>4</armorcapacity>
+			<avail>0</avail>
+			<cost>750</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>811d9335-d784-4d69-a7de-6551bac37ea8</id>
+			<name>Armor Jacket (2050)</name>
+			<category>Armor</category>
+			<armor>12</armor>
+			<armorcapacity>12</armorcapacity>
+			<avail>3</avail>
+			<cost>900</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>52f8cc10-655b-4813-b038-f135d6a24786</id>
+			<name>Armor Clothing (2050)</name>
+			<category>Armor</category>
+			<armor>6</armor>
+			<armorcapacity>6</armorcapacity>
+			<avail>2</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>bd6dd017-c6b8-4df2-a96f-eb920fc5499d</id>
+			<name>Armor Vest (2050)</name>
+			<category>Armor</category>
+			<armor>9</armor>
+			<armorcapacity>9</armorcapacity>
+			<avail>2</avail>
+			<cost>200</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>4ca1e01b-24bb-42f9-a27d-b284a13e739b</id>
+			<name>Heavy Armor, Full (2050)</name>
+			<category>Armor</category>
+			<armor>18</armor>
+			<armorcapacity>18</armorcapacity>
+			<addmodcategory>Full Body Mods</addmodcategory>
+			<avail>16R</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<armor>
+			<id>fc36610c-5a0a-4757-852c-062e59b1a568</id>
+			<name>Heavy Armor, Partial (2050)</name>
+			<category>Armor</category>
+			<armor>15</armor>
+			<armorcapacity>15</armorcapacity>
+			<avail>8R</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>192</page>
+		</armor>
+		<!-- End Region -->
 	</armors>
 	<mods>
 		<!-- Region Shadowrun 5 -->
