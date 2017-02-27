@@ -1,9 +1,17 @@
 Build 192
 
+Application Changes:
+
+- Fixed an issue loading characters with lifestyle qualities that have been renamed. 
+
 Data Changes:
 
 - Fixed incorrect reach for the Frying Pan and Chair improvised weapons. Fixes #1483.
 - Fixed incorrect bonuses for the Dracoform qualities that prevented them from being added. 
+
+- New Strings: 
+
+- String_CannotFindLifestyleQuality
 
 Build 191
 
