@@ -4,7 +4,9 @@ Application Changes:
 
 - Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
-Data Changes: 
+Data Changes:
+
+- Fixed incorrect reach for the Frying Pan and Chair improvised weapons. Fixes #1483.
 
 - Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
 
@@ -14,7 +16,6 @@ New Strings:
 - Power_SortAction
 - String_PowerFilterRatingAboveZero
 - String_PowerFilterRatingZero
-
 Build 191
 
 Application Changes:
