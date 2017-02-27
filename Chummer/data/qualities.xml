@@ -11406,13 +11406,18 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<replaceattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</replaceattribute>
+        <replaceattributes>
+          <replaceattribute>
+            <name>MAG</name>
+            <min>1</min>
+            <max>6</max>
+            <aug>6</aug>
+            <val>1</val>
+          </replaceattribute>
+        </replaceattributes>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -11469,13 +11474,18 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</replaceattribute>
+        <replaceattributes>
+          <replaceattribute>
+            <name>MAG</name>
+            <min>1</min>
+            <max>6</max>
+            <aug>6</aug>
+            <val>1</val>
+          </replaceattribute>
+        </replaceattributes>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -11528,13 +11538,18 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</replaceattribute>
+        <replaceattributes>
+          <replaceattribute>
+            <name>MAG</name>
+            <min>1</min>
+            <max>6</max>
+            <aug>6</aug>
+            <val>1</val>
+          </replaceattribute>
+        </replaceattributes>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -11595,13 +11610,18 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</replaceattribute>
+        <replaceattributes>
+          <replaceattribute>
+            <name>MAG</name>
+            <min>1</min>
+            <max>6</max>
+            <aug>6</aug>
+            <val>1</val>
+          </replaceattribute>
+        </replaceattributes>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
