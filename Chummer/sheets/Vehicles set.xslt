@@ -131,7 +131,7 @@
 									</tr>
 									<tr><td colspan="100%" class="hseparator"></td></tr>
 									<tr>
-										<td class="AttribName"><xsl:value-of select="$lang.Body"/></td>
+										<td class="AttribName"><xsl:value-of select="$lang.VehicleBody"/></td>
 										<td class="AttribValue"><xsl:value-of select="body"/></td>
 									</tr>
 									<tr>
