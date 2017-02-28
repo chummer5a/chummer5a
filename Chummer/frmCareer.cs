@@ -7550,12 +7550,11 @@ namespace Chummer
 
 		private void cmdDeleteQuality_Click(object sender, EventArgs e)
 		{
-			bool blnMetatypeQuality = false;
-
             // Locate the selected Quality.
-            if (treQualities.SelectedNode != null || treQualities.SelectedNode.Level == 0)
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level == 0)
                 return;
 
+            bool blnMetatypeQuality = false;
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
 
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
@@ -7737,7 +7736,7 @@ namespace Chummer
 		private void cmdSwapQuality_Click(object sender, EventArgs e)
 		{
             // Locate the selected Quality.
-            if (treQualities.SelectedNode != null || treQualities.SelectedNode.Level == 0)
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level == 0)
                 return;
 
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);

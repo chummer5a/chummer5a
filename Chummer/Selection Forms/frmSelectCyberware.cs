@@ -1020,14 +1020,14 @@ namespace Chummer
                         if (intMax == 0)
                         {
                             intMax = 1000000;
-                            lblCost.Text = String.Format("{0:###,###,##0¥+}", intMin);
+                            lblCost.Text = $"{intMin:###,###,##0¥+}";
                         }
                         else
-                            lblCost.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+                            lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
 
                         dblItemCost = intMin;
                     }
-                    if (objXmlCyberware["cost"].InnerText.StartsWith("FixedValues"))
+                    else if (objXmlCyberware["cost"].InnerText.StartsWith("FixedValues"))
                     {
                         string[] strValues = objXmlCyberware["cost"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
                         if (strValues.Length >= Convert.ToInt32(nudRating.Value))
@@ -1039,7 +1039,7 @@ namespace Chummer
                             }
                             double multiplier = 1 + Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo)/100.0;
                             dblItemCost *= multiplier;
-                            lblCost.Text = String.Format("{0:###,###,##0¥}", dblItemCost);
+                            lblCost.Text = $"{dblItemCost:###,###,##0¥}";
                         }
                     }
                     else
@@ -1052,26 +1052,10 @@ namespace Chummer
                                 switch (xmlMinRatingNode.InnerText)
                                 {
                                     case "MinimumAGI":
-                                        if (_objVehicle != null)
-                                        {
-                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
-                                                _objVehicle.Pilot.ToString());
-                                        }
-                                        else
-                                        {
-                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
-                                        }
+                                        objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", _objVehicle?.Pilot.ToString() ?? 3.ToString());
                                         break;
                                     case "MinimumSTR":
-                                        if (_objVehicle != null)
-                                        {
-                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
-                                                _objVehicle.TotalBody.ToString());
-                                        }
-                                        else
-                                        {
-                                            objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
-                                        }
+                                        objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", _objVehicle?.TotalBody.ToString() ?? 3.ToString());
                                         break;
                                 }
                             }
@@ -1087,7 +1071,7 @@ namespace Chummer
                             dblItemCost -= Convert.ToInt32(dblItemCost * 0.10);
                         }
 
-                        lblCost.Text = String.Format("{0:###,###,##0¥}", dblItemCost);
+                        lblCost.Text = $"{dblItemCost:###,###,##0¥}";
                     }
                 }
                 else
@@ -1112,11 +1096,7 @@ namespace Chummer
 				// Check if the character has Sensitive System.
 				if (_objMode == Mode.Cyberware)
 				{
-					foreach (Improvement objImprovement in _objCharacter.Improvements)
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled)
-							dblESS *= 2.0;
-					}
+				    dblESS = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled).Aggregate(dblESS, (current, objImprovement) => current * 2.0);
 				}
 				lblEssence.Text = dblESS.ToString(GlobalOptions.CultureInfo);
 
