@@ -251,7 +251,7 @@
 											<tr>
 												<td><strong><xsl:value-of select="$lang.Weapon"/></strong></td>
 												<td align="center"><strong><xsl:value-of select="$lang.Pool"/></strong></td>
-												<td align="center"><strong><xsl:value-of select="$lang.Pool"/></strong></td>
+												<td align="center"><strong><xsl:value-of select="$lang.Accuracy"/></strong></td>
 												<td align="center"><strong><xsl:value-of select="$lang.Damage"/></strong></td>
 												<td align="center"><strong><xsl:value-of select="$lang.AP"/></strong></td>
 												<td align="center"><strong><xsl:value-of select="$lang.Mode"/></strong></td>
