@@ -3,6 +3,7 @@ Build 192
 Application Changes:
 
 - Fixed an issue loading characters with lifestyle qualities that have been renamed. 
+- Added functionality for Working for the People/Man to automatically exchange Karma for Nuyen. 
 
 Data Changes:
 

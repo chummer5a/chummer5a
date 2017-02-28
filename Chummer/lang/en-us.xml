@@ -4496,6 +4496,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_BurnStreetCred</key>
 			<text>Burn Street Cred</text>
 		</string>
+    <string>
+      <key>Message_KarmaNuyenExchange</key>
+      <text>Nuyen can only be exchanged in multiples of 2,000¥.</text>
+    </string>
+    <string>
+      <key>MessageTitle_KarmaNuyenExchange</key>
+      <text>Cannot Convert</text>
+    </string>
 		<string>
 			<key>String_CareerKarma</key>
 			<text>Career Karma</text>
@@ -5637,6 +5645,14 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Expense_RefundNuyen</key>
 			<text>Refund (does not count towards Total Career Nuyen)</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheMan</key>
+			<text>Working for the Man</text>
+		</string>
+		<string>
+			<key>String_WorkingForThePeople</key>
+			<text>Working for the People</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region History Window -->
