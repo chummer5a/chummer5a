@@ -4,12 +4,13 @@ Application Changes:
 
 - Fixed an issue loading characters with lifestyle qualities that have been renamed. 
 - Added functionality for Working for the People/Man to automatically exchange Karma for Nuyen. 
+- Fixed the career mode weapons list stretching outside the visible area.
 
 Data Changes:
 
 - Fixed incorrect reach for the Frying Pan and Chair improvised weapons. Fixes #1483.
 - Fixed incorrect bonuses for the Dracoform qualities that prevented them from being added. 
-
+- Fixed incorrect costing for the Workshop vehicle modfication.
 - New Strings: 
 
 - String_CannotFindLifestyleQuality
