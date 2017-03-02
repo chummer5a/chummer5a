@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Xml;
+using System.Xml.XPath;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace Chummer
@@ -625,6 +626,42 @@ namespace Chummer
             {
                 _objCharacter.MainMugshotIndex -= 1;
             }
+        }
+
+
+	    /// <summary>
+	    /// Processes the string strDrain into a calculated Drain dicepool and appropriate display attributes and labels.
+	    /// </summary>
+	    /// <param name="strDrain"></param>
+	    /// <param name="objImprovementManager"></param>
+	    /// <param name="drain"></param>
+	    /// <param name="attributeText"></param>
+	    /// <param name="valueText"></param>
+	    /// <param name="tooltip"></param>
+	    public void CalculateTraditionDrain(string strDrain, ImprovementManager objImprovementManager, Improvement.ImprovementType drain, Label attributeText, Label valueText, ToolTip tooltip)
+        {
+            if (string.IsNullOrWhiteSpace(strDrain))
+                return;
+            string strDisplayDrain = strDrain;
+            string strTip = strDrain;
+            var intDrain = 0;
+            // Update the Fading CharacterAttribute Value.
+            var objXmlDocument = new XmlDocument();
+            XPathNavigator nav = objXmlDocument.CreateNavigator();
+            foreach (string strAttribute in Character.AttributeStrings)
+            {
+                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
+                strDisplayDrain = strDisplayDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev.ToString());
+            }
+            XPathExpression xprFading = nav.Compile(strDrain);
+            object o = nav.Evaluate(xprFading);
+            if (o != null) intDrain = Convert.ToInt32(o.ToString());
+            intDrain += objImprovementManager.ValueOf(drain);
+            attributeText.Text = strDisplayDrain;
+            valueText.Text = intDrain.ToString();
+            strTip = Character.AttributeStrings.Select(strAttribute => _objCharacter.GetAttribute(strAttribute)).Aggregate(strTip, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")"));
+            tooltip.SetToolTip(valueText, strTip);
         }
     }
 }

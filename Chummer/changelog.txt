@@ -1,3 +1,19 @@
+Build 192
+
+Application Changes:
+
+- Fixed an issue loading characters with lifestyle qualities that have been renamed. 
+- Added functionality for Working for the People/Man to automatically exchange Karma for Nuyen. 
+
+Data Changes:
+
+- Fixed incorrect reach for the Frying Pan and Chair improvised weapons. Fixes #1483.
+- Fixed incorrect bonuses for the Dracoform qualities that prevented them from being added. 
+
+- New Strings: 
+
+- String_CannotFindLifestyleQuality
+
 Build 191
 
 Application Changes:
@@ -60,6 +76,8 @@ Application Changes:
 - Fixed a bug causing qualities that discount knowledge point costs to also apply the discount to levels obtained with karma. Added a new house rule that re-enables this behavior.
 - Selecting a skill specialization with no points spent in the skill automatically checks the "buy specialization with karma" box.
 - Fixed an issue with the cost calculation for knowledge skills in career mode with Jack of All Trades.
+- Refactored the Tradition drain logic to be consolidated into a single method, shared between technomancers and magicians in career and create.  
+- Added technomancer drain attribute calculation.
 
 Data Changes:
 
@@ -110,6 +128,7 @@ Changed Strings:
 Changes Sheets:
 
 - Removed a sort for Expanses that caused incorrect sorting behaviour in 'Shadowrun 5' sheets. 
+- Added/replaced translated character sheets, created by Lochabar. 
 
 Build 190
 
