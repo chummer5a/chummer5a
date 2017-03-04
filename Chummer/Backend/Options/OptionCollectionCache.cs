@@ -7,7 +7,7 @@ namespace Chummer.Backend.Options
 {
     public class OptionCollectionCache
     {
-        public SimpleTree<OptionItem> Tree { get; }
+        public SimpleTree<OptionRenderItem> Tree { get; }
         public List<OptionItem> BookOptions { get; }
         public List<OptionItem> NotBookOptions { get; }
         public List<IOptionWinFromControlFactory> ControlFactories { get; }
@@ -15,12 +15,12 @@ namespace Chummer.Backend.Options
         public Dictionary<string, OptionDictionaryEntryProxy<string, bool>> BookEnabled { get; }
         public Dictionary<string, OptionGroup> Books { get; }
 
-        public OptionCollectionCache(SimpleTree<OptionItem> tree, List<OptionItem> bookOptions, List<IOptionWinFromControlFactory> controlFactories)
+        public OptionCollectionCache(SimpleTree<OptionRenderItem> tree, List<OptionItem> bookOptions, List<IOptionWinFromControlFactory> controlFactories)
         {
             Tree = tree;
             BookOptions = bookOptions;
             ControlFactories = controlFactories;
-            NotBookOptions = tree.DepthFirstEnumerator().ToList();
+            NotBookOptions = tree.DepthFirstEnumerator().OfType<OptionItem>().ToList();
 
             SearchList = BookOptions.Concat(NotBookOptions).ToList();
             BookEnabled = bookOptions.OfType<OptionGroup>()

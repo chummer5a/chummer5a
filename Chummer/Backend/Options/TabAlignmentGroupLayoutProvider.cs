@@ -37,8 +37,13 @@ namespace Chummer.Backend.Options
         /// </summary>
         public LayoutOptionsContainer LayoutOptions { get; set; } = new LayoutOptionsContainer();
 
-        public object ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents, List<int> additonalConformTarget = null)
+        public object ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents,
+            List<int> additonalConformTarget = null)
         {
+            //Go over every line and calculate the lenght of every piece
+            //    (Lenght is lenght of text, plausibly with the lenght of a control if {} is found)
+            //    Some batching logic is included
+
             List<int> alignmentLenghts = additonalConformTarget ?? new List<int>();
             StringBuilder builder = new StringBuilder();
             List<LineInfo> controlIndex = new List<LineInfo>();
@@ -48,7 +53,7 @@ namespace Chummer.Backend.Options
             int count;
             foreach (LayoutLineInfo line in contents)
             {
-                string[] alignmentPieces = line.LayoutString.Split(new[] { "\\t" }, StringSplitOptions.None);
+                string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
                 LineInfo currentLine = new LineInfo
                 {
                     Parts = alignmentPieces.Length
@@ -88,7 +93,7 @@ namespace Chummer.Backend.Options
             }
 
 
-            UpdateRegions(builder, regions, ranges, format, rendergarget, force:true);
+            UpdateRegions(builder, regions, ranges, format, rendergarget, force: true);
 
 
 
@@ -99,7 +104,7 @@ namespace Chummer.Backend.Options
             for (int j = 0; j < contents.Count; j++)
             {
                 LayoutLineInfo line = contents[j];
-                string[] alignmentPieces = line.LayoutString.Split(new[] { "\\t" }, StringSplitOptions.None);
+                string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
 //                Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
 //                Console.WriteLine("content[{0}]", j);
                 //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
@@ -118,11 +123,11 @@ namespace Chummer.Backend.Options
                     if (alignmentLenghts.Count > i)
                     {
 
-                        alignmentLenghts[i] = Math.Max(alignmentLenghts[i], (int)size);
+                        alignmentLenghts[i] = Math.Max(alignmentLenghts[i], (int) size);
                     }
                     else
                     {
-                        alignmentLenghts.Add((int)size);
+                        alignmentLenghts.Add((int) size);
                     }
                 }
             }
@@ -131,7 +136,8 @@ namespace Chummer.Backend.Options
             return regions;
         }
 
-        private void UpdateRegions(StringBuilder builder, List<Region> regions, List<CharacterRange> ranges, StringFormat format, Graphics target, bool force = false)
+        private void UpdateRegions(StringBuilder builder, List<Region> regions, List<CharacterRange> ranges,
+            StringFormat format, Graphics target, bool force = false)
         {
             if (ranges.Count >= 32 || force)
             {
@@ -196,6 +202,9 @@ namespace Chummer.Backend.Options
 //                Console.WriteLine($"[{i}] <- {alignmentLenghts[i]} added {alignmentLenghts[i - 1]}");
             }
 
+            //Keeps track of widest line width
+            int lineMaxRight = 0;
+
             //LineTop defines the top of the current line, lineButtom keeps track of how far down it goes
             int lineTop = 0;
             int lineBottom = 0;
@@ -247,6 +256,9 @@ namespace Chummer.Backend.Options
                         lineBottom = Math.Max(lineBottom,
                             lineTop + Math.Max(size.Height,
                                 line.ControlSize.Height - Math.Min(0, line.ControlOffset.Y)));
+
+                        lineRight = alignmentLenghts[i] + size.Width + line.ControlSize.Width +
+                                    LayoutOptions.ControlMargin * 2 + size2.Width;
                         controlRendered = true;
                     }
                     else
@@ -269,52 +281,33 @@ namespace Chummer.Backend.Options
                 {
                     ret.ControlLocations.Add(new Point(lineRight + LayoutOptions.ControlMargin,
                         lineTop + line.ControlOffset.Y));
+
+                    lineRight = lineRight + LayoutOptions.ControlMargin + line.ControlSize.Width;
                 }
 
 //                Console.WriteLine("EOL {0} -> {1}(+{2})", lineTop, lineBottom + LayoutOptions.Linespacing, (lineBottom + LayoutOptions.Linespacing) - lineTop);
 
-
+                lineMaxRight = Math.Max(lineMaxRight, lineRight);
                 lineTop = lineBottom + LayoutOptions.Linespacing;
             }
+
+
+            ret.Width = lineMaxRight;
+            ret.Height = lineTop;
+
             return ret;
         }
 
         private Size ToSize(RectangleF getBounds)
         {
             //Console.WriteLine("Rectangle of {0} {1}", getBounds.Width, getBounds.Height);
-            return new Size((int)getBounds.Width, (int)getBounds.Height);
+            return new Size((int) getBounds.Width, (int) getBounds.Height);
         }
 
         private readonly SizeF Big = new SizeF(int.MaxValue, int.MaxValue);
         private string[] split = new[] {"{}"};
-        private Size ElementSize(Graphics g, string textMaybeEmbeddedControl, Size controlSize, Point controlOffset)
-        {
-            if(string.IsNullOrWhiteSpace(textMaybeEmbeddedControl)) return Size.Empty;
 
-            //Either calculate the size of text, or black magic to calculate the size of control and 2 pieces of text to suround it
-            if (textMaybeEmbeddedControl.Contains("{}"))
-            {
-                string[] sides = textMaybeEmbeddedControl.Split(split, 2, StringSplitOptions.None);
 
-                SizeF s1, s2;
-                s1 = g.MeasureString(sides[0], LayoutOptions.Font, Big, StringFormat.GenericTypographic);
-                s2 = g.MeasureString(sides[1], LayoutOptions.Font, Big, StringFormat.GenericTypographic);
 
-                //TODO: this should be how far the total element goes outside the upper left cornor of the text. Any that the control goes over should be ignored.
-                //Probably confused because i don't quite see what controlOffset.X means
-                float height = Math.Max(s1.Height, controlSize.Height - Math.Min(0, controlOffset.Y));
-                float width = controlSize.Width + s1.Width + s2.Width; //Probably sane way
-                Console.WriteLine($"Calculated width = {width} from {controlSize.Width} +{s1.Width} + {s2.Width} \"{textMaybeEmbeddedControl}\"");
-                return new Size((int)width, (int)height);
-            }
-            else
-            {
-                SizeF s = g.MeasureString(textMaybeEmbeddedControl, LayoutOptions.Font, Big, StringFormat.GenericTypographic);
-                //s.Width -= 5;
-                return new Size((int)s.Width, (int)s.Height);
-            }
-        }
-
-        
     }
 }

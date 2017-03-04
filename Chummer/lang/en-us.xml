@@ -8141,6 +8141,34 @@ Do you want to continue?</text>
 		<!-- End Region -->
 		<!-- Region New options Display Strings -->
 		<string>
+			<key>Label_Options_ProgramOptions</key>
+			<text>Program Behavour</text>
+		</string>
+		<string>
+			<key>Label_Options_Printingptions</key>
+			<text>Printing</text>
+		</string>
+		<string>
+			<key>Label_Options_CharacterOptions</key>
+			<text>Character Behavour</text>
+		</string>
+		<string>
+			<key>Label_Options_KarmaCosts</key>
+			<text>Karma Costs</text>
+		</string>
+		<string>
+			<key>Label_Options_OptionalRules</key>
+			<text>Optional Rules</text>
+		</string>
+		<string>
+			<key>Label_Options_HouseRules</key>
+			<text>House Rules</text>
+		</string>
+		<string>
+			<key>Label_Options_Books</key>
+			<text>Enabled books</text>
+		</string>
+		<string>
 			<key>Display_ConfirmDelete</key>
 			<text>{} Ask for confirmation when deleting items</text>
 		</string>
@@ -8194,7 +8222,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_KarmaImproveSkillGroup</key>
-			<text>Improve Skill Group by 1\t\t{} x New Rating</text>
+			<text>Improve Skill Group by 1\t\t{}x New Rating</text>
 		</string>
 		<string>
 			<key>Display_KarmaSpell</key>
@@ -8202,15 +8230,15 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_KarmaEnhancement</key>
-			<text>Karma Enhancement (NOTE: WTF IS THIS?)\t\t{}</text>
+			<text>Karma Enhancement (MEANS?)\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_KarmaSpirit</key>
-			<text>Bound Spirit\t\t{} x Services Owed</text>
+			<text>Bound Spirit\t\t{}x Services Owed</text>
 		</string>
 		<string>
 			<key>Display_KarmaInitiation</key>
-			<text>Initiation/Submersion\t(\t{} x New Rating) + 10</text>
+			<text>Initiation/Submersion\t(\t{}x New Rating) + 10</text>
 		</string>
 		<string>
 			<key>Display_KarmaMetamagic</key>
@@ -8226,76 +8254,369 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_KarmaAlchemicalFocus</key>
-			<text>Bind an Alchemical Focus\t\t{} x Force</text>
+			<text>Bind an Alchemical Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaBanishingFocus</key>
-			<text>Bind a Banishing Focus\t\t{} x Force</text>
+			<text>Bind a Banishing Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaBindingFocus</key>
-			<text>Bind a Binding Focus\t\t{} x Force</text>
+			<text>Bind a Binding Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaCenteringFocus</key>
-			<text>Bind a Centering Focus\t\t{} x Force</text>
+			<text>Bind a Centering Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaCounterspellingFocus</key>
-			<text>Bind a Counterspelling Focus\t\t{} x Force</text>
+			<text>Bind a Counterspelling Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaDisenchantingFocus</key>
-			<text>Bind a Disenchanting Focus\t\t{} x Force</text>
+			<text>Bind a Disenchanting Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaFlexibleSignatureFocus</key>
-			<text>Bind a Flexible Signature Focus\t\t{} x Force</text>
+			<text>Bind a Flexible Signature Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaMaskingFocus</key>
-			<text>Bind a Masking Focus\t\t{} x Force</text>
+			<text>Bind a Masking Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaPowerFocus</key>
-			<text>Bind a Power Focus\t\t{} x Force</text>
+			<text>Bind a Power Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaQiFocus</key>
-			<text>Bind a Qi Focus\t\t{} x Force</text>
+			<text>Bind a Qi Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaRitualSpellcastingFocus</key>
-			<text>Bind a Ritual Spellcasting Focus\t\t{} x Force</text>
+			<text>Bind a Ritual Spellcasting Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaSpellcastingFocus</key>
-			<text>Bind a Spellcasting Focus\t\t{} x Force</text>
+			<text>Bind a Spellcasting Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaSpellShapingFocus</key>
-			<text>Bind a Spell Shaping Focus\t\t{} x Force</text>
+			<text>Bind a Spell Shaping Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaSummoningFocus</key>
-			<text>Bind a Summoning Focus\t\t{} x Force</text>
+			<text>Bind a Summoning Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaSustainingFocus</key>
-			<text>Bind a Sustaining Focus\t\t{} x Force</text>
+			<text>Bind a Sustaining Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_KarmaWeaponFocus</key>
-			<text>Bind a Weapon Focus\t\t{} x Force</text>
+			<text>Bind a Weapon Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_Karma_Focus</key>
-			<text>Bind a _ Focus\t\t{} x Force</text>
+			<text>Bind a _ Focus\t\t{}x Force</text>
 		</string>
 		<string>
 			<key>Display_Karma__Focus</key>
-			<text>Bind a _ Focus\t\t{} x Force</text>
+			<text>Bind a _ Focus\t\t{}x Force</text>
 		</string>
+		<string>
+			<key>Display_</key>
+			<text>Bind a _ Focus\t\t{}x Force</text>
+		</string>
+		<string>
+			<key>Display_FooBar</key>
+			<text>TestString\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_BreakSkillGroupsWithPoints</key>
+			<text>{}\tAllow spending Skill Points to break Skill Groups</text>
+		</string>
+		<string>
+			<key>Display_IgnoreArtRequirements</key>
+			<text>{}\tIgnore Art Requirements from Street Grimoire</text>
+		</string>
+		<string>
+			<key>Display_CyberlegMovement</key>
+			<text>{}\tUse Cyberlegs Stats for Movement</text>
+		</string>
+		<string>
+			<key>Display_DroneArmorMultiplier</key>
+			<text>\t{}</text>
+		</string>
+		<string>
+			<key>Display_DroneArmorMultiplierEnabled</key>
+			<text>{}\tLimit Drone Armor Enhancements to Drone Armor</text>
+		</string>
+		<string>
+			<key>Display_EnforceCapacity</key>
+			<text>{}\tEnforce Capacity limits</text>
+		</string>
+		<string>
+			<key>Display_RestrictRecoil</key>
+			<text>{}\tUse Restrictions to Recoil Compensation (RG 53)</text>
+		</string>
+		<string>
+			<key>Display_UnrestrictedNuyen</key>
+			<text>{}\tAllow Characters to exceed Karma/Nuyen conversion limits</text>
+		</string>
+		<string>
+			<key>Display_AllowEditPartOfBaseWeapon</key>
+			<text>{}\tAllow Editing of weapon builtin parts</text>
+		</string>
+		<string>
+			<key>Display_AllowCustomTransgenics</key>
+			<text>{}\tAllow any piece of bioware to be Transgenics</text>
+		</string>
+		<string>
+			<key>Display_StrictSkillGroupsInCreateMode</key>
+			<text>{}\tStrict interprentation of breaking skill groups in create mode</text>
+		</string>
+		<string>
+			<key>Display_ExtendAnyDetectionSpell</key>
+			<text>{}\tAllow any dection spell to be bought as extended version</text>
+		</string>
+		<string>
+			<key>Display_AllowSkillDiceRolling</key>
+			<text>{}\tAllow dice rolling for dice pools</text>
+		</string>
+		<string>
+			<key>Display_DontUseCyberlimbCalculation</key>
+			<text>{}\tDon't use Cyberlimbs for calculating argumented Attributes</text>
+		</string>
+		<string>
+			<key>Display_DontDoubleQualityPurchases</key>
+			<text>{}\tDon't double the cost of purchasing Positive Qualities in Career Mode</text>
+		</string>
+		<string>
+			<key>Display_DontDoubleQualityRefunds</key>
+			<text>{}\tDon't double the cost of removing Negative Qualities in Career Mode</text>
+		</string>
+		<string>
+			<key>Display_AllowObsolescentUpgrade</key>
+			<text>{}\tAllow removal of the Obsolescent weapon modification</text>
+		</string>
+		<string>
+			<key>Display_AllowBiowareSuites</key>
+			<text>{}\tAllow Bioware suites</text>
+		</string>
+		<string>
+			<key>Display_FreeSpiritPowerPointsMAG</key>
+			<text>{}\tNo idea?</text>
+		</string>
+		<string>
+			<key>Display_TechnomancerAllowAutosoft</key>
+			<text>{}\tAllow technomancers to use Autosofts as complex forms</text>
+		</string>
+		<string>
+			<key>Display_FreeContactsMultiplier</key>
+			<text>\tFree Contact Points equal to Charisma\t{}</text>
+		</string>
+		<string>
+			<key>Display_FreeContactsMultiplierEnabled</key>
+			<text>\tProbably broken\t{}</text>
+		</string>
+		<string>
+			<key>Display_FreeKarmaContacts</key>
+			<text>{}\tKarma Build: Free Contacts like Priority Build</text>
+		</string>
+		<string>
+			<key>Display_FreeKarmaKnowledge</key>
+			<text>{}\tKarma Build: Free Knowledge skills like Priority Build</text>
+		</string>
+		<string>
+			<key>Display_FreeKnowledgeMultiplierEnabled</key>
+			<text>\tFree Knowledge Points Equal to (INT+LOG) x {}</text>
+		</string>
+		<string>
+			<key>Display_FreeKnowledgeMultiplier</key>
+			<text>\tFree Knowledge Points Equal to (INT+LOG) x {}</text>
+		</string>
+		<string>
+			<key>Display_MetatypeCostsKarma</key>
+			<text>\t{}Metatypes cost Karma</text>
+		</string>
+		<string>
+			<key>Display_MetatypeCostsKarmaMultiplier</key>
+			<text>\tMetatype Karma cost Multiplier{}</text>
+		</string>
+		<string>
+			<key>Display_AlternateMetatypeAttributeKarma</key>
+			<text>\t{}Treat Metatype Attribute minimum as 1 for the purpose of determining Karma costs</text>
+		</string>
+		<string>
+			<key>Display_KarmaCarryover</key>
+			<text>Allow a maximums of {} Karma to carry over to Career Mode</text>
+		</string>
+		<string>
+			<key>Display_NuyenPerBP</key>
+			<text>Nuyen\t\t{} per Karma</text>
+		</string>
+		<string>
+			<key>Display_UseTotalValueForFreeContacts</key>
+			<text>{}\tUse Argumented values for Free Contact points\t</text>
+		</string>
+		<string>
+			<key>Display_UseTotalValueForFreeKnowledge</key>
+			<text>{}\tUse Argumented values for Free Knowledge points\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaNewComplexForm</key>
+			<text>New Complex Form\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaImproveComplexForm</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_KarmaComplexFormOption</key>
+			<text>Complex Form Options\t\t{}x Rating</text>
+		</string>
+		<string>
+			<key>Display_KarmaComplexFormSkillsoft</key>
+			<text>Complex Form Skillsoft\t\t{}x Rating</text>
+		</string>
+		<string>
+			<key>Display_Books</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_MoreLethalGameplay</key>
+			<text>{}\tMore Lethal Gameplay (somewhere?)</text>
+		</string>
+		<string>
+			<key>Display_LicenseRestricted</key>
+			<text>{}\tLicense each Restricted item</text>
+		</string>
+		<string>
+			<key>Display_SpiritForceBasedOnTotalMAG</key>
+			<text>{}\tSpirit Force based on total MAG</text>
+		</string>
+		<string>
+			<key>Display_KnucksUseUnarmed</key>
+			<text>{}\tKnucks Benefit from Unarmed Attack Bonuses</text>
+		</string>
+		<string>
+			<key>Display_AllowInitiationInCreateMode</key>
+			<text>{}\tAllow Initiation/Submersion in Create mode</text>
+		</string>
+		<string>
+			<key>Display_SkillDefaultingIncludesModifiers</key>
+			<text>{}\tSkill defaulting should include modifiers</text>
+		</string>
+		<string>
+			<key>Display_ESSLossReducesMaximumOnly</key>
+			<text>{}\tEssence loss only reduces maximum MAG/RES mimimum (Can cause Crashes)</text>
+		</string>
+		<string>
+			<key>Display_AllowSkillRegrouping</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_AllowCyberwareESSDiscounts</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_StrengthAffectsRecoil</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_MaximumArmorModifications</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_ArmorSuitCapacity</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_ArmorDegradation</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_SpecialKarmaCostBasedOnShownValue</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_ExceedPositiveQualities</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_ExceedNegativeQualities</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_ExceedNegativeQualitiesLimit</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_MultiplyRestrictedCost</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_RestrictedCostMultiplier</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_MultiplyForbiddenCost</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_ForbiddenCostMultiplier</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_CapSkillRating</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_UseCalculatedPublicAwareness</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_LimbCount</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_CreateBackupOnCareer</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_EssenceDecimals</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_BuildMethod</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_BuildPoints</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_Availability</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_AutomaticBackstory</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_PrintSkillsWithZeroRating</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_PrintExpenses</key>
+			<text>_\t\t{}</text>
+		</string>
+		<string>
+			<key>Display_PrintNotes</key>
+			<text>_\t\t{}</text>
+		</string>
+
 		<!-- End Region -->
 		<!-- End Region -->
 	</strings>

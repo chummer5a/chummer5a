@@ -1,20 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Chummer.Annotations;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
 using Chummer.Backend.Options;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedMember.Global
 
 namespace Chummer
 {
 	public class CharacterOptions
 	{
 	    #region Default Values
-		public readonly string FileName = "default.xml";
+		public readonly string FileName;
 
 
 
 	    // Settings.
+        //TODO: Im sure they had some effect. Or remove them
+        /*
 		private bool _blnAllow2ndMaxAttribute;
 		private bool _blnAllowAttributePointsOnExceptional;
 	    private bool _blnAllowExceedAttributeBP;
@@ -35,16 +40,10 @@ namespace Chummer
 	    private bool _blnSpecialAttributeKarmaLimit;
 	    private bool _blnUseContactPoints;
 	    private int _intFreeContactsFlatNumber = 0;
+        */
 
 	    private readonly XmlDocument _objBookDoc = new XmlDocument();
 		private string _strBookXPath = "";
-
-	    // Karma variables.
-	    private int _intKarmaNuyenPer = 2000;
-
-	    // Karma Foci variables.
-
-	    // Default build settings.
 
 	    #endregion
 		// Sourcebook list.
@@ -186,12 +185,13 @@ namespace Chummer
 		}
 		#endregion
 
-		#region Rule Settings
-		#region Chummer Options
+		#region Program behavour
+
+	    #region Program options
 		/// <summary>
 		/// Whether or not confirmation messages are shown when deleting an object.
 		/// </summary>
-		[OptionAttributes("Chummer Options")]
+		[OptionAttributes("Display_ProgramOptions")]
 		[SavePropertyAs("confirmdelete")]
 		[DisplayConfiguration("Checkbox_Options_ConfirmDelete")]
 		public bool ConfirmDelete { get; set; } = true;
@@ -202,21 +202,6 @@ namespace Chummer
 		[SavePropertyAs("confirmkarmaexpense")]
 		[DisplayConfiguration("Checkbox_Options_ConfirmKarmaExpense")]
 		public bool ConfirmKarmaExpense { get; set; } = true;
-
-	    /// <summary>
-		/// Number of Limbs a standard character has.
-		/// </summary>
-		[SavePropertyAs("limbcount")]
-		//TODO: Handler for comboboxes
-		public int LimbCount { get; set; } = 6;
-
-	    /// <summary>
-		/// Exclude a particular Limb Slot from count towards the Limb Count.
-		/// </summary>
-        [DisplayIgnore] //TODO: Do something
-		[SavePropertyAs("excludelimbslot")]
-		//TODO: Handler for comboboxes
-		public string ExcludeLimbSlot { get; set; } = "";
 
 	    /// <summary>
 		/// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
@@ -253,14 +238,13 @@ namespace Chummer
 		/// Whether Life Modules should automatically generate a character background.
 		/// </summary>
 		[SavePropertyAs("autobackstory")]
-	    [OptionTag(Tags = new []{"OPTIONALRULE+SR5"})] //TODO: REMOVE THIS LINE BEFORE RELEASE!
-		public bool AutomaticBackstory { get; internal set; } = true;
+	    public bool AutomaticBackstory { get; internal set; } = true;
 
 	    #region Printing
 		/// <summary>
 		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
 		/// </summary>
-		[OptionAttributes("Chummer Options/Printing")]
+		[OptionAttributes("Display_ProgramOptions/Display_Printingptions")]
 		[DisplayConfiguration("Checkbox_Options_PrintAllSkills")]
 		[SavePropertyAs("printzeroratingskills")]
 		public bool PrintSkillsWithZeroRating { get; set; } = true;
@@ -280,12 +264,34 @@ namespace Chummer
 		public bool PrintNotes { get; set; }
 
 	    #endregion
-		#endregion
-		#region Optional Rules
+        #endregion
+
+	    #endregion
+
+	    #region Character behavour
+	    [OptionAttributes("Display_CharacterOptions")]
+
+	    /// <summary>
+	    /// Number of Limbs a standard character has.
+	    /// </summary>
+	    [SavePropertyAs("limbcount")]
+	    //TODO: Handler for comboboxes
+	    public int LimbCount { get; set; } = 6;
+
+	    /// <summary>
+	    /// Exclude a particular Limb Slot from count towards the Limb Count.
+	    /// </summary>
+	    [DisplayIgnore] //TODO: Do something
+	    [SavePropertyAs("excludelimbslot")]
+	    //TODO: Handler for comboboxes
+	    public string ExcludeLimbSlot { get; set; } = "";
+
+	    #region Optional Rules
 		/// <summary>
 		/// Whether or not the More Lethal Gameplay optional rule is enabled.
 		/// </summary>
-		[OptionAttributes("Optional Rules")]
+		//
+		[OptionAttributes("Display_CharacterOptions/Display_HouseRules")]
 	    [DisplayConfiguration("Checkbox_Options_MoreLethalGameplay")]
 		[SavePropertyAs("morelethalgameplay")]
 		public bool MoreLethalGameplay { get; set; }
@@ -323,6 +329,7 @@ namespace Chummer
 		/// </summary>
 		[DisplayConfiguration("Checkbox_Options_DefaultIncludeModifiers")]
 		[SavePropertyAs("skilldefaultingincludesmodifiers")]
+	    //TODO: Hook this up?
 		public bool SkillDefaultingIncludesModifiers { get; set; }
 
 	    /// <summary>
@@ -431,7 +438,7 @@ namespace Chummer
 	    /// <summary>
 		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
 		/// </summary>
-		[OptionAttributes("Optional Rules/SR4")]
+		//[OptionAttributes("Display_CharacterOptions")]
 		[SavePropertyAs("capskillrating")]
 		[DisplayConfiguration("Checkbox_Options_LimitSkills")]
 		public bool CapSkillRating { get; set; }
@@ -443,15 +450,12 @@ namespace Chummer
 		[DisplayConfiguration("Checkbox_Options_UseCalculatedPublicAwareness")]
 		public bool UseCalculatedPublicAwareness { get; set; }
 
-	    #endregion
-		#region House Rules
-		/// <summary>
-		/// Whether or not characters can spend skill points on broken groups.
+	    /// <summary>
+		/// Whether or not characters can spend skill points to break groups.
 		/// </summary>
-		[OptionAttributes("House Rules")]
 		[SavePropertyAs("usepointsonbrokengroups")]
 		[DisplayConfiguration("Checkbox_Options_PointsOnBrokenGroups")]
-		public bool UsePointsOnBrokenGroups { get; set; }
+		public bool BreakSkillGroupsWithPoints { get; set; }
 
 	    /// <summary>
 		/// Whether or not to ignore the art requirements from street grimoire.
@@ -468,6 +472,7 @@ namespace Chummer
 		public bool CyberlegMovement { get; set; }
 
 
+	    [UsedImplicitly]
 	    private OptionConstaint<CharacterOptions> DroneArmorConstaint { get; } =
 	        new OptionConstaint<CharacterOptions>(option => option.DroneArmorMultiplierEnabled);
 	    /// <summary>
@@ -495,6 +500,8 @@ namespace Chummer
 	    /// <summary>
 		/// Whether or not Recoil modifiers are restricted (AR 148).
 		/// </summary>
+		//TODO: Check this is the same as what is somewhere in R&G
+	    //TODO: Should probably be an inverted option, and moved to house rule
 		[SavePropertyAs("restrictrecoil")]
 		[DisplayConfiguration("Checkbox_Options_RestrictRecoil")]
 		public bool RestrictRecoil { get; set; } = true;
@@ -551,7 +558,7 @@ namespace Chummer
 	    /// <summary>
 		/// Whether or not characters in Career Mode should pay double for qualities.
 		/// </summary>
-		[OptionAttributes("House Rules/Qualities")]
+		//TODO: HEADER[OptionAttributes("House Rules/Qualities")]
 		[SavePropertyAs("dontdoublequalities")]
 		[DisplayConfiguration("Checkbox_Options_DontDoubleQualityPurchases")]
 		public bool DontDoubleQualityPurchases { get; set; }
@@ -566,6 +573,7 @@ namespace Chummer
 	    /// <summary>
 		/// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
 		/// </summary>
+		//TODO: Does this still exist?
 		[SavePropertyAs("allowobsolescentupgrade")]
 		[DisplayConfiguration("Checkbox_Options_AllowObsolescentUpgrade")]
 		public bool AllowObsolescentUpgrade { get; set; }
@@ -580,6 +588,7 @@ namespace Chummer
 	    /// <summary>
 		/// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
 		/// </summary>
+		//TODO: Find out what this is and probably remove it
 		[SavePropertyAs("freespiritpowerpointsmag")]
 		[DisplayConfiguration("Checkbox_Options_FreeSpiritPowerPointsMAG")]
 		public bool FreeSpiritPowerPointsMAG { get; set; }
@@ -598,7 +607,7 @@ namespace Chummer
 
 		private OptionConstaint<CharacterOptions> ContactsConstaint =
 		    new OptionConstaint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
-		[OptionAttributes("House Rules/Character Creation")]
+		//TODO: HEADER[OptionAttributes("House Rules/Character Creation")]
 		[SavePropertyAs("freekarmacontactsmultiplier")]
 		[DisplayConfiguration("Checkbox_Options_ContactMultiplier")]
 		public int FreeContactsMultiplier { get; set; } = 3;
@@ -689,15 +698,26 @@ namespace Chummer
 		[DisplayConfiguration("Checkbox_Options_UseTotalValueForFreeKnowledge")]
 		public bool UseTotalValueForFreeKnowledge { get; set; }
 
+
+
 	    #endregion
 
 		#endregion
 
+	    #region Optional Rules
+
+	    [OptionAttributes("Display_CharacterOptions/Display_OptionalRules")]
+	    public bool DroneMods { get; set; } = false;
+
+
+
+	    #endregion
 		#region Karma Costs
 		/// <summary>
 		/// Karma cost to improve an Attribute = New Rating X this value.
 		/// </summary>
-		[OptionAttributes("Karma Costs")]
+		[Header("Character Creation")]
+		[OptionAttributes("Display_CharacterOptions/Display_KarmaCosts")]
 		[SavePropertyAs("karmaattribute")]
 		[DisplayConfiguration("Label_Options_ImproveAttribute")]
 		public int KarmaAttribute { get; set; } = 5;
@@ -734,6 +754,7 @@ namespace Chummer
 		/// <summary>
 		/// Karma cost to purchase a Specialization = this value.
 		/// </summary>
+		[Header("Skills")]
 		[SavePropertyAs("karmaspecialization")]
 		[DisplayConfiguration("Label_Options_KarmaSkillSpecialization")]
 		public int KarmaSpecialization { get; set; } = 7;
@@ -785,6 +806,7 @@ namespace Chummer
 		/// <summary>
 		/// Karma cost for each Spell = this value.
 		/// </summary>
+		[Header("Magic")]
 		[SavePropertyAs("karmaspell")]
 		[DisplayConfiguration("Label_Options_KarmaSpell")]
 		public int KarmaSpell { get; set; } = 5;
@@ -834,7 +856,7 @@ namespace Chummer
 	    /// <summary>
 		/// Karma cost for Alchemical Foci.
 		/// </summary>
-		[OptionAttributes("Karma Costs/Foci")]
+	    [Header("Foci")]
 		[SavePropertyAs("karmaalchemicalfocus")]
 		[DisplayConfiguration("Label_Options_AlchemicalFocus")]
 		public int KarmaAlchemicalFocus { get; set; } = 3;
@@ -949,7 +971,8 @@ namespace Chummer
 		/// <summary>
 		/// Karma cost for a new Complex Form = this value.
 		/// </summary>
-		[OptionAttributes("Karma Costs/Complex Forms")]
+		//TODO: HEADER[OptionAttributes("Karma Costs/Complex Forms")]
+		[Header("Complex Forms")]
 		[SavePropertyAs("karmanewcomplexform")]
 		[DisplayConfiguration("Label_Options_NewComplexForm")]
 		public int KarmaNewComplexForm { get; set; } = 4;
@@ -977,7 +1000,8 @@ namespace Chummer
 
 	    #endregion
 		#endregion
-		#endregion
+
+	    #endregion
 
 	    /// <summary>
 	    /// Sourcebooks.

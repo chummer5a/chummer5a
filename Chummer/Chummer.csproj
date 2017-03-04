@@ -156,6 +156,7 @@
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\OptionsManager.cs" />
+    <Compile Include="Backend\Options\HeaderAttribute.cs" />
     <Compile Include="Backend\Options\IGroupLayoutProvider.cs" />
     <Compile Include="Backend\Options\OptionCollectionCache.cs" />
     <Compile Include="Backend\Options\OptionConstaint.cs" />

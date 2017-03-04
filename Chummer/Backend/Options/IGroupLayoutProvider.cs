@@ -22,6 +22,9 @@ namespace Chummer.Backend.Options
     {
         public List<Point> ControlLocations { get; set; }
         public List<TextRenderInfo> TextLocations { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public Point Offset { get; set; }
     }
 
     public class TextRenderInfo

@@ -5,9 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Xml.Xsl.Runtime;
 using Chummer.Datastructures;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Classes;
+using Chummer.UI.Options;
+
 //using Mono.CodeGeneration;
 
 namespace Chummer.Backend.Options
@@ -22,9 +25,9 @@ namespace Chummer.Backend.Options
             _supported = new List<Predicate<OptionItem>>(supported);
         }
 
-        public SimpleTree<OptionItem> Extract(object target)
+        public SimpleTree<OptionRenderItem> Extract(object target)
         {
-            SimpleTree<OptionItem> root = new SimpleTree<OptionItem> {Tag = "root"};
+            SimpleTree<OptionRenderItem> root = new SimpleTree<OptionRenderItem> {Tag = "root"};
 
 
             Dictionary<string, OptionEntryProxy> proxies = new Dictionary<string, OptionEntryProxy>();
@@ -74,7 +77,7 @@ namespace Chummer.Backend.Options
             foreach (KeyValuePair<string, List<PropertyInfo>> group in temp)
             {
                 string[] path = group.Key.Split('/');
-                SimpleTree<OptionItem> parrent = root;
+                SimpleTree<OptionRenderItem> parrent = root;
 
                 //find path in option tree, skip last as thats new
                 //Breaks if trying to "jump" a path element
@@ -83,14 +86,23 @@ namespace Chummer.Backend.Options
                     parrent = parrent.Children.First(x => (string) x.Tag == path[i]);
                 }
 
-                SimpleTree<OptionItem> newChild = new SimpleTree<OptionItem> {Tag = path.Last()};
+                SimpleTree<OptionRenderItem> newChild = new SimpleTree<OptionRenderItem> {Tag = path.Last()};
 
 
-                foreach (OptionEntryProxy entryProxy in group.Value
-                    .Select(p => CreateOptionEntry(target, p))
-                    .Where(p => _supported.Any(x => x(p)))
-                    .Where(x => x != null))
+                foreach (PropertyInfo propertyInfo in group.Value)
                 {
+                    OptionEntryProxy entryProxy =  CreateOptionEntry(target, propertyInfo);
+
+                    if(entryProxy == null)
+                        continue;
+
+                    if (!_supported.Any(x => x(entryProxy)))
+                        continue;
+
+                    if (propertyInfo.GetCustomAttribute<HeaderAttribute>() != null)
+                    {
+                        newChild.Leafs.AddRange(propertyInfo.GetCustomAttributes<HeaderAttribute>().Select(x => new HeaderRenderDirective(x.Title)));
+                    }
                     newChild.Leafs.Add(entryProxy);
                     proxies.Add(entryProxy.TargetProperty.Name, entryProxy);
                 }
@@ -155,7 +167,7 @@ namespace Chummer.Backend.Options
                 if (!LanguageManager.Instance.TryGetString("Display_" + arg.Name, out displayString))
                 {
                     displayString = Utils.PascalCaseInsertSpaces(arg.Name);
-                    Log.Info($"No translation found for {arg.DeclaringType.Name}.{arg.Name}");
+                    Console.WriteLine($"No translation found for {arg.DeclaringType.Name}.{arg.Name}");
                 }
 
                 LanguageManager.Instance.TryGetString("Tooltip_" + arg.Name, out toolTip);
@@ -232,6 +244,16 @@ namespace Chummer.Backend.Options
                 }
                 return base.Visit(node);
             }
+        }
+    }
+
+    public class HeaderRenderDirective : OptionRenderItem
+    {
+        public string Title { get; }
+
+        public HeaderRenderDirective(string argTitle)
+        {
+            Title = argTitle;
         }
     }
 }

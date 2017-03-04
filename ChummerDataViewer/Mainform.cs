@@ -65,7 +65,7 @@ namespace ChummerDataViewer
 			//lstCrashes.View = View.Details;
 
 
-			foreach (CrashReport crashReport in PersistentState.Database.GetAllCrashes())
+			foreach (CrashReport crashReport in PersistentState.Database.GetAllCrashes().Take(100))
 			{
 				_crashReports.Add(crashReport);
 			}

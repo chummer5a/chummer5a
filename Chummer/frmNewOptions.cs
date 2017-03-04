@@ -53,7 +53,7 @@ namespace Chummer
 	                    (x => x.IsSupported)));
 
             var temp = extactor.BookOptions(o, GlobalOptions.Instance);
-	        SimpleTree<OptionItem> rawTree = extactor.Extract(o);
+	        SimpleTree<OptionRenderItem> rawTree = extactor.Extract(o);
 	        _options = new OptionCollectionCache(rawTree, temp, controlFactories);
 	        _winformTree = GenerateWinFormTree(rawTree);
 	        _winformTree.Children.Add(new BookNode(_options));
@@ -124,7 +124,7 @@ namespace Chummer
 	        }
 	    }
 
-	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionItem> tree)
+	    private AbstractOptionTree GenerateWinFormTree(SimpleTree<OptionRenderItem> tree)
 	    {
 	        SimpleOptionTree so = new SimpleOptionTree(tree.Tag.ToString(), new List<OptionRenderItem>(tree.Leafs), _options.ControlFactories);
 	        so.Children.AddRange(tree.Children.Select(GenerateWinFormTree));
@@ -153,7 +153,7 @@ namespace Chummer
 	    {
 	        c.Location = new Point(treeView1.Right,0);
 	        c.Height = treeView1.Bottom;
-	        c.Width = treeView1.Parent.Width - treeView1.Right;
+	        c.Width = treeView1.Parent.Width - treeView1.Right - SystemInformation.VerticalScrollBarWidth;
 	        c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 	    }
 
