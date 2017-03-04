@@ -180,7 +180,8 @@ namespace Chummer.Backend.Options
             LayoutRenderInfo ret = new LayoutRenderInfo()
             {
                 ControlLocations = new List<Point>(),
-                TextLocations = new List<TextRenderInfo>()
+                TextLocations = new List<TextRenderInfo>(),
+                ToolTips = new List<ToolTipData>()
             };
 
 
@@ -286,6 +287,10 @@ namespace Chummer.Backend.Options
                 }
 
 //                Console.WriteLine("EOL {0} -> {1}(+{2})", lineTop, lineBottom + LayoutOptions.Linespacing, (lineBottom + LayoutOptions.Linespacing) - lineTop);
+
+                if (line.ToolTip != null)
+                    ret.ToolTips.Add(new ToolTipData(line.ToolTip,
+                        new Rectangle(0, lineTop, lineRight, lineBottom - lineTop)));
 
                 lineMaxRight = Math.Max(lineMaxRight, lineRight);
                 lineTop = lineBottom + LayoutOptions.Linespacing;

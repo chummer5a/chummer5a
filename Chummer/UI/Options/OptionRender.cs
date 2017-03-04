@@ -9,6 +9,8 @@ using System.Drawing;
 using System.Linq;
 using System.Resources;
 using Chummer.Backend;
+using Chummer.Backend.Datastructures;
+using Chummer.Backend.UI;
 using Chummer.UI.Options.ControlGenerators;
 using FontStyle = System.Drawing.FontStyle;
 
@@ -21,6 +23,9 @@ namespace Chummer.UI.Options
         private List<LayoutRenderInfo> renderData = null;
         private List<int> sharedLayoutSpacing;
         private Font HeaderFont = new Font(Control.DefaultFont.FontFamily, (FIXED_SPACING * 2) / 3, FontStyle.Bold, GraphicsUnit.Pixel);
+        private HowerHelper _howerHelper = new HowerHelper();
+        private ToolTip _toolTip = new ToolTip();
+        private RTree<string> toolTipTree = new RTree<string>();
         
         public List<IOptionWinFromControlFactory> Factories { get; set; }
 
@@ -40,7 +45,22 @@ namespace Chummer.UI.Options
             Size = new System.Drawing.Size(300, 200);
             this.Resize += OnResize;
             _defaultGroupLayoutProvider.LayoutOptions.Font = Font;
+            MouseMove += _howerHelper.MouseEventHandler;
+            _howerHelper.Hover += OnHover;
+            _howerHelper.StopHover += StopHower;
 
+        }
+
+        private void StopHower(object sender, EventArgs e)
+        {
+            _toolTip.Hide(this);
+        }
+
+        private void OnHover(object sender, MouseEventArgs eventArgs)
+        {
+            string tt = toolTipTree.Find(eventArgs.Location);
+            if(tt != null)
+            {_toolTip.Show(tt, this, eventArgs.Location);}
         }
 
         private void OnResize(object sender, EventArgs eventArgs)
@@ -159,11 +179,22 @@ namespace Chummer.UI.Options
             PreRenderGroup @group =  new PreRenderGroup
             {
                 Controls = controls,
-                Lines = entries.Select((x, i) => new LayoutLineInfo
+                Lines = entries.Select((x, i) =>
                     {
-                        ControlOffset = controls[i].Location,
-                        ControlSize = controls[i].Size,
-                        LayoutString = x.DisplayString
+                        var l = new LayoutLineInfo
+                        {
+                            ControlOffset = controls[i].Location,
+                            ControlSize = controls[i].Size,
+                            LayoutString = x.DisplayString,
+                        };
+
+                        OptionEntryProxy proxy = x as OptionEntryProxy;
+                        if (proxy != null && proxy.ToolTip != null)
+                        {
+                            l.ToolTip = proxy.ToolTip;
+                        }
+
+                        return l;
                     })
                     .ToList()
             };
@@ -226,11 +257,12 @@ namespace Chummer.UI.Options
 
         private void LayoutGroups()
         {
+            toolTipTree = new RTree<string>(); //No clear method
+
             PointF offset = PointF.Empty; //new PointF(5, 5);
             int widestColumn = renderData.Count > 0 ? renderData.Max(x => x.Width) : 1;
             int columnCount = (Width - 5) / (widestColumn + 5);
             if (columnCount == 0) columnCount = 1;
-            Console.WriteLine($"Width of {Width} and a size of {widestColumn} gives space for {columnCount}");
 
             int[] usedSpace = new int[columnCount];
             for (int i = 0; i < usedSpace.Length; i++)
@@ -253,16 +285,25 @@ namespace Chummer.UI.Options
             {
                 PreRenderGroup preRenderGroup = preRenderData[index];
                 LayoutRenderInfo renderGroup = renderData[index];
-                Console.WriteLine("Controls = {0}, locations = {1}", preRenderGroup.Controls.Count,
-                    renderGroup.ControlLocations.Count);
                 for (int i = 0; i < preRenderGroup.Controls.Count; i++)
                 {
-                    preRenderGroup.Controls[i].Location =
-                        new System.Drawing.Point(
-                            renderGroup.ControlLocations[i].X + (int) offset.X + renderGroup.Offset.X,
-                            renderGroup.ControlLocations[i].Y + (int) offset.Y + renderGroup.Offset.Y + FIXED_SPACING);
+                    System.Drawing.Point controlPoint = new System.Drawing.Point(
+                        renderGroup.ControlLocations[i].X + (int) offset.X + renderGroup.Offset.X,
+                        renderGroup.ControlLocations[i].Y + (int) offset.Y + renderGroup.Offset.Y + FIXED_SPACING);
+
+
+                    preRenderGroup.Controls[i].Location = controlPoint;
+                }
+
+                foreach (ToolTipData toolTip in renderGroup.ToolTips)
+                {
+                    Rectangle r = toolTip.Location;
+                    r.Y += FIXED_SPACING;
+                    toolTipTree.Insert(toolTip.Text, r);
                 }
             }
+
+
         }
 
         private readonly Dictionary<FontStyle, Font> _fontCache = new Dictionary<FontStyle, Font>();

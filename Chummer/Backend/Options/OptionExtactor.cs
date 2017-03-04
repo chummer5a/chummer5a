@@ -173,7 +173,7 @@ namespace Chummer.Backend.Options
                 LanguageManager.Instance.TryGetString("Tooltip_" + arg.Name, out toolTip);
 
 
-                OptionEntryProxy option = new OptionEntryProxy(target, arg, displayString, toolTip);
+                OptionEntryProxy option = new OptionEntryProxy(target, arg, displayString, toolTip:toolTip);
 
                 OptionTagAttribute taga = arg.GetCustomAttribute<OptionTagAttribute>();
                 if (taga != null)

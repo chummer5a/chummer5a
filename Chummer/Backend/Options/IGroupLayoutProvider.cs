@@ -16,6 +16,7 @@ namespace Chummer.Backend.Options
         public Size ControlSize { get; set; }
         public Point ControlOffset { get; set; }
         public string LayoutString { get; set; }
+        public string ToolTip { get; set; }
     }
 
     public class LayoutRenderInfo
@@ -25,6 +26,19 @@ namespace Chummer.Backend.Options
         public int Width { get; set; }
         public int Height { get; set; }
         public Point Offset { get; set; }
+        public List<ToolTipData> ToolTips { get; set; }
+    }
+
+    public class ToolTipData
+    {
+        public string Text { get; }
+        public Rectangle Location { get; }
+
+        public ToolTipData(string text, Rectangle location)
+        {
+            Text = text;
+            Location = location;
+        }
     }
 
     public class TextRenderInfo

@@ -129,6 +129,7 @@
     <Compile Include="Backend\ColorUtilities.cs" />
     <Compile Include="Backend\Datastructures\DictionaryList.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
+    <Compile Include="Backend\Datastructures\RTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Datastructures\SimpleTree.cs" />
     <Compile Include="Backend\Datastructures\Vector3.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
     <Compile Include="Backend\UI\BookImageManager.cs" />
+    <Compile Include="Backend\UI\HowerHelper.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
