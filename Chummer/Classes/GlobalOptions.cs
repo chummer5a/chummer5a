@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
 using Chummer.Backend.Equipment;
 using Microsoft.Win32;
@@ -127,6 +128,7 @@ namespace Chummer
         #endregion
 
         #region Properties
+        [OptionAttributes("Display_GlobalOptions")]
         /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>

@@ -8620,7 +8620,10 @@ Do you want to continue?</text>
 			<key>Display_PrintNotes</key>
 			<text>_\t\t{}</text>
 		</string>
-
+		<string>
+			<key>OptionHeader_CharacterOptions</key>
+			<text>Character options</text>
+		</string>
 		<!-- End Region -->
 		<!-- End Region -->
 	</strings>

@@ -53,7 +53,9 @@ namespace Chummer
 	                    (x => x.IsSupported)));
 
             var temp = extactor.BookOptions(o, GlobalOptions.Instance);
+	        SimpleTree<OptionRenderItem> globalTree = extactor.Extract(GlobalOptions.Instance);
 	        SimpleTree<OptionRenderItem> rawTree = extactor.Extract(o);
+	        rawTree.Children.AddRange(globalTree.Children);
 	        _options = new OptionCollectionCache(rawTree, temp, controlFactories);
 	        _winformTree = GenerateWinFormTree(rawTree);
 	        _winformTree.Children.Add(new BookNode(_options));

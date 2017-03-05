@@ -269,7 +269,7 @@ namespace Chummer
 	    #endregion
 
 	    #region Character behavour
-	    [OptionAttributes("Display_CharacterOptions")]
+	    [OptionAttributes("OptionHeader_CharacterOptions")]
 
 	    /// <summary>
 	    /// Number of Limbs a standard character has.
@@ -291,7 +291,7 @@ namespace Chummer
 		/// Whether or not the More Lethal Gameplay optional rule is enabled.
 		/// </summary>
 		//
-		[OptionAttributes("Display_CharacterOptions/Display_HouseRules")]
+		[OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules")]
 	    [DisplayConfiguration("Checkbox_Options_MoreLethalGameplay")]
 		[SavePropertyAs("morelethalgameplay")]
 		public bool MoreLethalGameplay { get; set; }
@@ -706,7 +706,7 @@ namespace Chummer
 
 	    #region Optional Rules
 
-	    [OptionAttributes("Display_CharacterOptions/Display_OptionalRules")]
+	    [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
 	    public bool DroneMods { get; set; } = false;
 
 
@@ -717,7 +717,7 @@ namespace Chummer
 		/// Karma cost to improve an Attribute = New Rating X this value.
 		/// </summary>
 		[Header("Character Creation")]
-		[OptionAttributes("Display_CharacterOptions/Display_KarmaCosts")]
+		[OptionAttributes("OptionHeader_CharacterOptions/Display_KarmaCosts")]
 		[SavePropertyAs("karmaattribute")]
 		[DisplayConfiguration("Label_Options_ImproveAttribute")]
 		public int KarmaAttribute { get; set; } = 5;

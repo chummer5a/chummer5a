@@ -78,15 +78,22 @@ namespace Chummer.Backend.Options
             {
                 string[] path = group.Key.Split('/');
                 SimpleTree<OptionRenderItem> parrent = root;
-
+                string header;
                 //find path in option tree, skip last as thats new
                 //Breaks if trying to "jump" a path element
                 for (int i = 0; i < path.Length - 1; i++)
                 {
-                    parrent = parrent.Children.First(x => (string) x.Tag == path[i]);
+
+                    if(!LanguageManager.Instance.TryGetString(path[i], out header))
+                        header = path[i];
+                    parrent = parrent.Children.First(x => (string) x.Tag == header);
                 }
 
-                SimpleTree<OptionRenderItem> newChild = new SimpleTree<OptionRenderItem> {Tag = path.Last()};
+
+                if(!LanguageManager.Instance.TryGetString(path.Last(), out header))
+                    header = path.Last();
+
+                SimpleTree<OptionRenderItem> newChild = new SimpleTree<OptionRenderItem> {Tag = header};
 
 
                 foreach (PropertyInfo propertyInfo in group.Value)
