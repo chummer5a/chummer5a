@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="Backend\Attributes\OptionAttributes\DisplayConfigurationAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\DisplayIgnoreAttribute.cs" />
+    <Compile Include="Backend\Attributes\OptionAttributes\IsPathAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\OptionDisplayAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\OptionTagAttribute.cs" />
     <Compile Include="Backend\Attributes\SaveAttributes\SaveIgnorePropertyAttribute.cs" />
@@ -349,6 +350,7 @@
     <Compile Include="UI\Options\ControlGenerators\CheckBoxOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\IOptionWinFromControlFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\NumericUpDownOptionFactory.cs" />
+    <Compile Include="UI\Options\ControlGenerators\PathSelectiorFactory.cs" />
     <Compile Include="UI\Options\OptionRender.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -358,6 +360,7 @@
     <Compile Include="UI\Options\OptionsNumberControl.Designer.cs">
       <DependentUpon>OptionsNumberControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Options\PathSelectorControl.cs" />
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>

@@ -235,6 +235,7 @@ namespace Chummer
         /// Path to the user's PDF application.
         /// </summary>
         [SavePropertyAs("pdfapppath")]
+        [IsPath]
         public string PDFAppPath { get; set; } = "";
 
         /// <summary>

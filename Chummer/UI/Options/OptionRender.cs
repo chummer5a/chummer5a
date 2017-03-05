@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
-using System.Windows;
 using System.Windows.Forms;
 using Chummer.Backend.Options;
 using System.Drawing;
 using System.Linq;
-using System.Resources;
-using Chummer.Backend;
 using Chummer.Backend.Datastructures;
 using Chummer.Backend.UI;
 using Chummer.UI.Options.ControlGenerators;
@@ -19,13 +15,14 @@ namespace Chummer.UI.Options
     public class OptionRender : UserControl
     {
         private readonly IGroupLayoutProvider _defaultGroupLayoutProvider;
-        private List<PreRenderGroup> preRenderData = new List<PreRenderGroup>();
-        private List<LayoutRenderInfo> renderData = null;
-        private List<int> sharedLayoutSpacing;
-        private Font HeaderFont = new Font(Control.DefaultFont.FontFamily, (FIXED_SPACING * 2) / 3, FontStyle.Bold, GraphicsUnit.Pixel);
-        private HowerHelper _howerHelper = new HowerHelper();
-        private ToolTip _toolTip = new ToolTip();
-        private RTree<string> toolTipTree = new RTree<string>();
+        private readonly List<PreRenderGroup> _preRenderData = new List<PreRenderGroup>();
+        private readonly List<LayoutRenderInfo> _renderData = new List<LayoutRenderInfo>();
+        private readonly List<int> _sharedLayoutSpacing = new List<int>();
+        // ReSharper disable once PossibleLossOfFraction
+        private readonly Font _headerFont = new Font(DefaultFont.FontFamily, FIXED_SPACING * 2 / 3, FontStyle.Bold, GraphicsUnit.Pixel);
+        private readonly HowerHelper _howerHelper = new HowerHelper();
+        private readonly ToolTip _toolTip = new ToolTip();
+        private RTree<string> _toolTipTree = new RTree<string>();
         
         public List<IOptionWinFromControlFactory> Factories { get; set; }
 
@@ -42,8 +39,8 @@ namespace Chummer.UI.Options
         private void IntitializeComponent()
         {
             AutoScroll = true;
-            Size = new System.Drawing.Size(300, 200);
-            this.Resize += OnResize;
+            Size = new Size(300, 200);
+            Resize += OnResize;
             _defaultGroupLayoutProvider.LayoutOptions.Font = Font;
             MouseMove += _howerHelper.MouseEventHandler;
             _howerHelper.Hover += OnHover;
@@ -58,7 +55,7 @@ namespace Chummer.UI.Options
 
         private void OnHover(object sender, MouseEventArgs eventArgs)
         {
-            string tt = toolTipTree.Find(eventArgs.Location);
+            string tt = _toolTipTree.Find(eventArgs.Location);
             if(tt != null)
             {_toolTip.Show(tt, this, eventArgs.Location);}
         }
@@ -67,7 +64,7 @@ namespace Chummer.UI.Options
         {
             LayoutGroups();
 
-            this.Invalidate();
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -79,18 +76,17 @@ namespace Chummer.UI.Options
 
             //Can probably also restrict drawing arear...
 
-            for (var index = 0; index < renderData.Count; index++)
+            for (var index = 0; index < _renderData.Count; index++)
             {
-                LayoutRenderInfo renderGroup = renderData[index];
+                LayoutRenderInfo renderGroup = _renderData[index];
                 e.Graphics.DrawString(
-                    preRenderData[index].Header,
-                    HeaderFont,
+                    _preRenderData[index].Header,
+                    _headerFont,
                     new SolidBrush(ForeColor),
                     new PointF(
                         renderGroup.Offset.X + AutoScrollPosition.X,
                         renderGroup.Offset.Y + AutoScrollPosition.Y
                     ));
-                Console.WriteLine("Offset = {0}", renderGroup.Offset);
                 foreach (TextRenderInfo renderInfo in renderGroup.TextLocations)
                 {
                     e.Graphics.DrawString(
@@ -132,18 +128,17 @@ namespace Chummer.UI.Options
                 {
                     if (displayEntries.Count != 0)
                     {
-                        preRenderData.Add(CreatePreRenderGroup(nonDisplayEntries, displayEntries));
+                        _preRenderData.Add(CreatePreRenderGroup(nonDisplayEntries, displayEntries));
 
                         displayEntries.Clear();
                         nonDisplayEntries.Clear();
-                        Console.WriteLine("Added new group");
                     }
 
                     nonDisplayEntries.Add(item);
                 }
             }
 
-            preRenderData.Add(CreatePreRenderGroup(nonDisplayEntries, displayEntries));
+            _preRenderData.Add(CreatePreRenderGroup(nonDisplayEntries, displayEntries));
 
             sw.TaskEnd("PreRender");
 
@@ -152,7 +147,7 @@ namespace Chummer.UI.Options
             sw.TaskEnd("Layout");
 
             Visible = oldVis;
-            this.Invalidate();
+            Invalidate();
 
             sw.TaskEnd("Last");
         }
@@ -216,51 +211,46 @@ namespace Chummer.UI.Options
         {
             Controls.Clear();
 
-            preRenderData.Clear();
-            renderData.Clear();
-            sharedLayoutSpacing.Clear();
+            _preRenderData.Clear();
+            _renderData.Clear();
+            _sharedLayoutSpacing.Clear();
         }
 
 
         void SetupLayout()
         {
-            Console.WriteLine("Enter");
-            PointF offset = new PointF(5, 5);
-            Graphics g = this.CreateGraphics();
-            sharedLayoutSpacing = new List<int>();
-            renderData = new List<LayoutRenderInfo>();
+            Graphics g = CreateGraphics();
+            _sharedLayoutSpacing.Clear();
+            _renderData.Clear();
 
-            foreach (PreRenderGroup preRenderGroup in preRenderData)
+            foreach (PreRenderGroup preRenderGroup in _preRenderData)
             {
                 object cache = _defaultGroupLayoutProvider.ComputeLayoutSpacing(
                     g                    ,
                     preRenderGroup.Lines,
-                    sharedLayoutSpacing
+                    _sharedLayoutSpacing
                 );
                 preRenderGroup.Cache = cache;
             }
 
-            Console.WriteLine("First");
-            foreach (PreRenderGroup preRenderGroup in preRenderData)
+            foreach (PreRenderGroup preRenderGroup in _preRenderData)
             {
                 LayoutRenderInfo renderGroup = _defaultGroupLayoutProvider.PerformLayout(g,
-                    preRenderGroup.Lines, sharedLayoutSpacing, preRenderGroup.Cache);
+                    preRenderGroup.Lines, _sharedLayoutSpacing, preRenderGroup.Cache);
 
 
-                renderData.Add(renderGroup);
+                _renderData.Add(renderGroup);
             }
-
-            Console.WriteLine("Exit");
 
             LayoutGroups();
         }
 
         private void LayoutGroups()
         {
-            toolTipTree = new RTree<string>(); //No clear method
+            _toolTipTree = new RTree<string>(); //No clear method
 
             PointF offset = PointF.Empty; //new PointF(5, 5);
-            int widestColumn = renderData.Count > 0 ? renderData.Max(x => x.Width) : 1;
+            int widestColumn = _renderData.Count > 0 ? _renderData.Max(x => x.Width) : 1;
             int columnCount = (Width - 5) / (widestColumn + 5);
             if (columnCount == 0) columnCount = 1;
 
@@ -268,7 +258,7 @@ namespace Chummer.UI.Options
             for (int i = 0; i < usedSpace.Length; i++)
                 usedSpace[i] = 5;
 
-            foreach (LayoutRenderInfo renderInfo in renderData)
+            foreach (LayoutRenderInfo renderInfo in _renderData)
             {
                 int smallest = 0;
                 for (int i = 0; i < usedSpace.Length; i++)
@@ -277,17 +267,17 @@ namespace Chummer.UI.Options
                         smallest = i;
                 }
 
-                renderInfo.Offset = new System.Drawing.Point(smallest * (widestColumn + 5) + 5, usedSpace[smallest]);
+                renderInfo.Offset = new Point(smallest * (widestColumn + 5) + 5, usedSpace[smallest]);
                 usedSpace[smallest] += renderInfo.Height + FIXED_SPACING;
             }
 
-            for (var index = 0; index < preRenderData.Count; index++)
+            for (var index = 0; index < _preRenderData.Count; index++)
             {
-                PreRenderGroup preRenderGroup = preRenderData[index];
-                LayoutRenderInfo renderGroup = renderData[index];
+                PreRenderGroup preRenderGroup = _preRenderData[index];
+                LayoutRenderInfo renderGroup = _renderData[index];
                 for (int i = 0; i < preRenderGroup.Controls.Count; i++)
                 {
-                    System.Drawing.Point controlPoint = new System.Drawing.Point(
+                    Point controlPoint = new Point(
                         renderGroup.ControlLocations[i].X + (int) offset.X + renderGroup.Offset.X,
                         renderGroup.ControlLocations[i].Y + (int) offset.Y + renderGroup.Offset.Y + FIXED_SPACING);
 
@@ -299,7 +289,7 @@ namespace Chummer.UI.Options
                 {
                     Rectangle r = toolTip.Location;
                     r.Y += FIXED_SPACING;
-                    toolTipTree.Insert(toolTip.Text, r);
+                    _toolTipTree.Insert(toolTip.Text, r);
                 }
             }
 

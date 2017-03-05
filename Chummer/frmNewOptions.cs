@@ -39,7 +39,8 @@ namespace Chummer
 	        {
 	            new CheckBoxOptionFactory(),
 	            new NumericUpDownOptionFactory(),
-                new BookOptionFactory()
+                new BookOptionFactory(),
+	            new PathSelectiorFactory()
 	        };
 
 	        //TODO: dropdown that allows you to select/add multiple

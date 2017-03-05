@@ -104,7 +104,10 @@ namespace Chummer.Backend.Options
                         continue;
 
                     if (!_supported.Any(x => x(entryProxy)))
+                    {
+                        Console.WriteLine($"No controlfactory for {entryProxy.TargetProperty.PropertyType}");
                         continue;
+                    }
 
                     if (propertyInfo.GetCustomAttribute<HeaderAttribute>() != null)
                     {
