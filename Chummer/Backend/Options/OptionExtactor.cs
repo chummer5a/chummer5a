@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Xml.Xsl.Runtime;
 using Chummer.Datastructures;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Classes;

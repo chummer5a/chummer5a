@@ -360,7 +360,12 @@
     <Compile Include="UI\Options\OptionsNumberControl.Designer.cs">
       <DependentUpon>OptionsNumberControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Options\PathSelectorControl.cs" />
+    <Compile Include="UI\Options\PathSelectorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Options\PathSelectorControl.Designer.cs">
+      <DependentUpon>PathSelectorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
@@ -915,6 +920,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Options\OptionsNumberControl.resx">
       <DependentUpon>OptionsNumberControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Options\PathSelectorControl.resx">
+      <DependentUpon>PathSelectorControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
