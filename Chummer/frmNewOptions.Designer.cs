@@ -67,7 +67,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.Location = new System.Drawing.Point(8, 32);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(160, 501);
+            this.treeView1.Size = new System.Drawing.Size(160, 507);
             this.treeView1.TabIndex = 7;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -265,7 +265,7 @@
             this.flowLayoutPanel1.MinimumSize = new System.Drawing.Size(300, 300);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(967, 524);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(967, 531);
             this.flowLayoutPanel1.TabIndex = 5;
             this.flowLayoutPanel1.Tag = "Default";
             this.flowLayoutPanel1.Visible = false;
@@ -273,10 +273,11 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(1064, 545);
+            this.btnOK.Location = new System.Drawing.Point(1068, 545);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 8;
+            this.btnOK.Tag = "String_OK";
             this.btnOK.Text = "[OK]";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -284,10 +285,11 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(983, 545);
+            this.btnCancel.Location = new System.Drawing.Point(987, 545);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 9;
+            this.btnCancel.Tag = "String_Cancel";
             this.btnCancel.Text = "[Cancel]";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -295,10 +297,11 @@
             // btnReset
             // 
             this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnReset.Location = new System.Drawing.Point(902, 545);
+            this.btnReset.Location = new System.Drawing.Point(906, 545);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 23);
             this.btnReset.TabIndex = 10;
+            this.btnReset.Tag = "Button_Reset";
             this.btnReset.Text = "[Reset]";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
@@ -306,11 +309,12 @@
             // btnDefault
             // 
             this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDefault.Location = new System.Drawing.Point(12, 545);
+            this.btnDefault.Location = new System.Drawing.Point(8, 545);
             this.btnDefault.Name = "btnDefault";
-            this.btnDefault.Size = new System.Drawing.Size(75, 23);
+            this.btnDefault.Size = new System.Drawing.Size(160, 23);
             this.btnDefault.TabIndex = 11;
-            this.btnDefault.Text = "[Default]";
+            this.btnDefault.Tag = "Button_RestoreDefaultSettings";
+            this.btnDefault.Text = "[Restore Default Settings]";
             this.btnDefault.UseVisualStyleBackColor = true;
             this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
             // 
@@ -328,7 +332,8 @@
             this.Controls.Add(this.textBox1);
             this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "frmNewOptions";
-            this.Text = "Form1";
+            this.Tag = "Title_Options";
+            this.Text = "Options";
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);

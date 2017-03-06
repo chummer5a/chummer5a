@@ -8624,6 +8624,10 @@ Do you want to continue?</text>
 			<key>OptionHeader_CharacterOptions</key>
 			<text>Character options</text>
 		</string>
+    <string>
+      <key>Button_RestoreDefaultSettings</key>
+      <text>Restore Default Settings</text>
+    </string>
 		<!-- End Region -->
 		<!-- End Region -->
 	</strings>

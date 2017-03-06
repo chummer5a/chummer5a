@@ -79,7 +79,9 @@ namespace Chummer
 
                 return c;
 	        });
-	    }
+
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+        }
 
 	    private void SearchBoxChanged(object sender, EventArgs args)
 	    {
