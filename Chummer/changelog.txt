@@ -17,6 +17,8 @@ Data Changes:
 - New Strings: 
 
 - String_CannotFindLifestyleQuality
+- Checkbox_Spirit_Fettered
+- String_ExpenseFetteredSpirit
 
 Build 191
 

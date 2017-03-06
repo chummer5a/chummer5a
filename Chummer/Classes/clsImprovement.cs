@@ -221,7 +221,8 @@ namespace Chummer
 			Custom,
 	        Heritage,
 	        MartialArt,
-            AIProgram
+            AIProgram,
+            SpiritFettering
         }
 
 		private string _strImprovedName = string.Empty;

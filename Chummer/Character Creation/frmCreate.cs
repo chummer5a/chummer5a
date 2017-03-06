@@ -830,6 +830,7 @@ namespace Chummer
                     objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
                     objSpiritControl.ForceChanged += objSpirit_ForceChanged;
                     objSpiritControl.BoundChanged += objSpirit_BoundChanged;
+                    objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
                     objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
@@ -1255,6 +1256,7 @@ namespace Chummer
                     objSpiritControl.ServicesOwedChanged -= objSpirit_ServicesOwedChanged;
                     objSpiritControl.ForceChanged -= objSpirit_ForceChanged;
                     objSpiritControl.BoundChanged -= objSpirit_BoundChanged;
+                    objSpiritControl.FetteredChanged -= objSpirit_FetteredChanged;
                     objSpiritControl.DeleteSpirit -= objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged -= objSpirit_FileNameChanged;
                 }
@@ -4223,6 +4225,14 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
+        private void objSpirit_FetteredChanged(Object sender)
+        {
+            //OBSOLETE: This will be redundant once DataBoundAttributes is merged, replace with CalculateBP.
+            UpdateCharacterInfo();
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
         private void objSpirit_ServicesOwedChanged(Object sender)
         {
             // Handle the ServicesOwedChanged Event for the SpiritControl object.
@@ -4737,6 +4747,7 @@ namespace Chummer
             objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
             objSpiritControl.ForceChanged += objSpirit_ForceChanged;
             objSpiritControl.BoundChanged += objSpirit_BoundChanged;
+            objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
             objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
             objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
@@ -14227,6 +14238,14 @@ namespace Chummer
                 // Each Spirit costs KarmaSpirit x Services Owed.
                 intKarmaPointsRemain -= objSpiritControl.ServicesOwed * _objOptions.KarmaSpirit;
                 intSpiritPointsUsed += objSpiritControl.ServicesOwed * _objOptions.KarmaSpirit;
+
+                // Each Fettered Spirit costs 3 x Force. 
+                //TODO: Bind the 3 to an option.
+                if (objSpiritControl.Fettered)
+                {
+                    intKarmaPointsRemain -= objSpiritControl.Force * 3;
+                    intSpiritPointsUsed += objSpiritControl.Force * 3;
+                }
             }
             lblSpiritsBP.Text = string.Format("{0} " + strPoints, intSpiritPointsUsed.ToString());
             intFreestyleBP += intSpiritPointsUsed;

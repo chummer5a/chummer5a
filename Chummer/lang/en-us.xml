@@ -3003,7 +3003,11 @@
 			<key>String_ExpenseLeaveNetwork</key>
 			<text>Left a Network</text>
 		</string>
-		<string>
+    <string>
+      <key>String_ExpenseFetteredSpirit</key>
+      <text>Fettered a Spirit</text>
+    </string>
+    <string>
 			<key>String_CloningMachineNumber</key>
 			<text>How many clones would you like to create?</text>
 		</string>
@@ -5320,6 +5324,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Spirit_Bound</key>
 			<text>Bound</text>
 		</string>
+    <string>
+      <key>Checkbox_Spirit_Fettered</key>
+      <text>Fettered</text>
+    </string>
 		<string>
 			<key>Label_Sprite_Rating</key>
 			<text>Rating:</text>
