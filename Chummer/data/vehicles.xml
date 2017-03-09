@@ -7541,8 +7541,8 @@
 			<category>Body</category>
 			<rating>0</rating>
 			<slots>1</slots>
-			<avail>12</avail>
-			<cost>50000</cost>
+			<avail>8</avail>
+			<cost>5000</cost>
 			<source>R5</source>
 			<page>166</page>
 		</mod>

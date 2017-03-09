@@ -143,7 +143,7 @@ namespace Chummer
                     foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
                     {
                         objNode.ExpandAll();
-        }
+                    }
                 }
                 else
                 {
@@ -782,6 +782,7 @@ namespace Chummer
                     objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
                     objSpiritControl.ForceChanged += objSpirit_ForceChanged;
                     objSpiritControl.BoundChanged += objSpirit_BoundChanged;
+                    objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
                     objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
@@ -1199,6 +1200,7 @@ namespace Chummer
                     objSpiritControl.ServicesOwedChanged -= objSpirit_ServicesOwedChanged;
                     objSpiritControl.ForceChanged -= objSpirit_ForceChanged;
                     objSpiritControl.BoundChanged -= objSpirit_BoundChanged;
+                    objSpiritControl.FetteredChanged -= objSpirit_FetteredChanged;
                     objSpiritControl.DeleteSpirit -= objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged -= objSpirit_FileNameChanged;
                 }
@@ -4165,6 +4167,14 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
+        private void objSpirit_FetteredChanged(Object sender)
+        {
+            //OBSOLETE: This will be redundant once DataBoundAttributes is merged, replace with CalculateBP.
+            UpdateCharacterInfo();
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
         private void objSpirit_ServicesOwedChanged(Object sender)
         {
             // Handle the ServicesOwedChanged Event for the SpiritControl object.
@@ -4599,6 +4609,7 @@ namespace Chummer
             objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
             objSpiritControl.ForceChanged += objSpirit_ForceChanged;
             objSpiritControl.BoundChanged += objSpirit_BoundChanged;
+            objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
             objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
             objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
@@ -12063,7 +12074,7 @@ namespace Chummer
                 if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(_objCharacter.TraditionDrain))
                 {
                     CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
-                        }
+                }
 
                 _blnSkipRefresh = false;
             }
@@ -13942,6 +13953,14 @@ namespace Chummer
                 // Each Spirit costs KarmaSpirit x Services Owed.
                 intKarmaPointsRemain -= objSpiritControl.ServicesOwed * _objOptions.KarmaSpirit;
                 intSpiritPointsUsed += objSpiritControl.ServicesOwed * _objOptions.KarmaSpirit;
+
+                // Each Fettered Spirit costs 3 x Force. 
+                //TODO: Bind the 3 to an option.
+                if (objSpiritControl.Fettered)
+                {
+                    intKarmaPointsRemain -= objSpiritControl.Force * 3;
+                    intSpiritPointsUsed += objSpiritControl.Force * 3;
+                }
             }
             lblSpiritsBP.Text = string.Format("{0} " + strPoints, intSpiritPointsUsed.ToString());
             intFreestyleBP += intSpiritPointsUsed;
@@ -14265,13 +14284,13 @@ namespace Chummer
                 if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
                     CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
-                        }
+                }
 
                 // Update the Fading CharacterAttribute Value.
                 if (_objCharacter.RESEnabled)
                 {
                     CalculateTraditionDrain(_objCharacter.TechnomancerFading, _objImprovementManager, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
-                        }
+                }
 
                 // Update Living Persona values.
                 if (_objCharacter.RESEnabled || _objCharacter.DEPEnabled)
@@ -14440,7 +14459,7 @@ namespace Chummer
             {
                 AutoSaveCharacter();
             }
-		    }
+		}
 
         /// <summary>
         /// Calculate the amount of Nuyen the character has remaining.
@@ -15308,8 +15327,8 @@ namespace Chummer
 		    string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
             string strCounterSpelling = LanguageManager.Instance.GetString("Label_CounterspellingDice");
             string strSpellResistance = LanguageManager.Instance.GetString("String_SpellResistanceDice");
-			//Indirect Dodge
-			lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
+            //Indirect Dodge
+            lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
 		    strSpellTooltip = $"{strModifiers}: " +
 		                      $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue})";
 			tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
@@ -15328,14 +15347,14 @@ namespace Chummer
 			lblSpellDefenceDirectSoakPhysical.Text = (_objCharacter.BOD.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
 			strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
 			//Detection Spells
 			lblSpellDefenceDetection.Text =
 				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
 			strSpellTooltip = $"{strModifiers}: " +
 			                  $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) " +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
 			//Decrease Attribute - BOD
 			lblSpellDefenceDecAttBOD.Text =
 				(_objCharacter.BOD.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
@@ -15347,67 +15366,67 @@ namespace Chummer
 				(_objCharacter.AGI.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.AGI.DisplayAbbrev} ({_objCharacter.AGI.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
 			//Decrease Attribute - REA
 			lblSpellDefenceDecAttREA.Text =
 				(_objCharacter.REA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
 			//Decrease Attribute - STR
 			lblSpellDefenceDecAttSTR.Text =
 				(_objCharacter.STR.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({_objCharacter.STR.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
 			//Decrease Attribute - CHA
 			lblSpellDefenceDecAttCHA.Text =
 				(_objCharacter.CHA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
 			//Decrease Attribute - INT
 			lblSpellDefenceDecAttINT.Text =
 				(_objCharacter.INT.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
 			//Decrease Attribute - LOG
 			lblSpellDefenceDecAttLOG.Text =
 				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
 			//Decrease Attribute - WIL
 			lblSpellDefenceDecAttWIL.Text =
 				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
 			//Illusion - Mana
 			lblSpellDefenceIllusionMana.Text =
 				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
 			//Illusion - Physical
 			lblSpellDefenceIllusionPhysical.Text =
 				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
 			//Manipulation - Mental
 			lblSpellDefenceManipMental.Text =
 				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
+            tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
 			//Manipulation - Physical
 			lbllSpellDefenceManipPhysical.Text =
 				(_objCharacter.STR.TotalValue + _objCharacter.BOD.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({_objCharacter.BOD.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-			tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
+            tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
 		}
 
         /// <summary>
@@ -16424,15 +16443,15 @@ namespace Chummer
 				}
 
 				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost))
-					{
-						if (strQualities.Length > 0)
-							strQualities += ", ";
+				{
+                    if (strQualities.Length > 0)
+                        strQualities += ", ";
 
-						if (objImprovement.Value > 0)
-							strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
-						else
-							strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
-					}
+                    if (objImprovement.Value > 0)
+                        strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
+                    else
+                        strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
+                }
 
 				foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
 				{

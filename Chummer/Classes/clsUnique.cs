@@ -45,10 +45,10 @@ namespace Chummer
 		private int _intMetatypeMin = 1;
 		private int _intMetatypeMax = 6;
 		private int _intMetatypeAugMax = 9;
-		private int _intValue = 0;
-		private int _intAugModifier = 0;
-        private int _intBase = 0;
-        private int _intKarma = 0;
+		private int _intValue;
+		private int _intAugModifier;
+        private int _intBase;
+        private int _intKarma;
 		private string _strAbbrev;
 	    private string _strDisplayAbbrev;
 	    private string _strDisplayName;
@@ -807,17 +807,17 @@ namespace Chummer
                 }
                 return _strDisplayName;
             }
-		}
-		#endregion
+        }
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
-		/// </summary>
-		/// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
-		/// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
-		/// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
-		public void AssignLimits(string strMin, string strMax, string strAug)
+        #region Methods
+        /// <summary>
+        /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
+        /// </summary>
+        /// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        public void AssignLimits(string strMin, string strMax, string strAug)
 		{
 		    int intTmp;
 		    int.TryParse(strMin, out intTmp);
@@ -1127,7 +1127,7 @@ namespace Chummer
 	/// </summary>
 	public class Quality : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
         public string _strMetagenetic = string.Empty;
 		private string _strExtra = string.Empty;
@@ -1138,8 +1138,8 @@ namespace Chummer
 		private bool _blnImplemented = true;
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
-		private int _intBP = 0;
-        private int _intLP = 0;
+		private int _intBP;
+        private int _intLP;
 		private QualityType _objQualityType = QualityType.Positive;
 		private QualitySource _objQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
@@ -1147,8 +1147,8 @@ namespace Chummer
 		private readonly Character _objCharacter;
 		private string _strAltName = string.Empty;
 		private string _strAltPage = string.Empty;
-		private Guid _guiWeaponID = new Guid();
-	    private Guid _qualiyGuid = new Guid();
+		private Guid _guiWeaponID;
+	    private Guid _qualiyGuid;
 		private string _stage;
 
 		public String Stage
@@ -2094,9 +2094,10 @@ namespace Chummer
 	/// </summary>
 	public class Spirit
 	{
+        private Guid _guiId;
 		private string _strName = string.Empty;
 		private string _strCritterName = string.Empty;
-		private int _intServicesOwed = 0;
+		private int _intServicesOwed;
 		private SpiritType _objEntityType = SpiritType.Spirit;
 		private bool _blnBound = true;
 		private int _intForce = 1;
@@ -2136,6 +2137,7 @@ namespace Chummer
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("spirit");
+            objWriter.WriteElementString("guid", _guiId.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("crittername", _strCritterName);
 			objWriter.WriteElementString("services", _intServicesOwed.ToString());
@@ -2156,6 +2158,7 @@ namespace Chummer
 		{
             if (objNode == null)
                 return;
+            objNode.TryGetField("guid", Guid.TryParse, out _guiId);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
             objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
@@ -2176,22 +2179,12 @@ namespace Chummer
 		{
 			// Translate the Critter name if applicable.
 			string strName = _strName;
-			XmlDocument objXmlDocument;
-			if (_objEntityType == SpiritType.Spirit)
-				objXmlDocument = XmlManager.Instance.Load("traditions.xml");
-			else
-				objXmlDocument = XmlManager.Instance.Load("streams.xml");
+		    XmlDocument objXmlDocument = XmlManager.Instance.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml");
 			XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strName + "\"]");
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
-				if (objXmlCritterNode != null)
-				{
-					if (objXmlCritterNode["translate"] != null)
-						strName = objXmlCritterNode["translate"].InnerText;
+                strName = objXmlCritterNode?["translate"]?.InnerText;
 				}
-			}
-
-
 
 			objWriter.WriteStartElement("spirit");
 			objWriter.WriteElementString("name", strName);
@@ -2205,10 +2198,10 @@ namespace Chummer
 
 				Dictionary<String, int> attributes = new Dictionary<string, int>();
 				objWriter.WriteStartElement("spiritattributes");
-				foreach (string Attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"})
+				foreach (string attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"})
 				{
 					String strInner = string.Empty;
-					if (objXmlCritterNode.TryGetStringFieldQuickly(Attribute, ref strInner))
+					if (objXmlCritterNode.TryGetStringFieldQuickly(attribute, ref strInner))
 					{
 						//Here is some black magic (used way too many places)
 						//To calculate the int value of a string
@@ -2222,9 +2215,9 @@ namespace Chummer
 							value = _intForce; //if failed to parse, default to force
 						}
 						value = Math.Max(value, 1); //Min value is 1
-						objWriter.WriteElementString(Attribute, value.ToString());
+						objWriter.WriteElementString(attribute, value.ToString());
 
-						attributes[Attribute] = value;
+						attributes[attribute] = value;
 					}
 				}
 
@@ -2469,6 +2462,14 @@ namespace Chummer
 				_strNotes = value;
 			}
 		}
+
+        public bool Fettered { get; internal set; }
+
+        public string InternalId
+        {
+            get { return _guiId.ToString(); }
+            set { _guiId = Guid.Parse(value); }
+        }
 		#endregion
 	}
 
@@ -2477,7 +2478,7 @@ namespace Chummer
 	/// </summary>
 	public class Spell : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
 		private string _strDescriptors = string.Empty;
 		private string _strCategory = string.Empty;
@@ -2489,15 +2490,15 @@ namespace Chummer
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
 		private string _strExtra = string.Empty;
-		private bool _blnLimited = false;
-		private bool _blnExtended = false;
+		private bool _blnLimited;
+		private bool _blnExtended;
 		private string _strNotes = string.Empty;
 		private readonly Character _objCharacter;
 		private string _strAltName = string.Empty;
 		private string _strAltCategory = string.Empty;
 		private string _strAltPage = string.Empty;
-        private bool _blnAlchemical = false;
-        private int _intGrade = 0;
+        private bool _blnAlchemical;
+        private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -3439,10 +3440,10 @@ namespace Chummer
 	/// </summary>
 	public class Focus : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
-		private Guid _guiGearId = new Guid();
-		private int _intRating = 0;
+		private Guid _guiGearId;
+		private int _intRating;
 
 		#region Constructor, Create, Save, and Load Methods
 		public Focus()
@@ -3542,9 +3543,9 @@ namespace Chummer
 	/// </summary>
 	public class StackedFocus
 	{
-		private Guid _guiID = new Guid();
-		private bool _blnBonded = false;
-		private Guid _guiGearId = new Guid();
+		private Guid _guiID;
+		private bool _blnBonded;
+		private Guid _guiGearId;
 		private List<Gear> _lstGear = new List<Gear>();
 		private readonly Character _objCharacter;
 
@@ -3766,12 +3767,12 @@ namespace Chummer
 	/// </summary>
 	public class Metamagic : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
-		private bool _blnPaidWithKarma = false;
-        private int _intGrade = 0;
+		private bool _blnPaidWithKarma;
+        private int _intGrade;
 		private XmlNode _nodBonus;
 		private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Metamagic;
 		private string _strNotes = string.Empty;
@@ -4101,12 +4102,12 @@ namespace Chummer
     /// </summary>
     public class Art : INamedItemWithGuid
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private XmlNode _nodBonus;
-        private int _intGrade = 0;
+        private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Art;
         private string _strNotes = string.Empty;
 
@@ -4385,12 +4386,12 @@ namespace Chummer
     /// </summary>
     public class Enhancement : INamedItemWithGuid
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private XmlNode _nodBonus;
-        private int _intGrade = 0;
+        private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
         private string _strNotes = string.Empty;
         private Power _objParent;
@@ -4685,7 +4686,7 @@ namespace Chummer
 	/// </summary>
 	public class ComplexForm : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
         private string _strTarget = string.Empty;
         private string _strDuration = string.Empty;
@@ -4983,7 +4984,7 @@ namespace Chummer
 	/// </summary>
 	public class AIProgram : INamedItemWithGuid
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strRequiresProgram = string.Empty;
         private string _strSource = string.Empty;
@@ -4992,7 +4993,7 @@ namespace Chummer
         private string _strExtra = string.Empty;
         private string _strAltName = string.Empty;
         private string _strAltPage = string.Empty;
-        private bool _boolIsAdvancedProgram = false;
+        private bool _boolIsAdvancedProgram;
         private bool _boolCanDelete = true;
         private readonly Character _objCharacter;
 
@@ -5308,7 +5309,7 @@ namespace Chummer
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
 		private int _intRating = 1;
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private List<MartialArtAdvantage> _lstAdvantages = new List<MartialArtAdvantage>();
 		private string _strNotes = string.Empty;
 		private Character _objCharacter;
@@ -5583,7 +5584,7 @@ namespace Chummer
 	/// </summary>
 	public class MartialArtAdvantage : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
 		private string _strNotes = string.Empty;
         private string _strSource = string.Empty;
@@ -5784,7 +5785,7 @@ namespace Chummer
     /// </summary>
     public class MartialArtManeuver : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
@@ -5997,12 +5998,12 @@ namespace Chummer
     /// </summary>
     public class LimitModifier : INamedItemWithGuid
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
         private string _strLimit = string.Empty;
         private string _strCondition = string.Empty;
-        private int _intBonus = 0;
+        private int _intBonus;
         private Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -6260,13 +6261,13 @@ namespace Chummer
 		private string _strRelativeName = string.Empty;
 		private string _strNotes = string.Empty;
 		private Color _objColour;
-		private bool _blnFree = false;
-        private bool _blnIsGroup = false;
+		private bool _blnFree;
+        private bool _blnIsGroup;
 		private Character _objCharacter;
 	    private bool _blnMadeMan;
 		private bool _blnBlackmail;
 		private bool _blnFamily;
-		private bool _readonly = false;
+		private bool _readonly;
 
 		#region Helper Methods
 		/// <summary>
@@ -6672,7 +6673,7 @@ namespace Chummer
 	/// </summary>
 	public class CritterPower : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
 		private string _strType = string.Empty;
@@ -6682,8 +6683,8 @@ namespace Chummer
 		private string _strExtra = string.Empty;
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
-	    private int _intKarma = 0;
-		private double _dblPowerPoints = 0.0;
+	    private int _intKarma;
+		private double _dblPowerPoints;
 		private XmlNode _nodBonus;
 		private string _strNotes = string.Empty;
 		private readonly Character _objCharacter;
@@ -7257,12 +7258,12 @@ namespace Chummer
 	/// </summary>
 	public class InitiationGrade : IItemWithGuid
 	{
-		private Guid _guiID = new Guid();
-		private bool _blnGroup = false;
-		private bool _blnOrdeal = false;
-        private bool _blnSchooling = false;
-		private bool _blnTechnomancer = false;
-		private int _intGrade = 0;
+		private Guid _guiID;
+		private bool _blnGroup;
+		private bool _blnOrdeal;
+        private bool _blnSchooling;
+		private bool _blnTechnomancer;
+		private int _intGrade;
 		private string _strNotes = string.Empty;
 
 		private readonly CharacterOptions _objOptions;
@@ -7500,7 +7501,7 @@ namespace Chummer
 
 	public class CalendarWeek : IItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+		private Guid _guiID;
 		private int _intYear = 2072;
 		private int _intWeek = 1;
 		private string _strNotes = string.Empty;

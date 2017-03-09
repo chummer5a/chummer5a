@@ -137,6 +137,7 @@
 	<xsl:variable name="lang.Notoriety"		select="'Schlechter Ruf'"/>
 	<xsl:variable name="lang.Nuyen"			select="'Nuyen'"/>
 	<xsl:variable name="lang.Other"			select="'Andere'"/>
+	<xsl:variable name="lang.OVR"			select="'ÜbS'"/>
 	<xsl:variable name="lang.Permanent"		select="'Permanent'"/>
 	<xsl:variable name="lang.Persona"		select="'Persona'"/>
 	<xsl:variable name="lang.Physical"		select="'Körperlich'"/>

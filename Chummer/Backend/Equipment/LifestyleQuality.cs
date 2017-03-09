@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -228,7 +229,31 @@ namespace Chummer.Backend.Equipment
 			if (_objCharacter.LastSavedVersion <= Version.Parse("5.190.0"))
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + _guiID + "\"]") ??
+				                                  objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+			    if (objLifestyleQualityNode == null)
+			    {
+			        var lstQualities = new List<ListItem>();
+                    lstQualities.AddRange(
+                             from XmlNode objNode in
+                             objXmlDocument.SelectNodes("/chummer/qualities/quality")
+                             select new ListItem
+                             {
+                                 Value = objNode["name"].InnerText,
+                                 Name = objNode["translate"]?.InnerText ?? objNode["name"].InnerText
+                             });
+                    var frmSelect = new frmSelectItem
+			        {
+			            DropdownItems = lstQualities,
+			            Description =
+                        LanguageManager.Instance.GetString("String_CannotFindLifestyleQuality").Replace("{0}", _strName)
+			        };
+			        frmSelect.ShowDialog();
+			        if (frmSelect.DialogResult == DialogResult.Cancel)
+			            return;
+
+                    objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelect.SelectedItem + "\"]");
+                }
 			    int intTemp = 0;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("cost", ref intTemp))
                     Cost = intTemp;

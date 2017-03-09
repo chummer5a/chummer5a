@@ -209,8 +209,9 @@
           <applytorating>yes</applytorating>
 					<skillcategories>
 						<category>Combat Active</category>
-						<category>Technical Active</category>
+            <category>Physical Active</category>
 						<category>Social Active</category>
+            <category>Technical Active</category>
 						<category>Vehicle Active</category>
 					</skillcategories>
         </selectskill>

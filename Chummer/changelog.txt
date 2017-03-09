@@ -2,11 +2,24 @@ Build 192
 
 Application Changes:
 
+- Fixed an issue loading characters with lifestyle qualities that have been renamed. 
+- Added functionality for Working for the People/Man to automatically exchange Karma for Nuyen. 
+- Fixed the career mode weapons list stretching outside the visible area.
 - Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
 Data Changes:
 
 - Fixed incorrect reach for the Frying Pan and Chair improvised weapons. Fixes #1483.
+- Fixed incorrect bonuses for the Dracoform qualities that prevented them from being added. 
+- Fixed incorrect costing for the Workshop vehicle modfication.
+- Restored missing Physical Active group to the Improved Ability power. 
+- Fixed incorrect requirement filtering for the Nosferatu quality.
+
+- New Strings: 
+
+- String_CannotFindLifestyleQuality
+- Checkbox_Spirit_Fettered
+- String_ExpenseFetteredSpirit
 
 - Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
 

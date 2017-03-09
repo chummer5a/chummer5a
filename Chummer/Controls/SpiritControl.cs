@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -37,6 +38,7 @@ namespace Chummer
         public Action<object> ServicesOwedChanged;
 		public Action<object> ForceChanged;
 		public Action<object> BoundChanged;
+        public Action<object> FetteredChanged;
         public Action<object> DeleteSpirit;
 		public Action<object> FileNameChanged;
 
@@ -79,6 +81,28 @@ namespace Chummer
 			_objSpirit.Bound = chkBound.Checked;
 			BoundChanged(this);
 		}
+        private void chkFettered_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkFettered.Checked)
+            {
+                //Only one Fettered spirit is permitted. 
+                if (_objSpirit.CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                {
+                    chkFettered.Checked = false;
+                    return;
+                }
+                _objSpirit.CharacterObject.ObjImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+            }
+            else
+            {
+                _objSpirit.CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
+            }
+            _objSpirit.Fettered = chkFettered.Checked;
+
+            // Raise the FetteredChanged Event when the Checkbox's Checked status changes.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            FetteredChanged(this);
+        }
 
 		private void SpiritControl_Load(object sender, EventArgs e)
 		{
@@ -408,6 +432,22 @@ namespace Chummer
 				_objSpirit.Bound = value;
 			}
 		}
+
+        /// <summary>
+        /// Whether or not the Spirit is Fettered.
+        /// </summary>
+        public bool Fettered
+        {
+            get
+            {
+                return _objSpirit.Fettered;
+            }
+            set
+            {
+                chkFettered.Checked = value;
+                _objSpirit.Fettered = value;
+            }
+        }
 		#endregion
 
 		#region Methods
@@ -814,5 +854,6 @@ namespace Chummer
 			return intValue.ToString();
 		}
 		#endregion
+
     }
 }

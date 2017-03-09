@@ -738,7 +738,8 @@ namespace Chummer
 					objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
 					objSpiritControl.ForceChanged += objSpirit_ForceChanged;
 					objSpiritControl.BoundChanged += objSpirit_BoundChanged;
-					objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
+                    objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
+                    objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
 					objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
 					objSpiritControl.SpiritName = objSpirit.Name;
@@ -1175,7 +1176,8 @@ namespace Chummer
 					objSpiritControl.ServicesOwedChanged -= objSpirit_ServicesOwedChanged;
 					objSpiritControl.ForceChanged -= objSpirit_ForceChanged;
 					objSpiritControl.BoundChanged -= objSpirit_BoundChanged;
-					objSpiritControl.DeleteSpirit -= objSpirit_DeleteSpirit;
+                    objSpiritControl.FetteredChanged -= objSpirit_FetteredChanged;
+                    objSpiritControl.DeleteSpirit -= objSpirit_DeleteSpirit;
 					objSpiritControl.FileNameChanged -= objSpirit_FileNameChanged;
 				}
 
@@ -4019,9 +4021,42 @@ namespace Chummer
 		{
 			_blnIsDirty = true;
 			UpdateWindowTitle();
-		}
+        }
 
-		private void objSpirit_ServicesOwedChanged(Object sender)
+        private void objSpirit_FetteredChanged(Object sender)
+        {
+            SpiritControl Control = (SpiritControl) sender;
+            Spirit thisSpirit = Control.SpiritObject;
+            if (thisSpirit.Fettered)
+            {
+                int FetteringCost = thisSpirit.Force * 3;
+                if (
+                    !ConfirmKarmaExpense(
+                        LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend")
+                            .Replace("{0}", thisSpirit.Name)
+                            .Replace("{1}", FetteringCost.ToString())))
+                {
+                    return;
+                }
+
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                objExpense.Create(FetteringCost * -1,
+                    LanguageManager.Instance.GetString("String_ExpenseFetteredSpirit") + " " + thisSpirit.Name,
+                    ExpenseType.Karma, DateTime.Now);
+                thisSpirit.CharacterObject.ExpenseEntries.Add(objExpense);
+                thisSpirit.CharacterObject.Karma -= FetteringCost;
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, thisSpirit.InternalId);
+                objExpense.Undo = objUndo;
+            }
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
+        private void objSpirit_ServicesOwedChanged(Object sender)
 		{
 			UpdateCharacterInfo();
 
@@ -4425,7 +4460,8 @@ namespace Chummer
 			objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
 			objSpiritControl.ForceChanged += objSpirit_ForceChanged;
 			objSpiritControl.BoundChanged += objSpirit_BoundChanged;
-			objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
+            objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
+            objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
 			objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
 			if (_objOptions.SpiritForceBasedOnTotalMAG)
@@ -6292,14 +6328,15 @@ namespace Chummer
 		private void cmdKarmaGained_Click(object sender, EventArgs e)
 		{
 			frmExpense frmNewExpense = new frmExpense();
-			frmNewExpense.ShowDialog(this);
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForThePeople");
+            frmNewExpense.ShowDialog(this);
 
 			if (frmNewExpense.DialogResult == DialogResult.Cancel)
 				return;
 
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(frmNewExpense.Amount, frmNewExpense.strReason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+			objEntry.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
 			_objCharacter.ExpenseEntries.Add(objEntry);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
@@ -6309,7 +6346,22 @@ namespace Chummer
 			// Adjust the character's Karma total.
 			_objCharacter.Karma += frmNewExpense.Amount;
 
-			UpdateCharacterInfo();
+            if (frmNewExpense.KarmaNuyenExchange)
+            {
+                // Create the Expense Log Entry.
+                objEntry = new ExpenseLogEntry();
+                objEntry.Create(frmNewExpense.Amount * 2000 * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                _objCharacter.ExpenseEntries.Add(objEntry);
+
+                objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                objEntry.Undo = objUndo;
+
+                // Adjust the character's Nuyen total.
+                _objCharacter.Nuyen += frmNewExpense.Amount * 2000 * -1;
+            }
+
+            UpdateCharacterInfo();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -6318,7 +6370,9 @@ namespace Chummer
 		private void cmdKarmaSpent_Click(object sender, EventArgs e)
 		{
 			frmExpense frmNewExpense = new frmExpense();
-			frmNewExpense.ShowDialog(this);
+		    frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForTheMan");
+
+            frmNewExpense.ShowDialog(this);
 
 			if (frmNewExpense.DialogResult == DialogResult.Cancel)
 				return;
@@ -6332,7 +6386,7 @@ namespace Chummer
 
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.strReason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+			objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
 			_objCharacter.ExpenseEntries.Add(objEntry);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
@@ -6341,6 +6395,21 @@ namespace Chummer
 
 			// Adjust the character's Karma total.
 			_objCharacter.Karma += frmNewExpense.Amount * -1;
+
+		    if (frmNewExpense.KarmaNuyenExchange)
+		    {
+                // Create the Expense Log Entry.
+                objEntry = new ExpenseLogEntry();
+                objEntry.Create(frmNewExpense.Amount * 2000, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                _objCharacter.ExpenseEntries.Add(objEntry);
+
+                objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                objEntry.Undo = objUndo;
+
+                // Adjust the character's Nuyen total.
+                _objCharacter.Nuyen += frmNewExpense.Amount * 2000;
+            }
 
 			UpdateCharacterInfo();
 
@@ -6357,14 +6426,15 @@ namespace Chummer
 		{
 			frmExpense frmNewExpense = new frmExpense();
 			frmNewExpense.Mode = ExpenseType.Nuyen;
-			frmNewExpense.ShowDialog(this);
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForTheMan");
+            frmNewExpense.ShowDialog(this);
 
 			if (frmNewExpense.DialogResult == DialogResult.Cancel)
 				return;
 
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(frmNewExpense.Amount, frmNewExpense.strReason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+			objEntry.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
 			objEntry.Refund = frmNewExpense.Refund;
 			_objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -6374,6 +6444,21 @@ namespace Chummer
 
 			// Adjust the character's Nuyen total.
 			_objCharacter.Nuyen += frmNewExpense.Amount;
+
+		    if (frmNewExpense.KarmaNuyenExchange)
+		    {
+                // Create the Expense Log Entry.
+                objEntry = new ExpenseLogEntry();
+                objEntry.Create(frmNewExpense.Amount /2000 * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                _objCharacter.ExpenseEntries.Add(objEntry);
+
+                objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                objEntry.Undo = objUndo;
+
+                // Adjust the character's Karma total.
+                _objCharacter.Karma += (frmNewExpense.Amount / 2000) * -1;
+            }
 
 			UpdateCharacterInfo();
 
@@ -6385,7 +6470,8 @@ namespace Chummer
 		{
 			frmExpense frmNewExpense = new frmExpense();
 			frmNewExpense.Mode = ExpenseType.Nuyen;
-			frmNewExpense.ShowDialog(this);
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForThePeople");
+            frmNewExpense.ShowDialog(this);
 
 			if (frmNewExpense.DialogResult == DialogResult.Cancel)
 				return;
@@ -6399,7 +6485,7 @@ namespace Chummer
 
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.strReason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+			objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
 			_objCharacter.ExpenseEntries.Add(objEntry);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
@@ -6409,7 +6495,22 @@ namespace Chummer
 			// Adjust the character's Nuyen total.
 			_objCharacter.Nuyen += frmNewExpense.Amount * -1;
 
-			UpdateCharacterInfo();
+            if (frmNewExpense.KarmaNuyenExchange)
+            {
+                // Create the Expense Log Entry.
+                objEntry = new ExpenseLogEntry();
+                objEntry.Create(frmNewExpense.Amount / 2000, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                _objCharacter.ExpenseEntries.Add(objEntry);
+
+                objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                objEntry.Undo = objUndo;
+
+                // Adjust the character's Karma total.
+                _objCharacter.Karma += (frmNewExpense.Amount / 2000);
+            }
+
+            UpdateCharacterInfo();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -7368,12 +7469,11 @@ namespace Chummer
 
 		private void cmdDeleteQuality_Click(object sender, EventArgs e)
 		{
-			bool blnMetatypeQuality = false;
-
             // Locate the selected Quality.
-            if (treQualities.SelectedNode != null || treQualities.SelectedNode.Level == 0)
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level == 0)
                 return;
 
+            bool blnMetatypeQuality = false;
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
 
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
@@ -7554,7 +7654,7 @@ namespace Chummer
 		private void cmdSwapQuality_Click(object sender, EventArgs e)
 		{
             // Locate the selected Quality.
-            if (treQualities.SelectedNode != null || treQualities.SelectedNode.Level == 0)
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level == 0)
                 return;
 
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
@@ -18585,7 +18685,7 @@ namespace Chummer
 			}
 
 			frmExpense frmEditExpense = new frmExpense();
-			frmEditExpense.strReason = objEntry.Reason;
+			frmEditExpense.Reason = objEntry.Reason;
 			frmEditExpense.Amount = objEntry.Amount;
 			frmEditExpense.Refund = objEntry.Refund;
 			frmEditExpense.SelectedDate = objEntry.Date;
@@ -18606,7 +18706,7 @@ namespace Chummer
 			}
 
 			// Rename the Expense.
-			objEntry.Reason = frmEditExpense.strReason;
+			objEntry.Reason = frmEditExpense.Reason;
 			objEntry.Date = frmEditExpense.SelectedDate;
 
 			PopulateExpenseList();
@@ -18650,7 +18750,7 @@ namespace Chummer
 
 			frmExpense frmEditExpense = new frmExpense();
 			frmEditExpense.Mode = ExpenseType.Nuyen;
-			frmEditExpense.strReason = objEntry.Reason;
+			frmEditExpense.Reason = objEntry.Reason;
 			frmEditExpense.Amount = objEntry.Amount;
 			frmEditExpense.Refund = objEntry.Refund;
 			frmEditExpense.SelectedDate = objEntry.Date;
@@ -18671,7 +18771,7 @@ namespace Chummer
 			}
 
 			// Rename the Expense.
-			objEntry.Reason = frmEditExpense.strReason;
+			objEntry.Reason = frmEditExpense.Reason;
 			objEntry.Date = frmEditExpense.SelectedDate;
 
 			PopulateExpenseList();

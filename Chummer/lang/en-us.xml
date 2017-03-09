@@ -3019,7 +3019,11 @@
 			<key>String_ExpenseLeaveNetwork</key>
 			<text>Left a Network</text>
 		</string>
-		<string>
+    <string>
+      <key>String_ExpenseFetteredSpirit</key>
+      <text>Fettered a Spirit</text>
+    </string>
+    <string>
 			<key>String_CloningMachineNumber</key>
 			<text>How many clones would you like to create?</text>
 		</string>
@@ -4520,6 +4524,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_BurnStreetCred</key>
 			<text>Burn Street Cred</text>
 		</string>
+    <string>
+      <key>Message_KarmaNuyenExchange</key>
+      <text>Nuyen can only be exchanged in multiples of 2,000¥.</text>
+    </string>
+    <string>
+      <key>MessageTitle_KarmaNuyenExchange</key>
+      <text>Cannot Convert</text>
+    </string>
 		<string>
 			<key>String_CareerKarma</key>
 			<text>Career Karma</text>
@@ -5336,6 +5348,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Spirit_Bound</key>
 			<text>Bound</text>
 		</string>
+    <string>
+      <key>Checkbox_Spirit_Fettered</key>
+      <text>Fettered</text>
+    </string>
 		<string>
 			<key>Label_Sprite_Rating</key>
 			<text>Rating:</text>
@@ -5661,6 +5677,14 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Expense_RefundNuyen</key>
 			<text>Refund (does not count towards Total Career Nuyen)</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheMan</key>
+			<text>Working for the Man</text>
+		</string>
+		<string>
+			<key>String_WorkingForThePeople</key>
+			<text>Working for the People</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region History Window -->
@@ -7277,7 +7301,11 @@ Do you want to continue?</text>
 			<key>String_SelectItemFocus</key>
 			<text>Select a Focus to add to the Stacked Focus. Click Cancel if you are done adding Foci to the Stacked Focus.</text>
 		</string>
-		<!-- End Region-->
+    <string>
+      <key>String_CannotFindLifestyleQuality</key>
+      <text>The quality {0} could not be found. Please select the appropriate quality from the below list.</text>
+    </string>
+    <!-- End Region-->
 		<!-- Region Select Lifestyle Window -->
 		<string>
 			<key>Title_SelectLifestyle</key>
