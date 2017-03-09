@@ -504,7 +504,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _intMaxLevel;
+				return Math.Max(_intMaxLevel, 1);
 			}
 			set
 			{
@@ -657,21 +657,17 @@ namespace Chummer
 				}
 				if (intReturn > CharacterObject.MAG.TotalValue && !CharacterObject.IgnoreRules)
 				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 					intReturn = CharacterObject.MAG.TotalValue;
 				}
 				else
 				{
-					// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-					if (Bonus != null)
-					{
-						if (Bonus.InnerXml.Contains("Rating"))
-						{
-							CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
-							CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-							CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
-						}
-					}
+				    // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+				    if (Bonus?.InnerXml.Contains("Rating") == true)
+				    {
+				        CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+				        CharacterObject.ObjImprovementManager.ForcedValue = Extra;
+				        CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
+				    }
 				}
 				return intReturn;
 			}
