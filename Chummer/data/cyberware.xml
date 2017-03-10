@@ -3809,9 +3809,9 @@
 			<allowgear>
 				<gearcategory>Vision Devices</gearcategory>
 			</allowgear>
-			<subsystems>
-				<subsystem>Eyeware</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Eyeware</category>
+			</allowsubsystems>
 			<source>2050</source>
 			<page>201</page>
 		</cyberware>
