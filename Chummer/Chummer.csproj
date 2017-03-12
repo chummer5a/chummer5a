@@ -168,7 +168,7 @@
     <Compile Include="Backend\Options\OptionRenderItem.cs" />
     <Compile Include="Backend\Options\TabAlignmentGroupLayoutProvider.cs" />
     <Compile Include="Backend\Options\OptionEntryProxy.cs" />
-    <Compile Include="Backend\Options\OptionExtactor.cs" />
+    <Compile Include="Backend\Options\OptionExtractor.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
     <Compile Include="Backend\Skills\Skill.core.cs" />

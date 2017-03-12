@@ -47,7 +47,7 @@ namespace Chummer
             //TODO: When doing so, remember to include selection login in btnReset_Click
 	        CharacterOptions o = Program.OptionsManager.Default;
 
-	        OptionExtactor extactor = new OptionExtactor(
+	        OptionExtractor extactor = new OptionExtractor(
 	            new List<Predicate<OptionItem>>(
 	                controlFactories.Select
 	                    <IOptionWinFromControlFactory, Predicate<OptionItem>>

@@ -4915,15 +4915,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Coûts en PC</text>
     </string>
     <string>
-      <key>Tab_Options_KarmaCosts</key>
+      <key>Display_KarmaCosts</key>
       <text>Coûts en Karma</text>
     </string>
     <string>
-      <key>Tab_Options_OptionalRules</key>
+      <key>Display_OptionalRules</key>
       <text>Règles Optionnelles</text>
     </string>
     <string>
-      <key>Tab_Options_HouseRules</key>
+      <key>Display_HouseRules</key>
       <text>Règles Maison</text>
     </string>
     <string>

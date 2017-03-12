@@ -4932,15 +4932,15 @@
       <text>BP コスト</text>
     </string>
     <string>
-      <key>Tab_Options_KarmaCosts</key>
+      <key>Display_KarmaCosts</key>
       <text>カルマ コスト</text>
     </string>
     <string>
-      <key>Tab_Options_OptionalRules</key>
+      <key>Display_OptionalRules</key>
       <text>オプションルール</text>
     </string>
     <string>
-      <key>Tab_Options_HouseRules</key>
+      <key>Display_HouseRules</key>
       <text>ハウスルール</text>
     </string>
     <string>

@@ -128,7 +128,7 @@ namespace Chummer
         #endregion
 
         #region Properties
-        [OptionAttributes("Display_GlobalOptions")]
+        [OptionAttributes("OptionHeader_GlobalOptions")]
         /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>

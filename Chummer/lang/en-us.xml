@@ -6028,18 +6028,6 @@ Do you want to continue?</text>
 			<text>BP Costs</text>
 		</string>
 		<string>
-			<key>Tab_Options_KarmaCosts</key>
-			<text>Karma Costs</text>
-		</string>
-		<string>
-			<key>Tab_Options_OptionalRules</key>
-			<text>Optional Rules</text>
-		</string>
-		<string>
-			<key>Tab_Options_HouseRules</key>
-			<text>House Rules</text>
-		</string>
-		<string>
 			<key>Tab_Options_Global</key>
 			<text>Global</text>
 		</string>
@@ -6470,10 +6458,6 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Options_LimitSkills</key>
 			<text>Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is higher</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_SkillRegroup</key>
-			<text>Allow Skills to be re-Grouped if all Ratings are the same</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MetatypeCostsKarma</key>
@@ -8161,10 +8145,6 @@ Do you want to continue?</text>
 			<text>Optional Rules</text>
 		</string>
 		<string>
-			<key>Label_Options_HouseRules</key>
-			<text>House Rules</text>
-		</string>
-		<string>
 			<key>Label_Options_Books</key>
 			<text>Enabled books</text>
 		</string>
@@ -8234,7 +8214,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_KarmaEnhancement</key>
-			<text>Karma Enhancement (MEANS?)\t\t{}</text>
+			<text>Metamagic Enhancement \t\t{}</text>
 		</string>
 		<string>
 			<key>Display_KarmaSpirit</key>
@@ -8518,7 +8498,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_AllowSkillRegrouping</key>
-			<text>_\t\t{}</text>
+			<text>Allow Skills to be re-Grouped if all Ratings are the same\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_AllowCyberwareESSDiscounts</key>
@@ -8622,8 +8602,32 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>OptionHeader_CharacterOptions</key>
-			<text>Character options</text>
+			<text>Character Options</text>
 		</string>
+    <string>
+      <key>OptionHeader_ProgramOptions</key>
+      <text>Program Options</text>
+    </string>
+    <string>
+      <key>Display_PrintingOptions</key>
+      <text>Printing</text>
+    </string>
+    <string>
+      <key>OptionHeader_GlobalOptions</key>
+      <text>Global Options</text>
+    </string>
+    <string>
+      <key>Display_OptionalRules</key>
+      <text>Optional Rules</text>
+    </string>
+    <string>
+      <key>Display_HouseRules</key>
+      <text>House Rules</text>
+    </string>
+    <string>
+      <key>Display_KarmaCosts</key>
+      <text>Karma Costs</text>
+    </string>
     <string>
       <key>Button_RestoreDefaultSettings</key>
       <text>Restore Default Settings</text>

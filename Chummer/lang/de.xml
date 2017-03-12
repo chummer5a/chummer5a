@@ -4168,15 +4168,15 @@
       <text>Allgemein</text>
     </string>
     <string>
-      <key>Tab_Options_KarmaCosts</key>
+      <key>Display_KarmaCosts</key>
       <text>Karmakosten</text>
     </string>
     <string>
-      <key>Tab_Options_OptionalRules</key>
+      <key>Display_OptionalRules</key>
       <text>Optionale Regeln</text>
     </string>
     <string>
-      <key>Tab_Options_HouseRules</key>
+      <key>Display_HouseRules</key>
       <text>Hausregeln</text>
     </string>
     <string>
@@ -4413,7 +4413,7 @@
       <text>Alternative Schwellenwertberechnung für Panzerungsbehinderung (KON+STR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowCyberwareESSDiscounts</key>
+      <key>Display_AllowCyberwareESSDiscounts</key>
       <text>Vergünstigungen für Cyberware-Essenzkosten erlauben</text>
     </string>
     <string>
@@ -5435,7 +5435,7 @@
       <text>Taktische AR-Komplexe Form wählen</text>
     </string>
     <string>
-      <key>Tab_Options_BPCosts</key>
+      <key>Display_KarmaCostsBPCosts</key>
       <text>GP-Kosten</text>
     </string>
     <string>
@@ -6260,15 +6260,15 @@
       <text>Metamagie</text>
     </string>
     <string>
-      <key>Tab_Options_Global</key>
+      <key>Display_KarmaCostsGlobal</key>
       <text>Global</text>
     </string>
     <string>
-      <key>Tab_Options_Character</key>
+      <key>Display_KarmaCostsCharacter</key>
       <text>Charakter und ausdrucken</text>
     </string>
     <string>
-      <key>Tab_Options_Miscellaneous</key>
+      <key>Display_KarmaCostsMiscellaneous</key>
       <text>Verschiedenes</text>
     </string>
     <string>
