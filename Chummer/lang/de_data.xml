@@ -680,13 +680,13 @@
 			<armor>
 				<id>6747e88b-b884-4400-aa33-3ccbbe71f135</id>
 				<name>Form Fitting, Half Suit (2050)</name>
-				<translate>Formangepasste Panzerung, Hemd</translate>
+				<translate>Formangepasste Panzerung, Halbkörper</translate>
 				<page>192</page>
 			</armor>
 			<armor>
 				<id>40544ce0-eee7-4273-80fe-ffa111fa9c35</id>
 				<name>Form Fitting, Full Suit (2050)</name>
-				<translate>Formangepasste Panzerung, Hemd</translate>
+				<translate>Formangepasste Panzerung, Ganzkörper</translate>
 				<page>192</page>
 			</armor>
 			<armor>
