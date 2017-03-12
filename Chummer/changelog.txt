@@ -6,6 +6,8 @@ Application Changes:
 - Added functionality for Working for the People/Man to automatically exchange Karma for Nuyen. 
 - Fixed the career mode weapons list stretching outside the visible area.
 - Fixed behaviour of the Enable Special Attribute improvement in the Improvement creation form to work properly. 
+- Fixed an issue tyhat prevented lifestyle qualities like Extra Secure from working. Fixes #1506
+- Fixed behaviour of the Free checkbox when selecting armour and gear in create mode.
 
 Data Changes:
 

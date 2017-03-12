@@ -7449,7 +7449,11 @@ namespace Chummer
 			if (objArmor.InternalId == Guid.Empty.ToString())
                 return;
 
-			_objCharacter.Armor.Add(objArmor);
+            if (frmPickArmor.FreeCost)
+            {
+                objArmor.Cost = 0;
+            }
+            _objCharacter.Armor.Add(objArmor);
             objNode.ContextMenuStrip = cmsArmor;
             treArmor.Nodes[0].Nodes.Add(objNode);
             treArmor.Nodes[0].Expand();
@@ -7751,7 +7755,11 @@ namespace Chummer
             objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount,Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsWeaponAccessoryGear);
             objAccessory.Parent = objWeapon;
 
-            if (objAccessory.Cost.StartsWith("Variable"))
+            if (frmPickWeaponAccessory.FreeCost)
+            {
+                objAccessory.Cost = "0";
+            }
+            else if (objAccessory.Cost.StartsWith("Variable"))
             {
                 int intMin = 0;
                 int intMax = 0;
@@ -7778,7 +7786,6 @@ namespace Chummer
                     objAccessory.Cost = frmPickNumber.SelectedValue.ToString();
                 }
             }
-
             objWeapon.WeaponAccessories.Add(objAccessory);
 
             objNode.ContextMenuStrip = cmsWeaponAccessory;
@@ -8040,6 +8047,11 @@ namespace Chummer
             Weapon objWeapon = new Weapon(_objCharacter);
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+
+            if (frmPickWeapon.FreeCost)
+            {
+                objWeapon.Cost = 0;
+            }
             objWeapon.VehicleMounted = true;
 
             objMod.Weapons.Add(objWeapon);
@@ -8122,6 +8134,11 @@ namespace Chummer
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
             objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsVehicleWeaponAccessoryGear);
 			objAccessory.Parent = objWeapon;
+
+            if (frmPickWeaponAccessory.FreeCost)
+            {
+                objAccessory.Cost = "0";
+            }
             objWeapon.WeaponAccessories.Add(objAccessory);
 
             objNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
@@ -8161,6 +8178,11 @@ namespace Chummer
             Weapon objWeapon = new Weapon(_objCharacter);
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+
+            if (frmPickWeapon.FreeCost)
+            {
+                objWeapon.Cost = 0;
+            }
             objWeapon.VehicleMounted = true;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
@@ -8691,7 +8713,11 @@ namespace Chummer
 	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
-
+            
+            if (frmPickWeapon.FreeCost)
+            {
+                objWeapon.Cost = 0;
+            }
             objNode.ContextMenuStrip = cmsWeapon;
             treWeapons.SelectedNode.Nodes.Add(objNode);
             treWeapons.SelectedNode.Expand();
