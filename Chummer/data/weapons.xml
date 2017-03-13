@@ -9613,7 +9613,7 @@
 			<page>185</page>
 		</weapon>
 		<weapon>
-			<id>1a5768a6-012a-4884-9bdd-4f3b32e86aa2</id>
+			<id>4cdded3c-831d-456f-a0f7-7e7921118dd8</id>
 			<name>AK-98 (2050)</name>
 			<category>Assault Rifles</category>
 			<type>Ranged</type>
@@ -9872,7 +9872,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory><name>Smartgun System, Internal (2050)</name></accessory>
 			</accessories>
 			<source>2050</source>
 			<page>186</page>
