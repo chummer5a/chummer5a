@@ -22,8 +22,6 @@ namespace Chummer
         /*
 		private bool _blnAllow2ndMaxAttribute;
 		private bool _blnAllowAttributePointsOnExceptional;
-	    private bool _blnAllowExceedAttributeBP;
-		private bool _blnAllowHigherStackedFoci;
 	    private bool _blnAlternateArmorEncumbrance;
 		private bool _blnAlternateComplexFormCost;
 		private bool _blnAlternateMatrixAttribute;
@@ -313,48 +311,23 @@ namespace Chummer
 		[SavePropertyAs("allowinitiationincreatemode")]
 		public bool AllowInitiationInCreateMode { get; set; }
 
-	    /// <summary>
-		/// Whether or not Defaulting on a Skill should include any Modifiers.
-		/// </summary>
-		[SavePropertyAs("skilldefaultingincludesmodifiers")]
-	    //TODO: Hook this up?
-		public bool SkillDefaultingIncludesModifiers { get; set; }
-
-	    /// <summary>
-		/// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
-		/// </summary>
-		[SavePropertyAs("esslossreducesmaximumonly")]
+        /// <summary>
+        /// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
+        /// </summary>
+        [SavePropertyAs("esslossreducesmaximumonly")]
 		public bool ESSLossReducesMaximumOnly { get; set; }
 
-	    /// <summary>
-		/// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
-		/// </summary>
-		[SavePropertyAs("allowskillregrouping")]
-		public bool AllowSkillRegrouping { get; set; } = true;
-
-	    /// <summary>
-		/// Allow Cyberware Essence cost discounts.
-		/// </summary>
-		[SavePropertyAs("allowcyberwareessdiscounts")]
+        /// <summary>
+        /// Allow Cyberware Essence cost discounts.
+        /// </summary>
+        [SavePropertyAs("allowcyberwareessdiscounts")]
 		public bool AllowCyberwareESSDiscounts { get; set; }
 
-	    /// <summary>
-		/// Whether or not a character's Strength affects Weapon Recoil.
-		/// </summary>
-		[SavePropertyAs("strengthaffectsrecoil")]
-		public bool StrengthAffectsRecoil { get; set; }
-
-	    /// <summary>
-		/// Whether or not Maximum Armor Modifications is in use.
-		/// </summary>
-		[SavePropertyAs("maximumarmormodifications")]
+        /// <summary>
+        /// Whether or not Maximum Armor Modifications is in use.
+        /// </summary>
+        [SavePropertyAs("maximumarmormodifications")]
 		public bool MaximumArmorModifications { get; set; }
-
-	    /// <summary>
-		/// Whether or not Armor Suit Capacity is in use.
-		/// </summary>
-		[SavePropertyAs("armorsuitcapacity")]
-		public bool ArmorSuitCapacity { get; set; }
 
 	    /// <summary>
 		/// Whether or not Armor Degredation is allowed.
@@ -387,22 +360,10 @@ namespace Chummer
 		public bool ExceedNegativeQualitiesLimit { get; set; }
 
 	    /// <summary>
-		/// Whether or not Restricted items have their cost multiplied.
-		/// </summary>
-		[SavePropertyAs("multiplyrestrictedcost")]
-		public bool MultiplyRestrictedCost { get; set; }
-
-	    /// <summary>
 		/// Cost multiplier for Restricted items.
 		/// </summary>
 		[SavePropertyAs("restrictedcostmultiplier")]
 		public int RestrictedCostMultiplier { get; set; } = 1;
-
-	    /// <summary>
-		/// Whether or not Forbidden items have their cost multiplied.
-		/// </summary>
-		[SavePropertyAs("multiplyforbiddencost")]
-		public bool MultiplyForbiddenCost { get; set; }
 
 	    /// <summary>
 		/// Cost multiplier for Forbidden items.
@@ -410,29 +371,16 @@ namespace Chummer
 		[SavePropertyAs("forbiddencostmultiplier")]
 		public int ForbiddenCostMultiplier { get; set; } = 1;
 
-	    /// <summary>
-		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
-		/// </summary>
-		//[OptionAttributes("Display_CharacterOptions")]
-		[SavePropertyAs("capskillrating")]
-		public bool CapSkillRating { get; set; }
-
-	    /// <summary>
-		/// Whether to use the rules from SR4 to calculate Public Awareness.
-		/// </summary>
-		[SavePropertyAs("usecalculatedpublicawareness")]
+        /// <summary>
+        /// Whether to use the rules from SR4 to calculate Public Awareness.
+        /// </summary>
+        [SavePropertyAs("usecalculatedpublicawareness")]
 		public bool UseCalculatedPublicAwareness { get; set; }
 
-	    /// <summary>
-		/// Whether or not characters can spend skill points to break groups.
-		/// </summary>
-		[SavePropertyAs("usepointsonbrokengroups")]
-		public bool BreakSkillGroupsWithPoints { get; set; }
-
-	    /// <summary>
-		/// Whether or not to ignore the art requirements from street grimoire.
-		/// </summary>
-		[SavePropertyAs("ignoreart")]
+        /// <summary>
+        /// Whether or not to ignore the art requirements from street grimoire.
+        /// </summary>
+        [SavePropertyAs("ignoreart")]
 		public bool IgnoreArtRequirements { get; set; }
 
 	    /// <summary>
@@ -583,16 +531,10 @@ namespace Chummer
 		[SavePropertyAs("freekarmaknowledge")]
 		public bool FreeKarmaKnowledge { get; set; }
 
-	    /// <summary>
-		/// Whether or not the multiplier for Free Knowledge points are used.
-		/// </summary>
-		[SavePropertyAs("freekarmaknowledgemultiplierenabled")]
-		public bool FreeKnowledgeMultiplierEnabled { get; set; }
-
-	    /// <summary>
-		/// The INT+LOG multiplier to be used with the Free Knowledge Option.
-		/// </summary>
-		[SavePropertyAs("freekarmaknowledgemultiplier")]
+        /// <summary>
+        /// The INT+LOG multiplier to be used with the Free Knowledge Option.
+        /// </summary>
+        [SavePropertyAs("freekarmaknowledgemultiplier")]
 		public int FreeKnowledgeMultiplier { get; set; } = 2;
 
 	    /// <summary>
@@ -637,26 +579,78 @@ namespace Chummer
 		/// </summary>
 		[SavePropertyAs("usetotalvalueforknowledge")]
 		public bool UseTotalValueForFreeKnowledge { get; set; }
+        #endregion
+
+        #endregion
+
+        #region Optional Rules
+
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
+        public bool DroneMods { get; set; } = false;
+        #endregion
+
+        #region Unused Rules
+        /* These rules have no code references. Some may still be used and were disconnected accidentally. 
 
 
+        /// <summary>
+        /// Whether or not the multiplier for Free Knowledge points are used.
+        /// </summary>
+        [SavePropertyAs("freekarmaknowledgemultiplierenabled")]
+        public bool FreeKnowledgeMultiplierEnabled { get; set; }
 
-	    #endregion
+        /// <summary>
+        /// Whether or not characters can spend skill points to break groups.
+        /// </summary>
+        [SavePropertyAs("usepointsonbrokengroups")]
+        public bool BreakSkillGroupsWithPoints { get; set; }
 
-		#endregion
+        /// <summary>
+        /// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
+        /// </summary>
+        //[OptionAttributes("Display_CharacterOptions")]
+        [SavePropertyAs("capskillrating")]
+        public bool CapSkillRating { get; set; }
 
-	    #region Optional Rules
+        /// <summary>
+        /// Whether or not Defaulting on a Skill should include any Modifiers.
+        /// </summary>
+        [SavePropertyAs("skilldefaultingincludesmodifiers")]
+        //TODO: Hook this up?
+        public bool SkillDefaultingIncludesModifiers { get; set; }
 
-	    [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
-	    public bool DroneMods { get; set; } = false;
+        /// <summary>
+        /// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
+        /// </summary>
+        [SavePropertyAs("allowskillregrouping")]
+        public bool AllowSkillRegrouping { get; set; } = true;
 
+        /// <summary>
+        /// Whether or not a character's Strength affects Weapon Recoil.
+        /// </summary>
+        [SavePropertyAs("strengthaffectsrecoil")]
+        public bool StrengthAffectsRecoil { get; set; }
 
+        /// <summary>
+        /// Whether or not Armor Suit Capacity is in use.
+        /// </summary>
+        [SavePropertyAs("armorsuitcapacity")]
+        public bool ArmorSuitCapacity { get; set; }
 
-	    #endregion
-		#region Karma Costs
-		/// <summary>
-		/// Karma cost to improve an Attribute = New Rating X this value.
+	    /// <summary>
+		/// Karma cost for Complex Form Skillsofts = Rating x this value.
 		/// </summary>
-		[Header("Character Creation")]
+		[SavePropertyAs("karmacomplexformskillsoft")]
+		public int KarmaComplexFormSkillsoft { get; set; } = 1;
+
+        */
+        #endregion
+
+        #region Karma Costs
+        /// <summary>
+        /// Karma cost to improve an Attribute = New Rating X this value.
+        /// </summary>
+        [Header("Character Creation")]
 		[OptionAttributes("OptionHeader_CharacterOptions/Display_KarmaCosts")]
 		[SavePropertyAs("karmaattribute")]
 		public int KarmaAttribute { get; set; } = 5;
@@ -892,12 +886,6 @@ namespace Chummer
 		/// </summary>
 		[SavePropertyAs("karmacomplexformoption")]
 		public int KarmaComplexFormOption { get; set; } = 2;
-
-	    /// <summary>
-		/// Karma cost for Complex Form Skillsofts = Rating x this value.
-		/// </summary>
-		[SavePropertyAs("karmacomplexformskillsoft")]
-		public int KarmaComplexFormSkillsoft { get; set; } = 1;
 
 	    #endregion
 		#endregion

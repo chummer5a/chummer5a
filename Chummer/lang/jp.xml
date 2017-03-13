@@ -4964,7 +4964,7 @@
       <text>新規キャラクターの標準設定</text>
     </string>
     <string>
-      <key>Label_Options_CyberlimbCount</key>
+      <key>Display_LimbCount</key>
       <text>通常のキャラクターの四肢:</text>
     </string>
     <string>
@@ -4984,35 +4984,35 @@
       <text>1BPあたりの新円:</text>
     </string>
     <string>
-      <key>Checkbox_Options_AutomaticUpdates</key>
+      <key>Display_AutomaticUpdates</key>
       <text>自動的にアップデート</text>
     </string>
     <string>
-      <key>Checkbox_Options_LocalisedUpdatesOnly</key>
+      <key>Display_LocalisedUpdatesOnly</key>
       <text>選択した言語のアップデートのみをダウンロードする</text>
     </string>
     <string>
-      <key>Checkbox_Options_ConfirmDelete</key>
+      <key>Display_ConfirmDelete</key>
       <text>アイテムの削除時に確認する</text>
     </string>
     <string>
-      <key>Checkbox_Options_ConfirmKarmaExpense</key>
+      <key>Display_ConfirmKarmaExpense</key>
       <text>カルマの消費時に確認する</text>
     </string>
     <string>
-      <key>Checkbox_Options_EnforceSkillRating</key>
+      <key>Display_EnforceSkillRating</key>
       <text>修正技能値の上限ルールを守る</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintAllSkills</key>
+      <key>Display_PrintAllSkills</key>
       <text>ボーナスを含めた技能値が0以上のすべての能動技能を印刷する</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintExpenses</key>
+      <key>Display_PrintExpenses</key>
       <text>カルマと新円の支出を印刷する</text>
     </string>
 	<string>
-			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<key>Display_UseCyberlimbCalculation</key>
 			<text>増補属性を計算するためCyberlimbsを使用しないでください</text>
 		</string>	
     <string>
@@ -5272,211 +5272,207 @@
       <text>デフォルトに戻す</text>
     </string>
     <string>
-      <key>Checkbox_Options_MoreLethalGameplace</key>
+      <key>Display_MoreLethalGameplace</key>
       <text>よりデッドリーなプレイ (SR4 91)</text>
     </string>
     <string>
-      <key>Checkbox_Options_SingleArmorEncumbrance</key>
+      <key>Display_SingleArmorEncumbrance</key>
       <text>防具を1つしか身につけていないときは, 防具のかさばりを考慮しない (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_LimitSkills</key>
+      <key>Display_LimitSkills</key>
       <text>ダイスプールの上限を20か「(自然能力値 + 技能値)の2倍」の高いほうにする (SR4 74)</text>
     </string>
     <string>
-      <key>Checkbox_Options_SkillRegroup</key>
+      <key>Display_SkillRegroup</key>
       <text>技能値がすべて同じなら, 能動技能を再びグループにしてもよい (SR4 FAQ)</text>
     </string>
     <string>
-      <key>Checkbox_Options_MetatypeCostsKarma</key>
+      <key>Display_MetatypeCostsKarma</key>
       <text>メタタイプのカルマコストはBP</text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeContactPointsKarma</key>
+      <key>Display_FreeContactPointsKarma</key>
       <text>自由に使えるコンタクト・ポイント: 【魅力】 ×</text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeContactPointsBP</key>
+      <key>Display_FreeContactPointsBP</key>
       <text>自由に使えるコンタクト・ポイント BP:</text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeKnowledgeSkills</key>
+      <key>Display_FreeKnowledgeSkills</key>
       <text>カルマ作成時: BP作成時と同様の初期知識技能点</text>
     </string>
     <string>
-      <key>Checkbox_Options_MaxSpiritForce</key>
+      <key>Display_MaxSpiritForce</key>
       <text>精霊の【フォース】とミスティック・アデプトのパワーレベルの上限は【魔力】の合計値を基準にする</text>
     </string>
     <string>
-      <key>Checkbox_Options_DefaultIncludeModifiers</key>
+      <key>Display_DefaultIncludeModifiers</key>
       <text>技能のデフォルティング時に修正を加える</text>
     </string>
     <string>
-      <key>Checkbox_Options_EssenceLossReducesMaximum</key>
+      <key>Display_EssenceLossReducesMaximum</key>
       <text>エッセンスの喪失は【魔力】【共振力】の最大値のみを減らす</text>
     </string>
     <string>
-      <key>Checkbox_Options_NoArmorEncumbrance</key>
+      <key>Display_NoArmorEncumbrance</key>
       <text>防具の身につけすぎを考慮しない</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateArmorEncumbrance</key>
+      <key>Display_AlternateArmorEncumbrance</key>
       <text>防具の身につけすぎの基準を 【強靭力】 + 【筋力】にする</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowCyberwareESSDiscounts</key>
+      <key>Display_AllowCyberwareESSDiscounts</key>
       <text>サイバーウェアのエッセンスコストの軽減を認める</text>
     </string>
     <string>
-      <key>Checkbox_Options_StrengthAffectsRecoil</key>
+      <key>Display_StrengthAffectsRecoil</key>
       <text>高い【筋力】は武器の反動を軽減する (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_MaximumArmorModifications</key>
+      <key>Display_MaximumArmorModifications</key>
       <text>防具の改造上限を適用する (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ArmorSuitCapacity</key>
+      <key>Display_ArmorSuitCapacity</key>
       <text>防具一式の容量を適用する (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ArmorDegradation</key>
+      <key>Display_ArmorDegradation</key>
       <text>防具の劣化を適用する (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseCalculatedVehicleSensorRatings</key>
+      <key>Display_UseCalculatedVehicleSensorRatings</key>
       <text>ヴィークル・センサーレーティングを計算する (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateMatrixAttribute</key>
+      <key>Display_AlternateMatrixAttribute</key>
       <text>マトリックス能力値の代替を使用する (UN)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateComplexFormCost</key>
+      <key>Display_AlternateComplexFormCost</key>
       <text>複合体コストの代替を使用する (UN)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowCustomTransgenics</key>
+      <key>Display_AllowCustomTransgenics</key>
       <text>好きなバイオウェアを遺伝子導入とみなせる (AU 100)</text>
     </string>
     <string>
-      <key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
+      <key>Display_BreakSkillGroupsInCreateMode</key>
       <text>キャラクター作成時の技能グループの解体を認める (SR4 83)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
+      <key>Display_ExtendAnyDetectionSpell</key>
       <text>好きな探知呪文を広域バージョンとして習得できる (SM 179)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ErgonomicProgramLimit</key>
+      <key>Display_ErgonomicProgramLimit</key>
       <text>エルゴノミック・プログラムはコムリンクの【レスポンス】に影響しない (UN)</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
+      <key>Display_SpecialKarmaCostBasedOnShownValue</key>
       <text>特殊能力値を成長させる際のカルマは、【エッセンス】の減少に基づいて削減される</text>
     </string>
     <string>
-      <key>Checkbox_Options_RestrictRecoil</key>
+      <key>Display_RestrictRecoil</key>
       <text>反動補正の制限を適用する (AR)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AutomaticCopyProtection</key>
+      <key>Display_AutomaticCopyProtection</key>
       <text>マトリックス・プログラムに自動的にコピー防止プラグインを追加する (要アンワイヤード)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AutomaticRegistration</key>
+      <key>Display_AutomaticRegistration</key>
       <text>マトリックス・プログラムに自動的にレジストレーションプラグインを追加する (要アンワイヤード)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceedPositiveQualities</key>
+      <key>Display_ExceedPositiveQualities</key>
       <text>35BPを超える有利な資質の獲得を認める</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceedNegativeQualities</key>
+      <key>Display_ExceedNegativeQualities</key>
       <text>-35BPを超える不利な資質の獲得を認める</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
+      <key>Display_ExceedNegativeQualitiesLimit</key>
       <text>不利な資質では-35BPまでしか獲得できない</text>
     </string>
     <string>
-      <key>Checkbox_Options_StartupFullscreen</key>
+      <key>Display_StartupFullscreen</key>
       <text>Chummer をフルスクリーン・モードで起動する</text>
     </string>
     <string>
-      <key>Checkbox_Options_SingleDiceRoller</key>
+      <key>Display_SingleDiceRoller</key>
       <text>ダイスツールの同時起動を認めない</text>
     </string>
     <string>
-      <key>Checkbox_Options_DatesIncludeTime</key>
+      <key>Display_DatesIncludeTime</key>
       <text>支出データに時間を含める</text>
     </string>
     <string>
-      <key>Checkbox_Options_MultiplyRestrictedCost</key>
+      <key>Display_MultiplyRestrictedCost</key>
       <text>規制されている装備の価格倍率</text>
     </string>
     <string>
-      <key>Checkbox_Options_MultiplyForbiddenCost</key>
+      <key>Display_MultiplyForbiddenCost</key>
       <text>禁止されている装備の価格倍率</text>
     </string>
     <string>
-      <key>Checkbox_Options_EnforceCapacity</key>
+      <key>Display_EnforceCapacity</key>
       <text>容量制限を守る</text>
     </string>
     <string>
-      <key>Checkbox_Options_CalculateCommlinkResponse</key>
+      <key>Display_CalculateCommlinkResponse</key>
       <text>コムリンクの【レスポンス】を実行中のプログラムの数を元に計算する</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowSkillDiceRolling</key>
+      <key>Display_AllowSkillDiceRolling</key>
       <text>ダイス・プールからダイスツールを起動できる</text>
     </string>
     <string>
-      <key>Checkbox_Options_CreateBackupOnCareer</key>
+      <key>Display_CreateBackupOnCareer</key>
       <text>キャラクターをキャリア・モードにする際にバックアップを取る</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowExceedAttributeBP</key>
-      <text>能力値にBP/カルマの50%以上を消費することを認める</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_UnrestrictedNuyen</key>
+      <key>Display_UnrestrictedNuyen</key>
       <text>キャラクターは新円に好きなだけBP/カルマを使える</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowHigherStackedFoci</key>
+      <key>Display_AllowHigherStackedFoci</key>
       <text>合計【フォース】が6を超える重積収束具の作成を認める</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowEditPartOfBaseWeapon</key>
+      <key>Display_AllowEditPartOfBaseWeapon</key>
       <text>武器アクセサリと改造が元の武器の性能を変化することを認める</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateMetatypeAttributeKarma</key>
+      <key>Display_AlternateMetatypeAttributeKarma</key>
       <text>カルマコストを決定する際に, 能力値の下限を1として取り扱う</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintLeadershipAlternates</key>
+      <key>Display_PrintLeadershipAlternates</key>
       <text>&lt;統率&gt;の派生技能を印刷する (WAR! より)</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintArcanaAlternates</key>
+      <key>Display_PrintArcanaAlternates</key>
       <text>&lt;アルカナ&gt;の派生技能を印刷する (ストリート・マジック より)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowObsolescentUpgrade</key>
+      <key>Display_AllowObsolescentUpgrade</key>
       <text>痛みかけたものも, 痛んだものと同様に除去/アップグレードする</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowBiowareSuites</key>
+      <key>Display_AllowBiowareSuites</key>
       <text>バイオウェア・スイートを認める</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintNotes</key>
+      <key>Display_PrintNotes</key>
       <text>ノートを印刷</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintToFileFirst</key>
+      <key>Display_PrintToFileFirst</key>
       <text>Linux 上での印刷トラブルに対応させる</text>
     </string>
     <string>
@@ -5484,15 +5480,15 @@
       <text>エッセンスの端数処理を行う桁数:</text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
+      <key>Display_FreeSpiritPowerPointsMAG</key>
       <text>自由精霊は【エッジ】でなく【魔力】を基準にパワーポイントを得る</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialAttributeKarmaLimit</key>
+      <key>Display_SpecialAttributeKarmaLimit</key>
       <text>キャラクター作成時は, 特殊能力値をカルマの50%制限に含めない</text>
     </string>
     <string>
-      <key>Checkbox_Options_TechnomancerAllowAutosoft</key>
+      <key>Display_TechnomancerAllowAutosoft</key>
       <text>テクノマンサーはオートソフトを複合体として習得できる</text>
     </string>
     <string>
@@ -7176,55 +7172,55 @@
       <text>Select a Skill/Skill Group</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
+      <key>Display_MayBuyQualities</key>
       <text>May buy Qualities (RC 40)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ContactPoints</key>
+      <key>Display_ContactPoints</key>
       <text>Contact points instead of fixed Contacts (RC 40)</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseLogging</key>
+      <key>Display_UseLogging</key>
       <text>Use Debug Logging</text>
     </string>
     <string>
-      <key>Checkbox_Options_LicenseRestricted</key>
+      <key>Display_LicenseRestricted</key>
       <text>License each Restricted item</text>
     </string>
     <string>
-      <key>Checkbox_Options_Knucks</key>
+      <key>Display_Knucks</key>
       <text>Knucks Benefit from Unarmed Attack Bonuses</text>
     </string>
     <string>
-      <key>Checkbox_Options_DontDoubleQualities</key>
+      <key>Display_DontDoubleQualities</key>
       <text>Don't double the cost of Qualities in Career Mode</text>
     </string>
     <string>
-      <key>Checkbox_Options_IgnoreArt</key>
+      <key>Display_IgnoreArt</key>
       <text>Ignore Art Requirements from Street Grimoire</text>
     </string>
     <string>
-      <key>Checkbox_Options_CyberlegMovement</key>
+      <key>Display_CyberlegMovement</key>
       <text>Use Cyberleg Stats for Movement</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceptionalAttributes</key>
+      <key>Display_ExceptionalAttributes</key>
       <text>Attribute Points may be spent on Exceptional Attributes</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceptionalNotMaxed</key>
+      <key>Display_ExceptionalNotMaxed</key>
       <text>Exceptional Attributes not at cap, are not maxed</text>
     </string>
     <string>
-      <key>Checkbox_Options_PointsOnBrokenGroups</key>
+      <key>Display_PointsOnBrokenGroups</key>
       <text>Use Skill Points on broken groups</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowInitiation</key>
+      <key>Display_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
 	<string>
-			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<key>Display_DroneArmorMultiplier</key>
 			<text>ドローンアーマーにドローンアーマー強化を制限</text>
 		</string>
     <string>

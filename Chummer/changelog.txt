@@ -3706,7 +3706,7 @@ New Strings
 - Label_OtherFly
 - Tip_OtherSwim
 - Tip_OtherFly
-- Label_Options_CyberlimbCount
+- Display_LimbCount
 - String_LimbCount6
 - String_LimbCount5Torso
 - String_LimbCount5Skull

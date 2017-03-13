@@ -5042,9 +5042,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -5294,9 +5294,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -5673,9 +5673,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -9063,9 +9063,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			if (!frmPickWeaponAccessory.FreeCost)
@@ -9188,9 +9188,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			if (!frmPickArmorMod.FreeCost)
@@ -9366,9 +9366,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			if (!frmPickVehicleMod.FreeCost)
@@ -9475,9 +9475,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			if (!frmPickWeapon.FreeCost)
@@ -9602,9 +9602,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			if (!frmPickWeaponAccessory.FreeCost)
@@ -9689,9 +9689,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -9906,9 +9906,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -10109,9 +10109,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -11960,9 +11960,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -12020,9 +12020,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -12113,9 +12113,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -14498,9 +14498,9 @@ namespace Chummer
 			int intCost = objCyberware.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Apply a markup if applicable.
@@ -15061,9 +15061,9 @@ namespace Chummer
 			int intCost = objNewGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -15241,9 +15241,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -15375,9 +15375,9 @@ namespace Chummer
 			int intCost = objNewGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -15537,9 +15537,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -15780,9 +15780,9 @@ namespace Chummer
 			int intCost = objGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -15913,9 +15913,9 @@ namespace Chummer
 			int intCost = objNewGear.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -23032,9 +23032,9 @@ namespace Chummer
 			int intCost = objCyberware.TotalCost;
 
 			// Multiply the cost if applicable.
-			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -23342,9 +23342,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
@@ -23612,9 +23612,9 @@ namespace Chummer
 			}
 
 			// Multiply the cost if applicable.
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
 				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+			if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")))
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
 			// Do not allow the user to add new Gear if the Armor's Capacity has been reached.

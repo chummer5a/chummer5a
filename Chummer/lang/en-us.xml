@@ -4567,30 +4567,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_BuildPositiveQualities</key>
 			<text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
 		</string>
-    <string>
-      <key>Checkbox_Options_OmaeEnabled</key>
-      <text>Enable Omae character exchange</text>      
-    </string>
-		<string>
-			<key>Checkbox_Options_UseLifeModule</key>
-			<text>Life modules available</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_Missions</key>
-			<text>Hide Qualities prohibited by Missions</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_Dronemods</key>
-			<text>Use Drone Modification rules (R5 122)</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
-			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
-		</string>
-    <string>
-      <key>Checkbox_Options_StrictSkillGroups</key>
-      <text>Strict interprentation of breaking skill groups in create mode</text>
-    </string>
 		<string>
 			<key>Checkbox_Options_UseCyberlimbCalculation</key>
 			<text>Don't use Cyberlimbs for calculating augmented Attributes</text>
@@ -6048,10 +6024,6 @@ Do you want to continue?</text>
 			<text>Defaults for New Characters</text>
 		</string>
 		<string>
-			<key>Label_Options_CyberlimbCount</key>
-			<text>Limbs for Standard Characters:</text>
-		</string>
-		<string>
 			<key>String_LimbCount4</key>
 			<text>4 (2 arms, 2 legs)</text>
 		</string>
@@ -6096,18 +6068,6 @@ Do you want to continue?</text>
 			<text>Use Debug Logging</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_LocalisedUpdatesOnly</key>
-			<text>Only download updates in my selected language</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ConfirmDelete</key>
-			<text>Ask for confirmation when deleting items</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ConfirmKarmaExpense</key>
-			<text>Ask for confirmation for Karma expenses</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_EnforceSkillRating</key>
 			<text>Enforce maximum Skill modified Rating</text>
 		</string>
@@ -6116,20 +6076,12 @@ Do you want to continue?</text>
 			<text>License each Restricted item</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_PrintAllSkills</key>
-			<text>Print all Active Skills with total score higher than 0</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
 			<text>Free Knowledge Skill Points are calculated with augmented LOG+INT values.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeContacts</key>
 			<text>Free Contact Points are calculated with augmented CHA values.</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_PrintExpenses</key>
-			<text>Print Karma and Nuyen Expenses</text>
 		</string>
 		<string>
 			<key>Label_Options_KarmaAttribute</key>
@@ -6452,10 +6404,6 @@ Do you want to continue?</text>
 			<text>No Armor Encumbrance when wearing only one piece of Armor (AR 44)</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_MoreLethalGameplay</key>
-			<text>More Lethal Gameplay (SR4 75)</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_LimitSkills</key>
 			<text>Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is higher</text>
 		</string>
@@ -6500,24 +6448,8 @@ Do you want to continue?</text>
 			<text>Alternate Armor Encumbrance Threshold (BOD+STR)</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_AllowCyberwareESSDiscounts</key>
-			<text>Allow Cyber/Bioware Essence costs to be customized</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_StrengthAffectsRecoil</key>
 			<text>High Strength affects Weapon Recoil</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_MaximumArmorModifications</key>
-			<text>Use Maximum Armor Modifications</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ArmorSuitCapacity</key>
-			<text>Use Armor Suit Capacity</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ArmorDegradation</key>
-			<text>Allow Armor Degradation</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseCalculatedVehicleSensorRatings</key>
@@ -6548,10 +6480,6 @@ Do you want to continue?</text>
 			<text>Ergonomic Programs do not affect a Commlink's effective Response</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
-			<text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_RestrictRecoil</key>
 			<text>Use Restrictions to Recoil Compensation (RG 53)</text>
 		</string>		
@@ -6562,18 +6490,6 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Options_AutomaticRegistration</key>
 			<text>Automatically add Registration plugin to Matrix Programs (requires Unwired)</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ExceedPositiveQualities</key>
-			<text>Allow characters to exceed their Positive Quality limit</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Allow characters to exceed their Negative Quality limit</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Characters do not gain Karma from taking Negative Qualities in excess of their Gameplay Option's limit</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>
@@ -6588,10 +6504,6 @@ Do you want to continue?</text>
 			<text>Expense dates should include time</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_MultiplyRestrictedCost</key>
-			<text>Multiply the cost of Restricted items by</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_MultiplyForbiddenCost</key>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
@@ -6602,18 +6514,6 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Options_CalculateCommlinkResponse</key>
 			<text>Calculate Commlink Response based on number of running programs</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_AllowSkillDiceRolling</key>
-			<text>Allow dice rolling for dice pools</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_CreateBackupOnCareer</key>
-			<text>Create backup of character before moving them to Career Mode</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_AllowExceedAttributeBP</key>
-			<text>Allow characters to exceed 50% of points in Attributes</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UnrestrictedNuyen</key>
@@ -6648,16 +6548,8 @@ Do you want to continue?</text>
 			<text>Allow Bioware Suites</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_PrintNotes</key>
-			<text>Print Notes</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_PrintToFileFirst</key>
 			<text>Apply Linux printing fix</text>
-		</string>
-    <string>
-			<key>Label_Options_EssenceDecimals</key>
-			<text>Number of decimal places to round Essence to:</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
@@ -6670,10 +6562,6 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Options_TechnomancerAllowAutosoft</key>
 			<text>Technomancers may select Autosofts as Complex Forms</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>Limit Drone Armor Enhance ment to Drone Armor</text>
 		</string>
 		<string>
 			<key>Message_Options_CloseForms</key>
@@ -8156,6 +8044,10 @@ Do you want to continue?</text>
 			<key>Display_ConfirmKarmaExpense</key>
 			<text>{} Ask for confirmation for Karma expenses</text>
 		</string>
+    <string>
+      <key>Display_LocalisedUpdatesOnly</key>
+      <text>{} Only download updates in my selected language</text>
+    </string>
 		<string>
 			<key>Display_KarmaAttribute</key>
 			<text>Improve Attribute by 1\t\t{} x New Rating</text>
@@ -8330,11 +8222,11 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_DroneArmorMultiplier</key>
-			<text>\t{}</text>
+			<text>Drone Armor Enhancement Multiplier\t{}</text>
 		</string>
 		<string>
 			<key>Display_DroneArmorMultiplierEnabled</key>
-			<text>{}\tLimit Drone Armor Enhancements to Drone Armor</text>
+			<text>{}\tLimit Drone Armor Enhancements to Drone Armor Enhancement Multiplier</text>
 		</string>
 		<string>
 			<key>Display_EnforceCapacity</key>
@@ -8454,7 +8346,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_KarmaImproveComplexForm</key>
-			<text>_\t\t{}</text>
+			<text>Improve Complex Form\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_KarmaComplexFormOption</key>
@@ -8466,7 +8358,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_Books</key>
-			<text>_\t\t{}</text>
+			<text>Books\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_MoreLethalGameplay</key>
@@ -8498,79 +8390,83 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_AllowSkillRegrouping</key>
-			<text>Allow Skills to be re-Grouped if all Ratings are the same\t\t{}</text>
+			<text>{} Allow Skills to be re-Grouped if all Ratings are the same\t\t</text>
 		</string>
 		<string>
 			<key>Display_AllowCyberwareESSDiscounts</key>
-			<text>_\t\t{}</text>
+			<text>{} Allow Cyber/Bioware Essence costs to be customized\t\t</text>
 		</string>
-		<string>
-			<key>Display_StrengthAffectsRecoil</key>
-			<text>_\t\t{}</text>
-		</string>
+    <string>
+      <key>Display_OmaeEnabled</key>
+      <text>{} Enable Omae character exchange</text>
+    </string>
+    <string>
+      <key>Display_UseLifeModule</key>
+      <text>{} Life modules available</text>
+    </string>
+    <string>
+      <key>Display_MissionsOnly</key>
+      <text>{}\tHide Qualities prohibited by Missions</text>
+    </string>
+    <string>
+      <key>Display_DroneMods</key>
+      <text>{}\tUse Drone Modification rules (R5 122)</text>
+    </string>
+    <string>
+      <key>Display_UseCalculatedPublicAwareness</key>
+      <text>{}\tPublic Awareness should be (Street Cred + Notoriety /3)</text>
+    </string>
 		<string>
 			<key>Display_MaximumArmorModifications</key>
-			<text>_\t\t{}</text>
+			<text>Use Maximum Armor Modifications\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_ArmorSuitCapacity</key>
-			<text>_\t\t{}</text>
+			<text>Use Armor Suit Capacity\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_ArmorDegradation</key>
-			<text>_\t\t{}</text>
+			<text>Allow Armor Degradation\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_SpecialKarmaCostBasedOnShownValue</key>
-			<text>_\t\t{}</text>
+			<text>Karma cost for increasing Special Attributes is not reduced with Essence Loss\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_ExceedPositiveQualities</key>
-			<text>_\t\t{}</text>
+			<text>Allow characters to exceed their Positive Quality limit\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_ExceedNegativeQualities</key>
-			<text>_\t\t{}</text>
+			<text>Allow characters to exceed their Negative Quality limit\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_ExceedNegativeQualitiesLimit</key>
-			<text>_\t\t{}</text>
-		</string>
-		<string>
-			<key>Display_MultiplyRestrictedCost</key>
-			<text>_\t\t{}</text>
+			<text>Characters do not gain Karma from taking Negative Qualities in excess of their Gameplay Option's limit\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_RestrictedCostMultiplier</key>
-			<text>_\t\t{}</text>
-		</string>
-		<string>
-			<key>Display_MultiplyForbiddenCost</key>
-			<text>_\t\t{}</text>
+			<text>Multiply the cost of Restricted items by\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_ForbiddenCostMultiplier</key>
-			<text>_\t\t{}</text>
+			<text>Multiply the cost of Forbidden items by\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_CapSkillRating</key>
-			<text>_\t\t{}</text>
+			<text>Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher\t\t{}</text>
 		</string>
-		<string>
-			<key>Display_UseCalculatedPublicAwareness</key>
-			<text>_\t\t{}</text>
-		</string>
-		<string>
-			<key>Display_LimbCount</key>
-			<text>_\t\t{}</text>
-		</string>
+    <string>
+      <key>Display_LimbCount</key>
+      <text>Limbs for Standard Characters:\t\t{}</text>
+    </string>
 		<string>
 			<key>Display_CreateBackupOnCareer</key>
-			<text>_\t\t{}</text>
+			<text>Create backup of character before moving them to Career Mode\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_EssenceDecimals</key>
-			<text>_\t\t{}</text>
+			<text>Number of decimal places to round Essence to:\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_BuildMethod</key>
@@ -8578,27 +8474,27 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_BuildPoints</key>
-			<text>_\t\t{}</text>
+			<text>Default Build Points\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_Availability</key>
-			<text>_\t\t{}</text>
+			<text>Default Availability\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_AutomaticBackstory</key>
-			<text>_\t\t{}</text>
+			<text>Automatically create a backstory when using Life Modules\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_PrintSkillsWithZeroRating</key>
-			<text>_\t\t{}</text>
+			<text>Print all Active Skills with total score higher than 0\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_PrintExpenses</key>
-			<text>_\t\t{}</text>
+			<text>Print Karma and Nuyen Expenses\t\t{}</text>
 		</string>
 		<string>
 			<key>Display_PrintNotes</key>
-			<text>_\t\t{}</text>
+			<text>Print Notes\t\t{}</text>
 		</string>
 		<string>
 			<key>OptionHeader_CharacterOptions</key>

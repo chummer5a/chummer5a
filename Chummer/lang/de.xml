@@ -4188,7 +4188,7 @@
       <text>Standardwerte für neue Charaktere</text>
     </string>
     <string>
-      <key>Label_Options_CyberlimbCount</key>
+      <key>Display_LimbCount</key>
       <text>Gliedmaßen für Standard-Charaktere:</text>
     </string>
     <string>
@@ -4208,31 +4208,31 @@
       <text>Nuyen pro Generierungspunkt:</text>
     </string>
     <string>
-      <key>Checkbox_Options_AutomaticUpdates</key>
+      <key>Display_AutomaticUpdates</key>
       <text>Automatische Updates</text>
     </string>
     <string>
-      <key>Checkbox_Options_ConfirmDelete</key>
+      <key>Display_ConfirmDelete</key>
       <text>Um Bestätigung bitten beim Entfernen von Gegenständen</text>
     </string>
     <string>
-      <key>Checkbox_Options_ConfirmKarmaExpense</key>
+      <key>Display_ConfirmKarmaExpense</key>
       <text>Um Bestätigung bitten beim Ausgeben von Karma</text>
     </string>
     <string>
-      <key>Checkbox_Options_EnforceSkillRating</key>
+      <key>Display_EnforceSkillRating</key>
       <text>Limit für verbesserte Fertigkeiten anwenden</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintAllSkills</key>
+      <key>Display_PrintAllSkills</key>
       <text>Alle Aktionsfertigkeiten mit eine Gesamtstufe von über 0 drucken</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintExpenses</key>
+      <key>Display_PrintExpenses</key>
       <text>Karma und Nuyen Ausgaben mitschreiben</text>
     </string>
 	<string>
-      <key>Checkbox_Options_UseCyberlimbCalculation</key>
+      <key>Display_UseCyberlimbCalculation</key>
       <text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
     </string>
     <string>
@@ -4360,56 +4360,56 @@
       <text>Gruppe/Netzwerk verlassen</text>
     </string>
     <string>
-      <key>Checkbox_Options_MoreLethalGameplace</key>
+      <key>Display_MoreLethalGameplace</key>
       <text>Tödlichere Spielumgebung (SR4 98)</text>
     </string>
     <string>
-      <key>Checkbox_Options_SingleArmorEncumbrance</key>
+      <key>Display_SingleArmorEncumbrance</key>
       <text>Keine Panzerungsbehinderung, wenn nur ein Panzerungsteil getragen wird (AR 48)</text>
     </string>
     <string>
-      <key>Checkbox_Options_LimitSkills</key>
+      <key>Display_LimitSkills</key>
       <text>Begrenze Würfelpools auf 20 Würfel oder 2 x (natürliches Attribut + Fertigkeitswert) (SR4 83).</text>
     </string>
     <string>
-      <key>Checkbox_Options_SkillRegroup</key>
+      <key>Display_SkillRegroup</key>
       <text>Erlaube das Regruppieren von Fertigkeiten, wenn alle den selben Wert haben.</text>
     </string>
     <string>
-      <key>Checkbox_Options_MetatypeCostsKarma</key>
+      <key>Display_MetatypeCostsKarma</key>
       <text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeContactPointsKarma</key>
+      <key>Display_FreeContactPointsKarma</key>
       <text>Kostenlose Connectionpunkte: CHA x </text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeContactPointsBP</key>
+      <key>Display_FreeContactPointsBP</key>
       <text>Freie Generierungspunkte für Connections:</text>
     </string>
     <string>
-      <key>Checkbox_Options_FreeKnowledgeSkills</key>
+      <key>Display_FreeKnowledgeSkills</key>
       <text>Generieren mit Karma: Kostenlose Wissensfertigkeiten wie im GP-System</text>
     </string>
     <string>
-      <key>Checkbox_Options_MaxSpiritForce</key>
+      <key>Display_MaxSpiritForce</key>
       <!--<text>Max. Spirit Force and Mystic Adept Power Levels based on total MAG Attribute</text> -->
       <text>Die maximale Geisterstufe und die Kraftstufe des Magieradepten sind auf die Höhe des Magie-Attributes beschränkt.</text>
     </string>
     <string>
-      <key>Checkbox_Options_DefaultIncludeModifiers</key>
+      <key>Display_DefaultIncludeModifiers</key>
       <text>Proben auf Fertigkeiten ohne Wert beinhalten Modifikatoren</text>
     </string>
     <string>
-      <key>Checkbox_Options_EssenceLossReducesMaximum</key>
+      <key>Display_EssenceLossReducesMaximum</key>
       <text>Essenzverlust senkt nur das MAG/RES-Maximum</text>
     </string>
     <string>
-      <key>Checkbox_Options_NoArmorEncumbrance</key>
+      <key>Display_NoArmorEncumbrance</key>
       <text>Keine Panzerungsbehinderung</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateArmorEncumbrance</key>
+      <key>Display_AlternateArmorEncumbrance</key>
       <text>Alternative Schwellenwertberechnung für Panzerungsbehinderung (KON+STR)</text>
     </string>
     <string>
@@ -4417,67 +4417,67 @@
       <text>Vergünstigungen für Cyberware-Essenzkosten erlauben</text>
     </string>
     <string>
-      <key>Checkbox_Options_StrengthAffectsRecoil</key>
+      <key>Display_StrengthAffectsRecoil</key>
       <text>Stärke reduziert den Rückstoß einer Waffe (AR 171)</text>
     </string>
     <string>
-      <key>Checkbox_Options_MaximumArmorModifications</key>
+      <key>Display_MaximumArmorModifications</key>
       <text>Maximale Panzerungsmodifikatoren benutzen (AR 48)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ArmorSuitCapacity</key>
+      <key>Display_ArmorSuitCapacity</key>
       <text>Kapazität von Panzeranzügen benutzen (AR 48)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ArmorDegradation</key>
+      <key>Display_ArmorDegradation</key>
       <text>Panzerungsverschleiß erlauben (AR 48)</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseCalculatedVehicleSensorRatings</key>
+      <key>Display_UseCalculatedVehicleSensorRatings</key>
       <text>Nutze errechnete Sensorstufe für Fahrzeuge (AR 111)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateMatrixAttribute</key>
+      <key>Display_AlternateMatrixAttribute</key>
       <text>Attribut statt Programm für Matrixproben nutzen (VN 42)</text>
     </string>
     <string>
-      <key>Checkbox_Options_RestrictRecoil</key>
+      <key>Display_RestrictRecoil</key>
       <text>Nutze Einschränkungen für Rückstoßkompensation (AR 156)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AutomaticCopyProtection</key>
+      <key>Display_AutomaticCopyProtection</key>
       <text>Kopierschutz-Software automatisch an Matrix Programme koppeln (Vernetzt benötigt)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AutomaticRegistration</key>
+      <key>Display_AutomaticRegistration</key>
       <text>Registrations-Software automatisch an Matrix Programm koppeln (Vernetzt benötigt)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceedPositiveQualities</key>
+      <key>Display_ExceedPositiveQualities</key>
       <text>Charakteren gestatten, mehr als 35 GP für Gaben auszugeben</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceedNegativeQualities</key>
+      <key>Display_ExceedNegativeQualities</key>
       <text>Charakteren gestatten, mehr als 35 GP für Handicaps zu erhalten</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
+      <key>Display_ExceedNegativeQualitiesLimit</key>
       <text>Charaktere können maximal 35 GP für Handicaps erhalten</text>
     </string>
     <string>
-      <key>Checkbox_Options_StartupFullscreen</key>
+      <key>Display_StartupFullscreen</key>
       <text>Chummer im Vollbild-Modus starten</text>
     </string>
     <string>
-      <key>Checkbox_Options_MultiplyRestrictedCost</key>
+      <key>Display_MultiplyRestrictedCost</key>
       <text>Multipliziere die Kosten für eingeschränkt verfügbare Gegenstände mit dem Faktor</text>
     </string>
     <string>
-      <key>Checkbox_Options_MultiplyForbiddenCost</key>
+      <key>Display_MultiplyForbiddenCost</key>
       <text>Multipliziere die Kosten für verbotene Gegenstände mit dem Faktor</text>
     </string>
     <string>
-      <key>Checkbox_Options_EnforceCapacity</key>
+      <key>Display_EnforceCapacity</key>
       <text>Erzwinge Kapazitätsgrenzen</text>
     </string>
     <string>
@@ -5279,11 +5279,7 @@
       <text>Schwingungsfokus</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowExceedAttributeBP</key>
-      <text>Dem Spieler erlauben, mehr als 50% der Punkte für Attribute auszugeben</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_UnrestrictedNuyen</key>
+      <key>Display_UnrestrictedNuyen</key>
       <text>Der Charakter kann beliebig viele Punkte in Nuyen wandeln</text>
     </string>
     <string>
@@ -5586,7 +5582,7 @@
       <text>wird ausgeführt</text>
     </string>
     <string>
-      <key>Checkbox_Options_CalculateCommlinkResponse</key>
+      <key>Display_CalculateCommlinkResponse</key>
       <text>Berechne de Kommlink-Prozessor anhand der laufenden Programme</text>
     </string>
     <string>
@@ -5794,7 +5790,7 @@
       <text>Sie müssen auswählen, ob der Zauberspruch eine geringe oder eine starke Veränderung hervorruft</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowHigherStackedFoci</key>
+      <key>Display_AllowHigherStackedFoci</key>
       <text>Erlauben, dass ein Mehrfachfoki zusammengerechnet über Kraftstufe 6 hinaus generiert werden kann</text>
     </string>
     <!-- Version 311 -->
@@ -5914,19 +5910,19 @@
       <text>Die maximale Anzahl an verfügbaren Echos errechnet sich durch RES + Wandlung</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateComplexFormCost</key>
+      <key>Display_AlternateComplexFormCost</key>
       <text>Benutze alternative Kosten für Komplexe Formen (VN 42)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowCustomTransgenics</key>
+      <key>Display_AllowCustomTransgenics</key>
       <text>Erlauben Bioware in Transgenetik zu wandeln (BT 96)</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowEditPartOfBaseWeapon</key>
+      <key>Display_AllowEditPartOfBaseWeapon</key>
       <text>Waffenzubehör darf auch an nicht dafür vorgesehenen Stellen an der Waffen angebracht werden</text>
     </string>
     <string>
-      <key>Checkbox_Options_AlternateMetatypeAttributeKarma</key>
+      <key>Display_AlternateMetatypeAttributeKarma</key>
       <text>Die gesteigerten Werte von Metamenschen kosten in der Bauphase Punkte</text>
     </string>
     <string>
@@ -6104,7 +6100,7 @@
       <text>NPC Paket runtergeladen.</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowSkillDiceRolling</key>
+      <key>Display_AllowSkillDiceRolling</key>
       <text>Würfeltool für Fertigkeiten benutzen</text>
     </string>
     <string>
@@ -6113,7 +6109,7 @@
     </string>
     <!-- Version 330 -->
     <string>
-      <key>Checkbox_Options_SingleDiceRoller</key>
+      <key>Display_SingleDiceRoller</key>
       <text>Nur ein Würfelfenster zulassen</text>
     </string>
     <!-- Version 342 -->
@@ -6207,7 +6203,7 @@
     </string>
     <!-- Version 356 -->
     <string>
-      <key>Checkbox_Options_CreateBackupOnCareer</key>
+      <key>Display_CreateBackupOnCareer</key>
       <text>Kopie des Charakters erstellen, bevor er in den Karriere-Modus überführt wird</text>
     </string>
     <string>
@@ -6272,11 +6268,11 @@
       <text>Verschiedenes</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintLeadershipAlternates</key>
+      <key>Display_PrintLeadershipAlternates</key>
       <text>Alternative Führungsskills anzeigen(aus dem "War!" Regelwerk)</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintArcanaAlternates</key>
+      <key>Display_PrintArcanaAlternates</key>
       <text>Alternative Magieskills anzeigen(aus dem "Strassenmagie" Regelwerk)</text>
     </string>
     <!-- Version 360 -->
@@ -6390,7 +6386,7 @@
       <text>Natürliche Waffe erstellen</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintNotes</key>
+      <key>Display_PrintNotes</key>
       <text>Notizen ausdrucken</text>
     </string>
     <string>
@@ -6451,7 +6447,7 @@
     </string>
     <!-- Version 401 -->
     <string>
-      <key>Checkbox_Options_AllowObsolescentUpgrade</key>
+      <key>Display_AllowObsolescentUpgrade</key>
       <text>Antiquierte Fahrzeuge dürfen ebenso wie Auslaufmodelle nachgerüstet werden.</text>
     </string>
     <string>
@@ -6480,7 +6476,7 @@
       <text>Bioware Zusammenstellung erstellen</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowBiowareSuites</key>
+      <key>Display_AllowBiowareSuites</key>
       <text>Bioware Zusammenstellung erlauben</text>
     </string>
     <string>
@@ -6514,12 +6510,12 @@
     </string>
     <!-- Version 408 -->
     <string>
-      <key>Checkbox_Options_FreeSpiritPowerPointsMAG</key>
+      <key>Display_FreeSpiritPowerPointsMAG</key>
       <text>Frei Geister erhalten ihre Powerpunkte basierend auf ihrem MAG Attribute, nicht Edge</text>
     </string>
     <!-- Gelöscht
 		<string>
-			<key>Checkbox_Options_IncludeSmartlink</key>
+			<key>Display_IncludeSmartlink</key>
 			<text>Smartlink Bonus bei den Aktionsfertigkeiten miteinberechnen</text>
 		</string>
 		-->
@@ -6538,7 +6534,7 @@
       <text>Startdatum ändern</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialAttributeKarmaLimit</key>
+      <key>Display_SpecialAttributeKarmaLimit</key>
       <text>Spezialattribute(EDG,MAG,RES) werden während der Charaktererschaffung nicht dem 50% Limit für Attribute angerechnet</text>
     </string>
     <!-- Version 418 -->
@@ -6548,11 +6544,11 @@
     </string>
     <!-- Version 423 -->
     <string>
-      <key>Checkbox_Options_ErgonomicProgramLimit</key>
+      <key>Display_ErgonomicProgramLimit</key>
       <text>Ergonomische Programme beeinflussen die Prozessorleistung des Kommlinks nicht (UN114)</text>
     </string>
     <string>
-      <key>Checkbox_Options_TechnomancerAllowAutosoft</key>
+      <key>Display_TechnomancerAllowAutosoft</key>
       <text>Technomancer dürfen Autosofts als Komplexe Form wählen</text>
     </string>
     <!-- Version 425 -->
@@ -6655,12 +6651,12 @@
       <text>Test - Seite 5 öffnen</text>
     </string>
     <string>
-      <key>Checkbox_Options_DatesIncludeTime</key>
+      <key>Display_DatesIncludeTime</key>
       <text>Unkosten mit Zeitangabe anzeigen.</text>
     </string>
     <!-- Version 455 -->
     <string>
-      <key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
+      <key>Display_BreakSkillGroupsInCreateMode</key>
       <text>Erlauben, während der Charakter-Erstellung Skillgruppen aufzutrennen</text>
     </string>
     <string>
@@ -6696,11 +6692,11 @@
       <text>Fehlschalg</text>
     </string>
     <string>
-      <key>Checkbox_Options_LocalisedUpdatesOnly</key>
+      <key>Display_LocalisedUpdatesOnly</key>
       <text>Lade Aktualisierungen nur in der von mir gewählten Sprache.</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintToFileFirst</key>
+      <key>Display_PrintToFileFirst</key>
       <text>Linux Druckfehler-Fix nutzen.</text>
     </string>
     <string>
@@ -7244,63 +7240,63 @@
       <text>Wählen sie eine Fertigkeit/Fertigkeitsgruppe</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
+      <key>Display_MayBuyQualities</key>
       <text>Kann Vorteile kaufen (RC 40)</text>
     </string>
     <string>
-      <key>Checkbox_Options_ContactPoints</key>
+      <key>Display_ContactPoints</key>
       <text>Connection Punkte anstatt fester Anzahl von Connections.(RC 40)</text>
     </string>
     <string>
-      <key>Checkbox_Options_UseLogging</key>
+      <key>Display_UseLogging</key>
       <text>Benutze Debug Logging</text>
     </string>
     <string>
-      <key>Checkbox_Options_LicenseRestricted</key>
+      <key>Display_LicenseRestricted</key>
       <text>Jeden eingeschränkten Gegenstand Lizensieren lassen.</text>
     </string>
     <string>
-      <key>Checkbox_Options_Knucks</key>
+      <key>Display_Knucks</key>
       <text>Schlagringe erhalten Boni, die Waffenlosenkampf betreffen</text>
     </string>
     <string>
-      <key>Checkbox_Options_DontDoubleQualities</key>
+      <key>Display_DontDoubleQualities</key>
       <text>Kosten für Vor-/Nachteile im Karrieremodus nicht verdoppeln</text>
     </string>
     <string>
-      <key>Checkbox_Options_IgnoreArt</key>
+      <key>Display_IgnoreArt</key>
       <text>Ignore Art Requirements from Street Grimoire</text>
     </string>
     <string>
-      <key>Checkbox_Options_CyberlegMovement</key>
+      <key>Display_CyberlegMovement</key>
       <text>Werte von Cyberbeinen für Bewegung verwenden</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceptionalAttributes</key>
+      <key>Display_ExceptionalAttributes</key>
       <text>Attributspunkte können für Aussergewöhnliche Attribute ausgegeben werden</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExceptionalNotMaxed</key>
+      <key>Display_ExceptionalNotMaxed</key>
       <text>Exceptional attributes not at cap, are not maxed</text>
     </string>
     <string>
-      <key>Checkbox_Options_PointsOnBrokenGroups</key>
+      <key>Display_PointsOnBrokenGroups</key>
       <text>Benutze Fertigkeitspunkte für aufgelöste Fertigkeitsgruppen</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowInitiation</key>
+      <key>Display_AllowInitiation</key>
       <text>Erlaube Initiation/Wandlung im Erschaffungsmodus</text>
     </string>
     <string>
-      <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
+      <key>Display_ExtendAnyDetectionSpell</key>
       <text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
     </string>
 	<string>
-      <key>Checkbox_Options_DroneArmorMultiplier</key>
+      <key>Display_DroneArmorMultiplier</key>
       <text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
     </string>
     <string>
-      <key>Checkbox_Options_SpecialKarmaCostBasedOnShownValue</key>
+      <key>Display_SpecialKarmaCostBasedOnShownValue</key>
       <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>
     </string>
     <string>
