@@ -373,12 +373,7 @@ namespace Chummer.Skills
 			get
 			{
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority ||
-				                     (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) ||
-				                     _character.BuildMethod == CharacterBuildMethod.SumtoTen
-					? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier
-					: 0;
-
+				var fromAttributes = (_character.INT.Value + _character.LOG.Value) *_character.Options.FreeKnowledgeMultiplier;
 
 				int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
 				return fromAttributes + val;

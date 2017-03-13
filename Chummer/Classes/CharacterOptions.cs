@@ -359,16 +359,42 @@ namespace Chummer
 		[SavePropertyAs("exceednegativequalitieslimit")]
 		public bool ExceedNegativeQualitiesLimit { get; set; }
 
-	    /// <summary>
-		/// Cost multiplier for Restricted items.
-		/// </summary>
-		[SavePropertyAs("restrictedcostmultiplier")]
+        /// <summary>
+        /// Whether or not Restricted items have their cost multiplied.
+        /// </summary>
+        [SavePropertyAs("multiplyrestrictedcost")]
+        public bool MultiplyRestrictedCost { get; set; }
+
+        /// <summary>
+        /// Constrains the RestrictedCostMultiplier option to only be enabled if the MultiplyRestrictedCost rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+        private OptionConstraint<CharacterOptions> MultiplyRestrictedCostConstraint { get; } =
+            new OptionConstraint<CharacterOptions>(option => option.MultiplyRestrictedCost);
+
+        /// <summary>
+        /// Cost multiplier for Restricted items.
+        /// </summary>
+        [SavePropertyAs("restrictedcostmultiplier")]
 		public int RestrictedCostMultiplier { get; set; } = 1;
 
-	    /// <summary>
-		/// Cost multiplier for Forbidden items.
-		/// </summary>
-		[SavePropertyAs("forbiddencostmultiplier")]
+        /// <summary>
+        /// Whether or not Forbidden items have their cost multiplied.
+        /// </summary>
+        [SavePropertyAs("multiplyforbiddencost")]
+        public bool MultiplyForbiddenCost { get; set; }
+
+        /// <summary>
+        /// Constrains the ForbiddenCostMultiplier option to only be enabled if the MultiplyForbiddenCost rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+        private OptionConstraint<CharacterOptions> MultiplyForbiddenCostConstraint { get; } =
+            new OptionConstraint<CharacterOptions>(option => option.MultiplyForbiddenCost);
+        
+        /// <summary>
+        /// Cost multiplier for Forbidden items.
+        /// </summary>
+        [SavePropertyAs("forbiddencostmultiplier")]
 		public int ForbiddenCostMultiplier { get; set; } = 1;
 
         /// <summary>
@@ -389,21 +415,24 @@ namespace Chummer
 		[SavePropertyAs("cyberlegmovement")]
 		public bool CyberlegMovement { get; set; }
 
+        /// <summary>
+        /// Whether or not the DroneArmorMultiplier house rule is enabled.
+        /// </summary>
+        [SavePropertyAs("dronearmormultiplierenabled")]
+        public bool DroneArmorMultiplierEnabled { get; set; }
 
-	    [UsedImplicitly]
-	    private OptionConstaint<CharacterOptions> DroneArmorConstaint { get; } =
-	        new OptionConstaint<CharacterOptions>(option => option.DroneArmorMultiplierEnabled);
+        /// <summary>
+        /// Constrains the DroneArmorMultiplier option to only be enabled if the DroneArmorMultiplierEnabled rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+	    private OptionConstraint<CharacterOptions> DroneArmorConstraint { get; } =
+	        new OptionConstraint<CharacterOptions>(option => option.DroneArmorMultiplierEnabled);
+
 	    /// <summary>
 		/// The Drone Body multiplier for maximal Armor
 		/// </summary>
 		[SavePropertyAs("dronearmorflatnumber")]
 	    public int DroneArmorMultiplier { get; set; } = 2;
-
-	    /// <summary>
-		/// Whether or not the DroneArmorMultiplier house rule is enabled.
-		/// </summary>
-		[SavePropertyAs("dronearmormultiplierenabled")]
-		public bool DroneArmorMultiplierEnabled { get; set; }
 
 
 	    /// <summary>
@@ -506,8 +535,8 @@ namespace Chummer
 		/// The CHA multiplier to be used with the Free Contacts Option.
 		/// </summary>
 
-		private OptionConstaint<CharacterOptions> ContactsConstaint =
-		    new OptionConstaint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
+		private OptionConstraint<CharacterOptions> ContactsConstaint =
+		    new OptionConstraint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
 		//TODO: HEADER[OptionAttributes("House Rules/Character Creation")]
 		[SavePropertyAs("freekarmacontactsmultiplier")]
 		public int FreeContactsMultiplier { get; set; } = 3;
@@ -518,18 +547,6 @@ namespace Chummer
 
 		[SavePropertyAs("freecontactsmultiplierenabled")]
 		public bool FreeContactsMultiplierEnabled { get; set; }
-
-	    /// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		[SavePropertyAs("freekarmacontacts")]
-		public bool FreeKarmaContacts { get; set; }
-
-	    /// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		[SavePropertyAs("freekarmaknowledge")]
-		public bool FreeKarmaKnowledge { get; set; }
 
         /// <summary>
         /// The INT+LOG multiplier to be used with the Free Knowledge Option.

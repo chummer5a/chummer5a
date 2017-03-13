@@ -37,17 +37,17 @@ namespace Chummer.Backend.Options
             string[] npath;
 
             DictionaryList<string, PropertyInfo> propertiesDisplayPath = new DictionaryList<string, PropertyInfo>();
-            Dictionary<PropertyInfo, OptionConstaint> constaints =
-                new Dictionary<PropertyInfo, OptionConstaint>();
-            OptionConstaint currentConstaint = null;
+            Dictionary<PropertyInfo, OptionConstraint> constaints =
+                new Dictionary<PropertyInfo, OptionConstraint>();
+            OptionConstraint currentConstaint = null;
             string currentName = "";
             //Collect all properties in groups based on their option path
             foreach (PropertyInfo info in target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                if (typeof(OptionConstaint).IsAssignableFrom(info.PropertyType))
+                if (typeof(OptionConstraint).IsAssignableFrom(info.PropertyType))
                 {
                     if(currentConstaint != null) throw new ArgumentException("Multiple constaints on one property detected.");
-                    currentConstaint = (OptionConstaint) info.GetValue(target);
+                    currentConstaint = (OptionConstraint) info.GetValue(target);
                 }
 
                 if(!info.GetMethod.IsPublic) continue;
@@ -152,9 +152,9 @@ namespace Chummer.Backend.Options
             return opt;
         }
 
-        private void SetupConstraints(Dictionary<PropertyInfo, OptionConstaint> constaints, Dictionary<string, OptionEntryProxy> proxies)
+        private void SetupConstraints(Dictionary<PropertyInfo, OptionConstraint> constaints, Dictionary<string, OptionEntryProxy> proxies)
         {
-            foreach (KeyValuePair<PropertyInfo, OptionConstaint> constaint in constaints)
+            foreach (KeyValuePair<PropertyInfo, OptionConstraint> constaint in constaints)
             {
                 LambdaExpression ex = constaint.Value.Ex;
                 PropertyExtractorExpressionVisitor visitor = new PropertyExtractorExpressionVisitor(constaint.Key.DeclaringType);

@@ -14979,25 +14979,16 @@ namespace Chummer
                 // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
                 if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
-
                 
-
                 // Calculate Free Contacts Points. Free points = (CHA) * 2.
-	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
-	                (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) ||
-	                _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-	            {
-		            int intCHA = _objCharacter.CHA.Value;
-					if (_objOptions.UseTotalValueForFreeKnowledge)
-					{
-						intCHA = _objCharacter.CHA.TotalValue;
-					}
-					_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier * (_objCharacter.GameplayOption == "Prime Runner" ? 2 : 1);
-				}
-                else
-                    _objCharacter.ContactPoints = 0;
+                int intCHA = _objCharacter.CHA.Value;
+                if (_objOptions.UseTotalValueForFreeKnowledge)
+                {
+                    intCHA = _objCharacter.CHA.TotalValue;
+                }
+                _objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier * (_objCharacter.GameplayOption == "Prime Runner" ? 2 : 1);
 
-				UpdateSkillRelatedInfo();
+                UpdateSkillRelatedInfo();
 				
                 UpdateConditionMonitor(lblCMPhysical,lblCMStun,tipTooltip, _objImprovementManager);
 
