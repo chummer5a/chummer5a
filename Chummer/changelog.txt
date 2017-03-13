@@ -16,6 +16,7 @@ Data Changes:
 - Fixed incorrect costing for the Workshop vehicle modfication.
 - Restored missing Physical Active group to the Improved Ability power. 
 - Fixed incorrect requirement filtering for the Nosferatu quality.
+- Fixed an incorrect Category for the Dracoform Mastery power that prevented it from being shown. 
 
 - New Strings: 
 
