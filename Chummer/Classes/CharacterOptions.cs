@@ -530,23 +530,41 @@ namespace Chummer
 		[SavePropertyAs("technomancerallowautosoft")]
 		public bool TechnomancerAllowAutosoft { get; set; }
 
-	    #region Character Creation
-		/// <summary>
-		/// The CHA multiplier to be used with the Free Contacts Option.
-		/// </summary>
+        #region Character Creation
+        //TODO: HEADER[OptionAttributes("House Rules/Character Creation")]
 
-		private OptionConstraint<CharacterOptions> ContactsConstaint =
-		    new OptionConstraint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
-		//TODO: HEADER[OptionAttributes("House Rules/Character Creation")]
-		[SavePropertyAs("freekarmacontactsmultiplier")]
-		public int FreeContactsMultiplier { get; set; } = 3;
+        /// <summary>
+        /// Whether or not the FreeContactsMultiplier house rule is enabled.
+        /// </summary>
+        [SavePropertyAs("freecontactsmultiplierenabled")]
+        public bool FreeContactsMultiplierEnabled { get; set; }
 
-	    /// <summary>
-		/// Whether or not characters get a flat number of BP for free Contacts.
-		/// </summary>
+        /// <summary>
+        /// Constrains the FreeContactsMultiplier option to only be enabled if the freecontactsmultiplierenabled rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+        private OptionConstraint<CharacterOptions> ContactsMultiplierConstraint { get; } =
+            new OptionConstraint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
 
-		[SavePropertyAs("freecontactsmultiplierenabled")]
-		public bool FreeContactsMultiplierEnabled { get; set; }
+        /// <summary>
+        /// The CHA multiplier to be used with the Free Contacts Option.
+        /// </summary>
+        [SavePropertyAs("freekarmacontactsmultiplier")]
+        public int FreeContactsMultiplier { get; set; } = 3;
+
+
+        /// <summary>
+        /// Whether or not the multiplier for Free Knowledge points are used.
+        /// </summary>
+        [SavePropertyAs("freekarmaknowledgemultiplierenabled")]
+        public bool FreeKnowledgeMultiplierEnabled { get; set; }
+
+        /// <summary>
+        /// Constrains the FreeContactsMultiplier option to only be enabled if the freecontactsmultiplierenabled rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+        private OptionConstraint<CharacterOptions> KnowledgeMultiplierConstraint { get; } =
+            new OptionConstraint<CharacterOptions>(option => option.FreeKnowledgeMultiplierEnabled);
 
         /// <summary>
         /// The INT+LOG multiplier to be used with the Free Knowledge Option.
@@ -608,13 +626,6 @@ namespace Chummer
 
         #region Unused Rules
         /* These rules have no code references. Some may still be used and were disconnected accidentally. 
-
-
-        /// <summary>
-        /// Whether or not the multiplier for Free Knowledge points are used.
-        /// </summary>
-        [SavePropertyAs("freekarmaknowledgemultiplierenabled")]
-        public bool FreeKnowledgeMultiplierEnabled { get; set; }
 
         /// <summary>
         /// Whether or not characters can spend skill points to break groups.

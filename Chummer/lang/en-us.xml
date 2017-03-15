@@ -8286,11 +8286,11 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_FreeContactsMultiplier</key>
-			<text>Free Contact Points equal to CHA x {}</text>
+			<text>    Free Contact Multiplier x {}</text>
 		</string>
 		<string>
 			<key>Display_FreeContactsMultiplierEnabled</key>
-			<text>\tProbably broken\t{}</text>
+			<text>{} Free Contact Points equal to CHA x Multiplier</text>
 		</string>
 		<string>
 			<key>Display_FreeKarmaContacts</key>
@@ -8302,23 +8302,23 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_FreeKnowledgeMultiplierEnabled</key>
-			<text>\tFree Knowledge Points Equal to (INT+LOG) x {}</text>
+			<text>{} Free Knowledge Points Equal to (INT+LOG) x Multiplier</text>
 		</string>
 		<string>
 			<key>Display_FreeKnowledgeMultiplier</key>
-			<text>\tFree Knowledge Points Equal to (INT+LOG) x {}</text>
+			<text>    Free Knowledge Multiplier {}</text>
 		</string>
 		<string>
 			<key>Display_MetatypeCostsKarma</key>
-			<text>\t{}Metatypes cost Karma</text>
+			<text>{}Metatypes cost Karma</text>
 		</string>
 		<string>
 			<key>Display_MetatypeCostsKarmaMultiplier</key>
-			<text>\tMetatype Karma cost Multiplier{}</text>
+			<text>Metatype Karma cost Multiplier{}</text>
 		</string>
 		<string>
 			<key>Display_AlternateMetatypeAttributeKarma</key>
-			<text>\t{}Treat Metatype Attribute minimum as 1 for the purpose of determining Karma costs</text>
+			<text>{}Treat Metatype Attribute minimum as 1 for the purpose of determining Karma costs</text>
 		</string>
 		<string>
 			<key>Display_KarmaCarryover</key>
@@ -8326,7 +8326,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_NuyenPerBP</key>
-			<text>Nuyen\t\t{} per Karma</text>
+			<text>{} Nuyen per Karma</text>
 		</string>
 		<string>
 			<key>Display_UseTotalValueForFreeContacts</key>
