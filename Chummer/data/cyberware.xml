@@ -361,7 +361,7 @@
 			<avail>(Rating * 3)</avail>
 			<cost>FixedValues(4000,6000,10000,14000)</cost>
 			<allowgear>
-				<gearcategory>Vision Devices</gearcategory>
+				<gearcategory>Vision Enhancements</gearcategory>
 			</allowgear>
 			<allowsubsystems>
 				<category>Eyeware</category>
@@ -493,6 +493,9 @@
 			<capacity>Rating * 4</capacity>
 			<avail>Rating * 3</avail>
 			<cost>FixedValues(3000,4500,7500,11000)</cost>
+			<allowgear>
+				<gearcategory>Audio Enhancements</gearcategory>
+			</allowgear>
 			<allowsubsystems>
 				<category>Earware</category>
 			</allowsubsystems>
@@ -3807,11 +3810,11 @@
 			<avail>0</avail>
 			<cost>5000</cost>
 			<allowgear>
-				<gearcategory>Vision Devices</gearcategory>
+				<gearcategory>Vision Enhancements</gearcategory>
 			</allowgear>
-			<subsystems>
-				<subsystem>Eyeware</subsystem>
-			</subsystems>
+			<allowsubsystems>
+				<category>Eyeware</category>
+			</allowsubsystems>
 			<source>2050</source>
 			<page>201</page>
 		</cyberware>
@@ -3912,6 +3915,9 @@
 			<capacity>4</capacity>
 			<avail>0</avail>
 			<cost>5000</cost>
+			<allowgear>
+				<gearcategory>Audio Enhancements</gearcategory>
+			</allowgear>
 			<subsystems>
 				<subsystem>Earware</subsystem>
 			</subsystems>

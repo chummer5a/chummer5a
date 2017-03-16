@@ -2362,7 +2362,7 @@
     <power>
       <id>31ad1e6d-3e95-42cc-af61-5b59c8e745e6</id>
       <name>Dracoform Mastery</name>
-      <category>Drake Optional Powers</category>
+      <category>Drake</category>
       <type>P</type>
       <action>Special</action>
       <range>Self</range>

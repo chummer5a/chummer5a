@@ -680,13 +680,13 @@
 			<armor>
 				<id>6747e88b-b884-4400-aa33-3ccbbe71f135</id>
 				<name>Form Fitting, Half Suit (2050)</name>
-				<translate>Formangepasste Panzerung, Hemd</translate>
+				<translate>Formangepasste Panzerung, Halbkörper</translate>
 				<page>192</page>
 			</armor>
 			<armor>
 				<id>40544ce0-eee7-4273-80fe-ffa111fa9c35</id>
 				<name>Form Fitting, Full Suit (2050)</name>
-				<translate>Formangepasste Panzerung, Hemd</translate>
+				<translate>Formangepasste Panzerung, Ganzkörper</translate>
 				<page>192</page>
 			</armor>
 			<armor>
@@ -21663,7 +21663,7 @@
 				<translate>AK-97</translate>
 			</weapon>
 			<weapon>
-				<id>1a5768a6-012a-4884-9bdd-4f3b32e86aa2</id>
+				<id>4cdded3c-831d-456f-a0f7-7e7921118dd8</id>
 				<name>AK-98 (2050)</name>
 				<page>185</page>
 				<translate>AK-98</translate>

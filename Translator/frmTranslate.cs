@@ -430,20 +430,22 @@ namespace Translator
                 {
                     string strKey = xmlNodeEnglish["key"]?.InnerText;
                     string strEnglish = xmlNodeEnglish["text"]?.InnerText;
+                    string strTranslated = xmlNodeEnglish["text"]?.InnerText;
+                    var blnTranslated = false;
                     XmlNode xmlNodeLocal =
                         _objTranslationDoc.SelectSingleNode(string.Concat("/chummer/strings/string[key = \"", strKey, "\"]"));
                     if (xmlNodeLocal != null)
                     {
-                        string strTranslated = xmlNodeLocal["text"]?.InnerText;
-                        var blnTranslated = false;
-                        if (xmlNodeEnglish.Attributes?["translated"] != null)
-                            blnTranslated = Convert.ToBoolean(xmlNodeEnglish.Attributes["translated"].InnerText);
-                        if (chkOnlyTranslation.Checked && (strEnglish == strTranslated || string.IsNullOrWhiteSpace(strTranslated)) || !chkOnlyTranslation.Checked)
-                        {
-                            DataRowCollection rows = dataTable.Rows;
-                            object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
-                            rows.Add(objArray);
-                        }
+                        strTranslated = xmlNodeLocal["text"]?.InnerText;
+                        blnTranslated = xmlNodeEnglish.Attributes?["translated"] != null
+                            ? Convert.ToBoolean(xmlNodeEnglish.Attributes["translated"].InnerText)
+                            : strEnglish != strTranslated;
+                    }
+                    if (chkOnlyTranslation.Checked && (strEnglish == strTranslated || string.IsNullOrWhiteSpace(strTranslated)) || !chkOnlyTranslation.Checked)
+                    {
+                        DataRowCollection rows = dataTable.Rows;
+                        object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
+                        rows.Add(objArray);
                     }
                 }
             var dataSet = new DataSet("strings");
