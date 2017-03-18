@@ -13024,7 +13024,71 @@
 			<cost>400</cost>
 			<source>2050</source>
 			<page>198</page>
-		</gear>		
+		</gear>
+		<gear>
+			<id>9218a0ea-f1c5-4532-bbe0-25c10e97f0b9</id>
+			<name>Remote Control Deck (2050)</name>
+			<category>Rigger Command Consoles</category>
+			<capacity>0</capacity>
+			<rating>6</rating>
+			<devicerating>0</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>0</dataprocessing>
+			<firewall>0</firewall>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 5000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</gear>
+		<gear>
+			<id>b7f9bde1-8a2e-4012-81d3-f45aa32ee474</id>
+			<name>Chip Burner (2050)</name>
+			<category>Cyberdeck Modules</category>
+			<armorcapacity>0</armorcapacity>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>0</avail>
+			<cost>250</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>d2d3bd03-88fa-408e-bed7-56367c957a84</id>
+			<name>Response Increase (2050)</name>
+			<category>Cyberdeck Modules</category>
+			<armorcapacity>0</armorcapacity>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>0</avail>
+			<cost>35000</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>
+		<gear>
+			<id>eee44602-35b5-4a35-a329-a233529ff773</id>
+			<name>Hitcher Jacks (2050)</name>
+			<category>Cyberdeck Modules</category>
+			<armorcapacity>0</armorcapacity>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>	
+		<gear>
+			<id>305a1ffd-b724-49d9-99c2-7b311b51417a</id>
+			<name>Vidscreen Display (2050)</name>
+			<category>Cyberdeck Modules</category>
+			<armorcapacity>0</armorcapacity>
+			<rating>0</rating>
+			<devicerating>0</devicerating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>2050</source>
+			<page>170</page>
+		</gear>	
 		<!-- End -->		
 	</gears>
 </chummer>
