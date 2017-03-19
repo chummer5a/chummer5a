@@ -180,8 +180,9 @@ namespace Chummer
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
+	    private bool _blnReverseAttributePriorityOrder;
 
-        #region Initialization, Save, and Load Methods
+	    #region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
 		{
 			_character = character;
@@ -378,6 +379,8 @@ namespace Chummer
             objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString());
 			// <alternatemetatypeattributekarma />
 			objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
+            // <reversekarmapriorityorder />
+            objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
 			// <createbackuponcareer />
 			objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
 			// <printleadershipalternates />
@@ -666,8 +669,10 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
 			// Metatype Costs Karma.
 			objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
-			// Metatype Costs Karma Multiplier.
-			objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
+            // Metatype Costs Karma.
+            objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder", ref _blnReverseAttributePriorityOrder);
+            // Metatype Costs Karma Multiplier.
+            objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
 			// Limb Count.
 			objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
 			// Exclude Limb Slot.
@@ -3381,7 +3386,16 @@ namespace Chummer
 			}
 		}
 
-		#endregion
+	    /// <summary>
+	    /// Allows characters to spend their Karma before Priority Points.
+	    /// </summary>
+	    public bool ReverseAttributePriorityOrder
+	    {
+	        get { return _blnReverseAttributePriorityOrder; }
+	        internal set { _blnReverseAttributePriorityOrder = value; }
+	    }
 
-	}
+	    #endregion
+
+    }
 }

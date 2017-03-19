@@ -2207,6 +2207,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>-2</conceal>
+      <spec>Aerodynamic</spec>
 			<accuracy>Physical-1</accuracy>
 			<reach>0</reach>
 			<damage>(STR+2)P</damage>
@@ -2228,6 +2229,8 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>-2</conceal>
+      <spec>Blades</spec>
+      <spec2>Aerodynamic</spec2>
 			<accuracy>Physical+1</accuracy>
 			<reach>0</reach>
 			<damage>(STR+2)P</damage>
@@ -2312,6 +2315,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Non-Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>Chemical (10m Radius)</damage>
@@ -2333,6 +2337,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Non-Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>16P (-2/m)</damage>
@@ -2354,6 +2359,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Non-Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(10m Radius)</damage>
@@ -2375,6 +2381,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Non-Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(3m Radius)</damage>
@@ -2396,6 +2403,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Non-Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(10m Radius)</damage>
@@ -2417,6 +2425,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Non-Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(10m Radius)</damage>
@@ -2438,6 +2447,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>-2</conceal>
+      <spec>Aerodynamic</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(STR+3)P</damage>
@@ -2459,6 +2469,8 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>-2</conceal>
+      <spec>Blades</spec>
+      <spec2>Non-Aerodynamic</spec2>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(STR+3)P</damage>
@@ -2769,6 +2781,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>-2</conceal>
+      <spec>Blades</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(STR+1)P</damage>
@@ -2790,6 +2803,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
+      <spec>Blades</spec>
 			<accuracy>4</accuracy>
 			<reach>0</reach>
 			<damage>(STR)P</damage>
@@ -2811,6 +2825,7 @@
 			<category>Gear</category>
 			<type>Ranged</type>
 			<conceal>-2</conceal>
+      <spec>Blades</spec>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
 			<damage>(STR+1)P</damage>
@@ -7882,6 +7897,7 @@
 			<conceal>-2</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
+      <spec>Aerodynamic</spec>
 			<damage>(STR-2)P</damage>
 			<ap>-1</ap>
 			<mode>0</mode>

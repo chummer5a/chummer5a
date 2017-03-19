@@ -239,6 +239,8 @@
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
+            this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
             this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
             this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
             this.chkMysAdPp = new System.Windows.Forms.CheckBox();
@@ -271,7 +273,6 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2775,6 +2776,7 @@
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder);
             this.tabHouseRules.Controls.Add(this.chkEducationQualitiesApplyOnChargenKarma);
             this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
             this.tabHouseRules.Controls.Add(this.chkFreeMartialArtSpecialization);
@@ -2810,6 +2812,30 @@
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // chkReverseAttributePriorityOrder
+            // 
+            this.chkReverseAttributePriorityOrder.AutoSize = true;
+            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(8, 371);
+            this.chkReverseAttributePriorityOrder.Name = "chkReverseAttributePriorityOrder";
+            this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(251, 17);
+            this.chkReverseAttributePriorityOrder.TabIndex = 33;
+            this.chkReverseAttributePriorityOrder.Tag = "Checkbox_Options_ReverseAttributePriorityOrder";
+            this.chkReverseAttributePriorityOrder.Text = "Spend Karma on Attributes before Priority Points";
+            this.chkReverseAttributePriorityOrder.UseVisualStyleBackColor = true;
+            this.chkReverseAttributePriorityOrder.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkEducationQualitiesApplyOnChargenKarma
+            // 
+            this.chkEducationQualitiesApplyOnChargenKarma.AutoSize = true;
+            this.chkEducationQualitiesApplyOnChargenKarma.Location = new System.Drawing.Point(8, 348);
+            this.chkEducationQualitiesApplyOnChargenKarma.Name = "chkEducationQualitiesApplyOnChargenKarma";
+            this.chkEducationQualitiesApplyOnChargenKarma.Size = new System.Drawing.Size(381, 17);
+            this.chkEducationQualitiesApplyOnChargenKarma.TabIndex = 32;
+            this.chkEducationQualitiesApplyOnChargenKarma.Tag = "Checkbox_Option_EducationQualitiesApplyOnChargenKarma";
+            this.chkEducationQualitiesApplyOnChargenKarma.Text = "Education qualities give karma discount for knowledge skills in create mode";
+            this.chkEducationQualitiesApplyOnChargenKarma.UseVisualStyleBackColor = true;
+            this.chkEducationQualitiesApplyOnChargenKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPrioritySpellsAsAdeptPowers
             // 
@@ -3218,18 +3244,6 @@
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
-            // chkEducationQualitiesApplyOnChargenKarma
-            // 
-            this.chkEducationQualitiesApplyOnChargenKarma.AutoSize = true;
-            this.chkEducationQualitiesApplyOnChargenKarma.Location = new System.Drawing.Point(8, 348);
-            this.chkEducationQualitiesApplyOnChargenKarma.Name = "chkEducationQualitiesApplyOnChargenKarma";
-            this.chkEducationQualitiesApplyOnChargenKarma.Size = new System.Drawing.Size(381, 17);
-            this.chkEducationQualitiesApplyOnChargenKarma.TabIndex = 32;
-            this.chkEducationQualitiesApplyOnChargenKarma.Tag = "Checkbox_Option_EducationQualitiesApplyOnChargenKarma";
-            this.chkEducationQualitiesApplyOnChargenKarma.Text = "Education qualities give karma discount for knowledge skills in create mode";
-            this.chkEducationQualitiesApplyOnChargenKarma.UseVisualStyleBackColor = true;
-            this.chkEducationQualitiesApplyOnChargenKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -3573,5 +3587,6 @@
         private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
         private System.Windows.Forms.CheckBox chkLiveCustomData;
         private System.Windows.Forms.CheckBox chkEducationQualitiesApplyOnChargenKarma;
+        private System.Windows.Forms.CheckBox chkReverseAttributePriorityOrder;
     }
 }

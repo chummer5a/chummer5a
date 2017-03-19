@@ -139,6 +139,7 @@ namespace Chummer
             _characterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
             _characterOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
             _characterOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
+		    _characterOptions.ReverseAttributePriorityOrder = chkReverseAttributePriorityOrder.Checked;
             _characterOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
             _characterOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
             _characterOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
@@ -645,6 +646,7 @@ namespace Chummer
 			chkUseCalculatedPublicAwareness.Checked = _characterOptions.UseCalculatedPublicAwareness;
 			chkStrictSkillGroups.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
 			chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
+	        chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
 			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;

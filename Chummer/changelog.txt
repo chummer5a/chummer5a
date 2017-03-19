@@ -8,6 +8,8 @@ Application Changes:
 - Fixed behaviour of the Enable Special Attribute improvement in the Improvement creation form to work properly. 
 - Fixed an issue tyhat prevented lifestyle qualities like Extra Secure from working. Fixes #1506
 - Fixed behaviour of the Free checkbox when selecting armour and gear in create mode.
+- Fixed an issue with calculation of attributes when using the optional rule to treat Metatype Attribute Values as 1.
+- Added a house rule to spend Karma on Attributes before Priority Points. 
 
 Data Changes:
 
@@ -17,12 +19,14 @@ Data Changes:
 - Restored missing Physical Active group to the Improved Ability power. 
 - Fixed incorrect requirement filtering for the Nosferatu quality.
 - Fixed an incorrect Category for the Dracoform Mastery power that prevented it from being shown. 
+- Fixed missing specialisations for several throwing weapons.
 
 - New Strings: 
 
 - String_CannotFindLifestyleQuality
 - Checkbox_Spirit_Fettered
 - String_ExpenseFetteredSpirit
+- Checkbox_Options_ReverseAttributePriorityOrder
 
 Build 191
 
