@@ -877,7 +877,7 @@
 		</spirit>
 		<!--Toxic Spirits-->
 		<spirit>
-			<id></id>
+			<id>05f52567-0406-41ce-ab5b-bea370963207</id>
 			<name>Noxious</name>
 			<bod>F-2</bod>
 			<agi>F+3</agi>
@@ -919,7 +919,7 @@
 			<page>387</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>b76a6219-0308-4225-a4c2-07682c409741</id>
 			<name>Barren</name>
 			<bod>F+4</bod>
 			<agi>F-2</agi>
@@ -961,7 +961,7 @@
 			<page>88</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>3a65e42f-fbc5-494c-80b7-9221b8c9cc24</id>
 			<name>Abomination</name>
 			<bod>F+2</bod>
 			<agi>F+1</agi>
@@ -1008,7 +1008,7 @@
 			<page>87</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>433695d0-94ca-4bb6-afad-a95f391786d7</id>
 			<name>Nuclear</name>
 			<bod>F+1</bod>
 			<agi>F+2</agi>
@@ -1046,7 +1046,7 @@
 			<page>88</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>bc720993-d169-4d4e-a836-72464f6b0eda</id>
 			<name>Plague</name>
 			<bod>F+0</bod>
 			<agi>F+0</agi>
@@ -1090,7 +1090,7 @@
 			<page>88</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>b986e478-0d37-4175-a144-9e59f4b2c88c</id>
 			<name>Sludge</name>
 			<bod>F+0</bod>
 			<agi>F+1</agi>
@@ -1134,7 +1134,7 @@
 		</spirit>
 		<!--Blood Spirits-->
 		<spirit>
-			<id></id>
+			<id>6630bbe6-60e5-44fc-8c5c-15a97b41ee5f</id>
 			<name>Blood Spirit</name>
 			<bod>F+2</bod>
 			<agi>F+2</agi>
@@ -1175,7 +1175,7 @@
 		</spirit>
 		<!--Insect Spirits-->
 		<spirit>
-			<id></id>
+			<id>8263b5dc-80d5-4fa2-86ab-e1608acf7342</id>
 			<name>Caretaker</name>
 			<bod>F+0</bod>
 			<agi>F+1</agi>
@@ -1217,7 +1217,7 @@
 			<page>98</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>19a87e05-f929-4db9-b7f8-94eed7a13020</id>
 			<name>Nymph</name>
 			<bod>F-1</bod>
 			<agi>F+0</agi>
@@ -1259,7 +1259,7 @@
 			<page>98</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>5673d266-2da5-4912-93bd-b153f14ec87e</id>
 			<name>Scout</name>
 			<bod>F+0</bod>
 			<agi>F+2</agi>
@@ -1305,7 +1305,7 @@
 			<page>98</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>caf8f724-e1a9-4469-998d-76d23fe4014e</id>
 			<name>Soldier</name>
 			<bod>F+3</bod>
 			<agi>F+1</agi>
@@ -1349,7 +1349,7 @@
 			<page>98</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>3e9ed319-1fed-4867-90f1-68b62497516a</id>
 			<name>Worker</name>
 			<bod>F+0</bod>
 			<agi>F+0</agi>
@@ -1391,7 +1391,7 @@
 			<page>99</page>
 		</spirit>
 		<spirit>
-			<id></id>
+			<id>ad2dd39f-4fb0-4e89-8d73-b76184ecb1cf</id>
 			<name>Queen</name>
 			<bod>F+5</bod>
 			<agi>F+3</agi>

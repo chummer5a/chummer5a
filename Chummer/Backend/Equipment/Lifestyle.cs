@@ -352,7 +352,7 @@ namespace Chummer.Backend.Equipment
 				string strReturn = DisplayNameShort;
 
 				if (!string.IsNullOrEmpty(_strName))
-					strReturn += " (\"" + LifestyleName + "\")";
+					strReturn += " (\"" + Name + "\")";
 
 				return strReturn;
 			}
