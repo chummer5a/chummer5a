@@ -8535,6 +8535,11 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateCharacterInfo();
+                
+                //OBSOLETE: Review once ImprovementManager gets outbound events
+                //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
+                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+
                 UpdateWindowTitle();
             }
 		}
@@ -8553,6 +8558,11 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateCharacterInfo();
+                
+                //OBSOLETE: Review once ImprovementManager gets outbound events
+                //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
+                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+
                 UpdateWindowTitle();
             }
 		}
@@ -19208,7 +19218,11 @@ namespace Chummer
 
 					UpdateCharacterInfo();
 
-					_blnIsDirty = true;
+                    //OBSOLETE: Review once ImprovementManager gets outbound events
+                    //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
+                    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+
+                    _blnIsDirty = true;
 					UpdateWindowTitle();
 				}
 			}

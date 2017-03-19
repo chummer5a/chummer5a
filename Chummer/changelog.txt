@@ -12,6 +12,7 @@ Application Changes:
 - Added a house rule to spend Karma on Attributes before Priority Points. 
 - Fixed the rounding behaviour of the MaxArmor property to prevent crashing for drones with 0 BOD/Armor. 
 - Fixed an issue with the Stun Condition Monitor that caused it not to update properly. 
+- Fixed behaviour of custom improvements to refresh Skill Pools on toggle. 
 
 Data Changes:
 
