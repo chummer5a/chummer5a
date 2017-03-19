@@ -13,6 +13,7 @@ Application Changes:
 - Fixed the rounding behaviour of the MaxArmor property to prevent crashing for drones with 0 BOD/Armor. 
 - Fixed an issue with the Stun Condition Monitor that caused it not to update properly. 
 - Fixed behaviour of custom improvements to refresh Skill Pools on toggle. 
+- Fixed an issue with the house-rule for cyberleg movement causing the movement rate to show as 0 if the character has no cyberlegs. 
 
 Data Changes:
 
