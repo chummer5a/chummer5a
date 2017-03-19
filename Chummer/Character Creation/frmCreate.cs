@@ -13652,7 +13652,7 @@ namespace Chummer
             if (_objOptions.AlternateMetatypeAttributeKarma)
             {
                 // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma. Treat the karma cost as though we were raising it from 1.
-                if (_objOptions.IgnoreAttributePriorityOrder)
+                if (_objOptions.ReverseAttributePriorityOrder)
                 {
                     // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma. Treat the karma cost as though we were raising it from 1, ignoring any priority points that have been spent.
                     for (int i = 1; i <= nudKBOD.Value; i++)
@@ -13762,7 +13762,7 @@ namespace Chummer
             }
             else
             {
-                if (_objOptions.IgnoreAttributePriorityOrder)
+                if (_objOptions.ReverseAttributePriorityOrder)
                 {
                     // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
                     for (int i = 1; i <= nudKBOD.Value; i++)

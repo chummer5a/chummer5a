@@ -10,6 +10,7 @@ Application Changes:
 - Fixed behaviour of the Free checkbox when selecting armour and gear in create mode.
 - Fixed an issue with calculation of attributes when using the optional rule to treat Metatype Attribute Values as 1.
 - Added a house rule to spend Karma on Attributes before Priority Points. 
+- Fixed the rounding behaviour of the MaxArmor property to prevent crashing for drones with 0 BOD/Armor. 
 
 Data Changes:
 
