@@ -11,6 +11,7 @@ Application Changes:
 - Fixed an issue with calculation of attributes when using the optional rule to treat Metatype Attribute Values as 1.
 - Added a house rule to spend Karma on Attributes before Priority Points. 
 - Fixed the rounding behaviour of the MaxArmor property to prevent crashing for drones with 0 BOD/Armor. 
+- Fixed an issue with the Stun Condition Monitor that caused it not to update properly. 
 
 Data Changes:
 

@@ -19723,95 +19723,58 @@ namespace Chummer
 		#region Condition Monitors
 		private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_blnSkipRefresh)
-				return;
-
-			int intFillCount = 0;
-
-			CheckBox objCheck = (CheckBox)sender;
-			if (objCheck.Checked)
-			{
-				// If this is being checked, make sure everything before it is checked off.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objPhysicalCM in panPhysicalCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-						objPhysicalCM.Checked = true;
-
-					if (objPhysicalCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-			else
-			{
-				// If this is being unchecked, make sure everything after it is unchecked.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objPhysicalCM in panPhysicalCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-						objPhysicalCM.Checked = false;
-
-					if (objPhysicalCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-
-			_objCharacter.PhysicalCMFilled = intFillCount;
-
-			UpdateCharacterInfo();
-			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
+            ProcessConditionMonitor((CheckBox)sender, panPhysicalCM, _objCharacter.PhysicalCMFilled);
+        }
 
 		private void chkStunCM_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_blnSkipRefresh)
-				return;
-
-			int intFillCount = 0;
-
-			CheckBox objCheck = (CheckBox)sender;
-			if (objCheck.Checked)
-			{
-				// If this is being checked, make sure everything before it is checked off.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objStunCM in panStunCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objStunCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-						objStunCM.Checked = true;
-
-					if (objStunCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-			else
-			{
-				// If this is being unchecked, make sure everything after it is unchecked.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objStunCM in panStunCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objStunCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-						objStunCM.Checked = false;
-
-					if (objStunCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-			
-			_objCharacter.StunCMFilled = intFillCount;
-		    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
-		    UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-
+            ProcessConditionMonitor((CheckBox)sender,panStunCM,_objCharacter.StunCMFilled);
 		}
+
+	    private void ProcessConditionMonitor(CheckBox objCheck, Panel objPanel, int ConditionMonitorTrack)
+	    {
+            if (_blnSkipRefresh)
+                return;
+
+            int intFillCount = 0;
+            
+            if (objCheck.Checked)
+            {
+                // If this is being checked, make sure everything before it is checked off.
+                _blnSkipRefresh = true;
+                foreach (CheckBox cmCheckBox in objPanel.Controls.OfType<CheckBox>())
+                {
+                    if (Convert.ToInt32(cmCheckBox.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+                        cmCheckBox.Checked = true;
+
+                    if (cmCheckBox.Checked)
+                        intFillCount += 1;
+                }
+                _blnSkipRefresh = false;
+            }
+            else
+            {
+                // If this is being unchecked, make sure everything after it is unchecked.
+                _blnSkipRefresh = true;
+                foreach (CheckBox cmCheckBox in objPanel.Controls.OfType<CheckBox>())
+                {
+                    if (Convert.ToInt32(cmCheckBox.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+                        cmCheckBox.Checked = false;
+
+                    if (cmCheckBox.Checked)
+                        intFillCount += 1;
+                }
+                _blnSkipRefresh = false;
+            }
+
+            ConditionMonitorTrack = intFillCount;
+
+            UpdateCharacterInfo();
+            _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
 
 		private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
 		{
