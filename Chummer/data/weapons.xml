@@ -10341,6 +10341,64 @@
 			<allowaccessory>true</allowaccessory>
 			<source>2050</source>
 			<page>191</page>
+		</weapon>
+		<weapon>
+			<id>90eca76a-4e5a-4cce-a6a1-0921d12d4d74</id>
+			<name>Autocannon (2050)</name>
+			<category>Assault Cannons</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>13P</damage>
+			<ap>-6</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>10(c)</ammo>
+			<avail>12F</avail>
+			<cost>12000</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>196</page>
+		</weapon>		
+		<weapon>
+			<id>3e4c13e4-ae4a-4928-937f-6e0038514350</id>
+			<name>Launcher, Vehicle (2050)</name>
+			<category>Missile Launchers</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>Missile</damage>
+			<ap>Missile</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>6(b)</ammo>
+			<avail>12F</avail>
+			<cost>15000</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>196</page>
+		</weapon>
+		<weapon>
+			<id>c6540493-21b1-44db-9cd3-e2b22770a320</id>
+			<name>Water Cannon (2050)</name>
+			<category>Assault Cannons</category>
+			<type>Ranged</type>
+			<conceal>10</conceal>
+			<accuracy>0</accuracy>
+			<reach>0</reach>
+			<damage>12S</damage>
+			<ap>-6</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>200 (tank)</ammo>
+			<avail>15R</avail>
+			<cost>20000</cost>
+			<range>Submachine Guns</range>
+			<allowaccessory>true</allowaccessory>
+			<source>2050</source>
+			<page>196</page>
 		</weapon>		
 		<!-- End SR5 2050 -->		
 		<!-- End Region -->
