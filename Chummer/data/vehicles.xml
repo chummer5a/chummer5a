@@ -8956,5 +8956,47 @@
 			<page>123</page>
 		</mod>
 	<!-- End Region -->
+	<!-- SR 5 2050 -->
+		<mod>
+			<id>f62c6ac8-66cf-4606-893c-76386afd0f9b</id>
+			<name>Rigger Adaptation (2050)</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>2800</cost>
+			<source>2050</source>
+			<page>212</page>
+		</mod>
+		<mod>
+			<id>160eab98-7fb6-437c-b0b7-9c960ed95543</id>
+			<name>Remote Adaptation (2050)</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>Body * 1000</cost>
+			<required>
+				<vehicledetails>
+					<OR>
+				<category>Bikes</category>
+				<category>Cars</category>
+				<category>Trucks</category>
+				<category>Municipal/Construction</category>
+				<category>Corpsec/Police/Military</category>
+				<category>Boats</category>
+				<category>Submarines</category>
+				<category>Fixed-Wing Aircraft</category>
+				<category>LTAV</category>
+				<category>Rotorcraft</category>
+				<category>VTOL/VSTOL</category>
+				<category operation="contains">Drones</category>
+					</OR>
+				</vehicledetails>			
+			</required>			
+			<source>2050</source>
+			<page>212</page>
+		</mod>
+		<!-- End Region -->
 	</mods>
 </chummer>
