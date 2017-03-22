@@ -6433,6 +6433,101 @@
 			<source>2050</source>
 			<page>210</page>
 		</vehicle>
+		<!-- Drones 2050-->
+		<vehicle>
+			<id>f9a409cd-e7ef-4049-94af-a9e812602f84</id>
+			<name>Surveillance Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>4</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>4</modslots>
+			<gears>
+				<gear rating="2" maxrating="2">Sensor Array</gear>
+			</gears>
+
+			<avail>6</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>7ac00990-31a3-4314-a114-9cd6468fb66d</id>
+			<name>Spotter Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>3</accel>
+			<speed>5</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>2</armor>
+			<seats>0</seats>
+			<sensor>2</sensor>
+			<modslots>4</modslots>
+			<gears>
+				<gear rating="2" maxrating="2">Sensor Array</gear>
+			</gears>
+			<avail>4</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>11418c52-6c1f-477f-a660-2451fb3ee8fa</id>
+			<name>Hunter Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>5</handling>
+			<accel>3</accel>
+			<speed>5</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>5</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Standard Weapon Mount (Drone)</name>
+				<name>Standard Weapon Mount (Drone)</name>
+			</mods>
+			<avail>6R</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>d28b349e-6580-4a04-8dfe-d09ebdb261f0</id>
+			<name>Patrol Vehicle (2050)</name>
+			<category>Drones: Large</category>
+			<handling>5</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>6</body>
+			<armor>12</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Standard Weapon Mount (Drone)</name>
+				<name>Standard Weapon Mount (Drone)</name>
+			</mods>
+			<avail>6R</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>		
+		<!-- End Region -->		
 		<!-- End Region -->			
 	</vehicles>
 	<mods>
