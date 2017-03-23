@@ -273,6 +273,7 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkHideItemsOverAvail = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1592,6 +1593,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.chkHideItemsOverAvail);
             this.tabPage1.Controls.Add(this.chkLicenseEachRestrictedItem);
             this.tabPage1.Controls.Add(this.chkSpecialKarmaCost);
             this.tabPage1.Controls.Add(this.chkErgonomicProgramLimit);
@@ -3244,6 +3246,20 @@
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
+            // chkHideItemsOverAvail
+            // 
+            this.chkHideItemsOverAvail.AutoSize = true;
+            this.chkHideItemsOverAvail.Checked = true;
+            this.chkHideItemsOverAvail.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkHideItemsOverAvail.Location = new System.Drawing.Point(6, 311);
+            this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
+            this.chkHideItemsOverAvail.Size = new System.Drawing.Size(353, 17);
+            this.chkHideItemsOverAvail.TabIndex = 19;
+            this.chkHideItemsOverAvail.Tag = "Checkbox_Option_HideItemsOverAvailLimit";
+            this.chkHideItemsOverAvail.Text = "Hide items that are over the Availability Limit during character creation";
+            this.chkHideItemsOverAvail.UseVisualStyleBackColor = true;
+            this.chkHideItemsOverAvail.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -3588,5 +3604,6 @@
         private System.Windows.Forms.CheckBox chkLiveCustomData;
         private System.Windows.Forms.CheckBox chkEducationQualitiesApplyOnChargenKarma;
         private System.Windows.Forms.CheckBox chkReverseAttributePriorityOrder;
+        private System.Windows.Forms.CheckBox chkHideItemsOverAvail;
     }
 }

@@ -248,13 +248,14 @@ namespace Chummer
 			{
                 if (objXmlGear["hidden"] != null)
                     continue;
-                ListItem objItem = new ListItem();
-				objItem.Value = objXmlGear["name"].InnerText;
-				if (objXmlGear["translate"] != null)
-					objItem.Name = objXmlGear["translate"].InnerText;
-				else
-					objItem.Name = objXmlGear["name"].InnerText;
-				lstGears.Add(objItem);
+
+                if (CheckAvailRestriction(objXmlGear))
+			    {
+			        ListItem objItem = new ListItem();
+			        objItem.Value = objXmlGear["name"].InnerText;
+			        objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
+			        lstGears.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstGears.Sort(objSort.Compare);
@@ -368,7 +369,7 @@ namespace Chummer
 			else
 				strCategoryFilter += "category != \"General\"";
 
-			// Treat everything as being uppercase so the search is case-insensitive.
+            // Treat everything as being uppercase so the search is case-insensitive.
 			string strSearch = "/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
 
 			XmlNodeList objXmlGearList = _objXmlDocument.SelectNodes(strSearch);
@@ -398,15 +399,17 @@ namespace Chummer
 				if (!blnFound)
 					blnAddToList = false;
 
-				if (blnAddToList)
+			    if (blnAddToList)
+			    {
+			        blnAddToList = CheckAvailRestriction(objXmlGear, blnAddToList);
+			    }
+
+			    if (blnAddToList)
 				{
 					ListItem objItem = new ListItem();
 					// When searching, Category needs to be added to the Value so we can identify the English Category name.
 					objItem.Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText;
-					if (objXmlGear["translate"] != null)
-						objItem.Name = objXmlGear["translate"].InnerText;
-					else
-						objItem.Name = objXmlGear["name"].InnerText;
+					objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
 
                     if (objXmlGear["category"] != null)
                     {
@@ -430,7 +433,52 @@ namespace Chummer
             lstGear.EndUpdate();
         }
 
-		private void lstGear_DoubleClick(object sender, EventArgs e)
+	    private bool CheckAvailRestriction(XmlNode objXmlGear, bool blnAddToList = true)
+	    {
+            //TODO: Better handler for restricted gear
+            if (_objCharacter.Options.HideItemsOverAvailLimit && !_objCharacter.Created && !_objCharacter.RestrictedGear && !_objCharacter.IgnoreRules && blnAddToList)
+            {
+                // Avail.
+                // If avail contains "F" or "R", remove it from the string so we can use the expression.
+                string strAvailExpr = string.Empty;
+                string strPrefix = string.Empty;
+                if (objXmlGear["avail"] != null)
+                    strAvailExpr = objXmlGear["avail"].InnerText;
+                if (nudRating.Value <= 3 && objXmlGear["avail3"] != null)
+                    strAvailExpr = objXmlGear["avail3"].InnerText;
+                else if (nudRating.Value <= 6 && objXmlGear["avail6"] != null)
+                    strAvailExpr = objXmlGear["avail6"].InnerText;
+                else if (nudRating.Value >= 7 && objXmlGear["avail10"] != null)
+                    strAvailExpr = objXmlGear["avail10"].InnerText;
+
+                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                {
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                }
+                if (strAvailExpr.Substring(0, 1) == "+")
+                {
+                    strPrefix = "+";
+                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                }
+                if (strPrefix != "+")
+                {
+                    try
+                    {
+                        XPathNavigator nav = _objXmlDocument.CreateNavigator();
+                        var xprAvail = nav.Compile(strAvailExpr.Replace("Rating",
+                            nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+                        blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier <
+                                       _objCharacter.MaximumAvailability;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+	        return blnAddToList;
+	    }
+
+	    private void lstGear_DoubleClick(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(lstGear.Text))
 				AcceptForm();
