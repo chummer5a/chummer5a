@@ -973,5 +973,60 @@ namespace Chummer.Backend.Shared_Methods
 
             return true;
         }
+
+        /// <summary>
+        /// Evaluates the availability of a given node against Availability Limits in Create Mode
+        /// </summary>
+        /// <param name="objXmlGear"></param>
+        /// <param name="_objCharacter"></param>
+        /// <param name="intRating"></param>
+        /// <param name="intAvailModifier"></param>
+        /// <param name="blnAddToList"></param>
+        /// <returns></returns>
+        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character _objCharacter, int intRating = 0, int intAvailModifier = 0, bool blnAddToList = true)
+        {
+            XmlDocument objXmlDocument = new XmlDocument();
+            //TODO: Better handler for restricted gear
+            if (_objCharacter.Options.HideItemsOverAvailLimit && !_objCharacter.Created && !_objCharacter.RestrictedGear && !_objCharacter.IgnoreRules && blnAddToList)
+            {
+                // Avail.
+                // If avail contains "F" or "R", remove it from the string so we can use the expression.
+                string strAvailExpr = string.Empty;
+                string strPrefix = string.Empty;
+                if (objXmlGear["avail"] != null)
+                    strAvailExpr = objXmlGear["avail"].InnerText;
+                if (intRating <= 3 && objXmlGear["avail3"] != null)
+                    strAvailExpr = objXmlGear["avail3"].InnerText;
+                else if (intRating <= 6 && objXmlGear["avail6"] != null)
+                    strAvailExpr = objXmlGear["avail6"].InnerText;
+                else if (intRating >= 7 && objXmlGear["avail10"] != null)
+                    strAvailExpr = objXmlGear["avail10"].InnerText;
+
+                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                {
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                }
+                if (strAvailExpr.Substring(0, 1) == "+")
+                {
+                    strPrefix = "+";
+                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                }
+                if (strPrefix != "+")
+                {
+                    try
+                    {
+                        XPathNavigator nav = objXmlDocument.CreateNavigator();
+                        var xprAvail = nav.Compile(strAvailExpr.Replace("Rating",
+                            intRating.ToString(GlobalOptions.InvariantCultureInfo)));
+                        blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <
+                                       _objCharacter.MaximumAvailability;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+            return blnAddToList;
+        }
     }
 }

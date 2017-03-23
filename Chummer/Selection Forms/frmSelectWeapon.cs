@@ -135,7 +135,12 @@ namespace Chummer
 			{
                 bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes";
 				blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
-				if (!blnHide)
+
+                if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                {
+                    continue;
+                }
+                if (!blnHide)
 				{
 					ListItem objItem = new ListItem
 					{
@@ -692,6 +697,9 @@ namespace Chummer
                 foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                 {
                     bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
+
+                    blnHide = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter,0,0,blnHide);
+
                     if (!blnHide)
                     {
                         TreeNode objNode = new TreeNode();
@@ -758,7 +766,10 @@ namespace Chummer
                 foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                 {
 					bool blnHide = objXmlWeapon["hide"]?.InnerText == "yes";
-	                if (!blnHide)
+
+                    blnHide = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, 0, 0, blnHide);
+
+                    if (!blnHide)
 	                {
 	                    ListItem objItem = new ListItem
 	                    {

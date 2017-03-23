@@ -159,12 +159,17 @@ namespace Chummer
 
 			// Populate the Armor list.
 			XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+
 			foreach (XmlNode objXmlArmor in objXmlArmorList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlArmor["name"].InnerText;
-				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
-				lstArmors.Add(objItem);
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
+			        Convert.ToInt32(nudRating.Value)))
+			    {
+			        ListItem objItem = new ListItem();
+			        objItem.Value = objXmlArmor["name"].InnerText;
+			        objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
+			        lstArmors.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstArmors.Sort(objSort.Compare);
@@ -217,19 +222,23 @@ namespace Chummer
 			List<ListItem> lstArmors = new List<ListItem>();
 			foreach (XmlNode objXmlArmor in objXmlArmorList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlArmor["name"].InnerText;
-				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
+			        Convert.ToInt32(nudRating.Value)))
+			    {
+			        ListItem objItem = new ListItem();
+			        objItem.Value = objXmlArmor["name"].InnerText;
+			        objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
 
-				if (objXmlArmor["category"] != null)
-				{
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
-                    if (objFoundItem != null)
-                    {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
-                    }
-					lstArmors.Add(objItem);
-				}
+			        if (objXmlArmor["category"] != null)
+			        {
+			            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
+			            if (objFoundItem != null)
+			            {
+			                objItem.Name += " [" + objFoundItem.Name + "]";
+			            }
+			            lstArmors.Add(objItem);
+			        }
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstArmors.Sort(objSort.Compare);

@@ -249,7 +249,7 @@ namespace Chummer
                 if (objXmlGear["hidden"] != null)
                     continue;
 
-                if (CheckAvailRestriction(objXmlGear))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter,Convert.ToInt32(nudRating.Value), _intAvailModifier))
 			    {
 			        ListItem objItem = new ListItem();
 			        objItem.Value = objXmlGear["name"].InnerText;
@@ -401,7 +401,7 @@ namespace Chummer
 
 			    if (blnAddToList)
 			    {
-			        blnAddToList = CheckAvailRestriction(objXmlGear, blnAddToList);
+                    blnAddToList = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, Convert.ToInt32(nudRating.Value), _intAvailModifier, blnAddToList);
 			    }
 
 			    if (blnAddToList)
@@ -432,51 +432,6 @@ namespace Chummer
 			lstGear.DataSource = lstGears;
             lstGear.EndUpdate();
         }
-
-	    private bool CheckAvailRestriction(XmlNode objXmlGear, bool blnAddToList = true)
-	    {
-            //TODO: Better handler for restricted gear
-            if (_objCharacter.Options.HideItemsOverAvailLimit && !_objCharacter.Created && !_objCharacter.RestrictedGear && !_objCharacter.IgnoreRules && blnAddToList)
-            {
-                // Avail.
-                // If avail contains "F" or "R", remove it from the string so we can use the expression.
-                string strAvailExpr = string.Empty;
-                string strPrefix = string.Empty;
-                if (objXmlGear["avail"] != null)
-                    strAvailExpr = objXmlGear["avail"].InnerText;
-                if (nudRating.Value <= 3 && objXmlGear["avail3"] != null)
-                    strAvailExpr = objXmlGear["avail3"].InnerText;
-                else if (nudRating.Value <= 6 && objXmlGear["avail6"] != null)
-                    strAvailExpr = objXmlGear["avail6"].InnerText;
-                else if (nudRating.Value >= 7 && objXmlGear["avail10"] != null)
-                    strAvailExpr = objXmlGear["avail10"].InnerText;
-
-                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
-                {
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                if (strAvailExpr.Substring(0, 1) == "+")
-                {
-                    strPrefix = "+";
-                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
-                }
-                if (strPrefix != "+")
-                {
-                    try
-                    {
-                        XPathNavigator nav = _objXmlDocument.CreateNavigator();
-                        var xprAvail = nav.Compile(strAvailExpr.Replace("Rating",
-                            nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                        blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier <
-                                       _objCharacter.MaximumAvailability;
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-	        return blnAddToList;
-	    }
 
 	    private void lstGear_DoubleClick(object sender, EventArgs e)
 		{
