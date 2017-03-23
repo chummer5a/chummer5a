@@ -14,6 +14,8 @@ Application Changes:
 - Fixed an issue with the Stun Condition Monitor that caused it not to update properly. 
 - Fixed behaviour of custom improvements to refresh Skill Pools on toggle. 
 - Fixed an issue with the house-rule for cyberleg movement causing the movement rate to show as 0 if the character has no cyberlegs. 
+- Fixed an interaction between the Enhanced Accuracy power and multiple instances of the Exotic weapon skills.
+- Fixed an incorrect doubling of costs for modifications attached to Vintage weapons. 
 
 Data Changes:
 
