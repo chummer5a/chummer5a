@@ -7833,7 +7833,15 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Weapon Window -->
-		<string>
+    <string>
+      <key>Title_Browse</key>
+      <text>Browse</text>
+    </string>
+    <string>
+      <key>Title_ListView</key>
+      <text>List View</text>
+    </string>    
+    <string>
 			<key>Title_SelectWeapon</key>
 			<text>Select Weapon</text>
 		</string>
