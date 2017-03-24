@@ -269,12 +269,17 @@ namespace Chummer
 			{
                 if (objXmlCyberware["hide"] != null)
                     continue;
-				ListItem objItem = new ListItem
-				{
-					Value = objXmlCyberware["name"].InnerText,
-					Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText
-				};
-				lstCyberwares.Add(objItem);
+
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+			        Convert.ToInt32(nudRating.Value), _intAvailModifier))
+			    {
+			        ListItem objItem = new ListItem
+			        {
+			            Value = objXmlCyberware["name"].InnerText,
+			            Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText
+			        };
+			        lstCyberwares.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
@@ -500,22 +505,25 @@ namespace Chummer
 			XmlNodeList objXmlCyberwareList = _objXmlDocument.SelectNodes(strSearch);
 			foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCyberware["name"].InnerText;
-				if (objXmlCyberware["translate"] != null)
-					objItem.Name = objXmlCyberware["translate"].InnerText;
-				else
-					objItem.Name = objXmlCyberware["name"].InnerText;
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+			        Convert.ToInt32(nudRating.Value), _intAvailModifier))
+			    {
+			        ListItem objItem = new ListItem();
+			        objItem.Value = objXmlCyberware["name"].InnerText;
+			        objItem.Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
 
-                if (objXmlCyberware["category"] != null && objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
-                {
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
-                    if (objFoundItem != null)
-                    {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
-                    }
-                }
-                lstCyberwares.Add(objItem);
+			        if (objXmlCyberware["category"] != null &&
+			            objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
+			        {
+			            ListItem objFoundItem =
+			                _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
+			            if (objFoundItem != null)
+			            {
+			                objItem.Name += " [" + objFoundItem.Name + "]";
+			            }
+			        }
+			        lstCyberwares.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);

@@ -134,6 +134,7 @@ namespace Chummer
                 if (chkKnowledgeMultiplier.Checked)
                     chkKnowledgeMultiplier.Enabled = true;
             _characterOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
+		    _characterOptions.HideItemsOverAvailLimit = chkHideItemsOverAvail.Checked;
             _characterOptions.IgnoreArt = chkIgnoreArt.Checked;
             _characterOptions.UnarmedImprovementsApplyToWeapons = chkUnarmedSkillImprovements.Checked;
             _characterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
@@ -614,6 +615,7 @@ namespace Chummer
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
             chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
+	        chkHideItemsOverAvail.Checked = _characterOptions.HideItemsOverAvailLimit;
 	        chkFreeMartialArtSpecialization.Checked = _characterOptions.FreeMartialArtSpecialization;
             chkPrioritySpellsAsAdeptPowers.Checked = _characterOptions.PrioritySpellsAsAdeptPowers;
             chkEducationQualitiesApplyOnChargenKarma.Checked = _characterOptions.EducationQualitiesApplyOnChargenKarma;
@@ -1270,11 +1272,6 @@ namespace Chummer
 				if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
 					txtCharacterRosterPath.Text = selectFolderDialog.SelectedPath;
 			}
-		}
-
-		private void cboPDFParameters_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			GlobalOptions.Instance.PDFParameters = cboPDFParameters.SelectedValue.ToString();
 		}
     }
 }

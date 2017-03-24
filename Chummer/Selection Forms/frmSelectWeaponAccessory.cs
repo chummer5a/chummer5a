@@ -150,7 +150,9 @@ namespace Chummer
 					    boolCanAdd = _lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name));
 					}
 
-					if (!boolCanAdd)
+                    boolCanAdd = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, Convert.ToInt32(nudRating.Value), 0, boolCanAdd);
+
+                    if (!boolCanAdd)
 						continue;
 					ListItem objItem = new ListItem();
 					objItem.Value = objXmlAccessory["name"]?.InnerText;

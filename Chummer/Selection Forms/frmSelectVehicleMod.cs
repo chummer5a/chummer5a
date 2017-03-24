@@ -214,10 +214,13 @@ namespace Chummer
                         continue;
                     }
                 }
-
-			    ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
+			    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,Convert.ToInt32(nudRating.Value)))
+                {
+                    continue;
+                }
+                ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
 			    objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
-				lstMods.Add(objItem);
+			    lstMods.Add(objItem);
 			}
             lstMod.BeginUpdate();
             lstMod.DataSource = null;

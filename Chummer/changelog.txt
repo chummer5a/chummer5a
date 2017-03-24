@@ -16,6 +16,7 @@ Application Changes:
 - Fixed an issue with the house-rule for cyberleg movement causing the movement rate to show as 0 if the character has no cyberlegs. 
 - Fixed an interaction between the Enhanced Accuracy power and multiple instances of the Exotic weapon skills.
 - Fixed an incorrect doubling of costs for modifications attached to Vintage weapons. 
+- Redesigned the Select Armor and Select Weapon forms to make the item browser more visible.
 
 Data Changes:
 
@@ -33,6 +34,8 @@ Data Changes:
 - Checkbox_Spirit_Fettered
 - String_ExpenseFetteredSpirit
 - Checkbox_Options_ReverseAttributePriorityOrder
+- Title_ListView
+- Title_Browse
 
 Build 191
 

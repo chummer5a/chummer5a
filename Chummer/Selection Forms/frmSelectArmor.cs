@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
+// ReSharper disable LocalizableElement
 
 namespace Chummer
 {
@@ -31,9 +32,9 @@ namespace Chummer
 	{
 		private string _strSelectedArmor = string.Empty;
 
-		private bool _blnAddAgain = false;
+		private bool _blnAddAgain;
 		private static string _strSelectCategory = string.Empty;
-		private int _intMarkup = 0;
+		private int _intMarkup;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
@@ -67,22 +68,20 @@ namespace Chummer
 
 			// Populate the Armor Category list.
 			XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-			foreach (XmlNode objXmlCategory in objXmlCategoryList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCategory.InnerText;
-				if (objXmlCategory.Attributes != null)
-				{
-					if (objXmlCategory.Attributes["translate"] != null)
-						objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-					else
-						objItem.Name = objXmlCategory.InnerText;
-				}
-				else
-					objItem.Name = objXmlCategory.InnerXml;
-				_lstCategory.Add(objItem);
-			}
-            cboCategory.BeginUpdate();
+		    if (objXmlCategoryList != null)
+		        foreach (XmlNode objXmlCategory in objXmlCategoryList)
+		        {
+		            ListItem objItem = new ListItem();
+		            objItem.Value = objXmlCategory.InnerText;
+		            if (objXmlCategory.Attributes != null)
+		            {
+		                objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
+		            }
+		            else
+		                objItem.Name = objXmlCategory.InnerXml;
+		            _lstCategory.Add(objItem);
+		        }
+		    cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
@@ -96,9 +95,6 @@ namespace Chummer
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
-
-            if (chkBrowse.Checked)
-                LoadGrid();
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -123,61 +119,42 @@ namespace Chummer
 
 			// Get the information for the selected piece of Armor.
 			XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + lstArmor.SelectedValue + "\"]");
-			// Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
-			Armor objArmor = new Armor(_objCharacter);
-			TreeNode objNode = new TreeNode();
-			List<Weapon> objWeapons = new List<Weapon>();
-			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
+		    if (objXmlArmor == null) return;
+		    // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
+		    Armor objArmor = new Armor(_objCharacter);
+		    TreeNode objNode = new TreeNode();
+		    List<Weapon> objWeapons = new List<Weapon>();
+		    objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
 
-			lblArmor.Text = objXmlArmor["name"].InnerText;
-            lblArmorValue.Text = objXmlArmor["armor"].InnerText;
-			lblAvail.Text = objArmor.TotalAvail;
+		    lblArmor.Text = objXmlArmor["name"]?.InnerText;
+		    lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
+		    lblAvail.Text = objArmor.TotalAvail;
 
-			if (objXmlArmor["rating"] != null)
-			{
-				lblRatingLabel.Visible = true;
-				nudRating.Visible = true;
-				nudRating.Enabled = true;
-				nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
-				nudRating.Minimum = 1;
-				nudRating.Value = 1;
-			}
-			else
-			{
-				lblRatingLabel.Visible = false;
-				nudRating.Visible = false;
-				nudRating.Enabled = false;
-				nudRating.Minimum = 0;
-				nudRating.Value = 0;
-			}
-			UpdateArmorInfo();
+		    if (objXmlArmor["rating"] != null)
+		    {
+		        lblRatingLabel.Visible = true;
+		        nudRating.Visible = true;
+		        nudRating.Enabled = true;
+		        nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+		        nudRating.Minimum = 1;
+		        nudRating.Value = 1;
+		    }
+		    else
+		    {
+		        lblRatingLabel.Visible = false;
+		        nudRating.Visible = false;
+		        nudRating.Enabled = false;
+		        nudRating.Minimum = 0;
+		        nudRating.Value = 0;
+		    }
+		    UpdateArmorInfo();
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			List<ListItem> lstArmors = new List<ListItem>();
-
-			// Populate the Armor list.
-			XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-			foreach (XmlNode objXmlArmor in objXmlArmorList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlArmor["name"].InnerText;
-				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
-				lstArmors.Add(objItem);
-			}
-			SortListItem objSort = new SortListItem();
-			lstArmors.Sort(objSort.Compare);
-            lstArmor.BeginUpdate();
-            lstArmor.DataSource = null;
-			lstArmor.ValueMember = "Value";
-			lstArmor.DisplayMember = "Name";
-			lstArmor.DataSource = lstArmors;
-            lstArmor.EndUpdate();
-
-            if (chkBrowse.Checked)
-                LoadGrid();
-		}
+            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+            BuildArmorList(objXmlArmorList);
+        }
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
@@ -189,8 +166,8 @@ namespace Chummer
 		{
 			if (string.IsNullOrEmpty(txtSearch.Text))
 			{
-				cboCategory_SelectedIndexChanged(sender, e);
-				return;
+                cboCategory_SelectedIndexChanged(sender, e);
+                return;
 			}
 
 			string strCategoryFilter = string.Empty;
@@ -214,31 +191,7 @@ namespace Chummer
 			strSearch += "]";
 
 			XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes(strSearch);
-			List<ListItem> lstArmors = new List<ListItem>();
-			foreach (XmlNode objXmlArmor in objXmlArmorList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlArmor["name"].InnerText;
-				objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
-
-				if (objXmlArmor["category"] != null)
-				{
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
-                    if (objFoundItem != null)
-                    {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
-                    }
-					lstArmors.Add(objItem);
-				}
-			}
-			SortListItem objSort = new SortListItem();
-			lstArmors.Sort(objSort.Compare);
-            lstArmor.BeginUpdate();
-            lstArmor.DataSource = null;
-			lstArmor.ValueMember = "Value";
-			lstArmor.DisplayMember = "Name";
-			lstArmor.DataSource = lstArmors;
-            lstArmor.EndUpdate();
+            BuildArmorList(objXmlArmorList);
         }
 
 		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
@@ -326,125 +279,97 @@ namespace Chummer
 
             XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes(strSearch);
 
-            if (dgvArmor.Visible)
-            {
-                DataTable tabArmor = new DataTable("armor");
-                tabArmor.Columns.Add("ArmorName");
-                tabArmor.Columns.Add("Armor");
-                tabArmor.Columns["Armor"].DataType = typeof(Int32);
-                tabArmor.Columns.Add("Capacity");
-                tabArmor.Columns["Capacity"].DataType = typeof(Int32);
-                tabArmor.Columns.Add("Avail");
-                tabArmor.Columns.Add("Special");
-                tabArmor.Columns.Add("Source");
-                tabArmor.Columns.Add("Cost");
-                tabArmor.Columns["Cost"].DataType = typeof(Int32);
-
-                // Populate the Weapon list.
-                foreach (XmlNode objXmlArmor in objXmlArmorList)
-                {
-                    TreeNode objNode = new TreeNode();
-                    Armor objArmor = new Armor(_objCharacter);
-					List<Weapon> objWeapons = new List<Weapon>();
-					objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true);
-
-                    string strWeaponName = objArmor.Name;
-                    int intArmor = objArmor.TotalArmor;
-                    int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
-                    string strAvail = objArmor.Avail;
-                    string strAccessories = string.Empty;
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
-                    {
-                        if (strAccessories.Length > 0)
-                            strAccessories += "\n";
-                        strAccessories += objMod.Name;
-                    }
-                    foreach (Gear objGear in objArmor.Gear)
-                    {
-                        if (strAccessories.Length > 0)
-                            strAccessories += "\n";
-                        strAccessories += objGear.Name;
-                    }
-                    string strSource = objArmor.Source + " " + objArmor.Page;
-                    int intCost = objArmor.Cost;
-
-                    tabArmor.Rows.Add(strWeaponName, intArmor, intCapacity, strAvail, strAccessories, strSource, intCost);
-                }
-
-                DataSet set = new DataSet("armor");
-                set.Tables.Add(tabArmor);
-
-                dgvArmor.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                dgvArmor.DataSource = set;
-                dgvArmor.DataMember = "armor";
-            }
-            else
-            {
-                List<ListItem> lstArmors = new List<ListItem>();
-                foreach (XmlNode objXmlArmor in objXmlArmorList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlArmor["name"].InnerText;
-                    if (objXmlArmor["translate"] != null)
-                        objItem.Name = objXmlArmor["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlArmor["name"].InnerText;
-
-                    if (objXmlArmor["category"] != null)
-                    {
-                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
-                        if (objFoundItem != null)
-                        {
-                            objItem.Name += " [" + objFoundItem.Name + "]";
-                        }
-                        lstArmors.Add(objItem);
-                    }
-                }
-                SortListItem objSort = new SortListItem();
-                lstArmors.Sort(objSort.Compare);
-                lstArmor.BeginUpdate();
-                lstArmor.DataSource = null;
-                lstArmor.ValueMember = "Value";
-                lstArmor.DisplayMember = "Name";
-                lstArmor.DataSource = lstArmors;
-                lstArmor.EndUpdate();
-            }
+            BuildArmorList(objXmlArmorList);
         }
 
-        private void chkBrowse_CheckedChanged(object sender, EventArgs e)
-        {
-            dgvArmor.Visible = chkBrowse.Checked;
+	    private void BuildArmorList(XmlNodeList objXmlArmorList)
+	    {
+	        switch (tabControl.SelectedIndex)
+	        {
+	            case 1:
+	                DataTable tabArmor = new DataTable("armor");
+                    tabArmor.Columns.Add("ArmorGuid");
+                    tabArmor.Columns.Add("ArmorName");
+	                tabArmor.Columns.Add("Armor");
+	                tabArmor.Columns["Armor"].DataType = typeof(Int32);
+	                tabArmor.Columns.Add("Capacity");
+	                tabArmor.Columns["Capacity"].DataType = typeof(Int32);
+	                tabArmor.Columns.Add("Avail");
+	                tabArmor.Columns.Add("Special");
+	                tabArmor.Columns.Add("Source");
+	                tabArmor.Columns.Add("Cost");
+	                tabArmor.Columns["Cost"].DataType = typeof(Int32);
 
-            lstArmor.Visible = !chkBrowse.Checked;
-            lblArmorLabel.Visible = !chkBrowse.Checked;
-            lblArmor.Visible = !chkBrowse.Checked;
-            lblCost.Visible = !chkBrowse.Checked;
-            lblCostLabel.Visible = !chkBrowse.Checked;
-            lblAvail.Visible = !chkBrowse.Checked;
-            lblAvailLabel.Visible = !chkBrowse.Checked;
-            lblSourceLabel.Visible = !chkBrowse.Checked;
-            lblSource.Visible = !chkBrowse.Checked;
-            chkFreeItem.Visible = !chkBrowse.Checked;
-            lblCapacity.Visible = !chkBrowse.Checked;
-            lblCapacityLabel.Visible = !chkBrowse.Checked;
-            nudMarkup.Visible = !chkBrowse.Checked;
-            lblMarkupLabel.Visible = !chkBrowse.Checked;
-            lblMarkupPercentLabel.Visible = !chkBrowse.Checked;
-            lblTest.Visible = !chkBrowse.Checked;
-            lblTestLabel.Visible = !chkBrowse.Checked;
-            lblArmorValue.Visible = !chkBrowse.Checked;
-            lblArmorValueLabel.Visible = !chkBrowse.Checked;
+	                // Populate the Weapon list.
+	                foreach (XmlNode objXmlArmor in objXmlArmorList)
+	                {
+	                    TreeNode objNode = new TreeNode();
+	                    Armor objArmor = new Armor(_objCharacter);
+	                    List<Weapon> objWeapons = new List<Weapon>();
+	                    objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, false, true, true);
 
-            if (txtSearch.Text.Length > 0)
-            {
-                tmrSearch_Tick(this, null);
-            }
+                        string strWeaponGuid = objArmor.SourceID.ToString();
+                        string strWeaponName = objArmor.Name;
+	                    int intArmor = objArmor.TotalArmor;
+	                    int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
+	                    string strAvail = objArmor.Avail;
+	                    string strAccessories = string.Empty;
+	                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+	                    {
+	                        if (strAccessories.Length > 0)
+	                            strAccessories += "\n";
+	                        strAccessories += objMod.Name;
+	                    }
+	                    foreach (Gear objGear in objArmor.Gear)
+	                    {
+	                        if (strAccessories.Length > 0)
+	                            strAccessories += "\n";
+	                        strAccessories += objGear.Name;
+	                    }
+	                    string strSource = objArmor.Source + " " + objArmor.Page;
+	                    int intCost = objArmor.Cost;
 
-            if (chkBrowse.Checked)
-                LoadGrid();
-        }
+	                    tabArmor.Rows.Add(strWeaponGuid,strWeaponName, intArmor, intCapacity, strAvail, strAccessories, strSource, intCost);
+	                }
 
-        private void dgvArmor_DoubleClick(object sender, EventArgs e)
+	                DataSet set = new DataSet("armor");
+	                set.Tables.Add(tabArmor);
+
+	                dgvArmor.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+	                dgvArmor.DataSource = set;
+	                dgvArmor.DataMember = "armor";
+	                break;
+	            default:
+	                List<ListItem> lstArmors = new List<ListItem>();
+	                foreach (XmlNode objXmlArmor in objXmlArmorList)
+	                {
+	                    ListItem objItem = new ListItem();
+	                    objItem.Value = objXmlArmor["name"]?.InnerText;
+	                    objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
+
+	                    if (objXmlArmor["category"] != null)
+	                    {
+	                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
+	                        if (objFoundItem != null)
+	                        {
+	                            objItem.Name += " [" + objFoundItem.Name + "]";
+	                        }
+	                        lstArmors.Add(objItem);
+	                    }
+	                }
+	                SortListItem objSort = new SortListItem();
+	                lstArmors.Sort(objSort.Compare);
+	                lstArmor.BeginUpdate();
+	                lstArmor.DataSource = null;
+	                lstArmor.ValueMember = "Value";
+	                lstArmor.DisplayMember = "Name";
+	                lstArmor.DataSource = lstArmors;
+	                lstArmor.EndUpdate();
+	                break;
+	        }
+	    }
+
+	    private void dgvArmor_DoubleClick(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstArmor.Text) || dgvArmor.Visible)
                 AcceptForm();
@@ -580,148 +505,93 @@ namespace Chummer
 			lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
 		}
 
-        private void LoadGrid()
-        {
-            DataTable tabArmor = new DataTable("armor");
-            tabArmor.Columns.Add("ArmorName");
-            tabArmor.Columns.Add("Armor");
-            tabArmor.Columns["Armor"].DataType = typeof(Int32);
-            tabArmor.Columns.Add("Capacity");
-            tabArmor.Columns["Capacity"].DataType = typeof(Int32);
-            tabArmor.Columns.Add("Avail");
-            tabArmor.Columns.Add("Special");
-            tabArmor.Columns.Add("Source");
-            tabArmor.Columns.Add("Cost");
-            tabArmor.Columns["Cost"].DataType = typeof(Int32);
-
-            // Populate the Weapon list.
-            XmlNodeList objXmlArmorList;
-
-            if (txtSearch.Text.Length > 1)
-            {
-                string strSearch = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and category != \"Cyberware\" and category != \"Gear\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-                objXmlArmorList = _objXmlDocument.SelectNodes(strSearch);
-            }
-            else
-            {
-                // Populate the Armor list.
-                objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-            }
-
-            foreach (XmlNode objXmlArmor in objXmlArmorList)
-            {
-                TreeNode objNode = new TreeNode();
-                Armor objArmor = new Armor(_objCharacter);
-				List<Weapon> objWeapons = new List<Weapon>();
-				objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true);
-
-                string strWeaponName = objArmor.Name;
-                int intArmor = objArmor.TotalArmor;
-                int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
-                string strAvail = objArmor.Avail;
-                string strAccessories = string.Empty;
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
-                {
-                    if (strAccessories.Length > 0)
-                        strAccessories += "\n";
-                    strAccessories += objMod.Name;
-                }
-                foreach (Gear objGear in objArmor.Gear)
-                {
-                    if (strAccessories.Length > 0)
-                        strAccessories += "\n";
-                    strAccessories += objGear.Name;
-                }
-                string strSource = objArmor.Source + " " + objArmor.Page;
-                int intCost = objArmor.Cost;
-
-                tabArmor.Rows.Add(strWeaponName, intArmor, intCapacity, strAvail, strAccessories, strSource, intCost);
-            }
-
-            DataSet set = new DataSet("armor");
-            set.Tables.Add(tabArmor);
-
-            dgvArmor.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvArmor.DataSource = set;
-            dgvArmor.DataMember = "armor";
-        }
 		private void UpdateArmorInfo()
 		{
 			// Get the information for the selected piece of Armor.
 			XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + lstArmor.SelectedValue + "\"]");
-			// Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
-			Armor objArmor = new Armor(_objCharacter);
-			TreeNode objNode = new TreeNode();
-			List<Weapon> objWeapons = new List<Weapon>();
-			objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
+		    if (objXmlArmor == null) return;
+		    // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
+		    Armor objArmor = new Armor(_objCharacter);
+		    TreeNode objNode = new TreeNode();
+		    List<Weapon> objWeapons = new List<Weapon>();
+		    objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
 
-			// Check for a Variable Cost.
-			int intItemCost = 0;
-			if (objXmlArmor["cost"].InnerText.StartsWith("Variable"))
-			{
-				int intMin = 0;
-				int intMax = int.MaxValue;
-				string strCost = objXmlArmor["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-				if (strCost.Contains("-"))
-				{
-					string[] strValues = strCost.Split('-');
-					intMin = Convert.ToInt32(strValues[0]);
-					intMax = Convert.ToInt32(strValues[1]);
-				}
-				else
-					intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+		    // Check for a Variable Cost.
+		    XmlElement xmlCostElement = objXmlArmor["cost"];
+		    if (xmlCostElement != null)
+		    {
+		        int intItemCost;
+		        if (xmlCostElement.InnerText.StartsWith("Variable"))
+		        {
+		            int intMin;
+		            int intMax = int.MaxValue;
+		            string strCost = xmlCostElement.InnerText.Replace("Variable(", string.Empty)
+		                .Replace(")", string.Empty);
+		            if (strCost.Contains("-"))
+		            {
+		                string[] strValues = strCost.Split('-');
+		                intMin = Convert.ToInt32(strValues[0]);
+		                intMax = Convert.ToInt32(strValues[1]);
+		            }
+		            else
+		                intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-				if (intMax == int.MaxValue)
-				{
-					lblCost.Text = $"{intMin:###,###,##0¥+}";
-				}
-				else
-					lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+		            if (intMax == int.MaxValue)
+		            {
+		                lblCost.Text = $"{intMin:###,###,##0¥+}";
+		            }
+		            else
+		                lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
 
-				intItemCost = intMin;
-			}
-			else if (objXmlArmor["cost"].InnerText.Contains("Rating"))
-			{
-				XPathNavigator nav = _objXmlDocument.CreateNavigator();
-				XPathExpression xprCost = nav.Compile(objXmlArmor["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-				double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-				if (chkBlackMarketDiscount.Checked)
-				{
-					dblCost = dblCost - (dblCost*0.90);
-				}
-				intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
-				lblCost.Text = $"{intItemCost:###,###,##0¥}";
-			}
-			else
-			{
-				double dblCost = Convert.ToDouble(objXmlArmor["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
-				if (chkBlackMarketDiscount.Checked)
-				{
-					dblCost = dblCost * 0.90;
-				}
-				lblCost.Text = $"{dblCost:###,###,##0¥}";
-				intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
-			}
+		            intItemCost = intMin;
+		        }
+		        else if (xmlCostElement.InnerText.Contains("Rating"))
+		        {
+		            XPathNavigator nav = _objXmlDocument.CreateNavigator();
+		            XPathExpression xprCost =
+		                nav.Compile(xmlCostElement.InnerText.Replace("Rating",
+		                    nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+		            double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+		            if (chkBlackMarketDiscount.Checked)
+		            {
+		                dblCost = dblCost - (dblCost * 0.90);
+		            }
+		            intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
+		            lblCost.Text = $"{intItemCost:###,###,##0¥}";
+		        }
+		        else
+		        {
+		            double dblCost = Convert.ToDouble(xmlCostElement.InnerText, GlobalOptions.InvariantCultureInfo);
+		            dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+		            if (chkBlackMarketDiscount.Checked)
+		            {
+		                dblCost = dblCost * 0.90;
+		            }
+		            lblCost.Text = $"{dblCost:###,###,##0¥}";
+		            intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
+		        }
 
-			lblCapacity.Text = objXmlArmor["armorcapacity"].InnerText;
+		        lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;
 
-			if (chkFreeItem.Checked)
-			{
-				lblCost.Text = $"{0:###,###,##0¥}";
-				intItemCost = 0;
-			}
+		        if (chkFreeItem.Checked)
+		        {
+		            lblCost.Text = $"{0:###,###,##0¥}";
+		            intItemCost = 0;
+		        }
 
-			lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
+		        lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlArmor["source"].InnerText);
-			string strPage = objXmlArmor["page"].InnerText;
-			if (objXmlArmor["altpage"] != null)
-				strPage = objXmlArmor["altpage"].InnerText;
-			lblSource.Text = strBook + " " + strPage;
+		        string strBook = _objCharacter.Options.LanguageBookShort(objXmlArmor["source"]?.InnerText);
+		        string strPage = objXmlArmor["page"]?.InnerText;
+		        if (objXmlArmor["altpage"] != null)
+		            strPage = objXmlArmor["altpage"].InnerText;
+		        lblSource.Text = strBook + " " + strPage;
 
 
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArmor["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+		        tipTooltip.SetToolTip(lblSource,
+		            _objCharacter.Options.LanguageBookLong(objXmlArmor["source"]?.InnerText) + " " +
+		            LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+		    }
 		}
         #endregion
 

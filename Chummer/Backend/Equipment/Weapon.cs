@@ -13,7 +13,8 @@ namespace Chummer.Backend.Equipment
 	/// </summary>
 	public class Weapon : INamedParentWithGuid<Weapon>
     {
-		private Guid _guiID = new Guid();
+        private Guid _sourceID = new Guid();
+        private Guid _guiID = new Guid();
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
 		private string _strType = string.Empty;
@@ -84,6 +85,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
+            objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlWeapon.TryGetStringFieldQuickly("type", ref _strType);
@@ -289,7 +291,8 @@ namespace Chummer.Backend.Equipment
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("weapon");
-			objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("sourceid", _sourceID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("type", _strType);
@@ -392,7 +395,18 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode["sourceid"] == null)
+            {
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+                XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
+                _sourceID = Guid.Parse(objWeaponNode["id"].InnerText);
+            }
+            else
+            {
+                _sourceID = Guid.Parse(objNode["sourceid"].InnerText);
+            }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (_strCategory == "Hold-Outs")
                 _strCategory = "Holdouts";
@@ -1152,14 +1166,21 @@ namespace Chummer.Backend.Equipment
 		/// The second Active Skill Specialization that this Weapon uses, in addition to any others it would normally use.
 		/// </summary>
 		public string Spec2 => _strSpec2;
-
+        
+        public Guid SourceID
+        {
+            get
+            {
+                return _sourceID;
+            }
+        }
         #endregion
 
-		#region Complex Properties
-		/// <summary>
-		/// Weapon's total Concealability including all Accessories and Modifications.
-		/// </summary>
-		public string CalculatedConcealability()
+        #region Complex Properties
+        /// <summary>
+        /// Weapon's total Concealability including all Accessories and Modifications.
+        /// </summary>
+        public string CalculatedConcealability()
 		{
 			int intReturn = _intConceal;
 

@@ -107,11 +107,14 @@ namespace Chummer
 			XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlVehicle in objXmlVehicleList)
 			{
-                if (objXmlVehicle["hidden"] != null)
-                    continue;
-				ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
-			    objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
-				lstVehicles.Add(objItem);
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+			    {
+			        if (objXmlVehicle["hidden"] != null)
+			            continue;
+			        ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
+			        objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
+			        lstVehicles.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
@@ -156,19 +159,22 @@ namespace Chummer
 			{
                 if (objXmlVehicle["hidden"] != null)
                     continue;
-			    ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
-			    objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+			    {
+			        ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
+			        objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
 
-                if (objXmlVehicle["category"] != null)
-                {
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText);
-                    if (objFoundItem != null)
-                    {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
-                    }
-                }
-                lstVehicles.Add(objItem);
-            }
+			        if (objXmlVehicle["category"] != null)
+			        {
+			            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText);
+			            if (objFoundItem != null)
+			            {
+			                objItem.Name += " [" + objFoundItem.Name + "]";
+			            }
+			        }
+			        lstVehicles.Add(objItem);
+			    }
+			}
 			SortListItem objSort = new SortListItem();
 			lstVehicles.Sort(objSort.Compare);
             lstVehicle.BeginUpdate();

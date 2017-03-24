@@ -89,12 +89,16 @@ namespace Chummer
                 bool blnHide = (objXmlMod["hide"] != null);
                 if (!blnHide)
                 {
-	                ListItem objItem = new ListItem
-	                {
-		                Value = objXmlMod["name"].InnerText,
-		                Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-	                };
-	                lstMods.Add(objItem);
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,
+                        Convert.ToInt32(nudRating.Value)))
+                    {
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlMod["name"].InnerText,
+                            Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
+                        };
+                        lstMods.Add(objItem);
+                    }
                 }
 			}
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;

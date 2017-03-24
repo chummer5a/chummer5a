@@ -181,6 +181,7 @@ namespace Chummer
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
 	    private bool _blnReverseAttributePriorityOrder;
+	    private bool _blnHhideItemsOverAvailLimit = true;
 
 	    #region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
@@ -254,8 +255,10 @@ namespace Chummer
 			objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
 			// <nuyenperbp />
 			objWriter.WriteElementString("nuyenperbp", _intNuyenPerBP.ToString());
-			// <UnarmedImprovementsApplyToWeapons />
-			objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
+            // <hideitemsoveravaillimit />
+            objWriter.WriteElementString("hideitemsoveravaillimit", _blnHhideItemsOverAvailLimit.ToString());
+            // <UnarmedImprovementsApplyToWeapons />
+            objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
 			// <allowinitiationincreatemode />
 			objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString());
 			// <usepointsonbrokengroups />
@@ -622,8 +625,10 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
 			// Nuyen per Build Point
 			objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
-			// Knucks use Unarmed
-			objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
+            // Hide Items Over Avail Limit in Create Mode
+            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHhideItemsOverAvailLimit);
+            // Knucks use Unarmed
+            objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
 			// Allow Initiation in Create Mode
 			objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
 			// Use Points on Broken Groups
@@ -3393,6 +3398,15 @@ namespace Chummer
 	    {
 	        get { return _blnReverseAttributePriorityOrder; }
 	        internal set { _blnReverseAttributePriorityOrder = value; }
+	    }
+
+	    /// <summary>
+	    /// Whether items that exceed the Availability Limit should be shown in Create Mode. 
+	    /// </summary>
+	    public bool HideItemsOverAvailLimit
+	    {
+	        get { return _blnHhideItemsOverAvailLimit; }
+	        set { _blnHhideItemsOverAvailLimit = value; }
 	    }
 
 	    #endregion
