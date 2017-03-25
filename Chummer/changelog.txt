@@ -17,6 +17,7 @@ Application Changes:
 - Fixed an interaction between the Enhanced Accuracy power and multiple instances of the Exotic weapon skills.
 - Fixed an incorrect doubling of costs for modifications attached to Vintage weapons. 
 - Redesigned the Select Armor and Select Weapon forms to make the item browser more visible.
+- Fixed behaviour of the ArmorRating attribute to properly account for High-Fashion Armor Clothing. 
 
 Data Changes:
 

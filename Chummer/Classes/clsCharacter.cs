@@ -5224,17 +5224,15 @@ namespace Chummer
 	            bool blnCustomFit = false;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                foreach (Armor objArmor in _lstArmor)
+                foreach (Armor objArmor in _lstArmor.Where(objArmor => !objArmor.ArmorValue.StartsWith("+")))
                 {
                     // Don't look at items that start with "+" since we'll consider those next.
-	                if (!objArmor.ArmorValue.StartsWith("+"))
-	                {
-		                if (objArmor.TotalArmor > intHighest && objArmor.Equipped)
-		                {
-			                intHighest = objArmor.TotalArmor;
-							strHighest = objArmor.Name;
-						}
-					}
+                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped)
+                    {
+                        intHighest = objArmor.TotalArmor;
+                        strHighest = objArmor.Name;
+                        blnCustomFit = objArmor.Category == "High-Fashion Armor Clothing";
+                    }
                 }
 
                 int intArmor = intHighest;
@@ -5247,34 +5245,22 @@ namespace Chummer
                         intStacking += objArmor.TotalArmor;
 					if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
 					{
-						blnCustomFit = (objArmor.Category == "High-Fashion Armor Clothing");
 						strHighest = objArmor.Name;
-					}
+                        blnCustomFit = (objArmor.Category == "High-Fashion Armor Clothing");
+                    }
 				}
 
 				foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")) && objArmor.Equipped))
 				{
 					if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
 					{
-						foreach (ArmorMod objMod in objArmor.ArmorMods)
-						{
-							if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
-							{
-								intStacking += Convert.ToInt32(objArmor.TotalArmor);
-							}
-						}
-					}
+                        if (objArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest))
+                            intStacking += Convert.ToInt32(objArmor.TotalArmor);
+                    }
 				}
 
 				// Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
-				int intClothing = 0;
-                foreach (Armor objArmor in _lstArmor)
-                {
-                    if (objArmor.ArmorValue.StartsWith("+") && objArmor.Category == "Clothing" && objArmor.Equipped)
-                    {
-                        intClothing += objArmor.TotalArmor;
-                    }
-                }
+				int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category == "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
 
                 if (intClothing > intArmor)
                     intArmor = intClothing;
@@ -5290,53 +5276,7 @@ namespace Chummer
         {
             get
             {
-                int intHighest = 0;
-
-                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                foreach (Armor objArmor in _lstArmor)
-                {
-                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
-                    {
-                        intHighest = objArmor.TotalArmor;
-                    }
-                }
-                int intArmor = intHighest;
-
-                // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
-                int intStacking = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
-
-	            // Run through the list of Armor currently worn again and look at High-Fashion Armor Clothing items that start with "+" since they stack with eachother.
-                int intFashionClothing = 0;
-                int intFashionClothingStack = 0;
-                string strFashionClothing = string.Empty;
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing"))
-                {
-	                //Find the highest fancy suit armour value.
-	                if (!objArmor.ArmorValue.StartsWith("+") && objArmor.TotalArmor > intFashionClothing)
-	                {
-		                foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => objMod.Name != "Custom Fit (Stack)"))
-		                {
-			                intFashionClothing = objArmor.TotalArmor;
-			                strFashionClothing = objArmor.Name;
-		                }
-	                }
-	                //Find the fancy suits that stack with other fancy suits.
-	                else if (objArmor.ArmorOverrideValue.StartsWith("+"))
-	                {
-		                intFashionClothingStack += objArmor.ArmorMods.Where(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strFashionClothing).Sum(objMod => Convert.ToInt32(objArmor.TotalArmor));
-	                }
-                }
-                intFashionClothing += intFashionClothingStack;
-                // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
-                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Equipped && objArmor.Category == "Clothing").Sum(objArmor => objArmor.TotalArmor);
-
-	            int[] intArmorMax = new[] { intClothing, intArmor, intFashionClothing };
-                intArmor = intArmorMax.Max();
-
-                // Add any Armor modifiers.
-                intArmor += _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
-
-                return intArmor + intStacking;
+                return ArmorRating + _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
             }
         }
 
