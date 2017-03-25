@@ -1018,7 +1018,7 @@ namespace Chummer.Backend.Shared_Methods
                         XPathNavigator nav = objXmlDocument.CreateNavigator();
                         var xprAvail = nav.Compile(strAvailExpr.Replace("Rating",
                             intRating.ToString(GlobalOptions.InvariantCultureInfo)));
-                        blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <
+                        blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <=
                                        _objCharacter.MaximumAvailability;
                     }
                     catch
