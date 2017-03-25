@@ -348,6 +348,7 @@
     </Compile>
     <Compile Include="UI\Options\ControlGenerators\BookOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\CheckBoxOptionFactory.cs" />
+    <Compile Include="UI\Options\ControlGenerators\DropDownFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\IOptionWinFromControlFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\NumericUpDownOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\PathSelectiorFactory.cs" />
