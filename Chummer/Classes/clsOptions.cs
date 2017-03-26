@@ -18,6 +18,7 @@
  */
 
 
+using Chummer.Backend.Attributes.OptionAttributes;
 
 namespace Chummer
 {
@@ -51,6 +52,7 @@ namespace Chummer
 
 		public string Code { get; }
 
+        [IsPath(Filter = "PDF Files|*.pdf|All files|*")]
 	    public string Path { get; set; } = "";
 
 	    public int Offset { get; set; } = 0;

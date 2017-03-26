@@ -31,8 +31,6 @@
             this.lblName = new System.Windows.Forms.Label();
             this.chkEnabled = new System.Windows.Forms.CheckBox();
             this.lblPath = new System.Windows.Forms.Label();
-            this.txtPath = new System.Windows.Forms.TextBox();
-            this.btnChangePath = new System.Windows.Forms.Button();
             this.lblOffset = new System.Windows.Forms.Label();
             this.btnTest = new System.Windows.Forms.Button();
             this.nudOffset = new System.Windows.Forms.NumericUpDown();
@@ -45,10 +43,10 @@
             this.lblName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblName.Location = new System.Drawing.Point(0, 0);
             this.lblName.Name = "lblName";
-            this.lblName.UseMnemonic = false;
             this.lblName.Size = new System.Drawing.Size(155, 20);
             this.lblName.TabIndex = 0;
             this.lblName.Text = "[Book Name Here]";
+            this.lblName.UseMnemonic = false;
             // 
             // chkEnabled
             // 
@@ -68,27 +66,6 @@
             this.lblPath.Size = new System.Drawing.Size(75, 13);
             this.lblPath.TabIndex = 2;
             this.lblPath.Text = "PDF Location;";
-            // 
-            // txtPath
-            // 
-            this.txtPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPath.Location = new System.Drawing.Point(88, 46);
-            this.txtPath.Name = "txtPath";
-            this.txtPath.ReadOnly = true;
-            this.txtPath.Size = new System.Drawing.Size(222, 20);
-            this.txtPath.TabIndex = 3;
-            // 
-            // btnChangePath
-            // 
-            this.btnChangePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnChangePath.Location = new System.Drawing.Point(316, 44);
-            this.btnChangePath.Name = "btnChangePath";
-            this.btnChangePath.Size = new System.Drawing.Size(33, 23);
-            this.btnChangePath.TabIndex = 4;
-            this.btnChangePath.Text = "...";
-            this.btnChangePath.UseVisualStyleBackColor = true;
-            this.btnChangePath.Click += new System.EventHandler(this.btnChangePath_Click);
             // 
             // lblOffset
             // 
@@ -123,8 +100,6 @@
             this.Controls.Add(this.nudOffset);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.lblOffset);
-            this.Controls.Add(this.btnChangePath);
-            this.Controls.Add(this.txtPath);
             this.Controls.Add(this.lblPath);
             this.Controls.Add(this.chkEnabled);
             this.Controls.Add(this.lblName);
@@ -141,8 +116,6 @@
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.CheckBox chkEnabled;
         private System.Windows.Forms.Label lblPath;
-        private System.Windows.Forms.TextBox txtPath;
-        private System.Windows.Forms.Button btnChangePath;
         private System.Windows.Forms.Label lblOffset;
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.NumericUpDown nudOffset;

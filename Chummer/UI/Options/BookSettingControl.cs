@@ -13,10 +13,15 @@ namespace Chummer.UI.Options
     public partial class BookSettingControl : UserControl
     {
         private OptionGroup _book;
+        private Dictionary<string, OptionEntryProxy> _childFields;
+        private PathSelectorControl _pathSelector;
 
         public BookSettingControl()
         {
             InitializeComponent();
+            _pathSelector = new PathSelectorControl();
+            _pathSelector.Location = new Point(83, 47);
+            Controls.Add(_pathSelector);
         }
 
         public OptionGroup Book
@@ -34,31 +39,37 @@ namespace Chummer.UI.Options
             OptionDictionaryEntryProxy<string, bool> enabledProxy =
                 _book.Children.OfType<OptionDictionaryEntryProxy<string, bool>>().First();
 
-            Dictionary<string, OptionEntryProxy> otherProxies =
+            _childFields =
                 _book.Children.OfType<OptionEntryProxy>().ToDictionary(x => x.TargetProperty.Name);
+
 
             
             chkEnabled.DataBindings.Add(nameof(CheckBox.Checked), enabledProxy,
                 nameof(OptionDictionaryEntryProxy<string, bool>.Value), false, DataSourceUpdateMode.OnPropertyChanged);
-            
-            
+
+            _pathSelector.PathEntry = _childFields["Path"];
 
             chkEnabled.Text = LanguageManager.Instance.GetString("Label_Enabled");
-            lblName.Text = otherProxies["Name"].Value as string;
+            lblName.Text = _childFields["Name"].Value as string;
             lblOffset.Text = LanguageManager.Instance.GetString("Label_Options_PDFOffset");
             lblPath.Text = LanguageManager.Instance.GetString("Label_Options_PDFLocation");
             btnTest.Text = LanguageManager.Instance.GetString("Button_Options_PDFTest");
 
         }
 
-        private void btnChangePath_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            int page = 0;
+            if (int.TryParse(_childFields["Offset"].Value?.ToString() ?? "0", out page))
+            {
+                page += 5;
+                string val = _childFields["Code"].Value + " " + page;
+
+                new CommonFunctions().OpenPDF(val);
+
+            }
         }
     }
 }

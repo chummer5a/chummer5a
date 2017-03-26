@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Chummer.UI.Options
     public partial class PathSelectorControl : UserControl
     {
         private FileDialog dialog;
+        private FolderBrowserDialog browserDialog;
         private OptionEntryProxy _pathEntry;
         private IsPathAttribute metaAttribute;
 
@@ -27,12 +29,28 @@ namespace Chummer.UI.Options
         {
             if (_pathEntry == null) return;
 
-            DialogResult result = dialog.ShowDialog();
+            DialogResult result = ShowDialog();
 
             if (result != DialogResult.OK) return;
 
-            _pathEntry.Value = dialog.FileName;
-            UpdateDisplayString(dialog.FileName);
+            string read = GetResult();
+
+            _pathEntry.Value = read;
+            UpdateDisplayString(read);
+        }
+
+        private string GetResult()
+        {
+            if (dialog != null) return dialog.FileName;
+
+            return browserDialog.SelectedPath;
+        }
+
+        private DialogResult ShowDialog()
+        {
+            if (dialog != null) return dialog.ShowDialog();
+
+            return browserDialog.ShowDialog();
         }
 
         private void UpdateDisplayString(string value)
@@ -46,14 +64,25 @@ namespace Chummer.UI.Options
             set
             {
                 _pathEntry = value;
-                UpdateDisplayString(_pathEntry.Value.ToString());
-                dialog = new OpenFileDialog();
-                metaAttribute = _pathEntry.TargetProperty.GetCustomAttribute<IsPathAttribute>();
 
-                if (!string.IsNullOrWhiteSpace(metaAttribute.Filter))
+
+                metaAttribute = _pathEntry.TargetProperty.GetCustomAttribute<IsPathAttribute>();
+                
+                UpdateDisplayString(_pathEntry.Value?.ToString());
+                
+                if (metaAttribute.Folder)
                 {
-                    dialog.Filter = metaAttribute.Filter;
+                    browserDialog = new FolderBrowserDialog();
                 }
+                else
+                {
+                    dialog = new OpenFileDialog();
+                    if (!string.IsNullOrWhiteSpace(metaAttribute.Filter))
+                    {
+                        dialog.Filter = metaAttribute.Filter;
+                    }
+                }
+                
 
             }
         }

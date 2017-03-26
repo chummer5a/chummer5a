@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Annotations;
 using Chummer.Backend;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
@@ -33,11 +32,12 @@ namespace Chummer
 
         static GlobalOptions()
         {
-            if (Utils.IsRunningInVisualStudio()) return;
-
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
-            if (!Directory.Exists(settingsDirectoryPath))
-                Directory.CreateDirectory(settingsDirectoryPath);
+            if (!Utils.IsRunningInVisualStudio())
+            {
+                string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+                if (!Directory.Exists(settingsDirectoryPath))
+                    Directory.CreateDirectory(settingsDirectoryPath);
+            }
 
             bool fuckload = false;
             _instance = new GlobalOptions();
@@ -93,8 +93,9 @@ namespace Chummer
                     }
                     else
                     {
-                        RegistryKey bookKey = Registry.CurrentConfig.CreateSubKey("Software\\Chummer5\\Books");
-                        foreach (RegistryKey specificBook in bookKey.GetSubKeyNames()
+                        RegistryKey bookKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Books");
+                        var z = bookKey.GetSubKeyNames();
+                        foreach (RegistryKey specificBook in z
                             .Select(x => bookKey.OpenSubKey(x)))
                         {
                             string bookCode = specificBook.GetValue("code").ToString();
@@ -103,7 +104,8 @@ namespace Chummer
                                 loader.Load(ref info, specificBook);
                         }
                     }
-                } catch {}
+                }
+                catch {}
             }
 
             CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);
@@ -241,6 +243,8 @@ namespace Chummer
         /// <summary>
         /// Path to the user's PDF application.
         /// </summary>
+        /// [IsPath(Filter = "Programs|*.exe")]
+        [IsPath(Filter = "Programs|*.exe")]
         public string URLAppPath { get; set; } = "";
 
         /// <summary>
@@ -266,8 +270,9 @@ namespace Chummer
         [SavePropertyAs("prefernightlybuilds")]
         public bool PreferNightlyBuilds { get; set; } = false;
 
+        [IsPath(true)]
         [SavePropertyAs("characterrosterpath")]
-        public string CharacterRosterPath { get; set; }
+        public string CharacterRosterPath { get; set; } = "";
 
         #endregion
 

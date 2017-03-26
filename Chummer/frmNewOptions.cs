@@ -240,11 +240,12 @@ namespace Chummer
                 RegistryKey rootKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
                 saver.Save(GlobalOptions.Instance, rootKey);
                 int count = 0;
-                RegistryKey bookKey = Registry.CurrentConfig.CreateSubKey("Software\\Chummer5\\Books");
+                RegistryKey bookKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Books");
                 foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
                 {
-                    RegistryKey k2 = bookKey.OpenSubKey(count.ToString("D2"), true);
+                    RegistryKey k2 = bookKey.CreateSubKey(count.ToString("D2"));
                     saver.Save(book, k2);
+                    count++;
                 }
             }
             Close();

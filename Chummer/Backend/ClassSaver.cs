@@ -51,7 +51,10 @@ namespace Chummer.Backend
 
         public void Load<T>(ref T target, RegistryKey source)
         {
+            if (target == null) throw new NullReferenceException(nameof(target));
+            if (source == null) throw new NullReferenceException(nameof(source));
 
+            LoadInner(ref target, field => source.GetValue(field)?.ToString());
         }
 
         private void LoadInner<T>(ref T target, Func<string, string> read)
@@ -76,9 +79,16 @@ namespace Chummer.Backend
 
                 try
                 {
-                    var converter = TypeDescriptor.GetConverter(property.PropertyType);
+                    if (property.CanWrite)
+                    {
+                        var converter = TypeDescriptor.GetConverter(property.PropertyType);
 
-                    property.SetValue(target, converter.ConvertFrom(unparsed));
+                        property.SetValue(target, converter.ConvertFrom(unparsed));
+                    }
+                    else
+                    {
+                        //
+                    }
                 }
                 catch (Exception ex)
                 {

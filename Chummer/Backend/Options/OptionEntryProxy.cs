@@ -106,7 +106,7 @@ namespace Chummer.Backend.Options
         {
             //Maybe, just maybe this will prevent fucking up if complex properties is used/sat
             object old = TargetProperty.GetValue(_targetObject);
-            if (!old.Equals(_value))
+            if (_value != null && !_value.Equals(old))
             {
                 TargetProperty.SetValue(_targetObject, _value);
                 return true;

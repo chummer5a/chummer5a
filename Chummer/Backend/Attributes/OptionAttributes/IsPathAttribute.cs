@@ -2,10 +2,13 @@
 {
     public sealed class IsPathAttribute : System.Attribute
     {
+        public bool Folder { get; set; }
         private string _filter;
 
-        public IsPathAttribute()
-        {}
+        public IsPathAttribute(bool folder = false)
+        {
+            Folder = folder;
+        }
 
         public string Filter
         {
