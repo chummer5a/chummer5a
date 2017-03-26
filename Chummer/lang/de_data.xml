@@ -7655,7 +7655,7 @@
 				<translate>Smartlink</translate>
 			</gear>
 			<gear>
-				<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
+				<id>e140b671-dc22-429d-b12a-dfbf46951049</id>
 				<name>Ultrasound</name>
 				<page>450</page>
 				<translate>Ultraschall</translate>
@@ -8637,7 +8637,7 @@
 				<page>193</page>
 			</gear>
 			<gear translated="True">
-				<id>2c98be77-22d7-4116-90fc-e8489944578d</id>
+				<id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
 				<name>Detonator, Blasting Cap</name>
 				<translate>Sprengkapsel</translate>
 				<page>439</page>
@@ -10083,7 +10083,7 @@
 				<translate>Munition: Taserpfeil</translate>
 			</gear>	
 			<gear>
-				<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
+				<id>eb395ddc-d8d2-4dbc-8dad-089221a1db5a</id>
 				<name>Grenade: Shock (2050)</name>
 				<page>191</page>
 				<translate>Granate: Schock</translate>
@@ -19588,7 +19588,7 @@
 				<page>208</page>
 			</vehicle>
 			<vehicle>
-				<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+				<id>6975423f-43c7-4960-98bb-7363b491856c</id>
 				<name>Chrysler-Nissan Jackrabbit (2050)</name>
 				<translate>Chrysler-Nissan Jackrabbit</translate>
 				<page>208</page>
@@ -21718,7 +21718,7 @@
 				<translate>Ingram Smartgun</translate>
 			</weapon>
 			<weapon>
-				<id>e80cca4e-3210-4e38-b333-6c1cd42d6b54</id>
+				<id>317ad4f6-85ce-48e0-a3a7-ec5fb09d41e1</id>
 				<name>Uzi III (2050)</name>
 				<page>185</page>
 				<translate>Uzi III</translate>

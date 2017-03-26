@@ -1631,7 +1631,7 @@
 			<page>422</page>
 		</weapon>
 		<weapon>
-			<id>b4b3a872-1532-4477-9bf3-76db34dc7bbf</id>
+			<id>9c960f46-ba6c-4674-8141-26dad10508d9</id>
 			<name>Stun Dongle</name>
 			<category>Clubs</category>
 			<hide>yes</hide>
@@ -7235,7 +7235,7 @@
 			<page>137</page>
 		</weapon>
 		<weapon>
-			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<id>099f7e31-bb8d-4dfa-8fae-6d8e1a7fb3ab</id>
 			<name>Bite (Naga)</name>
 			<category>Quality</category>
 			<type>Melee</type>
@@ -7370,7 +7370,7 @@
 			<page>91</page>
 		</weapon>
 		<weapon>
-			<id>D82CFA4C-DBEB-4CEA-977C-8849E97C0438</id>
+			<id>ca15807c-17c7-49a3-987c-118365446c34</id>
 			<name>Junkyard Jaw</name>
 			<category>Cyberweapon</category>
 			<type>Melee</type>
@@ -7394,7 +7394,7 @@
 		<!-- End Region -->
     <!--Region Chrome Flesh Bio-Weapons -->
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>1d37e560-0e33-4129-95a9-a38217c00c0d</id>
 			<name>Claws (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7415,7 +7415,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>8472cb1d-d3a3-4995-86d8-f07aca06b3a9</id>
 			<name>Retractable Claws (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7436,7 +7436,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>99cbc9c0-11b6-4906-9dba-adc217592b92</id>
 			<name>Electrical Discharge</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7457,7 +7457,7 @@
 			<page>122</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>bdb9e0d7-fba7-48ed-ba16-2b540f8ce151</id>
 			<name>Fangs (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7499,7 +7499,7 @@
       <page>121</page>
     </weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>f15fe505-99a2-45b0-99d9-a1cbf83dc1c4</id>
 			<name>Horns (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7520,7 +7520,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>380c0512-a672-4f94-a969-83a7679e52c6</id>
 			<name>Large Stinger</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7541,7 +7541,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>5527b38d-2ecf-4729-8b7b-421e0985bab2</id>
 			<name>Medium Stinger</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7562,28 +7562,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
-			<name>Horns (Bio-Weapon)</name>
-			<category>Bio-Weapon</category>
-			<hide>yes</hide>
-			<type>Melee</type>
-			<conceal>0</conceal>
-			<accuracy>4</accuracy>
-			<reach>0</reach>
-			<damage>(STR+1)P</damage>
-			<ap>-2</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
-			<useskill>Unarmed Combat</useskill>
-			<source>CF</source>
-			<page>121</page>
-		</weapon>
-		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>57e51d68-076b-4f05-ac6f-0fb493333e2d</id>
 			<name>Medium Tusk(s)</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7604,7 +7583,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>a2812fb9-0ad0-424d-98d6-9a48861c664f</id>
 			<name>Large Tusk(s)</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7625,7 +7604,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>b6989b15-0ddb-4d0d-b178-312560e8bce2</id>
 			<name>Raptor Foot</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -7646,7 +7625,7 @@
 			<page>90</page>
 		</weapon>
 		<weapon>
-			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<id>7daa50cc-67d5-43d1-b779-28d444a9d519</id>
 			<name>Grapple Fist</name>
 			<category>Bio-Weapon</category>
 			<hide>yes</hide>
@@ -9573,7 +9552,7 @@
 			<page>185</page>
 		</weapon>
 		<weapon>
-			<id>e80cca4e-3210-4e38-b333-6c1cd42d6b54</id>
+			<id>317ad4f6-85ce-48e0-a3a7-ec5fb09d41e1</id>
 			<name>Uzi III (2050)</name>
 			<category>Submachine Guns</category>
 			<type>Ranged</type>

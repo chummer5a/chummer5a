@@ -7396,7 +7396,7 @@
 			<page>80</page>
 		</quality>
 		<quality>
-			<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
+			<id>6556d48f-2cbd-4bc6-a2c8-e9fe3f99ac7e</id>
 			<name>Infected: Dzoo-Noo-Qua</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>43</karma>
@@ -10544,7 +10544,7 @@
 			<page>149</page>
 		</quality>
 		<quality>
-			<id>b86f54af-cca7-4698-ad6d-21ffca93fb23</id>
+			<id>91a06a6b-7d4a-4b10-9180-18dd3da623ab</id>
 			<name>Pilot Origins (Rating 1)</name>
 			<karma>8</karma>
 			<category>Positive</category>
@@ -10701,7 +10701,7 @@
 			<page>151</page>
 		</quality>
 		<quality>
-			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
+			<id>73e0a16b-3fac-41a1-9157-cd51625e1843</id>
 			<name>Easily Exploitable</name>
 			<karma>-8</karma>
 			<implemented>False</implemented>
@@ -10753,7 +10753,7 @@
 			<page>152</page>
 		</quality>
 		<quality>
-			<id>B65991AF-B962-4641-A5A2-92FC53F30370</id>
+			<id>81224e80-43f1-4b70-8eb5-029540db2f62</id>
 			<name>Real World Naiveté</name>
 			<karma>-8</karma>
 			<category>Negative</category>
@@ -11106,8 +11106,8 @@
 			<page>58</page>
 		</quality>
 		<quality>
-			<id>8e176d15-e646-4aed-824c-171c6bd9e4bc</id>
-			<name>One of them</name>
+			<id>d398b3ec-93b1-4229-906a-49d7136045cb</id>
+			<name>One of Them</name>
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
@@ -11254,7 +11254,7 @@
 			<page>191</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>1c356f79-e4c1-4874-aed0-d7796ea35ed4</id>
 			<name>Impassive</name>
 			<karma>-7</karma>
 			<category>Negative</category>
@@ -11269,7 +11269,7 @@
 			<page>191</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>48e7351a-3d47-48d4-a969-cc5943d29da0</id>
 			<name>Faceless</name>
 			<karma>-6</karma>
 			<category>Negative</category>
@@ -11281,7 +11281,7 @@
 		<!-- Region Rigger 5.0-->
 		<!-- Region Positive Qualities -->
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>ab72b0fb-5a64-4d5e-9e23-2fdf548a7f53</id>
 			<name>Chaser</name>
 			<karma>4</karma>
 			<category>Positive</category>
@@ -11290,7 +11290,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>ef6796eb-6559-4f22-bfa6-7e6571a3690d</id>
 			<name>Dealer Connection</name>
 			<karma>3</karma>
 			<category>Positive</category>
@@ -11307,7 +11307,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>1b40cda8-97e1-40bf-827b-0d38c3ba6dfc</id>
 			<name>Grease Monkey</name>
 			<karma>8</karma>
 			<category>Positive</category>
@@ -11321,7 +11321,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>5bcfc0fc-1e46-4ba9-a48c-7b623e9ab8db</id>
 			<name>Speed Demon</name>
 			<karma>3</karma>
 			<category>Positive</category>
@@ -11330,7 +11330,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>fe34b084-2368-4f8d-bb91-689ee22e9380</id>
 			<name>Stunt Driver</name>
 			<karma>4</karma>
 			<category>Positive</category>
@@ -11339,7 +11339,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>311421e2-a71e-4f06-a15a-9fbc53247376</id>
 			<name>Subtle Pilot</name>
 			<karma>4</karma>
 			<category>Positive</category>
@@ -11353,7 +11353,7 @@
 		<!-- End Region -->
 		<!-- Region Negative Qualities -->
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>ba27345f-0e68-4660-9b76-2b999c3a4161</id>
 			<name>Accident Prone</name>
 			<karma>-4</karma>
 			<category>Negative</category>
@@ -11362,7 +11362,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>9038578e-6a7c-43d7-ae51-324738a1a9d1</id>
 			<name>Motion Sickness</name>
 			<karma>-4</karma>
 			<category>Negative</category>
@@ -11371,7 +11371,7 @@
 			<page>33</page>
 		</quality>
 		<quality>
-			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<id>22c624b8-89f4-4c0d-ab19-c84ca204e2a5</id>
 			<name>Too Much Data</name>
 			<karma>-3</karma>
 			<category>Negative</category>

@@ -19,6 +19,7 @@ Application Changes:
 - Redesigned the Select Armor and Select Weapon forms to make the item browser more visible.
 - Fixed behaviour of the ArmorRating attribute to properly account for High-Fashion Armor Clothing. 
 - Applied a filter to the JSON Export to properly save files as JSON.
+- Added a warning message when loading an XML file if duplicate IDs exist. 
 
 Data Changes:
 
@@ -29,6 +30,80 @@ Data Changes:
 - Fixed incorrect requirement filtering for the Nosferatu quality.
 - Fixed an incorrect Category for the Dracoform Mastery power that prevented it from being shown. 
 - Fixed missing specialisations for several throwing weapons.
+- Removed duplicate GUIDs for a lot of items. This should not have any noticeable effect if you already have the item, but if you notice odd behaviour please remove and re-add the object:
+	- Lifestyle Qualities
+		- Cramped Workshop/Facility
+	- Bioware
+		- Severe Biosculpting Modification
+	- Books
+		- Data Trails (Dissonant Echoes)
+		- Shadowrun 2050 (5th Edition)<
+	- Critter Powers
+		- Vestigial Wings
+		- Underwater Adapation
+		- Magical Flight
+	- Cyberware
+		- Remote Cyberhand
+	- Gear
+		- TNT
+		- Detonator, Blasting Cap
+		- Smartsoft
+		- AR Nails
+		- Ultrasound (Sensor Function)
+		- Nova Scorpion Venom
+		- Cyberdeck Form Factor, Non-Standard
+		- Grenade: Shock (2050)
+	- Powers 
+		- Commanding Voice
+	- Qualities
+		- Infected: Dzoo-Noo-Qua
+		- Pilot Origins (Rating 1)
+		- Easily Exploitable
+		- Real World Naiveté
+		- One of Them
+		- Impassive
+		- Faceless
+		- Chaser
+		- Dealer Connection
+		- Grease Monkey
+		- Speed Demon
+		- Stunt Driver
+		- Accident Prone
+		- Motion Sickness
+		- Too Much Data
+	- Skills
+		- Alchemy
+		- Drones
+		- Fashion Design
+		- Mathematics
+		- Tir Military Vehicles
+		- Foster System
+		- Lone Star Procedures
+	- Vehicles
+		- Ares Garuda
+		- Clockwork Greyhound
+		- Chrysler-Nissan Jackrabbit (2050)
+		- Handling Downgrade (Drone)
+		- Speed Downngrade (Drone)
+		- Acceleration Downgrade (Drone)
+		- Body Downgrade (Drone)
+		- Sensor Downgrade (Drone)
+	- Weapons
+		- Stun Dongle
+		- Bite (Naga)
+		- Junkyard Jaw
+		- Claws (Bio-Weapon)
+		- Retractable Claws (Bio-Weapon)
+		- Electrical Discharge
+		- Fangs (Bio-Weapon)
+		- Horns (Bio-Weapon)
+		- Large Stinger
+		- Medium Stinger
+		- Horns (Bio-Weapon)
+		- Large Tusk(s)
+		- Raptor Foot
+		- Grapple Fist
+		- Uzi III (2050)
 
 - New Strings: 
 

@@ -2073,7 +2073,7 @@
 			<page>397</page>
 		</power>
 		<power>
-			<id>28e8f9d8-6e2d-4bbe-bba3-e7195508a027</id>
+			<id>276b92d9-efcd-447d-a86d-8a141058615e</id>
 			<name>Vestigial Wings</name>
 			<category>Paranormal</category>
 			<type>P</type>
@@ -2084,7 +2084,7 @@
 			<page>173</page>
 		</power>
 		<power>
-			<id>28e8f9d8-6e2d-4bbe-bba3-e7195508a027</id>
+			<id>98928dbd-5b79-4dde-bc92-56dc317e293b</id>
 			<name>Underwater Adapation</name>
 			<category>Paranormal</category>
 			<type>P</type>
@@ -2625,7 +2625,7 @@
       <page>165</page>
     </power>
     <power>
-      <id>eda3036b-441c-45bf-9e97-aac7cdd87054</id>
+      <id>276c718b-7176-403a-9452-48e58b1f29e3</id>
       <name>Magical Flight</name>
       <category>Drake</category>
       <type>M</type>

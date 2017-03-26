@@ -1236,7 +1236,7 @@
 			<page>190</page>
 		</gear>
 		<gear>
-			<id>381a235b-5282-45b4-a4c1-9c75d20f71b3</id>
+			<id>733504c5-f2bb-4114-9132-e92979dc2010</id>
 			<name>TNT</name>
 			<category>Explosives</category>
 			<rating>5</rating>
@@ -1356,7 +1356,7 @@
 			<page>436</page>
 		</gear>
     <gear>
-      <id>2c98be77-22d7-4116-90fc-e8489944578d</id>
+      <id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
       <name>Detonator, Blasting Cap</name>
       <category>Explosives</category>
       <rating>0</rating>
@@ -3519,7 +3519,7 @@
 			<page>270</page>
 		</gear>
 		<gear>
-			<id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
+			<id>7c0eb818-def2-479f-a270-a6fcbe6454fd</id>
 			<name>Smartsoft</name>
 			<category>Autosofts</category>
 			<rating>3</rating>
@@ -3672,7 +3672,7 @@
 			<page>439</page>
 		</gear>
 		<gear>
-			<id>2e409fba-8b1a-42c4-8fa5-4d256ccd540d</id>
+			<id>641aa926-0e5f-4e8b-935e-ec704db4df13</id>
 			<name>AR Nails</name>
 			<category>Electronics Accessories</category>
 			<armorcapacity>[0]</armorcapacity>
@@ -4714,7 +4714,7 @@
 			<page>446</page>
 		</gear>
 		<gear>
-			<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
+			<id>e140b671-dc22-429d-b12a-dfbf46951049</id>
 			<name>Ultrasound</name>
 			<category>Sensor Functions</category>
 			<rating>8</rating>
@@ -7210,7 +7210,7 @@
 			<rating>0</rating>
 		</gear>
 		<gear>
-			<id>c4e5d594-f578-4b9f-bd36-422135d13208</id>
+			<id>dc06bc78-8b18-439b-9a24-fa5a04139ec0</id>
 			<name>Nova Scorpion Venom</name>
 			<category>Toxins</category>
 			<rating>0</rating>
@@ -8404,7 +8404,7 @@
 			<page>61</page>
 		</gear>
 		<gear>
-			<id>01c28047-0446-4f3d-817d-4805317167ce</id>
+			<id>0d8a2bef-a76e-4152-9a6d-003311e16555</id>
 			<name>Cyberdeck Form Factor, Non-Standard</name>
 			<category>Commlink/Cyberdeck Form Factors</category>
 			<rating>0</rating>
@@ -11542,7 +11542,7 @@
 			<page>191</page>
 		</gear>		
 		<gear>
-			<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
+			<id>eb395ddc-d8d2-4dbc-8dad-089221a1db5a</id>
 			<name>Grenade: Shock (2050)</name>
 			<category>Ammunition</category>
 			<rating>0</rating>

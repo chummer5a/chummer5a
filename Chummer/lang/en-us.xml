@@ -8387,5 +8387,9 @@ Do you want to continue?</text>
 			<key>Message_DroneIllegalDowngrade</key>
 			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
 		</string>
+    <string>
+      <key>Message_DuplicateGuidWarning</key>
+      <text>{0} items were found in the file {1} with the same GUID. If you are using custom content, please ensure that you use a new GUID for each item you add. Duplicate GUIDs found:\n{2}</text>
+    </string>
 	</strings>
 </chummer>

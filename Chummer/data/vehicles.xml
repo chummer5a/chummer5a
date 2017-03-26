@@ -5644,7 +5644,7 @@
 			<page>139</page>
 		</vehicle>
 		<vehicle>
-			<id>b5f962ae-d541-4271-812b-3a4d0eb812e4</id>
+			<id>53079aac-250a-4ec5-9f0d-b8fbc6368e46</id>
 			<name>Ares Garuda</name>
 			<category>Drones: Missile</category>
 			<handling>6</handling>
@@ -5779,7 +5779,7 @@
 			<page>190</page>
 		</vehicle>
 		<vehicle>
-			<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
+			<id>54807634-4472-4c86-87ad-5d07b7116ef5</id>
 			<name>Clockwork Greyhound</name>
 			<category>Drones: Medium</category>
 			<handling>3</handling>
@@ -5948,7 +5948,7 @@
 			<page>208</page>
 		</vehicle>	
 		<vehicle>
-			<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+			<id>6975423f-43c7-4960-98bb-7363b491856c</id>
 			<name>Chrysler-Nissan Jackrabbit (2050)</name>
 			<category>Cars</category>
 			<handling>4/3</handling>
@@ -8922,7 +8922,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>f56c3103-e5e7-4b7c-8cdf-7d74d7196f35</id>
 			<name>Handling Downgrade (Drone)</name>
 			<category>Handling</category>
 			<optionaldrone/>
@@ -8944,7 +8944,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>16aed61a-a163-4927-9b5d-7949c763abe3</id>
 			<name>Speed Downgrade (Drone)</name>
 			<category>Speed</category>
 			<optionaldrone/>
@@ -8966,7 +8966,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>57a3c9c6-76ec-4f65-9747-001ca3f7515b</id>
 			<name>Acceleration Downgrade (Drone)</name>
 			<category>Acceleration</category>
 			<optionaldrone/>
@@ -8988,7 +8988,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>e6de30bf-310e-4a3d-b44a-9d98f4618964</id>
 			<name>Body Downgrade (Drone)</name>
 			<category>Body</category>
 			<optionaldrone/>
@@ -9009,7 +9009,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>616bad95-cc17-47b2-b85b-14fdd0bcb27f</id>
 			<name>Armor Downgrade (Drone)</name>
 			<category>Armor</category>
 			<optionaldrone/>
@@ -9030,7 +9030,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>df14f2ec-c85c-4b5f-9765-98bbc7c8b7d5</id>
 			<name>Sensor Downgrade (Drone)</name>
 			<category>Sensor</category>
 			<optionaldrone/>
