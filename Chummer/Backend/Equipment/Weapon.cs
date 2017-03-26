@@ -401,7 +401,10 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-                _sourceID = Guid.Parse(objWeaponNode["id"].InnerText);
+                if (objWeaponNode != null)
+                {
+                    _sourceID = Guid.Parse(objWeaponNode["id"].InnerText);
+                }
             }
             else
             {

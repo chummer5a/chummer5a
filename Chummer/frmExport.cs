@@ -197,7 +197,8 @@ namespace Chummer
 		{
 			SaveFileDialog1.AddExtension = true;
 			SaveFileDialog1.DefaultExt = "json";
-			SaveFileDialog1.Title = "Save JSON as";
+            SaveFileDialog1.Filter = "JSON File|*.json";
+            SaveFileDialog1.Title = "Save JSON as";
 			SaveFileDialog1.ShowDialog();
 
 			if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))

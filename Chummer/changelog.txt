@@ -18,6 +18,7 @@ Application Changes:
 - Fixed an incorrect doubling of costs for modifications attached to Vintage weapons. 
 - Redesigned the Select Armor and Select Weapon forms to make the item browser more visible.
 - Fixed behaviour of the ArmorRating attribute to properly account for High-Fashion Armor Clothing. 
+- Applied a filter to the JSON Export to properly save files as JSON.
 
 Data Changes:
 
