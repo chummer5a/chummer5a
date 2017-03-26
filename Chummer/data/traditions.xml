@@ -301,11 +301,11 @@
 			<name>Insect Shaman</name>
 			<drain>WIL + INT</drain>
 			<spirits>
-				<spiritcombat>Soldier</spiritcombat>
-				<spiritdetection>Scout</spiritdetection>
-				<spirithealth>Caretaker</spirithealth>
-				<spiritillusion>Nymph</spiritillusion>
-				<spiritmanipulation>Worker</spiritmanipulation>
+				<spiritcombat>Soldier Spirit</spiritcombat>
+				<spiritdetection>Scout Spirit</spiritdetection>
+				<spirithealth>Caretaker Spirit</spirithealth>
+				<spiritillusion>Nymph Spirit</spiritillusion>
+				<spiritmanipulation>Worker Spirit</spiritmanipulation>
 			</spirits>
 			<spiritform>Inhabitation</spiritform>
 			<source>SG</source>
@@ -1176,7 +1176,7 @@
 		<!--Insect Spirits-->
 		<spirit>
 			<id>8263b5dc-80d5-4fa2-86ab-e1608acf7342</id>
-			<name>Caretaker</name>
+			<name>Caretaker Spirit</name>
 			<bod>F+0</bod>
 			<agi>F+1</agi>
 			<rea>F+1</rea>
@@ -1218,7 +1218,7 @@
 		</spirit>
 		<spirit>
 			<id>19a87e05-f929-4db9-b7f8-94eed7a13020</id>
-			<name>Nymph</name>
+			<name>Nymph Spirit</name>
 			<bod>F-1</bod>
 			<agi>F+0</agi>
 			<rea>F+3</rea>
@@ -1260,7 +1260,7 @@
 		</spirit>
 		<spirit>
 			<id>5673d266-2da5-4912-93bd-b153f14ec87e</id>
-			<name>Scout</name>
+			<name>Scout Spirit</name>
 			<bod>F+0</bod>
 			<agi>F+2</agi>
 			<rea>F+2</rea>
@@ -1306,7 +1306,7 @@
 		</spirit>
 		<spirit>
 			<id>caf8f724-e1a9-4469-998d-76d23fe4014e</id>
-			<name>Soldier</name>
+			<name>Soldier Spirit</name>
 			<bod>F+3</bod>
 			<agi>F+1</agi>
 			<rea>F+1</rea>
@@ -1350,7 +1350,7 @@
 		</spirit>
 		<spirit>
 			<id>3e9ed319-1fed-4867-90f1-68b62497516a</id>
-			<name>Worker</name>
+			<name>Worker Spirit</name>
 			<bod>F+0</bod>
 			<agi>F+0</agi>
 			<rea>F+0</rea>
@@ -1392,7 +1392,7 @@
 		</spirit>
 		<spirit>
 			<id>ad2dd39f-4fb0-4e89-8d73-b76184ecb1cf</id>
-			<name>Queen</name>
+			<name>Queen Spirit</name>
 			<bod>F+5</bod>
 			<agi>F+3</agi>
 			<rea>F+4</rea>

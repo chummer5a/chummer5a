@@ -31,79 +31,81 @@ Data Changes:
 - Fixed an incorrect Category for the Dracoform Mastery power that prevented it from being shown. 
 - Fixed missing specialisations for several throwing weapons.
 - Removed duplicate GUIDs for a lot of items. This should not have any noticeable effect if you already have the item, but if you notice odd behaviour please remove and re-add the object:
-	- Lifestyle Qualities
-		- Cramped Workshop/Facility
-	- Bioware
-		- Severe Biosculpting Modification
-	- Books
-		- Data Trails (Dissonant Echoes)
-		- Shadowrun 2050 (5th Edition)<
-	- Critter Powers
-		- Vestigial Wings
-		- Underwater Adapation
-		- Magical Flight
-	- Cyberware
-		- Remote Cyberhand
-	- Gear
-		- TNT
-		- Detonator, Blasting Cap
-		- Smartsoft
-		- AR Nails
-		- Ultrasound (Sensor Function)
-		- Nova Scorpion Venom
-		- Cyberdeck Form Factor, Non-Standard
-		- Grenade: Shock (2050)
-	- Powers 
-		- Commanding Voice
-	- Qualities
-		- Infected: Dzoo-Noo-Qua
-		- Pilot Origins (Rating 1)
-		- Easily Exploitable
-		- Real World Naiveté
-		- One of Them
-		- Impassive
-		- Faceless
-		- Chaser
-		- Dealer Connection
-		- Grease Monkey
-		- Speed Demon
-		- Stunt Driver
-		- Accident Prone
-		- Motion Sickness
-		- Too Much Data
-	- Skills
-		- Alchemy
-		- Drones
-		- Fashion Design
-		- Mathematics
-		- Tir Military Vehicles
-		- Foster System
-		- Lone Star Procedures
-	- Vehicles
-		- Ares Garuda
-		- Clockwork Greyhound
-		- Chrysler-Nissan Jackrabbit (2050)
-		- Handling Downgrade (Drone)
-		- Speed Downngrade (Drone)
-		- Acceleration Downgrade (Drone)
-		- Body Downgrade (Drone)
-		- Sensor Downgrade (Drone)
-	- Weapons
-		- Stun Dongle
-		- Bite (Naga)
-		- Junkyard Jaw
-		- Claws (Bio-Weapon)
-		- Retractable Claws (Bio-Weapon)
-		- Electrical Discharge
-		- Fangs (Bio-Weapon)
-		- Horns (Bio-Weapon)
-		- Large Stinger
-		- Medium Stinger
-		- Horns (Bio-Weapon)
-		- Large Tusk(s)
-		- Raptor Foot
-		- Grapple Fist
-		- Uzi III (2050)
+    - Lifestyle Qualities
+        - Cramped Workshop/Facility
+    - Bioware
+        - Severe Biosculpting Modification
+    - Books
+        - Data Trails (Dissonant Echoes)
+        - Shadowrun 2050 (5th Edition)<
+    - Critter Powers
+        - Vestigial Wings
+        - Underwater Adapation
+        - Magical Flight
+    - Cyberware
+        - Remote Cyberhand
+    - Gear
+        - TNT
+        - Detonator, Blasting Cap
+        - Smartsoft
+        - AR Nails
+        - Ultrasound (Sensor Function)
+        - Nova Scorpion Venom
+        - Cyberdeck Form Factor, Non-Standard
+        - Grenade: Shock (2050)
+    - Powers 
+        - Commanding Voice
+    - Qualities
+        - Infected: Dzoo-Noo-Qua
+        - Pilot Origins (Rating 1)
+        - Easily Exploitable
+        - Real World Naiveté
+        - One of Them
+        - Impassive
+        - Faceless
+        - Chaser
+        - Dealer Connection
+        - Grease Monkey
+        - Speed Demon
+        - Stunt Driver
+        - Accident Prone
+        - Motion Sickness
+        - Too Much Data
+    - Skills
+        - Alchemy
+        - Drones
+        - Fashion Design
+        - Mathematics
+        - Tir Military Vehicles
+        - Foster System
+        - Lone Star Procedures
+    - Vehicles
+        - Ares Garuda
+        - Clockwork Greyhound
+        - Chrysler-Nissan Jackrabbit (2050)
+        - Handling Downgrade (Drone)
+        - Speed Downngrade (Drone)
+        - Acceleration Downgrade (Drone)
+        - Body Downgrade (Drone)
+        - Sensor Downgrade (Drone)
+    - Weapons
+        - Stun Dongle
+        - Bite (Naga)
+        - Junkyard Jaw
+        - Claws (Bio-Weapon)
+        - Retractable Claws (Bio-Weapon)
+        - Electrical Discharge
+        - Fangs (Bio-Weapon)
+        - Horns (Bio-Weapon)
+        - Large Stinger
+        - Medium Stinger
+        - Horns (Bio-Weapon)
+        - Large Tusk(s)
+        - Raptor Foot
+        - Grapple Fist
+        - Uzi III (2050)
+    - Corrected insect spirit naming conventions to resolve a crash when selecting the Insect Shaman tradition
+    - Fixed the weapon mount categories for the Heavy Weapon Mount
 
 - New Strings: 
 
@@ -125,8 +127,8 @@ Application Changes:
 - Removed the ability to add Roommates to a lifestyle that's allocated as a Trust Fund lifestyle. This will not affect existing characters. 
 - Added reminder text to the LP and Cost labels for Lifestyle qualities to indicate whether a quality is Free from something or other (Usually just the Free checkbox)
 - Per errata for Run Faster, the following changes have been made:
-	- The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu.
-	- Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed.
+    - The default value for maximum Nuyen -> Karma conversion in Point Buy is now 235. Existing characters in create mode will need to use the Change Build Method menu option in the Special menu.
+    - Point Buy and Life Modules now benefit from free Knowledge Points and Contact Points. Due to this, the optional rules enabling these options have been removed.
 - Fixed an issue with moving Changelings into career mode.
 - Brought all projects to the same, .NET 4.5.2 target sku.
 - Fixed an issue where changing selections in Priority or Sum-to-Ten mode would unnecessarily reset the selected values for talents and skills within talents.
@@ -188,10 +190,10 @@ Data Changes:
 - Fixed the Addon Category of the Bug Promotional Pen to be Sensors, instead of Sensor Functions. 
 - Corrected the allowed subsystems for the Chemical Gland bioware.
 - Per errata for Run Faster, the following changes have been made:
-	- The Infected: Banshee quality's CHA minimum has been set to 3, instead of 1.
-	- Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively.
-	- The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
-	- Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+    - The Infected: Banshee quality's CHA minimum has been set to 3, instead of 1.
+    - Nartaki and Wakyambi have had their EDG values updated to match their metatype. 2/7 and 1/6, respectively.
+    - The Private Investigator/Detective Life Module has In Debt V instead of Sinner (National). Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
+    - Added SINner (National) to the Tour of Duty (NAN) and Tour of Duty (Tir Tairngire) Life Modules. Note that you will need to remove the Life Module and re-add it for this to take effect for existing characters.
 - Removed Cost and Availability from the Pistol and Rifle Butt Improved Weapons. 
 - Fixed the Ares Briefcase Shield not properly adding an entry in the weapons list.
 - Fixed various arrow types from Run and Gun not properly applying their weapon stat modifications.
@@ -1047,16 +1049,16 @@ Translation Changes:
 Build 180:
 Application Change:
 - Total rewrite of skills. 
-	* Eliminated a lot (all?) old bugs
-	* Opening the skills tab first time is now signifigantly faster
-	* Searchbox for skills
-	* Custom sorting of skills. Sort by Rating, Dicepool, Category and more
-	* Skill tooltip now display dicepools for cyberarms
-	* In Career mode, it is possible to calculate the dicepool using another attribute that the default one.
-	* Some minor UI changes to acomodate new skill features
-	* Skills that cannot be defaulted has their name in italics.
-	* Easier maintainance
-	* Reduced file size
+    * Eliminated a lot (all?) old bugs
+    * Opening the skills tab first time is now signifigantly faster
+    * Searchbox for skills
+    * Custom sorting of skills. Sort by Rating, Dicepool, Category and more
+    * Skill tooltip now display dicepools for cyberarms
+    * In Career mode, it is possible to calculate the dicepool using another attribute that the default one.
+    * Some minor UI changes to acomodate new skill features
+    * Skills that cannot be defaulted has their name in italics.
+    * Easier maintainance
+    * Reduced file size
 - First things first, good news bad news. Good news, automatic updates will be functional again for updates after 179. Bad news, due to a change in implementation of the automatic updates this brings an end to .Net 4.0 support. Chummer will no longer launch without .Net 4.5 or higher installed on your system. 
 - Rewrote crash handling. Now dumps most/all internal state, making debugging easier.
 - Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added. Fixes #566.
@@ -1179,10 +1181,10 @@ Data Change:
 - Cloaks now have Ratings and calculated values instead of the initial implementation. 
 - Fixed a formatting issue for the German version of the Shadowrun 5 Base character sheet.
 - The following armour improvements can no longer stack with each other: 
-	* Dermal Deposit changeling qualities
-	* Troll metatype dermal plating
-	* Orthoskin bioware
-	* Dermal Plating cyberware
+    * Dermal Deposit changeling qualities
+    * Troll metatype dermal plating
+    * Orthoskin bioware
+    * Dermal Plating cyberware
 - Fixed a crash for the Mutaqua infected qualities.
 - Fixed an incorrect limit modifier value for the Audio Analyser and Balance Tail cyberware that made some weird stuff happen. Fixes #616.
 - Did some boring admin stuff with armour and bioware.
@@ -1340,9 +1342,9 @@ Application Change:
 Data Change:
 - Poor Self Control (Attention Seeking, Sadistic) now properly grant karma.
 - First-pass addition of Hard Targets content has been added. Big thanks to Reddit's /u/Fweeba and HaikenEdge.
-	Some provisional issues:
-	- Adept Spell does not work properly. 
-	- There are a few items that use Ratings in ways that haven't previously been required (Ie, the cloaks), so they're not as clean as I'd otherwise like. 
+    Some provisional issues:
+    - Adept Spell does not work properly. 
+    - There are a few items that use Ratings in ways that haven't previously been required (Ie, the cloaks), so they're not as clean as I'd otherwise like. 
 - Ares Thuderstruck Gauss Rifle renamed to Ares Thunderstruck Gauss Rifle.
 - The Fame qualities provide the associated Public Awareness increases.
 - Added prompts for sides (Left, Right) for most cyberware that could reasonably be expected to need it. 
@@ -1429,20 +1431,20 @@ Data Change:
 - Lifemodules no longer contains a "Magical Education (Archetype)".
 - Tír is now spelled correctly a few more places.
 - Equipment, Weapon and Ammo PACKs from run faster added.
-	There are a couple of important caveats with this:
-	First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. 
-	Second, items that don't currently exist haven't been added in, like backpacks. Again, mostly a tedium thing but the PACKs code doesn't play nice with Custom Item and I don't like littering up the data files with fluff items. 
-	  Items not added include:
-	  - Backpack.
-	  - Sound-link on the earbuds.
-	  - Disposable inhaler from Cheap Soldier Pack.
-	  - Orange vest from Sportsman Pack.
-	  - Reusable Syringe from Tranq Darter Pack and Tranq Pistol Darter Pack.
-	  - Bug-out bag's dufflebag.
-	  - Mechanic Shop's duct-tape.
-	  - Surveillance pack's Periscope.
-	  - Infiltration Kit contains a Micro-Transceiver on the assumption that that's the correct item.
-	  - Medium Machine gunner pack doesn't contain ammo belts, but does come with the ammo.
+    There are a couple of important caveats with this:
+    First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. 
+    Second, items that don't currently exist haven't been added in, like backpacks. Again, mostly a tedium thing but the PACKs code doesn't play nice with Custom Item and I don't like littering up the data files with fluff items. 
+      Items not added include:
+      - Backpack.
+      - Sound-link on the earbuds.
+      - Disposable inhaler from Cheap Soldier Pack.
+      - Orange vest from Sportsman Pack.
+      - Reusable Syringe from Tranq Darter Pack and Tranq Pistol Darter Pack.
+      - Bug-out bag's dufflebag.
+      - Mechanic Shop's duct-tape.
+      - Surveillance pack's Periscope.
+      - Infiltration Kit contains a Micro-Transceiver on the assumption that that's the correct item.
+      - Medium Machine gunner pack doesn't contain ammo belts, but does come with the ammo.
   - Ammo packs not added as stacks split among multiple types of weapons is not possible in Chummer5a.
   - Rigger Pack gets Reaction Enhancers instead of the mythical reflex enhancers. Come on guys, it's a list of items. Seriously, if you need an editor I'm sure there's tons of people who'd be happy to sign an NDA.
   - Big Boom Pistoleer pack has 190 rounds of heavy regular amunition, because Chummer doesn't care about your brass.
@@ -1472,7 +1474,7 @@ Application Change:
 - Cyberware can have a metatype restriction.
 - Born Rich quality works properly.
 - The Select Bioware/Cyberware form can now display a special notes text field to indicate weird workaroundy stuff that I can't be bothered fixing with code. 
-	- For example, Striking Calluses are treated as a Rating item, with the Notes field explaining why. Currently has no support for translations.
+    - For example, Striking Calluses are treated as a Rating item, with the Notes field explaining why. Currently has no support for translations.
 - Essence Discount house rule enabled. Can be used to emulate the Prototype Transhuman quality for you munchkin mages that need your pain editors and whatnot until I get around to implementing it properly.
 - Fixed an issue with the incorrect cap being used for spell selection. There's still a couple of UI failures that need to be resolved, but they're a relatively low priority. 
 
@@ -1527,9 +1529,9 @@ Application Change:
 - Genemods and Symbionts are locked to Standard grade properly. 
 - Internal changes to how some values are stored. Shouldn't affect characters.
 - Added support for building characters with Life Modules.
-	| If a character has multiple knowledge skills with the same name, they can optionally be folded in to one another by clicking the Collapse button on the right side of the skill. 
-	| Only debug life modules have been created thus far; any assistance in writing up the data for this would be greatly appreciated. 
-	| Selecting Life Modules will pre-generate a Background for your character. This can still be edited normally, but makes for a useful springboard. Development is still in the early stages, but is more or less functional. Full thanks to joha4270 for implementing this.
+    | If a character has multiple knowledge skills with the same name, they can optionally be folded in to one another by clicking the Collapse button on the right side of the skill. 
+    | Only debug life modules have been created thus far; any assistance in writing up the data for this would be greatly appreciated. 
+    | Selecting Life Modules will pre-generate a Background for your character. This can still be edited normally, but makes for a useful springboard. Development is still in the early stages, but is more or less functional. Full thanks to joha4270 for implementing this.
 
 Data Change:
 - Priviliged Family Name's SIN requirement changed to National or Corporate, rather than Corporate (Limited).
@@ -1648,7 +1650,7 @@ Administrative Change:
 
 Application Change:
 - AUTOMATIC UPDATES ENABLED. Now I just have to not forget to update the version metadata every time I fiddle with something...
-	- To use automatic updates, open the Tools window and click on Check For Updates. Any new file versions should be available for download. Select the files, hit the download button and cross your fingers.
+    - To use automatic updates, open the Tools window and click on Check For Updates. Any new file versions should be available for download. Select the files, hit the download button and cross your fingers.
 - Fix for Friends in High Places causing a crash due to invalid bounds.
 - Fixed an issue with free karma knowledge reverting values to 0.
 - Rewrite of Knowledge Skill BP calculation to support free points. Needs some logic validation.
