@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="Backend\Attributes\OptionAttributes\DisplayConfigurationAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\DisplayIgnoreAttribute.cs" />
+    <Compile Include="Backend\Attributes\OptionAttributes\DropDownAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\IsPathAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\OptionDisplayAttribute.cs" />
     <Compile Include="Backend\Attributes\OptionAttributes\OptionTagAttribute.cs" />

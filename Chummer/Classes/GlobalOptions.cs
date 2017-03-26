@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -199,6 +199,7 @@ namespace Chummer
         /// Language.
         /// </summary>
         [SavePropertyAs("language")]
+        [DropDown(new []{"en-us", "jp", "de", "fr" }, DirectDisplay = new []{ "English (US)", "日本語 (JP)", "Deutsch (DE)" , "Français (FR)" })]
         public string Language { get; set; } = "en-us";
 
         /// <summary>
