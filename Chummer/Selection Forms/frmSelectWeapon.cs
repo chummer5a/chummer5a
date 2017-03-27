@@ -261,6 +261,10 @@ namespace Chummer
                 {
                     bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
 
+                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    {
+                        continue;
+                    }
                     if (!blnHide)
                     {
                         TreeNode objNode = new TreeNode();
@@ -545,11 +549,11 @@ namespace Chummer
 		            {
 		                _strSelectCategory = objNode["category"]?.InnerText;
 		                _strSelectedWeapon = objNode["name"]?.InnerText;
-		            }
-		            _intMarkup = Convert.ToInt32(nudMarkup.Value);
-		            _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                        _intMarkup = Convert.ToInt32(nudMarkup.Value);
+                        _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
-		            DialogResult = DialogResult.OK;
+                        DialogResult = DialogResult.OK;
+                    }
 		            break;
 		        case 1:
 		            if (dgvWeapons.SelectedRows.Count == 1)
