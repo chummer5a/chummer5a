@@ -123,8 +123,8 @@ namespace Chummer
 		    // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
 		    Armor objArmor = new Armor(_objCharacter);
 		    TreeNode objNode = new TreeNode();
-		    List<Weapon> objWeapons = new List<Weapon>();
-		    objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
+		    List<Weapon> lstWeapons = new List<Weapon>();
+		    objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
 
 		    lblArmor.Text = objXmlArmor["name"]?.InnerText;
 		    lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
@@ -386,9 +386,9 @@ namespace Chummer
         #region Methods
 
         /// <summary>
-        /// Builds the list of Weapons to render in the active tab.
+        /// Builds the list of Armors to render in the active tab.
         /// </summary>
-        /// <param name="objXmlArmorList">XmlNodeList of weapons to render.</param>
+        /// <param name="objXmlArmorList">XmlNodeList of Armors to render.</param>
         private void BuildArmorList(XmlNodeList objXmlArmorList)
         {
             switch (tabControl.SelectedIndex)
@@ -407,16 +407,16 @@ namespace Chummer
                     tabArmor.Columns.Add("Cost");
                     tabArmor.Columns["Cost"].DataType = typeof(Int32);
 
-                    // Populate the Weapon list.
+                    // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
                         TreeNode objNode = new TreeNode();
                         Armor objArmor = new Armor(_objCharacter);
-                        List<Weapon> objWeapons = new List<Weapon>();
-                        objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, false, true, true);
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, false, true, true);
 
-                        string strWeaponGuid = objArmor.SourceID.ToString();
-                        string strWeaponName = objArmor.Name;
+                        string strArmorGuid = objArmor.SourceID.ToString();
+                        string strArmorName = objArmor.Name;
                         int intArmor = objArmor.TotalArmor;
                         int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
                         string strAvail = objArmor.Avail;
@@ -436,7 +436,7 @@ namespace Chummer
                         string strSource = objArmor.Source + " " + objArmor.Page;
                         int intCost = objArmor.Cost;
 
-                        tabArmor.Rows.Add(strWeaponGuid, strWeaponName, intArmor, intCapacity, strAvail, strAccessories, strSource, intCost);
+                        tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, intCapacity, strAvail, strAccessories, strSource, intCost);
                     }
 
                     DataSet set = new DataSet("armor");
@@ -451,7 +451,7 @@ namespace Chummer
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
                         ListItem objItem = new ListItem();
-                        objItem.Value = objXmlArmor["name"]?.InnerText;
+                        objItem.Value = objXmlArmor["id"]?.InnerText;
                         objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
 
                         if (objXmlArmor["category"] != null)
@@ -484,7 +484,7 @@ namespace Chummer
             switch (tabControl.SelectedIndex)
             {
                 case 0:
-                    objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstArmor.SelectedValue + "\"]");
+                    objNode = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + lstArmor.SelectedValue + "\"]");
                     if (objNode != null)
                     {
                         _strSelectCategory = objNode["category"]?.InnerText;
@@ -500,14 +500,14 @@ namespace Chummer
                     {
                         if (txtSearch.Text.Length > 1)
                         {
-                            string strWeapon = dgvArmor.SelectedRows[0].Cells[0].Value.ToString();
-                            if (!string.IsNullOrEmpty(strWeapon))
-                                strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf("(", StringComparison.Ordinal) - 1);
-                            objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strWeapon + "\"]");
+                            string strArmor = dgvArmor.SelectedRows[0].Cells[0].Value.ToString();
+                            if (!string.IsNullOrEmpty(strArmor))
+                                strArmor = strArmor.Substring(0, strArmor.LastIndexOf("(", StringComparison.Ordinal) - 1);
+                            objNode = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strArmor + "\"]");
                         }
                         else
                         {
-                            objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + dgvArmor.SelectedRows[0].Cells[0].Value + "\"]");
+                            objNode = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + dgvArmor.SelectedRows[0].Cells[0].Value + "\"]");
                         }
                         if (objNode != null)
                         {
@@ -551,8 +551,8 @@ namespace Chummer
 		    // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
 		    Armor objArmor = new Armor(_objCharacter);
 		    TreeNode objNode = new TreeNode();
-		    List<Weapon> objWeapons = new List<Weapon>();
-		    objArmor.Create(objXmlArmor, objNode, null, 0, objWeapons, true, true, true);
+		    List<Weapon> lstWeapons = new List<Weapon>();
+		    objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
 
 		    // Check for a Variable Cost.
 		    XmlElement xmlCostElement = objXmlArmor["cost"];
