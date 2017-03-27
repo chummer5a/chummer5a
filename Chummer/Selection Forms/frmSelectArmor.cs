@@ -118,37 +118,37 @@ namespace Chummer
 				return;
 
 			// Get the information for the selected piece of Armor.
-			XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + lstArmor.SelectedValue + "\"]");
-		    if (objXmlArmor == null) return;
-		    // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
-		    Armor objArmor = new Armor(_objCharacter);
-		    TreeNode objNode = new TreeNode();
-		    List<Weapon> lstWeapons = new List<Weapon>();
-		    objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
+			XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + lstArmor.SelectedValue + "\"]");
+            if (objXmlArmor == null) return;
+            // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
+            Armor objArmor = new Armor(_objCharacter);
+            TreeNode objNode = new TreeNode();
+            List<Weapon> lstWeapons = new List<Weapon>();
+            objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
 
-		    lblArmor.Text = objXmlArmor["name"]?.InnerText;
-		    lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
-		    lblAvail.Text = objArmor.TotalAvail;
+            lblArmor.Text = objXmlArmor["name"]?.InnerText;
+            lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
+            lblAvail.Text = objArmor.TotalAvail;
 
-		    if (objXmlArmor["rating"] != null)
-		    {
-		        lblRatingLabel.Visible = true;
-		        nudRating.Visible = true;
-		        nudRating.Enabled = true;
-		        nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
-		        nudRating.Minimum = 1;
-		        nudRating.Value = 1;
-		    }
-		    else
-		    {
-		        lblRatingLabel.Visible = false;
-		        nudRating.Visible = false;
-		        nudRating.Enabled = false;
-		        nudRating.Minimum = 0;
-		        nudRating.Value = 0;
-		    }
-		    UpdateArmorInfo();
-		}
+            if (objXmlArmor["rating"] != null)
+            {
+                lblRatingLabel.Visible = true;
+                nudRating.Visible = true;
+                nudRating.Enabled = true;
+                nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+                nudRating.Minimum = 1;
+                nudRating.Value = 1;
+            }
+            else
+            {
+                lblRatingLabel.Visible = false;
+                nudRating.Visible = false;
+                nudRating.Enabled = false;
+                nudRating.Minimum = 0;
+                nudRating.Value = 0;
+            }
+            UpdateArmorInfo();
+        }
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -413,7 +413,7 @@ namespace Chummer
                         TreeNode objNode = new TreeNode();
                         Armor objArmor = new Armor(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
-                        objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, false, true, true);
+                        objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
 
                         string strArmorGuid = objArmor.SourceID.ToString();
                         string strArmorName = objArmor.Name;
@@ -480,45 +480,28 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
 		{
-            XmlNode objNode;
-            switch (tabControl.SelectedIndex)
+            XmlNode objNode = null;
+		    switch (tabControl.SelectedIndex)
+		    {
+		        case 0:
+		            objNode =
+		                _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + lstArmor.SelectedValue + "\"]");
+		            break;
+		        case 1:
+		            objNode =
+		                _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" +
+		                                                 dgvArmor.SelectedRows[0].Cells[0].Value + "\"]");
+		            break;
+		    }
+            if (objNode != null)
             {
-                case 0:
-                    objNode = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + lstArmor.SelectedValue + "\"]");
-                    if (objNode != null)
-                    {
-                        _strSelectCategory = objNode["category"]?.InnerText;
-                        _strSelectedArmor = objNode["name"]?.InnerText;
-                        _intMarkup = Convert.ToInt32(nudMarkup.Value);
-                        _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                _strSelectCategory = objNode["category"]?.InnerText;
+                _strSelectedArmor = objNode["name"]?.InnerText;
+                _intMarkup = Convert.ToInt32(nudMarkup.Value);
+                _intRating = Convert.ToInt32(nudRating.Value);
+                _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
-                        DialogResult = DialogResult.OK;
-                    }
-                    break;
-                case 1:
-                    if (dgvArmor.SelectedRows.Count == 1)
-                    {
-                        if (txtSearch.Text.Length > 1)
-                        {
-                            string strArmor = dgvArmor.SelectedRows[0].Cells[0].Value.ToString();
-                            if (!string.IsNullOrEmpty(strArmor))
-                                strArmor = strArmor.Substring(0, strArmor.LastIndexOf("(", StringComparison.Ordinal) - 1);
-                            objNode = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strArmor + "\"]");
-                        }
-                        else
-                        {
-                            objNode = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + dgvArmor.SelectedRows[0].Cells[0].Value + "\"]");
-                        }
-                        if (objNode != null)
-                        {
-                            _strSelectCategory = objNode["category"]?.InnerText;
-                            _strSelectedArmor = objNode["name"]?.InnerText;
-                        }
-                        _intMarkup = Convert.ToInt32(nudMarkup.Value);
-
-                        DialogResult = DialogResult.OK;
-                    }
-                    break;
+                DialogResult = DialogResult.OK;
             }
         }
 
@@ -546,7 +529,7 @@ namespace Chummer
 		private void UpdateArmorInfo()
 		{
 			// Get the information for the selected piece of Armor.
-			XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + lstArmor.SelectedValue + "\"]");
+			XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + lstArmor.SelectedValue + "\"]");
 		    if (objXmlArmor == null) return;
 		    // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
 		    Armor objArmor = new Armor(_objCharacter);
