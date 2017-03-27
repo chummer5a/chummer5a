@@ -424,7 +424,10 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
                 XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
-                _sourceID = Guid.Parse(objArmorNode["id"].InnerText);
+                if (objArmorNode != null)
+                {
+                    _sourceID = Guid.Parse(objArmorNode["id"].InnerText);
+                }
             }
             else
             {
