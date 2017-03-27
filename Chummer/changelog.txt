@@ -115,6 +115,7 @@ Data Changes:
 - Checkbox_Options_ReverseAttributePriorityOrder
 - Title_ListView
 - Title_Browse
+- Checkbox_Option_HideItemsOverAvailLimit
 
 Build 191
 
