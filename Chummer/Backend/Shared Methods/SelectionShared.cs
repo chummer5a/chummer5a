@@ -20,14 +20,24 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="objCharacter">Character Object.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
         /// <returns></returns>
-        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, string strIgnoreQuality = "")
+        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null)
         {
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
                 return true;
-            XmlDocument objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
-            XmlDocument objCritterDocument = XmlManager.Instance.Load("critters.xml");
-            XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            //TODO: Find a better way to manage this, repeated calls to the method cause a stupid amount of CPU activity from loading the XMLs. Cache the XMLs in Main as part of the Load method, maybe?
+            if (objMetatypeDocument == null)
+            {
+                objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
+            }
+            if (objCritterDocument == null)
+            {
+                objCritterDocument = XmlManager.Instance.Load("critters.xml");
+            }
+            if (objQualityDocument == null)
+            {
+                objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            }
             // See if the character already has this Quality and whether or not multiple copies are allowed.
             if (objXmlNode == null) return false;
             if (objXmlNode["limit"]?.InnerText != "no")
