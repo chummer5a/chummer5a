@@ -36,6 +36,7 @@ namespace Chummer
 		private int _intModMultiplier = 1;
 		private string _strInputFile = "vehicles";
 		private int _intMarkup = 0;
+	    private bool _blnSkipUpdate = true;
 		private static string _strSelectCategory = string.Empty;
 
 	    readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
@@ -132,6 +133,8 @@ namespace Chummer
 
 			if (_strInputFile == "weapons")
 				Text = LanguageManager.Instance.GetString("Title_SelectVehicleMod_Weapon");
+		    _blnSkipUpdate = false;
+            UpdateGearInfo();
 		}
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
@@ -644,6 +647,8 @@ namespace Chummer
 		/// </summary>
 		private void UpdateGearInfo()
 		{
+		    if (_blnSkipUpdate) return;
+		    _blnSkipUpdate = true;
 			if (!string.IsNullOrEmpty(lstMod.Text))
 			{
 				// Retireve the information for the selected Mod.
@@ -679,20 +684,20 @@ namespace Chummer
 					strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
 					// Remove the trailing character if it is "F" or "R".
 					strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-				}
-				try
-				{
-					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString(GlobalOptions.InvariantCultureInfo)));
-					lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
-				}
-				catch (XPathException)
-				{
-					lblAvail.Text = objXmlMod["avail"].InnerText;
-				}
-				lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                }
+                try
+                {
+                    xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString(GlobalOptions.InvariantCultureInfo)));
+                    lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
+                }
+                catch (XPathException)
+                {
+                    lblAvail.Text = objXmlMod["avail"].InnerText;
+                }
+                lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
-				// Cost.
-				int intItemCost = 0;
+                // Cost.
+                int intItemCost = 0;
 				if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
 				{
 					int intMin = 0;
@@ -885,6 +890,7 @@ namespace Chummer
 				lblSource.Text = strBook + " " + strPage;
 
 				tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			    _blnSkipUpdate = false;
 			}
 		}
 

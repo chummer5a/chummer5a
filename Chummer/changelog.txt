@@ -20,6 +20,7 @@ Application Changes:
 - Fixed behaviour of the ArmorRating attribute to properly account for High-Fashion Armor Clothing. 
 - Applied a filter to the JSON Export to properly save files as JSON.
 - Added a warning message when loading an XML file if duplicate IDs exist. 
+- Fixed a stack overflow when selecting vehicle mods. 
 
 Data Changes:
 
