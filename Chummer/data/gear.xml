@@ -1701,6 +1701,23 @@
 			<source>SR5</source>
 			<page>438</page>
 		</gear>
+    <gear>
+      <id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
+      <name>Spinrad Industries Trompe L'Oeil</name>
+      <category>Commlinks</category>
+      <armorcapacity>[2]</armorcapacity>
+      <capacity>0</capacity>
+      <rating>0</rating>
+      <devicerating>6</devicerating>
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>6</dataprocessing>
+      <firewall>6</firewall>
+      <avail>16</avail>
+      <cost>50000</cost>
+      <source>BOTL</source>
+      <page>126</page>
+    </gear>
 		<gear>
 			<id>d589142e-a71f-4cd9-b916-967168721eea</id>
 			<name>Sim Module</name>

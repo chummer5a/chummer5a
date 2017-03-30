@@ -105,10 +105,11 @@ Data Changes:
         - Raptor Foot
         - Grapple Fist
         - Uzi III (2050)
-    - Corrected insect spirit naming conventions to resolve a crash when selecting the Insect Shaman tradition
-    - Fixed the weapon mount categories for the Heavy Weapon Mount
+- Corrected insect spirit naming conventions to resolve a crash when selecting the Insect Shaman tradition
+- Fixed the weapon mount categories for the Heavy Weapon Mount
+- Added content from Book of the Lost (2 Mentor Spirits, 1 Commlink)
 
-- New Strings: 
+New Strings: 
 
 - String_CannotFindLifestyleQuality
 - Checkbox_Spirit_Fettered

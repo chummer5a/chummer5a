@@ -182,5 +182,10 @@
 			<name>Shadowrun 2050 (5th Edition)</name>
 			<code>2050</code>
 		</book>
+    <book>
+      <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
+      <name>Book of the Lost</name>
+      <code>BOTL</code>
+    </book>
 	</books>
 </chummer>

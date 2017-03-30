@@ -1830,5 +1830,80 @@
 			<source>HS</source>
 			<page>46</page>
 		</mentor>
-	</mentors>
+    <mentor>
+      <id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
+      <name>Goddess</name>
+      <advantage>All: +2 dice pool modifer for Instruction Tests.</advantage>
+      <disadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Instruction</name>
+          <bonus>2</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Ritual Spellcasting Tests</name>
+          <bonus>
+            <specificskill>
+              <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <applytorating>no</applytorating>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: 1 free level of Authoritative Tone</name>
+          <bonus>
+            <specificpower>
+              <name>Authoritative Tone</name>
+              <val>1</val>
+              <free>yes</free>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>BOTL</source>
+      <page>129</page>
+    </mentor>
+    <mentor>
+      <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
+      <name>Lion</name>
+      <advantage>All: +2 dice pool modifer for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
+      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
+      <bonus>
+        <selectskill limittoskill="Survival,Running,Tracking">
+          <val>2</val>
+          <applytorating>no</applytorating>
+        </selectskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
+            <bonus>
+              <spellcategory>
+                <name>Combat</name>
+                <val>2</val>
+              </spellcategory>
+            </bonus>
+          </choice>
+        <choice>
+          <name>Adept: 2 free levels of Attribute Boost (Strength)</name>
+          <bonus>
+            <specificpower>
+              <name>Attribute Boost</name>
+              <val>2</val>
+              <selectattribute>
+                <attribute>AGI</attribute>
+              </selectattribute>
+              <free>yes</free>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>BOTL</source>
+      <page>129</page>
+    </mentor>
+  </mentors>
 </chummer>
