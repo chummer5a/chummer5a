@@ -32,6 +32,7 @@ namespace Chummer
         public int buildNeg = 0;
 		private string _strSelectedQuality = string.Empty;
 		private bool _blnAddAgain = false;
+	    private bool _blnLoading = true;
 		private readonly Character _objCharacter;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -52,8 +53,6 @@ namespace Chummer
 
 		private void frmSelectQuality_Load(object sender, EventArgs e)
 		{
-			_objXmlDocument = XmlManager.Instance.Load("qualities.xml");
-
 			foreach (Label objLabel in Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
@@ -96,7 +95,7 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
-
+		    _blnLoading = false;
             BuildQualityList();
         }
 
@@ -301,6 +300,7 @@ namespace Chummer
 		/// </summary>
 		private void BuildQualityList()
 		{
+		    if (_blnLoading) return;
 			List<ListItem> lstQuality = new List<ListItem>();
             XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
