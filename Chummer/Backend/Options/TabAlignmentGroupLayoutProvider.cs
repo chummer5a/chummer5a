@@ -53,7 +53,7 @@ namespace Chummer.Backend.Options
             int count;
             foreach (LayoutLineInfo line in contents)
             {
-                string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
+                string[] alignmentPieces = line.LayoutString.TrimEnd('\\').Split(new[] {"\\t"}, StringSplitOptions.None);
                 LineInfo currentLine = new LineInfo
                 {
                     Parts = alignmentPieces.Length
@@ -96,7 +96,9 @@ namespace Chummer.Backend.Options
             UpdateRegions(builder, regions, ranges, format, rendergarget, force: true);
 
 
-
+            //TODO: If layoutstring ends with '\' and the following contains '\t' this will break
+            //It needs to move to the next line (j++) without resetting i, then updating the last written 
+            //element with current size + size of new element, then move for the next elements as it was one long line.
 
             //Keeps the mimumum size required for each tab.
             //Loop over every line in the layout and calculate how big elements need to be
@@ -105,15 +107,11 @@ namespace Chummer.Backend.Options
             {
                 LayoutLineInfo line = contents[j];
                 string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
-//                Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
-//                Console.WriteLine("content[{0}]", j);
                 //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
                 //If a previous size requirement for that tab count is already found, take the biggest one
                 //Otherwise store a new one
                 for (int i = 0; i < alignmentPieces.Length; i++)
                 {
-//                    Console.WriteLine("Starting on {0}", regionCount);
-//                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
                     RectangleF rect = regions[regionCount++].GetBounds(rendergarget);
                     float size = rect.Width;
                     if (alignmentPieces[i].Contains("{}") /*controlIndex[j].ControlIndex == 1 */)
@@ -212,21 +210,15 @@ namespace Chummer.Backend.Options
 
             //Perform the actual layout
             int regionCount = 0;
+            int lineRight = 0;
+            int iext = 0;
             for (int j = 0; j < contents.Count; j++)
             {
-                int lineRight = 0;
                 LayoutLineInfo line = contents[j];
-                string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
-                //Console.WriteLine($"splitting {line.LayoutString} into [{string.Join(", ", alignmentPieces)}]");
-//                Console.WriteLine("content[{0}]", j);
-                //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
-                //If a previous size requirement for that tab count is already found, take the biggest one
-                //Otherwise store a new one
+                string[] alignmentPieces = line.LayoutString.TrimEnd('\\').Split(new[] {"\\t"}, StringSplitOptions.None);
                 bool controlRendered = false;
                 for (int i = 0; i < alignmentPieces.Length; i++)
                 {
-//                    Console.WriteLine("Starting on {1},{0}", regionCount, j);
-//                    Console.WriteLine("Processing {0}", alignmentPieces[i]);
                     Size size = ToSize(cache[regionCount++].GetBounds(renderGraphics));
 
                     if (!controlRendered && alignmentPieces[i].Contains("{}"))
@@ -235,30 +227,29 @@ namespace Chummer.Backend.Options
                         Size size2 = ToSize(cache[regionCount++].GetBounds(renderGraphics));
                         TextRenderInfo tri = new TextRenderInfo
                         {
-                            Location = new Point(alignmentLenghts[i], lineTop),
+                            Location = new Point(GetAlignment(alignmentLenghts, i, iext, lineRight), lineTop),
                             Size = size,
                             Text = sides[0]
                         };
-                        //Console.WriteLine($"Rendering tri \"{tri.Text}\" at {tri.Location.X},{tri.Location.Y} ({tri.Size.Width},{tri.Size.Height})");
                         ret.TextLocations.Add(new TextRenderInfo
                         {
                             Location =
                                 new Point(
-                                    alignmentLenghts[i] + size.Width + line.ControlSize.Width +
+                                    GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width + line.ControlSize.Width +
                                     LayoutOptions.ControlMargin * 2, lineTop),
                             Size = size2,
                             Text = sides[1]
                         });
                         ret.TextLocations.Add(tri);
                         ret.ControlLocations.Add(new Point(
-                            alignmentLenghts[i] + size.Width + LayoutOptions.ControlMargin,
+                            GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width + LayoutOptions.ControlMargin,
                             lineTop + line.ControlOffset.Y));
 
                         lineBottom = Math.Max(lineBottom,
                             lineTop + Math.Max(size.Height,
                                 line.ControlSize.Height - Math.Min(0, line.ControlOffset.Y)));
 
-                        lineRight = alignmentLenghts[i] + size.Width + line.ControlSize.Width +
+                        lineRight = GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width + line.ControlSize.Width +
                                     LayoutOptions.ControlMargin * 2 + size2.Width;
                         controlRendered = true;
                     }
@@ -266,15 +257,14 @@ namespace Chummer.Backend.Options
                     {
                         TextRenderInfo tri = new TextRenderInfo
                         {
-                            Location = new Point(alignmentLenghts[i], lineTop),
+                            Location = new Point(GetAlignment(alignmentLenghts, i, iext, lineRight), lineTop),
                             Size = size,
                             Text = alignmentPieces[i]
                         };
-                        //Console.WriteLine($"Rendering tri \"{tri.Text}\" at {tri.Location.X},{tri.Location.Y} ({tri.Size.Width},{tri.Size.Height})");
                         ret.TextLocations.Add(tri);
                         lineBottom = Math.Max(lineBottom, lineTop + size.Height);
 
-                        lineRight = alignmentLenghts[i] + size.Width;
+                        lineRight = GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width;
                     }
                 }
 
@@ -292,8 +282,17 @@ namespace Chummer.Backend.Options
                     ret.ToolTips.Add(new ToolTipData(line.ToolTip,
                         new Rectangle(0, lineTop, lineRight, lineBottom - lineTop)));
 
+                if (line.LayoutString.EndsWith("\\"))
+                {
+                    iext = iext + alignmentPieces.Length;
+                    continue;
+                }
+                else iext = 0;
+                
+
                 lineMaxRight = Math.Max(lineMaxRight, lineRight);
                 lineTop = lineBottom + LayoutOptions.Linespacing;
+                lineRight = 0;
             }
 
 
@@ -301,6 +300,19 @@ namespace Chummer.Backend.Options
             ret.Height = lineTop;
 
             return ret;
+        }
+
+        private int GetAlignment(List<int> alignment, int index, int extension, int firstpad)
+        {
+            if (extension > 0)
+            {
+                //Only first needs padding as it is part of previous group
+                if (index != 0) firstpad = 0;
+
+                //All groups with extension is off by one as first is acctually previous group with a little extra (already rendered stuff)
+                return alignment[index + extension - 1] + firstpad;
+            }
+            else return alignment[index];
         }
 
         private Size ToSize(RectangleF getBounds)

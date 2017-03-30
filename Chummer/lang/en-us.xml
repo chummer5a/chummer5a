@@ -8286,11 +8286,11 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_FreeContactsMultiplier</key>
-			<text>    Free Contact Multiplier x {}</text>
+			<text>{}</text>
 		</string>
 		<string>
 			<key>Display_FreeContactsMultiplierEnabled</key>
-			<text>{} Free Contact Points equal to CHA x Multiplier</text>
+			<text>{} Free Contact Points equal to CHA x\</text>
 		</string>
 		<string>
 			<key>Display_FreeKarmaContacts</key>
@@ -8302,11 +8302,11 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Display_FreeKnowledgeMultiplierEnabled</key>
-			<text>{} Free Knowledge Points Equal to (INT+LOG) x Multiplier</text>
+			<text>{} Free Knowledge Points Equal to (INT+LOG) x\</text>
 		</string>
 		<string>
 			<key>Display_FreeKnowledgeMultiplier</key>
-			<text>    Free Knowledge Multiplier {}</text>
+			<text>{}</text>
 		</string>
 		<string>
 			<key>Display_MetatypeCostsKarma</key>
@@ -8442,19 +8442,19 @@ Do you want to continue?</text>
 		</string>
     <string>
       <key>Display_MultiplyRestrictedCost</key>
-      <text>{}Multiply the cost of Restricted items</text>
+      <text>{}Multiply the cost of Restricted items by\</text>
     </string>
     <string>
       <key>Display_MultiplyForbiddenCost</key>
-      <text>{}Multiply the cost of Forbidden items</text>
+      <text>{}Multiply the cost of Forbidden items by\</text>
     </string>
 		<string>
 			<key>Display_RestrictedCostMultiplier</key>
-			<text>    Cost Multiplier: {}</text>
+			<text>{}</text>
 		</string>
 		<string>
 			<key>Display_ForbiddenCostMultiplier</key>
-			<text>    Cost Multiplier: {}</text>
+			<text>{}</text>
 		</string>
 		<string>
 			<key>Display_CapSkillRating</key>

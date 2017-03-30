@@ -34,7 +34,6 @@
             this.lblOffset = new System.Windows.Forms.Label();
             this.btnTest = new System.Windows.Forms.Button();
             this.nudOffset = new System.Windows.Forms.NumericUpDown();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudOffset)).BeginInit();
             this.SuspendLayout();
             // 
@@ -94,20 +93,10 @@
             this.nudOffset.Size = new System.Drawing.Size(40, 20);
             this.nudOffset.TabIndex = 7;
             // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(168, 40);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 8;
-            // 
             // BookSettingControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.nudOffset);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.lblOffset);
@@ -130,6 +119,5 @@
         private System.Windows.Forms.Label lblOffset;
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.NumericUpDown nudOffset;
-        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
