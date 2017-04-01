@@ -21,6 +21,7 @@ Application Changes:
 - Applied a filter to the JSON Export to properly save files as JSON.
 - Added a warning message when loading an XML file if duplicate IDs exist. 
 - Fixed a stack overflow when selecting vehicle mods. 
+- When creating a new knowledge skill, the Type combobox will attempt to populate automatically. 
 
 Data Changes:
 

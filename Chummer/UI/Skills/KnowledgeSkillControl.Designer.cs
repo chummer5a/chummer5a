@@ -115,6 +115,7 @@
             this.cboSkill.Size = new System.Drawing.Size(190, 21);
             this.cboSkill.Sorted = true;
             this.cboSkill.TabIndex = 20;
+            this.cboSkill.SelectedIndexChanged += new System.EventHandler(this.cboSkill_SelectedIndexChanged);
             // 
             // cboType
             // 
