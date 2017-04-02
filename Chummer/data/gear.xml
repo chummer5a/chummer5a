@@ -113,9 +113,9 @@
 				<avail>8R</avail>
 				<costfor>1</costfor>
 				<cost>(Rating * 30)</cost>
-				<bonus>
-					<ap>-2</ap>
-				</bonus>
+        <weaponbonus>
+          <ap>-2</ap>
+        </weaponbonus>
 				<source>HT</source>
 				<page>187</page>
 			</gear>

@@ -22,6 +22,7 @@ Application Changes:
 - Added a warning message when loading an XML file if duplicate IDs exist. 
 - Fixed a stack overflow when selecting vehicle mods. 
 - When creating a new knowledge skill, the Type combobox will attempt to populate automatically. 
+- Fixed an incorrect bonus type for the monotip arrowhead that prevented it from being added.
 
 Data Changes:
 
