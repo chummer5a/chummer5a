@@ -7227,7 +7227,7 @@
 				<critterpowers>
 					<power>Adaptive Coloration</power>
 					<power select="Sunlight, Mild">Allergy</power>
-					<power select="Sasquatch Flesh">Dietary Requirement</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
 				</critterpowers>
 			</bonus>
 			<required>
@@ -8454,7 +8454,7 @@
 			<id>5f31925d-cc76-49da-acab-644b66d5e93d</id>
 			<name>Infected: Gnawer</name>
 			<contributetolimit>no</contributetolimit>
-			<karma>29</karma>
+			<karma>35</karma>
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
@@ -8528,6 +8528,7 @@
 					</selectattribute>
 				</selectattributes>
 			<critterpowers>
+        <power select="Vermin">Animal Control</power>
 				<power>Dual Natured</power>
 				<power select="Toxins">Immunity</power>
 				<power>Noxious Breath</power>
@@ -11400,15 +11401,6 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattributes>
-          <replaceattribute>
-            <name>MAG</name>
-            <min>1</min>
-            <max>6</max>
-            <aug>6</aug>
-            <val>1</val>
-          </replaceattribute>
-        </replaceattributes>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11468,15 +11460,6 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattributes>
-          <replaceattribute>
-            <name>MAG</name>
-            <min>1</min>
-            <max>6</max>
-            <aug>6</aug>
-            <val>1</val>
-          </replaceattribute>
-        </replaceattributes>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11532,15 +11515,6 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattributes>
-          <replaceattribute>
-            <name>MAG</name>
-            <min>1</min>
-            <max>6</max>
-            <aug>6</aug>
-            <val>1</val>
-          </replaceattribute>
-        </replaceattributes>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11604,15 +11578,6 @@
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-        <replaceattributes>
-          <replaceattribute>
-            <name>MAG</name>
-            <min>1</min>
-            <max>6</max>
-            <aug>6</aug>
-            <val>1</val>
-          </replaceattribute>
-        </replaceattributes>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>

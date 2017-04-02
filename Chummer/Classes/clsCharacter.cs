@@ -1000,6 +1000,12 @@ namespace Chummer
             
             objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
             objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
+
+            //Shim for characters created prior to Run Faster Errata
+            if (_strMetavariant == "Cyclopean")
+            {
+                _strMetavariant = "Cyclops";
+            }
 		    objXmlCharacter.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
 
             // General character information.

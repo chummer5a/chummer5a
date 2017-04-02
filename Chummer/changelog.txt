@@ -22,7 +22,6 @@ Application Changes:
 - Added a warning message when loading an XML file if duplicate IDs exist. 
 - Fixed a stack overflow when selecting vehicle mods. 
 - When creating a new knowledge skill, the Type combobox will attempt to populate automatically. 
-- Fixed an incorrect bonus type for the monotip arrowhead that prevented it from being added.
 
 Data Changes:
 
@@ -110,6 +109,17 @@ Data Changes:
 - Corrected insect spirit naming conventions to resolve a crash when selecting the Insect Shaman tradition
 - Fixed the weapon mount categories for the Heavy Weapon Mount
 - Added content from Book of the Lost (2 Mentor Spirits, 1 Commlink)
+- Renamed the Cyclopean metavariant to Cyclops. Existing character should rename themselves properly.
+- Removed ReplaceAttribute bonuses for the various dracoforms that caused an override of Magic attributes.
+- Removed ReplaceAttribute bonuses for the various dracoforms that caused an override of Magic attributes. Fixes #1516
+- Updated the State University/Medicine life module to remove the Biotechnology skill and increase the Biotech skill group, per errata.
+- Updated the Street Magic/Street Mage life module to move 1 point in Conjuring into Sorcery. 
+- Renamed the Cyclopean Metavariant to the Cyclops.
+- Updated the Movement speed for the Naga metatype. 
+- Increased the Lifestyle Cost for the Centaur metatype. 
+- Altered the selecttext for the Bandersnatch quality's dietary requirement to Metathuman Flesh.
+- Increase the karma cost of the Gnawer quality to 35 and added the Animal Control (Vermin) power. 
+- Fixed an incorrect bonus type for the monotip arrowhead that prevented it from being added.
 
 New Strings: 
 
@@ -1357,7 +1367,7 @@ Data Change:
 - Bioware Limbs from Chrome Flesh added.
 - Additional Life Modules added. Most Life Modules now have a random story attached. The bulk of these stories are jokes, because it's good to laugh. Note: Checking and unchecking the Automatic Backstory checkbox on the Character Info page will select new random values, if they're present.
 - Removed the Extravagant Eyes metagenetic quality.
-- Fixed Karma values for the Cyclopean Eye, Vestigial Tail and Feathers metagenetic qualities.
+- Fixed Karma values for the Cyclops Eye, Vestigial Tail and Feathers metagenetic qualities.
 - The Extended Masking Metamagic has been enabled as a power Adepts can take, as it's functionally identical to the Improved Masking power.
 - Added the Body Sculpt power from Bloody Business.
 - Fixed a crash caused by lifestyles with qualities.
