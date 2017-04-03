@@ -1349,6 +1349,57 @@ namespace Chummer.Classes
 				CreateImprovement(strAttrib, _objImprovementSource, SourceName,
 					Improvement.ImprovementType.Attributelevel, string.Empty, value);
 			}
+            else if (bonusNode["options"] != null)
+			{
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                if (!string.IsNullOrEmpty(_strFriendlyName))
+                    frmPickAttribute.Description =
+                        LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
+                else
+                    frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
+
+                // Add MAG and/or RES to the list of Attributes if they are enabled on the form.
+                if (_objCharacter.MAGEnabled)
+                    frmPickAttribute.AddMAG();
+                if (_objCharacter.RESEnabled)
+                    frmPickAttribute.AddRES();
+                if (_objCharacter.DEPEnabled)
+                    frmPickAttribute.AddDEP();
+
+                Log.Info("attributelevel = " + bonusNode.OuterXml.ToString());
+
+                List<string> strValue = new List<string>();
+                foreach (XmlNode objSubNode in bonusNode["options"])
+                    strValue.Add(objSubNode.InnerText);
+                frmPickAttribute.LimitToList(strValue);
+
+                // Check to see if there is only one possible selection because of _strLimitSelection.
+                if (!string.IsNullOrEmpty(ForcedValue))
+                    LimitSelection = ForcedValue;
+
+                Log.Info("_strForcedValue = " + ForcedValue);
+                Log.Info("_strLimitSelection = " + LimitSelection);
+
+                if (!string.IsNullOrEmpty(LimitSelection))
+                {
+                    frmPickAttribute.SingleAttribute(LimitSelection);
+                    frmPickAttribute.Opacity = 0;
+                }
+
+                frmPickAttribute.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
+                Log.Info("SourceName = " + SourceName);
+
+                CreateImprovement(frmPickAttribute.SelectedAttribute, _objImprovementSource, SourceName,
+    Improvement.ImprovementType.Attributelevel, string.Empty, value);
+            }
 			else
 			{
 				Log.Error(new object[] { "attributelevel", bonusNode.OuterXml });

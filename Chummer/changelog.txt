@@ -3,6 +3,7 @@ Build 193
 Application Changes:
 
 - Tweaked the KnowledgeSkill control to provide autocomplete in the skill textbox.
+- Fixed the AttributeLevel improvement to work properly for improvements that provide a choice. Fixes the Drifter and Celebrity Life Modules.
 
 Build 192
 
