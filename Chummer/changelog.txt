@@ -1,3 +1,9 @@
+Build 193
+
+Application Changes:
+
+- Tweaked the KnowledgeSkill control to provide autocomplete in the skill textbox.
+
 Build 192
 
 Application Changes:

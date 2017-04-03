@@ -109,6 +109,8 @@
             // 
             // cboSkill
             // 
+            this.cboSkill.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboSkill.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboSkill.FormattingEnabled = true;
             this.cboSkill.Location = new System.Drawing.Point(3, 1);
             this.cboSkill.Name = "cboSkill";
