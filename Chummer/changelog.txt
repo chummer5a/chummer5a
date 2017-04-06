@@ -6,6 +6,7 @@ Application Changes:
 - Fixed the AttributeLevel improvement to work properly for improvements that provide a choice. Fixes the Drifter and Celebrity Life Modules.
 - Fixed behaviour of the Select Vehicle Mod window to prevent a crash caused by invalid Ratings.
 - Fixed TotalCost of cyberware to properly account for gear that is connected to a child of other cyberware. 
+- Fixed behaviour of the houserule to treat metatype minimums as 1 for Karma costs.
 
 Build 192
 
