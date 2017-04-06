@@ -1676,10 +1676,6 @@ namespace Chummer.Backend.Equipment
 						else
 							intReturn += objChild.TotalCostWithoutModifiers;
 					}
-
-					// Add in the cost of any Plugin Gear plugins.
-					foreach (Gear objGear in objChild.Gear)
-						intReturn += objGear.TotalCost;
 				}
 
 				// Add in the cost of all Gear plugins.
@@ -1795,10 +1791,6 @@ namespace Chummer.Backend.Equipment
                         else
                             intReturn += objChild.TotalCostWithoutModifiers;
                     }
-
-                    // Add in the cost of any Plugin Gear plugins.
-                    foreach (Gear objGear in objChild.Gear)
-                        intReturn += objGear.TotalCost;
                 }
 
                 // Add in the cost of all Gear plugins.
