@@ -8,6 +8,7 @@ Application Changes:
 - Fixed TotalCost of cyberware to properly account for gear that is connected to a child of other cyberware. 
 - Fixed behaviour of the houserule to treat metatype minimums as 1 for Karma costs.
 - Fixed an issue that prevented knowledge skills from selecting their proper default attribute. 
+- Fixed the behaviour of spirits for mystic adepts to not have their force based on power points. 
 
 Build 192
 

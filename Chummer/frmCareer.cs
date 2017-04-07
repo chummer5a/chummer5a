@@ -547,11 +547,9 @@ namespace Chummer
             MetatypeSelected();
 
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-			int intCharacterMAG = _objCharacter.MAG.TotalValue;
 			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
 			{
 				lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
-				intCharacterMAG = _objCharacter.MysticAdeptPowerPoints;
 
 				lblMysticAdeptAssignment.Visible = true;
 				lblMysticAdeptMAGAdept.Visible = true;
@@ -772,7 +770,7 @@ namespace Chummer
 					if (_objOptions.SpiritForceBasedOnTotalMAG)
 						objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue * 2;
 					else
-						objSpiritControl.ForceMaximum = intCharacterMAG * 2;
+						objSpiritControl.ForceMaximum = _objCharacter.MAG.Value * 2;
 					objSpiritControl.CritterName = objSpirit.CritterName;
 					objSpiritControl.Force = objSpirit.Force;
 					objSpiritControl.Bound = objSpirit.Bound;
