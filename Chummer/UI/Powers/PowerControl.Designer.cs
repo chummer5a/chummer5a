@@ -86,7 +86,6 @@
             0,
             0,
             0});
-			this.nudRating.ValueChanged += new System.EventHandler(this.RequestCharacterUpdate);
 			// 
 			// lblPowerPoints
 			// 
@@ -109,7 +108,6 @@
 			this.chkDiscountedAdeptWay.Tag = "Checkbox_Power_AdeptWay";
 			this.chkDiscountedAdeptWay.Text = "Adept Way";
 			this.chkDiscountedAdeptWay.UseVisualStyleBackColor = true;
-			this.chkDiscountedAdeptWay.CheckStateChanged += new System.EventHandler(this.RequestCharacterUpdate);
 			// 
 			// chkDiscountedGeas
 			// 
@@ -123,7 +121,6 @@
 			this.chkDiscountedGeas.Text = "Geas";
 			this.chkDiscountedGeas.UseVisualStyleBackColor = true;
 			this.chkDiscountedGeas.Visible = false;
-			this.chkDiscountedGeas.CheckStateChanged += new System.EventHandler(this.RequestCharacterUpdate);
 			// 
 			// imgNotes
 			// 

@@ -14,7 +14,7 @@ namespace Chummer
 	/// <summary>
 	/// An Adept Power.
 	/// </summary>
-	public class Power
+	public class Power : INotifyPropertyChanged
 	{
 		private Guid _guiID;
 	    private string _strSource = "";
@@ -344,7 +344,11 @@ namespace Chummer
 		public int TotalRating
 		{
 			get { return Rating + FreeLevels; }
-			set { Rating = value - FreeLevels; }
+			set
+            {
+                Rating = value - FreeLevels;
+                OnPropertyChanged();
+            }
 		}
 
 		/// <summary>

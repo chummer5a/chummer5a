@@ -20,20 +20,11 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-// PowerRatingChanged Event Handler.
-public delegate void PowerRatingChangedHandler(Object sender);
-// DeletePower Event Handler;
-public delegate void DeletePowerHandler(Object sender);
-
 namespace Chummer
 {
     public partial class PowerControl : UserControl
     {
 		private Power _objPower;
-
-	    // Events.
-        public event PowerRatingChangedHandler PowerRatingChanged;
-        public event DeletePowerHandler DeletePower;
 
 		#region Control Events
 		public PowerControl(Power objPower)
@@ -61,8 +52,8 @@ namespace Chummer
 				DataSourceUpdateMode.OnPropertyChanged);
 			chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, 
 				DataSourceUpdateMode.OnPropertyChanged);
-
-			tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+            
+            tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
 			MoveControls();
         }
 
@@ -154,20 +145,6 @@ namespace Chummer
 		#endregion
 
 		#region Methods
-		public void RequestCharacterUpdate(object sender = null, EventArgs e = null)
-		{
-			if (ParentForm != null)
-			if (_objPower.CharacterObject.Created)
-			{
-				frmCareer parent = ParentForm as frmCareer;
-				parent.UpdateCharacterInfo();
-			}
-			else
-			{
-				frmCreate parent = ParentForm as frmCreate;
-				parent.UpdateCharacterInfo();
-			}
-		}
 		private void lblPowerName_Click(object sender, EventArgs e)
 		{
 			string strBook = _objPower.Source + " " + _objPower.Page;

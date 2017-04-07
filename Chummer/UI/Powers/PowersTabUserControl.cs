@@ -28,7 +28,6 @@ namespace Chummer.UI.Skills
 		{
 			//TODO: Databind this
 			CalculatePowerPoints();
-			ValidateVisibility();
 		}
 
 		private bool _loadCalled = false;
@@ -243,7 +242,7 @@ namespace Chummer.UI.Skills
 		/// <summary>
 		/// Calculate the number of Adept Power Points used.
 		/// </summary>
-		private void CalculatePowerPoints()
+		public void CalculatePowerPoints()
 		{
 			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
 			ValidateVisibility();

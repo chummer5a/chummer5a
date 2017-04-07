@@ -96,7 +96,8 @@ namespace Chummer
             _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
             _objCharacter.ErasedChanged += objCharacter_ErasedChanged;
 
-	        tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
+            tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
+            tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
 
             GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
@@ -1871,7 +1872,20 @@ namespace Chummer
             }
         }
 
-		private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
+
+        //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
+        private Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
+        private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            _blnIsDirty = true;
+
+            if (PowerPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
+            PowerPropertyChanged_StopWatch.Restart();
+            tabPowerUc.CalculatePowerPoints();
+            UpdateCharacterInfo();
+        }
+
+        private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 		private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			//HACK PERFORMANCE
@@ -14287,12 +14301,6 @@ namespace Chummer
                         intSpellCount += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
                     }
                     lblPBuildSpells.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
-				}
-
-
-				if (_objCharacter.AdeptEnabled)
-				{
-					tabPowerUc.MissingDatabindingsWorkaround();
 				}
 
                 // If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
