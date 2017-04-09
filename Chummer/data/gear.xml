@@ -6133,6 +6133,7 @@
 			<bonus>
 				<selectpowers>
 					<selectpower>
+            <ignorerating>True</ignorerating>
 						<val>Rating</val>
 						<limit>Rating</limit>
 						<pointsperlevel>0.25</pointsperlevel>

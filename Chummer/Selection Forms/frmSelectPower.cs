@@ -26,14 +26,10 @@ namespace Chummer
 {
     public partial class frmSelectPower : Form
     {
-        private string _strSelectedPower = "";
-		private string _strLimitToPowers;
+        private string _strLimitToPowers;
 	    private double _dblLimitToRating;
-	    private double _dblPointsPerLevel = 0.25;
 
-		private bool _blnAddAgain = false;
-
-		private readonly Character _objCharacter;
+        private readonly Character _objCharacter;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -80,7 +76,7 @@ namespace Chummer
 			{
 				bool blnAdd = true;
 				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText);
-				if (objXmlPower["limit"] != null)
+				if (objXmlPower["limit"] != null && !IgnoreLimits)
 				{
 					if (_objCharacter.Powers.Count(power => power.Name == objXmlPower["name"].InnerText) >=
 					    Convert.ToInt32(objXmlPower["limit"].InnerText))
@@ -104,7 +100,7 @@ namespace Chummer
 				objItem.Value = objXmlPower["name"].InnerText;
 					objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 				lstPower.Add(objItem);
-			}
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
@@ -158,7 +154,7 @@ namespace Chummer
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
-			_blnAddAgain = true;
+			AddAgain = true;
 			cmdOK_Click(sender, e);
 		}
 
@@ -235,24 +231,17 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the user wants to add another item after this one.
 		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
+		public bool AddAgain { get; private set; }
 
-		/// <summary>
+        /// <summary>
+        /// Whether or not we should ignore how many of a given power may be taken. Generally used when bonding Qi Foci.
+        /// </summary>
+        public bool IgnoreLimits { get; set; }
+
+        /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower
-        {
-            get
-            {
-                return _strSelectedPower;
-            }
-        }
+        public string SelectedPower { get; private set; } = "";
 
 
         /// <summary>
@@ -277,19 +266,9 @@ namespace Chummer
         /// <summary>
 	    /// Value of the PP per level if using LimitToRating. Defaults to 0.25.
         /// </summary>
-	    public double PointsPerLevel
-	    {
-		    set
-        {
-			    _dblPointsPerLevel = value;
-		    }
-            get
-            {
-			    return _dblPointsPerLevel;
-        }
-		}
+	    public double PointsPerLevel { set; get; } = 0.25;
 
-		#endregion
+        #endregion
 
 		#region Methods
 		/// <summary>
@@ -338,7 +317,7 @@ namespace Chummer
 				}
 			}
 			
-            _strSelectedPower = lstPowers.SelectedValue.ToString();
+            SelectedPower = lstPowers.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 

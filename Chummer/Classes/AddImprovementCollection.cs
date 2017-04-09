@@ -2735,6 +2735,8 @@ namespace Chummer.Classes
 					Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
 				int intLevels = 0;
+			    if (objNode["ignorerating"] != null)
+			        frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
 				if (objNode["val"] != null)
 					intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
 				if (objNode["pointsperlevel"] != null)

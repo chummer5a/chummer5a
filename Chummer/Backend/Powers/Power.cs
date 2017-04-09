@@ -343,7 +343,7 @@ namespace Chummer
 		/// </summary>
 		public int TotalRating
 		{
-			get { return Rating + FreeLevels; }
+			get { return Math.Min(Rating + FreeLevels, TotalMaximumLevels); }
 			set
             {
                 Rating = value - FreeLevels;
@@ -403,9 +403,12 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					decReturn = Math.Max(Rating - FreeLevels, 0) * PointsPerLevel;
-					decReturn += ExtraPointCost;
-					decReturn -= Discount;
+					decReturn = Levels * PointsPerLevel;
+				    if (decReturn > 0)
+				    {
+				        decReturn += ExtraPointCost;
+				    }
+				    decReturn -= Discount;
 					return Math.Max(decReturn, 0);
 				}
 			}
