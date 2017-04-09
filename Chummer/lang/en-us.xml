@@ -217,8 +217,24 @@
 		<string>
 			<key>Message_SumtoTenComplexFormLimit</key>
 			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
-		</string>			
-		<string>
+		</string>
+    <string>
+      <key>Message_FailedLoad</key>
+      <text>This file failed to load with the following XML error:\n{0}</text>
+    </string>
+    <string>
+      <key>MessageTitle_FailedLoad</key>
+      <text>Could Not Load</text>
+    </string>
+    <string>
+      <key>Message_FailedSave</key>
+      <text>This file failed to save with the following XML error:\n{0}</text>
+    </string>
+    <string>
+      <key>MessageTitle_FailedSave</key>
+      <text>Could Not Save</text>
+    </string>
+    <string>
 			<key>String_BuyWithKarma</key>
 			<text>Buy With Karma</text>
 		</string>

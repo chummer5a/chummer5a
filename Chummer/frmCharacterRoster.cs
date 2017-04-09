@@ -93,17 +93,21 @@ namespace Chummer
                 return;
 			XmlDocument objXmlSource = new XmlDocument();
 			// If we run into any problems loading the character cache, fail out early.
-			try
-			{
-                using (StreamReader sr = new StreamReader(strFile, true))
-                {
-                    objXmlSource.Load(sr);
-                }
-            }
-			catch (IOException)
-			{
-                return;
-            }
+		    try
+		    {
+		        using (StreamReader sr = new StreamReader(strFile, true))
+		        {
+		            objXmlSource.Load(sr);
+		        }
+		    }
+		    catch (IOException)
+		    {
+		        return;
+		    }
+		    catch (XmlException)
+		    {
+		        return;
+		    }
 			CharacterCache objCache = new CharacterCache();
 			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
 			if (objXmlSourceNode != null)

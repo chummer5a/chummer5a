@@ -299,15 +299,15 @@ namespace Chummer
             {
                 strFileName = _strFileName;
             }
-            FileStream objStream = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-	        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-	        {
-		        Formatting = Formatting.Indented,
-		        Indentation = 1,
-		        IndentChar = '\t'
-	        };
-	        _lstSources.Clear();
-	        objWriter.WriteStartDocument();
+            MemoryStream objStream = new MemoryStream();
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
+            _lstSources.Clear();
+            objWriter.WriteStartDocument();
 
             // <character>
             objWriter.WriteStartElement("character");
@@ -884,14 +884,30 @@ namespace Chummer
 				objWriter.WriteElementString("source", strItem);
 			}
 			objWriter.WriteEndElement();
-			// </sources>
+            // </sources>
 
-			// </character>
-			objWriter.WriteEndElement();
+            // </character>
+            objWriter.WriteEndElement();
 
             objWriter.WriteEndDocument();
+            objWriter.Flush();
+            objStream.Flush();
+            objStream.Position = 0;
+
+            // Validate that the character can save properly. If there's no error, save the file to the listed file location.
+            try
+            {
+                XmlDocument objDoc = new XmlDocument();
+                objDoc.Load(objStream);
+                objDoc.Save(strFileName);
+            }
+            catch (XmlException)
+            {
+                return;
+            }
             objWriter.Close();
             objStream.Close();
+
         }
 
         /// <summary>
@@ -903,7 +919,15 @@ namespace Chummer
             XmlDocument objXmlDocument = new XmlDocument();
             using (StreamReader sr = new StreamReader(_strFileName, true))
             {
-                objXmlDocument.Load(sr);
+                try
+                {
+                    objXmlDocument.Load(sr);
+                }
+                catch (XmlException ex)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.Instance.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
             }
 	        Timekeeper.Finish("load_xml");
 			Timekeeper.Start("load_char_misc");
