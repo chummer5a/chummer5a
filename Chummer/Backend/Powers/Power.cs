@@ -33,6 +33,7 @@ namespace Chummer
 		private string _strBonusSource = "";
 		private decimal _decFreePoints;
 	    private string _strDisplayName;
+	    private string _displayPoints;
 
 	    #region Constructor, Create, Save, Load, and Print Methods
 		public Power(Character objCharacter)
@@ -399,7 +400,7 @@ namespace Chummer
 			get
 			{
 				decimal decReturn = 0;
-				if (_blnFree || Rating == 0)
+				if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
 					return decReturn;
 				else
 				{
@@ -409,15 +410,25 @@ namespace Chummer
 				        decReturn += ExtraPointCost;
 				    }
 				    decReturn -= Discount;
-					return Math.Max(decReturn, 0);
+
+                    return Math.Max(decReturn, 0);
 				}
 			}
 		}
 
-		/// <summary>
-		/// Bonus source.
-		/// </summary>
-		public string BonusSource
+	    public string DisplayPoints
+	    {
+	        get
+	        {
+	            return _displayPoints ?? PowerPoints.ToString();
+	        }
+	        set { _displayPoints = value; }
+	    }
+
+	    /// <summary>
+	    /// Bonus source.
+	    /// </summary>
+	    public string BonusSource
 		{
 			get
 			{
@@ -725,6 +736,15 @@ namespace Chummer
 		    return strReturn + strModifier;
 		}
 
-		#endregion
-	}
+        /// <summary>
+        /// Forces a particular event. Currently used for forcing Qi Foci to update Single-Level powers. //TODO: Better way to implement this?
+        /// </summary>
+        /// <param name="property"></param>
+        public void ForceEvent(string property)
+        {
+            var v = new PropertyChangedEventArgs(property);
+            PropertyChanged?.Invoke(this, v);
+        }
+        #endregion
+    }
 }

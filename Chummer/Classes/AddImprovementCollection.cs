@@ -2779,6 +2779,17 @@ namespace Chummer.Classes
 					Log.Info("blnHasPower = " + blnHasPower);
 					Log.Info("Calling CreateImprovement");
 					CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
+
+				    if (blnHasPower)
+				    {
+				        foreach (
+				            Power objPower in
+				            _objCharacter.Powers.Where(
+				                objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
+				        {
+				            objPower.ForceEvent(nameof(Power.FreeLevels));
+				        }
+				    }
 				}
 			}
 		}

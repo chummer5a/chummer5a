@@ -17,7 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.Drawing;
+ using System.ComponentModel;
+ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -42,7 +43,7 @@ namespace Chummer
 				DataSourceUpdateMode.OnPropertyChanged);
 			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false, 
 				DataSourceUpdateMode.OnPropertyChanged);
-			lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.PowerPoints), false, 
+			lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayPoints), false, 
 				DataSourceUpdateMode.OnPropertyChanged);
 			lblActivation.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayAction), false, 
 				DataSourceUpdateMode.OnPropertyChanged);
@@ -53,11 +54,27 @@ namespace Chummer
 			chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, 
 				DataSourceUpdateMode.OnPropertyChanged);
             
+            PowerObject.PropertyChanged += Power_PropertyChanged;
+
             tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
 			MoveControls();
         }
 
-		private void PowerControl_Load(object sender, EventArgs e)
+        private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            switch (propertyChangedEventArgs?.PropertyName)
+            {
+                case nameof(PowerObject.FreeLevels):
+                case nameof(PowerObject.TotalRating):
+                    PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
+                    goto default;
+                default:
+                    tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+                    break;
+            }
+        }
+
+        private void PowerControl_Load(object sender, EventArgs e)
 		{
 			this.Width = cmdDelete.Left + cmdDelete.Width;
         }
@@ -190,6 +207,6 @@ namespace Chummer
 		    }
 	    }
 
-		#endregion
-	}
+        #endregion
+    }
 }
