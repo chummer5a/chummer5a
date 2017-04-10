@@ -11,6 +11,7 @@ Application Changes:
 - Fixed the behaviour of spirits for mystic adepts to not have their force based on power points. 
 - Added code to prevent attempting to load or save a character with invalid XML.
 - AddWeapon and AddVehicle bonuses can now use the GUID of the weapon they're adding instead of relying on the name. 
+- Cleaned up the Cyberware selection window to process Availability properly. 
 
 Data Changes:
 
