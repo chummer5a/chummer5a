@@ -8764,7 +8764,7 @@
 		</weapon>
 		<weapon>
 			<id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
-			<name>Spurs (fixed) (2050)</name>
+			<name>Spur, Fixed (2050)</name>
 			<category>Blades</category>
 			<hide>yes</hide>
 			<type>Melee</type>
@@ -8787,7 +8787,7 @@
 		</weapon>
 		<weapon>
 			<id>9c003405-8e41-4a2e-bde3-dc67709a71e7</id>
-			<name>Spurs (retractable) (2050)</name>
+			<name>Spur, Retractable (2050)</name>
 			<category>Blades</category>
 			<hide>yes</hide>
 			<type>Melee</type>

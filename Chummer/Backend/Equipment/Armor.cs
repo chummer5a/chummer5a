@@ -325,9 +325,11 @@ namespace Chummer.Backend.Equipment
 				// More than one Weapon can be added, so loop through all occurrences.
 				foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
 				{
-					XmlNode objXmlWeapon = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
+				    var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
+				        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
+				        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-					TreeNode objGearWeaponNode = new TreeNode();
+				    TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(_objCharacter);
 					objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
 					objWeapons.Add(objGearWeapon);

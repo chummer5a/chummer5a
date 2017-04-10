@@ -10,6 +10,11 @@ Application Changes:
 - Fixed an issue that prevented knowledge skills from selecting their proper default attribute. 
 - Fixed the behaviour of spirits for mystic adepts to not have their force based on power points. 
 - Added code to prevent attempting to load or save a character with invalid XML.
+- AddWeapon and AddVehicle bonuses can now use the GUID of the weapon they're adding instead of relying on the name. 
+
+Data Changes:
+
+- Fixed a naming issue with the 2050 Cyberspur weapons that caused a crash. 
 
 New Strings:
 
