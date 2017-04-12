@@ -443,10 +443,6 @@ namespace Chummer
             this.panSpirits = new System.Windows.Forms.Panel();
             this.cmdAddSpell = new SplitButton();
             this.tabAdept = new System.Windows.Forms.TabPage();
-            this.panPowers = new System.Windows.Forms.Panel();
-            this.lblPowerPoints = new System.Windows.Forms.Label();
-            this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this.cmdAddPower = new System.Windows.Forms.Button();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
             this.lblLivingPersonaFirewall = new System.Windows.Forms.Label();
             this.lblLivingPersonaFirewallLabel = new System.Windows.Forms.Label();
@@ -5452,11 +5448,11 @@ namespace Chummer
 			this.treComplexForms.HideSelection = false;
 			this.treComplexForms.Location = new System.Drawing.Point(8, 54);
 			this.treComplexForms.Name = "treComplexForms";
-			treeNode15.Name = "nodProgramAdvancedRoot";
-			treeNode15.Tag = "Node_SelectedAdvancedComplexForms";
-			treeNode15.Text = "Selected Complex Forms";
+            treeNode40.Name = "nodProgramAdvancedRoot";
+            treeNode40.Tag = "Node_SelectedAdvancedComplexForms";
+            treeNode40.Text = "Selected Complex Forms";
 			this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15});
+            treeNode40});
 			this.treComplexForms.ShowNodeToolTips = true;
 			this.treComplexForms.ShowRootLines = false;
 			this.treComplexForms.Size = new System.Drawing.Size(295, 333);
