@@ -3139,11 +3139,8 @@
 					<bonus>
 						<skillgrouplevel>
 							<name>Biotech</name>
-							<val>1</val>
+							<val>2</val>
 						</skillgrouplevel>
-						<skilllevel>
-							<name>Biotechnology</name>
-						</skilllevel>
 						<skilllevel>
 							<name>Chemistry</name>
 						</skilllevel>
@@ -5065,7 +5062,7 @@
 						</skilllevel>
 						<skillgrouplevel>
 							<name>Conjuring</name>
-							<val>3</val>
+							<val>2</val>
 						</skillgrouplevel>
 						<skilllevel>
 							<name>Palming</name>
@@ -5078,7 +5075,7 @@
 						</skilllevel>
 						<skillgrouplevel>
 							<name>Sorcery</name>
-							<val>2</val>
+							<val>3</val>
 						</skillgrouplevel>
 						<skilllevel>
 							<name>Survival</name>

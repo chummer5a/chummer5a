@@ -20,14 +20,24 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="objCharacter">Character Object.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
         /// <returns></returns>
-        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, string strIgnoreQuality = "")
+        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null)
         {
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
                 return true;
-            XmlDocument objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
-            XmlDocument objCritterDocument = XmlManager.Instance.Load("critters.xml");
-            XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            //TODO: Find a better way to manage this, repeated calls to the method cause a stupid amount of CPU activity from loading the XMLs. Cache the XMLs in Main as part of the Load method, maybe?
+            if (objMetatypeDocument == null)
+            {
+                objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
+            }
+            if (objCritterDocument == null)
+            {
+                objCritterDocument = XmlManager.Instance.Load("critters.xml");
+            }
+            if (objQualityDocument == null)
+            {
+                objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            }
             // See if the character already has this Quality and whether or not multiple copies are allowed.
             if (objXmlNode == null) return false;
             if (objXmlNode["limit"]?.InnerText != "no")
@@ -972,6 +982,61 @@ namespace Chummer.Backend.Shared_Methods
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Evaluates the availability of a given node against Availability Limits in Create Mode
+        /// </summary>
+        /// <param name="objXmlGear"></param>
+        /// <param name="_objCharacter"></param>
+        /// <param name="intRating"></param>
+        /// <param name="intAvailModifier"></param>
+        /// <param name="blnAddToList"></param>
+        /// <returns></returns>
+        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character _objCharacter, int intRating = 0, int intAvailModifier = 0, bool blnAddToList = true)
+        {
+            XmlDocument objXmlDocument = new XmlDocument();
+            //TODO: Better handler for restricted gear
+            if (_objCharacter.Options.HideItemsOverAvailLimit && !_objCharacter.Created && !_objCharacter.RestrictedGear && !_objCharacter.IgnoreRules && blnAddToList)
+            {
+                // Avail.
+                // If avail contains "F" or "R", remove it from the string so we can use the expression.
+                string strAvailExpr = string.Empty;
+                string strPrefix = string.Empty;
+                if (objXmlGear["avail"] != null)
+                    strAvailExpr = objXmlGear["avail"].InnerText;
+                if (intRating <= 3 && objXmlGear["avail3"] != null)
+                    strAvailExpr = objXmlGear["avail3"].InnerText;
+                else if (intRating <= 6 && objXmlGear["avail6"] != null)
+                    strAvailExpr = objXmlGear["avail6"].InnerText;
+                else if (intRating >= 7 && objXmlGear["avail10"] != null)
+                    strAvailExpr = objXmlGear["avail10"].InnerText;
+
+                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                {
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                }
+                if (strAvailExpr.Substring(0, 1) == "+")
+                {
+                    strPrefix = "+";
+                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                }
+                if (strPrefix != "+")
+                {
+                    try
+                    {
+                        XPathNavigator nav = objXmlDocument.CreateNavigator();
+                        var xprAvail = nav.Compile(strAvailExpr.Replace("Rating",
+                            intRating.ToString(GlobalOptions.InvariantCultureInfo)));
+                        blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <=
+                                       _objCharacter.MaximumAvailability;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+            return blnAddToList;
         }
     }
 }

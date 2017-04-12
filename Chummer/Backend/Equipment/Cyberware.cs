@@ -255,9 +255,11 @@ namespace Chummer.Backend.Equipment
 				// More than one Weapon can be added, so loop through all occurrences.
 				foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
 				{
-					XmlNode objXmlWeapon = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]"); // and starts-with(category, \"Cyberware\")]");
+                    var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
+                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
+                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-					TreeNode objGearWeaponNode = new TreeNode();
+                    TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(objCharacter);
 					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
@@ -276,7 +278,9 @@ namespace Chummer.Backend.Equipment
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                 {
-                    XmlNode objXmlVehicle = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlAddVehicle.InnerText + "\"]"); // and starts-with(category, \"Cyberware\")]");
+                    var objXmlVehicle = helpers.Guid.IsGuid(objXmlAddVehicle.InnerText)
+                        ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + objXmlAddVehicle.InnerText + "\"]")
+                        : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlAddVehicle.InnerText + "\"]");
 
                     TreeNode objVehicleNode = new TreeNode();
                     Vehicle objVehicle = new Vehicle(_objCharacter);
@@ -1676,10 +1680,6 @@ namespace Chummer.Backend.Equipment
 						else
 							intReturn += objChild.TotalCostWithoutModifiers;
 					}
-
-					// Add in the cost of any Plugin Gear plugins.
-					foreach (Gear objGear in objChild.Gear)
-						intReturn += objGear.TotalCost;
 				}
 
 				// Add in the cost of all Gear plugins.
@@ -1795,10 +1795,6 @@ namespace Chummer.Backend.Equipment
                         else
                             intReturn += objChild.TotalCostWithoutModifiers;
                     }
-
-                    // Add in the cost of any Plugin Gear plugins.
-                    foreach (Gear objGear in objChild.Gear)
-                        intReturn += objGear.TotalCost;
                 }
 
                 // Add in the cost of all Gear plugins.

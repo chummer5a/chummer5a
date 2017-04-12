@@ -1099,7 +1099,7 @@
 			<page>50</page>
 			<metavariants>
 				<metavariant>
-					<name>Cyclopean</name>
+					<name>Cyclops</name>
 					<category>Metavariant</category>
 					<karma>100</karma>
 					<bodmin>5</bodmin>
@@ -1399,7 +1399,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<lifestylecost>100</lifestylecost>
+				<lifestylecost>150</lifestylecost>
 			</bonus>
 			<qualities>
 				<positive>
@@ -1463,9 +1463,9 @@
 			<depmin>0</depmin>
 			<depmax>0</depmax>
 			<depaug>0</depaug>
-			<walk>2/1/0</walk>
-			<run>4/0/0</run>
-			<sprint>1/1/0</sprint>
+			<walk>1/2/0</walk>
+			<run>4/6/0</run>
+			<sprint>1/2/0</sprint>
 			<bonus>
 				<armor>8</armor>
 				<enableattribute>

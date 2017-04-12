@@ -5644,7 +5644,7 @@
 			<page>139</page>
 		</vehicle>
 		<vehicle>
-			<id>b5f962ae-d541-4271-812b-3a4d0eb812e4</id>
+			<id>53079aac-250a-4ec5-9f0d-b8fbc6368e46</id>
 			<name>Ares Garuda</name>
 			<category>Drones: Missile</category>
 			<handling>6</handling>
@@ -5779,7 +5779,7 @@
 			<page>190</page>
 		</vehicle>
 		<vehicle>
-			<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
+			<id>54807634-4472-4c86-87ad-5d07b7116ef5</id>
 			<name>Clockwork Greyhound</name>
 			<category>Drones: Medium</category>
 			<handling>3</handling>
@@ -5948,7 +5948,7 @@
 			<page>208</page>
 		</vehicle>	
 		<vehicle>
-			<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+			<id>6975423f-43c7-4960-98bb-7363b491856c</id>
 			<name>Chrysler-Nissan Jackrabbit (2050)</name>
 			<category>Cars</category>
 			<handling>4/3</handling>
@@ -6433,6 +6433,101 @@
 			<source>2050</source>
 			<page>210</page>
 		</vehicle>
+		<!-- Drones 2050-->
+		<vehicle>
+			<id>f9a409cd-e7ef-4049-94af-a9e812602f84</id>
+			<name>Surveillance Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>4</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>4</modslots>
+			<gears>
+				<gear rating="2" maxrating="2">Sensor Array</gear>
+			</gears>
+
+			<avail>6</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>7ac00990-31a3-4314-a114-9cd6468fb66d</id>
+			<name>Spotter Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>3</accel>
+			<speed>5</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>2</armor>
+			<seats>0</seats>
+			<sensor>2</sensor>
+			<modslots>4</modslots>
+			<gears>
+				<gear rating="2" maxrating="2">Sensor Array</gear>
+			</gears>
+			<avail>4</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>11418c52-6c1f-477f-a660-2451fb3ee8fa</id>
+			<name>Hunter Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>5</handling>
+			<accel>3</accel>
+			<speed>5</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>5</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Standard Weapon Mount (Drone)</name>
+				<name>Standard Weapon Mount (Drone)</name>
+			</mods>
+			<avail>6R</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>d28b349e-6580-4a04-8dfe-d09ebdb261f0</id>
+			<name>Patrol Vehicle (2050)</name>
+			<category>Drones: Large</category>
+			<handling>5</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>6</body>
+			<armor>12</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Standard Weapon Mount (Drone)</name>
+				<name>Standard Weapon Mount (Drone)</name>
+			</mods>
+			<avail>6R</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>		
+		<!-- End Region -->		
 		<!-- End Region -->			
 	</vehicles>
 	<mods>
@@ -7257,7 +7352,7 @@
 			<rating>0</rating>
 			<slots>4</slots>
 			<!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
-			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Missile Launchers,Lasers</weaponmountcategories>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
 			<avail>10F</avail>
 			<cost>4000</cost>
 			<source>R5</source>
@@ -8827,7 +8922,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>f56c3103-e5e7-4b7c-8cdf-7d74d7196f35</id>
 			<name>Handling Downgrade (Drone)</name>
 			<category>Handling</category>
 			<optionaldrone/>
@@ -8849,7 +8944,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>16aed61a-a163-4927-9b5d-7949c763abe3</id>
 			<name>Speed Downgrade (Drone)</name>
 			<category>Speed</category>
 			<optionaldrone/>
@@ -8871,7 +8966,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>57a3c9c6-76ec-4f65-9747-001ca3f7515b</id>
 			<name>Acceleration Downgrade (Drone)</name>
 			<category>Acceleration</category>
 			<optionaldrone/>
@@ -8893,7 +8988,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>e6de30bf-310e-4a3d-b44a-9d98f4618964</id>
 			<name>Body Downgrade (Drone)</name>
 			<category>Body</category>
 			<optionaldrone/>
@@ -8914,7 +9009,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>616bad95-cc17-47b2-b85b-14fdd0bcb27f</id>
 			<name>Armor Downgrade (Drone)</name>
 			<category>Armor</category>
 			<optionaldrone/>
@@ -8935,7 +9030,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>df14f2ec-c85c-4b5f-9765-98bbc7c8b7d5</id>
 			<name>Sensor Downgrade (Drone)</name>
 			<category>Sensor</category>
 			<optionaldrone/>
@@ -8956,5 +9051,47 @@
 			<page>123</page>
 		</mod>
 	<!-- End Region -->
+	<!-- SR 5 2050 -->
+		<mod>
+			<id>f62c6ac8-66cf-4606-893c-76386afd0f9b</id>
+			<name>Rigger Adaptation (2050)</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>2800</cost>
+			<source>2050</source>
+			<page>212</page>
+		</mod>
+		<mod>
+			<id>160eab98-7fb6-437c-b0b7-9c960ed95543</id>
+			<name>Remote Adaptation (2050)</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>Body * 1000</cost>
+			<required>
+				<vehicledetails>
+					<OR>
+				<category>Bikes</category>
+				<category>Cars</category>
+				<category>Trucks</category>
+				<category>Municipal/Construction</category>
+				<category>Corpsec/Police/Military</category>
+				<category>Boats</category>
+				<category>Submarines</category>
+				<category>Fixed-Wing Aircraft</category>
+				<category>LTAV</category>
+				<category>Rotorcraft</category>
+				<category>VTOL/VSTOL</category>
+				<category operation="contains">Drones</category>
+					</OR>
+				</vehicledetails>			
+			</required>			
+			<source>2050</source>
+			<page>212</page>
+		</mod>
+		<!-- End Region -->
 	</mods>
 </chummer>

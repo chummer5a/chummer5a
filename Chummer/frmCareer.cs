@@ -550,11 +550,9 @@ namespace Chummer
             MetatypeSelected();
 
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-			int intCharacterMAG = _objCharacter.MAG.TotalValue;
 			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
 			{
 				lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
-				intCharacterMAG = _objCharacter.MysticAdeptPowerPoints;
 
 				lblMysticAdeptAssignment.Visible = true;
 				lblMysticAdeptMAGAdept.Visible = true;
@@ -749,7 +747,7 @@ namespace Chummer
 					if (_objOptions.SpiritForceBasedOnTotalMAG)
 						objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue * 2;
 					else
-						objSpiritControl.ForceMaximum = intCharacterMAG * 2;
+						objSpiritControl.ForceMaximum = _objCharacter.MAG.Value * 2;
 					objSpiritControl.CritterName = objSpirit.CritterName;
 					objSpiritControl.Force = objSpirit.Force;
 					objSpiritControl.Bound = objSpirit.Bound;
@@ -8366,6 +8364,11 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateCharacterInfo();
+                
+                //OBSOLETE: Review once ImprovementManager gets outbound events
+                //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
+                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+
                 UpdateWindowTitle();
             }
 		}
@@ -8384,6 +8387,11 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateCharacterInfo();
+                
+                //OBSOLETE: Review once ImprovementManager gets outbound events
+                //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
+                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+
                 UpdateWindowTitle();
             }
 		}
@@ -18965,7 +18973,11 @@ namespace Chummer
 
 					UpdateCharacterInfo();
 
-					_blnIsDirty = true;
+                    //OBSOLETE: Review once ImprovementManager gets outbound events
+                    //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
+                    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+
+                    _blnIsDirty = true;
 					UpdateWindowTitle();
 				}
 			}
@@ -19466,95 +19478,58 @@ namespace Chummer
 		#region Condition Monitors
 		private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_blnSkipRefresh)
-				return;
-
-			int intFillCount = 0;
-
-			CheckBox objCheck = (CheckBox)sender;
-			if (objCheck.Checked)
-			{
-				// If this is being checked, make sure everything before it is checked off.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objPhysicalCM in panPhysicalCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-						objPhysicalCM.Checked = true;
-
-					if (objPhysicalCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-			else
-			{
-				// If this is being unchecked, make sure everything after it is unchecked.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objPhysicalCM in panPhysicalCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-						objPhysicalCM.Checked = false;
-
-					if (objPhysicalCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-
-			_objCharacter.PhysicalCMFilled = intFillCount;
-
-			UpdateCharacterInfo();
-			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
+            ProcessConditionMonitor((CheckBox)sender, panPhysicalCM, _objCharacter.PhysicalCMFilled);
+        }
 
 		private void chkStunCM_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_blnSkipRefresh)
-				return;
-
-			int intFillCount = 0;
-
-			CheckBox objCheck = (CheckBox)sender;
-			if (objCheck.Checked)
-			{
-				// If this is being checked, make sure everything before it is checked off.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objStunCM in panStunCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objStunCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-						objStunCM.Checked = true;
-
-					if (objStunCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-			else
-			{
-				// If this is being unchecked, make sure everything after it is unchecked.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objStunCM in panStunCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objStunCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-						objStunCM.Checked = false;
-
-					if (objStunCM.Checked)
-						intFillCount += 1;
-				}
-				_blnSkipRefresh = false;
-			}
-			
-			_objCharacter.StunCMFilled = intFillCount;
-		    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
-		    UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-
+            ProcessConditionMonitor((CheckBox)sender,panStunCM,_objCharacter.StunCMFilled);
 		}
+
+	    private void ProcessConditionMonitor(CheckBox objCheck, Panel objPanel, int ConditionMonitorTrack)
+	    {
+            if (_blnSkipRefresh)
+                return;
+
+            int intFillCount = 0;
+            
+            if (objCheck.Checked)
+            {
+                // If this is being checked, make sure everything before it is checked off.
+                _blnSkipRefresh = true;
+                foreach (CheckBox cmCheckBox in objPanel.Controls.OfType<CheckBox>())
+                {
+                    if (Convert.ToInt32(cmCheckBox.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+                        cmCheckBox.Checked = true;
+
+                    if (cmCheckBox.Checked)
+                        intFillCount += 1;
+                }
+                _blnSkipRefresh = false;
+            }
+            else
+            {
+                // If this is being unchecked, make sure everything after it is unchecked.
+                _blnSkipRefresh = true;
+                foreach (CheckBox cmCheckBox in objPanel.Controls.OfType<CheckBox>())
+                {
+                    if (Convert.ToInt32(cmCheckBox.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+                        cmCheckBox.Checked = false;
+
+                    if (cmCheckBox.Checked)
+                        intFillCount += 1;
+                }
+                _blnSkipRefresh = false;
+            }
+
+            ConditionMonitorTrack = intFillCount;
+
+            UpdateCharacterInfo();
+            _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
 
 		private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
 		{
@@ -22952,63 +22927,64 @@ namespace Chummer
 			lblVehicleDataProcessingLabel.Visible = false;
 			lblVehicleFirewallLabel.Visible = false;
 
+            lblVehicleWeaponAmmoRemaining.Text = string.Empty;
+            lblVehicleWeaponName.Text = string.Empty;
+            lblVehicleWeaponCategory.Text = string.Empty;
+            lblVehicleWeaponAP.Text = string.Empty;
+            lblVehicleWeaponDamage.Text = string.Empty;
+            lblVehicleWeaponMode.Text = string.Empty;
+            lblVehicleWeaponAmmo.Text = string.Empty;
+            cmdFireVehicleWeapon.Enabled = false;
+            cmdReloadVehicleWeapon.Enabled = false;
+
+            lblVehicleWeaponRangeShort.Text = string.Empty;
+            lblVehicleWeaponRangeMedium.Text = string.Empty;
+            lblVehicleWeaponRangeLong.Text = string.Empty;
+            lblVehicleWeaponRangeExtreme.Text = string.Empty;
+
+            lblVehicleWeaponName.Visible = false;
+            lblVehicleWeaponCategory.Visible = false;
+            lblVehicleWeaponAP.Visible = false;
+            lblVehicleWeaponDamage.Visible = false;
+            lblVehicleWeaponMode.Visible = false;
+            lblVehicleWeaponAmmo.Visible = false;
+
+            lblVehicleWeaponRangeShort.Visible = false;
+            lblVehicleWeaponRangeMedium.Visible = false;
+            lblVehicleWeaponRangeLong.Visible = false;
+            lblVehicleWeaponRangeExtreme.Visible = false;
+
+            lblVehicleWeaponNameLabel.Visible = false;
+            lblVehicleWeaponCategoryLabel.Visible = false;
+            lblVehicleWeaponAPLabel.Visible = false;
+            lblVehicleWeaponDamageLabel.Visible = false;
+            lblVehicleWeaponModeLabel.Visible = false;
+            lblVehicleWeaponAmmoLabel.Visible = false;
+            lblVehicleWeaponRangeLabel.Visible = false;
+
+            lblVehicleWeaponRangeShortLabel.Visible = false;
+            lblVehicleWeaponRangeMediumLabel.Visible = false;
+            lblVehicleWeaponRangeLongLabel.Visible = false;
+            lblVehicleWeaponRangeExtremeLabel.Visible = false;
+
+            lblVehicleDroneModSlots.Visible = false;
+            lblVehiclePowertrain.Visible = false;
+            lblVehicleCosmetic.Visible = false;
+            lblVehicleElectromagnetic.Visible = false;
+            lblVehicleBodymod.Visible = false;
+            lblVehicleWeaponsmod.Visible = false;
+            lblVehicleProtection.Visible = false;
+
+            lblVehicleGearQty.Text = string.Empty;
+            cmdVehicleGearReduceQty.Enabled = false;
+            cboVehicleWeaponAmmo.Enabled = false;
+
+            lblVehicleSeatsLabel.Visible = false;
+            lblVehicleSeats.Visible = false;
+
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
             {
-				lblVehicleWeaponAmmoRemaining.Text = string.Empty;
-				lblVehicleWeaponName.Text = string.Empty;
-				lblVehicleWeaponCategory.Text = string.Empty;
-				lblVehicleWeaponAP.Text = string.Empty;
-				lblVehicleWeaponDamage.Text = string.Empty;
-				lblVehicleWeaponMode.Text = string.Empty;
-				lblVehicleWeaponAmmo.Text = string.Empty;
-				cmdFireVehicleWeapon.Enabled = false;
-				cmdReloadVehicleWeapon.Enabled = false;
-
-				lblVehicleWeaponRangeShort.Text = string.Empty;
-				lblVehicleWeaponRangeMedium.Text = string.Empty;
-				lblVehicleWeaponRangeLong.Text = string.Empty;
-				lblVehicleWeaponRangeExtreme.Text = string.Empty;
-
-				lblVehicleWeaponName.Visible = false;
-				lblVehicleWeaponCategory.Visible = false;
-				lblVehicleWeaponAP.Visible = false;
-				lblVehicleWeaponDamage.Visible = false;
-				lblVehicleWeaponMode.Visible = false;
-				lblVehicleWeaponAmmo.Visible = false;
-
-				lblVehicleWeaponRangeShort.Visible = false;
-				lblVehicleWeaponRangeMedium.Visible = false;
-				lblVehicleWeaponRangeLong.Visible = false;
-				lblVehicleWeaponRangeExtreme.Visible = false;
-
-				lblVehicleWeaponNameLabel.Visible = false;
-				lblVehicleWeaponCategoryLabel.Visible = false;
-				lblVehicleWeaponAPLabel.Visible = false;
-				lblVehicleWeaponDamageLabel.Visible = false;
-				lblVehicleWeaponModeLabel.Visible = false;
-				lblVehicleWeaponAmmoLabel.Visible = false;
-				lblVehicleWeaponRangeLabel.Visible = false;
-
-				lblVehicleWeaponRangeShortLabel.Visible = false;
-				lblVehicleWeaponRangeMediumLabel.Visible = false;
-				lblVehicleWeaponRangeLongLabel.Visible = false;
-				lblVehicleWeaponRangeExtremeLabel.Visible = false;
-
-				lblVehicleDroneModSlots.Visible = false;
-				lblVehiclePowertrain.Visible = false;
-				lblVehicleCosmetic.Visible = false;
-				lblVehicleElectromagnetic.Visible = false;
-				lblVehicleBodymod.Visible = false;
-				lblVehicleWeaponsmod.Visible = false;
-				lblVehicleProtection.Visible = false;
-
-				lblVehicleGearQty.Text = string.Empty;
-				cmdVehicleGearReduceQty.Enabled = false;
-				cboVehicleWeaponAmmo.Enabled = false;
-
-				lblVehicleSeatsLabel.Visible = false;
-				lblVehicleSeats.Visible = false;
-				return;
+			    return;
 			}
 			chkVehicleHomeNode.Visible = false;
 			cmdVehicleMoveToInventory.Enabled = false;

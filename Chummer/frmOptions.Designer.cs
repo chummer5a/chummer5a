@@ -239,6 +239,8 @@
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
+            this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
             this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
             this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
             this.chkMysAdPp = new System.Windows.Forms.CheckBox();
@@ -271,7 +273,7 @@
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
+            this.chkHideItemsOverAvail = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1591,6 +1593,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.chkHideItemsOverAvail);
             this.tabPage1.Controls.Add(this.chkLicenseEachRestrictedItem);
             this.tabPage1.Controls.Add(this.chkSpecialKarmaCost);
             this.tabPage1.Controls.Add(this.chkErgonomicProgramLimit);
@@ -2775,6 +2778,7 @@
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder);
             this.tabHouseRules.Controls.Add(this.chkEducationQualitiesApplyOnChargenKarma);
             this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
             this.tabHouseRules.Controls.Add(this.chkFreeMartialArtSpecialization);
@@ -2810,6 +2814,30 @@
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // chkReverseAttributePriorityOrder
+            // 
+            this.chkReverseAttributePriorityOrder.AutoSize = true;
+            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(8, 371);
+            this.chkReverseAttributePriorityOrder.Name = "chkReverseAttributePriorityOrder";
+            this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(251, 17);
+            this.chkReverseAttributePriorityOrder.TabIndex = 33;
+            this.chkReverseAttributePriorityOrder.Tag = "Checkbox_Options_ReverseAttributePriorityOrder";
+            this.chkReverseAttributePriorityOrder.Text = "Spend Karma on Attributes before Priority Points";
+            this.chkReverseAttributePriorityOrder.UseVisualStyleBackColor = true;
+            this.chkReverseAttributePriorityOrder.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkEducationQualitiesApplyOnChargenKarma
+            // 
+            this.chkEducationQualitiesApplyOnChargenKarma.AutoSize = true;
+            this.chkEducationQualitiesApplyOnChargenKarma.Location = new System.Drawing.Point(8, 348);
+            this.chkEducationQualitiesApplyOnChargenKarma.Name = "chkEducationQualitiesApplyOnChargenKarma";
+            this.chkEducationQualitiesApplyOnChargenKarma.Size = new System.Drawing.Size(381, 17);
+            this.chkEducationQualitiesApplyOnChargenKarma.TabIndex = 32;
+            this.chkEducationQualitiesApplyOnChargenKarma.Tag = "Checkbox_Option_EducationQualitiesApplyOnChargenKarma";
+            this.chkEducationQualitiesApplyOnChargenKarma.Text = "Education qualities give karma discount for knowledge skills in create mode";
+            this.chkEducationQualitiesApplyOnChargenKarma.UseVisualStyleBackColor = true;
+            this.chkEducationQualitiesApplyOnChargenKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPrioritySpellsAsAdeptPowers
             // 
@@ -3218,17 +3246,19 @@
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
-            // chkEducationQualitiesApplyOnChargenKarma
+            // chkHideItemsOverAvail
             // 
-            this.chkEducationQualitiesApplyOnChargenKarma.AutoSize = true;
-            this.chkEducationQualitiesApplyOnChargenKarma.Location = new System.Drawing.Point(8, 348);
-            this.chkEducationQualitiesApplyOnChargenKarma.Name = "chkEducationQualitiesApplyOnChargenKarma";
-            this.chkEducationQualitiesApplyOnChargenKarma.Size = new System.Drawing.Size(381, 17);
-            this.chkEducationQualitiesApplyOnChargenKarma.TabIndex = 32;
-            this.chkEducationQualitiesApplyOnChargenKarma.Tag = "Checkbox_Option_EducationQualitiesApplyOnChargenKarma";
-            this.chkEducationQualitiesApplyOnChargenKarma.Text = "Education qualities give karma discount for knowledge skills in create mode";
-            this.chkEducationQualitiesApplyOnChargenKarma.UseVisualStyleBackColor = true;
-            this.chkEducationQualitiesApplyOnChargenKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkHideItemsOverAvail.AutoSize = true;
+            this.chkHideItemsOverAvail.Checked = true;
+            this.chkHideItemsOverAvail.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkHideItemsOverAvail.Location = new System.Drawing.Point(6, 311);
+            this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
+            this.chkHideItemsOverAvail.Size = new System.Drawing.Size(353, 17);
+            this.chkHideItemsOverAvail.TabIndex = 19;
+            this.chkHideItemsOverAvail.Tag = "Checkbox_Option_HideItemsOverAvailLimit";
+            this.chkHideItemsOverAvail.Text = "Hide items that are over the Availability Limit during character creation";
+            this.chkHideItemsOverAvail.UseVisualStyleBackColor = true;
+            this.chkHideItemsOverAvail.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // frmOptions
             // 
@@ -3573,5 +3603,7 @@
         private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
         private System.Windows.Forms.CheckBox chkLiveCustomData;
         private System.Windows.Forms.CheckBox chkEducationQualitiesApplyOnChargenKarma;
+        private System.Windows.Forms.CheckBox chkReverseAttributePriorityOrder;
+        private System.Windows.Forms.CheckBox chkHideItemsOverAvail;
     }
 }

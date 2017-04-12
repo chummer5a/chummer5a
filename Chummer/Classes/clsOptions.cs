@@ -258,6 +258,7 @@ namespace Chummer
                                     objSource.Offset = intTmp;
                             }
                         }
+                        _lstSourcebookInfo.Add(objSource);
                     }
                     catch (Exception)
                     {

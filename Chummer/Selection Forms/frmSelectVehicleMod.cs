@@ -36,6 +36,7 @@ namespace Chummer
 		private int _intModMultiplier = 1;
 		private string _strInputFile = "vehicles";
 		private int _intMarkup = 0;
+	    private bool _blnSkipUpdate = true;
 		private static string _strSelectCategory = string.Empty;
 
 	    readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
@@ -132,6 +133,8 @@ namespace Chummer
 
 			if (_strInputFile == "weapons")
 				Text = LanguageManager.Instance.GetString("Title_SelectVehicleMod_Weapon");
+		    _blnSkipUpdate = false;
+            UpdateGearInfo();
 		}
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
@@ -214,10 +217,13 @@ namespace Chummer
                         continue;
                     }
                 }
-
-			    ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
+			    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,Convert.ToInt32(nudRating.Value)))
+                {
+                    continue;
+                }
+                ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
 			    objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
-				lstMods.Add(objItem);
+			    lstMods.Add(objItem);
 			}
             lstMod.BeginUpdate();
             lstMod.DataSource = null;
@@ -641,6 +647,8 @@ namespace Chummer
 		/// </summary>
 		private void UpdateGearInfo()
 		{
+		    if (_blnSkipUpdate) return;
+		    _blnSkipUpdate = true;
 			if (!string.IsNullOrEmpty(lstMod.Text))
 			{
 				// Retireve the information for the selected Mod.
@@ -651,9 +659,58 @@ namespace Chummer
 				// This is done using XPathExpression.
 				XPathNavigator nav = _objXmlDocument.CreateNavigator();
 
-				// Avail.
-				// If avail contains "F" or "R", remove it from the string so we can use the expression.
-				string strAvail = string.Empty;
+                int intMinRating = 1;
+                if (objXmlMod["minrating"]?.InnerText.Length > 0)
+                {
+                    string strMinRating = ReplaceStrings(objXmlMod["minrating"]?.InnerText);
+                    XPathExpression xprRating = nav.Compile(strMinRating);
+                    intMinRating = Convert.ToInt32(nav.Evaluate(xprRating).ToString());
+                }
+                // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
+                if (objXmlMod["rating"].InnerText == "qty")
+                {
+                    nudRating.Enabled = true;
+                    nudRating.Maximum = 20;
+                    nudRating.Minimum = intMinRating;
+                    lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
+                }
+                //Used for the Armor modifications.
+                else if (objXmlMod["rating"].InnerText.ToLower() == "body")
+                {
+                    nudRating.Maximum = _objVehicle.Body;
+                    nudRating.Minimum = intMinRating;
+                    nudRating.Enabled = true;
+                    lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Body");
+                }
+                //Used for Metahuman Adjustments.
+                else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
+                {
+                    nudRating.Maximum = _objVehicle.TotalSeats;
+                    nudRating.Minimum = intMinRating;
+                    nudRating.Enabled = true;
+                    lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
+                }
+                else
+                {
+                    if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
+                    {
+                        nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
+                        nudRating.Minimum = intMinRating;
+                        nudRating.Enabled = true;
+                        lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                    }
+                    else
+                    {
+                        nudRating.Minimum = 0;
+                        nudRating.Maximum = 0;
+                        nudRating.Enabled = false;
+                        lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                    }
+                }
+
+                // Avail.
+                // If avail contains "F" or "R", remove it from the string so we can use the expression.
+                string strAvail = string.Empty;
 				string strAvailExpr = string.Empty;
                 if (objXmlMod["avail"].InnerText.StartsWith("FixedValues"))
 				{
@@ -676,20 +733,20 @@ namespace Chummer
 					strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
 					// Remove the trailing character if it is "F" or "R".
 					strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-				}
-				try
-				{
-					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString(GlobalOptions.InvariantCultureInfo)));
-					lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
-				}
-				catch (XPathException)
-				{
-					lblAvail.Text = objXmlMod["avail"].InnerText;
-				}
-				lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                }
+                try
+                {
+                    xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString(GlobalOptions.InvariantCultureInfo)));
+                    lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
+                }
+                catch (XPathException)
+                {
+                    lblAvail.Text = objXmlMod["avail"].InnerText;
+                }
+                lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
-				// Cost.
-				int intItemCost = 0;
+                // Cost.
+                int intItemCost = 0;
 				if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
 				{
 					int intMin = 0;
@@ -759,54 +816,6 @@ namespace Chummer
 
 				// Update the Avail Test Label.
 				lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
-			    int intMinRating = 1;
-			    if (objXmlMod["minrating"]?.InnerText.Length > 0)
-			    {
-			        string strMinRating = ReplaceStrings(objXmlMod["minrating"]?.InnerText);
-                    XPathExpression xprRating = nav.Compile(strMinRating);
-                    intMinRating = Convert.ToInt32(nav.Evaluate(xprRating).ToString());
-                }
-                // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
-                if (objXmlMod["rating"].InnerText == "qty")
-				{
-					nudRating.Enabled = true;
-					nudRating.Maximum = 20;
-					nudRating.Minimum = intMinRating;
-					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
-				}
-				//Used for the Armor modifications.
-				else if (objXmlMod["rating"].InnerText.ToLower() == "body")
-				{
-					nudRating.Maximum = _objVehicle.Body;
-					nudRating.Minimum = intMinRating;
-					nudRating.Enabled = true;
-					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Body");
-				}
-				//Used for Metahuman Adjustments.
-				else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
-				{
-					nudRating.Maximum = _objVehicle.TotalSeats;
-					nudRating.Minimum = intMinRating;
-					nudRating.Enabled = true;
-					lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
-				}
-				else
-				{
-				    if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
-					{
-						nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
-						nudRating.Minimum = intMinRating;
-						nudRating.Enabled = true;
-						lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
-					}
-					else
-					{
-						nudRating.Minimum = 0;
-						nudRating.Maximum = 0;
-						nudRating.Enabled = false;
-						lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
-					}
-				}
 
 				// Slots.
 
@@ -882,6 +891,7 @@ namespace Chummer
 				lblSource.Text = strBook + " " + strPage;
 
 				tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			    _blnSkipUpdate = false;
 			}
 		}
 

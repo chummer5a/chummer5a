@@ -1920,7 +1920,8 @@ namespace Chummer.Backend.Equipment
 				if (_objCharacter.IgnoreRules)
 					intReturn = 99;
 
-				return intReturn;
+                //When you need to use a 0 for the math, use 0.5 instead
+                return Math.Max(intReturn, 1);
 			}
 		}
 

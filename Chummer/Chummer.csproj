@@ -210,6 +210,7 @@
     <Compile Include="frmCharacterRoster.Designer.cs">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\Guid.cs" />
     <Compile Include="Interfaces\INamedItemWithGuid.cs" />
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>

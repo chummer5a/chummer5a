@@ -53,10 +53,8 @@ namespace Chummer
 			StunCM,
 			UnarmedDV,
 			InitiativeDice,
-			InitiativePass,
 			MatrixInitiative,
 			MatrixInitiativeDice,
-			MatrixInitiativePass,
 			LifestyleCost,
 			CMThreshold,
 			EnhancedArticulation,
@@ -109,8 +107,6 @@ namespace Chummer
 			FadingResistance,
 			MatrixInitiativeDiceAdd,
 			InitiativeDiceAdd,
-			MatrixInitiativePassAdd,
-			InitiativePassAdd,
 			Composure,
 			UnarmedAP,
 			CMThresholdOffset,
@@ -258,7 +254,11 @@ namespace Chummer
 		/// <param name="strValue">String value to convert.</param>
 		private ImprovementType ConvertToImprovementType(string strValue)
 		{
-			return (ImprovementType) Enum.Parse(typeof (ImprovementType), strValue);
+		    if (strValue.Contains("InitiativePass"))
+		    {
+		        strValue = strValue.Replace("InitiativePass","InitiativeDice");
+		    }
+            return (ImprovementType) Enum.Parse(typeof (ImprovementType), strValue);
 		}
 
 		/// <summary>

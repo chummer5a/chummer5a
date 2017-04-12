@@ -269,12 +269,17 @@ namespace Chummer
 			{
                 if (objXmlCyberware["hide"] != null)
                     continue;
-				ListItem objItem = new ListItem
-				{
-					Value = objXmlCyberware["name"].InnerText,
-					Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText
-				};
-				lstCyberwares.Add(objItem);
+
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+			        Convert.ToInt32(nudRating.Value), _intAvailModifier))
+			    {
+			        ListItem objItem = new ListItem
+			        {
+			            Value = objXmlCyberware["name"].InnerText,
+			            Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText
+			        };
+			        lstCyberwares.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
@@ -500,22 +505,25 @@ namespace Chummer
 			XmlNodeList objXmlCyberwareList = _objXmlDocument.SelectNodes(strSearch);
 			foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCyberware["name"].InnerText;
-				if (objXmlCyberware["translate"] != null)
-					objItem.Name = objXmlCyberware["translate"].InnerText;
-				else
-					objItem.Name = objXmlCyberware["name"].InnerText;
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+			        Convert.ToInt32(nudRating.Value), _intAvailModifier))
+			    {
+			        ListItem objItem = new ListItem();
+			        objItem.Value = objXmlCyberware["name"].InnerText;
+			        objItem.Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
 
-                if (objXmlCyberware["category"] != null && objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
-                {
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
-                    if (objFoundItem != null)
-                    {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
-                    }
-                }
-                lstCyberwares.Add(objItem);
+			        if (objXmlCyberware["category"] != null &&
+			            objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
+			        {
+			            ListItem objFoundItem =
+			                _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
+			            if (objFoundItem != null)
+			            {
+			                objItem.Name += " [" + objFoundItem.Name + "]";
+			            }
+			        }
+			        lstCyberwares.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
@@ -905,93 +913,68 @@ namespace Chummer
 
 				// Avail.
 				// If avail contains "F" or "R", remove it from the string so we can use the expression.
-				string strAvail = string.Empty;
-				string strAvailExpr = objXmlCyberware["avail"].InnerText;
+				string strSuffix = string.Empty;
+                string strPrefix = string.Empty;
 				XPathExpression xprAvail;
-                if (objXmlCyberware["avail"] != null)
+                if (objXmlCyberware?["avail"] != null)
                 {
+                    string strAvailExpr = objXmlCyberware["avail"].InnerText;
+                    if (strAvailExpr.StartsWith("FixedValues"))
+                    {
+                        string[] strValues = strAvailExpr.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                        if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+                            strAvailExpr = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                    }
+                    if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
+                    {
+                        strPrefix = strAvailExpr.Substring(0, 1);
+                        strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                    }
+
                     if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                     {
-                        strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                        strSuffix = strAvailExpr.Substring(strAvailExpr.Length - 1, 1)
+                            .Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"))
+                            .Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
                         // Remove the trailing character if it is "F" or "R".
                         strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                     }
-                    else if (objXmlCyberware["avail"].InnerText.StartsWith("FixedValues"))
+
+                    if (strAvailExpr.Contains("MinRating"))
                     {
-                        string[] strValues = objXmlCyberware["avail"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                        if (strValues.Length >= Convert.ToInt32(nudRating.Value))
-                            strAvail = strValues[Convert.ToInt32(nudRating.Value) - 1];
-                        string strAvailSuffix = string.Empty;
-                        if (strAvail.EndsWith("F") || strAvail.EndsWith("R"))
+                        XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
+                        if (xmlMinRatingNode != null)
                         {
-                            strAvailSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-                            strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                        }
-                        int intAvail = Convert.ToInt32(strAvail) + _intAvailModifier;
-                        lblAvail.Text = intAvail.ToString();
-                    }
-                    else
-                    {
-                        if (strAvailExpr.Contains("MinRating"))
-                        {
-                            XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
-                            if (xmlMinRatingNode != null)
+                            switch (xmlMinRatingNode.InnerText)
                             {
-                                switch (xmlMinRatingNode.InnerText)
-                                {
-                                    case "MinimumAGI":
-                                        if (_objVehicle != null)
-                                        {
-                                            strAvailExpr = strAvailExpr.Replace("MinRating",
-                                                _objVehicle.Pilot.ToString());
-                                        }
-                                        else
-                                        {
-                                            strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
-                                        }
-                                        break;
-                                    case "MinimumSTR":
-                                        if (_objVehicle != null)
-                                        {
-                                            strAvailExpr = strAvailExpr.Replace("MinRating",
-                                                _objVehicle.TotalBody.ToString());
-                                        }
-                                        else
-                                        {
-                                            strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
-                                        }
-                                        break;
-                                    default:
-                                        strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
-                                        break;
-                                }
+                                case "MinimumAGI":
+                                    strAvailExpr = strAvailExpr.Replace("MinRating", _objVehicle?.Pilot.ToString() ?? 3.ToString());
+                                    break;
+                                case "MinimumSTR":
+                                    strAvailExpr = strAvailExpr.Replace("MinRating", _objVehicle?.TotalBody.ToString() ?? 3.ToString());
+                                    break;
+                                default:
+                                    strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+                                    break;
                             }
                         }
-                        strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    }
+                    strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
 
-                        string strPrefix = string.Empty;
-                        if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
-                        {
-                            strPrefix = strAvailExpr.Substring(0, 1);
-                            strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
-                        }
-                        int intAvail = -1;
-                        try
-                        {
-                            xprAvail = nav.Compile(strAvailExpr);
-                            intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
-                            // Avail cannot go below 0.
-                            if (intAvail < 0)
-                                intAvail = 0;
-                            lblAvail.Text = strPrefix + intAvail.ToString() + strAvail;
-                        }
-                        catch (XPathException)
-                        {
-                            lblAvail.Text = objXmlCyberware["avail"].InnerText;
-                        }
+                    try
+                    {
+                        xprAvail = nav.Compile(strAvailExpr);
+                        int intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
+                        // Avail cannot go below 0.
+                        if (intAvail < 0)
+                            intAvail = 0;
+                        lblAvail.Text = strPrefix + intAvail + strSuffix;
+                    }
+                    catch (XPathException)
+                    {
+                        lblAvail.Text = objXmlCyberware["avail"].InnerText;
                     }
                 }
-				lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
                 // Cost.
                 double dblItemCost = 0;

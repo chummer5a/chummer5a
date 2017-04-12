@@ -7655,7 +7655,7 @@
 				<translate>Smartlink</translate>
 			</gear>
 			<gear>
-				<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
+				<id>e140b671-dc22-429d-b12a-dfbf46951049</id>
 				<name>Ultrasound</name>
 				<page>450</page>
 				<translate>Ultraschall</translate>
@@ -8637,7 +8637,7 @@
 				<page>193</page>
 			</gear>
 			<gear translated="True">
-				<id>2c98be77-22d7-4116-90fc-e8489944578d</id>
+				<id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
 				<name>Detonator, Blasting Cap</name>
 				<translate>Sprengkapsel</translate>
 				<page>439</page>
@@ -10083,7 +10083,7 @@
 				<translate>Munition: Taserpfeil</translate>
 			</gear>	
 			<gear>
-				<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
+				<id>eb395ddc-d8d2-4dbc-8dad-089221a1db5a</id>
 				<name>Grenade: Shock (2050)</name>
 				<page>191</page>
 				<translate>Granate: Schock</translate>
@@ -10546,7 +10546,7 @@
 			</gear>
 			<gear>
 				<id>fafbd892-c217-4d1e-87f0-61464f7eaa2d</id>
-				<name>Medkit</name>
+				<name>Medkit (2050)</name>
 				<page>198</page>
 				<translate>Medkit</translate>
 			</gear>
@@ -10624,7 +10624,7 @@
 			</gear>	
 			<gear>
 				<id>dd4a0fa5-771a-4fa7-aca3-4fa6b531c32e</id>
-				<name></name>
+				<name>Counterspelling Focus, Detection (2050)</name>
 				<page>207</page>
 				<translate>Antimagiefocus, Wahrnehmung</translate>
 			</gear>	
@@ -10648,7 +10648,7 @@
 			</gear>	
 			<gear>
 				<id>b11333ac-a049-4e6f-b48c-2846b77c9cac</id>
-				<name>Banishing Focus(2050)</name>
+				<name>Banishing Focus (2050)</name>
 				<page>207</page>
 				<translate>Verbannungsfocus</translate>
 			</gear>	
@@ -10856,6 +10856,36 @@
 				<page>171</page>
 				<translate>Fairlight Sharur, Gepäck</translate>
 			</gear>
+			<gear>
+				<id>9218a0ea-f1c5-4532-bbe0-25c10e97f0b9</id>
+				<name>Remote Control Deck (2050)</name>
+				<page>212</page>
+				<translate>Fernsteuerdeck</translate>
+			</gear>	
+			<gear>
+				<id>b7f9bde1-8a2e-4012-81d3-f45aa32ee474</id>
+				<name>Chip Burner (2050)</name>
+				<page>170</page>
+				<translate>Chipbrenner</translate>
+			</gear>	
+			<gear>
+				<id>d2d3bd03-88fa-408e-bed7-56367c957a84</id>
+				<name>Response Increase (2050)</name>
+				<page>170</page>
+				<translate>Reaktionsverstärung</translate>
+			</gear>	
+			<gear>
+				<id>eee44602-35b5-4a35-a329-a233529ff773</id>
+				<name>Hitcher Jacks (2050)</name>
+				<page>170</page>
+				<translate>Trampstecker</translate>
+			</gear>
+			<gear>
+				<id>305a1ffd-b724-49d9-99c2-7b311b51417a</id>
+				<name>Vidscreen Display (2050)</name>
+				<page>170</page>
+				<translate>Zusatzdisplay</translate>
+			</gear>				
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -19558,7 +19588,7 @@
 				<page>208</page>
 			</vehicle>
 			<vehicle>
-				<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+				<id>6975423f-43c7-4960-98bb-7363b491856c</id>
 				<name>Chrysler-Nissan Jackrabbit (2050)</name>
 				<translate>Chrysler-Nissan Jackrabbit</translate>
 				<page>208</page>
@@ -19700,6 +19730,30 @@
 				<name>Federated-Boeing Eagle (2050)</name>
 				<translate>Federated-Boeing Eagle</translate>
 				<page>208</page>
+			</vehicle>
+			<vehicle>
+				<id>f9a409cd-e7ef-4049-94af-a9e812602f84</id>
+				<name>Surveillance Drone (2050)</name>
+				<translate>Überwachungsdrohne</translate>
+				<page>212</page>
+			</vehicle>
+			<vehicle>
+				<id>7ac00990-31a3-4314-a114-9cd6468fb66d</id>
+				<name>Spotter Drone (2050)</name>
+				<translate>Spähdrohne</translate>
+				<page>212</page>
+			</vehicle>
+			<vehicle>
+				<id>11418c52-6c1f-477f-a660-2451fb3ee8fa</id>
+				<name>Hunter Drone (2050)</name>
+				<translate>Jägerdrohne</translate>
+				<page>212</page>
+			</vehicle>
+			<vehicle>
+				<id>d28b349e-6580-4a04-8dfe-d09ebdb261f0</id>
+				<name>Patrol Vehicle (2050)</name>
+				<translate>Patroullienfahrzeugdrohne</translate>
+				<page>212</page>
 			</vehicle>			
 		</vehicles>
 		<mods>
@@ -19781,6 +19835,19 @@
 				<translate>Spoof Chips</translate>
 				<page>152</page>
 			</mod>
+			<!-- 2050 SR5 -->
+			<mod>
+				<id>f62c6ac8-66cf-4606-893c-76386afd0f9b</id>
+				<name>Rigger Adaptation (2050)</name>
+				<translate>Riggerinterface</translate>
+				<page>212</page>
+			</mod>	
+			<mod>
+				<id>160eab98-7fb6-437c-b0b7-9c960ed95543</id>
+				<name>Remote Adaptation (2050)</name>
+				<translate>Fernsteueradaption</translate>
+				<page>212</page>
+			</mod>				
 		</mods>
 	</chummer>
 	<chummer file="weapons.xml">
@@ -21651,7 +21718,7 @@
 				<translate>Ingram Smartgun</translate>
 			</weapon>
 			<weapon>
-				<id>e80cca4e-3210-4e38-b333-6c1cd42d6b54</id>
+				<id>317ad4f6-85ce-48e0-a3a7-ec5fb09d41e1</id>
 				<name>Uzi III (2050)</name>
 				<page>185</page>
 				<translate>Uzi III</translate>
@@ -21745,6 +21812,24 @@
 				<name>Styre AUG-CSL LMG (2050)</name>
 				<page>184</page>
 				<translate>Styre AUG-CSL LMG</translate>
+			</weapon>
+			<weapon>
+				<id>90eca76a-4e5a-4cce-a6a1-0921d12d4d74</id>
+				<name>Autocannon (2050)</name>
+				<page>212</page>
+				<translate>Maschinenkanone</translate>
+			</weapon>
+			<weapon>
+				<id>3e4c13e4-ae4a-4928-937f-6e0038514350</id>
+				<name>Launcher, Vehicle (2050)</name>
+				<page>212</page>
+				<translate>(Lenk-)Raketenwerfer</translate>
+			</weapon>
+			<weapon>
+				<id>c6540493-21b1-44db-9cd3-e2b22770a320</id>
+				<name>Water Cannon (2050)</name>
+				<page>212</page>
+				<translate>Wasserwerfer</translate>
 			</weapon>			
 			<!-- Weapon end -->			
 		</weapons>

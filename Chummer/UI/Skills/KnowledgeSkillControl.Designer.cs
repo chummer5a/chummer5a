@@ -109,12 +109,15 @@
             // 
             // cboSkill
             // 
+            this.cboSkill.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboSkill.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboSkill.FormattingEnabled = true;
             this.cboSkill.Location = new System.Drawing.Point(3, 1);
             this.cboSkill.Name = "cboSkill";
             this.cboSkill.Size = new System.Drawing.Size(190, 21);
             this.cboSkill.Sorted = true;
             this.cboSkill.TabIndex = 20;
+            this.cboSkill.SelectedIndexChanged += new System.EventHandler(this.cboSkill_SelectedIndexChanged);
             // 
             // cboType
             // 

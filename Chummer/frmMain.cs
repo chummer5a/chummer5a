@@ -693,7 +693,15 @@ namespace Chummer
                 //StreamReader is used to prevent encoding errors
                 using (StreamReader sr = new StreamReader(strFileName, true))
                 {
-                    objXmlDocument.Load(sr);
+                    try
+                    {
+                        objXmlDocument.Load(sr);
+                    }
+                    catch (XmlException ex)
+                    {
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.Instance.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
                 XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                 if (!string.IsNullOrEmpty(objXmlCharacter?["appversion"]?.InnerText))

@@ -93,7 +93,7 @@
 			<code>DT</code>
 		</book>
 		<book>
-			<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
+			<id>0b082117-8eb2-42d1-82e3-11454536c480</id>
 			<name>Data Trails (Dissonant Echoes)</name>
 			<code>DTD</code>
 		</book>
@@ -178,9 +178,14 @@
 			<code>CA</code>
 		</book>
 		<book>
-			<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
-			<name>Shadowrun 5. Edition 2050</name>
+			<id>71a6304e-03dc-41db-be01-a86acab1517b</id>
+			<name>Shadowrun 2050 (5th Edition)</name>
 			<code>2050</code>
 		</book>
+    <book>
+      <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
+      <name>Book of the Lost</name>
+      <code>BOTL</code>
+    </book>
 	</books>
 </chummer>

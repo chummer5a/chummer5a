@@ -73,14 +73,14 @@ namespace Chummer.Skills
 		{
 			AttributeObject = character.LOG;
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
-			_type = string.Empty;
-			SuggestedSpecializations = new List<ListItem>();
+            SuggestedSpecializations = new List<ListItem>();
 		}
 
 		public KnowledgeSkill(Character character, string forcedName) : this(character)
 		{
 			WriteableName = forcedName;
-			ForcedName = true;
+            LoadDefaultType(Name);
+            ForcedName = true;
 		}
 
 		public List<ListItem> KnowledgeSkillCatagories
@@ -131,6 +131,15 @@ namespace Chummer.Skills
 				OnPropertyChanged(nameof(CGLSpecializations));
 			}
 		}
+
+	    public void LoadDefaultType(string name)
+	    {
+	        if (name == null) return;
+            //TODO: Should this be targeted against guid for uniqueness? Creating a knowledge skill in career always generates a new SkillId instead of using the one from skills.
+	        XmlNode skillNode = XmlManager.Instance.Load("skills.xml").SelectSingleNode($"chummer/knowledgeskills/skill[name = \"{name}\"]");
+	        _type = skillNode?["category"].InnerText ?? "";
+	        AttributeObject = CharacterObject.GetAttribute(skillNode?["attribute"].InnerText ?? "LOG");
+	    }
 
 		public override string SkillCategory
 		{

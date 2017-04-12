@@ -217,8 +217,24 @@
 		<string>
 			<key>Message_SumtoTenComplexFormLimit</key>
 			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
-		</string>			
-		<string>
+		</string>
+    <string>
+      <key>Message_FailedLoad</key>
+      <text>This file failed to load with the following XML error:\n{0}</text>
+    </string>
+    <string>
+      <key>MessageTitle_FailedLoad</key>
+      <text>Could Not Load</text>
+    </string>
+    <string>
+      <key>Message_FailedSave</key>
+      <text>This file failed to save with the following XML error:\n{0}</text>
+    </string>
+    <string>
+      <key>MessageTitle_FailedSave</key>
+      <text>Could Not Save</text>
+    </string>
+    <string>
 			<key>String_BuyWithKarma</key>
 			<text>Buy With Karma</text>
 		</string>
@@ -4770,6 +4786,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_PreferNightlyBuilds</key>
 			<text>Prefer Nightly Builds</text>
 		</string>
+    <string>
+      <key>Checkbox_Option_HideItemsOverAvailLimit</key>
+      <text>Hide items that are over the Availability Limit during character creation</text>
+    </string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
@@ -6791,6 +6811,10 @@ Do you want to continue?</text>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
     <string>
+      <key>Checkbox_Options_ReverseAttributePriorityOrder</key>
+      <text>Spend Karma on Attributes before Priority Points</text>
+    </string>
+    <string>
       <key>Checkbox_Option_AllowMysadPowerPointCareer</key>
       <text>Allow Mystic Adepts to buy power points during career</text>
     </string>
@@ -7853,7 +7877,15 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Weapon Window -->
-		<string>
+    <string>
+      <key>Title_Browse</key>
+      <text>Browse</text>
+    </string>
+    <string>
+      <key>Title_ListView</key>
+      <text>List View</text>
+    </string>    
+    <string>
 			<key>Title_SelectWeapon</key>
 			<text>Select Weapon</text>
 		</string>
@@ -8399,5 +8431,9 @@ Do you want to continue?</text>
 			<key>Message_DroneIllegalDowngrade</key>
 			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
 		</string>
+    <string>
+      <key>Message_DuplicateGuidWarning</key>
+      <text>{0} items were found in the file {1} with the same GUID. If you are using custom content, please ensure that you use a new GUID for each item you add. Duplicate GUIDs found:\n{2}</text>
+    </string>
 	</strings>
 </chummer>
