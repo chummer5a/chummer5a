@@ -23256,63 +23256,64 @@ namespace Chummer
 			lblVehicleDataProcessingLabel.Visible = false;
 			lblVehicleFirewallLabel.Visible = false;
 
+            lblVehicleWeaponAmmoRemaining.Text = string.Empty;
+            lblVehicleWeaponName.Text = string.Empty;
+            lblVehicleWeaponCategory.Text = string.Empty;
+            lblVehicleWeaponAP.Text = string.Empty;
+            lblVehicleWeaponDamage.Text = string.Empty;
+            lblVehicleWeaponMode.Text = string.Empty;
+            lblVehicleWeaponAmmo.Text = string.Empty;
+            cmdFireVehicleWeapon.Enabled = false;
+            cmdReloadVehicleWeapon.Enabled = false;
+
+            lblVehicleWeaponRangeShort.Text = string.Empty;
+            lblVehicleWeaponRangeMedium.Text = string.Empty;
+            lblVehicleWeaponRangeLong.Text = string.Empty;
+            lblVehicleWeaponRangeExtreme.Text = string.Empty;
+
+            lblVehicleWeaponName.Visible = false;
+            lblVehicleWeaponCategory.Visible = false;
+            lblVehicleWeaponAP.Visible = false;
+            lblVehicleWeaponDamage.Visible = false;
+            lblVehicleWeaponMode.Visible = false;
+            lblVehicleWeaponAmmo.Visible = false;
+
+            lblVehicleWeaponRangeShort.Visible = false;
+            lblVehicleWeaponRangeMedium.Visible = false;
+            lblVehicleWeaponRangeLong.Visible = false;
+            lblVehicleWeaponRangeExtreme.Visible = false;
+
+            lblVehicleWeaponNameLabel.Visible = false;
+            lblVehicleWeaponCategoryLabel.Visible = false;
+            lblVehicleWeaponAPLabel.Visible = false;
+            lblVehicleWeaponDamageLabel.Visible = false;
+            lblVehicleWeaponModeLabel.Visible = false;
+            lblVehicleWeaponAmmoLabel.Visible = false;
+            lblVehicleWeaponRangeLabel.Visible = false;
+
+            lblVehicleWeaponRangeShortLabel.Visible = false;
+            lblVehicleWeaponRangeMediumLabel.Visible = false;
+            lblVehicleWeaponRangeLongLabel.Visible = false;
+            lblVehicleWeaponRangeExtremeLabel.Visible = false;
+
+            lblVehicleDroneModSlots.Visible = false;
+            lblVehiclePowertrain.Visible = false;
+            lblVehicleCosmetic.Visible = false;
+            lblVehicleElectromagnetic.Visible = false;
+            lblVehicleBodymod.Visible = false;
+            lblVehicleWeaponsmod.Visible = false;
+            lblVehicleProtection.Visible = false;
+
+            lblVehicleGearQty.Text = string.Empty;
+            cmdVehicleGearReduceQty.Enabled = false;
+            cboVehicleWeaponAmmo.Enabled = false;
+
+            lblVehicleSeatsLabel.Visible = false;
+            lblVehicleSeats.Visible = false;
+
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
             {
-				lblVehicleWeaponAmmoRemaining.Text = string.Empty;
-				lblVehicleWeaponName.Text = string.Empty;
-				lblVehicleWeaponCategory.Text = string.Empty;
-				lblVehicleWeaponAP.Text = string.Empty;
-				lblVehicleWeaponDamage.Text = string.Empty;
-				lblVehicleWeaponMode.Text = string.Empty;
-				lblVehicleWeaponAmmo.Text = string.Empty;
-				cmdFireVehicleWeapon.Enabled = false;
-				cmdReloadVehicleWeapon.Enabled = false;
-
-				lblVehicleWeaponRangeShort.Text = string.Empty;
-				lblVehicleWeaponRangeMedium.Text = string.Empty;
-				lblVehicleWeaponRangeLong.Text = string.Empty;
-				lblVehicleWeaponRangeExtreme.Text = string.Empty;
-
-				lblVehicleWeaponName.Visible = false;
-				lblVehicleWeaponCategory.Visible = false;
-				lblVehicleWeaponAP.Visible = false;
-				lblVehicleWeaponDamage.Visible = false;
-				lblVehicleWeaponMode.Visible = false;
-				lblVehicleWeaponAmmo.Visible = false;
-
-				lblVehicleWeaponRangeShort.Visible = false;
-				lblVehicleWeaponRangeMedium.Visible = false;
-				lblVehicleWeaponRangeLong.Visible = false;
-				lblVehicleWeaponRangeExtreme.Visible = false;
-
-				lblVehicleWeaponNameLabel.Visible = false;
-				lblVehicleWeaponCategoryLabel.Visible = false;
-				lblVehicleWeaponAPLabel.Visible = false;
-				lblVehicleWeaponDamageLabel.Visible = false;
-				lblVehicleWeaponModeLabel.Visible = false;
-				lblVehicleWeaponAmmoLabel.Visible = false;
-				lblVehicleWeaponRangeLabel.Visible = false;
-
-				lblVehicleWeaponRangeShortLabel.Visible = false;
-				lblVehicleWeaponRangeMediumLabel.Visible = false;
-				lblVehicleWeaponRangeLongLabel.Visible = false;
-				lblVehicleWeaponRangeExtremeLabel.Visible = false;
-
-				lblVehicleDroneModSlots.Visible = false;
-				lblVehiclePowertrain.Visible = false;
-				lblVehicleCosmetic.Visible = false;
-				lblVehicleElectromagnetic.Visible = false;
-				lblVehicleBodymod.Visible = false;
-				lblVehicleWeaponsmod.Visible = false;
-				lblVehicleProtection.Visible = false;
-
-				lblVehicleGearQty.Text = string.Empty;
-				cmdVehicleGearReduceQty.Enabled = false;
-				cboVehicleWeaponAmmo.Enabled = false;
-
-				lblVehicleSeatsLabel.Visible = false;
-				lblVehicleSeats.Visible = false;
-				return;
+			    return;
 			}
 			chkVehicleHomeNode.Visible = false;
 			cmdVehicleMoveToInventory.Enabled = false;
