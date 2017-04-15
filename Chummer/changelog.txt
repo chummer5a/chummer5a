@@ -13,6 +13,8 @@ Application Changes:
 - AddWeapon and AddVehicle bonuses can now use the GUID of the weapon they're adding instead of relying on the name. 
 - Cleaned up the Cyberware selection window to process Availability properly. 
 - Fixed behaviour of selecting vehicle weapons to not leave weapon-related buttons and labels active when a weapon is not selected. 
+- Fixed behaviour of removing cyberware that consumes Capacity from parent cyberware in career mode (Prevents Essence Hole creation)
+- Added a warning when using the Enforce Capacity option while selecting Cyberware. 
 
 Data Changes:
 
@@ -24,6 +26,8 @@ New Strings:
 - MessageTitle_FailedLoad
 - Message_FailedSave
 - MessageTitle_FailedSave
+- Message_OverCapacityLimit
+- MessageTitle_OverCapacityLimit
 
 Build 192
 

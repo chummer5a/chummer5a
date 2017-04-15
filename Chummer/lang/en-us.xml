@@ -234,6 +234,14 @@
       <key>MessageTitle_FailedSave</key>
       <text>Could Not Save</text>
     </string>
+		<string>
+			<key>Message_OverCapacityLimit</key>
+			<text>This item's capacity is too high for the parent item: Maximum Capacity {0}, {1} needed</text>
+		</string>
+		<string>
+			<key>MessageTitle_OverCapacityLimit</key>
+			<text>Over Capacity Limit</text>
+		</string>
     <string>
 			<key>String_BuyWithKarma</key>
 			<text>Buy With Karma</text>

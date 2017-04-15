@@ -4840,11 +4840,13 @@ namespace Chummer
 
 						_objCharacter.Cyberware.Remove(objCyberware);
 
-						//Add essence hole.
-						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100m));
+					    if (objCyberware.Parent == null)
+					    {
+					        //Add essence hole.
+					        IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100m));
+					    }
 
-
-						// Open the Cyberware XML file and locate the selected piece.
+					    // Open the Cyberware XML file and locate the selected piece.
 						XmlNode objXmlCyberware;
 						if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
 						{
