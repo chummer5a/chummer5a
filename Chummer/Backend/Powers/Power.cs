@@ -381,7 +381,7 @@ namespace Chummer
 				//Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
 				else
 				{
-					for (decimal i = decExtraCost; (i - PointsPerLevel >= 0); i--)
+					for (decimal i = decExtraCost; i - PointsPerLevel >= 0; i-= PointsPerLevel)
 					{
 						intReturn += 1;
 					}
@@ -404,7 +404,7 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					decReturn = Levels * PointsPerLevel;
+					decReturn = Rating * PointsPerLevel;
 				    if (decReturn > 0)
 				    {
 				        decReturn += ExtraPointCost;
@@ -509,7 +509,7 @@ namespace Chummer
 		{
 			get
 			{
-				return Math.Max(_intMaxLevel, 1);
+				return _intMaxLevel;
 			}
 			set
 			{
@@ -661,15 +661,12 @@ namespace Chummer
 				{
 					intReturn = CharacterObject.MAG.TotalValue;
 				}
-				else
+				// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+				if (Bonus?.InnerXml.Contains("Rating") == true)
 				{
-				    // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-				    if (Bonus?.InnerXml.Contains("Rating") == true)
-				    {
-				        CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
-				        CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-				        CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
-				    }
+					CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+					CharacterObject.ObjImprovementManager.ForcedValue = Extra;
+					CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
 				}
 				return intReturn;
 			}

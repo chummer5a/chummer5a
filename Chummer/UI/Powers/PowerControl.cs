@@ -19,7 +19,9 @@
 ﻿using System;
  using System.ComponentModel;
  using System.Drawing;
-using System.Windows.Forms;
+ using System.Linq;
+ using System.Windows.Forms;
+ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -55,8 +57,13 @@ namespace Chummer
 				DataSourceUpdateMode.OnPropertyChanged);
             
             PowerObject.PropertyChanged += Power_PropertyChanged;
+			PowerObject.CharacterObject.PropertyChanged += Power_PropertyChanged;
+			if (PowerObject.Name == "Improved Ability (skill)")
+			{
+				PowerObject.CharacterObject.SkillsSection.PropertyChanged += Power_PropertyChanged;
+			}
 
-            tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+			tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
 			MoveControls();
         }
 
@@ -64,13 +71,16 @@ namespace Chummer
         {
             switch (propertyChangedEventArgs?.PropertyName)
             {
+				case nameof(PowerObject.CharacterObject.MAG.TotalValue):
+				//TODO: For skills - probably needs to be rebound to something more specific?
+				case "Karma":
+				PowerObject.ForceEvent(nameof(PowerObject.TotalMaximumLevels));
+		            break;
                 case nameof(PowerObject.FreeLevels):
                 case nameof(PowerObject.TotalRating):
                     PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
-                    goto default;
-                default:
-                    tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
-                    break;
+					tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+		            break;
             }
         }
 
@@ -83,6 +93,18 @@ namespace Chummer
 		{
 			//Cache the parentform prior to deletion, otherwise the relationship is broken.
 			Form frmParent = ParentForm;
+			if (PowerObject.FreeLevels > 0)
+			{
+
+				foreach (Gear objGear in PowerObject.CharacterObject.Gear
+					.Where(objGear => objGear.Bonded && objGear.InternalId == PowerObject.CharacterObject.Improvements
+					.First(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == PowerObject.Name && objImprovement.UniqueName == PowerObject.Extra).SourceName))
+				{
+					objGear.Equipped = false;
+					objGear.Extra = string.Empty;
+					break;
+				}
+			}
 			PowerObject.CharacterObject.Powers.Remove(PowerObject);
 			
 			if (_objPower.CharacterObject.Created)
