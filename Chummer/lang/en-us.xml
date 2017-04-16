@@ -7220,7 +7220,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Label_SelectCyberware_ESSDiscount</key>
-			<text>Additional Discount:</text>
+			<text>Essence Discount:</text>
 		</string>
 		<string>
 			<key>Checkbox_Transgenic</key>

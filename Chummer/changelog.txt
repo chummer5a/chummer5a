@@ -15,6 +15,7 @@ Application Changes:
 - Fixed behaviour of selecting vehicle weapons to not leave weapon-related buttons and labels active when a weapon is not selected. 
 - Fixed behaviour of removing cyberware that consumes Capacity from parent cyberware in career mode (Prevents Essence Hole creation)
 - Added a warning when using the Enforce Capacity option while selecting Cyberware. 
+- Fixed interaction with the additional Essence discount numericupdown and discounts from things like Biocompatibility.
 
 Data Changes:
 
@@ -28,6 +29,10 @@ New Strings:
 - MessageTitle_FailedSave
 - Message_OverCapacityLimit
 - MessageTitle_OverCapacityLimit
+
+Changed Strings:
+
+- Label_SelectCyberware_ESSDiscount
 
 Build 192
 
