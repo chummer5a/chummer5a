@@ -127,7 +127,7 @@ namespace Translator
             if (_blnLoading || (e.RowIndex < 0))
                 return;
             DataGridViewRow item = dgvSection.Rows[e.RowIndex];
-            bool flag = Convert.ToBoolean(item.Cells["translated"]);
+            bool flag = Convert.ToBoolean(item.Cells["translated"].Value);
             TranslatedIndicator(item);
             string strTranslated = item.Cells["text"].Value.ToString();
             string strEnglish = item.Cells["english"].Value.ToString();
