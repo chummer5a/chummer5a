@@ -2627,31 +2627,31 @@
 			<metatype>
 				<id>47428a29-890f-4b3a-9d18-d8c2e581f1b4</id>
 				<name>Dog</name>
-				<page>404</page>
+				<page>343</page>
 				<translate>Hund</translate>
 			</metatype>
 			<metatype>
 				<id>7983859b-5c38-47b7-b127-2649f0c8c1b0</id>
 				<name>Great Cat</name>
-				<page>404</page>
+				<page>343</page>
 				<translate>Großkatze</translate>
 			</metatype>
 			<metatype>
 				<id>d4a66987-de45-4bd1-a1f3-c8573ba6d8cf</id>
 				<name>Horse</name>
-				<page>404</page>
+				<page>343</page>
 				<translate>Pferd</translate>
 			</metatype>
 			<metatype>
 				<id>a38329e9-cdfb-441f-9594-1ecf5fcdd787</id>
 				<name>Shark</name>
-				<page>404</page>
+				<page>343</page>
 				<translate>Hai</translate>
 			</metatype>
 			<metatype translated="True">
 				<id>d6da129f-65b2-4fb4-aae3-a73e6937a2a6</id>
 				<name>Wolf</name>
-				<page>404</page>
+				<page>343</page>
 				<translate>Wolf</translate>
 			</metatype>
 			<metatype>
@@ -3869,25 +3869,25 @@
 			<metatype translated="True">
 				<id>f03dcf11-8a65-4452-912b-d42bc78e3e93</id>
 				<name>Barghest</name>
-				<page>404</page>
+				<page>299</page>
 				<translate>Barghest</translate>
 			</metatype>
 			<metatype>
 				<id>6fb20284-a25b-4eb7-82d5-e20f79d345e3</id>
 				<name>Devil Rat</name>
-				<page>407</page>
-				<translate>Teufelsratte</translate>
+				<page>299</page>
+				<translate>Riesenratte</translate>
 			</metatype>
 			<metatype>
 				<id>d3a7e0fe-46bc-4c30-a287-b159eb53f0f8</id>
 				<name>Ghoul</name>
-				<page>406</page>
+				<page>299</page>
 				<translate>Ghul</translate>
 			</metatype>
 			<metatype>
 				<id>2403521d-8a3b-4e73-8562-2a5978841478</id>
 				<name>Hell Hound</name>
-				<page>406</page>
+				<page>300</page>
 				<translate>Höllenhund</translate>
 			</metatype>
 			<metatype translated="True">
@@ -3905,7 +3905,7 @@
 			<metatype translated="True">
 				<id>6d15c952-542a-429d-9b56-51fc21ebb138</id>
 				<name>Sasquatch</name>
-				<page>406</page>
+				<page>300</page>
 				<translate>Sasquatch</translate>
 			</metatype>
 			<metatype>
@@ -3917,7 +3917,7 @@
 			<metatype>
 				<id>c901c62b-30cb-4a55-89cc-95af3321c297</id>
 				<name>Vampire</name>
-				<page>407</page>
+				<page>301</page>
 				<translate>Vampir</translate>
 			</metatype>
 			<metatype translated="True">
@@ -4139,7 +4139,7 @@
 			<metatype>
 				<id>f023c6db-03f3-4dba-b7ee-7e64f71f7d5b</id>
 				<name>Cockatrice</name>
-				<page>407</page>
+				<page>129</page>
 				<translate>Schreckhahn</translate>
 			</metatype>
 			<metatype>
@@ -4373,7 +4373,7 @@
 			<metatype translated="True">
 				<id>49434a88-ced1-46e3-b650-b0bd12ddd480</id>
 				<name>Basilisk</name>
-				<page>405</page>
+				<page>148</page>
 				<translate>Basilisk</translate>
 			</metatype>
 			<metatype>
@@ -4607,7 +4607,7 @@
 			<metatype>
 				<id>7f0f9028-4351-4729-a363-ff8533895d1c</id>
 				<name>Spirit of Air</name>
-				<page>303</page>
+				<page>302</page>
 				<translate>Luftgeist</translate>
 			</metatype>
 			<metatype>
@@ -4619,7 +4619,7 @@
 			<metatype>
 				<id>4a80bfc5-da03-4896-9722-2a785d32095e</id>
 				<name>Spirit of Beasts</name>
-				<page>303</page>
+				<page>302</page>
 				<translate>Geist des Tieres</translate>
 			</metatype>
 			<metatype>
@@ -4631,7 +4631,7 @@
 			<metatype>
 				<id>285885ed-d2cb-4c02-976c-a8f81efa67cb</id>
 				<name>Spirit of Earth</name>
-				<page>302</page>
+				<page>303</page>
 				<translate>Erdgeist</translate>
 			</metatype>
 			<metatype>
@@ -4643,7 +4643,7 @@
 			<metatype>
 				<id>3232c4f1-0b22-4799-8c80-392392f9af38</id>
 				<name>Spirit of Fire</name>
-				<page>302</page>
+				<page>303</page>
 				<translate>Feuergeist</translate>
 			</metatype>
 			<metatype>
@@ -5045,13 +5045,13 @@
 			<metatype>
 				<id>805e79e4-4a6c-4877-b764-b07566414180</id>
 				<name>Eastern Dragon</name>
-				<page>409</page>
+				<page>303</page>
 				<translate>Östlicher Drache</translate>
 			</metatype>
 			<metatype>
 				<id>b6997b8d-b524-4d7d-a35c-8502e71fc9b6</id>
 				<name>Feathered Serpent</name>
-				<page>408</page>
+				<page>304</page>
 				<translate>Gefiederte Schlange</translate>
 			</metatype>
 			<metatype translated="True">
@@ -5063,7 +5063,7 @@
 			<metatype>
 				<id>26781a84-eab5-4617-962b-3c1ea14e8f7c</id>
 				<name>Western Dragon</name>
-				<page>409</page>
+				<page>303</page>
 				<translate>Westlicher Drache</translate>
 			</metatype>
 			<metatype>
@@ -5399,31 +5399,31 @@
 			<metatype>
 				<id>8db4f865-57b6-4363-8d1d-d2979df47cac</id>
 				<name>Courier Sprite</name>
-				<page>256</page>
+				<page>242</page>
 				<translate>Kurier-Sprite</translate>
 			</metatype>
 			<metatype>
 				<id>1eabd4d6-b759-4e89-8478-1d327e2755c3</id>
 				<name>Crack Sprite</name>
-				<page>255</page>
+				<page>242</page>
 				<translate>Infiltrator-Sprite</translate>
 			</metatype>
 			<metatype>
 				<id>4742c36a-baa9-467b-b2c1-9dc6889a46e2</id>
 				<name>Data Sprite</name>
-				<page>255</page>
+				<page>242</page>
 				<translate>Daten-Sprite</translate>
 			</metatype>
 			<metatype>
 				<id>72b6f335-4351-4af7-b103-350cb15d2bca</id>
 				<name>Fault Sprite</name>
-				<page>256</page>
+				<page>242</page>
 				<translate>Stör-Sprite</translate>
 			</metatype>
 			<metatype>
 				<id>1a34d4b2-2055-47e7-b750-39aa724ce19c</id>
 				<name>Machine Sprite</name>
-				<page>256</page>
+				<page>242</page>
 				<translate>Maschinen-Sprite</translate>
 			</metatype>
 			<metatype>
@@ -5554,7 +5554,7 @@
 			</metatype>
 			<metatype>
 				<name>Spirit of Air</name>
-				<page>303</page>
+				<page>348</page>
 				<translate>Luftgeist</translate>
 			</metatype>
 			<metatype>
@@ -5564,7 +5564,7 @@
 			</metatype>
 			<metatype>
 				<name>Spirit of Beasts</name>
-				<page>303</page>
+				<page>348</page>
 				<translate>Geist des Tieres</translate>
 			</metatype>
 			<metatype>
@@ -5574,7 +5574,7 @@
 			</metatype>
 			<metatype>
 				<name>Spirit of Earth</name>
-				<page>302</page>
+				<page>347</page>
 				<translate>Erdgeist</translate>
 			</metatype>
 			<metatype>
@@ -5584,7 +5584,7 @@
 			</metatype>
 			<metatype>
 				<name>Spirit of Fire</name>
-				<page>302</page>
+				<page>347</page>
 				<translate>Feuergeist</translate>
 			</metatype>
 			<metatype>
@@ -5594,7 +5594,7 @@
 			</metatype>
 			<metatype>
 				<name>Spirit of Man</name>
-				<page>303</page>
+				<page>348</page>
 				<translate>Geist des Menschen</translate>
 			</metatype>
 			<metatype>
@@ -5604,7 +5604,7 @@
 			</metatype>
 			<metatype>
 				<name>Spirit of Water</name>
-				<page>303</page>
+				<page>348</page>
 				<translate>Wassergeist</translate>
 			</metatype>
 			<metatype>
@@ -5619,12 +5619,12 @@
 			</metatype>
 			<metatype>
 				<name>Eastern Dragon</name>
-				<page>409</page>
+				<page>350</page>
 				<translate>Östlicher Drache</translate>
 			</metatype>
 			<metatype>
 				<name>Feathered Serpent</name>
-				<page>408</page>
+				<page>348</page>
 				<translate>Gefiederte Schlange</translate>
 			</metatype>
 			<metatype>
@@ -5634,7 +5634,7 @@
 			</metatype>
 			<metatype>
 				<name>Western Dragon</name>
-				<page>409</page>
+				<page>350</page>
 				<translate>Westlicher Drache</translate>
 			</metatype>
 			<metatype>
@@ -5659,27 +5659,27 @@
 			</metatype>
 			<metatype>
 				<name>Courier Sprite</name>
-				<page>256</page>
+				<page>282</page>
 				<translate>Kurier-Sprite</translate>
 			</metatype>
 			<metatype>
 				<name>Crack Sprite</name>
-				<page>255</page>
+				<page>282</page>
 				<translate>Infiltrator-Sprite</translate>
 			</metatype>
 			<metatype>
 				<name>Data Sprite</name>
-				<page>255</page>
+				<page>282</page>
 				<translate>Daten-Sprite</translate>
 			</metatype>
 			<metatype>
 				<name>Fault Sprite</name>
-				<page>256</page>
+				<page>282</page>
 				<translate>Stör-Sprite</translate>
 			</metatype>
 			<metatype>
 				<name>Machine Sprite</name>
-				<page>256</page>
+				<page>282</page>
 				<translate>Maschinen-Sprite</translate>
 			</metatype>
 			<metatype translated="True">
