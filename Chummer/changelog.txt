@@ -16,6 +16,7 @@ Application Changes:
 - Fixed behaviour of removing cyberware that consumes Capacity from parent cyberware in career mode (Prevents Essence Hole creation)
 - Added a warning when using the Enforce Capacity option while selecting Cyberware. 
 - Fixed interaction with the additional Essence discount numericupdown and discounts from things like Biocompatibility.
+- Fixed behaviour of weapon Damage to properly show damage values for weapons like flashbang grenades.
 
 Data Changes:
 
