@@ -1340,7 +1340,7 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// Look for splash damage info.
-			if (strDamage.Contains("/m)"))
+			if (strDamage.Contains("/m)") || strDamage.Contains(" Radius)"))
 			{
 				string strSplash = strDamage.Substring(strDamage.IndexOf('('), strDamage.IndexOf(')') - strDamage.IndexOf('(') + 1);
 				strDamageExtra += " " + strSplash;

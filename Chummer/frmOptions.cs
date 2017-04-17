@@ -1244,7 +1244,7 @@ namespace Chummer
 
 		private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			if (chkOmaeEnabled.Checked)
+			if (chkOmaeEnabled.Checked && !blnLoading)
 			{
 				DialogResult result = MessageBox.Show(LanguageManager.Instance.GetString("Tip_Omae_Warning"), "Warning!", MessageBoxButtons.OKCancel);
 
