@@ -10723,11 +10723,7 @@
 			<karma>-18</karma>
 			<category>Negative</category>
 			<bonus>
-				<specificattribute>
-					<name>ESS</name>
-					<val>-1</val>
-				</specificattribute>
-				<selecttext />
+        <essencemax>-1</essencemax>
 			</bonus>
 			<required>
 				<oneof>
