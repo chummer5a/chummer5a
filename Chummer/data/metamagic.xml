@@ -307,7 +307,7 @@
       <magician>yes</magician>
       <required>
         <oneof>
-          <art>Advanced Ritual</art>
+          <art>Advanced Ritual Casting</art>
         </oneof>
       </required>
       <source>SG</source>
@@ -320,7 +320,7 @@
       <magician>yes</magician>
       <required>
         <allof>
-          <art>Advanced Ritual</art>
+          <art>Advanced Ritual Casting</art>
         </allof>
       </required>
       <source>SG</source>

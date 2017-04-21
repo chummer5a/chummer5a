@@ -247,7 +247,8 @@ namespace Chummer
 		// Events.
 		public Action<object> HomeNodeChanged;
 		public Action<object> AdeptTabEnabledChanged;
-	    public Action<object> CritterTabEnabledChanged;
+		public Action<object> AmbidextrousChanged;
+		public Action<object> CritterTabEnabledChanged;
 		public Action<object> MAGEnabledChanged;
 		public Action<object> BlackMarketEnabledChanged;
 		public Action<object> BornRichChanged;
@@ -6369,10 +6370,8 @@ namespace Chummer
             }
             set
             {
-                bool blnOldValue = _blnLightningReflexes;
                 _blnLightningReflexes = value;
-                if (blnOldValue != value)
-                    LightningReflexesChanged?.Invoke(this);
+                    
             }
         }
         /// <summary>
@@ -6885,6 +6884,7 @@ namespace Chummer
 
 		//Can't be at improvementmanager due reasons
 		private Lazy<Stack<string>> _pushtext = new Lazy<Stack<string>>();
+	    private bool _ambidextrous;
 
 	    /// <summary>
 		/// Push a value that will be used instad of dialog instead in next <selecttext />
@@ -7005,10 +7005,18 @@ namespace Chummer
 	    {
 		    get { return _verSavedVersion; }
 	    }
+		
+	    public bool Ambidextrous
+	    {
+		    get { return _ambidextrous; }
+		    internal set
+		    {
+			    _ambidextrous = value;
+				AmbidextrousChanged?.Invoke(this);
+			}
+	    }
 
-		public bool Ambidextrous { get; internal set; }
-
-		public event PropertyChangedEventHandler PropertyChanged;
+	    public event PropertyChangedEventHandler PropertyChanged;
 
 	    [NotifyPropertyChangedInvocator]
 	    protected virtual void OnPropertyChanged<T>(ref T old, T value, [CallerMemberName] string propertyName = null)

@@ -2631,6 +2631,10 @@
 			<text>The Spirit must first be saved before it can Possess or Inhabit a Vessel. Save changes now?</text>
 		</string>
 		<string>
+			<key>String_Ambidextrous</key>
+			<text>Ambidextrous</text>
+		</string>
+		<string>
 			<key>String_Possessed</key>
 			<text>Possessed</text>
 		</string>
