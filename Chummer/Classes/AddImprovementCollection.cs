@@ -1332,9 +1332,9 @@ namespace Chummer.Classes
 			}
 			else
 			{
-				CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, string.Empty,
-					Convert.ToInt32(bonusNode["val"].InnerText));
-			}
+                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, string.Empty,
+                    Convert.ToInt32(bonusNode["val"].InnerText));
+            }
 		}
 
 		// Add a paid increase to an attribute
@@ -4393,14 +4393,37 @@ namespace Chummer.Classes
 		public void addskillspecializationoption(XmlNode bonusNode)
 		{
 			if (!(_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)) return;
-			Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
-			if (objSkill == null) return;
-			// Create the Improvement.
-			Log.Info("Calling CreateImprovement");
-			CreateImprovement(bonusNode["skill"].InnerText, _objImprovementSource, SourceName,
-				Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
-			SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
-			objSkill.Specializations.Add(nspec);
+            var lstSkills = new List<Skill>();
+            if (bonusNode["skills"] != null)
+		    {
+		        foreach (XmlNode objNode in bonusNode["skills"])
+		        {
+                    var objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objNode.InnerText);
+                    if (objSkill != null)
+                    {
+                        lstSkills.Add(objSkill);
+                    }
+                }
+		    }
+		    else
+            {
+                var objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
+                if (objSkill != null)
+                {
+                    lstSkills.Add(objSkill);
+                }
+            }
+                
+			if (lstSkills.Count == 0) return;
+		    foreach (var objSkill in lstSkills)
+		    {
+		        // Create the Improvement.
+		        Log.Info("Calling CreateImprovement");
+		        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+		            Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
+		        SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
+		        objSkill.Specializations.Add(nspec);
+		    }
 		}
 		#endregion
 	}
