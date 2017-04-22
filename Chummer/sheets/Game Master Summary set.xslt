@@ -64,7 +64,7 @@
 									<td width="9%" align="center"><strong><xsl:value-of select="$lang.INT"/></strong></td>
 									<td width="9%" align="center"><strong><xsl:value-of select="$lang.LOG"/></strong></td>
 									<td width="9%" align="center"><strong><xsl:value-of select="$lang.WIL"/></strong></td>
-									<td width="9%" align="center"><strong><xsl:value-of select="$lang.ESS"/></strong></td>
+									<td width="9%" align="center"><strong><xsl:value-of select="$lang.EDG"/></strong></td>
 									<xsl:if test="magenabled = 'True'">
 										<td width="9%" align="center"><strong><xsl:value-of select="$lang.MAG"/></strong></td>
 									</xsl:if>
@@ -488,7 +488,7 @@
 								<xsl:for-each select="cyberwares/cyberware">
 									<xsl:sort select="name" />
 									<xsl:value-of select="name" />
-									<xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/> <xsl:value-of select="rating" /></xsl:if>
+									<xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="$lang.Rating"/><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
 									<xsl:if test="children/cyberware">
 										(<xsl:for-each select="children/cyberware">
 											<xsl:value-of select="name" />
