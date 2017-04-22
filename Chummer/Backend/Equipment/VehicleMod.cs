@@ -775,24 +775,36 @@ namespace Chummer.Backend.Equipment
 				if (_strAvail.StartsWith("+"))
 					return _strAvail;
 
-				string strCalculated;
+				string strCalculated = _strAvail;
 
 			    // Reordered to process fixed value strings
-				if (_strAvail.StartsWith("FixedValues"))
+				if (strCalculated.StartsWith("FixedValues"))
 				{
-					string[] strValues = _strAvail.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+					string[] strValues = strCalculated.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
                     if (strValues.Length >= _intRating)
-					    _strAvail = strValues[_intRating - 1];
+						strCalculated = strValues[_intRating - 1];
 				}
-
-				if (_strAvail.Contains("Rating"))
+				else if (strCalculated.StartsWith("Range"))
+				{
+					// If the Availability code is based on the current Rating of the item, separate the Availability string into an array and find the first bracket that the Rating is lower than or equal to.
+					string[] strValues = strCalculated.Replace("MaxRating", MaxRating).Replace("Range", string.Empty).Trim("()".ToCharArray()).Split(',');
+					foreach (string strValue in strValues)
+					{
+						string strAvailCode = strValue.Split('[')[1].Replace("[",string.Empty).Replace("]", string.Empty);
+						int intMax = Convert.ToInt32(strValue.Split('[')[0]);
+						if (Rating > intMax) continue;
+						strCalculated = $"{Rating}{strAvailCode}";
+						break;
+					}
+				}
+				if (strCalculated.Contains("Rating"))
 				{
 					// If the availability is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
 					string strAvail = string.Empty;
-					string strAvailExpr = _strAvail;
+					string strAvailExpr = strCalculated;
 
 					if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
 					{
@@ -806,12 +818,12 @@ namespace Chummer.Backend.Equipment
 				else
 				{
 					// Just a straight cost, so return the value.
-					if (_strAvail.Contains("F") || _strAvail.Contains("R"))
+					if (strCalculated.Contains("F") || strCalculated.Contains("R"))
 					{
-						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + _strAvail.Substring(_strAvail.Length - 1, 1);
+						strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)) + strCalculated.Substring(strCalculated.Length - 1, 1);
 					}
 					else
-						strCalculated = Convert.ToInt32(_strAvail).ToString();
+						strCalculated = Convert.ToInt32(strCalculated).ToString();
 				}
 
 				int intAvail;
@@ -841,8 +853,6 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-
-
 			    return OwnCost + _lstVehicleWeapons.Sum(objWeapon => objWeapon.TotalCost) + _lstCyberware.Sum(objCyberware => objCyberware.TotalCost);
 			}
 		}

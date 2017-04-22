@@ -13,10 +13,19 @@ Application Changes:
 - AddWeapon and AddVehicle bonuses can now use the GUID of the weapon they're adding instead of relying on the name. 
 - Cleaned up the Cyberware selection window to process Availability properly. 
 - Fixed behaviour of selecting vehicle weapons to not leave weapon-related buttons and labels active when a weapon is not selected. 
+- Fixed behaviour of removing cyberware that consumes Capacity from parent cyberware in career mode (Prevents Essence Hole creation)
+- Added a warning when using the Enforce Capacity option while selecting Cyberware. 
+- Fixed interaction with the additional Essence discount numericupdown and discounts from things like Biocompatibility.
+- Fixed behaviour of weapon Damage to properly show damage values for weapons like flashbang grenades.
+- Added code to remove the need for different versions of the Armor mod for Drones based on Availability. 
+- If a character has the Ambidextrous improvement from cyberware or qualities, their handedness/dominant hand will not be shown as such on the Character Info tab.
 
 Data Changes:
 
 - Fixed a naming issue with the 2050 Cyberspur weapons that caused a crash. 
+- Updated de_data.xml with changes by Noraser.
+- Removed the Armor Restricted (Drone) and Armor Forbidden (Drone) vehicle modifications from vehicles.xml as they're now redundant. Existing drones with the modifications will be unaffected.
+- Fixed incorrect prerequisite arts for the Efficient Ritual and Greater Ritual metamagics. 
 
 New Strings:
 
@@ -24,6 +33,13 @@ New Strings:
 - MessageTitle_FailedLoad
 - Message_FailedSave
 - MessageTitle_FailedSave
+- Message_OverCapacityLimit
+- MessageTitle_OverCapacityLimit
+- String_Ambidextrous
+
+Changed Strings:
+
+- Label_SelectCyberware_ESSDiscount
 
 Build 192
 

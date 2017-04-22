@@ -234,6 +234,14 @@
       <key>MessageTitle_FailedSave</key>
       <text>Could Not Save</text>
     </string>
+		<string>
+			<key>Message_OverCapacityLimit</key>
+			<text>This item's capacity is too high for the parent item: Maximum Capacity {0}, {1} needed</text>
+		</string>
+		<string>
+			<key>MessageTitle_OverCapacityLimit</key>
+			<text>Over Capacity Limit</text>
+		</string>
     <string>
 			<key>String_BuyWithKarma</key>
 			<text>Buy With Karma</text>
@@ -2621,6 +2629,10 @@
 		<string>
 			<key>Message_PossessionSave</key>
 			<text>The Spirit must first be saved before it can Possess or Inhabit a Vessel. Save changes now?</text>
+		</string>
+		<string>
+			<key>String_Ambidextrous</key>
+			<text>Ambidextrous</text>
 		</string>
 		<string>
 			<key>String_Possessed</key>
@@ -7236,7 +7248,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Label_SelectCyberware_ESSDiscount</key>
-			<text>Additional Discount:</text>
+			<text>Essence Discount:</text>
 		</string>
 		<string>
 			<key>Checkbox_Transgenic</key>

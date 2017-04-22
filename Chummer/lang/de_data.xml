@@ -670,7 +670,7 @@
 				<translate>Evo Armadillo Gepanzerter Raumanzug</translate>
 				<page>82</page>
 			</armor>
-<!-- 2050 SR5 Clothing and Armor -->
+			<!-- 2050 SR5 Clothing and Armor -->
 			<armor>
 				<id>134e6912-d3b8-47cc-8804-fc02e66a0ee6</id>
 				<name>Form Fitting, Shirt (2050)</name>
@@ -1243,7 +1243,7 @@
 				<page>465</page>
 				<translate>Luftröhrenfilter</translate>
 			</bioware>
-		<!-- 2050 SR5 Bioware -->	
+			<!-- 2050 SR5 Bioware -->
 			<bioware>
 				<id>9343f6b7-6d02-4706-aa7d-6c357b22c947</id>
 				<name>Adrenaline Pump (2050)</name>
@@ -1315,7 +1315,7 @@
 				<name>Reflex Recorder (2050)</name>
 				<translate>Reflexrecorder</translate>
 				<page>205</page>
-			</bioware>	
+			</bioware>
 			<bioware>
 				<id>9300c974-1591-4dca-95d4-53755c27126e</id>
 				<name>Damage Compensators (2050)</name>
@@ -1333,7 +1333,7 @@
 				<name>Symbiotes (2050)</name>
 				<translate>Symbionten</translate>
 				<page>205</page>
-			</bioware> 
+			</bioware>
 			<bioware>
 				<id>418fc791-2ae8-4457-80ec-e89244f1497b</id>
 				<name>Synaptic Accelerator (2050)</name>
@@ -1412,7 +1412,7 @@
 				<name>Shadowrun 5th Edition (German)</name>
 				<translate>Shadowrun 5. Edition (Deutsch)</translate>
 			</book>
-			<book>  
+			<book>
 				<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
 				<name>Data Trails</name>
 				<translate>Datenpfade</translate>
@@ -1424,7 +1424,7 @@
 			</book>
 			<book>
 				<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-				<name>Run Faster German</name>
+				<name>Run Faster (German)</name>
 				<translate>Schattenläufer</translate>
 			</book>
 			<book>
@@ -1435,6 +1435,11 @@
 				<id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
 				<name>Rigger 5.0</name>
 				<translate>Asphaltkrieger</translate>
+			</book>
+			<book>
+				<id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
+				<name>Hard Targets</name>
+				<translate>Harte Ziele</translate>
 			</book>
 		</books>
 	</chummer>
@@ -6583,7 +6588,7 @@
 				<translate>Talentbuchse</translate>
 				<page>457</page>
 			</cyberware>
-<!-- 2050 SR5 CYberware -->
+			<!-- 2050 SR5 Cyberware -->
 			<cyberware>
 				<id>13ade3a3-1811-4ca6-9937-61dc6cfaccfb</id>
 				<name>Datajack (2050)</name>
@@ -6895,7 +6900,7 @@
 				<name>Cyber Machine Pistol (2050)</name>
 				<page>204</page>
 				<translate>Cyber Automatikpistole</translate>
-			</cyberware>			
+			</cyberware>
 			<cyberware>
 				<id>acffef6c-d88f-4e80-bfd3-924c516ce6f9</id>
 				<name>Cyber Heavy Pistol (2050)</name>
@@ -6913,8 +6918,8 @@
 				<name>Cyber Shotgun (2050)</name>
 				<page>204</page>
 				<translate>Cyber Schrotflinte</translate>
-			</cyberware>			
-		<!-- Cyberware end -->
+			</cyberware>
+			<!-- Cyberware end -->
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -7477,7 +7482,7 @@
 				<id>4ab02099-2d3c-437f-bdba-26ec919283c3</id>
 				<name>Self-Destruct</name>
 				<page>73</page>
-				<translate>Selbstzerstörung</translate>	
+				<translate>Selbstzerstörung</translate>
 			</gear>
 			<gear>
 				<id>ec2a95d8-0c4a-459b-85b3-420174c09d5e</id>
@@ -10075,13 +10080,13 @@
 				<name>Ammo: Assault Cannon (2050)</name>
 				<page>190</page>
 				<translate>Munition: Sturmkanone</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>02993005-44f2-4b2c-9e19-6ddb3517a7ee</id>
 				<name>Ammo: Taser Dart (2050)</name>
 				<page>436</page>
 				<translate>Munition: Taserpfeil</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>eb395ddc-d8d2-4dbc-8dad-089221a1db5a</id>
 				<name>Grenade: Shock (2050)</name>
@@ -10141,7 +10146,7 @@
 				<name>Rocket: Anti-Vehicle (2050)</name>
 				<page>191</page>
 				<translate>Rakete: Anti-Fahrzeug</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>1a0f0ea0-5c82-4e99-90bd-28ea390bcbd2</id>
 				<name>Rocket: High Explosive (2050)</name>
@@ -10159,13 +10164,13 @@
 				<name>Missile: Anti-Vehicle (2050)</name>
 				<page>191</page>
 				<translate>Missile: Anti-Fahrzeug</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>25177977-8f28-4966-ba61-63627bed8af7</id>
 				<name>Missile: High Explosive (2050)</name>
 				<page>191</page>
 				<translate>Missile: Hochexplosiv</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>94961a50-9d6a-44b7-bfb2-426be45e60c9</id>
 				<name>Commercial Explosive (2050)</name>
@@ -10213,7 +10218,7 @@
 				<name>Binoculars, Thermographic Vision (2050)</name>
 				<page>193</page>
 				<translate>Fernglas, Infrarotsicht</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>9755ccab-8fe1-4310-b7f1-87b280b0ec6f</id>
 				<name>Binoculars, Low Light (2050)</name>
@@ -10225,7 +10230,7 @@
 				<name>Goggles (2050)</name>
 				<page>193</page>
 				<translate>Sichtgerät</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>dee0e58f-5fcc-4af7-bc60-3d942b6457a3</id>
 				<name>Goggles, Thermographic Vision (2050)</name>
@@ -10237,7 +10242,7 @@
 				<name>Goggles, Low Light (2050)</name>
 				<page>193</page>
 				<translate>Sichtgerät, Restlichtverstärkung</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>71824fe1-a1ae-4216-bcf1-b85464abee1e</id>
 				<name>Goggles, Vision Magnification (2050)</name>
@@ -10255,7 +10260,7 @@
 				<name>Credstick, Standard (2050)</name>
 				<page>193</page>
 				<translate>Credstick, Standard</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
 				<name>Credstick, Fake (2050)</name>
@@ -10321,7 +10326,7 @@
 				<name>Restraints, Metal (2050)</name>
 				<page>195</page>
 				<translate>Handschellen, Metall</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>2d17198c-85af-4ea2-9a33-8f20ccb75b97</id>
 				<name>Restraints, Plastic (2050)</name>
@@ -10351,7 +10356,7 @@
 				<name>Identifcation Scanner, Retinal (2050)</name>
 				<page>195</page>
 				<translate>ID-Scanner, Retina</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>26402dc8-911c-471f-a818-0d997662fd60</id>
 				<name>Laser Microphone (2050)</name>
@@ -10399,7 +10404,7 @@
 				<name>Shotgun Microphone (2050)</name>
 				<page>195</page>
 				<translate>Pistolenmikrofon</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>f89f5119-3a1f-45ec-9119-0c687294e5e2</id>
 				<name>Signal Locator (2050)</name>
@@ -10417,7 +10422,7 @@
 				<name>Voice Mask (2050)</name>
 				<page>195</page>
 				<translate>Stimmmaske</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>80588ca3-1fd2-4c44-9c7a-b6a8dfda02ec</id>
 				<name>Bug Scanner (2050)</name>
@@ -10471,7 +10476,7 @@
 				<name>Fugu-5 (2050)</name>
 				<page>197</page>
 				<translate>Fugu-5</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>03fa8dc2-c858-47e5-bdff-23cd8cfd054a</id>
 				<name>Hyper (2050)</name>
@@ -10573,7 +10578,7 @@
 				<name>Stabilization Unit Supplies (2050)</name>
 				<page>198</page>
 				<translate>Vorräte für Stabilisierungseinheit</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>b2a8d29d-3113-4440-8777-a4c0ace36476</id>
 				<name>Slap Patch, Chem Patch (2050)</name>
@@ -10603,85 +10608,85 @@
 				<name>Counterspelling Focus, Health (2050)</name>
 				<page>207</page>
 				<translate>Antimagiefocus, Heilung</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>d3bff875-6d10-446c-9c3e-79aef9ca125c</id>
 				<name>Counterspelling Focus, Illusion (2050)</name>
 				<page>207</page>
 				<translate>Antimagiefocus, Illusion</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>dd9eca5f-3d71-46e8-a4aa-5ff06520dad5</id>
 				<name>Counterspelling Focus, Combat (2050)</name>
 				<page>207</page>
 				<translate>Antimagiefocus, Kampf</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>885db7ab-59c6-4129-ad2c-bd0bf92bc2eb</id>
 				<name>Counterspelling Focus, Manipulation (2050)</name>
 				<page>207</page>
 				<translate>Antimagiefocus, Manipulation</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>dd4a0fa5-771a-4fa7-aca3-4fa6b531c32e</id>
 				<name>Counterspelling Focus, Detection (2050)</name>
 				<page>207</page>
 				<translate>Antimagiefocus, Wahrnehmung</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>4f47e94c-e6d9-4ec5-b72d-ceb66c4a3548</id>
 				<name>Binding Focus (2050)</name>
 				<page>207</page>
 				<translate>Bindungsfocus</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>79867308-6ed3-43d5-adab-8017a4f58649</id>
 				<name>Summoning Focus (2050)</name>
 				<page>207</page>
 				<translate>Herbeirufungsfocus</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>846446e0-a686-4984-929f-8310dd48d5a2</id>
 				<name>Power Focus (2050)</name>
 				<page>207</page>
 				<translate>Kraftfocus</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>b11333ac-a049-4e6f-b48c-2846b77c9cac</id>
 				<name>Banishing Focus (2050)</name>
 				<page>207</page>
 				<translate>Verbannungsfocus</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>e826debe-e201-4eab-a885-9fb824cadb02</id>
 				<name>Weapon Focus (2050)</name>
 				<page>207</page>
 				<translate>Waffenfocus</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>1811a217-7e73-4f23-8d88-0be954b55c9e</id>
 				<name>Spell Lock, Health (2050)</name>
 				<page>207</page>
 				<translate>Zauberspeicher, Heilung</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>65ad391a-9baf-4a30-a634-c1fd0717bf71</id>
 				<name>Spell Lock, Illusion (2050)</name>
 				<page>207</page>
 				<translate>Zauberspeicher, Illusion</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>e3f6354b-998e-418e-95e2-d4d208eb7a42</id>
 				<name>Spell Lock, Combat (2050)</name>
 				<page>207</page>
 				<translate>Zauberspeicher, Kampf</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>34f75c53-38a3-4f93-b8b7-9e55bfb97319</id>
 				<name>Spell Lock, Manipulation (2050)</name>
 				<page>207</page>
 				<translate>Zauberspeicher, Manipulation</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>6f73bdf1-063c-491f-935a-746b938e93ab</id>
 				<name>Spell Lock, Detection (2050)</name>
@@ -10693,13 +10698,13 @@
 				<name>Spellcasting Focus, Health (2050)</name>
 				<page>207</page>
 				<translate>Zauberspruchfocus, Heilung</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>13cbd9a8-b1ec-49b3-a243-f40f3246e987</id>
 				<name>Spellcasting Focus, Illusion (2050)</name>
 				<page>207</page>
 				<translate>Zauberspruchfocus, Illusion</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>186574c3-73f2-4920-9764-7c034d671c11</id>
 				<name>Spellcasting Focus, Combat (2050)</name>
@@ -10711,13 +10716,13 @@
 				<name>Spellcasting Focus, Manipulation (2050)</name>
 				<page>207</page>
 				<translate>Zauberspruchfocus, Manipulation</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
 				<name>Spellcasting Focus, Detection (2050)</name>
 				<page>207</page>
 				<translate>Zauberspruchfocus, Wahrnehmung</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
 				<name>Elemental Binding Materials (2050)</name>
@@ -10729,37 +10734,37 @@
 				<name>Medicine Lodge Materials (2050)</name>
 				<page>207</page>
 				<translate>Materialien für Medizinhütte</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>abf8ac4c-1187-4758-a5b2-d3543bd0e111</id>
 				<name>Radio Shack PCD-100 (2050)</name>
 				<page>169</page>
 				<translate>Radio Shack PCD-100</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>9ada0e96-a2bb-46d7-9580-089ad18c91eb</id>
 				<name>Allegiance Alpha (2050)</name>
 				<page>169</page>
 				<translate>Allegiance Alpha</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>7038bd1a-8160-4d07-8a2a-c36cb398f123</id>
 				<name>Sony CTY-360 (2050)</name>
 				<page>169</page>
 				<translate>Sony CTY-360</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>dd0fd7e1-83e3-4748-891e-298172d8cfe0</id>
 				<name>Fuchi Cyber-4 (2050)</name>
 				<page>169</page>
 				<translate>Fuchi Cyber-4</translate>
-			</gear>			
+			</gear>
 			<gear>
 				<id>328b0236-4e49-4706-a852-2846b964736a</id>
 				<name>Fuchi Cyber-6 (2050)</name>
 				<page>169</page>
 				<translate>Fuchi Cyber-6</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>9863207b-98f0-494c-9cd2-52b961ccc4d9</id>
 				<name>Fuchi Cyber-7 (2050)</name>
@@ -10771,7 +10776,7 @@
 				<name>Fairlight Excalibur (2050)</name>
 				<page>169</page>
 				<translate>Fairlight Excalibur</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>6da6f93e-9422-4028-b610-99f94e8bd8c5</id>
 				<name>Radio Shack DTU-2500, Terminal (2050)</name>
@@ -10783,7 +10788,7 @@
 				<name>Microdeck Deckmaster, Terminal (2050)</name>
 				<page>170</page>
 				<translate>Microdeck Deckmaster, Terminal</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>828ea25b-d622-43c8-8438-646685551fae</id>
 				<name>Sony R4J, Terminal (2050)</name>
@@ -10795,7 +10800,7 @@
 				<name>Fuchi Cyber-2, Terminal (2050)</name>
 				<page>170</page>
 				<translate>Fuchi Cyber-2, Terminal</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
 				<name>MTC Sarari-Man, Terminal (2050)</name>
@@ -10807,7 +10812,7 @@
 				<name>Renraku Desukuwa-Ku, Terminal (2050)</name>
 				<page>170</page>
 				<translate>Renraku Desukuwa-Ku, Terminal</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>45a73c53-cbf1-4b97-b298-6c2edcea5422</id>
 				<name>Fairlight Joyeuse, Terminal (2050)</name>
@@ -10819,7 +10824,7 @@
 				<name>Radio Shack PCD-50, Luggage (2050)</name>
 				<page>171</page>
 				<translate>Radio Shack PCD-50, Gepäck</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>3c339d11-494a-4068-b068-c69335e26010</id>
 				<name>Microdesk Luggable, Luggage (2050)</name>
@@ -10831,7 +10836,7 @@
 				<name>Sony CTY-180, Luggage (2050)</name>
 				<page>171</page>
 				<translate>Sony CTY-180, Gepäck</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>793a151c-b720-48e0-8308-6e61547c30cc</id>
 				<name>Fuchi Cyber-3, Luggage (2050)</name>
@@ -10843,7 +10848,7 @@
 				<name>Amalgamated Tech. und Tele., Luggage (2050)</name>
 				<page>171</page>
 				<translate>Amalgamated Tech. und Tele., Gepäck</translate>
-			</gear>				
+			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
 				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
@@ -10861,19 +10866,19 @@
 				<name>Remote Control Deck (2050)</name>
 				<page>212</page>
 				<translate>Fernsteuerdeck</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>b7f9bde1-8a2e-4012-81d3-f45aa32ee474</id>
 				<name>Chip Burner (2050)</name>
 				<page>170</page>
 				<translate>Chipbrenner</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>d2d3bd03-88fa-408e-bed7-56367c957a84</id>
 				<name>Response Increase (2050)</name>
 				<page>170</page>
 				<translate>Reaktionsverstärung</translate>
-			</gear>	
+			</gear>
 			<gear>
 				<id>eee44602-35b5-4a35-a329-a233529ff773</id>
 				<name>Hitcher Jacks (2050)</name>
@@ -10885,7 +10890,7 @@
 				<name>Vidscreen Display (2050)</name>
 				<page>170</page>
 				<translate>Zusatzdisplay</translate>
-			</gear>				
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -14223,8 +14228,6 @@
 			<quality translated="True">
 				<id>55247bdc-c313-4614-ae15-5012308096ff</id>
 				<name>Adept</name>
-				<page>
-				</page>
 				<translate>Adept</translate>
 			</quality>
 			<quality>
@@ -14484,58 +14487,55 @@
 			<quality translated="True">
 				<id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
 				<name>Technomancer</name>
-				<page>
-				</page>
 				<translate>Technomancer</translate>
 			</quality>
 			<quality>
 				<id>15b8fbbd-9d6f-43e4-acf3-97badf073ac4</id>
 				<name>The Artisan's Way</name>
-				<page>12</page>
+				<page>208</page>
 				<translate>Der Weg des Handwerkers</translate>
 			</quality>
 			<quality>
 				<id>a61e2873-fe15-40f5-9ce3-07caa1f824d2</id>
 				<name>The Artist's Way</name>
-				<page>13</page>
+				<page>209</page>
 				<translate>Der Weg des Künstlers</translate>
 			</quality>
 			<quality>
 				<id>3f536570-2f0c-40b1-a056-d310e29e983d</id>
 				<name>The Athlete's Way</name>
-				<page>12</page>
+				<page>207</page>
 				<translate>Der Weg des Athleten</translate>
 			</quality>
 			<quality>
 				<id>01181bb0-2a94-43f1-8a97-41347eac3843</id>
 				<name>The Invisible Way</name>
-				<page>15</page>
+				<page>209</page>
 				<translate>Der Unsichtbare Weg</translate>
 			</quality>
 			<quality>
 				<id>64165b48-d67e-4bb8-b662-ca45fbf5b3c0</id>
 				<name>The Magician's Way</name>
-				<page>15</page>
+				<page>209</page>
 				<translate>Der Weg des Zauberers</translate>
 			</quality>
 			<quality>
 				<id>88dd98ab-2f09-4ba9-b5c1-ff788c31fbac</id>
 				<name>The Speaker's Way</name>
-				<page>13</page>
+				<page>209</page>
 				<translate>Der Weg des Sprechers</translate>
 			</quality>
 			<quality>
 				<id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
 				<name>The Warrior's Way</name>
-				<page>13</page>
+				<page>208</page>
 				<translate>Der Weg des Kriegers</translate>
 			</quality>
 			<quality>
 				<id>02e76a38-304e-4a0e-93a3-ad2938306afc</id>
 				<name>Thermographic Vision</name>
-				<page>
-				</page>
-				<translate>Infrarot</translate>
+				<page>448</page>
+				<translate>Infrarotsicht</translate>
 			</quality>
 			<quality>
 				<id>00cc6499-db13-447e-8116-278d317a9e31</id>
@@ -14934,7 +14934,8 @@
 			<quality>
 				<id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
 				<name>Aspected Magician</name>
-				<translate>Aspected Magician</translate>
+				<page>70</page>
+				<translate>Aspekt Zauberer</translate>
 			</quality>
 			<quality>
 				<id>cfdc255a-bb46-4d9c-8960-e4181455f4e3</id>
@@ -15035,67 +15036,2096 @@
 			<quality>
 				<id>2e7424d3-5d11-4c9d-ba92-f0431bb86786</id>
 				<name>The Beast's Way</name>
-				<translate>The Beast's Way</translate>
+				<page>209</page>
+				<translate>Der Weg des Tiers</translate>
 			</quality>
 			<quality>
 				<id>7da60a93-aa53-478c-8d08-18b5638d9b87</id>
 				<name>The Burnout's Way</name>
-				<translate>The Burnout's Way</translate>
+				<page>207</page>
+				<translate>Der Weg des Ausgebrannten</translate>
 			</quality>
 			<quality>
 				<id>1a530492-7036-49fe-9ff1-ff84c9ed5d0a</id>
 				<name>The Spiritual Way</name>
-				<translate>The Spiritual Way</translate>
+				<page>208</page>
+				<translate>Der Geisterweg</translate>
 			</quality>
 			<quality>
 				<id>a8747e12-08b1-4665-8e48-23c30c047be6</id>
 				<name>Gifted Healer</name>
-				<translate>Gifted Healer</translate>
+				<page>12</page>
+				<translate>Begnadeter Heiler</translate>
 			</quality>
 			<quality>
 				<id>97e9b186-8924-4885-a948-3c781244a5cb</id>
 				<name>Aged (Rating 1)</name>
-				<translate>Aged (Rating 1)</translate>
+				<page>12</page>
+				<translate>Alt (50-59 Jahre)</translate>
 			</quality>
 			<quality>
 				<id>dd0b1ba0-6262-4eb9-9784-c4d29d6b7771</id>
 				<name>Aged (Rating 2)</name>
-				<translate>Aged (Rating 2)</translate>
+				<page>12</page>
+				<translate>Alt (60-69 Jahre)</translate>
 			</quality>
 			<quality>
 				<id>d93fdb8e-c8ca-4699-a610-75cad195b50d</id>
 				<name>Aged (Rating 3)</name>
-				<translate>Aged (Rating 3)</translate>
+				<page>12</page>
+				<translate>Alt (70+ Jahre)</translate>
 			</quality>
 			<quality>
 				<id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
 				<name>Illness (Rating 1)</name>
-				<translate>Illness (Rating 1)</translate>
+				<page>13</page>
+				<translate>Krankheit (Leicht)</translate>
 			</quality>
 			<quality>
 				<id>16c8e91c-0d65-42bb-bc85-4af17c681714</id>
 				<name>Illness (Rating 2)</name>
-				<translate>Illness (Rating 2)</translate>
+				<page>13</page>
+				<translate>Krankheit (Mittel)</translate>
 			</quality>
 			<quality>
 				<id>cea9bcde-4cbf-475e-b641-b6385d518543</id>
 				<name>Illness (Rating 3)</name>
-				<translate>Illness (Rating 3)</translate>
+				<page>13</page>
+				<translate>Krankheit (Schwer)</translate>
 			</quality>
 			<quality>
 				<id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>
 				<name>Pregnant</name>
-				<translate>Pregnant</translate>
+				<page>13</page>
+				<translate>Schwanger</translate>
 			</quality>
 			<quality>
 				<id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
 				<name>Spirit Champion</name>
-				<translate>Spirit Champion</translate>
+				<page>230</page>
+				<translate>Held der Geisterwelt</translate>
 			</quality>
 			<quality>
 				<id>94a4cc04-d856-418f-ac60-165f327433d5</id>
 				<name>Spirit Pariah</name>
-				<translate>Spirit Pariah</translate>
+				<page>230</page>
+				<translate>Ausgestossener der Geisterwelt</translate>
+			</quality>
+			<quality>
+				<id>3ea0d4dd-5ed7-4ab0-817f-68d7d67ab3d1</id>
+				<name>Changeling (Class I SURGE)</name>
+				<source>RF</source>
+				<page>79</page>
+				<translate>Gestaltwandler(Klasse I SURGE)</translate>
+			</quality>
+			<quality>
+				<id>bb16aae9-b511-47b2-93c4-217918346cc8</id>
+				<name>Changeling (Class II SURGE)</name>
+				<source>RF</source>
+				<page>79</page>
+				<translate>Gestaltwandler(Klasse II SURGE)</translate>
+			</quality>
+			<quality>
+				<id>9baa5b9d-e96c-466d-b0b4-dd789a6c0f83</id>
+				<name>Changeling (Class III SURGE)</name>
+				<source>RF</source>
+				<page>79</page>
+				<translate>Gestaltwandler(Klasse III SURGE)</translate>
+			</quality>
+			<quality>
+				<id>f446f88c-26aa-496a-aa78-ed478bf0875f</id>
+				<name>Adrenaline Surge</name>
+				<source>RF</source>
+				<page>123</page>
+				<translate>Adrenalinschub</translate>
+			</quality>
+			<quality>
+				<id>94b64f4d-ef99-460a-a9e8-86c4e14f9159</id>
+				<name>Animal Empathy</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Tierempathie</translate>
+			</quality>
+			<quality>
+				<id>a68a897e-412f-4659-a637-4848f39a9c90</id>
+				<name>Black Market Pipeline</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Schwarzmarktkanal</translate>
+			</quality>
+			<quality>
+				<id>8f232e71-d4bf-4bea-b1b2-b88c7e652073</id>
+				<name>Born Rich</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Reiche Eltern</translate>
+			</quality>
+			<quality>
+				<id>2714ba2c-9297-4f15-ab41-9b4ed3169eaf</id>
+				<name>City Slicker</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Grossstädter</translate>
+			</quality>
+			<quality>
+				<id>604aea10-3f13-4f28-a87b-25b8bf677276</id>
+				<name>College Education.RF</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>College-Abschluss.SL</translate>
+			</quality>
+			<quality>
+				<id>cf3a62e1-8a41-413e-a679-30c8d1b5a0c1</id>
+				<name>Common Sense</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Gesunder Menschenverstand</translate>
+			</quality>
+			<quality>
+				<id>d5eaa4c0-7f7c-4eb2-a708-bed460914d0a</id>
+				<name>Daredevil</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Draufgänger</translate>
+			</quality>
+			<quality>
+				<id>75c24a3e-f5f9-47e4-947f-e461bac0e82f</id>
+				<name>Digital Doppelganger</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Digitaler Doppelgänger</translate>
+			</quality>
+			<quality>
+				<id>e30d8c76-968d-4f05-9635-5cb18ca43836</id>
+				<name>Disgraced</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>In Ungnade</translate>
+			</quality>
+			<quality>
+				<id>07f1833e-e5e0-41e1-91de-9044b2f48367</id>
+				<name>Erased</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Gelöscht</translate>
+			</quality>
+			<quality>
+				<id>51e9e615-e3ba-4b25-b7b0-ffa8acf076f8</id>
+				<name>Fame: Local</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Locale Berühmtheit</translate>
+			</quality>
+			<quality>
+				<id>b6334a9c-4c68-4db5-918e-59e1d91c46fd</id>
+				<name>Fame: National</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Nationale Berühmtheit</translate>
+			</quality>
+			<quality>
+				<id>e8b81024-b6cc-42cf-b56e-664bc01993ea</id>
+				<name>Fame: Megacorporate</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Berühmtheit im Megakonzern</translate>
+			</quality>
+			<quality>
+				<id>d43aca8d-a304-4060-86c7-81ac62fc8df0</id>
+				<name>Fame: Global</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Weltweite Berühmtheit</translate>
+			</quality>
+			<quality>
+				<id>e07fc29c-55cc-46b3-af56-3b1de76f0a89</id>
+				<name>Friends in High Places</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Hochgestellte Freunde</translate>
+			</quality>
+			<quality>
+				<id>f356d63f-1782-4952-aca2-bc04e2cd6c60</id>
+				<name>Hawk Eye</name>
+				<source>RF</source>
+				<page>123</page>
+				<translate>Adleraugen</translate>
+			</quality>
+			<quality>
+				<id>f8f216b5-1c29-467d-9fb5-c9812408203d</id>
+				<name>Inspired.RF</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Inspiriert.SL</translate>
+			</quality>
+			<quality>
+				<id>624fa943-c0a1-44ee-8cd8-3aef4bea3f4b</id>
+				<name>Jack of All Trades Master of None</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Ein bisschen von allem</translate>
+			</quality>
+			<quality>
+				<id>3564b678-7721-4a8d-ac79-1600cf92dc14</id>
+				<name>Lightning Reflexes</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Blitzreflexe</translate>
+			</quality>
+			<quality>
+				<id>d6c7389c-d6cf-42b1-b3f2-3466d5a5d485</id>
+				<name>Linguist</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Sprachtalent</translate>
+			</quality>
+			<quality>
+				<id>45be40cc-a21a-4771-b47d-a532ea60b205</id>
+				<name>Made Man</name>
+				<source>RF</source>
+				<page>127</page>
+				<translate>Mafiasoldat</translate>
+			</quality>
+			<quality>
+				<id>7a468691-1362-439a-a096-76da6933b24c</id>
+				<name>Night Vision</name>
+				<source>RF</source>
+				<page>127</page>
+				<translate>Nachtsicht</translate>
+			</quality>
+			<quality>
+				<id>055e66f2-b530-4664-a143-0c0544e0baee</id>
+				<name>Outdoorsman</name>
+				<source>RF</source>
+				<page>127</page>
+				<translate>Naturmensch</translate>
+			</quality>
+			<quality>
+				<id>554ca59c-22e6-46ef-9b05-250ec8abd728</id>
+				<name>Overclocker</name>
+				<source>RF</source>
+				<page>127</page>
+				<translate>Übertakter</translate>
+			</quality>
+			<quality>
+				<id>1bad26cf-9d67-4bb1-9b4f-e9c80d668651</id>
+				<name>Perceptive I</name>
+				<source>RF</source>
+				<page>123</page>
+				<translate>Aufmerksamkeit I</translate>
+			</quality>
+			<quality>
+				<id>1faea6b4-99d2-4bb6-a292-c5d8e6d16956</id>
+				<name>Perceptive II</name>
+				<source>RF</source>
+				<page>123</page>
+				<translate>Aufmerksamkeit II</translate>
+			</quality>
+			<quality>
+				<id>fd78fa11-5ab6-40db-bdb8-9fd722b08054</id>
+				<name>Perfect Time</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Innere Uhr</translate>
+			</quality>
+			<quality>
+				<id>9567f663-b56e-4038-9e15-78c963171fc6</id>
+				<name>Poor Link</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Schwache Verbindung</translate>
+			</quality>
+			<quality>
+				<id>e518d74e-9e63-42fe-be47-2e37c461d21b</id>
+				<name>Privileged Family Name</name>
+				<source>RF</source>
+				<page>123</page>
+				<translate>Angesehener Familienname</translate>
+			</quality>
+			<quality>
+				<id>c15df7f5-2108-4be2-9500-86045221be0a</id>
+				<name>Rank</name>
+				<source>RF</source>
+				<page>171</page>
+				<translate>Rang</translate>
+			</quality>
+			<quality>
+				<id>ce939b04-5fc6-49e9-a747-9c9d1254449e</id>
+				<name>Restricted Gear</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Spezialausrüstung</translate>
+			</quality>
+			<quality>
+				<id>f15c06f4-d413-4fee-a8de-b1089340fcd7</id>
+				<name>School of Hard Knocks</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Die Harte Schule des Lebens</translate>
+			</quality>
+			<quality>
+				<id>3030bfc9-5551-4ef9-bf3c-badef9c27472</id>
+				<name>Sense of Direction</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Orientierungssinn</translate>
+			</quality>
+			<quality>
+				<id>dc7a0c59-5f9c-4ba9-8b63-aaf442472673</id>
+				<name>Sensei</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Sensei</translate>
+			</quality>
+			<quality>
+				<id>16f138ec-2a6a-4cc3-a5a9-3c12b0fb9689</id>
+				<name>Solid Rep</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Guter Ruf</translate>
+			</quality>
+			<quality>
+				<id>da834cdb-bb3f-4866-a7f6-755d9d17c62b</id>
+				<name>Legendary Rep</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Legendärer Ruf</translate>
+			</quality>
+			<quality>
+				<id>c0f1c43c-7e50-4a84-ad0d-a0bc28f77836</id>
+				<name>Speed Reading</name>
+				<source>RF</source>
+				<page>128</page>
+				<translate>Schnelllesen</translate>
+			</quality>
+			<quality>
+				<id>60972204-7dc5-4882-be7d-781f533dabef</id>
+				<name>Spike Resistance I</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Biofeedback-Resistenz I</translate>
+			</quality>
+			<quality>
+				<id>176830e4-6d4b-4f8c-b207-4169be58e969</id>
+				<name>Spike Resistance II</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Biofeedback-Resistenz II</translate>
+			</quality>
+			<quality>
+				<id>a1c2c6f4-3247-40c6-a983-b740f51d8280</id>
+				<name>Spike Resistance III</name>
+				<source>RF</source>
+				<page>124</page>
+				<translate>Biofeedback-Resistenz III</translate>
+			</quality>
+			<quality>
+				<id>af460f42-c0d2-4f7d-8b80-8e71d19b5aac</id>
+				<name>Spirit Whisperer</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Geisterflüsterer</translate>
+			</quality>
+			<quality>
+				<id>3fd458df-fd47-4c62-9235-1af27eed2928</id>
+				<name>Steely Eyed Wheelman</name>
+				<source>RF</source>
+				<page>127</page>
+				<translate>Meisterfahrer</translate>
+			</quality>
+			<quality>
+				<id>56ef3346-1182-4326-961a-6a9edb0d171f</id>
+				<name>Technical School Education</name>
+				<source>RF</source>
+				<page>123</page>
+				<translate>Abschluss einer Beruffachschule</translate>
+			</quality>
+			<quality>
+				<id>3deeaa50-96d3-4c21-8f09-b9c224af5de3</id>
+				<name>Tough as Nails Physical I</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Knallhart Körperlich I </translate>
+			</quality>
+			<quality>
+				<id>ae04dc1d-d0f9-4807-800e-40828ab46e5e</id>
+				<name>Tough as Nails Physical II</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Knallhart Körperlich II </translate>
+			</quality>
+			<quality>
+				<id>ede449f6-f4f4-423a-b3b0-a6b82c306fec</id>
+				<name>Tough as Nails Physical III</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Knallhart Körperlich III </translate>
+			</quality>
+			<quality>
+				<id>798c8081-d7a8-4c11-8d6f-80fb12a48062</id>
+				<name>Tough as Nails Stun I</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Knallhart Geistig I</translate>
+			</quality>
+			<quality>
+				<id>3c44ba25-b059-4446-8dd6-9da6e37de699</id>
+				<name>Tough as Nails Stun II</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Knallhart Geistig II</translate>
+			</quality>
+			<quality>
+				<id>677c5510-cd57-4640-b437-6c6509f1390d</id>
+				<name>Tough as Nails Stun III</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Knallhart Geistig III</translate>
+			</quality>
+			<quality>
+				<id>2656bcd7-3fe1-4c34-a4fb-89ebebfbf016</id>
+				<name>Trust Fund I</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Treuhandfonds I</translate>
+			</quality>
+			<quality>
+				<id>36d761de-b423-4610-b8e4-026e7e78a3bf</id>
+				<name>Trust Fund II</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Treuhandfonds II</translate>
+			</quality>
+			<quality>
+				<id>e03653d0-6c53-4835-a3f6-baa0908d53c9</id>
+				<name>Trust Fund III</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Treuhandfonds III</translate>
+			</quality>
+			<quality>
+				<id>79835078-5e76-4431-902f-02fdc4990ac9</id>
+				<name>Trust Fund IV</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Treuhandfonds IV</translate>
+			</quality>
+			<quality>
+				<id>0334f054-7d44-443c-a14b-372ba86ff03f</id>
+				<name>Trustworthy</name>
+				<source>RF</source>
+				<page>126</page>
+				<translate>Glaubwürdig</translate>
+			</quality>
+			<quality>
+				<id>c23bc3b5-dd6b-41ee-90b1-6a4e08e3767f</id>
+				<name>Vehicle Empathy</name>
+				<source>RF</source>
+				<page>125</page>
+				<translate>Fahrzeugempathie</translate>
+			</quality>
+			<quality>
+				<id>57cd5ee6-236c-4625-a59e-56c7f15130ab</id>
+				<name>Water Sprite</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Wasserratte</translate>
+			</quality>
+			<quality>
+				<id>f8af38e2-e79a-44f9-8e72-57aba35b7056</id>
+				<name>Witness My Hate</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Spürt meinen Zorn</translate>
+			</quality>
+			<quality>
+				<id>cb3afab7-03ab-400f-bb67-5a854b24418b</id>
+				<name>Albinism I</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Albinismus I</translate>
+			</quality>
+			<quality>
+				<id>30eb56ed-b154-4748-a11f-415f03392113</id>
+				<name>Albinism II</name>
+				<source>RF</source>
+				<page>129</page>
+				<translate>Albinismus II</translate>
+			</quality>
+			<quality>
+				<id>1209249d-4600-46a7-833c-87d14f719b5e</id>
+				<name>Amnesia (Surface Loss)</name>
+				<source>RF</source>
+				<page>130</page>
+				<translate>Amnesie (Gedächnislücken)</translate>
+			</quality>
+			<quality>
+				<id>1f03322a-ef16-4495-9bdb-824006c41aad</id>
+				<name>Amnesia (Neural Deletion)</name>
+				<source>RF</source>
+				<page>130</page>
+				<translate>Amnesie (Gedächnislöschung)</translate>
+			</quality>
+			<quality>
+				<id>84d4acee-d58a-43dc-bea7-90cb133fbc76</id>
+				<name>Asthma</name>
+				<source>RF</source>
+				<page>130</page>
+				<translate>Asthma</translate>
+			</quality>
+			<quality>
+				<id>e7148da6-022b-4d54-b888-60719265e7f1</id>
+				<name>Bi-Polar</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Manisch-Depressiv</translate>
+			</quality>
+			<quality>
+				<id>5c5dd94f-8ad2-4fb2-bbe6-26d18e0da436</id>
+				<name>Big Regret</name>
+				<source>RF</source>
+				<page>131</page>
+				<translate>Dunkles Geheimnis</translate>
+			</quality>
+			<quality>
+				<id>81f51f6b-672f-477b-b84a-10b602d714e0</id>
+				<name>Blind</name>
+				<source>RF</source>
+				<page>131</page>
+				<translate>Blind</translate>
+			</quality>
+			<quality>
+				<id>56ed0031-cf9b-427c-978f-0a766ac2181d</id>
+				<name>Borrowed Time</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Geborgte Zeit</translate>
+			</quality>
+			<quality>
+				<id>8fa3b253-1e6f-439d-940e-f48a1d8959c8</id>
+				<name>Carrier (HMHVV Strain II)</name>
+				<source>RF</source>
+				<page>119</page>
+				<translate>Überträger (MMVV Strang II)</translate>
+			</quality>
+			<quality>
+				<id>3fc02bdc-1f3f-448c-8e8c-d1869ac4fcfc</id>
+				<name>Carrier (HMHVV Strain III)</name>
+				<source>RF</source>
+				<page>119</page>
+				<translate>Überträger (MMVV Strang III)</translate>
+			</quality>
+			<quality>
+				<id>bdb17940-1bb5-4d6e-925f-019cfa8090af</id>
+				<name>Computer Illiterate</name>
+				<source>RF</source>
+				<page>131</page>
+				<translate>Computer-Analphabet</translate>
+			</quality>
+			<quality>
+				<id>cf66af29-b4ff-4931-bc0b-5c5b6006e978</id>
+				<name>Creature of Comfort (Middle)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Luxusgeschöpf (Mittelschicht)</translate>
+			</quality>
+			<quality>
+				<id>d63f2467-1b76-4f7b-adef-bfced240109e</id>
+				<name>Creature of Comfort (High)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Luxusgeschöpf (Oberschicht)</translate>
+			</quality>
+			<quality>
+				<id>bf0f580e-ca90-40e7-8ca1-018bacad9bbc</id>
+				<name>Creature of Comfort (Luxury)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Luxusgeschöpf (Luxus-Lebensstil)</translate>
+			</quality>
+			<quality>
+				<id>8fc3e769-ea71-41e1-968c-600d507cdf94</id>
+				<name>Day Job (10 hrs)</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Fester Job (10 h)</translate>
+			</quality>
+			<quality>
+				<id>4294e480-4299-41e5-9336-50a98ec14bbf</id>
+				<name>Day Job (20 hrs)</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Fester Job (20 h)</translate>
+			</quality>
+			<quality>
+				<id>12b6f08b-5513-4dfd-840d-fd43595d15b8</id>
+				<name>Day Job (40 hrs)</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Fester Job (40 h)</translate>
+			</quality>
+			<quality>
+				<id>fc31eb53-28a3-46cb-af10-982fca829e34</id>
+				<name>Deaf</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Taub</translate>
+			</quality>
+			<quality>
+				<id>8bca877e-42e5-4ff7-92ec-4c83f4cadb86</id>
+				<name>Did You Just Call Me Dumb?</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Wie hast du mich genannt?</translate>
+			</quality>
+			<quality>
+				<id>7706ce23-77c2-470f-bb7e-6a4e56fa78fe</id>
+				<name>Dimmer Bulb I</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Keine grosse Leuchte I</translate>
+			</quality>
+			<quality>
+				<id>579fee35-82f9-4dd1-a4ed-8463c7a87e5b</id>
+				<name>Dimmer Bulb II</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Keine grosse Leuchte II</translate>
+			</quality>
+			<quality>
+				<id>f79a1c58-6cac-476e-bfc3-45f9293c6af7</id>
+				<name>Dimmer Bulb III</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Keine grosse Leuchte III</translate>
+			</quality>
+			<quality>
+				<id>4d435a24-f8f9-456d-83c1-6fecb217cf67</id>
+				<name>Driven</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Getriebener</translate>
+			</quality>
+			<quality>
+				<id>fae6e95c-f71b-47e5-8cb4-696f2af2bf22</id>
+				<name>Emotional Attachment</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Lieblingsspielzeug</translate>
+			</quality>
+			<quality>
+				<id>4fe8fa5e-e31b-4126-a880-3e719a0a5820</id>
+				<name>Ex-Con</name>
+				<source>RF</source>
+				<page>131</page>
+				<translate>Ex-Knacki</translate>
+			</quality>
+			<quality>
+				<id>9056baa6-ed79-4f28-a199-36093d99555f</id>
+				<name>Flashbacks I</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Flashbacks I</translate>
+			</quality>
+			<quality>
+				<id>41d447d7-5ea0-45f9-8b9d-16b5c9ec8937</id>
+				<name>Flashbacks II</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Flashbacks II</translate>
+			</quality>
+			<quality>
+				<id>b86cdb32-7c3a-404b-94c1-cafe8ccad060</id>
+				<name>Hobo with a Shotgun</name>
+				<source>RF</source>
+				<page>135</page>
+				<translate>Penner mit Knarre</translate>
+			</quality>
+			<quality>
+				<id>6a0a61f0-4b14-410e-9c3c-4c88a4592277</id>
+				<name>Hung Out to Dry</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Kalte Schulter</translate>
+			</quality>
+			<quality>
+				<id>df4cfe8b-3394-4ac8-b5c8-fda04701de17</id>
+				<name>Illiterate</name>
+				<source>RF</source>
+				<page>130</page>
+				<translate>Analphabet</translate>
+			</quality>
+			<quality>
+				<id>2b4dd1b1-b806-44e3-9067-65dc39c82d13</id>
+				<name>In Debt I</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet I</translate>
+			</quality>
+			<quality>
+				<id>3a4120ac-9788-4813-95a0-2a57bc844aac</id>
+				<name>In Debt II</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet II</translate>
+			</quality>
+			<quality>
+				<id>93b54fdf-6d1f-4d91-a754-419ee586cbf9</id>
+				<name>In Debt III</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet III</translate>
+			</quality>
+			<quality>
+				<id>0ede6fab-d882-4ec1-ac4c-d37bd870757f</id>
+				<name>In Debt IV</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet IV</translate>
+			</quality>
+			<quality>
+				<id>949d1fc5-78b5-4b7b-bef0-f1dd54816076</id>
+				<name>In Debt V</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet V</translate>
+			</quality>
+			<quality>
+				<id>d8815a08-135b-4a16-99bb-bc770ad5d9a6</id>
+				<name>In Debt VI</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet VI</translate>
+			</quality>
+			<quality>
+				<id>2553b9bd-898f-4816-acea-d62290ea9d2c</id>
+				<name>In Debt VII</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet VII</translate>
+			</quality>
+			<quality>
+				<id>974b3191-c524-45ba-be78-225bc599317a</id>
+				<name>In Debt VIII</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet VIII</translate>
+			</quality>
+			<quality>
+				<id>4aa3e87b-1f73-4c23-80f5-13e306633ef1</id>
+				<name>In Debt IX</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet IX</translate>
+			</quality>
+			<quality>
+				<id>4399a563-eee8-41ac-bb16-ddde4ccb5b46</id>
+				<name>In Debt X</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet X</translate>
+			</quality>
+			<quality>
+				<id>8c79a44a-1951-4f8f-90b1-fd3e1bd9d617</id>
+				<name>In Debt XI</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet XI</translate>
+			</quality>
+			<quality>
+				<id>7032c82f-ebd2-498f-9fd9-871349fe6d72</id>
+				<name>In Debt XII</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet XII</translate>
+			</quality>
+			<quality>
+				<id>78601939-9c6a-42d8-83bc-b6ab57251b45</id>
+				<name>In Debt XIII</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet XIII</translate>
+			</quality>
+			<quality>
+				<id>d3bd2fc0-dbea-4073-8c86-4a7b15987988</id>
+				<name>In Debt XIV</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet XIV</translate>
+			</quality>
+			<quality>
+				<id>a04672fa-95b1-47c1-9697-c45026cd430a</id>
+				<name>In Debt XV</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Verschuldet XV</translate>
+			</quality>
+			<quality>
+				<id>43cab487-f5f7-4fc1-bc61-c011c3aa3a67</id>
+				<name>Incomplete Deprogramming</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Unvollständige Deprogrammierung</translate>
+			</quality>
+			<quality>
+				<id>34ed73cb-28a3-43e1-a2bc-addbe2ccbbd3</id>
+				<name>Infirm I</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Körperliche Schwäche I</translate>
+			</quality>
+			<quality>
+				<id>1d3709e2-9c1e-4b5e-b37a-14978bdd39a1</id>
+				<name>Infirm II</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Körperliche Schwäche II</translate>
+			</quality>
+			<quality>
+				<id>a9cc86d5-bc0c-4fb6-9b28-6e587341bc02</id>
+				<name>Infirm III</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Körperliche Schwäche III</translate>
+			</quality>
+			<quality>
+				<id>9a5c2740-1805-440f-a36e-76dc796da4be</id>
+				<name>Infirm IV</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Körperliche Schwäche IV</translate>
+			</quality>
+			<quality>
+				<id>c825cc1c-ba80-40e5-af6d-46ddab625444</id>
+				<name>Infirm V</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Körperliche Schwäche V</translate>
+			</quality>
+			<quality>
+				<id>bf50a6c9-f165-451c-8d38-89240f39bb44</id>
+				<name>Liar</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Lügner</translate>
+			</quality>
+			<quality>
+				<id>dab93ad4-bc28-4f67-a3f7-209ba893c7fb</id>
+				<name>Night Blindness</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Nachtblindheit</translate>
+			</quality>
+			<quality>
+				<id>136cb6e9-0353-4324-9671-1ee176c5aeef</id>
+				<name>Oblivious I</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Unaufmerksamkeit I</translate>
+			</quality>
+			<quality>
+				<id>26fe2c36-f6cc-4f97-ae1b-5d5eb3be2315</id>
+				<name>Oblivious II</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Unaufmerksamkeit II</translate>
+			</quality>
+			<quality>
+				<id>3b2624fe-1d4d-47ba-a663-3ca21323f28c</id>
+				<name>Pacifist I</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Pazifist I</translate>
+			</quality>
+			<quality>
+				<id>ab5142e6-c8d7-4035-86da-dcdcc2fa46cc</id>
+				<name>Pacifist II</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Pazifist II</translate>
+			</quality>
+			<quality>
+				<id>4e2763ca-e042-4cad-996b-1b472c5426ca</id>
+				<name>Paranoia</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Paranoia</translate>
+			</quality>
+			<quality>
+				<id>dca0897f-532a-43ab-8796-4ef761e829af</id>
+				<name>Paraplegic</name>
+				<source>RF</source>
+				<page>135</page>
+				<translate>Querschnittgelähmt</translate>
+			</quality>
+			<quality>
+				<id>3659b016-5511-4cdb-a9f3-ce2ecfba4513</id>
+				<name>Phobia (Uncommon, Mild)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Phobie (selten, Leicht)</translate>
+			</quality>
+			<quality>
+				<id>255ba2d3-6fbd-4b89-8131-c10f96e70d32</id>
+				<name>Phobia (Uncommon, Moderate)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Phobie (selten, Mittel)</translate>
+			</quality>
+			<quality>
+				<id>e929cc4a-0973-4c55-9ca9-a925b0d7d463</id>
+				<name>Phobia (Uncommon, Severe)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Phobie (selten, Schwer)</translate>
+			</quality>
+			<quality>
+				<id>ff42593b-e1da-406e-aa10-cd90ef2629f5</id>
+				<name>Phobia (Common, Mild)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Phobie (häufig, Leicht)</translate>
+			</quality>
+			<quality>
+				<id>1c293ee1-c2e3-4e82-9ee6-91425955f250</id>
+				<name>Phobia (Common, Moderate)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Phobie (häufig, Mittel)</translate>
+			</quality>
+			<quality>
+				<id>10b0e391-6cb4-46ba-a357-570ffa2eba69</id>
+				<name>Phobia (Common, Severe)</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Phobie (häufig, Schwer)</translate>
+			</quality>
+			<quality>
+				<id>eeb2ed52-dd4a-4961-83e2-d707530ed193</id>
+				<name>Pie Iesu Domine. Dona Eis Requiem.</name>
+				<source>RF</source>
+				<page>132</page>
+				<translate>Flagellant</translate>
+			</quality>
+			<quality>
+				<id>5adbea9d-7b48-4bc9-9941-31df54b02804</id>
+				<name>Poor Self Control (Braggart)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Aufschneider)</translate>
+			</quality>
+			<quality>
+				<id>9f5ba6ba-c18e-49a4-8043-2dc5e7900b0c</id>
+				<name>Poor Self Control (Compulsive I, Personal)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft I, Persönlich)</translate>
+			</quality>
+			<quality>
+				<id>9d11f7df-c783-4bcb-8970-3473379bcf9d</id>
+				<name>Poor Self Control (Compulsive II, Personal)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft II, Persönlich)</translate>
+			</quality>
+			<quality>
+				<id>6406fb36-187e-486e-8dd0-1ddf6f1b3dbe</id>
+				<name>Poor Self Control (Compulsive III, Personal)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft III, Persönlich)</translate>
+			</quality>
+			<quality>
+				<id>882c7cbc-2a0a-4465-ac2e-7ae8af98c928</id>
+				<name>Poor Self Control (Compulsive IV, Personal)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft IV, Persönlich)</translate>
+			</quality>
+			<quality>
+				<id>d194fce3-8b1b-4ad8-a2be-87dbdd1c0569</id>
+				<name>Poor Self Control (Compulsive I, Public Single Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft I, einfacher öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>beb59507-23bc-4b21-97d9-a3256d505774</id>
+				<name>Poor Self Control (Compulsive II, Public Single Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft II, einfacher öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>03c2f009-825b-4464-abd1-1d27d5ce905e</id>
+				<name>Poor Self Control (Compulsive III, Public Single Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft III, einfacher öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>5792c584-c1e0-4231-9cdf-e6ef27ce2539</id>
+				<name>Poor Self Control (Compulsive IV, Public Single Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft IV, einfacher öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>f7ca837e-3691-4b49-8ef2-5f2ddbe53c1e</id>
+				<name>Poor Self Control (Compulsive I, Public Broad Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft I, häufiger öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>e73e2f0a-3bba-42d7-9351-d68255ce3f3a</id>
+				<name>Poor Self Control (Compulsive II, Public Broad Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft II, häufiger öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>cd39499d-ec05-44ec-b13f-fc66e11f686c</id>
+				<name>Poor Self Control (Compulsive III, Public Broad Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft III, häufiger öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>3039da6f-ad92-4082-bcf1-f2b400323679</id>
+				<name>Poor Self Control (Compulsive IV, Public Broad Aspect)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Zwanghaft IV, häufiger öffentlicher Aspekt)</translate>
+			</quality>
+			<quality>
+				<id>68399920-e3ff-4d17-a69a-0265c57422ab</id>
+				<name>Poor Self Control (Thrill Seeker)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Adrinalinjunkie)</translate>
+			</quality>
+			<quality>
+				<id>62de8226-b9a9-4065-9e82-b9ac4d4d027a</id>
+				<name>Poor Self Control (Vindictive)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Rachsucht)</translate>
+			</quality>
+			<quality>
+				<id>83e2a9b7-e06e-494e-95d3-c6e554d9928e</id>
+				<name>Poor Self Control (Combat Monster)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schlechte Selbstbeherrschung (Kampfmonster)</translate>
+			</quality>
+			<quality>
+				<id>ce01db25-465b-4d13-b091-055496f3a5c4</id>
+				<name>Records on File</name>
+				<source>RF</source>
+				<page>131</page>
+				<translate>Dossier</translate>
+			</quality>
+			<quality>
+				<id>1ae3ce29-5249-4477-952a-6074a212e197</id>
+				<name>Reduced Sense (Smell)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schwacher Sinn (Geruch)</translate>
+			</quality>
+			<quality>
+				<id>4d3a1151-0bc3-4858-98e1-fe930cd98425</id>
+				<name>Reduced Sense (Taste)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schwacher Sinn (Geschmack)</translate>
+			</quality>
+			<quality>
+				<id>2699e390-edd6-45fc-9e87-6c584e864490</id>
+				<name>Reduced Sense (Touch)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schwacher Sinn (Gefühl)</translate>
+			</quality>
+			<quality>
+				<id>c70262ae-6137-4c2a-82c7-b38c6debb367</id>
+				<name>Reduced Sense (Hearing)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schwacher Sinn (Höhren)</translate>
+			</quality>
+			<quality>
+				<id>82b00ac1-06c0-4566-ad51-69bba96efc6f</id>
+				<name>Reduced Sense (Sight)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schwacher Sinn (Sicht)</translate>
+			</quality>
+			<quality>
+				<id>cd42abaf-348c-41e9-ac9d-fbf9e2946b86</id>
+				<name>Reduced Sense (Astral Sight)</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Schwacher Sinn (Astrale Sicht)</translate>
+			</quality>
+			<quality>
+				<id>04b68abc-0f9d-4fe9-8b41-82d7b9c95e2e</id>
+				<name>Sensory Overload Syndrome</name>
+				<source>RF</source>
+				<page>136</page>
+				<translate>Reizüberflutungs-Syndrom</translate>
+			</quality>
+			<quality>
+				<id>3e255d71-c126-40a6-a6f6-44bd17d019e4</id>
+				<name>Signature</name>
+				<source>RF</source>
+				<page>134</page>
+				<translate>Markenzeichen</translate>
+			</quality>
+			<quality>
+				<id>34965554-9252-4b37-b40b-c904e8034d03</id>
+				<name>Vendetta</name>
+				<source>RF</source>
+				<page>137</page>
+				<translate>Vendetta</translate>
+			</quality>
+			<quality>
+				<id>1e3d8aff-c31c-41f9-8c62-e3332cac79fa</id>
+				<name>Wanted</name>
+				<source>RF</source>
+				<page>133</page>
+				<translate>Gesucht</translate>
+			</quality>
+			<quality>
+				<id>f9cdcb14-7181-4105-b59a-3628663f3be7</id>
+				<name>Natural Weapon: Kick (Centaur)</name>
+				<source>RF</source>
+				<page>81</page>
+				<translate>Naturliche Waffe: Tritt (Zentaur)</translate>
+			</quality>
+			<quality>
+				<id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
+				<name>Magic Sense</name>
+				<source>SG</source>
+				<page>203</page>
+				<translate>Magie Gespühr</translate>
+			</quality>
+			<quality>
+				<id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
+				<name>Natural Weapon: Bite (Naga)</name>
+				<source>RF</source>
+				<page>81</page>
+				<translate>Naturliche Waffe: Biss (Naga)</translate>
+			</quality>
+			<quality>
+				<id>9e50dbab-8a5d-430e-83b0-731cce142848</id>
+				<name>Astral Perception</name>
+				<source>SR5</source>
+				<page>308</page>
+				<translate>Astrale Wahrnehmung</translate>
+			</quality>
+			<quality>
+				<id>6509ce7a-a453-4941-9bfa-ec0fe48c6d40</id>
+				<name>360-degree Eyesight</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Rundumsicht</translate>
+			</quality>
+			<quality>
+				<id>9b441cbf-538d-4a75-bc7d-b1c9b6be0f9d</id>
+				<name>Animal Pelage (Quills)</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Tierbehaarung (Stacheln)</translate>
+			</quality>
+			<quality>
+				<id>4a381795-b582-4a81-8963-d81027a3986f</id>
+				<name>Animal Pelage (Insulating Pelt)</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Tierbehaarung (Isolierendes Fell)</translate>
+			</quality>
+			<quality>
+				<id>f46d91ad-8b3c-4bd7-bc5b-85ab7bb36d78</id>
+				<name>Animal Pelage (Camo Fur)</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Tierbehaarung (Tarnfell)</translate>
+			</quality>
+			<quality>
+				<id>0355c69a-85b4-48ae-84d6-f6dbf031eae7</id>
+				<name>Arcane Arrester</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Arkaner Blitzableiter I</translate>
+			</quality>
+			<quality>
+				<id>0a566660-4b37-4f61-a5e5-c85fcf01ddc6</id>
+				<name>Arcane Arrester II</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Arkaner Blitzableiter II</translate>
+			</quality>
+			<quality>
+				<id>cdcb6ace-b35e-48bc-8eb0-d7a48626e350</id>
+				<name>Balance Receptor</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Gleichgewichtsrezeptor</translate>
+			</quality>
+			<quality>
+				<id>f767c6fa-c316-428b-b15d-f7f96be97fba</id>
+				<name>Beak</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Schnabel</translate>
+			</quality>
+			<quality>
+				<id>491c1279-693d-47c7-87c7-b77f4dc4f60e</id>
+				<name>Raptor Beak</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Greifvogelschnabel</translate>
+			</quality>
+			<quality>
+				<id>f368f4c5-6d8e-4bf0-9567-f6ba8367678f</id>
+				<name>Bicardiac</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Zweites Herz</translate>
+			</quality>
+			<quality>
+				<id>79c42549-0ebd-48f9-9e1d-1215ab07bd47</id>
+				<name>Biosonar</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Biosonar</translate>
+			</quality>
+			<quality>
+				<id>0c11aefb-2306-43e9-9588-a84a563e9025</id>
+				<name>Bone Spikes</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Knochenlanzen</translate>
+			</quality>
+			<quality>
+				<id>8c434958-fce8-45d3-88a5-b0f6f8ca58b0</id>
+				<name>Broadened Auditory System (Infrasound)</name>
+				<source>RF</source>
+				<page>90</page>
+				<translate>Erweitertes Gehöhrspektrum (Infraschall)</translate>
+			</quality>
+			<quality>
+				<id>bbabf58c-e3b7-49c0-be8f-29f7d8011814</id>
+				<name>Broadened Auditory System (Ultrasound)</name>
+				<source>RF</source>
+				<page>90</page>
+				<translate>Erweitertes Gehöhrspektrum (Ultrschall)</translate>
+			</quality>
+			<quality>
+				<id>cb8ee404-fe6d-4697-9adf-1e41b14355cb</id>
+				<name>Camouflage</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Tarnung (einfach)</translate>
+			</quality>
+			<quality>
+				<id>02a5832b-6521-4be0-a025-f320e345ca81</id>
+				<name>Dynamic Coloration</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Tarnung (Dynamische Färbung)</translate>
+			</quality>
+			<quality>
+				<id>bd2cf8ea-4eb3-458c-aa04-2de47067f3ad</id>
+				<name>Celerity</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Schnelligkeit</translate>
+			</quality>
+			<quality>
+				<id>7d6e068b-0d9d-47d5-b175-6785b50eeb2b</id>
+				<name>Claws</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Grabkrallen</translate>
+			</quality>
+			<quality>
+				<id>72a6fe4e-056d-4f04-872d-d911f2e66946</id>
+				<name>Razor Claws</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Messerklauen</translate>
+			</quality>
+			<quality>
+				<id>d45602d8-6c15-476b-8f91-adb35c8804ec</id>
+				<name>Retractable Claws</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Einziehbare Klauen</translate>
+			</quality>
+			<quality>
+				<id>1d9239a1-0e58-4779-873d-5b8677865806</id>
+				<name>Climate Adaptation (Arctic)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Klimaanpassung (Polar)</translate>
+			</quality>
+			<quality>
+				<id>850ac6a8-4264-4b7f-bf75-04e1c768b411</id>
+				<name>Climate Adaptation (Desert)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Klimaanpassung (Wüste)</translate>
+			</quality>
+			<quality>
+				<id>a4a85a3e-c5b6-4613-b299-7726c6918026</id>
+				<name>Corrosive Spit</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Ätzender Speicher</translate>
+			</quality>
+			<quality>
+				<id>fe67d02c-e9f0-4d8f-9888-adbea2797376</id>
+				<name>Dermal Alteration (Bark Skin)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Hautveränderung (Rindenhaut)</translate>
+			</quality>
+			<quality>
+				<id>8a09e5c6-8b0a-4fbb-80dc-42020fac96b5</id>
+				<name>Dermal Alteration (Blubber)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Hautveränderung (Wallhaut)</translate>
+			</quality>
+			<quality>
+				<id>baee0763-4b49-4568-a80b-e1d4682272cd</id>
+				<name>Dermal Alteration (Dragon Skin)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Hautveränderung (Drachenhaut)</translate>
+			</quality>
+			<quality>
+				<id>64354f78-c8dd-4d3e-9d9f-3fcbe08e6c27</id>
+				<name>Dermal Alteration (Granite Shell)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Hautveränderung (Granithaut)</translate>
+			</quality>
+			<quality>
+				<id>bfb6b16b-d2b1-4b28-af37-e011d016da37</id>
+				<name>Dermal Alteration (Rhino Hide)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Hautveränderung (Elefantenhaut)</translate>
+			</quality>
+			<quality>
+				<id>72d1d797-4b61-4fbd-97b7-ffb8ea9ddf36</id>
+				<name>Dermal Deposits</name>
+				<source>RF</source>
+				<page>90</page>
+				<translate>Dermalablagerungen</translate>
+			</quality>
+			<quality>
+				<id>de498da5-c141-4ea3-991e-97e73fb551d4</id>
+				<name>Defensive Secretion</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Abwehrsekret</translate>
+			</quality>
+			<quality>
+				<id>67767d53-56f0-4b66-b7ef-5ff6319ea551</id>
+				<name>Electroception (Electrosense)</name>
+				<source>RF</source>
+				<page>90</page>
+				<translate>Elektrosinn (Elektro)</translate>
+			</quality>
+			<quality>
+				<id>54c7952d-24b2-489e-9597-3430dfff6207</id>
+				<name>Electroception (Technosense)</name>
+				<source>RF</source>
+				<page>90</page>
+				<translate>Elektrosinn (Technosinn)</translate>
+			</quality>
+			<quality>
+				<id>5e0aebd7-02a0-4ffd-80f5-56a26d508e2f</id>
+				<name>Elongated Limbs</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Verlängerte Gliedmassen</translate>
+			</quality>
+			<quality>
+				<id>27209cc3-756b-4cb2-b6fe-ffec5bd6a072</id>
+				<name>Fangs</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Fangzähne</translate>
+			</quality>
+			<quality>
+				<id>ef0e9191-c931-4d41-986f-ed1ad0092a65</id>
+				<name>Frog Tongue</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Froschzunge</translate>
+			</quality>
+			<quality>
+				<id>07536b3f-ca42-43af-b7eb-ce4e410aaa2e</id>
+				<name>Functional Tail (Balance)</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Funktionaler Schwanz (Balance)</translate>
+			</quality>
+			<quality>
+				<id>92f92e40-f9c3-4d5a-b832-44375088be97</id>
+				<name>Functional Tail (Paddle)</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Funktionaler Schwanz (Ruder)</translate>
+			</quality>
+			<quality>
+				<id>c724871b-6ae9-43fe-a0ae-83b0afcd4123</id>
+				<name>Functional Tail (Prehensile)</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Funktionaler Schwanz (Greif)</translate>
+			</quality>
+			<quality>
+				<id>c4324d55-2914-4b5c-9586-19f5515da5d7</id>
+				<name>Functional Tail (Thagomizer)</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Funktionaler Schwanz (Stachel)</translate>
+			</quality>
+			<quality>
+				<id>195f183e-8c42-49cb-bfce-fe84bb9a9964</id>
+				<name>Gills (Air)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Kiemen (Luft)</translate>
+			</quality>
+			<quality>
+				<id>d10f48e4-5587-4ecf-ba8e-f7de16fe6a2a</id>
+				<name>Gills (Aqua)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Kiemen (Wasser)</translate>
+			</quality>
+			<quality>
+				<id>1cf04f79-0d0a-4c61-b166-d1c95b78ebfb</id>
+				<name>Gills (Full)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Kiemen (Luft + Wasser)</translate>
+			</quality>
+			<quality>
+				<id>35103093-5f41-4d42-a2b5-6fbb64f627b1</id>
+				<name>Glamour</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Feenglanz</translate>
+			</quality>
+			<quality>
+				<id>3f96728d-9309-4335-9712-a568b61a8983</id>
+				<name>Greasy Skin</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Ölige Haut</translate>
+			</quality>
+			<quality>
+				<id>556c2599-ae97-44ff-98aa-442af1c9c6d4</id>
+				<name>Goring Horns</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Spitze Hörner</translate>
+			</quality>
+			<quality>
+				<id>32c427cf-2f0b-4cbc-a1bd-5dc97ba5e9c6</id>
+				<name>Keen-Eared</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Hellhörig</translate>
+			</quality>
+			<quality>
+				<id>9885823f-d80f-45dc-b379-1b3f55cd6aa3</id>
+				<name>Larger Tusks</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Rüssel</translate>
+			</quality>
+			<quality>
+				<id>2f080d13-92d7-4b16-9ee6-93b5a89206e4</id>
+				<name>Low-Light Vision (Changeling)</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Restlichtverstärkung (Wechselbalg)</translate>
+			</quality>
+			<quality>
+				<id>210401d7-57fa-4260-9517-2725689a509e</id>
+				<name>Low-Light Vision (Feline)</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Restlichtverstärkung (Feline)</translate>
+			</quality>
+			<quality>
+				<id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
+				<name>Magic Sense (Changeling)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Magiegespür (Wechselbalg)</translate>
+			</quality>
+			<quality>
+				<id>a22edb75-9b26-4f9f-b61a-26c58197694b</id>
+				<name>Magnetoception</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Magnetsinn</translate>
+			</quality>
+			<quality>
+				<id>51027aca-c1db-470a-afa4-d28cc219152f</id>
+				<name>Marsupial Pouch</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Beuteltasche</translate>
+			</quality>
+			<quality>
+				<id>cf429aea-85a7-4108-8fcd-9a062f3fc117</id>
+				<name>Metagenetic Improvement</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Metagenetische Verbesserung</translate>
+			</quality>
+			<quality>
+				<id>dc510f9d-0648-474b-8016-11a810ada098</id>
+				<name>Metahuman Traits</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Metamenschliche Merkmale</translate>
+			</quality>
+			<quality>
+				<id>9b8a9ecc-295f-4764-b5d8-0a3fb317d9b8</id>
+				<name>Monkey Paws</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Affenfüsse</translate>
+			</quality>
+			<quality>
+				<id>f3f8c1c4-a222-4f9d-a89d-b8a25fde0dad</id>
+				<name>Nasty Vibe</name>
+				<source>RF</source>
+				<page>89</page>
+				<translate>Böse Ausstrahlung</translate>
+			</quality>
+			<quality>
+				<id>05113ce9-0255-4753-b467-569564f6a60d</id>
+				<name>Natural Venom (Exhaled, Mild)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (ausgeatmet, Leicht)</translate>
+			</quality>
+			<quality>
+				<id>280af894-df4f-451c-874d-71c4b3db1580</id>
+				<name>Natural Venom (Exhaled, Moderate)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (ausgeatmet, Mittel)</translate>
+			</quality>
+			<quality>
+				<id>0d416e3e-2f90-4a33-8277-d58af5e42de5</id>
+				<name>Natural Venom (Exhaled, Serious)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (ausgeatmet, Stark)</translate>
+			</quality>
+			<quality>
+				<id>3a627958-3dc8-4db9-8672-3c4f343f484b</id>
+				<name>Natural Venom (Exhaled, Deadly)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (ausgeatmet, Tödlich)</translate>
+			</quality>
+			<quality>
+				<id>51d327e7-e5f7-4972-a9f8-836bb555f53d</id>
+				<name>Natural Venom (Spat, Mild)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (gespuckt, Leicht)</translate>
+			</quality>
+			<quality>
+				<id>c5552f98-af9d-413e-ba81-4d42dc9d0770</id>
+				<name>Natural Venom (Spat, Moderate)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (gespuckt, Mittel)</translate>
+			</quality>
+			<quality>
+				<id>a31a80cb-d05b-40ff-849e-37d2d9856225</id>
+				<name>Natural Venom (Spat, Serious)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (gespuckt, Schwer)</translate>
+			</quality>
+			<quality>
+				<id>19901576-8376-439a-9070-0a2df09c6baf</id>
+				<name>Natural Venom (Spat, Deadly)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (gespuckt, Tödlich)</translate>
+			</quality>
+			<quality>
+				<id>827a22bc-43ea-4f17-bf81-f68e289ea623</id>
+				<name>Natural Venom (Injected, Mild)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (injiziert, Leicht)</translate>
+			</quality>
+			<quality>
+				<id>be99a6f3-e1f2-4abe-afae-34a7dadb0b8f</id>
+				<name>Natural Venom (Injected, Moderate)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (injiziert, Mittel)</translate>
+			</quality>
+			<quality>
+				<id>4d6208c5-5b00-440c-a720-20f41d54410c</id>
+				<name>Natural Venom (Injected, Serious)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (injiziert, Schwer)</translate>
+			</quality>
+			<quality>
+				<id>2291b5e9-ebec-4a8f-96ae-e2539501ba72</id>
+				<name>Natural Venom (Injected, Deadly)</name>
+				<source>RF</source>
+				<page>93</page>
+				<translate>Natürliches Gift (injiziert, Tödlich)</translate>
+			</quality>
+			<quality>
+				<id>b3fce27e-d762-4eaa-9cb6-c62cfb2fbccf</id>
+				<name>Ogre Stomach</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Ogermagen</translate>
+			</quality>
+			<quality>
+				<id>5ce51789-1ed2-446a-8aff-5f7f70969507</id>
+				<name>Photometabolism</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Photometabolismus</translate>
+			</quality>
+			<quality>
+				<id>493450e1-b88b-441b-b7ee-bdecf5a99d2d</id>
+				<name>Proboscis</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Rüssel</translate>
+			</quality>
+			<quality>
+				<id>5451c3da-b08c-4a63-899f-afb62bd50a57</id>
+				<name>Satyr Legs</name>
+				<source>RF</source>
+				<page>94</page>
+				<translate>Satyrbeine</translate>
+			</quality>
+			<quality>
+				<id>3e80d1e0-ae6a-4059-8a49-ae97547b3384</id>
+				<name>Setae</name>
+				<source>RF</source>
+				<page>91</page>
+				<translate>Geckohände</translate>
+			</quality>
+			<quality>
+				<id>51ba5e67-f2fd-4149-b24c-9b502ed0e7c7</id>
+				<name>Shiva Arms (1 Pair)</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Shiva-Arme (1 Paar)</translate>
+			</quality>
+			<quality>
+				<id>697e7f6f-448e-4d30-9f77-232476448c0c</id>
+				<name>Shiva Arms (2 Pairs)</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Shiva-Arme (2 Paare)</translate>
+			</quality>
+			<quality>
+				<id>9b205e4a-66c7-45d9-b87b-d0c743944d60</id>
+				<name>Thermal Sensitivity</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Temperatursinn</translate>
+			</quality>
+			<quality>
+				<id>fd346177-3791-44c0-af8c-7cf176fc9aa3</id>
+				<name>Thermographic Vision (SURGE)</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Infrarotsicht (SURGE)</translate>
+			</quality>
+			<quality>
+				<id>c16ecaf5-e57f-4aae-8ef9-b7df84626ac5</id>
+				<name>Thorns</name>
+				<source>RF</source>
+				<page>90</page>
+				<translate>Dornen</translate>
+			</quality>
+			<quality>
+				<id>4390735f-54fa-44a5-bce7-d23a67427f25</id>
+				<name>Underwater Vision</name>
+				<source>RF</source>
+				<page>96</page>
+				<translate>Unterwassersicht</translate>
+			</quality>
+			<quality>
+				<id>6dae7800-8634-44e3-9aca-f5a18eb06b45</id>
+				<name>Vomeronasal Organ</name>
+				<source>RF</source>
+				<page>92</page>
+				<translate>Jacobson-Organ</translate>
+			</quality>
+			<quality>
+				<id>059f4399-f3c4-40b0-a975-d7e29a2e412b</id>
+				<name>Webbed Digits</name>
+				<source>RF</source>
+				<page>95</page>
+				<translate>Schwimmhäute</translate>
+			</quality>
+			<quality>
+				<id>db002182-a3c4-4c77-a615-7a878d227871</id>
+				<name>Adiposis</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Fettsucht</translate>
+			</quality>
+			<quality>
+				<id>8236f10b-345c-44f5-b0b1-648004f24d3f</id>
+				<name>Astral Hazing</name>
+				<source>RF</source>
+				<page>97</page>
+				<translate>Astrale Verunreinigung</translate>
+			</quality>
+			<quality>
+				<id>95ba1f65-34c0-4f6e-9440-40e860278342</id>
+				<name>Berserker</name>
+				<source>RF</source>
+				<page>97</page>
+				<translate>Berserker</translate>
+			</quality>
+			<quality>
+				<id>96b4cfc7-ddf6-4828-8393-7625b0564bd1</id>
+				<name>Bioluminescence</name>
+				<source>RF</source>
+				<page>97</page>
+				<translate>Biolumineszenz</translate>
+			</quality>
+			<quality>
+				<id>8b0eb8a7-fc44-4452-bfd6-db8ee531bc0d</id>
+				<name>Cephalopod Skull</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Kopffüsser</translate>
+			</quality>
+			<quality>
+				<id>006409d3-cc04-4195-8569-b81d73ccb1a2</id>
+				<name>Cold-Blooded</name>
+				<source>RF</source>
+				<page>100</page>
+				<translate>Wechselwarm</translate>
+			</quality>
+			<quality>
+				<id>bf416ac2-75b2-4907-8b15-1447784b5851</id>
+				<name>Critter Spook</name>
+				<source>RF</source>
+				<page>100</page>
+				<translate>Tierschreck</translate>
+			</quality>
+			<quality>
+				<id>acd06d4f-7f09-4d80-8bab-006b680392a2</id>
+				<name>Cyclopean Eye</name>
+				<source>RF</source>
+				<page>100</page>
+				<translate>Zyklopenauge</translate>
+			</quality>
+			<quality>
+				<id>ddc04b8e-b0f7-485d-9ab7-dee1110133fd</id>
+				<name>Deformity (Picasso)</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Missbildungen (Picasso)</translate>
+			</quality>
+			<quality>
+				<id>5c067c2c-435e-40c8-ab76-e4ffe6a4f884</id>
+				<name>Deformity (Quasimodo)</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Missbildungen (Quasimodo)</translate>
+			</quality>
+			<quality>
+				<id>35279341-3611-439a-9550-8227b306198f</id>
+				<name>Feathers</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Federn</translate>
+			</quality>
+			<quality>
+				<id>1279503d-0bd4-43b5-930c-3f1743685dde</id>
+				<name>Impaired Attribute</name>
+				<source>RF</source>
+				<page>97</page>
+				<translate>Eingeschränktes (Attribut)</translate>
+			</quality>
+			<quality>
+				<id>7618be2b-b4c1-4f7c-905b-7698cc2e744e</id>
+				<name>Insectoid Features</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Insektoide Merkmale</translate>
+			</quality>
+			<quality>
+				<id>0ece5812-aa89-484b-b899-f02ac961a417</id>
+				<name>Mood Hair</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Stimmungshaare</translate>
+			</quality>
+			<quality>
+				<id>9135118a-1085-4e31-9682-014c8b40c888</id>
+				<name>Neoteny</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Neotenie</translate>
+			</quality>
+			<quality>
+				<id>b0887f45-c0b1-4a5c-bd17-d73450287621</id>
+				<name>Nocturnal</name>
+				<source>RF</source>
+				<page>98</page>
+				<translate>Nachtaktive</translate>
+			</quality>
+			<quality>
+				<id>856622a9-b28c-4ac7-8707-812a51fecf7a</id>
+				<name>Progeria</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Progerie</translate>
+			</quality>
+			<quality>
+				<id>873d8045-853f-4797-9f08-1a1eac388af0</id>
+				<name>Scales</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Schuppen</translate>
+			</quality>
+			<quality>
+				<id>b0152c5a-b959-43f2-825e-801e5ac07466</id>
+				<name>Scent Glands</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Stinkdrüsen</translate>
+			</quality>
+			<quality>
+				<id>b8b300d4-cf20-4652-8feb-2528030c6271</id>
+				<name>Slow Healer</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Schlechtes Heilfleisch</translate>
+			</quality>
+			<quality>
+				<id>c57c9407-7ac6-4061-abab-7735c8bd69b4</id>
+				<name>Striking Skin Pigmentation</name>
+				<source>RF</source>
+				<page>97</page>
+				<translate>Auffällige Hautpigmentierung</translate>
+			</quality>
+			<quality>
+				<id>73ded55c-3f96-4efa-bd03-cd9bdebeb303</id>
+				<name>Stubby Arms</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Stummelarme</translate>
+			</quality>
+			<quality>
+				<id>33a1a0ed-20b8-4ddd-9070-2b460a5455b7</id>
+				<name>Symbiosis</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Simbiose</translate>
+			</quality>
+			<quality>
+				<id>dba6c764-3851-4d8e-97ce-344f45c8d771</id>
+				<name>Third Eye</name>
+				<source>RF</source>
+				<page>97</page>
+				<translate>Drittes Auge</translate>
+			</quality>
+			<quality>
+				<id>69a61e8c-238e-4ef9-8847-6271ed260a62</id>
+				<name>Unusual Hair</name>
+				<source>RF</source>
+				<page>100</page>
+				<translate>Ungewöhnliches Haar</translate>
+			</quality>
+			<quality>
+				<id>4e35cd80-5a2e-431b-aafc-5a39a9e17f38</id>
+				<name>Vestigial Tail</name>
+				<source>RF</source>
+				<page>99</page>
+				<translate>Stummelschwanz</translate>
+			</quality>
+			<quality>
+				<id>65026e10-6fa5-49a4-9da6-d9575b5b9cde</id>
+				<name>Infected: Bandersnatch</name>
+				<source>RF</source>
+				<page>114</page>
+				<translate>Infiziert: Bandersnatch</translate>
+			</quality>
+			<quality>
+				<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
+				<name>Infected: Banshee</name>
+				<source>RF</source>
+				<page>114</page>
+				<translate>Infiziert: Banshee</translate>
+			</quality>
+			<quality>
+				<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
+				<name>Infected: Dzoo-Noo-Qua</name>
+				<source>RF</source>
+				<page>115</page>
+				<translate>Infiziert: Dzoo-Noo-Qua</translate>
+			</quality>
+			<quality>
+				<id>fe01a71d-50c2-4ba3-9604-54af663ae8af</id>
+				<name>Infected: Fomoraig</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Fomoraig</translate>
+			</quality>
+			<quality>
+				<id>ed801fa4-0514-458a-b850-9eeddf0c2fed</id>
+				<name>Infected: Ghoul (Dwarf)</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Ghul (Zwerg)</translate>
+			</quality>
+			<quality>
+				<id>e156dc45-66ca-4b45-baf8-5c875b9866c4</id>
+				<name>Infected: Ghoul (Elf)</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Ghul (Elfe)</translate>
+			</quality>
+			<quality>
+				<id>2d99bbb6-7af0-45c6-a83b-46d9d9f10838</id>
+				<name>Infected: Ghoul (Human)</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Ghul (Mensch)</translate>
+			</quality>
+			<quality>
+				<id>ea7c269f-6843-488a-b0fa-8f79c935f568</id>
+				<name>Infected: Ghoul (Ork)</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Ghul (Ork)</translate>
+			</quality>
+			<quality>
+				<id>8325c7f3-c578-458a-9068-e159b2c686ef</id>
+				<name>Infected: Ghoul (Sasquatch)</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Ghul (Sasquatch)</translate>
+			</quality>
+			<quality>
+				<id>92123580-1f4f-4c6a-b2f5-3b9c9031d705</id>
+				<name>Infected: Ghoul (Troll)</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Ghul (Troll)</translate>
+			</quality>
+			<quality>
+				<id>5f31925d-cc76-49da-acab-644b66d5e93d</id>
+				<name>Infected: Gnawer</name>
+				<source>RF</source>
+				<page>117</page>
+				<translate>Infiziert: Nager</translate>
+			</quality>
+			<quality>
+				<id>ae5e7ba4-5b9e-40f9-8ace-66f19c6e11eb</id>
+				<name>Infected: Goblin</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Goblin</translate>
+			</quality>
+			<quality>
+				<id>ba87adfa-6c7e-4c9b-bf13-b6576b59bd1f</id>
+				<name>Infected: Grendel</name>
+				<source>RF</source>
+				<page>116</page>
+				<translate>Infiziert: Grendel</translate>
+			</quality>
+			<quality>
+				<id>8e3d558a-b69a-4176-a130-1ec3465aa809</id>
+				<name>Infected: Harvester</name>
+				<source>RF</source>
+				<page>117</page>
+				<translate>Infiziert: Schnitter</translate>
+			</quality>
+			<quality>
+				<id>fe0c2ae0-fc0f-40fe-9bae-1c3ad5c7e29a</id>
+				<name>Infected: Loup-Garou</name>
+				<source>RF</source>
+				<page>118</page>
+				<translate>Infiziert: Werwolf</translate>
+			</quality>
+			<quality>
+				<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
+				<name>Infected: Mutaqua</name>
+				<source>RF</source>
+				<page>117</page>
+				<translate>Infiziert: Mutaqua</translate>
+			</quality>
+			<quality>
+				<id>39a8e176-ddbf-470e-84a0-ba25ccd92ca0</id>
+				<name>Infected: Nosferatu</name>
+				<source>RF</source>
+				<page>117</page>
+				<translate>Infiziert: Nosferatu</translate>
+			</quality>
+			<quality>
+				<id>7d0a1679-846a-4cf2-b8b5-b5c686766a90</id>
+				<name>Infected: Vampire (Human)</name>
+				<source>RF</source>
+				<page>118</page>
+				<translate>Infiziert: Vampire (Mensch)</translate>
+			</quality>
+			<quality>
+				<id>4024b100-c762-4354-95e4-db5cb0694a9a</id>
+				<name>Infected: Vampire (Non-Human)</name>
+				<source>RF</source>
+				<page>118</page>
+				<translate>Infiziert: Vampire (Nicht-Mensch)</translate>
+			</quality>
+			<quality>
+				<id>3c746778-bec5-4b9b-a1a4-62ac6eb98342</id>
+				<name>Infected: Sukuyan (Human)</name>
+				<source>HT</source>
+				<page>???</page>
+				<translate>Infiziert: Sukuyan (Mensch)</translate>
+			</quality>
+			<quality>
+				<id>735aee59-2236-43e4-b618-9b9923513597</id>
+				<name>Infected: Sukuyan (Non-Human)</name>
+				<source>HT</source>
+				<page>???</page>
+				<translate>Infiziert: Sukuyan(Nicht-Mensch)</translate>
+			</quality>
+			<quality>
+				<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
+				<name>Infected: Wendigo</name>
+				<source>RF</source>
+				<page>114</page>
+				<translate>Infiziert: Wendigo</translate>
 			</quality>
 		</qualities>
 	</chummer>
@@ -19562,7 +21592,7 @@
 				<translate>Horizon Flying Eye mit Flashpack und Rauchgranate (Minidrone)</translate>
 				<page>472</page>
 			</vehicle>
-<!-- 2050 SR5 Vehicle -->
+			<!-- 2050 SR5 Vehicle -->
 			<vehicle>
 				<id>baac8c9e-5604-4329-9757-f82de25a5d3c</id>
 				<name>Dodge Scoot (2050)</name>
@@ -19754,7 +21784,7 @@
 				<name>Patrol Vehicle (2050)</name>
 				<translate>Patroullienfahrzeugdrohne</translate>
 				<page>212</page>
-			</vehicle>			
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -19841,13 +21871,13 @@
 				<name>Rigger Adaptation (2050)</name>
 				<translate>Riggerinterface</translate>
 				<page>212</page>
-			</mod>	
+			</mod>
 			<mod>
 				<id>160eab98-7fb6-437c-b0b7-9c960ed95543</id>
 				<name>Remote Adaptation (2050)</name>
 				<translate>Fernsteueradaption</translate>
 				<page>212</page>
-			</mod>				
+			</mod>
 		</mods>
 	</chummer>
 	<chummer file="weapons.xml">
@@ -21560,7 +23590,7 @@
 				<name>Cyber Machine Pistol (2050)</name>
 				<page>402</page>
 				<translate>Cyber Automatikpistole</translate>
-			</weapon>			
+			</weapon>
 			<weapon>
 				<id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
 				<name>Cyber Light Pistol (2050)</name>
@@ -21830,8 +23860,8 @@
 				<name>Water Cannon (2050)</name>
 				<page>212</page>
 				<translate>Wasserwerfer</translate>
-			</weapon>			
-			<!-- Weapon end -->			
+			</weapon>
+			<!-- Weapon end -->
 		</weapons>
 		<accessories>
 			<accessory>
@@ -22284,7 +24314,7 @@
 				<name>Speed Loader (2050)</name>
 				<page>189</page>
 				<translate>Schnelllader</translate>
-			</accessory>			
+			</accessory>
 			<accessory>
 				<id>1c8c3432-315b-4365-8a15-31e9427cbff9</id>
 				<name>Shock Pad (2050)</name>

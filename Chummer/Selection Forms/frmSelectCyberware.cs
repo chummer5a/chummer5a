@@ -18,57 +18,44 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Linq;
+ using System.Diagnostics;
+ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
 
 namespace Chummer
 {
     public partial class frmSelectCyberware : Form
     {
-		private string _strSelectedCyberware = string.Empty;
-		private Grade _objSelectedGrade;
-		private int _intSelectedRating = 0;
-		private readonly Character _objCharacter;
-        private Vehicle _objVehicle;
-		private int _intSelectedESSDiscount = 0;
+	    private readonly Character _objCharacter;
 
-        private double _dblCostMultiplier = 1.0;
+	    private double _dblCostMultiplier = 1.0;
         private double _dblESSMultiplier = 1.0;
-		private int _intAvailModifier = 0;
-		private int _intMarkup = 0;
-		private double _dblCharacterESSModifier = 1.0;
-		private double _dblGenetechCostModifier = 1.0;
-		private double _dblBasicBiowareESSModifier = 1.0;
-		private double _dblTransgenicsBiowareCostModifier = 1.0;
-		private bool _blnCareer = false;
+		private int _intAvailModifier;
+	    private readonly bool _blnCareer;
 
 		private string _strSetGrade = string.Empty;
-		private bool _blnShowOnlySubsystems = false;
+		private bool _blnShowOnlySubsystems;
 		private string _strSubsystems = string.Empty;
 		private int _intMaximumCapacity = -1;
-		private bool _blnLockGrade = false;
+		private bool _blnLockGrade;
 
 		private Mode _objMode = Mode.Cyberware;
 		private string _strNode = "cyberware";
-		private bool _blnAddAgain = false;
-		private bool _blnAllowModularPlugins = false;
-        private bool _blnShowOnlyLimbs = false;
-	    private bool _blnBlackMarketDiscount = false;
-		private static string _strSelectCategory = string.Empty;
+	    private bool _blnAllowModularPlugins;
+        private bool _blnShowOnlyLimbs;
+	    private static string _strSelectCategory = string.Empty;
 		private static string _strSelectedGrade = string.Empty;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
-		private XmlDocument _objMetatypeDocument = new XmlDocument();
+	    private readonly XPathNavigator _nav;
 
-		private List<ListItem> _lstCategory = new List<ListItem>();
-		private List<ListItem> _lstGrade = new List<ListItem>();
-		
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 
-		public enum Mode
+        public enum Mode
 		{
 			Cyberware = 0,
 			Bioware = 1,
@@ -77,6 +64,7 @@ namespace Chummer
 		#region Control Events
 		public frmSelectCyberware(Character objCharacter, bool blnCareer = false)
         {
+            _nav = _objXmlDocument.CreateNavigator();
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			chkFree.Visible = blnCareer;
@@ -86,8 +74,8 @@ namespace Chummer
 			_blnCareer = blnCareer;
 			_objCharacter = objCharacter;
 			MoveControls();
-			
-		}
+
+        }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
         {
@@ -131,34 +119,27 @@ namespace Chummer
 	        {
 				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 			}
-	        foreach (XmlNode objXmlCategory in objXmlCategoryList)
-			{
-				// Make sure the Category isn't in the exclusion list.
-				bool blnAddItem = true;
+	        if (objXmlCategoryList != null)
+		        foreach (XmlNode objXmlCategory in objXmlCategoryList)
+		        {
+			        // Make sure the Category isn't in the exclusion list.
+			        bool blnAddItem = true;
 
-				if (objXmlCategory.Attributes["show"] != null)
-					blnAddItem = _blnAllowModularPlugins;
+			        if (objXmlCategory.Attributes["show"] != null)
+				        blnAddItem = _blnAllowModularPlugins;
 
-			    if (_blnShowOnlyLimbs)
-			        blnAddItem = objXmlCategory.InnerText == "Cyberlimb";
+			        if (_blnShowOnlyLimbs)
+				        blnAddItem = objXmlCategory.InnerText == "Cyberlimb";
 
-				if (blnAddItem)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objXmlCategory.InnerText;
-					if (objXmlCategory.Attributes["translate"] != null)
-					{
-						if (objXmlCategory.Attributes["translate"] != null)
-							objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-						else
-							objItem.Name = objXmlCategory.InnerText;
-					}
-					else
-						objItem.Name = objXmlCategory.InnerXml;
-					_lstCategory.Add(objItem);
-				}
-			}
-            cboCategory.BeginUpdate();
+			        if (blnAddItem)
+			        {
+				        ListItem objItem = new ListItem();
+				        objItem.Value = objXmlCategory.InnerText;
+						objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
+						_lstCategory.Add(objItem);
+			        }
+		        }
+	        cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
@@ -211,11 +192,14 @@ namespace Chummer
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
         	// Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
-			_dblESSMultiplier = Convert.ToDouble(objXmlGrade["ess"].InnerText, GlobalOptions.InvariantCultureInfo);
-			_intAvailModifier = Convert.ToInt32(objXmlGrade["avail"].InnerText);
+	        if (objXmlGrade != null)
+	        {
+		        _dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+		        _dblESSMultiplier = Convert.ToDouble(objXmlGrade["ess"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+		        _intAvailModifier = Convert.ToInt32(objXmlGrade["avail"]?.InnerText);
+	        }
 
-            UpdateCyberwareInfo();
+	        UpdateCyberwareInfo();
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -259,29 +243,29 @@ namespace Chummer
 	        }
 
 			// Retrieve the list of Cyberware for the selected Category.
-            if (_objCharacter.DEPEnabled && _objVehicle == null)
+            if (_objCharacter.DEPEnabled && ParentVehicle == null)
                 objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" + _objCharacter.Options.BookXPath() + ")]");
             else if (_blnShowOnlySubsystems)
 				objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ") and contains(capacity, \"[\")]");
 			else
 				objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-			foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
-			{
-                if (objXmlCyberware["hide"] != null)
-                    continue;
-
-			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-			        Convert.ToInt32(nudRating.Value), _intAvailModifier))
-			    {
-			        ListItem objItem = new ListItem
+	        if (objXmlCyberwareList != null)
+		        foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
+		        {
+			        if (objXmlCyberware["hide"] != null)
+				        continue;
+			        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+				        Convert.ToInt32(nudRating.Value), _intAvailModifier))
 			        {
-			            Value = objXmlCyberware["name"].InnerText,
-			            Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText
-			        };
-			        lstCyberwares.Add(objItem);
-			    }
-			}
-			SortListItem objSort = new SortListItem();
+				        ListItem objItem = new ListItem
+				        {
+					        Value = objXmlCyberware["name"]?.InnerText,
+					        Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"]?.InnerText
+				        };
+				        lstCyberwares.Add(objItem);
+			        }
+		        }
+	        SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
             lstCyberware.BeginUpdate();
             lstCyberware.DataSource = null;
@@ -296,7 +280,8 @@ namespace Chummer
 			if (string.IsNullOrEmpty(lstCyberware.Text))
 				return;
 
-			if ((cboCategory.SelectedValue.ToString().Contains("Genetech:") && _dblTransgenicsBiowareCostModifier != 1.0) || _blnCareer)
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0 || _blnCareer)
 				chkFree.Visible = true;
 			else
 			{
@@ -308,61 +293,47 @@ namespace Chummer
 
 			// Retireve the information for the selected piece of Cyberware.
 			XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
-
+			if (objXmlCyberware == null) return;
 			// If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
 			if (objXmlCyberware.InnerXml.Contains("<rating>"))
 			{
 				nudRating.Enabled = true;
-			    switch (objXmlCyberware["rating"].InnerText)
-			    {
-				    case "MaximumSTR":
-					    if (_objVehicle != null)
-					    {
-						    nudRating.Maximum = _objVehicle.TotalBody*2;
-						    nudRating.Minimum = _objVehicle.TotalBody;
-					    }
-					    else
-					    {
-						    nudRating.Maximum = _objCharacter.STR.TotalMaximum;
-					    }
-					    break;
-				    case "MaximumAGI":
-					    if (_objVehicle != null)
-					    {
-						    nudRating.Maximum = _objVehicle.Pilot*2;
-					    }
-					    else
-					    {
-						    nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
-					    }
-					    break;
-				    default:
-					    nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
-					    break;
-			    }
+				switch (objXmlCyberware["rating"]?.InnerText)
+				{
+					case "MaximumSTR":
+						if (ParentVehicle != null)
+						{
+							nudRating.Maximum = ParentVehicle.TotalBody * 2;
+							nudRating.Minimum = ParentVehicle.TotalBody;
+						}
+						else
+						{
+							nudRating.Maximum = _objCharacter.STR.TotalMaximum;
+						}
+						break;
+					case "MaximumAGI":
+						if (ParentVehicle != null)
+						{
+							nudRating.Maximum = ParentVehicle.Pilot * 2;
+						}
+						else
+						{
+							nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
+						}
+						break;
+					default:
+						nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"]?.InnerText);
+						break;
+				}
 				if (objXmlCyberware["minrating"] != null)
 				{
 					switch (objXmlCyberware["minrating"].InnerText)
 					{
 						case "MinimumAGI":
-							if (_objVehicle != null)
-							{
-								nudRating.Minimum = _objVehicle.Pilot;
-							}
-							else
-							{
-								nudRating.Minimum = 4;
-							}
+							nudRating.Minimum = ParentVehicle?.Pilot ?? 4;
 							break;
 						case "MinimumSTR":
-							if (_objVehicle != null)
-							{
-								nudRating.Minimum = _objVehicle.TotalBody;
-							}
-							else
-							{
-								nudRating.Minimum = 4;
-							}
+							nudRating.Minimum = ParentVehicle?.TotalBody ?? 4;
 							break;
 						default:
 							nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
@@ -381,11 +352,11 @@ namespace Chummer
 				nudRating.Enabled = false;
 			}
 
-
-			if (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
-				objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
-				objXmlCyberware["category"].InnerText.StartsWith("Genemods") ||
-				_blnLockGrade)
+			string category = objXmlCyberware["category"]?.InnerText ?? string.Empty;
+			if (category.StartsWith("Genetech:") ||
+			    category.StartsWith("Symbionts") ||
+			    category.StartsWith("Genemods") ||
+			    _blnLockGrade)
 			{
 				cboGrade.Enabled = false;
 
@@ -395,10 +366,10 @@ namespace Chummer
 				cboGrade.Enabled = true;
 			}
 
-			if (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
-				objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
-				objXmlCyberware["category"].InnerText.StartsWith("Genemods"))
-            {
+			if (category.StartsWith("Genetech:") ||
+			    category.StartsWith("Symbionts") ||
+			    category.StartsWith("Genemods"))
+			{
 				cboGrade.SelectedValue = "Standard";
 			}
 
@@ -412,16 +383,16 @@ namespace Chummer
 			string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText);
 			string strPage = objXmlCyberware["page"].InnerText;
 			if (objXmlCyberware["altpage"] != null)
-				{
+			{
 				strPage = objXmlCyberware["altpage"].InnerText;
-				}
-			lblSource.Text = strBook + " " + strPage;
+			}
+			lblSource.Text = $"{strBook} {strPage}";
 			if (objXmlCyberware["notes"] != null)
-				{
+			{
 				lblCyberwareNotes.Visible = true;
 				lblCyberwareNotesLabel.Visible = true;
-                lblCyberwareNotes.Text = objXmlCyberware["notes"].InnerText;
-				}
+				lblCyberwareNotes.Text = objXmlCyberware["notes"].InnerText;
+			}
 
 			if (objXmlCyberware["notes"] == null)
 			{
@@ -429,10 +400,12 @@ namespace Chummer
 				lblCyberwareNotesLabel.Visible = false;
 			}
 
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			tipTooltip.SetToolTip(lblSource,
+				_objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText) + " " +
+				LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 
-            UpdateCyberwareInfo();
-        }
+			UpdateCyberwareInfo();
+		}
 
         private void nudRating_ValueChanged(object sender, EventArgs e)
         {
@@ -473,7 +446,7 @@ namespace Chummer
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
-			_blnAddAgain = true;
+			AddAgain = true;
 			cmdOK_Click(sender, e);
 		}
 
@@ -503,28 +476,29 @@ namespace Chummer
 			strSearch += "]";
 
 			XmlNodeList objXmlCyberwareList = _objXmlDocument.SelectNodes(strSearch);
-			foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
-			{
-			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-			        Convert.ToInt32(nudRating.Value), _intAvailModifier))
-			    {
-			        ListItem objItem = new ListItem();
-			        objItem.Value = objXmlCyberware["name"].InnerText;
-			        objItem.Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
+			if (objXmlCyberwareList != null)
+				foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
+				{
+					if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+						Convert.ToInt32(nudRating.Value), _intAvailModifier))
+					{
+						ListItem objItem = new ListItem();
+						objItem.Value = objXmlCyberware["name"].InnerText;
+						objItem.Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
 
-			        if (objXmlCyberware["category"] != null &&
-			            objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
-			        {
-			            ListItem objFoundItem =
-			                _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
-			            if (objFoundItem != null)
-			            {
-			                objItem.Name += " [" + objFoundItem.Name + "]";
-			            }
-			        }
-			        lstCyberwares.Add(objItem);
-			    }
-			}
+						if (objXmlCyberware["category"] != null &&
+						    objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
+						{
+							ListItem objFoundItem =
+								_lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
+							if (objFoundItem != null)
+							{
+								objItem.Name += " [" + objFoundItem.Name + "]";
+							}
+						}
+						lstCyberwares.Add(objItem);
+					}
+				}
 			SortListItem objSort = new SortListItem();
 			lstCyberwares.Sort(objSort.Compare);
             lstCyberware.BeginUpdate();
@@ -590,7 +564,7 @@ namespace Chummer
 			else
 				cboGrade.Enabled = true;
 
-			if ((cboCategory.SelectedValue.ToString().Contains("Genetech:") && _dblTransgenicsBiowareCostModifier != 1.0) || _blnCareer)
+			if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0 || _blnCareer)
 				chkFree.Visible = true;
 			else
 			{
@@ -608,70 +582,34 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the user wants to add another item after this one.
 		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
+		public bool AddAgain { get; private set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Essence cost multiplier from the character.
 		/// </summary>
-		public double CharacterESSMultiplier
-		{
-			set
-			{
-				_dblCharacterESSModifier = value;
-			}
-		}
+		public double CharacterESSMultiplier { get; set; } = 1.0;
 
-		/// <summary>
+	    /// <summary>
 		/// Cost multiplier for Genetech.
 		/// </summary>
-		public double GenetechCostMultiplier
-		{
-			set
-			{
-				_dblGenetechCostModifier = value;
-			}
-		}
+		public double GenetechCostMultiplier { get; set; } = 1.0;
 
-		/// <summary>
+	    /// <summary>
 		/// Essence cost multiplier for Basic Bioware.
 		/// </summary>
-		public double BasicBiowareESSMultiplier
-		{
-			set
-			{
-				_dblBasicBiowareESSModifier = value;
-			}
-		}
+		public double BasicBiowareESSMultiplier { get; set; } = 1.0;
 
-		/// <summary>
+	    /// <summary>
 		/// Cost multiplier for Transgenics Bioware.
 		/// </summary>
-		public double TransgenicsBiowareCostMultiplier
-		{
-			set
-			{
-				_dblTransgenicsBiowareCostModifier = value;
-			}
-		}
+		public double TransgenicsBiowareCostMultiplier { get; set; } = 1.0;
 
-		/// <summary>
+	    /// <summary>
 		/// Whether or not the item has no cost.
 		/// </summary>
-		public bool FreeCost
-		{
-			get
-			{
-				return chkFree.Checked;
-			}
-		}
+		public bool FreeCost => chkFree.Checked;
 
-		/// <summary>
+	    /// <summary>
 		/// Set the window's Mode to Cyberware or Bioware.
 		/// </summary>
 		public Mode WindowMode
@@ -700,14 +638,15 @@ namespace Chummer
 		/// </summary>
 		public int MaximumCapacity
 		{
-			set
+		    get { return _intMaximumCapacity; }
+		    set
 			{
 				_intMaximumCapacity = value;
-				lblMaximumCapacity.Text = LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed") + " " + _intMaximumCapacity.ToString();
+				lblMaximumCapacity.Text = $"{LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed")} {_intMaximumCapacity}";
 			}
-		}
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Set whether or not only subsystems (those that consume Capacity) should be shown.
 		/// </summary>
 		public bool ShowOnlySubsystems
@@ -743,48 +682,24 @@ namespace Chummer
 		/// <summary>
 		/// Name of Cyberware that was selected in the dialogue.
 		/// </summary>
-		public string SelectedCyberware
-		{
-			get
-			{
-				return _strSelectedCyberware;
-			}
-		}
+		public string SelectedCyberware { get; private set; } = string.Empty;
 
-		/// <summary>
+	    /// <summary>
 		/// Grade of the selected piece of Cyberware.
 		/// </summary>
-		public Grade SelectedGrade
-		{
-			get
-			{
-				return _objSelectedGrade;
-			}
-		}
+		public Grade SelectedGrade { get; private set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Rating of the selected piece of Cyberware (0 if not applicable).
 		/// </summary>
-		public int SelectedRating
-		{
-			get
-			{
-				return _intSelectedRating;
-			}
-		}
+		public int SelectedRating { get; private set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Selected Essence cost discount.
 		/// </summary>
-		public int SelectedESSDiscount
-		{
-			get
-			{
-				return _intSelectedESSDiscount;
-			}
-		}
+		public int SelectedESSDiscount { get; private set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Whether or not Modular Plugins are allowed.
 		/// </summary>
 		public bool AllowModularPlugins
@@ -798,15 +713,9 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the selected Vehicle is used.
 		/// </summary>
-		public bool BlackMarketDiscount
-		{
-			get
-			{
-				return _blnBlackMarketDiscount;
-			}
-		}
+		public bool BlackMarketDiscount { get; private set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Whether or not the Bioware should be forced into the Genetech: Transgenics category.
 		/// </summary>
 		public bool ForceTransgenic
@@ -835,31 +744,11 @@ namespace Chummer
         /// <summary>
         /// Parent vehicle that the cyberlimb will be attached to.
         /// </summary>
-        public Vehicle ParentVehicle
-        {
-            set
-            {
-                _objVehicle = value;
-            }
-            get
-            {
-                return _objVehicle;
-            }
-        }
+        public Vehicle ParentVehicle { set; get; }
 
-	    public int Markup
-	    {
-		    get
-		    {
-			    return _intMarkup;
-		    }
-		    set
-		    {
-			    _intMarkup = value;
-		    }
-	    }
+	    public int Markup { get; set; }
 
-        #endregion
+	    #endregion
 
         #region Methods
         /// <summary>
@@ -876,11 +765,11 @@ namespace Chummer
 					strSelectCategory = "Genetech: Transgenics";
 
 				// Place the Essence cost multiplier in a variable that can be safely modified.
-				double dblCharacterESSModifier = _dblCharacterESSModifier;
+				double dblCharacterESSModifier = CharacterESSMultiplier;
 
 				// If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
 				if (strSelectCategory == "Basic")
-					dblCharacterESSModifier -= (1 - _dblBasicBiowareESSModifier);
+					dblCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
 
 				if (nudESSDiscount.Visible)
 				{
@@ -898,18 +787,18 @@ namespace Chummer
 				double dblGenetechCostModifier = 1;
 				// Genetech cost modifier only applies to Genetech.
 				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
-					dblGenetechCostModifier = _dblGenetechCostModifier;
+					dblGenetechCostModifier = GenetechCostMultiplier;
 
 				// If Genetech: Transgenics is selected, apply the Transgenetics Bioware ESS Multiplier.
 				if (strSelectCategory == "Genetech: Transgenics")
-					dblGenetechCostModifier -= (1 - _dblTransgenicsBiowareCostModifier);
+					dblGenetechCostModifier -= (1 - TransgenicsBiowareCostMultiplier);
 
 				// Retireve the information for the selected piece of Cyberware.
 				XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
 
 				// Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
 				// This is done using XPathExpression.
-				XPathNavigator nav = _objXmlDocument.CreateNavigator();
+				
 
 				// Avail.
 				// If avail contains "F" or "R", remove it from the string so we can use the expression.
@@ -948,10 +837,10 @@ namespace Chummer
                             switch (xmlMinRatingNode.InnerText)
                             {
                                 case "MinimumAGI":
-                                    strAvailExpr = strAvailExpr.Replace("MinRating", _objVehicle?.Pilot.ToString() ?? 3.ToString());
+                                    strAvailExpr = strAvailExpr.Replace("MinRating", ParentVehicle?.Pilot.ToString() ?? 3.ToString());
                                     break;
                                 case "MinimumSTR":
-                                    strAvailExpr = strAvailExpr.Replace("MinRating", _objVehicle?.TotalBody.ToString() ?? 3.ToString());
+                                    strAvailExpr = strAvailExpr.Replace("MinRating", ParentVehicle?.TotalBody.ToString() ?? 3.ToString());
                                     break;
                                 default:
                                     strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
@@ -963,8 +852,8 @@ namespace Chummer
 
                     try
                     {
-                        xprAvail = nav.Compile(strAvailExpr);
-                        int intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
+                        xprAvail = _nav.Compile(strAvailExpr);
+                        int intAvail = Convert.ToInt32(_nav.Evaluate(xprAvail)) + _intAvailModifier;
                         // Avail cannot go below 0.
                         if (intAvail < 0)
                             intAvail = 0;
@@ -988,7 +877,7 @@ namespace Chummer
                     // Check for a Variable Cost.
                     if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
                     {
-                        int intMin = 0;
+                        int intMin;
                         int intMax = 0;
                         string strCost = objXmlCyberware["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
                         if (strCost.Contains("-"))
@@ -1000,13 +889,7 @@ namespace Chummer
                         else
                             intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-                        if (intMax == 0)
-                        {
-                            intMax = 1000000;
-                            lblCost.Text = $"{intMin:###,###,##0¥+}";
-                        }
-                        else
-                            lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+                        lblCost.Text = intMax == 0 ? $"{intMin:###,###,##0¥+}" : $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
 
                         dblItemCost = intMin;
                     }
@@ -1035,16 +918,16 @@ namespace Chummer
                                 switch (xmlMinRatingNode.InnerText)
                                 {
                                     case "MinimumAGI":
-                                        objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", _objVehicle?.Pilot.ToString() ?? 3.ToString());
+                                        objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", ParentVehicle?.Pilot.ToString() ?? 3.ToString());
                                         break;
                                     case "MinimumSTR":
-                                        objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", _objVehicle?.TotalBody.ToString() ?? 3.ToString());
+                                        objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", ParentVehicle?.TotalBody.ToString() ?? 3.ToString());
                                         break;
                                 }
                             }
                         }
-                        XPathExpression xprCost = nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                        double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier *
+                        XPathExpression xprCost = _nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+                        double dblCost = (Convert.ToDouble(_nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier *
                                     dblGenetechCostModifier);
                         dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
                         dblItemCost = dblCost;
@@ -1064,7 +947,7 @@ namespace Chummer
                 lblTest.Text = _objCharacter.AvailTest(Convert.ToInt32(dblItemCost), lblAvail.Text);
 
 				// Essence.
-				double dblESS = 0.0;
+				double dblESS;
 				if (objXmlCyberware["ess"].InnerText.StartsWith("FixedValues"))
 				{
 					string[] strValues = objXmlCyberware["ess"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
@@ -1073,8 +956,8 @@ namespace Chummer
 				}
 				else
 				{
-					XPathExpression xprEssence = nav.Compile(objXmlCyberware["ess"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-					dblESS = Math.Round(Convert.ToDouble(nav.Evaluate(xprEssence), GlobalOptions.InvariantCultureInfo) * dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+					XPathExpression xprEssence = _nav.Compile(objXmlCyberware["ess"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+					dblESS = Math.Round(Convert.ToDouble(_nav.Evaluate(xprEssence), GlobalOptions.InvariantCultureInfo) * dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
 				}
 				// Check if the character has Sensitive System.
 				if (_objMode == Mode.Cyberware)
@@ -1099,7 +982,7 @@ namespace Chummer
 					strCapacity = strFirstHalf;
 					if (blnSquareBrackets && strCapacity.Length > 1)
 						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+					xprCapacity = _nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
 					if (objXmlCyberware["capacity"] != null)
 					{
@@ -1114,10 +997,10 @@ namespace Chummer
 								    lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value, GlobalOptions.InvariantCultureInfo) - 1];
 							}
 							else
-								lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
+								lblCapacity.Text = _nav.Evaluate(xprCapacity).ToString();
 						}
 						if (blnSquareBrackets)
-							lblCapacity.Text = "[" + lblCapacity.Text + "]";
+							lblCapacity.Text = $"[{lblCapacity.Text}]";
 					}
 					else
 					{
@@ -1127,8 +1010,8 @@ namespace Chummer
 					if (strSecondHalf.Contains("Rating"))
 					{
 						strSecondHalf = strSecondHalf.Replace("[", string.Empty).Replace("]", string.Empty);
-						xprCapacity = nav.Compile(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-						strSecondHalf = "[" + nav.Evaluate(xprCapacity).ToString() + "]";
+						xprCapacity = _nav.Compile(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+						strSecondHalf = "[" + _nav.Evaluate(xprCapacity).ToString() + "]";
 					}
 
 					lblCapacity.Text += "/" + strSecondHalf;
@@ -1137,7 +1020,7 @@ namespace Chummer
 				{
 					if (blnSquareBrackets)
 						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+					xprCapacity = _nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
 					if (objXmlCyberware["capacity"].InnerText == "[*]")
 						lblCapacity.Text = "*";
@@ -1149,7 +1032,7 @@ namespace Chummer
 							lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
 						}
 						else
-							lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
+							lblCapacity.Text = _nav.Evaluate(xprCapacity).ToString();
 					}
 					if (blnSquareBrackets)
 						lblCapacity.Text = "[" + lblCapacity.Text + "]";
@@ -1171,39 +1054,69 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (!string.IsNullOrEmpty(lstCyberware.Text))
-			{
-				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
-				_strSelectCategory = objNode["category"].InnerText;
-				_strSelectedCyberware = objNode["name"].InnerText;
-			}
+			XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
+			if (objCyberwareNode == null) return;
 
+			_strSelectCategory = objCyberwareNode["category"]?.InnerText;
+			SelectedCyberware = objCyberwareNode["name"]?.InnerText;
 			if (_objMode == Mode.Bioware)
 			{
 				if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
 				    cboCategory.SelectedValue.ToString() == "Symbionts" ||
 				    cboCategory.SelectedValue.ToString() == "Genemods")
 				{
-					_objSelectedGrade = GlobalOptions.BiowareGrades.GetGrade("Standard");
+					SelectedGrade = GlobalOptions.BiowareGrades.GetGrade("Standard");
 				}
 				else
 				{
-					_objSelectedGrade = GlobalOptions.BiowareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+					SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(cboGrade.SelectedValue.ToString());
 				}
 			}
 			else
 			{
-				_objSelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+				SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(cboGrade.SelectedValue.ToString());
 			}
 
-			_strSelectedGrade = _objSelectedGrade.ToString();
-			_intSelectedRating = Convert.ToInt32(nudRating.Value);
-			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+			_strSelectedGrade = SelectedGrade.ToString();
+			SelectedRating = Convert.ToInt32(nudRating.Value);
+			BlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
 			if (nudESSDiscount.Visible)
-				_intSelectedESSDiscount = Convert.ToInt32(nudESSDiscount.Value);
+				SelectedESSDiscount = Convert.ToInt32(nudESSDiscount.Value);
 
-			XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
+		    if (objCyberwareNode["capacity"].InnerText.Contains('[') && _blnShowOnlySubsystems && _objCharacter.Options.EnforceCapacity)
+		    {
+                // Capacity.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+			    string strCapacity = objCyberwareNode["capacity"].InnerText;
+				strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+				int intCapacity;
+
+			    XPathExpression xprCapacity = _nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+
+				if (strCapacity == "*")
+					intCapacity = 0;
+				else
+				{
+					if (strCapacity.StartsWith("FixedValues"))
+					{
+						string[] strValues = strCapacity.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+						intCapacity = Convert.ToInt32(strValues[Convert.ToInt32(nudRating.Value) - 1]);
+					}
+					else
+						intCapacity = Convert.ToInt32(_nav.Evaluate(xprCapacity));
+				}
+				if (MaximumCapacity - intCapacity < 0)
+		        {
+					MessageBox.Show(
+						LanguageManager.Instance.GetString("Message_OverCapacityLimit")
+							.Replace("{0}",MaximumCapacity.ToString())
+							.Replace("{1}",intCapacity.ToString()),
+						LanguageManager.Instance.GetString("MessageTitle_OverCapacityLimit"),
+						MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+                }
+            }
 			if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objCyberwareNode, false, _objCharacter))
 				return;
 			DialogResult = DialogResult.OK;
@@ -1215,11 +1128,7 @@ namespace Chummer
 		/// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
 		private void PopulateGrades(bool blnIgnoreSecondHand = false)
 		{
-			GradeList objGradeList;
-			if (_objMode == Mode.Bioware)
-				objGradeList = GlobalOptions.BiowareGrades;
-			else
-				objGradeList = GlobalOptions.CyberwareGrades;
+			GradeList objGradeList = _objMode == Mode.Bioware ? GlobalOptions.BiowareGrades : GlobalOptions.CyberwareGrades;
 
 			_lstGrade.Clear();
 			foreach (Grade objGrade in objGradeList)
@@ -1230,16 +1139,13 @@ namespace Chummer
 				objItem.Value = objGrade.Name;
 				objItem.Name = objGrade.DisplayName;
 
-                if (objGrade.Burnout && _objCharacter.BurnoutEnabled)
-                    blnAddItem = true;
-                else if (objGrade.Burnout)
+                if (objGrade.Burnout && !_objCharacter.BurnoutEnabled)
                     blnAddItem = false;
-
-                if (objGrade.DisplayName == "Standard" && _objCharacter.BurnoutEnabled)
+                else if (objGrade.DisplayName == "Standard" && _objCharacter.BurnoutEnabled)
                     blnAddItem = false;
-				if (blnIgnoreSecondHand && objGrade.SecondHand)
+				else if (blnIgnoreSecondHand && objGrade.SecondHand)
 					blnAddItem = false;
-				if (!_objCharacter.AdapsinEnabled && objGrade.Adapsin)
+				else if (!_objCharacter.AdapsinEnabled && objGrade.Adapsin)
 					blnAddItem = false;
 
 				if (blnAddItem)

@@ -410,33 +410,38 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        TreeNode objNode = new TreeNode();
-                        Armor objArmor = new Armor(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
+	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
+		                    Convert.ToInt32(nudRating.Value)))
+	                    {
+		                    TreeNode objNode = new TreeNode();
+		                    Armor objArmor = new Armor(_objCharacter);
+		                    List<Weapon> lstWeapons = new List<Weapon>();
+		                    objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
 
-                        string strArmorGuid = objArmor.SourceID.ToString();
-                        string strArmorName = objArmor.Name;
-                        int intArmor = objArmor.TotalArmor;
-                        int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
-                        string strAvail = objArmor.Avail;
-                        string strAccessories = string.Empty;
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
-                        {
-                            if (strAccessories.Length > 0)
-                                strAccessories += "\n";
-                            strAccessories += objMod.Name;
-                        }
-                        foreach (Gear objGear in objArmor.Gear)
-                        {
-                            if (strAccessories.Length > 0)
-                                strAccessories += "\n";
-                            strAccessories += objGear.Name;
-                        }
-                        string strSource = objArmor.Source + " " + objArmor.Page;
-                        int intCost = objArmor.Cost;
+		                    string strArmorGuid = objArmor.SourceID.ToString();
+		                    string strArmorName = objArmor.Name;
+		                    int intArmor = objArmor.TotalArmor;
+		                    int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
+		                    string strAvail = objArmor.Avail;
+		                    string strAccessories = string.Empty;
+		                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+		                    {
+			                    if (strAccessories.Length > 0)
+				                    strAccessories += "\n";
+			                    strAccessories += objMod.Name;
+		                    }
+		                    foreach (Gear objGear in objArmor.Gear)
+		                    {
+			                    if (strAccessories.Length > 0)
+				                    strAccessories += "\n";
+			                    strAccessories += objGear.Name;
+		                    }
+		                    string strSource = objArmor.Source + " " + objArmor.Page;
+		                    int intCost = objArmor.Cost;
 
-                        tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, intCapacity, strAvail, strAccessories, strSource, intCost);
+		                    tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, intCapacity, strAvail, strAccessories,
+			                    strSource, intCost);
+	                    }
                     }
 
                     DataSet set = new DataSet("armor");
@@ -450,19 +455,24 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlArmor["id"]?.InnerText;
-                        objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
+	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
+		                    Convert.ToInt32(nudRating.Value)))
+	                    {
+		                    ListItem objItem = new ListItem();
+		                    objItem.Value = objXmlArmor["id"]?.InnerText;
+		                    objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
 
-                        if (objXmlArmor["category"] != null)
-                        {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
-                            if (objFoundItem != null)
-                            {
-                                objItem.Name += " [" + objFoundItem.Name + "]";
-                            }
-                            lstArmors.Add(objItem);
-                        }
+		                    if (objXmlArmor["category"] != null)
+		                    {
+			                    ListItem objFoundItem =
+				                    _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
+			                    if (objFoundItem != null)
+			                    {
+				                    objItem.Name += " [" + objFoundItem.Name + "]";
+			                    }
+			                    lstArmors.Add(objItem);
+		                    }
+	                    }
                     }
                     SortListItem objSort = new SortListItem();
                     lstArmors.Sort(objSort.Compare);

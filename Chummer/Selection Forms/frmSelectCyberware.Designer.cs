@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
 			this.cboCategory = new System.Windows.Forms.ComboBox();
 			this.lblCategory = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -330,10 +329,10 @@
 			this.lblESSDiscountLabel.AutoSize = true;
 			this.lblESSDiscountLabel.Location = new System.Drawing.Point(381, 83);
 			this.lblESSDiscountLabel.Name = "lblESSDiscountLabel";
-			this.lblESSDiscountLabel.Size = new System.Drawing.Size(101, 13);
+			this.lblESSDiscountLabel.Size = new System.Drawing.Size(96, 13);
 			this.lblESSDiscountLabel.TabIndex = 6;
 			this.lblESSDiscountLabel.Tag = "Label_SelectCyberware_ESSDiscount";
-			this.lblESSDiscountLabel.Text = "Additional Discount:";
+			this.lblESSDiscountLabel.Text = "Essence Discount:";
 			// 
 			// lblESSDiscountPercentLabel
 			// 
@@ -378,10 +377,15 @@
 			// 
 			// tipTooltip
 			// 
+			this.tipTooltip.AllowLinksHandling = true;
 			this.tipTooltip.AutoPopDelay = 10000;
+			this.tipTooltip.BaseStylesheet = null;
 			this.tipTooltip.InitialDelay = 250;
 			this.tipTooltip.IsBalloon = true;
+			this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+			this.tipTooltip.OwnerDraw = true;
 			this.tipTooltip.ReshowDelay = 100;
+			this.tipTooltip.TooltipCssClass = "htmltooltip";
 			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.tipTooltip.ToolTipTitle = "Chummer Help";
 			// 
@@ -439,7 +443,7 @@
 			// lblMarkupLabel
 			// 
 			this.lblMarkupLabel.AutoSize = true;
-			this.lblMarkupLabel.Location = new System.Drawing.Point(432, 104);
+			this.lblMarkupLabel.Location = new System.Drawing.Point(431, 104);
 			this.lblMarkupLabel.Name = "lblMarkupLabel";
 			this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
 			this.lblMarkupLabel.TabIndex = 40;

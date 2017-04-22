@@ -475,7 +475,11 @@
       <name>Firefight</name>
 			<bonus>
 				<addskillspecializationoption>
-					<skill>Firearms</skill>
+          <skills>
+            <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
 					<spec>Firefight</spec>
 				</addskillspecializationoption>
 			</bonus>
@@ -513,7 +517,11 @@
       <name>Gun Kata</name>
 			<bonus>
 				<addskillspecializationoption>
-					<skill>Firearms</skill>
+          <skills>
+            <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
 					<spec>Gun Kata</spec>
 				</addskillspecializationoption>
 			</bonus>
@@ -1258,7 +1266,11 @@
       <name>The Cowboy Way</name>
 			<bonus>
 				<addskillspecializationoption>
-					<skill>Firearms</skill>
+          <skills>
+					  <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
 					<spec>The Cowboy Way</spec>
 				</addskillspecializationoption>
 			</bonus>

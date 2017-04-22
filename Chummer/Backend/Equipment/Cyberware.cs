@@ -1519,55 +1519,40 @@ namespace Chummer.Backend.Equipment
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && objImprovementManager.ValueOf(Improvement.ImprovementType.CyberwareEssCost) != 0)
                     {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
-                        {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                                decMultiplier -= 1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m;
-                        }
-                        decCharacterESSMultiplier = decMultiplier;
+	                    decMultiplier = _objCharacter.Improvements
+							.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
+							.Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+	                    decCharacterESSMultiplier = decMultiplier;
                     }
 
                     // Apply the character's Bioware Essence cost multiplier if applicable.
                     else if (_objImprovementSource == Improvement.ImprovementSource.Bioware && objImprovementManager.ValueOf(Improvement.ImprovementType.BiowareEssCost) != 0)
                     {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
-                        {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                                decMultiplier -= 1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m;
-                        }
-                        decCharacterESSMultiplier = decMultiplier;
+	                    decMultiplier = _objCharacter.Improvements
+							.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
+							.Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+	                    decCharacterESSMultiplier = decMultiplier;
                     }
                 }
 
 				// Apply the character's Basic Bioware Essence cost multiplier if applicable.
 			    if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware && objImprovementManager.ValueOf(Improvement.ImprovementType.BasicBiowareEssCost) != 0)
 			    {
-                    decimal decBasicMultiplier = 1;
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                            decBasicMultiplier -= 1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m;
-                    }
-                    decCharacterESSMultiplier -= 1m - decBasicMultiplier;
+                    decimal decBasicMultiplier = _objCharacter.Improvements
+						.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
+						.Aggregate<Improvement, decimal>(1, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+				    decCharacterESSMultiplier -= 1m - decBasicMultiplier;
                 }
-
-				decCharacterESSMultiplier -= 1m - decESSMultiplier;
+				decReturn = decReturn * decESSMultiplier;
 
 				decReturn = decReturn * decCharacterESSMultiplier;
 
 				// Check if the character has Sensitive System.
-				if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
+				if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && _objCharacter != null)
 				{
-					if (_objCharacter != null)
+					if (_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled))
 					{
-						foreach (Improvement objImprovement in _objCharacter.Improvements)
-						{
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled)
-                            {
-                                decReturn *= 2.0m;
-                                break;
-                            }
-						}
+						decReturn *= 2.0m;
 					}
 				}
 
