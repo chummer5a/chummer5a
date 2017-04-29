@@ -447,7 +447,15 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 			objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
 
-			if (GlobalOptions.Instance.Language != "en-us")
+
+		    //#1544 Ammunition not loading or available.
+		    if (_strUseSkill == "Throwing Weapons"
+                && _strAmmo != "1")
+		    {
+		        _strAmmo = "1";
+		    }
+
+            if (GlobalOptions.Instance.Language != "en-us")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
