@@ -2961,13 +2961,17 @@ namespace Chummer.Backend.Equipment
 				string strAvailExpr = string.Empty;
 				int intAvail = 0;
 
-				if (_strAvail.Substring(_strAvail.Length - 1, 1) == "F" || _strAvail.Substring(_strAvail.Length - 1, 1) == "R")
-				{
-					strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
-					// Remove the trailing character if it is "F" or "R".
-					strAvailExpr = _strAvail.Substring(0, _strAvail.Length - 1);
-					intAvail = Convert.ToInt32(strAvailExpr);
-				}
+			    if (_strAvail.Substring(_strAvail.Length - 1, 1) == "F" || _strAvail.Substring(_strAvail.Length - 1, 1) == "R")
+			    {
+			        strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
+			        // Remove the trailing character if it is "F" or "R".
+			        strAvailExpr = _strAvail.Substring(0, _strAvail.Length - 1);
+			        intAvail = Convert.ToInt32(strAvailExpr);
+			    }
+			    else
+			    {
+                    intAvail = Convert.ToInt32(_strAvail);
+                }
 
 				// Run through the Accessories and add in their availability.
 				foreach (WeaponAccessory objAccessory in _lstAccessories)

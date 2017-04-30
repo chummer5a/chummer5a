@@ -19,6 +19,7 @@ Application Changes:
 - Fixed behaviour of weapon Damage to properly show damage values for weapons like flashbang grenades.
 - Added code to remove the need for different versions of the Armor mod for Drones based on Availability. 
 - If a character has the Ambidextrous improvement from cyberware or qualities, their handedness/dominant hand will not be shown as such on the Character Info tab.
+- Fixed a Bug where Chummer would show 0 Availability on every weapon without F or R Availability.
 
 Data Changes:
 
