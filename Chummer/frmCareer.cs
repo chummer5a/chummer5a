@@ -16081,8 +16081,19 @@ namespace Chummer
 				lstCount.Add(strAmmo);
 			}
 
-			// Find all of the Ammo for the current Weapon that the character is carrying.
-			if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
+		    //#1544 Ammunition not loading or available.
+		    if (objWeapon.Spec == "Flare Launcher"
+		        && objWeapon.Name == "Micro Flare Launcher")
+		    {
+                // we are assuming that this is the only eligible gear
+		        lstAmmo.Add(_objCharacter.Gear
+                    .Single(g => g.Quantity > 0 
+                        && g.Category == "Survival Gear" 
+                        && g.Name == "Micro Flares"));
+		    }
+			
+            // Find all of the Ammo for the current Weapon that the character is carrying.
+            if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
 			{
 				// This is a standard Weapon, so consume traditional Ammunition.
 				foreach (Gear objAmmo in _objCharacter.Gear)
