@@ -794,6 +794,10 @@
       <key>String_MatrixInitiativeLong</key>
       <text>{0} + Data Processing +{1}d6</text>
     </string>
+    <string>
+      <key>Checkbox_HideOverAvailLimit</key>
+      <text>Hide Items Over Avail Limit ({0})</text>
+    </string>
 		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>

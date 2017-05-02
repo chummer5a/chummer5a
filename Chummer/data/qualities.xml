@@ -9004,7 +9004,7 @@
 					<name>critter</name>
 				</enabletab>
 				<initiative>1</initiative>
-				<movement>1</movement>
+				<movementmultiplier>1</movementmultiplier>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>

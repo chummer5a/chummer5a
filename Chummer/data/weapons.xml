@@ -10691,6 +10691,9 @@
 					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
+      <allowgear>
+        <gearcategory>Autosofts</gearcategory>
+      </allowgear>
 			<rating>0</rating>
 			<avail>12F</avail>
 			<cost>2000</cost>

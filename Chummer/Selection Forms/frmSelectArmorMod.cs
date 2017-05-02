@@ -59,56 +59,12 @@ namespace Chummer
 			{
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = string.Empty;
-			}
-
-			List<ListItem> lstMods = new List<ListItem>();
-
-			// Load the Armor information.
-			_objXmlDocument = XmlManager.Instance.Load("armor.xml");
-
-			// Populate the Mods list.
-			string[] strAllowed = _strAllowedCategories.Split(',');
-			string strMount = string.Empty;
-			for (int i = 0; i < strAllowed.Length; i++)
-			{
-				if (!string.IsNullOrEmpty(strAllowed[i]))
-					strMount += "category = \"" + strAllowed[i] + "\"";
-				if (i < strAllowed.Length-1 || !_blnExcludeGeneralCategory)
-				{
-					strMount += " or ";
-				}
-			}
-			if (!_blnExcludeGeneralCategory)
-			{
-				strMount += "category = \"General\"";
-			}
-			XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() + ")]");
-
-			foreach (XmlNode objXmlMod in objXmlModList)
-			{
-                bool blnHide = (objXmlMod["hide"] != null);
-                if (!blnHide)
-                {
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,
-                        Convert.ToInt32(nudRating.Value)))
-                    {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objXmlMod["name"].InnerText,
-                            Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                        };
-                        lstMods.Add(objItem);
-                    }
-                }
-			}
-			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-			SortListItem objSort = new SortListItem();
-			lstMods.Sort(objSort.Compare);
-            lstMod.BeginUpdate();
-            lstMod.ValueMember = "Value";
-			lstMod.DisplayMember = "Name";
-			lstMod.DataSource = lstMods;
-            lstMod.EndUpdate();
+            }
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            BuildModList();
         }
 
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
@@ -405,6 +361,60 @@ namespace Chummer
 
 			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+	    private void BuildModList()
+	    {
+            List<ListItem> lstMods = new List<ListItem>();
+
+            // Load the Armor information.
+            _objXmlDocument = XmlManager.Instance.Load("armor.xml");
+
+            // Populate the Mods list.
+            string[] strAllowed = _strAllowedCategories.Split(',');
+            string strMount = string.Empty;
+            for (int i = 0; i < strAllowed.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(strAllowed[i]))
+                    strMount += "category = \"" + strAllowed[i] + "\"";
+                if (i < strAllowed.Length - 1 || !_blnExcludeGeneralCategory)
+                {
+                    strMount += " or ";
+                }
+            }
+            if (!_blnExcludeGeneralCategory)
+            {
+                strMount += "category = \"General\"";
+            }
+            XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() + ")]");
+
+            foreach (XmlNode objXmlMod in objXmlModList)
+            {
+                bool blnHide = (objXmlMod["hide"] != null);
+                if (!blnHide)
+                {
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,
+                        chkHideOverAvailLimit.Checked,Convert.ToInt32(nudRating.Value)))
+                    {
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlMod["name"].InnerText,
+                            Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
+                        };
+                        lstMods.Add(objItem);
+                    }
+                }
+            }
+            SortListItem objSort = new SortListItem();
+            lstMods.Sort(objSort.Compare);
+            lstMod.BeginUpdate();
+            lstMod.ValueMember = "Value";
+            lstMod.DisplayMember = "Name";
+            lstMod.DataSource = lstMods;
+            lstMod.EndUpdate();
+        }
 
 		/// <summary>
 		/// Accept the selected item and close the form.

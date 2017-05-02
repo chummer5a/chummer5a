@@ -65,8 +65,11 @@ namespace Chummer
 
 		private void frmSelectVehicleMod_Load(object sender, EventArgs e)
 		{
-			// Load the Mod information.
-			_objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            // Load the Mod information.
+            _objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
 
 			// Populate the Weapon Category list.
 			if (!string.IsNullOrEmpty(_strLimitToCategories))
@@ -217,7 +220,7 @@ namespace Chummer
                         continue;
                     }
                 }
-			    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,Convert.ToInt32(nudRating.Value)))
+			    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
                 {
                     continue;
                 }
