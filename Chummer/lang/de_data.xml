@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1071,21 +1071,25 @@
 				<id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
 				<name>Standard</name>
 				<translate>Standard</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>c2c6a3cc-c4bf-42c8-9260-868fd44d34ce</id>
 				<name>Alphaware</name>
 				<translate>Alphaware</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>9e24f0ce-b41e-496f-844a-82805fcb65a9</id>
 				<name>Betaware</name>
 				<translate>Betaware</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>2b599ecd-4e80-4669-a78e-4db232c80a83</id>
 				<name>Deltaware</name>
 				<translate>Deltaware</translate>
+				<page>456</page>
 			</grade>
 			<grade>
 				<id>9166244c-440b-44a1-8795-4917b53e6101</id>
@@ -1093,11 +1097,11 @@
 				<translate>Standard (Burnout's Way)</translate>
 				<page>177</page>
 			</grade>
-			<grade>
+			<grade translated="True">
 				<id>c4bbffe4-5818-4055-bc5e-f44562bde855</id>
 				<name>Used</name>
 				<translate>Gebraucht</translate>
-				<page>451</page>
+				<page>456</page>
 			</grade>
 		</grades>
 		<categories>
@@ -1462,16 +1466,16 @@
 				<page>59</page>
 				<translate>Sinnesverbindung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>99af5d63-9f6a-4a32-9bf6-9b8500a3c64c</id>
 				<name>Accident</name>
-				<page>224</page>
+				<page>400</page>
 				<translate>Unfall</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>1814f970-111f-4d56-9402-f584daa02663</id>
 				<name>Animal Control</name>
-				<page>223</page>
+				<page>400</page>
 				<translate>Tierbeherrschung</translate>
 			</power>
 			<power>
@@ -1486,202 +1490,202 @@
 				<page>204</page>
 				<translate>Panzer (Stoß)</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>0ea84be4-a293-44bf-bc60-52314495cc9a</id>
 				<name>Astral Form</name>
-				<page>217</page>
+				<page>395</page>
 				<translate>Astrale Gestalt</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>aca5b1a9-6b7f-49fa-aee4-ba20b4ee2f26</id>
 				<name>Binding</name>
-				<page>218</page>
+				<page>395</page>
 				<translate>Bindung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f6631c45-a705-434c-b4a6-ba2a889d38ff</id>
 				<name>Compulsion</name>
-				<page>226</page>
+				<page>402</page>
 				<translate>Zwang</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>1898d408-116a-4f98-b413-939660692ce7</id>
 				<name>Concealment</name>
-				<page>224</page>
+				<page>401</page>
 				<translate>Verschleierung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>4517126f-6dcf-4c73-b7f5-cac77532c1f5</id>
 				<name>Confusion</name>
-				<page>226</page>
+				<page>402</page>
 				<translate>Verwirrung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>1ddf4e08-8249-477c-ba8b-1b910428bf45</id>
 				<name>Corrosive Spit</name>
-				<page>217</page>
+				<page>395</page>
 				<translate>Ätzender Speichel</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>6ca4a4af-7da0-4cc2-b545-0fe0396cfb46</id>
 				<name>Dual Natured</name>
-				<page>218</page>
+				<page>396</page>
 				<translate>Dualwesen</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>37e62625-1099-426f-94c9-2750aaa9902b</id>
 				<name>Elemental Attack</name>
-				<page>218</page>
+				<page>396</page>
 				<translate>Elementarer Angriff</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>37bc7c80-beb9-424d-a4b4-db8d3a31612c</id>
 				<name>Energy Aura</name>
-				<page>218</page>
+				<page>396</page>
 				<translate>Energieaura</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>33be7248-a267-4085-a5d8-b15bd79d7e5f</id>
 				<name>Engulf</name>
-				<page>224</page>
+				<page>401</page>
 				<translate>Verschlingen</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>b289f6de-dc68-49a2-9d08-a9dcafdf9bac</id>
 				<name>Enhanced Senses</name>
-				<page>214</page>
+				<page>397</page>
 				<translate>Gesteigerte Sinne</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>24455a2c-c98c-4748-a720-1403a726fd57</id>
 				<name>Essence Drain</name>
-				<page>219</page>
+				<page>396</page>
 				<translate>Essenzentzug</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>953d3e23-cba0-440d-bab4-4234f1090ac5</id>
 				<name>Fear</name>
-				<page>220</page>
+				<page>397</page>
 				<translate>Grauen</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>13dc5c5d-ef46-433e-b27b-5775a57035a8</id>
 				<name>Guard</name>
-				<page>223</page>
+				<page>400</page>
 				<translate>Schutz</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>08b3b1bd-94cc-4468-a61f-31baade2a08e</id>
 				<name>Hardened Armor</name>
-				<page>225</page>
+				<page>401</page>
 				<translate>Verstärkter Panzer</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>c8ad6b5e-5520-4ea6-a472-a1fa51634c74</id>
 				<name>Immunity</name>
-				<page>220</page>
+				<page>398</page>
 				<translate>Immunität</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>951cb295-b6c6-4ff2-9a9e-2a49cc047fd1</id>
 				<name>Infection</name>
-				<page>220</page>
+				<page>398</page>
 				<translate>Infektion</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>e8013773-9497-472e-b2af-e96e49405290</id>
 				<name>Influence</name>
-				<page>218</page>
+				<page>396</page>
 				<translate>Einfluss</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>fe38ce43-3cf2-456d-aec2-0029e0bf173f</id>
 				<name>Innate Spell</name>
-				<page>222</page>
+				<page>399</page>
 				<translate>Natürlicher Zauberspruch</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>bf6c7543-0fa6-4297-8690-8230db5e46a8</id>
 				<name>Materialization</name>
-				<page>221</page>
+				<page>398</page>
 				<translate>Materialisierung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>153bc9aa-1a5e-41ac-877d-751470624bc7</id>
 				<name>Mimicry</name>
-				<page>222</page>
+				<page>398</page>
 				<translate>Mimikry</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>b43373c3-5006-4396-bbbb-a154b8c92eae</id>
 				<name>Mist Form</name>
-				<page>222</page>
+				<page>399</page>
 				<translate>Nebelgestalt</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>5090e9d2-07ba-4fb0-965c-5d5de29062b7</id>
 				<name>Movement</name>
-				<page>217</page>
+				<page>395</page>
 				<translate>Bewegung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>aa886ded-bf17-43e6-a7b5-82d77ed96a9c</id>
 				<name>Mystic Armor</name>
-				<page>222</page>
+				<page>399</page>
 				<translate>Mystischer Panzer</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>9fc065db-9d63-4e8b-aba9-e19dfba07652</id>
 				<name>Natural Weapon</name>
-				<page>215</page>
+				<page>399</page>
 				<translate>Natürliche Waffe</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>4709630d-f2d0-40cc-915b-4f41eb8a4092</id>
 				<name>Noxious Breath</name>
-				<page>224</page>
-				<translate>Übler Atem</translate>
+				<page>397</page>
+				<translate>Gifthauch</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f2c04372-d264-42fa-b0b4-534035888ad7</id>
 				<name>Paralyzing Howl</name>
-				<page>221</page>
+				<page>398</page>
 				<translate>Lähmendes Heulen</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>46ee1218-4b63-458d-b9b9-ec5b2bb607f0</id>
 				<name>Psychokinesis</name>
-				<page>222</page>
+				<page>399</page>
 				<translate>Psychokinese</translate>
 			</power>
 			<power translated="True">
 				<id>244ccf0f-fc77-4690-9441-1cfeb7a6dc2a</id>
 				<name>Regeneration</name>
-				<page>222</page>
+				<page>399</page>
 				<translate>Regeneration</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>4f694634-7c91-4534-a9ff-7f8ae3002a1e</id>
 				<name>Search</name>
-				<page>223</page>
+				<page>400</page>
 				<translate>Suche</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>bd881fa0-89e4-4734-816f-7ffe7cf5f35f</id>
 				<name>Sapience</name>
-				<page>212</page>
+				<page>395</page>
 				<translate>Bewußtsein</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>5e45dcc0-ec66-4bd5-a855-d3ce577dd2b4</id>
 				<name>Venom</name>
-				<page>215</page>
+				<page>397</page>
 				<translate>Gift</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>8b460350-fca3-427d-90af-4648666e8723</id>
 				<name>Weather Control</name>
-				<page>226</page>
+				<page>402</page>
 				<translate>Wetterbeherrschung</translate>
 			</power>
 			<power>
@@ -1928,10 +1932,10 @@
 				<page>224</page>
 				<translate>Todesaura</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>6bd7dbfd-1603-4333-86aa-b4b798caf9d1</id>
 				<name>Dragonspeech</name>
-				<page>218</page>
+				<page>395</page>
 				<translate>Drachensprache</translate>
 			</power>
 			<power>
@@ -1958,16 +1962,16 @@
 				<page>221</page>
 				<translate>Metamenschliche Gestalt</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>39442943-8367-4322-b7d2-3575061df3fa</id>
 				<name>Paralyzing Touch</name>
-				<page>221</page>
+				<page>398</page>
 				<translate>Lähmende Berührung</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>90c79eb4-665a-4844-90f3-e495f8cd3e61</id>
 				<name>Petrification</name>
-				<page>225</page>
+				<page>401</page>
 				<translate>Versteinerung</translate>
 			</power>
 			<power>
@@ -2017,10 +2021,10 @@
 				<page>226</page>
 				<translate>Betrug</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>b561f86f-683c-4ae3-b867-9c628d5f8953</id>
 				<name>Diagnostics</name>
-				<page>226</page>
+				<page>254</page>
 				<translate>Diagnose</translate>
 			</power>
 			<power>
@@ -2065,10 +2069,10 @@
 				<page>227</page>
 				<translate>Markieren</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f4026d71-afcb-430f-9336-56a280a77d36</id>
 				<name>Suppression</name>
-				<page>228</page>
+				<page>254</page>
 				<translate>Unterdrücken</translate>
 			</power>
 			<power>
@@ -2209,22 +2213,22 @@
 				<page>195</page>
 				<translate>Virulenz</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>67e02cc6-5099-473d-b185-3cd357af3e6f</id>
 				<name>Allergy</name>
-				<page>228</page>
+				<page>402</page>
 				<translate>Allergie</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f4de6eca-de5c-436b-955d-b322a9ce1a08</id>
 				<name>Dietary Requirement</name>
-				<page>228</page>
+				<page>402</page>
 				<translate>Nahrungsbedarf</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f4865138-c3f0-46e8-8010-6003b1491b96</id>
 				<name>Essence Loss</name>
-				<page>228</page>
+				<page>402</page>
 				<translate>Essenzverlust</translate>
 			</power>
 			<power>
@@ -2239,22 +2243,22 @@
 				<page>229</page>
 				<translate>Zerbrechlich</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>e44f268f-de46-4a03-93e8-69570dd7a2eb</id>
 				<name>Reduced Senses</name>
-				<page>228</page>
+				<page>402</page>
 				<translate>Reduzierte Sinne</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>a38a6e6e-c8be-477b-91a9-f285ec1941fa</id>
 				<name>Uneducated</name>
-				<page>229</page>
+				<page>403</page>
 				<translate>Ungebildet</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>cc5d600e-c1fd-47d2-affd-38a939cc21ab</id>
 				<name>Vulnerability</name>
-				<page>229</page>
+				<page>403</page>
 				<translate>Verwundbarkeit</translate>
 			</power>
 			<power>
@@ -2266,19 +2270,19 @@
 			<power>
 				<id>fc132915-118e-4fd2-a443-2f9799a83b4a</id>
 				<name>Cookie</name>
-				<page>283</page>
+				<page>254</page>
 				<translate>Cookie</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>db290d50-c208-4de6-ad30-85b1b078370c</id>
 				<name>Electron Storm</name>
-				<page>283</page>
+				<page>254</page>
 				<translate>Elektronensturm</translate>
 			</power>
 			<power>
 				<id>93507c52-d8fc-4b03-9e27-b24048d87526</id>
 				<name>Hash</name>
-				<page>283</page>
+				<page>254</page>
 				<translate>Hash</translate>
 			</power>
 			<power>
@@ -2287,16 +2291,16 @@
 				<page>283</page>
 				<translate>Steganografie</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>b733200f-9911-489d-b555-ebacd16110b0</id>
 				<name>Stability</name>
-				<page>283</page>
+				<page>254</page>
 				<translate>Stabilität</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>c8840b92-07ae-40a3-bd04-20152bae16b8</id>
 				<name>Watermark</name>
-				<page>283</page>
+				<page>254</page>
 				<translate>Wasserzeichen</translate>
 			</power>
 			<power>
@@ -2335,10 +2339,10 @@
 				<page>80</page>
 				<translate>Gestalt Wandeln (Drake)</translate>
 			</power>
-			<power>
+			<power translated="True">
 				<id>2c0e624f-b1e7-4519-ab11-509406e53b19</id>
 				<name>Induced Dormancy</name>
-				<page>88</page>
+				<page>402</page>
 				<translate>Erzwungener Schlaf</translate>
 			</power>
 			<power>
@@ -2629,34 +2633,34 @@
 			<category translate="Schattengeister">Shadow Spirits</category>
 		</categories>
 		<metatypes>
-			<metatype>
+			<metatype translated="True">
 				<id>47428a29-890f-4b3a-9d18-d8c2e581f1b4</id>
 				<name>Dog</name>
-				<page>343</page>
+				<page>404</page>
 				<translate>Hund</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>7983859b-5c38-47b7-b127-2649f0c8c1b0</id>
 				<name>Great Cat</name>
-				<page>343</page>
+				<page>404</page>
 				<translate>Großkatze</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>d4a66987-de45-4bd1-a1f3-c8573ba6d8cf</id>
 				<name>Horse</name>
-				<page>343</page>
+				<page>404</page>
 				<translate>Pferd</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>a38329e9-cdfb-441f-9594-1ecf5fcdd787</id>
 				<name>Shark</name>
-				<page>343</page>
+				<page>404</page>
 				<translate>Hai</translate>
 			</metatype>
 			<metatype translated="True">
 				<id>d6da129f-65b2-4fb4-aae3-a73e6937a2a6</id>
 				<name>Wolf</name>
-				<page>343</page>
+				<page>404</page>
 				<translate>Wolf</translate>
 			</metatype>
 			<metatype>
@@ -3874,25 +3878,25 @@
 			<metatype translated="True">
 				<id>f03dcf11-8a65-4452-912b-d42bc78e3e93</id>
 				<name>Barghest</name>
-				<page>299</page>
+				<page>404</page>
 				<translate>Barghest</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>6fb20284-a25b-4eb7-82d5-e20f79d345e3</id>
 				<name>Devil Rat</name>
-				<page>299</page>
-				<translate>Riesenratte</translate>
+				<page>407</page>
+				<translate>Teufelsratte</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>d3a7e0fe-46bc-4c30-a287-b159eb53f0f8</id>
 				<name>Ghoul</name>
-				<page>299</page>
+				<page>406</page>
 				<translate>Ghul</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>2403521d-8a3b-4e73-8562-2a5978841478</id>
 				<name>Hell Hound</name>
-				<page>300</page>
+				<page>406</page>
 				<translate>Höllenhund</translate>
 			</metatype>
 			<metatype translated="True">
@@ -3910,7 +3914,7 @@
 			<metatype translated="True">
 				<id>6d15c952-542a-429d-9b56-51fc21ebb138</id>
 				<name>Sasquatch</name>
-				<page>300</page>
+				<page>406</page>
 				<translate>Sasquatch</translate>
 			</metatype>
 			<metatype>
@@ -3919,10 +3923,10 @@
 				<page>300</page>
 				<translate>Donnervogel</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>c901c62b-30cb-4a55-89cc-95af3321c297</id>
 				<name>Vampire</name>
-				<page>301</page>
+				<page>407</page>
 				<translate>Vampir</translate>
 			</metatype>
 			<metatype translated="True">
@@ -4141,10 +4145,10 @@
 				<page>130</page>
 				<translate>Zentaur</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>f023c6db-03f3-4dba-b7ee-7e64f71f7d5b</id>
 				<name>Cockatrice</name>
-				<page>129</page>
+				<page>407</page>
 				<translate>Schreckhahn</translate>
 			</metatype>
 			<metatype>
@@ -4378,7 +4382,7 @@
 			<metatype translated="True">
 				<id>49434a88-ced1-46e3-b650-b0bd12ddd480</id>
 				<name>Basilisk</name>
-				<page>148</page>
+				<page>405</page>
 				<translate>Basilisk</translate>
 			</metatype>
 			<metatype>
@@ -4609,10 +4613,10 @@
 				<page>103</page>
 				<translate>Verbündeter</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>7f0f9028-4351-4729-a363-ff8533895d1c</id>
 				<name>Spirit of Air</name>
-				<page>302</page>
+				<page>303</page>
 				<translate>Luftgeist</translate>
 			</metatype>
 			<metatype>
@@ -4621,10 +4625,10 @@
 				<page>302</page>
 				<translate>Luftgeist, Große Form</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>4a80bfc5-da03-4896-9722-2a785d32095e</id>
 				<name>Spirit of Beasts</name>
-				<page>302</page>
+				<page>303</page>
 				<translate>Geist des Tieres</translate>
 			</metatype>
 			<metatype>
@@ -4633,10 +4637,10 @@
 				<page>302</page>
 				<translate>Geist des Tieres, Große Form</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>285885ed-d2cb-4c02-976c-a8f81efa67cb</id>
 				<name>Spirit of Earth</name>
-				<page>303</page>
+				<page>302</page>
 				<translate>Erdgeist</translate>
 			</metatype>
 			<metatype>
@@ -4645,10 +4649,10 @@
 				<page>303</page>
 				<translate>Erdgeist, Große Form</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>3232c4f1-0b22-4799-8c80-392392f9af38</id>
 				<name>Spirit of Fire</name>
-				<page>303</page>
+				<page>302</page>
 				<translate>Feuergeist</translate>
 			</metatype>
 			<metatype>
@@ -4657,7 +4661,7 @@
 				<page>303</page>
 				<translate>Feuergeist, Große Form</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>f4794218-5a32-43c5-a8f7-784bccb4c5aa</id>
 				<name>Spirit of Man</name>
 				<page>303</page>
@@ -4669,7 +4673,7 @@
 				<page>303</page>
 				<translate>Geist des Menschen, Große Form</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>4c0349ca-be2b-4b7f-9c52-9c9db12c873e</id>
 				<name>Spirit of Water</name>
 				<page>303</page>
@@ -5047,16 +5051,16 @@
 				<page>190</page>
 				<translate>Geisterspinne</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>805e79e4-4a6c-4877-b764-b07566414180</id>
 				<name>Eastern Dragon</name>
-				<page>303</page>
+				<page>409</page>
 				<translate>Östlicher Drache</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>b6997b8d-b524-4d7d-a35c-8502e71fc9b6</id>
 				<name>Feathered Serpent</name>
-				<page>304</page>
+				<page>408</page>
 				<translate>Gefiederte Schlange</translate>
 			</metatype>
 			<metatype translated="True">
@@ -5065,10 +5069,10 @@
 				<page>350</page>
 				<translate>Leviathan</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>26781a84-eab5-4617-962b-3c1ea14e8f7c</id>
 				<name>Western Dragon</name>
-				<page>303</page>
+				<page>409</page>
 				<translate>Westlicher Drache</translate>
 			</metatype>
 			<metatype>
@@ -5401,34 +5405,34 @@
 				<page>180</page>
 				<translate>Infektions-Sprite</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>8db4f865-57b6-4363-8d1d-d2979df47cac</id>
 				<name>Courier Sprite</name>
-				<page>242</page>
+				<page>256</page>
 				<translate>Kurier-Sprite</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>1eabd4d6-b759-4e89-8478-1d327e2755c3</id>
 				<name>Crack Sprite</name>
-				<page>242</page>
+				<page>255</page>
 				<translate>Infiltrator-Sprite</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>4742c36a-baa9-467b-b2c1-9dc6889a46e2</id>
 				<name>Data Sprite</name>
-				<page>242</page>
+				<page>255</page>
 				<translate>Daten-Sprite</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>72b6f335-4351-4af7-b103-350cb15d2bca</id>
 				<name>Fault Sprite</name>
-				<page>242</page>
+				<page>256</page>
 				<translate>Stör-Sprite</translate>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>1a34d4b2-2055-47e7-b750-39aa724ce19c</id>
 				<name>Machine Sprite</name>
-				<page>242</page>
+				<page>256</page>
 				<translate>Maschinen-Sprite</translate>
 			</metatype>
 			<metatype>
@@ -5960,10 +5964,8 @@
 			<metatype>
 				<id>f8240798-3ed5-4884-8188-ba6afcc39e29</id>
 				<name>Ross Seal</name>
-				<page>
-				</page>
-				<translate>
-				</translate>
+				<page></page>
+				<translate></translate>
 			</metatype>
 			<metatype>
 				<name>Ross Seal</name>
@@ -6026,21 +6028,25 @@
 				<id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
 				<name>Standard</name>
 				<translate>Standard</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>75da0ff2-4137-4990-85e6-331977564712</id>
 				<name>Alphaware</name>
 				<translate>Alphaware</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>b1b679e8-72ff-46b5-bd9d-652914731b17</id>
 				<name>Betaware</name>
 				<translate>Betaware</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>7dedfc1d-74c3-4ec4-a0e4-ec5145a3e834</id>
 				<name>Deltaware</name>
 				<translate>Deltaware</translate>
+				<page>456</page>
 			</grade>
 			<grade translated="True">
 				<id>62dd61be-f1c4-4310-8545-73a4a4645393</id>
@@ -6052,7 +6058,7 @@
 				<id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
 				<name>Used</name>
 				<translate>Gebraucht</translate>
-				<page>451</page>
+				<page>456</page>
 			</grade>
 		</grades>
 		<categories>
@@ -6764,7 +6770,7 @@
 				<translate>Cyberglied-Verstärung, Panzerzng</translate>
 			</cyberware>
 			<cyberware>
-				<id>>55738f72-0344-435d-8f92-b1e16a66c445</id>
+				<id>55738f72-0344-435d-8f92-b1e16a66c445</id>
 				<name>Cyberlimb Augmentation, Strength (2050)</name>
 				<page>203</page>
 				<translate>Cyberglied-Verstärung, Stärke</translate>
@@ -6954,17 +6960,17 @@
 				<page>257</page>
 				<translate>Maschinenbeherrschung</translate>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>36aa9af4-5c04-40d9-ba09-31b401cc1ff0</id>
 				<name>Attack Upgrade</name>
 				<translate>Angriffs-Upgrade</translate>
-				<page>257</page>
+				<page>256</page>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>cd2e640c-06b7-4638-9eb4-bf75c28452a2</id>
 				<name>Data Processing Upgrade</name>
 				<translate>Datenverarbeituns-Upgrade</translate>
-				<page>257</page>
+				<page>256</page>
 			</echo>
 			<echo>
 				<id>d5dbe3f7-8a44-466b-8d5d-db9f0c68ee6b</id>
@@ -13926,7 +13932,7 @@
 				<page>330</page>
 				<translate>Linguasoft</translate>
 			</program>
-			<program>
+			<program translated="True">
 				<id>734f653b-35ca-4b26-b837-f64662878e8f</id>
 				<name>Configurator</name>
 				<translate>Konfigurator</translate>
@@ -14365,8 +14371,7 @@
 			<quality>
 				<id>8ec5c9bb-aeb9-42f2-a436-a60f764adfe4</id>
 				<name>Low-Light Vision</name>
-				<page>
-				</page>
+				<page></page>
 				<translate>Restlichtverstärkung</translate>
 			</quality>
 			<quality>
@@ -14414,8 +14419,7 @@
 			<quality>
 				<id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
 				<name>Mystic Adept</name>
-				<page>
-				</page>
+				<page></page>
 				<translate>Magieradept</translate>
 			</quality>
 			<quality>
@@ -21163,29 +21167,29 @@
 				<translate>Geist des Tieres</translate>
 				<page>303</page>
 			</spirit>
-			<spirit>
+			<spirit translated="True">
 				<id>2a0352be-9b13-4e1e-a610-af480f6a1841</id>
 				<name>Spirit of Earth</name>
 				<translate>Erdgeist</translate>
-				<page>303</page>
+				<page>302</page>
 			</spirit>
-			<spirit>
+			<spirit translated="True">
 				<id>c0178bf8-1fc5-4c56-9ce1-92a3ae1adc45</id>
 				<name>Spirit of Fire</name>
 				<translate>Feuergeist</translate>
-				<page>303</page>
+				<page>302</page>
 			</spirit>
-			<spirit>
+			<spirit translated="True">
 				<id>d590d5ad-df91-486c-abb1-21a08a5b8a50</id>
 				<name>Spirit of Man</name>
 				<translate>Geist des Menschen</translate>
-				<page>304</page>
+				<page>303</page>
 			</spirit>
-			<spirit>
+			<spirit translated="True">
 				<id>5f284fc2-13dc-42cc-9cd9-231f815ea0bf</id>
 				<name>Spirit of Water</name>
 				<translate>Wassergeist</translate>
-				<page>304</page>
+				<page>303</page>
 			</spirit>
 			<spirit>
 				<id>a6906b58-489e-4100-a84d-866a3af4e37a</id>
@@ -22687,8 +22691,7 @@
 			<weapon>
 				<id>63dcfdb6-bbd9-4a58-bbf4-cd35f7614fdc</id>
 				<name>Unarmed Attack</name>
-				<page>
-				</page>
+				<page></page>
 				<translate>Waffenlos</translate>
 			</weapon>
 			<weapon>

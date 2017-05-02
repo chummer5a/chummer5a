@@ -278,9 +278,9 @@ namespace Chummer.Skills
             int adjustment = 0;
 			if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
 			{
-				adjustment = LearnedRating > 5 ? 2 : -1;
+				adjustment = LearnedRating >= 5 ? 2 : -1;
 			}
-			if (HasRelatedBoost() && CharacterObject.Created && LearnedRating >= 3)
+			if (HasRelatedBoost() && CharacterObject.Created && LearnedRating >= 2)
 			{
 				adjustment -= 1;
 			}
