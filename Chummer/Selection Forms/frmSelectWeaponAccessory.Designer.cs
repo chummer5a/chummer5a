@@ -54,6 +54,7 @@
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.cboExtraMount = new System.Windows.Forms.ComboBox();
             this.lblExtraMountLabel = new System.Windows.Forms.Label();
+            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             this.SuspendLayout();
@@ -172,7 +173,7 @@
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.lblSource.Location = new System.Drawing.Point(308, 212);
+            this.lblSource.Location = new System.Drawing.Point(308, 200);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 16;
@@ -182,7 +183,7 @@
             // lblSourceLabel
             // 
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(257, 212);
+            this.lblSourceLabel.Location = new System.Drawing.Point(257, 200);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 15;
@@ -343,6 +344,18 @@
             this.lblExtraMountLabel.Tag = "Label_ExtraMount";
             this.lblExtraMountLabel.Text = "Extra Mount:";
             // 
+            // chkHideOverAvailLimit
+            // 
+            this.chkHideOverAvailLimit.AutoSize = true;
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(257, 228);
+            this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
+            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
+            this.chkHideOverAvailLimit.TabIndex = 66;
+            this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
+            this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
+            // 
             // frmSelectWeaponAccessory
             // 
             this.AcceptButton = this.cmdOK;
@@ -350,6 +363,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(507, 394);
+            this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.cboExtraMount);
             this.Controls.Add(this.lblExtraMountLabel);
             this.Controls.Add(this.chkBlackMarketDiscount);
@@ -419,5 +433,6 @@
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.ComboBox cboExtraMount;
         private System.Windows.Forms.Label lblExtraMountLabel;
+        private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
     }
 }

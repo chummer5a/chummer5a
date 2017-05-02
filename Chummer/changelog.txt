@@ -20,6 +20,7 @@ Application Changes:
 - Added code to remove the need for different versions of the Armor mod for Drones based on Availability. 
 - If a character has the Ambidextrous improvement from cyberware or qualities, their handedness/dominant hand will not be shown as such on the Character Info tab.
 - Fixed a Bug where Chummer would show 0 Availability on every weapon without F or R Availability.
+- Fixed a crash caused by deleting root-level nodes on the Character Roster window. 
 
 Data Changes:
 
@@ -27,6 +28,8 @@ Data Changes:
 - Updated de_data.xml with changes by Noraser.
 - Removed the Armor Restricted (Drone) and Armor Forbidden (Drone) vehicle modifications from vehicles.xml as they're now redundant. Existing drones with the modifications will be unaffected.
 - Fixed incorrect prerequisite arts for the Efficient Ritual and Greater Ritual metamagics. 
+- Fixed an incorrect bonus applied to the Loup-Garou quality that prevented it from being added.
+- Enabled the Smart Firing Platform weapon accessory to add Autosofts to its gear list. 
 
 New Strings:
 

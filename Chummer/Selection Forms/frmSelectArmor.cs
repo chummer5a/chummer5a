@@ -62,7 +62,9 @@ namespace Chummer
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = string.Empty;
 			}
-
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+		    chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
 			// Load the Armor information.
 			_objXmlDocument = XmlManager.Instance.Load("armor.xml");
 
@@ -410,7 +412,7 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
+	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,chkHideOverAvailLimit.Checked,
 		                    Convert.ToInt32(nudRating.Value)))
 	                    {
 		                    TreeNode objNode = new TreeNode();
@@ -455,7 +457,7 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
+	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
 		                    Convert.ToInt32(nudRating.Value)))
 	                    {
 		                    ListItem objItem = new ListItem();

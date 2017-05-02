@@ -60,6 +60,7 @@
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
+            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.lblWeaponAccuracy = new System.Windows.Forms.Label();
             this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
@@ -384,6 +385,7 @@
             // 
             // tabListView
             // 
+            this.tabListView.Controls.Add(this.chkHideOverAvailLimit);
             this.tabListView.Controls.Add(this.chkBlackMarketDiscount);
             this.tabListView.Controls.Add(this.lblWeaponAccuracy);
             this.tabListView.Controls.Add(this.lblWeaponAccuracyLabel);
@@ -422,6 +424,18 @@
             this.tabListView.Text = "List View";
             this.tipTooltip.SetToolTip(this.tabListView, "Title_ListView");
             this.tabListView.UseVisualStyleBackColor = true;
+            // 
+            // chkHideOverAvailLimit
+            // 
+            this.chkHideOverAvailLimit.AutoSize = true;
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(252, 199);
+            this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
+            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
+            this.chkHideOverAvailLimit.TabIndex = 70;
+            this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
+            this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // chkBlackMarketDiscount
             // 
@@ -516,7 +530,7 @@
             // lblSourceLabel
             // 
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(249, 183);
+            this.lblSourceLabel.Location = new System.Drawing.Point(252, 183);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 64;
@@ -526,7 +540,7 @@
             // lblIncludedAccessories
             // 
             this.lblIncludedAccessories.AutoSize = true;
-            this.lblIncludedAccessories.Location = new System.Drawing.Point(269, 229);
+            this.lblIncludedAccessories.Location = new System.Drawing.Point(270, 242);
             this.lblIncludedAccessories.Name = "lblIncludedAccessories";
             this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 13);
             this.lblIncludedAccessories.TabIndex = 63;
@@ -535,7 +549,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(251, 206);
+            this.label2.Location = new System.Drawing.Point(252, 219);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(197, 13);
             this.label2.TabIndex = 62;
@@ -984,5 +998,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+        private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
     }
 }

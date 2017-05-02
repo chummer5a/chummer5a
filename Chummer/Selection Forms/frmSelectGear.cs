@@ -82,8 +82,10 @@ namespace Chummer
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = string.Empty;
 			}
-
-			XmlNodeList objXmlCategoryList;
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            XmlNodeList objXmlCategoryList;
 
 			// Load the Gear information.
 			_objXmlDocument = XmlManager.Instance.Load("gear.xml");
@@ -249,7 +251,7 @@ namespace Chummer
                 if (objXmlGear["hidden"] != null)
                     continue;
 
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter,Convert.ToInt32(nudRating.Value), _intAvailModifier))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter,chkHideOverAvailLimit.Checked,Convert.ToInt32(nudRating.Value), _intAvailModifier))
 			    {
 			        ListItem objItem = new ListItem();
 			        objItem.Value = objXmlGear["name"].InnerText;
@@ -401,7 +403,7 @@ namespace Chummer
 
 			    if (blnAddToList)
 			    {
-                    blnAddToList = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, Convert.ToInt32(nudRating.Value), _intAvailModifier, blnAddToList);
+                    blnAddToList = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier, blnAddToList);
 			    }
 
 			    if (blnAddToList)

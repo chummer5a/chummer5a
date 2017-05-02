@@ -518,7 +518,7 @@ namespace Chummer
 
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
 
-            
+            objWriter.WriteElementString("ambidextrous", _ambidextrous.ToString());
 
             objWriter.WriteElementString("lightningreflexes", _blnLightningReflexes.ToString());
 
@@ -1154,7 +1154,8 @@ namespace Chummer
 		    objXmlCharacter.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
 		    objXmlCharacter.TryGetBoolFieldQuickly("lightningreflexes", ref _blnLightningReflexes);
 		    objXmlCharacter.TryGetBoolFieldQuickly("fame", ref _blnFame);
-		    objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
+            objXmlCharacter.TryGetBoolFieldQuickly("ambidextrous", ref _ambidextrous);
+            objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
 		    objXmlCharacter.TryGetBoolFieldQuickly("erased", ref _blnErased);
             objXmlCharacter.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
 		    objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
