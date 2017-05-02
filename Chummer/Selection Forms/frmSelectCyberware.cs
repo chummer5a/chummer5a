@@ -205,13 +205,13 @@ namespace Chummer
                 _intAvailModifier = Convert.ToInt32(objXmlGrade["avail"]?.InnerText);
             }
 
-            string selected = lstCyberware.SelectedValue.ToString();
-            cboCategory_SelectedIndexChanged(sender, e);
+            var selected = lstCyberware.SelectedValue?.ToString() ?? "";
+            BuildCyberwareList();
             if (lstCyberware.Items.Contains(selected))
             {
                 lstCyberware.SetSelected(lstCyberware.FindStringExact(selected), true);
             }
-
+			UpdateCyberwareInfo();
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -231,9 +231,6 @@ namespace Chummer
             }
 
             // Update the list of Cyberware based on the selected Category.
-            XmlNodeList objXmlCyberwareList;
-            List<ListItem> lstCyberwares = new List<ListItem>();
-
             if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
                 cboCategory.SelectedValue.ToString() == "Symbionts" ||
                 cboCategory.SelectedValue.ToString() == "Genemods" ||
@@ -253,38 +250,7 @@ namespace Chummer
             {
                 cboGrade.SelectedValue = "Standard";
             }
-
-            // Retrieve the list of Cyberware for the selected Category.
-            if (_objCharacter.DEPEnabled && ParentVehicle == null)
-                objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" + _objCharacter.Options.BookXPath() + ")]");
-            else if (_blnShowOnlySubsystems)
-                objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ") and contains(capacity, \"[\")]");
-            else
-                objXmlCyberwareList = _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-            if (objXmlCyberwareList != null)
-                foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
-                {
-                    if (objXmlCyberware["hide"] != null)
-                        continue;
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier))
-                    {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objXmlCyberware["name"]?.InnerText,
-                            Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"]?.InnerText
-                        };
-                        lstCyberwares.Add(objItem);
-                    }
-                }
-            SortListItem objSort = new SortListItem();
-            lstCyberwares.Sort(objSort.Compare);
-            lstCyberware.BeginUpdate();
-            lstCyberware.DataSource = null;
-            lstCyberware.ValueMember = "Value";
-            lstCyberware.DisplayMember = "Name";
-            lstCyberware.DataSource = lstCyberwares;
-            lstCyberware.EndUpdate();
+			BuildCyberwareList();
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -474,17 +440,10 @@ namespace Chummer
                 cboCategory_SelectedIndexChanged(sender, e);
                 return;
             }
+			
+            string strCategoryFilter = _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
 
-            List<ListItem> lstCyberwares = new List<ListItem>();
-            string strCategoryFilter = string.Empty;
-
-            foreach (ListItem objAllowedCategory in _lstCategory)
-            {
-                if (!string.IsNullOrEmpty(objAllowedCategory.Value))
-                    strCategoryFilter += "category = \"" + objAllowedCategory.Value + "\" or ";
-            }
-
-            // Treat everything as being uppercase so the search is case-insensitive.
+	        // Treat everything as being uppercase so the search is case-insensitive.
             string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
             if (!string.IsNullOrEmpty(strCategoryFilter))
                 strSearch += " and (" + strCategoryFilter + ")";
@@ -492,38 +451,7 @@ namespace Chummer
             strSearch = strSearch.Substring(0, strSearch.Length - 4) + ")";
             strSearch += "]";
 
-            XmlNodeList objXmlCyberwareList = _objXmlDocument.SelectNodes(strSearch);
-            if (objXmlCyberwareList != null)
-                foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
-                {
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier))
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlCyberware["name"].InnerText;
-                        objItem.Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
-
-                        if (objXmlCyberware["category"] != null &&
-                            objXmlCyberware["category"].InnerText != cboCategory.SelectedValue.ToString())
-                        {
-                            ListItem objFoundItem =
-                                _lstCategory.Find(objFind => objFind.Value == objXmlCyberware["category"].InnerText);
-                            if (objFoundItem != null)
-                            {
-                                objItem.Name += " [" + objFoundItem.Name + "]";
-                            }
-                        }
-                        lstCyberwares.Add(objItem);
-                    }
-                }
-            SortListItem objSort = new SortListItem();
-            lstCyberwares.Sort(objSort.Compare);
-            lstCyberware.BeginUpdate();
-            lstCyberware.DataSource = null;
-            lstCyberware.ValueMember = "Value";
-            lstCyberware.DisplayMember = "Name";
-            lstCyberware.DataSource = lstCyberwares;
-            lstCyberware.EndUpdate();
+            BuildCyberwareList(_objXmlDocument.SelectNodes(strSearch));
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
@@ -1056,6 +984,53 @@ namespace Chummer
                 }
             }
         }
+
+	    private void BuildCyberwareList(XmlNodeList objXmlCyberwareList = null)
+	    {
+			List<ListItem> lstCyberwares = new List<ListItem>();
+
+			// Retrieve the list of Cyberware for the selected Category.
+		    if (objXmlCyberwareList == null)
+		    {
+			    if (_objCharacter.DEPEnabled && ParentVehicle == null)
+				    objXmlCyberwareList =
+					    _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" +
+					                                cboCategory.SelectedValue +
+					                                "\" and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" +
+					                                _objCharacter.Options.BookXPath() + ")]");
+			    else if (_blnShowOnlySubsystems)
+				    objXmlCyberwareList =
+					    _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" +
+					                                cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() +
+					                                ") and contains(capacity, \"[\")]");
+			    else
+				    objXmlCyberwareList =
+					    _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" +
+					                                cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+		    }
+		    if (objXmlCyberwareList != null)
+				foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
+				{
+					if (objXmlCyberware["hide"] != null)
+						continue;
+					if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
+						chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier)) continue;
+					ListItem objItem = new ListItem
+					{
+						Value = objXmlCyberware["name"]?.InnerText,
+						Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"]?.InnerText
+					};
+					lstCyberwares.Add(objItem);
+				}
+			SortListItem objSort = new SortListItem();
+			lstCyberwares.Sort(objSort.Compare);
+			lstCyberware.BeginUpdate();
+			lstCyberware.DataSource = null;
+			lstCyberware.ValueMember = "Value";
+			lstCyberware.DisplayMember = "Name";
+			lstCyberware.DataSource = lstCyberwares;
+			lstCyberware.EndUpdate();
+		}
 
         /// <summary>
         /// Lock the Grade so it cannot be changed.
