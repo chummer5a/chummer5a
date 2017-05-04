@@ -1316,7 +1316,7 @@
       <descriptor>Indirect, Area, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1393,7 +1393,7 @@
       <descriptor>Indirect, Area, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F</dv>
@@ -1406,7 +1406,7 @@
       <descriptor>Direct, Area</descriptor>
       <category>Combat</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F+1</dv>
@@ -1435,7 +1435,7 @@
       <descriptor>Indirect, Area, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F+1</dv>
@@ -1480,7 +1480,7 @@
       <descriptor>Direct, Area</descriptor>
       <category>Combat</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F-2</dv>
@@ -1528,7 +1528,7 @@
       <descriptor>Direct, Area</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1557,7 +1557,7 @@
       <descriptor>Indirect, Area, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1583,7 +1583,7 @@
       <descriptor>Indirect, Area, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>P</damage>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1674,7 +1674,7 @@
       <descriptor>Active, Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>T(A)</range>
+      <range>T (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -1700,7 +1700,7 @@
       <descriptor>Active, Psychic, Area</descriptor>
       <category>Detection</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+5</dv>
@@ -1765,7 +1765,7 @@
       <descriptor>Active, Psychic, Area</descriptor>
       <category>Detection</category>
       <type>M</type>
-      <range>T(A)</range>
+      <range>T (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F</dv>
@@ -1778,7 +1778,7 @@
       <descriptor>Active, Psychic, Extended Area</descriptor>
       <category>Detection</category>
       <type>M</type>
-      <range>T(A)</range>
+      <range>T (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+1</dv>
@@ -1820,7 +1820,7 @@
       <descriptor>Passive, Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>T(A)</range>
+      <range>T (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -1833,7 +1833,7 @@
       <descriptor>Passive, Extended Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>T(A)</range>
+      <range>T (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -1859,7 +1859,7 @@
       <descriptor>Active, Psychic, Area</descriptor>
       <category>Detection</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+2</dv>
@@ -2057,7 +2057,7 @@
       <descriptor>Realistic, Multi-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2109,7 +2109,7 @@
       <descriptor>Realistic, Single-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2122,7 +2122,7 @@
       <descriptor>Realistic, Multi-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -2135,7 +2135,7 @@
       <descriptor>Realistic, Multi-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -2164,7 +2164,7 @@
       <descriptor>Realistic, Single-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2193,7 +2193,7 @@
       <descriptor>Realistic, Single-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2206,7 +2206,7 @@
       <descriptor>Realistic, Single-Sense, Area</descriptor>
       <category>Illusion</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -2258,7 +2258,7 @@
       <descriptor>Physical, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2284,7 +2284,7 @@
       <descriptor>Mana, Area</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2297,7 +2297,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+1</dv>
@@ -2323,7 +2323,7 @@
       <descriptor>Mental, Area</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2349,7 +2349,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>P</duration>
       <dv>F-3</dv>
@@ -2391,7 +2391,7 @@
       <descriptor>Mental, Area</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2433,7 +2433,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+2</dv>
@@ -2449,7 +2449,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>T(A)</range>
+      <range>T (A)</range>
       <damage>0</damage>
       <duration>P</duration>
       <dv>F-1</dv>
@@ -2501,7 +2501,7 @@
       <descriptor>Physical, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>P</duration>
       <dv>F-1</dv>
@@ -2514,7 +2514,7 @@
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -2527,7 +2527,7 @@
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2566,7 +2566,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2592,7 +2592,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>P</duration>
       <dv>F-1</dv>
@@ -2618,7 +2618,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -2631,7 +2631,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+3</dv>
@@ -2670,7 +2670,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>I</duration>
       <dv>F+3</dv>
@@ -2709,7 +2709,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-2</dv>
@@ -2754,7 +2754,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2767,7 +2767,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+1</dv>
@@ -2780,7 +2780,7 @@
       <descriptor>Physical, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -3697,7 +3697,8 @@
       <source>SS</source>
       <page>190</page>
     </spell>
-		<spell>
+	<spell>
+      <id>3374e604-a947-43fa-a493-ea7c244e5559</id>
       <name>Chill</name>
       <descriptor>Direct</descriptor>
       <category>Combat</category>
@@ -3710,11 +3711,12 @@
       <page>16</page>
     </spell>
 	<spell>
+      <id>7a30952b-063d-4921-b05e-b438b8913519</id>
       <name>Frigid</name>
       <descriptor>Direct</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>S</damage>
       <duration>I</duration>
       <dv>F+1</dv>
@@ -3722,11 +3724,12 @@
       <page>16</page>
     </spell>
 	<spell>
+      <id>bd49cb38-6f42-479a-b256-d6753b7717e4</id>
       <name>Flame Burst</name>
       <descriptor>Direct, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>S(A)</range>
+      <range>S (A)</range>
       <damage>P</damage>
       <duration>S</duration>
       <dv>F+1</dv>
@@ -3734,6 +3737,7 @@
       <page>16</page>
     </spell>
 	<spell>
+      <id>1ddf48f9-8fd3-4c47-a8d7-5ff5770a863c</id>
       <name>Magebolt</name>
       <descriptor>Direct</descriptor>
       <category>Combat</category>
@@ -3746,6 +3750,7 @@
       <page>17</page>
     </spell>
 	<spell>
+      <id>de6a72c9-d70f-4bec-a5ef-232a78526707</id>
       <name>[Element] Grenade</name>
       <descriptor>Indirect, Elemental</descriptor>
       <category>Combat</category>
@@ -3761,6 +3766,7 @@
       <page>17</page>
     </spell>
 	<spell>
+      <id>79fb3fcb-9cc0-4993-8594-badace575372</id>
       <name>Sunbeam</name>
       <descriptor>Indirect</descriptor>
       <category>Combat</category>
@@ -3773,6 +3779,7 @@
       <page>17</page>
     </spell>
 	<spell>
+      <id>aace66b8-a856-461f-9506-f0d7c05da1ba</id>
       <name>Passenger</name>
       <descriptor>Passive, Psychic</descriptor>
       <category>Detection</category>
@@ -3785,11 +3792,12 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>25679580-3324-44a0-ba31-d6013f1cf372</id>
       <name>Recorded Room</name>
       <descriptor>Passive, Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F</dv>
@@ -3797,6 +3805,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>2d776604-c664-452b-bb7b-0ff5d6468c57</id>
       <name>Secret Handshake</name>
       <descriptor>Active, Area</descriptor>
       <category>Detection</category>
@@ -3809,6 +3818,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>40f96beb-53d7-43cb-b345-b4f4ffb1151c</id>
       <name>Broadcast</name>
       <descriptor>Active, Area</descriptor>
       <category>Detection</category>
@@ -3821,6 +3831,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>af1681a1-b511-42da-9a8b-2bd26f3a08ca</id>
       <name>Sending</name>
       <descriptor>Active, Extended Area</descriptor>
       <category>Detection</category>
@@ -3833,6 +3844,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>ef4204e5-d39c-41a1-9485-82aeb7ea499b</id>
       <name>[Sense] Link</name>
       <descriptor>Passive, Psychic</descriptor>
       <category>Detection</category>
@@ -3848,6 +3860,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>8074c89c-172d-413a-a8a3-bc39b35f5e73</id>
       <name>Convert Blood to Ichor</name>
       <descriptor>Essence, Negative</descriptor>
       <category>Health</category>
@@ -3860,6 +3873,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>5233fa7b-cd0c-49e0-9e8b-4b587036f8ec</id>
       <name>Decontamination</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3872,6 +3886,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>f626c8cc-4798-4b93-9cde-048a55a4682d</id>
       <name>Dehydrate</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3884,6 +3899,7 @@
       <page>18</page>
     </spell>
 	<spell>
+      <id>49c69c23-0416-4022-b5b0-685284da94d7</id>
       <name>Ghoulish Strength</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3896,6 +3912,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>f9864d0e-ab96-48cf-8947-a4834577dc97</id>
       <name>Healthy Glow</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3908,6 +3925,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>489c0eea-5d18-4e35-ba74-1d76fae320b5</id>
       <name>Hydrate</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3920,6 +3938,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>2d3ce706-8baa-4e05-a9b4-51a811fbc647</id>
       <name>Inflict Disease</name>
       <descriptor>Negative, Essence</descriptor>
       <category>Health</category>
@@ -3932,6 +3951,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>aef23c55-c9b6-4534-8c11-41593b4500c0</id>
       <name>Nauseate</name>
       <descriptor>Negative</descriptor>
       <category>Health</category>
@@ -3944,6 +3964,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>f3f5512d-b323-421d-ac12-9eb7403d4160</id>
       <name>Alleviate Nausea</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3956,6 +3977,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>59933987-6438-40fb-8325-268959b888c3</id>
       <name>Personal Warmth</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
@@ -3968,6 +3990,7 @@
       <page>19</page>
     </spell>
 	<spell>
+      <id>d9b376d9-f826-4138-9c8d-e0dcf1a0ae4c</id>
       <name>Rot</name>
       <descriptor>Essence, Negative</descriptor>
       <category>Health</category>
@@ -3980,11 +4003,12 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>8e0cbba7-efa2-4dca-99e4-9d0eb1decf13</id>
       <name>Vampiric Speed</name>
       <descriptor>Essence</descriptor>
       <category>Health</category>
       <type>P</type>
-      <range>S(A)</range>
+      <range>S (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-2</dv>
@@ -3992,6 +4016,7 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>56a474f0-142f-41cf-a130-feb26b96e3b0</id>
       <name>False Impression</name>
       <descriptor></descriptor>
       <category>Illusion</category>
@@ -4004,11 +4029,12 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>b6c1c8d6-da46-41a7-8693-6f582adf50c1</id>
       <name>Manascape</name>
       <descriptor></descriptor>
       <category>Illusion</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-2</dv>
@@ -4016,6 +4042,7 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>82b6ce21-1b48-485c-b856-03513a22f260</id>
       <name>Vampiric Stealth</name>
       <descriptor></descriptor>
       <category>Illusion</category>
@@ -4028,6 +4055,7 @@
       <page>20</page>
     </spell>	
 	<spell>
+      <id>df65b87a-e386-46f5-b8ad-21ce4b08dc09</id>
       <name>Air Filter</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
@@ -4040,6 +4068,7 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>f9864d0e-ab96-48cf-8947-a4834577dc97</id>
       <name>Alter Memory</name>
       <descriptor>Mental</descriptor>
       <category>Manipulation</category>
@@ -4052,11 +4081,12 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>31217b77-f149-403d-91bb-cd24542051b2</id>
       <name>Alter Temperature</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -4064,6 +4094,7 @@
       <page>20</page>
     </spell>
 	<spell>
+      <id>419f63a8-534a-4971-9481-0b44d0acd9e3</id>
       <name>Astral Armor</name>
       <descriptor>Mental</descriptor>
       <category>Manipulation</category>
@@ -4076,11 +4107,12 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>8917fc0d-649a-4231-bae6-7b34ce417263</id>
       <name>Control Emotions</name>
       <descriptor>Mental</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -4088,11 +4120,12 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>6befcc1b-9a2b-4a52-a45e-1de1e38d90e7</id>
       <name>Mob Mood</name>
       <descriptor>Mental</descriptor>
       <category>Manipulation</category>
       <type>M</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F+1</dv>
@@ -4100,6 +4133,7 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>e6799bf0-ab6f-4adf-8591-f3a0acd123c0</id>
       <name>Evaporate</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
@@ -4112,6 +4146,7 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>c4758634-2c63-4b77-a439-51811b326e8b</id>
       <name>Looking Glass</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
@@ -4124,11 +4159,12 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>8dc8b22e-fe26-4b9f-b816-c4b6b3e1a813</id>
       <name>Insulate</name>
       <descriptor>Physical, Environmental</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-2</dv>
@@ -4136,11 +4172,12 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>bd2a6ecf-75e8-4948-a939-430c3ca78002</id>
       <name>Napalm Wall</name>
       <descriptor>Physical, Environmental</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F</dv>
@@ -4148,6 +4185,7 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>c6995b10-5fff-44c2-8182-0a0a1b30cc6b</id>
       <name>Petrify</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
@@ -4160,11 +4198,12 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>65a02e9c-6472-406e-b5d1-17ec184c8ed2</id>
       <name>Pulse</name>
       <descriptor>Physical, Environmental</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>I</duration>
       <dv>F-4</dv>
@@ -4172,6 +4211,7 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>48f38481-6ece-4157-8594-d49a86eeb91a</id>
       <name>Radiation Shield</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
@@ -4184,11 +4224,12 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>8689fa5c-5965-4230-9706-245be36b242c</id>
       <name>Radiation Barrier</name>
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS(A)</range>
+      <range>LOS (A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-2</dv>
@@ -4196,6 +4237,7 @@
       <page>21</page>
     </spell>
 	<spell>
+      <id>de47011e-2de9-4e4d-9862-d05465c8b4e8</id>
       <name>Decrystalize</name>
       <descriptor>Material Link, Spotter</descriptor>
       <category>Rituals</category>
@@ -4208,6 +4250,7 @@
       <page>22</page>
     </spell>
 	<spell>
+      <id>a920e020-9beb-46e9-b39a-d7ac43d3fe51</id>
       <name>Mana Flow</name>
       <descriptor>Anchor</descriptor>
       <category>Rituals</category>
@@ -4220,6 +4263,7 @@
       <page>22</page>
     </spell>
 	<spell>
+      <id>6ae76940-5983-42e3-9f46-4f771cc7481f</id>
       <name>Mana Ebb</name>
       <descriptor>Anchored</descriptor>
       <category>Rituals</category>
@@ -4239,7 +4283,7 @@
 			<type>P</type>
 			<range>LOS</range>
 			<damage>P</damage>
-			<duration>1</duration>
+			<duration>I</duration>
 			<dv>F-2</dv>
 			<source>HT</source>
 			<page>191</page>
@@ -4250,7 +4294,7 @@
 			<descriptor></descriptor>
 			<category>Manipulation</category>
 			<type>P</type>
-			<range>Touch</range>
+			<range>T</range>
 			<damage>0</damage>
 			<duration>S</duration>
 			<dv>F-2</dv>
@@ -4263,7 +4307,7 @@
 			<descriptor>Object</descriptor>
 			<category>Manipulation</category>
 			<type>P</type>
-			<range>Touch</range>
+			<range>T</range>
 			<damage>0</damage>
 			<duration>S</duration>
 			<dv>F-3</dv>
@@ -4276,7 +4320,7 @@
 			<descriptor></descriptor>
 			<category>Manipulation</category>
 			<type>M</type>
-			<range>Touch</range>
+			<range>T</range>
 			<damage>0</damage>
 			<duration>S</duration>
 			<dv>F+1</dv>
