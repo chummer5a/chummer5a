@@ -211,8 +211,15 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			// If there are any Accessories that come with the Weapon, add them.
-			if (objXmlWeapon.InnerXml.Contains("<accessories>") && blnCreateChildren)
+		    //#1544 Ammunition not loading or available.
+		    if (_strUseSkill == "Throwing Weapons"
+		        && _strAmmo != "1")
+		    {
+		        _strAmmo = "1";
+		    }
+
+            // If there are any Accessories that come with the Weapon, add them.
+            if (objXmlWeapon.InnerXml.Contains("<accessories>") && blnCreateChildren)
 			{
 				XmlNodeList objXmlAccessoryList = objXmlWeapon.SelectNodes("accessories/accessory");
 				foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
