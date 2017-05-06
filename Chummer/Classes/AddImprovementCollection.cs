@@ -4425,6 +4425,16 @@ namespace Chummer.Classes
 		        objSkill.Specializations.Add(nspec);
 		    }
 		}
+
+		// Check for Skillwires.
+		public void spellkarmadiscount(XmlNode bonusNode)
+		{
+			Log.Info("spellkarmadiscount");
+			Log.Info("spellkarmadiscount = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellKarmaDiscount, string.Empty,
+				ValueToInt(bonusNode.InnerText, _intRating));
+		}
 		#endregion
 	}
 
