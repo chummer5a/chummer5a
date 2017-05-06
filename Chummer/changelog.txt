@@ -21,6 +21,8 @@ Application Changes:
 - If a character has the Ambidextrous improvement from cyberware or qualities, their handedness/dominant hand will not be shown as such on the Character Info tab.
 - Fixed a Bug where Chummer would show 0 Availability on every weapon without F or R Availability.
 - Fixed a crash caused by deleting root-level nodes on the Character Roster window. 
+- Refactored RequirementsMet code to be more consitent in approach and behave in a similar manner to AddImprovementCollection. Some weird behaviour may crop up from this, but initial testing seems okay. 
+- Fixed an issue with naming armour objects in career mode.
 
 Data Changes:
 
@@ -30,6 +32,8 @@ Data Changes:
 - Fixed incorrect prerequisite arts for the Efficient Ritual and Greater Ritual metamagics. 
 - Fixed an incorrect bonus applied to the Loup-Garou quality that prevented it from being added.
 - Enabled the Smart Firing Platform weapon accessory to add Autosofts to its gear list. 
+- Added content from Forbidden Arcana.
+- Added missing Mentor Spirit from Book of the Lost.
 
 New Strings:
 

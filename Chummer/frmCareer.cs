@@ -4530,12 +4530,12 @@ namespace Chummer
             }
 
 			treSpells.SelectedNode = objNode;
-
+			
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(_objOptions.KarmaSpell * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+			objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objEntry);
-			_objCharacter.Karma -= _objOptions.KarmaSpell;
+			_objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
 			objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -14240,7 +14240,7 @@ namespace Chummer
 		private void tsArmorName_Click(object sender, EventArgs e)
 		{
 			// Make sure a parent item is selected, then open the Select Accessory window.
-            if (treAIPrograms.SelectedNode == null || treArmor.SelectedNode.Level == 0)
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmorName"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -14449,9 +14449,9 @@ namespace Chummer
 
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(_objOptions.KarmaSpell * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+			objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objEntry);
-			_objCharacter.Karma -= _objOptions.KarmaSpell;
+			_objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
 			objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -26665,7 +26665,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create(_objOptions.KarmaSpell * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -26673,7 +26673,7 @@ namespace Chummer
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                _objCharacter.Karma -= _objOptions.KarmaSpell;
+                _objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
             }
 
             TreeNode objSpellNode = new TreeNode();
@@ -26774,7 +26774,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create(_objOptions.KarmaSpell * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -26782,7 +26782,7 @@ namespace Chummer
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                _objCharacter.Karma -= _objOptions.KarmaSpell;
+                _objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
             }
 
             TreeNode objSpellNode = new TreeNode();
