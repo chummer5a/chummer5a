@@ -8062,7 +8062,7 @@
 			<category>Heavy Pistols</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
-			<spec>Semi-Automatics</spec>
+			<spec>Revolvers</spec>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>8P</damage>

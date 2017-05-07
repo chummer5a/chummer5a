@@ -34,6 +34,7 @@ Data Changes:
 - Enabled the Smart Firing Platform weapon accessory to add Autosofts to its gear list. 
 - Added content from Forbidden Arcana.
 - Added missing Mentor Spirit from Book of the Lost.
+- Fixed the specialisation bonus of the LeMat 2072.
 
 New Strings:
 
