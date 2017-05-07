@@ -75,9 +75,8 @@ namespace Chummer.Backend.Shared_Methods
 
 						foreach (XmlNode objXmlForbidden in objXmlOneOfList)
 						{
-						    string name = string.Empty;
 							// The character is not allowed to take the Quality, so display a message and uncheck the item.
-							if (TestNodeRequirements(objXmlForbidden, objCharacter, name, strIgnoreQuality, objMetatypeDocument,
+							if (TestNodeRequirements(objXmlForbidden, objCharacter, out string name, strIgnoreQuality, objMetatypeDocument,
 								objCritterDocument, objQualityDocument))
 							{
 								if (blnShowMessage)
@@ -107,8 +106,7 @@ namespace Chummer.Backend.Shared_Methods
 					XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
 					foreach (XmlNode objXmlRequired in objXmlOneOfList)
 					{
-					    string name = string.Empty;
-						blnOneOfMet = TestNodeRequirements(objXmlRequired, objCharacter, name, strIgnoreQuality,
+						blnOneOfMet = TestNodeRequirements(objXmlRequired, objCharacter, out string name, strIgnoreQuality,
 							objMetatypeDocument,
 							objCritterDocument, objQualityDocument);
 
@@ -132,8 +130,7 @@ namespace Chummer.Backend.Shared_Methods
 					XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
 					foreach (XmlNode objXmlRequired in objXmlAllOfList)
 					{
-					    string name = string.Empty;
-						bool blnFound = TestNodeRequirements(objXmlRequired, objCharacter, name, strIgnoreQuality,
+						bool blnFound = TestNodeRequirements(objXmlRequired, objCharacter, out string name, strIgnoreQuality,
 							objMetatypeDocument,
 							objCritterDocument, objQualityDocument);
 
@@ -166,7 +163,7 @@ namespace Chummer.Backend.Shared_Methods
 			return true;
 		}
 
-		private static bool TestNodeRequirements(XmlNode node, Character character, string name,
+		private static bool TestNodeRequirements(XmlNode node, Character character, out string name,
 			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null,
 			XmlDocument objQualityDocument = null)
 		{
@@ -354,8 +351,7 @@ namespace Chummer.Backend.Shared_Methods
 					// Check that clustered options are present (Magical Tradition + Skill 6, for example)
 					foreach (XmlNode childNode in node.ChildNodes)
 					{
-					    string result = string.Empty;
-						if (!TestNodeRequirements(childNode, character, result, strIgnoreQuality,
+						if (!TestNodeRequirements(childNode, character, out string result, strIgnoreQuality,
 							objMetatypeDocument,
 							objCritterDocument, objQualityDocument))
 						{
