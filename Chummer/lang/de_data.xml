@@ -43,7 +43,7 @@
 				<id>5a650844-8f24-48e7-829f-0443d9ff5cf7</id>
 				<name>Actioneer Business Clothes</name>
 				<page>440</page>
-				<translate>Actioneer Geschäftsanzug</translate>
+				<translate>Actioneer Geschäftskleidung</translate>
 			</armor>
 			<armor>
 				<id>40826eaa-c22a-43da-8730-bc1867ea65a1</id>
@@ -223,7 +223,7 @@
 				<id>812a7926-3980-4c26-9935-5f1b66abacda</id>
 				<name>Urban Explorer Jumpsuit: Helmet</name>
 				<translate>Urban Explorer Overall: Helm</translate>
-				<page>440</page>
+				<page>441</page>
 			</armor>
 			<armor>
 				<id>ef42a5ce-3423-4018-b84f-5cc84238ccaf</id>
@@ -839,19 +839,19 @@
 				<id>9ee8e6ad-2472-485d-ae42-d1978749b456</id>
 				<name>Electrochromic Clothing</name>
 				<translate>Elektrochromische Modifikation</translate>
-				<page>441</page>
+				<page>439</page>
 			</mod>
 			<mod>
 				<id>3fdd4706-9052-4c6b-8c2c-61dbb5c1f16f</id>
 				<name>Feedback Clothing</name>
 				<translate>Feedback-Kleidung</translate>
-				<page>441</page>
+				<page>439</page>
 			</mod>
 			<mod>
 				<id>142031f9-ab13-4dd0-a5a4-2cc4d06055ea</id>
 				<name>(Synth)Leather</name>
-				<translate>(Synth)Leder</translate>
-				<page>441</page>
+				<translate>(Kunst-)Lederkleidung</translate>
+				<page>439</page>
 			</mod>
 			<mod>
 				<id>38168e21-833e-4ab3-8e5c-186468b70ef9</id>
@@ -1220,7 +1220,7 @@
 			<bioware>
 				<id>4a4e1079-5872-4f3f-a450-48c30a5504f3</id>
 				<name>Synaptic Booster</name>
-				<page>464</page>
+				<page>466</page>
 				<translate>Synapsenbeschleuniger</translate>
 			</bioware>
 			<bioware translated="True">
@@ -1251,115 +1251,115 @@
 			<bioware>
 				<id>9343f6b7-6d02-4706-aa7d-6c357b22c947</id>
 				<name>Adrenaline Pump (2050)</name>
-				<translate>Adrenalinpumpe</translate>
+				<translate>Adrenalinpumpe (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>b843eb04-8234-4fb4-a33d-87bd369cc8dc</id>
 				<name>Enhanced Articulation (2050)</name>
-				<translate>Hochleistungsgelenke</translate>
+				<translate>Hochleistungsgelenke (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>29711788-69f5-4b7a-8dd9-2ed615a448e3</id>
 				<name>Suprathyroid Gland (2050)</name>
-				<translate>Hyperschilddrüse</translate>
+				<translate>Hyperschilddrüse (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>bebdde65-cd72-4690-8436-945312c507ab</id>
 				<name>Tracheal Filter (2050)</name>
-				<translate>Luftröhrenfilter</translate>
+				<translate>Luftröhrenfilter (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>9c66557a-5757-42ee-ac00-a875b7013ad8</id>
 				<name>Tailored Pheromones (2050)</name>
-				<translate>Maßgeschneiderte Pheromone</translate>
+				<translate>Maßgeschneiderte Pheromone (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>aa992c89-3fc0-47bf-9275-f31acf83a615</id>
 				<name>Mnemonic Enhancer (2050)</name>
-				<translate>Mnemoverstärker</translate>
+				<translate>Mnemoverstärker (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>0603401c-183d-43e6-902e-fbdcc5a20fc4</id>
 				<name>Muscle Toner (2050)</name>
-				<translate>Muskelstraffung</translate>
+				<translate>Muskelstraffung (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>d563a110-b8d8-460c-8fb2-da7d87d033a0</id>
 				<name>Muscle Augmentation (2050)</name>
-				<translate>Muskelverstärkung</translate>
+				<translate>Muskelverstärkung (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>fd8d10ee-4a08-4e0d-a9a4-eec8f4633467</id>
 				<name>Nephritic Screen (2050)</name>
-				<translate>Nierensieb</translate>
+				<translate>Nierensieb (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>d52e5797-416f-414a-ba7f-8ba3c6aef35a</id>
 				<name>Orthoskin (2050)</name>
-				<translate>Orthoskin</translate>
+				<translate>Orthoskin (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>0dcfb784-e30b-4d29-b8a9-46786770c5d0</id>
 				<name>Pathogenic Defense (2050)</name>
-				<translate>Pathogenabwehr</translate>
+				<translate>Pathogenabwehr (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>20658b19-28c0-4e38-8523-768636510c7b</id>
 				<name>Reflex Recorder (2050)</name>
-				<translate>Reflexrecorder</translate>
+				<translate>Reflexrekorder (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>9300c974-1591-4dca-95d4-53755c27126e</id>
 				<name>Damage Compensators (2050)</name>
-				<translate>Schadenskompensator</translate>
+				<translate>Schadenskompensator (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>
 				<name>Pain Editor (2050)</name>
-				<translate>Schmerzeditor</translate>
+				<translate>Schmerzeditor (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>596c2f2c-e76e-49db-996b-d05fb56d994d</id>
 				<name>Symbiotes (2050)</name>
-				<translate>Symbionten</translate>
+				<translate>Symbionten (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>418fc791-2ae8-4457-80ec-e89244f1497b</id>
 				<name>Synaptic Accelerator (2050)</name>
-				<translate>Synapsenbeschleuniger</translate>
+				<translate>Synapsenbeschleuniger (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>7ec6348a-2edd-4629-a984-e88f258e8599</id>
 				<name>Synthacardium (2050)</name>
-				<translate>Synthacardium</translate>
+				<translate>Synthacardium (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>8cf8dfaa-64b1-4b46-90a1-7fe01a43ad74</id>
 				<name>Platelet Factories (2050)</name>
-				<translate>Thrombozytenfabrik</translate>
+				<translate>Thrombozytenfabrik (2050)</translate>
 				<page>205</page>
 			</bioware>
 			<bioware>
 				<id>773956b3-427b-4ed0-9510-8db622f01b66</id>
 				<name>Cerebral Booster (2050)</name>
-				<translate>Zerebralbooster</translate>
+				<translate>Zerebralbooster (2050)</translate>
 				<page>205</page>
 			</bioware>
 		</biowares>
@@ -1387,9 +1387,19 @@
 				<translate>Shadowrun 5. Edition</translate>
 			</book>
 			<book>
+				<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
+				<name>Shadowrun 5th Edition (German-exclusive Content)</name>
+				<translate>Shadowrun 5. Edition (Deutsch-exklusiver Inhalt)</translate>
+			</book>
+			<book>
 				<id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
-				<name>Street Grimoire (German)</name>
-				<translate>Strassengrimoire (Deutsch)</translate>
+				<name>Street Grimoire</name>
+				<translate>Strassengrimoire</translate>
+			</book>
+			<book>
+				<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
+				<name>Street Grimoire (German-exclusive Content)</name>
+				<translate>Strassengrimoire (Deutsch-exklusiver Inhalt)</translate>
 			</book>
 			<book>
 				<id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
@@ -1407,14 +1417,19 @@
 				<translate>Gestohlene Seelen</translate>
 			</book>
 			<book>
-				<id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
-				<name>Shadowrun Forum Post 1</name>
-				<translate>Shadowrun Forum Post 1</translate>
+				<id>0b2e86c9-98b7-4265-800f-9f1b98ce7f96</id>
+				<name>Run Faster</name>
+				<translate>Schattenläufer</translate>
 			</book>
 			<book>
-				<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-				<name>Shadowrun 5th Edition (German)</name>
-				<translate>Shadowrun 5. Edition (Deutsch)</translate>
+				<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
+				<name>Run Faster (German-exclusive Content)</name>
+				<translate>Schattenläufer (Deutsch-exklusiver Inhalt)</translate>
+			</book>
+			<book>
+				<id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
+				<name>Shadow Spells</name>
+				<translate>Schattenzauber</translate>
 			</book>
 			<book>
 				<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
@@ -1427,13 +1442,14 @@
 				<translate>Bodyshop</translate>
 			</book>
 			<book>
-				<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-				<name>Run Faster (German)</name>
-				<translate>Schattenläufer</translate>
+				<id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
+				<name>Hard Targets</name>
+				<translate>Harte Ziele</translate>
 			</book>
 			<book>
-				<name>Shadow Spells</name>
-				<translate>Schattenzauber</translate>
+				<id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
+				<name>Bloody Business</name>
+				<translate>Blutige Geschäfte</translate>
 			</book>
 			<book>
 				<id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
@@ -1441,9 +1457,19 @@
 				<translate>Asphaltkrieger</translate>
 			</book>
 			<book>
-				<id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
-				<name>Hard Targets</name>
-				<translate>Harte Ziele</translate>
+				<id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
+				<name>Rigger 5.0 (German-exclusive Content)</name>
+				<translate>Asphaltkrieger (Deutsch-exklusiver Inhalt)</translate>
+			</book>
+			<book>
+				<id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
+				<name>Howling Shadows</name>
+				<translate>Critterkompendium</translate>
+			</book>
+			<book>
+				<id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
+				<name>Shadowrun Forum Post 1</name>
+				<translate>Shadowrun Forum Post 1</translate>
 			</book>
 		</books>
 	</chummer>
@@ -6166,7 +6192,7 @@
 				<id>fde2bfc3-c7a2-435e-a220-4896f49d8ca9</id>
 				<name>Ocular Drone</name>
 				<page>458</page>
-				<translate>Okular-Drohne</translate>
+				<translate>Okulardrohne</translate>
 			</cyberware>
 			<cyberware>
 				<id>fb0419a3-6f0d-4fbb-8b37-39e853efa195</id>
@@ -6178,13 +6204,13 @@
 				<id>35dba0e2-1d3d-4386-a657-17fedca4622d</id>
 				<name>Smartlink</name>
 				<page>458</page>
-				<translate>Smartlink, Smartgunverbindung</translate>
+				<translate>Smartlink</translate>
 			</cyberware>
 			<cyberware>
 				<id>ba3204d8-3ec5-4da0-b980-44992a3a4a13</id>
 				<name>Thermographic Vision</name>
 				<page>458</page>
-				<translate>Infrarot</translate>
+				<translate>Infrarotsicht</translate>
 			</cyberware>
 			<cyberware>
 				<id>35c9c51e-5364-41b4-b3c9-4d1f080bd48c</id>
@@ -6285,13 +6311,13 @@
 			<cyberware>
 				<id>46f80a44-80ae-41d7-a7c8-a119c4cff70f</id>
 				<name>Muscle Replacement</name>
-				<page>459</page>
+				<page>460</page>
 				<translate>Kunstmuskeln</translate>
 			</cyberware>
 			<cyberware>
 				<id>4cef53aa-13ea-4f28-8fbf-e3b254248247</id>
 				<name>Reaction Enhancers</name>
-				<page>459</page>
+				<page>460</page>
 				<translate>Reaktionsverbesserung</translate>
 			</cyberware>
 			<cyberware translated="True">
@@ -6448,7 +6474,7 @@
 				<id>eea42123-0449-4c20-8c0b-ae766025b72b</id>
 				<name>Cyber Holster</name>
 				<page>462</page>
-				<translate>Cyber-Holster</translate>
+				<translate>Cyberholster</translate>
 			</cyberware>
 			<cyberware>
 				<id>816fbe31-0bfb-455f-a939-fca85b968bd2</id>
@@ -7048,7 +7074,7 @@
 			<gear translated="True">
 				<id>15a6c42b-12a4-494e-8ca5-e6c3a1052314</id>
 				<name>Renraku Sensei</name>
-				<page>443</page>
+				<page>442</page>
 				<translate>Renraku Sensei</translate>
 			</gear>
 			<gear translated="True">
@@ -7377,7 +7403,7 @@
 			</gear>
 			<gear>
 				<id>5217388a-e2ce-4add-bcc0-b0b1672f156c</id>
-				<name>Decrypt</name>
+				<name>Decryption</name>
 				<page>242</page>
 				<translate>Entschlüsselung</translate>
 			</gear>
@@ -7608,7 +7634,7 @@
 			<gear>
 				<id>5b0c94f2-437f-431a-b7f4-9cb00a0820eb</id>
 				<name>Periscope</name>
-				<page>378f</page>
+				<page>448</page>
 				<translate>Periskop</translate>
 			</gear>
 			<gear>
@@ -7733,7 +7759,7 @@
 			</gear>
 			<gear>
 				<id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
-				<name>Olfactory Sensor</name>
+				<name>Olfactory Scanner</name>
 				<page>450</page>
 				<translate>Geruchsscanner</translate>
 			</gear>
@@ -7998,7 +8024,7 @@
 			<gear>
 				<id>08fb5b81-af99-4311-8588-f7d680d3fa5c</id>
 				<name>Magnesium Torch</name>
-				<page>383</page>
+				<page>453</page>
 				<translate>Magnesiumfackel</translate>
 			</gear>
 			<gear>
@@ -8082,7 +8108,7 @@
 			<gear>
 				<id>082b52f1-9109-40aa-bf0e-8cb364fa2f8c</id>
 				<name>Binding Focus</name>
-				<page>306</page>
+				<page>318</page>
 				<translate>Bindungsfokus</translate>
 			</gear>
 			<gear>
@@ -8112,13 +8138,13 @@
 			<gear>
 				<id>62df3c6c-d080-4db9-98c0-24fc5e9a0604</id>
 				<name>Masking Focus</name>
-				<page>306</page>
+				<page>318</page>
 				<translate>Maskierungsfokus</translate>
 			</gear>
 			<gear translated="True">
 				<id>f8151303-b838-4af1-ba9d-d43ff0892b40</id>
 				<name>Magical Lodge Materials</name>
-				<page>306</page>
+				<page>325</page>
 				<translate>Materialien für Magische Refugien</translate>
 			</gear>
 			<gear>
@@ -8136,7 +8162,7 @@
 			<gear>
 				<id>0bf4113c-dedb-411d-8981-7b6af169f056</id>
 				<name>Ammo: Assault Cannon</name>
-				<page>436</page>
+				<page>437</page>
 				<translate>Munition: Sturmkanone</translate>
 			</gear>
 			<gear>
@@ -8178,19 +8204,19 @@
 			<gear>
 				<id>d9f69780-93eb-41ff-9a9c-893f8c52794e</id>
 				<name>Ammo: Stick-n-Shock</name>
-				<page>436</page>
+				<page>437</page>
 				<translate>Munition: Schocker</translate>
 			</gear>
 			<gear>
 				<id>e0d7aea7-52ac-4670-bac3-b13ce144257c</id>
 				<name>Ammo: Tracer</name>
 				<page>436</page>
-				<translate>Munition: Tracer</translate>
+				<translate>Munition: Leuchtspur</translate>
 			</gear>
 			<gear>
 				<id>8afe5065-5815-4a98-b047-2a7fed85db55</id>
 				<name>Ammo: Taser Dart</name>
-				<page>436</page>
+				<page>437</page>
 				<translate>Munition: Taserpfeil</translate>
 			</gear>
 			<gear>
@@ -8226,8 +8252,8 @@
 			<gear>
 				<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
 				<name>Grenade: Flash-Bang</name>
-				<page>437</page>
-				<translate>Granate: Betäubung</translate>
+				<page>438</page>
+				<translate>Granate: Schock</translate>
 			</gear>
 			<gear>
 				<id>8e04c493-b04d-4511-ba68-7b2e0edbf3aa</id>
@@ -8238,13 +8264,13 @@
 			<gear>
 				<id>7c5e7573-d75e-43e3-949c-cb4c9d70329b</id>
 				<name>Grenade: Fragmentation</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Granate: Splitter</translate>
 			</gear>
 			<gear>
 				<id>e61c5487-2074-4fc8-8da0-9891b15482e7</id>
 				<name>Grenade: High Explosive</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Granate: Spreng</translate>
 			</gear>
 			<gear>
@@ -8256,22 +8282,20 @@
 			<gear>
 				<id>84c6921e-dfa0-42ca-a01f-87c459ffc000</id>
 				<name>Grenade: Smoke</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Granate: Rauch</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>f3472dc1-4c7b-403a-8001-6441bb65a687</id>
 				<name>Grenade: Thermal Smoke</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Granate: IR-Rauch</translate>
-				&gt;&gt;
 			</gear>
 			<gear>
 				<id>f092fca8-46a9-4351-a06a-362846e6546a</id>
 				<name>Minigrenade: Flash-Bang</name>
-				<page>437</page>
-				<translate>Minigranate: Betäubung</translate>
+				<page>438</page>
+				<translate>Minigranate: Schock</translate>
 			</gear>
 			<gear>
 				<id>7c00891f-6554-497d-9726-058d7c4a598e</id>
@@ -8282,16 +8306,14 @@
 			<gear>
 				<id>8e1583bf-4cc5-4498-a800-36cb61d3fb27</id>
 				<name>Minigrenade: Fragmentation</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Minigranate: Splitter</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>daecdfc8-15d5-4864-9e20-13e4a0dca88e</id>
 				<name>Minigrenade: High Explosive</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Minigranate: Spreng</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>74284124-57a0-479b-9ab1-3433bdb9e3b7</id>
@@ -8302,16 +8324,14 @@
 			<gear>
 				<id>b6381691-1a96-4299-b9df-129ffee64c45</id>
 				<name>Minigrenade: Smoke</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Minigranate: Rauch</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>e2252b3c-1bae-496e-adbb-f1c3d6e0b32b</id>
 				<name>Minigrenade: Thermal Smoke</name>
-				<page>437</page>
+				<page>438</page>
 				<translate>Minigranate: IR-Rauch</translate>
-				&gt;&gt;
 			</gear>
 			<gear>
 				<id>60d28c15-42dd-4837-bc5f-8d8a15393655</id>
@@ -8324,14 +8344,12 @@
 				<name>Rocket: Fragmentation</name>
 				<page>438</page>
 				<translate>Rakete: Splitter</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>d5136e8b-bf34-401d-967d-c52f8cc175c1</id>
 				<name>Rocket: High Explosive</name>
 				<page>438</page>
 				<translate>Rakete: Spreng</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>a42b7377-5a2e-456d-b729-8783873465f0</id>
@@ -8344,14 +8362,12 @@
 				<name>Missile: Fragmentation</name>
 				<page>438</page>
 				<translate>Lenkrakete: Splitter</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>838a308e-a638-433e-b5bc-54222fb645c9</id>
 				<name>Missile: High Explosive</name>
 				<page>438</page>
 				<translate>Lenkrakete: Spreng</translate>
-				&gt;
 			</gear>
 			<gear>
 				<id>48eca1ec-bce2-4878-bfdc-5b37639e9d6f</id>
@@ -8647,9 +8663,9 @@
 				<translate>Flüssigsprengstoff</translate>
 				<page>193</page>
 			</gear>
-			<gear translated="True">
-				<id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
-				<name>Detonator, Blasting Cap</name>
+			<gear>
+				<id>2c98be77-22d7-4116-90fc-e8489944578d</id>
+				<name>Detonator Cap</name>
 				<translate>Sprengkapsel</translate>
 				<page>439</page>
 			</gear>
@@ -8831,7 +8847,7 @@
 				<id>18eb72a1-2b4d-4800-9669-d9e62ecc50b3</id>
 				<name>Scratch-Built Junk</name>
 				<translate>Aus Schrott gebastelt </translate>
-				<page>265</page>
+				<page>443</page>
 			</gear>
 			<gear translated="True">
 				<id>9d410862-89ae-408c-8342-82f7e6c1ae8f</id>
@@ -8849,7 +8865,7 @@
 				<id>f35d6a78-de2c-4b99-9509-2c87c5e382b4</id>
 				<name>CompuForce TaskMaster</name>
 				<translate>CompuForce TaskMaster</translate>
-				<page>266</page>
+				<page>443</page>
 			</gear>
 			<gear translated="True">
 				<id>a2c33659-d930-4eb8-9fac-238a67009def</id>
@@ -8879,7 +8895,7 @@
 				<id>4eebf70d-6e0f-4bbb-9356-3eaac0150d4d</id>
 				<name>Lone Star Remote Commander</name>
 				<translate>Lone Star Remote Commander</translate>
-				<page>266</page>
+				<page>443</page>
 			</gear>
 			<gear translated="True">
 				<id>f13946fe-8e30-466f-8fc4-9aba7ba7b0f8</id>
@@ -9125,13 +9141,13 @@
 				<id>a2953d6e-8bb8-40a8-b7f6-997be35947cf</id>
 				<name>Keypad</name>
 				<translate>Tastatur</translate>
-				<page>362</page>
+				<page>451</page>
 			</gear>
 			<gear translated="True">
 				<id>71a4cc20-19f0-4ed1-92f8-d049ba370134</id>
 				<name>Card Reader</name>
 				<translate>Kartenleser</translate>
-				<page>363</page>
+				<page>451</page>
 			</gear>
 			<gear translated="True">
 				<id>caa0f85d-e6f0-415a-98c7-fc4f16139964</id>
@@ -10985,25 +11001,25 @@
 				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
 				<name>DocWagon Contract, Basic</name>
 				<translate>DocWagon-Vertrag, Standard</translate>
-				<page>454</page>
+				<page>455</page>
 			</quality>
 			<quality translated="True">
 				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
 				<name>DocWagon Contract, Gold</name>
 				<translate>DocWagon-Vertrag, Gold</translate>
-				<page>454</page>
+				<page>455</page>
 			</quality>
 			<quality translated="True">
 				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
 				<name>DocWagon Contract, Platinum</name>
 				<translate>DocWagon-Vertrag, Platin</translate>
-				<page>454</page>
+				<page>455</page>
 			</quality>
 			<quality translated="True">
 				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
 				<name>DocWagon Contract, Super-Platinum</name>
 				<translate>DocWagon-Vertrag, Superplatin</translate>
-				<page>454</page>
+				<page>455</page>
 			</quality>
 		</qualities>
 	</chummer>
@@ -13780,6 +13796,12 @@
 				<translate>Mimic</translate>
 				<page>191</page>
 			</power>
+			<power>
+				<id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
+				<name>Body Sculpt</name>
+				<translate>Körperformung</translate>
+				<page>200</page>
+			</power>
 		</powers>
 		<enhancements>
 			<enhancement>
@@ -13886,7 +13908,7 @@
 			</program>
 			<program>
 				<id>de82aad2-da77-4478-a621-85ad02d70120</id>
-				<name>Decrypt</name>
+				<name>Decryption</name>
 				<page>242</page>
 				<translate>Entschlüsselung</translate>
 			</program>
@@ -13906,7 +13928,7 @@
 				<id>a381db11-6e7f-4472-b4ef-79a16be65ba4</id>
 				<name>Stealth</name>
 				<page>242</page>
-				<translate>Schleicher</translate>
+				<translate>Tarnkappe</translate>
 			</program>
 			<program>
 				<id>7306594f-5e07-440e-a2db-a6dfbe0b90cb</id>
@@ -13935,91 +13957,109 @@
 			<program translated="True">
 				<id>734f653b-35ca-4b26-b837-f64662878e8f</id>
 				<name>Configurator</name>
+				<page>242</page>
 				<translate>Konfigurator</translate>
 			</program>
 			<program>
 				<id>a1dd8536-d2ca-41cd-be55-4adfdc52068b</id>
 				<name>Encryption</name>
+				<page>242</page>
 				<translate>Verschlüsselung</translate>
 			</program>
 			<program>
 				<id>3f2498d9-b575-474c-9b18-b959442011c5</id>
 				<name>Signal Scrub</name>
+				<page>242</page>
 				<translate>Signalreiniger</translate>
 			</program>
 			<program translated="True">
 				<id>1861266c-9439-4816-9b1e-09ea9bbac9ec</id>
 				<name>Toolbox</name>
+				<page>242</page>
 				<translate>Toolbox</translate>
 			</program>
 			<program>
 				<id>c56fd11b-f543-4c1f-8f97-6e7a82265885</id>
 				<name>Virtual Machine</name>
+				<page>242</page>
 				<translate>Virtuelle Maschine</translate>
 			</program>
 			<program>
 				<id>f5a1d20b-caa2-4a53-ab42-6e71ee519702</id>
 				<name>Baby Monitor</name>
+				<page>242</page>
 				<translate>Babymonitor</translate>
 			</program>
 			<program translated="True">
 				<id>9bc73d88-bad2-4ae9-b9ea-fe004447e493</id>
 				<name>Biofeedback</name>
+				<page>242</page>
 				<translate>Biofeedback</translate>
 			</program>
 			<program>
 				<id>f05f35c3-1c35-4bac-9ecb-1a6ebf9f89dd</id>
 				<name>Biofeedback Filter</name>
+				<page>242</page>
 				<translate>Biofeedback-Filter</translate>
 			</program>
 			<program>
 				<id>a52cc5e5-83f5-4bcd-9fea-4f9ff5f52765</id>
 				<name>Demolition</name>
+				<page>243</page>
 				<translate>Superbombe</translate>
 			</program>
 			<program>
 				<id>b96ebe65-9bb5-49e7-8d23-a209eae7f9f3</id>
 				<name>Fork</name>
+				<page>242</page>
 				<translate>Gabel</translate>
 			</program>
 			<program>
 				<id>4a79b908-8239-4b3a-9c82-e2420be2a174</id>
 				<name>Guard</name>
+				<page>242</page>
 				<translate>Schild</translate>
 			</program>
 			<program translated="True">
 				<id>d2f96d3a-9dcb-4b46-b5bd-b98a730bf1d7</id>
 				<name>Hammer</name>
+				<page>242</page>
 				<translate>Hammer</translate>
 			</program>
 			<program>
 				<id>01c5f885-d14f-478d-8e1d-612773035480</id>
 				<name>Lockdown</name>
+				<page>242</page>
 				<translate>Fessel</translate>
 			</program>
 			<program>
 				<id>e3382b40-114e-456a-982a-f52d135527f5</id>
 				<name>Mugger</name>
+				<page>243</page>
 				<translate>Überfall</translate>
 			</program>
 			<program>
 				<id>ff9378d1-b6bc-4adc-8651-a9689a1b92b9</id>
 				<name>Shell</name>
+				<page>242</page>
 				<translate>Schutzschirm</translate>
 			</program>
 			<program>
 				<id>f7b5a9a3-c030-4647-b043-f968913867b4</id>
 				<name>Sneak</name>
+				<page>242</page>
 				<translate>Irreführung</translate>
 			</program>
 			<program>
 				<id>1b78748c-9a1d-427f-8657-e3e2bc8fd5b5</id>
 				<name>Wrapper</name>
+				<page>243</page>
 				<translate>Verwandlung</translate>
 			</program>
 			<program translated="True">
 				<id>9ebde6f6-a232-4af8-9e16-b553094160fa</id>
 				<name>Agent</name>
+				<page>243</page>
 				<translate>Agent</translate>
 			</program>
 			<program>
@@ -17135,21 +17175,21 @@
 	</chummer>
 	<chummer file="skills.xml">
 		<skillgroups>
-			<name translate="Tierhaltung">Animal Husbandry</name>
+			<name translate="Schauspielerei">Acting</name>
 			<name translate="Athletik">Athletics</name>
 			<name translate="Biotech">Biotech</name>
 			<name translate="Nahkampf">Close Combat</name>
 			<name translate="Beschwören">Conjuring</name>
 			<name translate="Cracken">Cracking</name>
 			<name translate="Elektronik">Electronics</name>
+			<name translate="Verzaubern">Enchanting</name>
 			<name translate="Feuerwaffen">Firearms</name>
 			<name translate="Einfluss">Influence</name>
-			<name translate="Mechanik">Mechanic</name>
+			<name translate="Mechanik">Engineering</name>
 			<name translate="Natur">Outdoors</name>
 			<name translate="Hexerei">Sorcery</name>
 			<name translate="Heimlichkeit">Stealth</name>
 			<name translate="Tasken">Tasking</name>
-			<name translate="Schauspielerei">Acting</name>
 		</skillgroups>
 		<categories>
 			<category type="active" translate="Kampf-Aktionsfertigkeiten">Combat Active</category>
