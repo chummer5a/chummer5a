@@ -934,5 +934,5 @@ namespace Chummer.Annotations
   /// The Attribute must be mentioned in your member reordering patterns
   /// </remarks>
   [AttributeUsage(AttributeTargets.All)]
-  public sealed class NoReorder : Attribute { }
+  public sealed class NoReorderAttribute : Attribute { }
 }
