@@ -429,7 +429,7 @@ namespace Chummer.Backend.Shared_Methods
 							name = power.DisplayNameShort;
 							return true;
 						}
-						XmlDocument xmlPowers = XmlManager.Instance.Load("qualities.xml");
+						XmlDocument xmlPowers = XmlManager.Instance.Load("powers.xml");
 						nameNode =
 							xmlPowers.SelectSingleNode($"/chummer/powers/power[name = \"{node.InnerText}\"]");
 						name = nameNode["translate"] != null
