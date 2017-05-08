@@ -512,31 +512,31 @@
       <page>90</page>
     </metamagic>
     <metamagic>
-      <id>94998ad1-956f-4c04-bb3f-f4464170bf32</id>
-      <name>Power Bleed</name>
-      <adept>yes</adept>
-      <magician>no</magician>
-      <required>
-        <allof>
-          <art>Blood Magic</art>
-        </allof>
-      </required>
-      <source>SG</source>
-      <page>90</page>
+		<id>94998ad1-956f-4c04-bb3f-f4464170bf32</id>
+		<name>Power Bleed</name>
+		<adept>yes</adept>
+		<magician>no</magician>
+		<required>
+			<allof>
+				<art>Blood Magic</art>
+				<metamagic>Cannibalize</metamagic>
+			</allof>
+		</required>
+		<source>SG</source>
+		<page>90</page>
     </metamagic>
     <metamagic>
-      <id>866592b7-b652-4270-b696-4a8020b62b12</id>
-      <name>Cannibalize</name>
-      <adept>yes</adept>
-      <magician>no</magician>
-      <required>
-        <allof>
-          <art>Blood Magic</art>
-					<metamagic>Sacrifice</metamagic>
-        </allof>
-      </required>
-      <source>SG</source>
-      <page>90</page>
+		<id>866592b7-b652-4270-b696-4a8020b62b12</id>
+		<name>Cannibalize</name>
+		<adept>yes</adept>
+		<magician>no</magician>
+		<required>
+			<allof>
+				<art>Blood Magic</art>		
+			</allof>
+		</required>
+		<source>SG</source>
+		<page>90</page>
     </metamagic>
   <!-- End Region -->
 	<!-- Region Forbidden Arcana -->
@@ -646,8 +646,52 @@
 		<source>FA</source>
 		<page>325</page>
 	</metamagic>
-  </metamagics>
+	<!-- Region Blood Magic Metamagics -->
+	<metamagic>
+		<id>5b2175c6-bbc9-4e8f-ac33-7a7ac6ded312</id>
+		<name>Predator Feast</name>
+		<adept>yes</adept>
+		<magician>no</magician>
+		<required>
+			<allof>
+				<art>Blood Magic</art>
+				<metamagic>Cannibalize</metamagic>				
+			</allof>
+		</required>
+		<source>FA</source>
+		<page>131</page>
+	</metamagic>
+	<metamagic>
+		<id>ba511830-7fb6-4ec0-8861-5cff07c90f41</id>
+		<name>Soul Tether</name>
+		<adept>no</adept>
+		<magician>yes</magician>
+		<required>
+			<allof>
+				<art>Blood Magic</art>
+				<metamagic>Sacrifice</metamagic>				
+			</allof>
+		</required>
+		<source>FA</source>
+		<page>131</page>
+	</metamagic>
+	<metamagic>
+		<id>30774b9d-bb89-4ece-9bc4-35017cbf30b4</id>
+		<name>Spiritual Sacrifice</name>
+		<adept>no</adept>
+		<magician>yes</magician>
+		<required>
+			<allof>
+				<art>Blood Magic</art>
+				<metamagic>Sacrifice</metamagic>				
+			</allof>
+		</required>
+		<source>FA</source>
+		<page>131</page>
+	</metamagic>
 	<!-- End Region -->
+	<!-- End Region -->
+  </metamagics>
   <arts>
     <art>
       <id>5b922bcf-4114-4c49-a4f3-0f3dcb45dd2f</id>
