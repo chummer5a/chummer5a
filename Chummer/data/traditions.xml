@@ -1602,7 +1602,7 @@
 		</spirit>
 		<!-- Region Forbidden Arcana -->		
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>6237233f-1872-45da-b828-16df75a30127</id>
 			<name>Bone Spirit</name>
 			<bod>F+3</bod>
 			<agi>F+0</agi>
@@ -1638,7 +1638,7 @@
 			<page>135</page>
 		</spirit>
 		<spirit>
-			<id>c1df7169-cad5-46ee-9026-4dcdc329059a</id>
+			<id>0ba85f5b-c05c-4858-8314-4dd3a7c5764f</id>
 			<name>Blood Shade</name>
 			<bod>F+0</bod>
 			<agi>F+2</agi>
@@ -1680,7 +1680,7 @@
 			<page>135</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>4eb2ac59-72bd-4dda-8709-aa822614ff94</id>
 			<name>Ceramic Spirit</name>
 			<bod>F+0</bod>
 			<agi>F+1</agi>
@@ -1720,7 +1720,7 @@
 			<page>180</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>75de5aea-77e7-4559-abe1-9f11b1c0004b</id>
 			<name>Metal Spirit</name>
 			<bod>F+4</bod>
 			<agi>F-2</agi>
@@ -1758,7 +1758,7 @@
 			<page>180</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>e69f5b99-7c0b-4174-9343-5424c18c17f2</id>
 			<name>Energy Spirit</name>
 			<bod>F+1</bod>
 			<agi>F+2</agi>
@@ -1799,7 +1799,7 @@
 			<page>180</page>
 		</spirit>	
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>ffdf57e1-319c-4772-bb43-c80a91baf290</id>
 			<name>Airwave Spirit</name>
 			<bod>F+2</bod>
 			<agi>F+3</agi>
@@ -1839,7 +1839,7 @@
 			<page>180</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>dbd6d567-1376-4847-b822-10a1f1d0a029</id>
 			<name>Ship Spirit</name>
 			<bod>F+4</bod>
 			<agi>F-1</agi>
@@ -1874,7 +1874,7 @@
 			<page>180</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>fc8c2451-6314-4a44-b3da-92966df9c9f4</id>
 			<name>Train Spirit</name>
 			<bod>F+3</bod>
 			<agi>F-1</agi>
@@ -1908,7 +1908,7 @@
 			<page>181</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>8dabb592-0860-469c-aa86-12eba627ddf4</id>
 			<name>Automotive Spirit</name>
 			<bod>F+1</bod>
 			<agi>F+2</agi>
@@ -1943,7 +1943,7 @@
 			<page>181</page>
 		</spirit>
 		<spirit>
-			<id>1c422fea-4bf5-4b51-b65c-6ec9356b850e</id>
+			<id>51203ea9-db22-4ec0-8b95-8ae68addf2f0</id>
 			<name>Aircraft Spirit</name>
 			<bod>F+2</bod>
 			<agi>F+1</agi>
@@ -1979,7 +1979,7 @@
 			<page>181</page>
 		</spirit>
 		<spirit>
-			<id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
+			<id>df28f999-2da1-49cc-a214-37207e9d58bc</id>
 			<name>Air Elemental</name>
 			<bod>F-2</bod>
 			<agi>F+3</agi>
@@ -2022,7 +2022,7 @@
 			<page>181</page>
 		</spirit>
 		<spirit>
-			<id>2a0352be-9b13-4e1e-a610-af480f6a1841</id>
+			<id>1f3d1a7d-f8b4-49f9-ac23-2dac7089d58e</id>
 			<name>Earth Elemental</name>
 			<bod>F+4</bod>
 			<agi>F-2</agi>
@@ -2061,7 +2061,7 @@
 			<page>181</page>
 		</spirit>
 		<spirit>
-			<id>c0178bf8-1fc5-4c56-9ce1-92a3ae1adc45</id>
+			<id>a33bc432-338f-417d-8959-9bfcbfad61b1</id>
 			<name>Fire Elemental</name>
 			<bod>F+1</bod>
 			<agi>F+2</agi>
@@ -2103,7 +2103,7 @@
 			<page>181</page>
 		</spirit>
 		<spirit>
-			<id>5f284fc2-13dc-42cc-9cd9-231f815ea0bf</id>
+			<id>c04bcb45-e2ca-4f70-a63a-6f354c6cbecb</id>
 			<name>Water Elemental</name>
 			<bod>F+0</bod>
 			<agi>F+1</agi>
