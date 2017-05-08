@@ -4481,7 +4481,7 @@
 			<descriptor>Physical, Area</descriptor>
 			<category>Manipulation</category>
 			<type>P</type>
-			<range>LOS(A)</range>
+			<range>LOS (A)</range>
 			<damage>0</damage>
 			<duration>S</duration>
 			<dv>F+2</dv>
@@ -4520,7 +4520,7 @@
 			<descriptor>Indirect, Area</descriptor>
 			<category>Manipulation</category>
 			<type>P</type>
-			<range>LOS(A)</range>
+			<range>LOS (A)</range>
 			<damage>0</damage>
 			<duration>I</duration>
 			<dv>F+3</dv>
@@ -4546,7 +4546,7 @@
 			<descriptor>Indirect, Area</descriptor>
 			<category>Manipulation</category>
 			<type>P</type>
-			<range>LOS(A)</range>
+			<range>LOS (A)</range>
 			<damage>0</damage>
 			<duration>I</duration>
 			<dv>F+3</dv>
@@ -4594,7 +4594,7 @@
 		</spell>
 		<spell>
 			<id>4115bdb8-c298-44f7-8a1c-8097133378ec</id>
-			<name>Gravuty Well</name>
+			<name>Gravity Well</name>
 			<descriptor>Physical, Area</descriptor>
 			<category>Manipulation</category>
 			<type>P</type>
@@ -4657,6 +4657,406 @@
 			<source>FA</source>
 			<page>52</page>
 		</spell>
+		<!-- Region Blood Magic Spells -->
+		<spell>
+			<id>80688ffa-82e6-4db2-a12d-9dd0a6603a3f</id>
+			<name>Boil Blood</name>
+			<descriptor>Blood, Direct, Elemental</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>P</damage>
+			<duration>I</duration>
+			<dv>F-2</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>125</page>
+		</spell>
+		<spell>
+			<id>a9b72b69-a7f0-4f58-a13e-a9227e9d51de</id>
+			<name>Corpse Explosion</name>
+			<descriptor>Blood, Direct, Elemental</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>P</damage>
+			<duration>I</duration>
+			<dv>F</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>126</page>
+		</spell>
+		<spell>
+			<id>6ff4ad6b-9883-46c7-bbcd-51511b34e9c9</id>
+			<name>Embolism</name>
+			<descriptor>Blood, Direct</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>P</damage>
+			<duration>I</duration>
+			<dv>F-2</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>126</page>
+		</spell>
+		<spell>
+			<id>8b50b92c-a8d3-4682-83fc-68ea654d78a5</id>
+			<name>Giger Spirit</name>
+			<descriptor>Blood, Direct, Elemental</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>T</range>
+			<damage>P</damage>
+			<duration>I</duration>
+			<dv>F-4</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>126</page>
+		</spell>
+		<spell>
+			<id>2c22bc40-1eee-48e5-83e4-84960e621a3d</id>
+			<name>Ice Veins</name>
+			<descriptor>Blood, Direct</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>Special</damage>
+			<duration>I</duration>
+			<dv>F-3</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>127</page>
+		</spell>
+		<spell>
+			<id>ed093fec-e0ac-4627-a81c-264162e13f47</id>
+			<name>Pyrohemetics</name>
+			<descriptor>Blood, Direct, Elemental</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>P</damage>
+			<duration>I</duration>
+			<dv>F-4</dv>
+			<required>
+				<allof>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>127</page>
+		</spell>
+		<spell>
+			<id>59aa2e30-c0f5-4340-97b6-adfe4e609756</id>
+			<name>Rupture</name>
+			<descriptor>Blood, Direct</descriptor>
+			<category>Combat</category>
+			<type>P</type>
+			<range>T</range>
+			<damage>P</damage>
+			<duration>I</duration>
+			<dv>F-6</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>127</page>
+		</spell>
+		<spell>
+			<id>22579211-45f0-493b-9c71-29f159ceb120</id>
+			<name>Clot</name>
+			<descriptor>Blood, Essence</descriptor>
+			<category>Health</category>
+			<type>M</type>
+			<range>T</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-2</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>127</page>
+		</spell>
+		<spell>
+			<id>ffd492e3-0b04-447f-95f3-4b686a9be37b</id>
+			<name>Share Damage</name>
+			<descriptor>Blood</descriptor>
+			<category>Health</category>
+			<type>M</type>
+			<range>T</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-4</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>127</page>
+		</spell>
+		<spell>
+			<id>a856169f-fdb0-4117-a82d-ef0eefa04e95</id>
+			<name>Somatic Healing</name>
+			<descriptor>Blood, Essence</descriptor>
+			<category>Health</category>
+			<type>M</type>
+			<range>T</range>
+			<damage>0</damage>
+			<duration>P</duration>
+			<dv>F-4</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>127</page>
+		</spell>
+		<spell>
+			<id>8d1c08f2-fe77-4a11-ab5f-dca8a7e0a7d9</id>
+			<name>Sympathetic Reprisal</name>
+			<descriptor>Blood</descriptor>
+			<category>Health</category>
+			<type>M</type>
+			<range>T</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-2</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>128</page>
+		</spell>
+		<spell>
+			<id>55f4619b-07a1-4a18-9f8d-3b9a587ffd9a</id>
+			<name>Blood Puppet</name>
+			<descriptor>Blood, Mental</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-1</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>128</page>
+		</spell>
+		<spell>
+			<id>fb3d0fd7-058f-4ebf-86be-7863d7a5820b</id>
+			<name>Corpse Spikes</name>
+			<descriptor>Blood, Environmental, Area</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>LOS (A)</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>F</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>129</page>
+		</spell>
+		<spell>
+			<id>b09723b8-d83e-4377-826d-4b286958d5e3</id>
+			<name>Corpse Lash</name>
+			<descriptor>Blood, Environmental, Area</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>LOS (A)</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>F-1</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>129</page>
+		</spell>
+		<spell>
+			<id>8a096951-d2ee-4c46-9c64-9e9a7f218c03</id>
+			<name>Blood Whip</name>
+			<descriptor>Blood, Physical</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>T</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>F-2</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>129</page>
+		</spell>
+		<spell>
+			<id>664fd84a-35c3-4309-9fb8-2ac8d8ba4f30</id>
+			<name>Blood Blade</name>
+			<descriptor>Blood, Physical</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>T</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>F-1</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>129</page>
+		</spell>
+		<spell>
+			<id>c55c32d8-52e2-4cdd-94b4-83c7566cbfaf</id>
+			<name>Viscera Web</name>
+			<descriptor>Blood, Physical, Damaging</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F+4</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>129</page>
+		</spell>
+		<spell>
+			<id>31b2929d-d876-40df-9cd4-8b92f57e839b</id>
+			<name>Blood Bath</name>
+			<descriptor>Adept, Blood</descriptor>
+			<category>Rituals</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>Special</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>130</page>
+		</spell>
+		<spell>
+			<id>3282adfa-a92b-4d7e-895c-51dd0fe7f61a</id>
+			<name>Blood Oath</name>
+			<descriptor>Material Link</descriptor>
+			<category>Rituals</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>Special</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>130</page>
+		</spell>
+		<spell>
+			<id>b557c296-01c2-4293-9d5a-c8e95be77612</id>
+			<name>Death Curse</name>
+			<descriptor>Material Link</descriptor>
+			<category>Rituals</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>Special</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>130</page>
+		</spell>
+		<spell>
+			<id>242a0e9f-4130-4094-8cac-3db739ffafb2</id>
+			<name>Guardian Bond</name>
+			<descriptor>Material Link</descriptor>
+			<category>Rituals</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>0</damage>
+			<duration>I</duration>
+			<dv>Special</dv>
+			<required>
+				<allof>
+					<metamagicart>Blood Magic</metamagicart>
+					<metamagic>Sacrifice</metamagic>
+				</allof>
+			</required>
+			<source>FA</source>
+			<page>131</page>
+		</spell>
+		<!-- End Region -->
 		<!-- End Region -->
   </spells>
 </chummer>

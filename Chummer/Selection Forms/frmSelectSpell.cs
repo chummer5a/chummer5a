@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+ using Chummer.Backend.Shared_Methods;
 
 namespace Chummer
 {
@@ -437,11 +438,15 @@ namespace Chummer
 							return;
 
 						}
-					}
+                        if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, "", null, null, _objXmlDocument))
+                        {
+                            return;
+                        }
+                    }
 				}
 				if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0)
-				{
-                    AcceptForm();
+				{				    
+				    AcceptForm();
 				}
 			}
 		}
