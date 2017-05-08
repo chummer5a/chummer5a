@@ -538,10 +538,8 @@
       <source>SG</source>
       <page>90</page>
     </metamagic>
-  </metamagics>
   <!-- End Region -->
 	<!-- Region Forbidden Arcana -->
-
 	<metamagic>
 		<id>a3015186-c234-448c-811d-43c7d722abd2</id>
 		<name>Paradigm Shift: Insect Shaman</name>
@@ -648,6 +646,7 @@
 		<source>FA</source>
 		<page>325</page>
 	</metamagic>
+  </metamagics>
 	<!-- End Region -->
   <arts>
     <art>

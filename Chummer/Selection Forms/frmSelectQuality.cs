@@ -266,10 +266,10 @@ namespace Chummer
             }
 		}
 
-		/// <summary>
-		/// A Quality the character has that should be ignored for checking Fobidden requirements (which would prevent upgrading/downgrading a Quality).
-		/// </summary>
-		public string IgnoreQuality { get; set; }
+	    /// <summary>
+	    /// A Quality the character has that should be ignored for checking Fobidden requirements (which would prevent upgrading/downgrading a Quality).
+	    /// </summary>
+	    public string IgnoreQuality { get; set; } = string.Empty;
 
 	    /// <summary>
 		/// Whether or not the user wants to add another item after this one.

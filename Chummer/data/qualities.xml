@@ -11941,7 +11941,7 @@
 			<doublecareer>False</doublecareer>
 			<required>
 				<allof>
-					<metamagic>Advanced Alchemy</metamagic>
+					<metamagicart>Advanced Alchemy</metamagicart>
 					<skill>
 						<name>Alchemy</name>
 						<val>4</val>
@@ -11966,7 +11966,7 @@
 			<doublecareer>False</doublecareer>
 			<required>
 				<allof>
-					<metamagic>Advanced Alchemy</metamagic>
+					<metamagicart>Advanced Alchemy</metamagicart>
 				</allof>
 				<oneof>
 					<skill>
@@ -12010,10 +12010,11 @@
 			<doublecareer>False</doublecareer>
 			<required>
 				<allof>
-					<knowledgeskill>
+					<skill>
 						<name>Magical Theory</name>
 						<val>4</val>
-					</knowledgeskill>
+            <type>Knowledge</type>
+					</skill>
 					<skill>
 						<name>Arcana</name>
 						<val>6</val>
@@ -12051,7 +12052,7 @@
 			<required>
 				<oneof>
 					<group>
-						<tradition>Chaos</tradition>
+						<tradition>Chaos Magic</tradition>
 						<skill>
 							<name>Spellcasting</name>
 							<val>4</val>
@@ -12067,7 +12068,7 @@
 						</skill>
 					</group>
 					<group>
-						<tradition>Chaos</tradition>
+						<tradition>Chaos Magic</tradition>
 						<skill>
 							<name>Spellcasting</name>
 							<val>4</val>
@@ -12242,7 +12243,7 @@
 			<doublecareer>False</doublecareer>
 			<required>
 				<allof>
-					<metamagic>Blood Magic</metamagic>
+					<metamagicart>Blood Magic</metamagicart>
 				</allof>
 				<oneof>
 					<skill>
@@ -12941,7 +12942,7 @@
 						<val>6</val>
 					</skill>
 					<group>
-						<tradition>Islamic</tradition>
+						<tradition>Islam</tradition>
 						<skill>
 							<name>Alchemy</name>
 							<val>6</val>
@@ -13056,7 +13057,7 @@
 						</skill>
 					</group>
 					<group>
-						<tradition>Chaos</tradition>
+						<tradition>Chaos Magic</tradition>
 						<skill>
 							<name>Arcana</name>
 							<val>2</val>

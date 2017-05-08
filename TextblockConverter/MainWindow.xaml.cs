@@ -22,6 +22,11 @@ namespace WpfApplication1
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            Guid g = Guid.NewGuid();
+            if (!Guid.TryParse(txtGUID.Text, out g))
+            {
+
+            }
             var lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 	        if (lines.Length <= 1) return;
 	        var doc = new XmlDocument();
@@ -30,7 +35,6 @@ namespace WpfApplication1
 	        doc.AppendChild(objHeader);
 
 			XmlNode xmlNode = doc.CreateElement("id");
-			Guid g = Guid.NewGuid();
 			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString();
 			objHeader.AppendChild(xmlNode);
 
@@ -55,6 +59,10 @@ namespace WpfApplication1
 			        foreach (var node in nodes)
 			        {
 				        xmlNode = doc.CreateElement($"{str}{node}".ToLower());
+			            if (node == "aug" && int.TryParse(_attValues[i], out int result))
+			            {
+                            xmlNode.InnerText = node == "aug" ? (result + 4).ToString() : _attValues[i];
+                        }
 				        xmlNode.InnerText = node == "aug" ? (Convert.ToInt32(_attValues[i]) + 4).ToString() : _attValues[i];
 				        objHeader.AppendChild(xmlNode);
 			        }

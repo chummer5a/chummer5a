@@ -123,7 +123,7 @@ namespace Chummer
             XmlManager.Instance.Load("critters.xml");
             XmlManager.Instance.Load("critterpowers.xml");
             XmlManager.Instance.Load("cyberware.xml");
-            XmlManager.Instance.Load("drugcomponents.xml");
+            // XmlManager.Instance.Load("drugcomponents.xml"); TODO: Re-enable when Custom Drugs branch is merged
             XmlManager.Instance.Load("echoes.xml");
             XmlManager.Instance.Load("gameplayoptions.xml");
             XmlManager.Instance.Load("gear.xml");

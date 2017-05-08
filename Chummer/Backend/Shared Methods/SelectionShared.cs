@@ -373,16 +373,23 @@ namespace Chummer.Backend.Shared_Methods
 						: "\n\t" + node.InnerText;
 					return character.MartialArts.Any(martialart => martialart.Advantages.Any(technique => technique.Name == node.InnerText));
 				case "metamagic":
-					XmlNode metamagicDoc = XmlManager.Instance.Load("metamagics.xml");
+					XmlNode metamagicDoc = XmlManager.Instance.Load("metamagic.xml");
 					nameNode =
-						metamagicDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{node.InnerText}\"]") ??
 						metamagicDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{node.InnerText}\"]");
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
 					return character.Metamagics.Any(objMetamagic => objMetamagic.Name == node.InnerText);
+                case "metamagicart":
+                    XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
+                    nameNode =
+                        metamagicArtDoc.SelectSingleNode($"/chummer/arts/art[name = \"{node.InnerText}\"]");
+                    name = nameNode["translate"] != null
+                        ? "\n\t" + nameNode["translate"].InnerText
+                        : "\n\t" + node.InnerText;
+                    return character.Arts.Any(objMetamagic => objMetamagic.Name == node.InnerText);
 
-				case "metatype":
+                case "metatype":
 					// Check the Metatype restriction.
 					nameNode =
 						objMetatypeDocument.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{node.InnerText}\"]") ??
@@ -484,9 +491,9 @@ namespace Chummer.Backend.Shared_Methods
 					XmlDocument xmlSkills = XmlManager.Instance.Load("skills.xml");
 					nameNode =
 						xmlSkills.SelectSingleNode($"/chummer/skills/skill[name = \"{node["name"].InnerText}\"]");
-					name = nameNode["translate"] != null
+					name = nameNode?["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
-						: "\n\t" + node.InnerText;
+						: "\n\t" + node["name"].InnerText;
 					return false;
 
 				case "skillgrouptotal":
@@ -537,11 +544,11 @@ namespace Chummer.Backend.Shared_Methods
 					// Character needs a specific Tradition.
 					XmlDocument xmlTradition = XmlManager.Instance.Load("traditions.xml");
 					nameNode =
-						xmlTradition.SelectSingleNode($"/chummer/traditions/tradition[name = \"{node["name"].InnerText}\"]");
+						xmlTradition.SelectSingleNode($"/chummer/traditions/tradition[name = \"{node.InnerText}\"]");
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
-					return character.MagicTradition == node["name"].InnerText;
+					return character.MagicTradition == node.InnerText;
 				default:
 					Utils.BreakIfDebug();
 					break;
