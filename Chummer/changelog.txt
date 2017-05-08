@@ -23,6 +23,7 @@ Application Changes:
 - Fixed a crash caused by deleting root-level nodes on the Character Roster window. 
 - Refactored RequirementsMet code to be more consitent in approach and behave in a similar manner to AddImprovementCollection. Some weird behaviour may crop up from this, but initial testing seems okay. 
 - Fixed an issue with naming armour objects in career mode.
+- Fixed behaviour of the main Chummer window to not launch on disconnected monitors.
 
 Data Changes:
 
