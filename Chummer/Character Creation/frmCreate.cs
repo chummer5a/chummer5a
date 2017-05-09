@@ -72,7 +72,8 @@ namespace Chummer
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
             _objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
             _objCharacter.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
-            _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
+			_objCharacter.AmbidextrousChanged += objCharacter_AmbidextrousChanged;
+			_objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
             _objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
             _objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
             _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
@@ -376,26 +377,7 @@ namespace Chummer
             txtAlias.Text = _objCharacter.Alias;
             txtPlayerName.Text = _objCharacter.PlayerName;
 
-			//Create the dropdown for the character's primary arm.
-			List<ListItem> lstPrimaryArm = new List<ListItem>();
-			ListItem objLeftHand = new ListItem();
-			objLeftHand.Value = "Left";
-			objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
-			lstPrimaryArm.Add(objLeftHand);
-			ListItem objRightHand = new ListItem();
-			objRightHand.Value = "Right";
-			objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
-			lstPrimaryArm.Add(objRightHand);
-
-			SortListItem objSortHand = new SortListItem();
-			lstPrimaryArm.Sort(objSortHand.Compare);
-            cboPrimaryArm.BeginUpdate();
-            cboPrimaryArm.ValueMember = "Value";
-			cboPrimaryArm.DisplayMember = "Name";
-			cboPrimaryArm.DataSource = lstPrimaryArm;
-
-	        cboPrimaryArm.SelectedValue = _objCharacter.PrimaryArm;
-            cboPrimaryArm.EndUpdate();
+			objCharacter_AmbidextrousChanged(null);
 
             // Check for Special Attributes.
             lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
@@ -1498,8 +1480,49 @@ namespace Chummer
                 nudMysticAdeptMAGMagician.Visible = false;
             }
         }
+		
+		private void objCharacter_AmbidextrousChanged(object sender)
+		{
+			if (_blnReapplyImprovements)
+				return;
+			//Create the dropdown for the character's primary arm.
+			List<ListItem> lstPrimaryArm = new List<ListItem>();
+			ListItem objLeftHand = new ListItem();
+			objLeftHand.Value = "Left";
+			objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+			lstPrimaryArm.Add(objLeftHand);
+			ListItem objRightHand = new ListItem();
+			objRightHand.Value = "Right";
+			objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+			lstPrimaryArm.Add(objRightHand);
+			if (_objCharacter.Ambidextrous)
+			{
+				ListItem objAmbidextrous = new ListItem();
+				objAmbidextrous.Value = "Ambidextrous";
+				objAmbidextrous.Name = LanguageManager.Instance.GetString("String_Ambidextrous");
+				lstPrimaryArm.Add(objAmbidextrous);
+			}
 
-        private void objCharacter_MagicianTabEnabledChanged(object sender)
+			SortListItem objSortHand = new SortListItem();
+			lstPrimaryArm.Sort(objSortHand.Compare);
+			cboPrimaryArm.BeginUpdate();
+			cboPrimaryArm.ValueMember = "Value";
+			cboPrimaryArm.DisplayMember = "Name";
+			cboPrimaryArm.DataSource = lstPrimaryArm;
+			if (_objCharacter.Ambidextrous)
+			{
+				cboPrimaryArm.SelectedValue = "Ambidextrous";
+				cboPrimaryArm.Enabled = false;
+			}
+			else
+			{
+				cboPrimaryArm.SelectedValue = _objCharacter.PrimaryArm;
+				cboPrimaryArm.Enabled = true;
+			}
+			cboPrimaryArm.EndUpdate();
+		}
+
+		private void objCharacter_MagicianTabEnabledChanged(object sender)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -14007,9 +14030,9 @@ namespace Chummer
                 }
 
                 // Each spell costs KarmaSpell.
-                intKarmaPointsRemain -= Math.Max(0, intSpellCount - _objCharacter.SpellLimit) * _objOptions.KarmaSpell;
-                intSpellPointsUsed += Math.Max(0, intSpellCount - _objCharacter.SpellLimit) * _objOptions.KarmaSpell;
-                tipTooltip.SetToolTip(lblSpellsBP, intSpellCount.ToString() + " x " + _objOptions.KarmaSpell + " " + LanguageManager.Instance.GetString("String_Karma") + " = " + intSpellPointsUsed.ToString() + " " + LanguageManager.Instance.GetString("String_Karma"));
+                intKarmaPointsRemain -= Math.Max(0, intSpellCount - _objCharacter.SpellLimit) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
+                intSpellPointsUsed += Math.Max(0, intSpellCount - _objCharacter.SpellLimit) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
+                tipTooltip.SetToolTip(lblSpellsBP, intSpellCount.ToString() + " x " + _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount) + " " + LanguageManager.Instance.GetString("String_Karma") + " = " + intSpellPointsUsed.ToString() + " " + LanguageManager.Instance.GetString("String_Karma"));
             }
             lblSpellsBP.Text = string.Format("{0} " + strPoints, intSpellPointsUsed.ToString());
             intFreestyleBP += intSpellPointsUsed;
@@ -22680,7 +22703,7 @@ namespace Chummer
 
 		private void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (_blnLoading ) return;
+			if (_blnLoading || _objCharacter.Ambidextrous) return;
 			_objCharacter.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
 		}
 	}

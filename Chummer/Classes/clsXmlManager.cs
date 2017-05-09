@@ -84,8 +84,11 @@ namespace Chummer
 		{
 			string strPath = Path.Combine(Application.StartupPath, "data", strFileName);
 		    if (!File.Exists(strPath))
+		    {
+		        Utils.BreakIfDebug();
 		        return null;
-			DateTime datDate = File.GetLastWriteTime(strPath);
+		    }
+		    DateTime datDate = File.GetLastWriteTime(strPath);
 
 			// Look to see if this XmlDocument is already loaded.
             bool blnLoadFile = false;

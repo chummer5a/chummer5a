@@ -177,26 +177,6 @@
 						<xsl:value-of select="page"/>
 					</td>
 				</tr>
-				<xsl:if test="accessories/accessory">
-					<tr>
-						<xsl:if test="position() mod 2 != 1">
-							<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-						</xsl:if>
-						<td colspan="100%" class="indent">
-							<xsl:for-each select="accessories/accessory">
-								<xsl:sort select="name"/>
-								<xsl:value-of select="name"/>
-								<xsl:if test="last() &gt; 1">; </xsl:if>
-							</xsl:for-each>
-							<xsl:for-each select="mods/weaponmod">
-								<xsl:sort select="name"/>
-								<xsl:value-of select="name"/>
-								<xsl:if test="rating > 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
-								<xsl:if test="last() &gt; 1">; </xsl:if>
-							</xsl:for-each>
-						</td>
-					</tr>
-				</xsl:if>
 				<xsl:if test="ranges/short != ''">
 					<tr style="text-align: center">
 						<xsl:if test="position() mod 2 != 1">
@@ -220,6 +200,26 @@
 							<xsl:value-of select="ranges/extreme"/>
 						</td>
 						<td colspan="5"/>
+					</tr>
+				</xsl:if>
+				<xsl:if test="accessories/accessory">
+					<tr>
+						<xsl:if test="position() mod 2 != 1">
+							<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+						</xsl:if>
+						<td colspan="100%" class="indent">
+							<xsl:for-each select="accessories/accessory">
+								<xsl:sort select="name"/>
+								<xsl:value-of select="name"/>
+								<xsl:if test="last() &gt; 1">; </xsl:if>
+							</xsl:for-each>
+							<xsl:for-each select="mods/weaponmod">
+								<xsl:sort select="name"/>
+								<xsl:value-of select="name"/>
+								<xsl:if test="rating > 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+								<xsl:if test="last() &gt; 1">; </xsl:if>
+							</xsl:for-each>
+						</td>
 					</tr>
 				</xsl:if>
 			</xsl:for-each>

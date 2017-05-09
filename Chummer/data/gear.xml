@@ -21,6 +21,7 @@
 	<!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
 	<version>0</version>
 	<categories>
+		<category>Alchemical Tools</category>		
 		<category>Ammunition</category>
 		<category>Armor Enhancements</category>
 		<category>Audio Devices</category>
@@ -11360,8 +11361,8 @@
 			<source>SR5</source>
 			<page>1</page>
 		</gear>
-        <!-- SR5 2050 -->
-		<!-- Explosives -->
+    <!-- Region SR5 2050 -->
+		<!-- Region Explosives -->
 		<gear>
 			<id>4320ca43-f04b-471a-a0c9-ae12fce4db4a</id>
 			<name>Detonator, Radio (2050)</name>
@@ -11921,7 +11922,7 @@
 			<page>207</page>
 		</gear>
 		<!-- End Region -->
-		<!-- Magisches Zubehör -->
+		<!-- Region Magical Supplies -->
 		<gear>
 			<id>7358fa13-7af0-4af8-ab91-7283feaa536e</id>
 			<name>Elemental Binding Materials (2050)</name>
@@ -11943,7 +11944,7 @@
 			<page>207</page>
 		</gear>
 		<!-- End Region -->
-		<!-- Cyberdecks -->
+		<!-- Region Cyberdecks -->
 		<gear>
 			<id>abf8ac4c-1187-4758-a5b2-d3543bd0e111</id>
 			<name>Radio Shack PCD-100 (2050)</name>
@@ -12070,7 +12071,8 @@
 			<source>2050</source>
 			<page>169</page>
 		</gear>
-		<!-- Cyberterminal -->
+		<!-- End Region -->
+		<!-- Region Cyberterminal -->
 		<gear>
 			<id>6da6f93e-9422-4028-b610-99f94e8bd8c5</id>
 			<name>Radio Shack DTU-2500, Terminal (2050)</name>
@@ -12197,7 +12199,8 @@
 			<source>2050</source>
 			<page>170</page>
 		</gear>
-		<!-- Gepäck -->
+		<!-- End Region -->
+		<!-- Region Gepäck -->
 		<gear>
 			<id>48a88dc3-ed52-4ae2-95a5-73b67e11a0d7</id>
 			<name>Radio Shack PCD-50, Luggage (2050)</name>
@@ -13109,6 +13112,58 @@
 			<source>2050</source>
 			<page>170</page>
 		</gear>	
-		<!-- End -->		
+		<!-- End Region  -->
+		<!-- Region Alchemical Supplies -->
+		<gear>
+			<id>377c7545-50e3-4547-a47b-1a0cd9ee567f</id>
+			<name>Atomizer</name>
+			<category>Alchemical Tools</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>FA</source>
+			<page>1</page>
+		</gear>
+		<gear>
+			<id>f0b6f6db-dcf9-47f4-9108-51ff196184da</id>
+			<name>Alembic</name>
+			<category>Alchemical Tools</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>3000</cost>
+			<source>FA</source>
+			<page>1</page>
+		</gear>
+		<gear>
+			<id>f6fde2af-ec7b-4531-83a4-eafa413f0ab7</id>
+			<name>Athanor</name>
+			<category>Alchemical Tools</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>FA</source>
+			<page>1</page>
+		</gear>
+		<gear>
+			<id>ca6e1548-2d3f-4e4d-87d1-52414eb62919</id>
+			<name>Crucible</name>
+			<category>Alchemical Tools</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>500</cost>
+			<source>FA</source>
+			<page>1</page>
+		</gear>
+		<gear>
+			<id>580fc834-9481-40d3-9e07-787273a99535</id>
+			<name>Vault of Ages</name>
+			<category>Alchemical Tools</category>
+			<rating>5</rating>
+			<avail>(Rating +4)R</avail>
+			<cost>2000 x Rating</cost>
+			<source>FA</source>
+			<page>1</page>
+		</gear>
+		<!-- End Region -->
 	</gears>
 </chummer>

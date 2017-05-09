@@ -65,8 +65,11 @@ namespace Chummer
 
 		private void frmSelectVehicleMod_Load(object sender, EventArgs e)
 		{
-			// Load the Mod information.
-			_objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            // Load the Mod information.
+            _objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
 
 			// Populate the Weapon Category list.
 			if (!string.IsNullOrEmpty(_strLimitToCategories))
@@ -152,80 +155,72 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
 			XmlNodeList objXmlModList = null;
 			// Populate the Mod list.
-			if (cboCategory.SelectedValue.ToString() != "All")
-			{
-				objXmlModList =
-					_objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]");
-			}
-			else
-			{
-				objXmlModList =
-					_objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
-			}
-			foreach (XmlNode objXmlMod in objXmlModList)
-			{
-                if (objXmlMod["hidden"] != null)
-                    continue;
+			objXmlModList = cboCategory.SelectedValue?.ToString() != "All" ? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]") : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
+			if (objXmlModList != null)
+				foreach (XmlNode objXmlMod in objXmlModList)
+				{
+					if (objXmlMod["hidden"] != null)
+						continue;
 
-                if (objXmlMod["forbidden"]?["vehicledetails"] != null)
-                {
-                    // Assumes topmost parent is an AND node
-                    if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
-                    {
-                        continue;
-                    }
-                }
-                if (objXmlMod["required"]?["vehicledetails"] != null)
-                {
-                    // Assumes topmost parent is an AND node
-                    if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
-                    {
-                        continue;
-                    }
-                }
+					if (objXmlMod["forbidden"]?["vehicledetails"] != null)
+					{
+						// Assumes topmost parent is an AND node
+						if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
+						{
+							continue;
+						}
+					}
+					if (objXmlMod["required"]?["vehicledetails"] != null)
+					{
+						// Assumes topmost parent is an AND node
+						if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
+						{
+							continue;
+						}
+					}
 
-                if (objXmlMod["forbidden"]?["oneof"] != null)
-                {
-                    XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
-                    //Add to set for O(N log M) runtime instead of O(N * M)
+					if (objXmlMod["forbidden"]?["oneof"] != null)
+					{
+						XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
+						//Add to set for O(N log M) runtime instead of O(N * M)
 
-                    HashSet<string> objForbiddenAccessory = new HashSet<string>();
-                    foreach (XmlNode node in objXmlForbiddenList)
-                    {
-                        objForbiddenAccessory.Add(node.InnerText);
-                    }
+						HashSet<string> objForbiddenAccessory = new HashSet<string>();
+						foreach (XmlNode node in objXmlForbiddenList)
+						{
+							objForbiddenAccessory.Add(node.InnerText);
+						}
 
-                    if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
-                    {
-                        continue;
-                    }
-                }
+						if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+						{
+							continue;
+						}
+					}
 
-                if (objXmlMod["required"]?["oneof"] != null)
-                {
-                    XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
-                    //Add to set for O(N log M) runtime instead of O(N * M)
+					if (objXmlMod["required"]?["oneof"] != null)
+					{
+						XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
+						//Add to set for O(N log M) runtime instead of O(N * M)
 
-                    HashSet<string> objRequiredAccessory = new HashSet<string>();
-                    foreach (XmlNode node in objXmlRequiredList)
-                    {
-                        objRequiredAccessory.Add(node.InnerText);
-                    }
+						HashSet<string> objRequiredAccessory = new HashSet<string>();
+						foreach (XmlNode node in objXmlRequiredList)
+						{
+							objRequiredAccessory.Add(node.InnerText);
+						}
 
-                    if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
-                    {
-                        continue;
-                    }
-                }
-			    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,Convert.ToInt32(nudRating.Value)))
-                {
-                    continue;
-                }
-                ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
-			    objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
-			    lstMods.Add(objItem);
-			}
-            lstMod.BeginUpdate();
+						if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+						{
+							continue;
+						}
+					}
+					if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
+					{
+						continue;
+					}
+					ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
+					objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
+					lstMods.Add(objItem);
+				}
+			lstMod.BeginUpdate();
             lstMod.DataSource = null;
 			lstMod.ValueMember = "Value";
 			lstMod.DisplayMember = "Name";

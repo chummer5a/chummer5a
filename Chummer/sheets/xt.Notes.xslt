@@ -5,11 +5,11 @@
 	<xsl:template name="notes">
 
 		<xsl:if test="notes != '' or gamenotes != ''">
-			<table><tr><td/></tr></table>
-			<xsl:call-template name="TableTitle">
-				<xsl:with-param name="name" select="$lang.Notes"/>
-			</xsl:call-template>
 			<div class="block" id="NotesBlock">
+				<table><tr><td/></tr></table>
+				<xsl:call-template name="TableTitle">
+					<xsl:with-param name="name" select="$lang.Notes"/>
+				</xsl:call-template>
 				<table class="tablestyle">
 					<tr><td colspan="100%" style="text-align: justify">
 						<xsl:call-template name="PreserveLineBreaks">
@@ -47,11 +47,11 @@
 		</xsl:if>
 
 		<xsl:if test="concept != ''">
-			<table><tr><td/></tr></table>
-			<xsl:call-template name="TableTitle">
-				<xsl:with-param name="name" select="$lang.Concept"/>
-			</xsl:call-template>
 			<div class="block" id="ConceptBlock">
+				<table><tr><td/></tr></table>
+				<xsl:call-template name="TableTitle">
+					<xsl:with-param name="name" select="$lang.Concept"/>
+				</xsl:call-template>
 				<table class="tablestyle">
 					<tr><td colspan="100%" style="text-align: justify">
 						<xsl:call-template name="PreserveLineBreaks">
@@ -67,11 +67,11 @@
 		</xsl:if>
 
 		<xsl:if test="description != ''">
-			<table><tr><td/></tr></table>
-			<xsl:call-template name="TableTitle">
-				<xsl:with-param name="name" select="$lang.Description"/>
-			</xsl:call-template>
 			<div class="block" id="DescriptionBlock">
+				<table><tr><td/></tr></table>
+				<xsl:call-template name="TableTitle">
+					<xsl:with-param name="name" select="$lang.Description"/>
+				</xsl:call-template>
 				<table class="tablestyle">
 					<tr><td colspan="100%" style="text-align: justify">
 						<xsl:call-template name="PreserveLineBreaks">
@@ -87,11 +87,11 @@
 		</xsl:if>
 
 		<xsl:if test="background != ''">
-			<table><tr><td/></tr></table>
-			<xsl:call-template name="TableTitle">
-				<xsl:with-param name="name" select="$lang.Background"/>
-			</xsl:call-template>
 			<div class="block" id="BackgroundBlock">
+				<table><tr><td/></tr></table>
+				<xsl:call-template name="TableTitle">
+					<xsl:with-param name="name" select="$lang.Background"/>
+				</xsl:call-template>
 				<table class="tablestyle">
 					<tr><td colspan="100%" style="text-align: justify">
 						<xsl:call-template name="PreserveLineBreaks">
@@ -105,6 +105,5 @@
 				<xsl:with-param name="bnme" select="'BackgroundBlock'"/>
 			</xsl:call-template>
 		</xsl:if>
-
 	</xsl:template>
 </xsl:stylesheet>

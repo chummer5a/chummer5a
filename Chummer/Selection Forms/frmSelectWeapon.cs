@@ -60,9 +60,12 @@ namespace Chummer
 			{
 				objLabel.Text = string.Empty;
 			}
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
 
-        	// Load the Weapon information.
-			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            // Load the Weapon information.
+            _objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
 			// Populate the Weapon Category list.
 			if (_strLimitToCategories.Length > 0)
@@ -261,7 +264,7 @@ namespace Chummer
                 {
                     bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
 
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
                     {
                         continue;
                     }
@@ -329,7 +332,7 @@ namespace Chummer
                 {
                     bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
 
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter,chkHideOverAvailLimit.Checked))
                     {
                         continue;
                     }

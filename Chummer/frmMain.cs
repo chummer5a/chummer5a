@@ -123,7 +123,7 @@ namespace Chummer
             XmlManager.Instance.Load("critters.xml");
             XmlManager.Instance.Load("critterpowers.xml");
             XmlManager.Instance.Load("cyberware.xml");
-            XmlManager.Instance.Load("drugcomponents.xml");
+            // XmlManager.Instance.Load("drugcomponents.xml"); TODO: Re-enable when Custom Drugs branch is merged
             XmlManager.Instance.Load("echoes.xml");
             XmlManager.Instance.Load("gameplayoptions.xml");
             XmlManager.Instance.Load("gear.xml");
@@ -715,12 +715,15 @@ namespace Chummer
                     }
                     Version.TryParse(strVersion, out verSavedVersion);
                     Version.TryParse("5.188.34", out verCorrectedVersion);
-                    int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
-                    //Check for typo in Corrupter quality and correct it
-                    if (intResult == -1)
-                    {
-                        File.WriteAllText(strFileName, Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));
-                    }
+	                if (verCorrectedVersion != null && verSavedVersion != null)
+	                {
+		                int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
+		                //Check for typo in Corrupter quality and correct it
+		                if (intResult == -1)
+		                {
+			                File.WriteAllText(strFileName, Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));
+		                }
+	                }
                 }
 
                 Timekeeper.Start("load_file");

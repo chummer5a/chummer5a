@@ -8062,7 +8062,7 @@
 			<category>Heavy Pistols</category>
 			<type>Ranged</type>
 			<conceal>0</conceal>
-			<spec>Semi-Automatics</spec>
+			<spec>Revolvers</spec>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>8P</damage>
@@ -10691,6 +10691,9 @@
 					<accessory>Vintage</accessory>
 				</oneof>
 			</forbidden>
+      <allowgear>
+        <gearcategory>Autosofts</gearcategory>
+      </allowgear>
 			<rating>0</rating>
 			<avail>12F</avail>
 			<cost>2000</cost>

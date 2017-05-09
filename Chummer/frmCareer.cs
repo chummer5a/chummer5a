@@ -74,6 +74,7 @@ namespace Chummer
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
 			_objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
             _objCharacter.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
+			_objCharacter.AmbidextrousChanged += objCharacter_AmbidextrousChanged;
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
@@ -327,26 +328,7 @@ namespace Chummer
 
 			RefreshQualities(treQualities,cmsQuality);
 
-			//Create the dropdown for the character's primary arm.
-			List<ListItem> lstPrimaryArm = new List<ListItem>();
-			ListItem objLeftHand = new ListItem();
-			objLeftHand.Value = "Left";
-			objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
-			lstPrimaryArm.Add(objLeftHand);
-			ListItem objRightHand = new ListItem();
-			objRightHand.Value = "Right";
-			objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
-			lstPrimaryArm.Add(objRightHand);
-
-			SortListItem objSortHand = new SortListItem();
-			lstPrimaryArm.Sort(objSortHand.Compare);
-            cboPrimaryArm.BeginUpdate();
-            cboPrimaryArm.ValueMember = "Value";
-			cboPrimaryArm.DisplayMember = "Name";
-			cboPrimaryArm.DataSource = lstPrimaryArm;
-
-			cboPrimaryArm.SelectedValue = _objCharacter.PrimaryArm;
-            cboPrimaryArm.EndUpdate();
+			objCharacter_AmbidextrousChanged();
 
             // Populate the Magician Traditions list.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -1379,7 +1361,48 @@ namespace Chummer
 			}
 		}
 
-        private void objCharacter_DEPEnabledChanged(object sender)
+		private void objCharacter_AmbidextrousChanged(object sender = null)
+		{
+			if (_blnReapplyImprovements)
+				return;
+			//Create the dropdown for the character's primary arm.
+			List<ListItem> lstPrimaryArm = new List<ListItem>();
+			ListItem objLeftHand = new ListItem();
+			objLeftHand.Value = "Left";
+			objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+			lstPrimaryArm.Add(objLeftHand);
+			ListItem objRightHand = new ListItem();
+			objRightHand.Value = "Right";
+			objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+			lstPrimaryArm.Add(objRightHand);
+			if (_objCharacter.Ambidextrous)
+			{
+				ListItem objAmbidextrous = new ListItem();
+				objAmbidextrous.Value = "Ambidextrous";
+				objAmbidextrous.Name = LanguageManager.Instance.GetString("String_Ambidextrous");
+				lstPrimaryArm.Add(objAmbidextrous);
+			}
+
+			SortListItem objSortHand = new SortListItem();
+			lstPrimaryArm.Sort(objSortHand.Compare);
+			cboPrimaryArm.BeginUpdate();
+			cboPrimaryArm.ValueMember = "Value";
+			cboPrimaryArm.DisplayMember = "Name";
+			cboPrimaryArm.DataSource = lstPrimaryArm;
+			if (_objCharacter.Ambidextrous)
+			{
+				cboPrimaryArm.SelectedValue = "Ambidextrous";
+				cboPrimaryArm.Enabled = false;
+			}
+			else
+			{
+				cboPrimaryArm.SelectedValue = _objCharacter.PrimaryArm;
+				cboPrimaryArm.Enabled = true;
+			}
+			cboPrimaryArm.EndUpdate();
+		}
+
+		private void objCharacter_DEPEnabledChanged(object sender)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -4404,12 +4427,12 @@ namespace Chummer
             }
 
 			treSpells.SelectedNode = objNode;
-
+			
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(_objOptions.KarmaSpell * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+			objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objEntry);
-			_objCharacter.Karma -= _objOptions.KarmaSpell;
+			_objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
 			objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -4673,11 +4696,13 @@ namespace Chummer
 
 						_objCharacter.Cyberware.Remove(objCyberware);
 
-						//Add essence hole.
-						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100m));
+					    if (objCyberware.Parent == null)
+					    {
+					        //Add essence hole.
+					        IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100m));
+					    }
 
-
-						// Open the Cyberware XML file and locate the selected piece.
+					    // Open the Cyberware XML file and locate the selected piece.
 						XmlNode objXmlCyberware;
 						if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
 						{
@@ -14046,7 +14071,7 @@ namespace Chummer
 		private void tsArmorName_Click(object sender, EventArgs e)
 		{
 			// Make sure a parent item is selected, then open the Select Accessory window.
-            if (treAIPrograms.SelectedNode == null || treArmor.SelectedNode.Level == 0)
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmorName"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -14255,9 +14280,9 @@ namespace Chummer
 
 			// Create the Expense Log Entry.
 			ExpenseLogEntry objEntry = new ExpenseLogEntry();
-			objEntry.Create(_objOptions.KarmaSpell * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+			objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objEntry);
-			_objCharacter.Karma -= _objOptions.KarmaSpell;
+			_objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
 			objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -15887,8 +15912,19 @@ namespace Chummer
 				lstCount.Add(strAmmo);
 			}
 
-			// Find all of the Ammo for the current Weapon that the character is carrying.
-			if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
+		    //#1544 Ammunition not loading or available.
+		    if (objWeapon.Spec == "Flare Launcher"
+		        && objWeapon.Name == "Micro Flare Launcher")
+		    {
+                // we are assuming that this is the only eligible gear
+		        lstAmmo.Add(_objCharacter.Gear
+                    .Single(g => g.Quantity > 0 
+                        && g.Category == "Survival Gear" 
+                        && g.Name == "Micro Flares"));
+		    }
+			
+            // Find all of the Ammo for the current Weapon that the character is carrying.
+            if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
 			{
 				// This is a standard Weapon, so consume traditional Ammunition.
 				foreach (Gear objAmmo in _objCharacter.Gear)
@@ -15906,8 +15942,16 @@ namespace Chummer
 								lstAmmo.Add(objChild);
 						}
 					}
-				}
-			}
+				    //#1544 Ammunition not loading or available.
+                    if (objWeapon.UseSkill == "Throwing Weapons"
+                        && objWeapon.Name == objAmmo.Name
+                        && objAmmo.Category == "Ammunition"
+                        && objAmmo.Quantity > 0)
+                    {
+                        lstAmmo.Add(objAmmo);
+                    }
+                }
+            }
 			else
 			{
 				if (objWeapon.AmmoCategory == "Grenade Launchers")
@@ -26289,7 +26333,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create(_objOptions.KarmaSpell * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -26297,7 +26341,7 @@ namespace Chummer
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                _objCharacter.Karma -= _objOptions.KarmaSpell;
+                _objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
             }
 
             TreeNode objSpellNode = new TreeNode();
@@ -26398,7 +26442,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create(_objOptions.KarmaSpell * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -26406,7 +26450,7 @@ namespace Chummer
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                _objCharacter.Karma -= _objOptions.KarmaSpell;
+                _objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
             }
 
             TreeNode objSpellNode = new TreeNode();

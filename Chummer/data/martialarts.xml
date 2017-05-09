@@ -20,6 +20,7 @@
 <chummer>
   <version>0</version>
   <martialarts>
+		<!-- Region Run and Gun -->
     <martialart>
       <id>de351d4e-4384-4dda-a37f-e0e4537e1445</id>
       <name>52 Blocks</name>
@@ -475,7 +476,11 @@
       <name>Firefight</name>
 			<bonus>
 				<addskillspecializationoption>
-					<skill>Firearms</skill>
+          <skills>
+            <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
 					<spec>Firefight</spec>
 				</addskillspecializationoption>
 			</bonus>
@@ -513,7 +518,11 @@
       <name>Gun Kata</name>
 			<bonus>
 				<addskillspecializationoption>
-					<skill>Firearms</skill>
+          <skills>
+            <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
 					<spec>Gun Kata</spec>
 				</addskillspecializationoption>
 			</bonus>
@@ -1258,7 +1267,11 @@
       <name>The Cowboy Way</name>
 			<bonus>
 				<addskillspecializationoption>
-					<skill>Firearms</skill>
+          <skills>
+					  <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
 					<spec>The Cowboy Way</spec>
 				</addskillspecializationoption>
 			</bonus>
@@ -1820,8 +1833,35 @@
       <source>RG</source>
       <page>127</page>
     </martialart>
+		<!-- End Region -->
+		<!-- Region Forbidden Arcana -->
+		<martialart>
+			<id>116723ab-ef17-4078-9b6b-609c24861c96</id>
+			<name>Way of Unified Mana (Hapsum-Do)</name>
+			<techniques>
+				<technique>
+					<name>Called Shot (Disarm)</name>
+				</technique>
+				<technique>
+					<name>Mana Choke</name>
+				</technique>
+				<technique>
+					<name>Counterstrike</name>
+				</technique>
+				<technique>
+					<name>Yielding Force (Counterstrike, Throw)</name>
+				</technique>
+				<technique>
+					<name>Mana Strike</name>
+				</technique>
+			</techniques>
+			<source>FA</source>
+			<page>101</page>
+		</martialart>
+		<!-- End Region -->
   </martialarts>
   <techniques>
+	<!-- Region Run and Gun -->
     <technique>
       <id>d2234863-297d-4a61-a939-ff263381e209</id>
       <name>Ballestra</name>
@@ -2287,5 +2327,20 @@
       <source>RG</source>
       <page>131</page>
     </technique>
+		<!-- End Region -->
+		<!-- Region Forbidden Arcana -->
+		<technique>
+			<id>4376ad31-af14-4204-86d1-e1a31b9cda6d</id>
+			<name>Mana Choke</name>
+			<source>FA</source>
+			<page>102</page>
+		</technique>
+		<technique>
+			<id>18400527-4b06-47fb-88fc-5d31100ae8d4</id>
+			<name>Mana Strike</name>
+			<source>FA</source>
+			<page>102</page>
+		</technique>
+		<!-- End Region -->
   </techniques>
 </chummer>

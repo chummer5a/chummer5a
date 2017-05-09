@@ -183,7 +183,8 @@ namespace Chummer
             AIProgram,
             CritterPowerLevel,
             SwapSkillSpecAttribute,
-            SpellResistance
+            SpellResistance,
+	        SpellKarmaDiscount
         }
 
         public enum ImprovementSource

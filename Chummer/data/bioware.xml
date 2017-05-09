@@ -911,7 +911,7 @@
 			<category>Biosculpting</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
-			<avail>2</avail>
+			<avail>4</avail>
 			<cost>Variable(500-2000)</cost>
 			<bonus>
 				<selecttext />
@@ -923,9 +923,9 @@
 			<id>a4ca355b-6188-42c1-88c7-93947f233314</id>
 			<name>Severe Biosculpting Modification</name>
 			<category>Biosculpting</category>
-			<ess>0</ess>
+			<ess>0.25</ess>
 			<capacity>0</capacity>
-			<avail>2</avail>
+			<avail>8</avail>
 			<cost>Variable(2000-10000)</cost>
 			<bonus>
 				<selecttext />

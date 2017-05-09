@@ -211,8 +211,15 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 
-			// If there are any Accessories that come with the Weapon, add them.
-			if (objXmlWeapon.InnerXml.Contains("<accessories>") && blnCreateChildren)
+		    //#1544 Ammunition not loading or available.
+		    if (_strUseSkill == "Throwing Weapons"
+		        && _strAmmo != "1")
+		    {
+		        _strAmmo = "1";
+		    }
+
+            // If there are any Accessories that come with the Weapon, add them.
+            if (objXmlWeapon.InnerXml.Contains("<accessories>") && blnCreateChildren)
 			{
 				XmlNodeList objXmlAccessoryList = objXmlWeapon.SelectNodes("accessories/accessory");
 				foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
@@ -447,7 +454,15 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 			objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
 
-			if (GlobalOptions.Instance.Language != "en-us")
+
+		    //#1544 Ammunition not loading or available.
+		    if (_strUseSkill == "Throwing Weapons"
+                && _strAmmo != "1")
+		    {
+		        _strAmmo = "1";
+		    }
+
+            if (GlobalOptions.Instance.Language != "en-us")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
@@ -1340,7 +1355,7 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// Look for splash damage info.
-			if (strDamage.Contains("/m)"))
+			if (strDamage.Contains("/m)") || strDamage.Contains(" Radius)"))
 			{
 				string strSplash = strDamage.Substring(strDamage.IndexOf('('), strDamage.IndexOf(')') - strDamage.IndexOf('(') + 1);
 				strDamageExtra += " " + strSplash;
@@ -2961,13 +2976,17 @@ namespace Chummer.Backend.Equipment
 				string strAvailExpr = string.Empty;
 				int intAvail = 0;
 
-				if (_strAvail.Substring(_strAvail.Length - 1, 1) == "F" || _strAvail.Substring(_strAvail.Length - 1, 1) == "R")
-				{
-					strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
-					// Remove the trailing character if it is "F" or "R".
-					strAvailExpr = _strAvail.Substring(0, _strAvail.Length - 1);
-					intAvail = Convert.ToInt32(strAvailExpr);
-				}
+			    if (_strAvail.Substring(_strAvail.Length - 1, 1) == "F" || _strAvail.Substring(_strAvail.Length - 1, 1) == "R")
+			    {
+			        strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
+			        // Remove the trailing character if it is "F" or "R".
+			        strAvailExpr = _strAvail.Substring(0, _strAvail.Length - 1);
+			        intAvail = Convert.ToInt32(strAvailExpr);
+			    }
+			    else
+			    {
+                    intAvail = Convert.ToInt32(_strAvail);
+                }
 
 				// Run through the Accessories and add in their availability.
 				foreach (WeaponAccessory objAccessory in _lstAccessories)

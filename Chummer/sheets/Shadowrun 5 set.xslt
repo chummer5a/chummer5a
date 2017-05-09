@@ -583,16 +583,20 @@
 												<xsl:value-of select="$lang.PhysicalTrack1"/>
 											</th>
 											<th width="3%"/>
-											<th width="46%">
+											<th width="46%" style="text-align: left">
 												<xsl:value-of select="$lang.StunTrack1"/>
 											</th>
 											<th width="2mm"/>
 										</tr>
 										<tr class="title">
 											<th/>
-											<th><xsl:value-of select="$lang.PhysicalTrack2"/></th>
+											<th style="text-align: left">
+												<xsl:value-of select="$lang.PhysicalTrack2"/>
+											</th>
 											<th/>
-											<th><xsl:value-of select="$lang.StunTrack2"/></th>
+											<th style="text-align: left">
+												<xsl:value-of select="$lang.StunTrack2"/>
+											</th>
 											<th/>
 										</tr>
 										<tr>
