@@ -1849,7 +1849,10 @@
 					<name>Counterstrike</name>
 				</technique>
 				<technique>
-					<name>Yielding Force (Counterstrike, Throw)</name>
+					<name>Yielding Force (Counterstrike)</name>
+				</technique>
+				<technique>
+					<name>Yielding Force (Throw)</name>
 				</technique>
 				<technique>
 					<name>Mana Strike</name>
