@@ -110,7 +110,7 @@ namespace Chummer.Backend.Shared_Methods
 							objMetatypeDocument,
 							objCritterDocument, objQualityDocument);
 
-						if (!blnOneOfMet) continue;
+						if (blnOneOfMet) continue;
 						strThisRequirement += name;
 						break;
 					}
@@ -200,18 +200,19 @@ namespace Chummer.Backend.Shared_Methods
 					// Run through all of the Powers the character has and see if the current required item exists.
 					if (character.CritterEnabled && character.CritterPowers != null)
 					{
-						CritterPower power = character.CritterPowers.FirstOrDefault(p => p.Name == node.InnerText);
-						if (power != null)
+						CritterPower critterPower = character.CritterPowers.FirstOrDefault(p => p.Name == node.InnerText);
+						if (critterPower != null)
 						{
-							name = power.DisplayNameShort;
+							name = critterPower.DisplayNameShort;
 							return true;
 						}
-						XmlDocument xmlPowers = XmlManager.Instance.Load("critterpowers.xml");
+						XmlDocument critterPowers = XmlManager.Instance.Load("critterpowers.xml");
 						nameNode =
-							xmlPowers.SelectSingleNode($"/chummer/powers/power[name = \"{node.InnerText}\"]");
+							critterPowers.SelectSingleNode($"/chummer/powers/power[name = \"{node.InnerText}\"]");
 						name = nameNode["translate"] != null
 							? "\n\t" + nameNode["translate"].InnerText
 							: "\n\t" + node.InnerText;
+						name += $" ({LanguageManager.Instance.GetString("Tab_Critter")})";
 						return false;
 					}
 					break;
@@ -421,23 +422,20 @@ namespace Chummer.Backend.Shared_Methods
 
 				case "power":
 					// Run through all of the Powers the character has and see if the current required item exists.
-					if (character.AdeptEnabled && character.Powers != null)
+					Power power = character.Powers.FirstOrDefault(p => p.Name == node.InnerText);
+					if (power != null)
 					{
-						Power power = character.Powers.FirstOrDefault(p => p.Name == node.InnerText);
-						if (power != null)
-						{
-							name = power.DisplayNameShort;
-							return true;
-						}
-						XmlDocument xmlPowers = XmlManager.Instance.Load("powers.xml");
-						nameNode =
-							xmlPowers.SelectSingleNode($"/chummer/powers/power[name = \"{node.InnerText}\"]");
-						name = nameNode["translate"] != null
-							? "\n\t" + nameNode["translate"].InnerText
-							: "\n\t" + node.InnerText;
-						return false;
+						name = power.DisplayNameShort;
+						return true;
 					}
-					break;
+					XmlDocument xmlPowers = XmlManager.Instance.Load("powers.xml");
+					nameNode =
+						xmlPowers.SelectSingleNode($"/chummer/powers/power[name = \"{node.InnerText}\"]");
+					name = nameNode["translate"] != null
+						? "\n\t" + nameNode["translate"].InnerText
+						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("Tab_Adept")})";
+					return false;
 
 				case "quality":
 					Quality quality =
