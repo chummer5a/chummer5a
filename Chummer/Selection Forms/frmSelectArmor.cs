@@ -412,7 +412,7 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,chkHideOverAvailLimit.Checked,
+	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
 		                    Convert.ToInt32(nudRating.Value)))
 	                    {
 		                    TreeNode objNode = new TreeNode();
@@ -457,7 +457,7 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
+	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,
 		                    Convert.ToInt32(nudRating.Value)))
 	                    {
 		                    ListItem objItem = new ListItem();
