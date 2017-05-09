@@ -404,7 +404,7 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					decReturn = Rating * PointsPerLevel;
+					decReturn = Levels * PointsPerLevel;
 				    if (decReturn > 0)
 				    {
 				        decReturn += ExtraPointCost;
@@ -509,8 +509,8 @@ namespace Chummer
 		{
 			get
 			{
-				return _intMaxLevel;
-			}
+                return Math.Max(_intMaxLevel, 1);
+            }
 			set
 			{
 				_intMaxLevel = value;
