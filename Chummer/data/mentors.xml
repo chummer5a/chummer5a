@@ -2127,7 +2127,7 @@
 				</choice>
 			</choices>
 			<bonus>
-				<selectskill limittoskills="Demolitions,Intimidation">
+				<selectskill limittoskill="Demolitions,Intimidation">
 					<val>2</val>
 					<applytorating>no</applytorating>
 				</selectskill>
