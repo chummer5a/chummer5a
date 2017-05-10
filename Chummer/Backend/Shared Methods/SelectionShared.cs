@@ -112,7 +112,6 @@ namespace Chummer.Backend.Shared_Methods
 
 						if (blnOneOfMet) continue;
 						strThisRequirement += name;
-						break;
 					}
 
 					// Update the flag for requirements met.
@@ -126,7 +125,7 @@ namespace Chummer.Backend.Shared_Methods
 				{
 					bool blnAllOfMet = true;
 					string strThisRequirement = "\n" +
-												LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
+											 LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
 					XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
 					foreach (XmlNode objXmlRequired in objXmlAllOfList)
 					{
@@ -138,7 +137,6 @@ namespace Chummer.Backend.Shared_Methods
 						if (blnFound) continue;
 						strThisRequirement += name;
 						blnAllOfMet = false;
-						break;
 					}
 
 					// Update the flag for requirements met.
@@ -382,15 +380,34 @@ namespace Chummer.Backend.Shared_Methods
 						: "\n\t" + node.InnerText;
 					return character.Metamagics.Any(objMetamagic => objMetamagic.Name == node.InnerText);
                 case "metamagicart":
-                    XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
-                    nameNode =
-                        metamagicArtDoc.SelectSingleNode($"/chummer/arts/art[name = \"{node.InnerText}\"]");
-                    name = nameNode["translate"] != null
-                        ? "\n\t" + nameNode["translate"].InnerText
-                        : "\n\t" + node.InnerText;
-                    return character.Arts.Any(objMetamagic => objMetamagic.Name == node.InnerText);
+					XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
+					nameNode =
+						metamagicArtDoc.SelectSingleNode($"/chummer/arts/art[name = \"{node.InnerText}\"]");
+					name = nameNode["translate"] != null
+						? "\n\t" + nameNode["translate"].InnerText
+						: "\n\t" + node.InnerText;
+					if (character.Options.IgnoreArt)
+					{
+						foreach (Metamagic metamagic in character.Metamagics)
+						{
+							XmlNode metaNode =
+								metamagicArtDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{metamagic.Name}\"]/required");
+							if (metaNode?.InnerXml.Contains($"<art>{node.InnerText}</art>") == true)
+							{
+								return metaNode.InnerXml.Contains($"<art>{node.InnerText}</art>");
+							}
+							metaNode =
+							   metamagicArtDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{metamagic.Name}\"]/forbidden");
+							if (metaNode?.InnerXml.Contains($"<art>{node.InnerText}</art>") == true)
+							{
+								return metaNode.InnerXml.Contains($"<art>{node.InnerText}</art>");
+							}
+						}
+						return false;
+					}
+					return character.Arts.Any(art => art.Name == node.InnerText);
 
-                case "metatype":
+				case "metatype":
 					// Check the Metatype restriction.
 					nameNode =
 						objMetatypeDocument.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{node.InnerText}\"]") ??
@@ -464,11 +481,19 @@ namespace Chummer.Backend.Shared_Methods
 							.Where(objSkill => objSkill.Name == node["name"]?.InnerText &&
 											   (node["spec"] == null ||
 												objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)))
-							.FirstOrDefault(objSkill => objSkill.Rating >= Convert.ToInt32(node["val"]?.InnerText));
+							.FirstOrDefault(objSkill => objSkill.LearnedRating >= Convert.ToInt32(node["val"]?.InnerText));
 
 						if (s != null)
 						{
 							name = s.DisplayName;
+							if (node["spec"] != null)
+							{
+								name += $" ({node["spec"].InnerText})";
+							}
+							if (node["val"] != null)
+							{
+								name += $" {node["val"].InnerText}";
+							}
 							return true;
 						}
 					}
@@ -478,11 +503,19 @@ namespace Chummer.Backend.Shared_Methods
 							.Where(objSkill => objSkill.Name == node["name"]?.InnerText &&
 											   (node["spec"] == null ||
 												objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)))
-							.FirstOrDefault(objSkill => objSkill.Rating >= Convert.ToInt32(node["val"]?.InnerText));
+							.FirstOrDefault(objSkill => objSkill.LearnedRating >= Convert.ToInt32(node["val"]?.InnerText));
 
 						if (s != null)
 						{
 							name = s.DisplayName;
+							if (node["spec"] != null)
+							{
+								name += $" ({node["spec"].InnerText})";
+							}
+							if (node["val"] != null)
+							{
+								name += $" {node["val"].InnerText}";
+							}
 							return true;
 						}
 					}
@@ -492,6 +525,14 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode?["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node["name"].InnerText;
+					if (node["spec"] != null)
+					{
+						name += $" ({node["spec"].InnerText})";
+					}
+					if (node["val"] != null)
+					{
+						name += $" {node["val"].InnerText}";
+					}
 					return false;
 
 				case "skillgrouptotal":
