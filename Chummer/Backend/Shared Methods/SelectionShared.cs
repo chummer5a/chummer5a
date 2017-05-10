@@ -110,7 +110,7 @@ namespace Chummer.Backend.Shared_Methods
 							objMetatypeDocument,
 							objCritterDocument, objQualityDocument);
 
-						if (blnOneOfMet) continue;
+						if (blnOneOfMet) break;
 						strThisRequirement += name;
 					}
 
