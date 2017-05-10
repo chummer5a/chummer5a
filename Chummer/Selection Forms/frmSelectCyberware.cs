@@ -1109,7 +1109,7 @@ namespace Chummer
                     return;
                 }
             }
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objCyberwareNode, false, _objCharacter))
+            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objCyberwareNode, true, _objCharacter))
                 return;
             DialogResult = DialogResult.OK;
         }
