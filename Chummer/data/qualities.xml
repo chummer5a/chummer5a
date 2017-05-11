@@ -12842,7 +12842,7 @@
 			<required>
 				<allof>
 					<skill>
-						<name>Industrial Engineering</name>
+						<name>Industrial Mechanic</name>
 						<val>4</val>
 					</skill>
 					<skill>
