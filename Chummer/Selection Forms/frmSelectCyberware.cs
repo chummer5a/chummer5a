@@ -206,10 +206,14 @@ namespace Chummer
             }
 
             var selected = lstCyberware.SelectedValue?.ToString() ?? "";
-            BuildCyberwareList();
-            if (lstCyberware.Items.Contains(selected))
+            txtSearch_TextChanged(sender, e);
+
+            for (var index = 0; index < lstCyberware.Items.Count; index++)
             {
-                lstCyberware.SetSelected(lstCyberware.FindStringExact(selected), true);
+                var item = (ListItem) lstCyberware.Items[index];
+                if (item.Value != selected) continue;
+                lstCyberware.SetSelected(index, true);
+                break;
             }
 			UpdateCyberwareInfo();
         }
@@ -392,7 +396,18 @@ namespace Chummer
 
         private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading) cboCategory_SelectedIndexChanged(sender, e);
+            if (_blnLoading) return;
+            var selected = lstCyberware.SelectedValue?.ToString() ?? "";
+            txtSearch_TextChanged(sender, e);
+
+            for (var index = 0; index < lstCyberware.Items.Count; index++)
+            {
+                var item = (ListItem) lstCyberware.Items[index];
+                if (item.Value != selected) continue;
+                lstCyberware.SetSelected(index, true);
+                break;
+            }
+            ;
         }
 
         private void lblSource_Click(object sender, EventArgs e)

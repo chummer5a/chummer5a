@@ -16578,7 +16578,7 @@ namespace Chummer
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier);
             if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0)
             {
-                if (objXmlGear.InnerXml.Contains("<addoncategory>"))
+                if (objXmlGear != null && objXmlGear.InnerXml.Contains("<addoncategory>"))
                 {
                     string strCategories = string.Empty;
                     foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))

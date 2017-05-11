@@ -20,6 +20,7 @@
 <chummer>
 	<version>0</version>
 	<grades>
+    <!-- Region Standard -->
 		<grade>
 			<id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
 			<name>Standard</name>
@@ -95,6 +96,81 @@
 			<source>CF</source>
 			<page>72</page>
 		</grade>
+    <!-- End Region -->
+    <!-- Region Adapsin -->
+    <grade>
+      <id>5fc14253-7bf8-4266-af24-072607a86d45</id>
+      <name>Standard (Adapsin)</name>
+      <ess>0.9</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>4db89466-a1e7-4507-9849-9ce3eef56fc9</id>
+      <name>Standard (Burnout's Way) (Adapsin)</name>
+      <ess>0.7</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SG</source>
+      <page>177</page>
+    </grade>
+    <grade>
+      <id>f248cee4-4629-40ca-83c6-fbf6422d0cd9</id>
+      <name>Used (Adapsin)</name>
+      <ess>1.125</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>aa2393f5-0d01-4b93-988c-d743c35ec22b</id>
+      <name>Alphaware (Adapsin)</name>
+      <ess>0.7</ess>
+      <cost>1.2</cost>
+      <avail>+2</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>0b15b0c5-4b98-4884-b080-e55a93491507</id>
+      <name>Betaware (Adapsin)</name>
+      <ess>0.6</ess>
+      <cost>1.5</cost>
+      <avail>+4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>ccb47e88-b940-41de-85fd-8d0f52c04c6e</id>
+      <name>Deltaware (Adapsin)</name>
+      <ess>0.4</ess>
+      <cost>2.5</cost>
+      <avail>+8</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>210703b8-6df1-4d1b-b5e7-7f1f8a167f74</id>
+      <name>Gammaware (Adapsin)</name>
+      <ess>0.3</ess>
+      <cost>5</cost>
+      <avail>+12</avail>
+      <source>CF</source>
+      <page>72</page>
+    </grade>
+    <grade>
+      <id>453dcb77-f1b2-46d6-9e96-227ecb053297</id>
+      <name>Omegaware (Adapsin)</name>
+      <ess>0.9</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>CF</source>
+      <page>71</page>
+    </grade>
+    <!-- End Region -->
 	</grades>
 	<categories>
 		<category>Bodyware</category>
