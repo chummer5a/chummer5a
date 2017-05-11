@@ -1600,6 +1600,552 @@
 			<source>SG</source>
 			<page>99</page>
 		</spirit>
+		<!-- Region Forbidden Arcana -->		
+		<spirit>
+			<id>6237233f-1872-45da-b828-16df75a30127</id>
+			<name>Bone Spirit</name>
+			<bod>F+3</bod>
+			<agi>F+0</agi>
+			<rea>F+0</rea>
+			<str>F+2</str>
+			<cha>F-1</cha>
+			<int>F+0</int>
+			<log>F-1</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Engulf</power>
+				<power>Natural Weapon</power>
+				<power>Possession (Bones)</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Enhanced Senses (Hearing)</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>135</page>
+		</spirit>
+		<spirit>
+			<id>0ba85f5b-c05c-4858-8314-4dd3a7c5764f</id>
+			<name>Blood Shade</name>
+			<bod>F+0</bod>
+			<agi>F+2</agi>
+			<rea>F+2</rea>
+			<str>F-1</str>
+			<cha>F+1</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="mag">Counterspelling</skill>
+				<skill attr="cha">Impersination</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Aura Masking</power>
+				<power>Deathly Aura</power>
+				<power>Energy Drain (Essence)</power>
+				<power>Fear</power>
+				<power>Magical Guard</power>
+				<power>Mimicry</power>
+				<power>Possesion (Blood)</power>
+				<power>Realistic Form</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Banishing Resistance</power>
+				<power>Compulsion</power>
+				<power>Paralyzing Touch</power>
+				<power>Search</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>135</page>
+		</spirit>
+		<spirit>
+			<id>4eb2ac59-72bd-4dda-8709-aa822614ff94</id>
+			<name>Ceramic Spirit</name>
+			<bod>F+0</bod>
+			<agi>F+1</agi>
+			<rea>F+2</rea>
+			<str>F+0</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Binding</power>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Enhanced Senses (Vision)</power>
+				<power>Guard</power>
+				<power>Skill (any Technical Skill)</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>180</page>
+		</spirit>
+		<spirit>
+			<id>75de5aea-77e7-4559-abe1-9f11b1c0004b</id>
+			<name>Metal Spirit</name>
+			<bod>F+4</bod>
+			<agi>F-2</agi>
+			<rea>F-1</rea>
+			<str>F+4</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-1</log>
+			<wil>F+0</wil>
+			<ini>(F*2)-1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Guard</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Elemental Attack</power>
+				<power>Fear</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>180</page>
+		</spirit>
+		<spirit>
+			<id>e69f5b99-7c0b-4174-9343-5424c18c17f2</id>
+			<name>Energy Spirit</name>
+			<bod>F+1</bod>
+			<agi>F+2</agi>
+			<rea>F+3</rea>
+			<str>F-2</str>
+			<cha>F+0</cha>
+			<int>F+1</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+3</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="agi">Flight</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Confusion</power>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+				<power>Search</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Water, Severe)</weakness>
+			</weaknesses>
+			<source>FA</source>
+			<page>180</page>
+		</spirit>	
+		<spirit>
+			<id>ffdf57e1-319c-4772-bb43-c80a91baf290</id>
+			<name>Airwave Spirit</name>
+			<bod>F+2</bod>
+			<agi>F+3</agi>
+			<rea>F+4</rea>
+			<str>F-3</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+4</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="cha">Impersonation</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="cha">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Psychokinesis</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>180</page>
+		</spirit>
+		<spirit>
+			<id>dbd6d567-1376-4847-b822-10a1f1d0a029</id>
+			<name>Ship Spirit</name>
+			<bod>F+4</bod>
+			<agi>F-1</agi>
+			<rea>F-1</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-2</log>
+			<wil>F+0</wil>
+			<ini>(F*2)-1</ini>
+			<skills>
+				<skill attr="int">Navigation</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="rea">Pilot Watercraft</skill>
+				<skill attr="int">Survival</skill>
+				<skill attr="str">Swimming</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Armor (F)</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+				<power>Toughness</power>
+			</powers>
+			<optionalpowers>
+				<power>Aura Masking</power>
+				<power>Haunt</power>
+				<power>Natural Weapon</power>
+				<power>Storm</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>180</page>
+		</spirit>
+		<spirit>
+			<id>fc8c2451-6314-4a44-b3da-92966df9c9f4</id>
+			<name>Train Spirit</name>
+			<bod>F+3</bod>
+			<agi>F-1</agi>
+			<rea>F-1</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-2</log>
+			<wil>F+1</wil>
+			<ini>(F*2)-1</ini>
+			<skills>
+				<skill attr="cha">Intimidation</skill>
+				<skill attr="int">Navigation</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="rea">Pilot Ground Craft</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Armor (F)</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Aura Masking</power>
+				<power>Haunt</power>
+				<power>Natural Weapon</power>
+				<power>Reinforcement</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<spirit>
+			<id>8dabb592-0860-469c-aa86-12eba627ddf4</id>
+			<name>Automotive Spirit</name>
+			<bod>F+1</bod>
+			<agi>F+2</agi>
+			<rea>F+1</rea>
+			<str>F+0</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-2</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+1</ini>
+			<skills>
+				<skill attr="int">Navigation</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="rea">Pilot Ground Craft</skill>
+				<skill attr="str">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Armor (F)</power>
+				<power>Evasion</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Aura Masking</power>
+				<power>Haunt</power>
+				<power>Movement</power>
+				<power>Natural Weapon</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<spirit>
+			<id>51203ea9-db22-4ec0-8b95-8ae68addf2f0</id>
+			<name>Aircraft Spirit</name>
+			<bod>F+2</bod>
+			<agi>F+1</agi>
+			<rea>F+0</rea>
+			<str>F+1</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-2</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="bod">Free Fall</skill>
+				<skill attr="int">Navigation</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="rea">Pilot Aircraft</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Evasion</power>
+				<power>Maneuvering</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+				<power>Stealth</power>
+			</powers>
+			<optionalpowers>
+				<power>Aura Masking</power>
+				<power>Dive Attack</power>
+				<power>Haunt</power>
+				<power>Natural Weapon</power>
+				<power>Search</power>
+			</optionalpowers>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<spirit>
+			<id>df28f999-2da1-49cc-a214-37207e9d58bc</id>
+			<name>Air Elemental</name>
+			<bod>F-2</bod>
+			<agi>F+3</agi>
+			<rea>F+4</rea>
+			<str>F-3</str>
+			<cha>F/2</cha>
+			<int>F/2</int>
+			<log>F/2</log>
+			<wil>F/2</wil>
+			<ini>F+(F/2)+4</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="str">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+				<power>Psychokinesis</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<spirit>
+			<id>1f3d1a7d-f8b4-49f9-ac23-2dac7089d58e</id>
+			<name>Earth Elemental</name>
+			<bod>F+4</bod>
+			<agi>F-2</agi>
+			<rea>F-1</rea>
+			<str>F+4</str>
+			<cha>F/2</cha>
+			<int>F/2</int>
+			<log>(F/2)-1</log>
+			<wil>F/2</wil>
+			<ini>F+(F/2)-1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Guard</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Elemental Attack</power>
+				<power>Fear</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<spirit>
+			<id>a33bc432-338f-417d-8959-9bfcbfad61b1</id>
+			<name>Fire Elemental</name>
+			<bod>F+1</bod>
+			<agi>F+2</agi>
+			<rea>F+3</rea>
+			<str>F-2</str>
+			<cha>F-2</cha>
+			<int>(F/2)+1</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>F+(F/2)+3</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="agi">Flight</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Confusion</power>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+				<power>Search</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Water, Severe)</weakness>
+			</weaknesses>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<spirit>
+			<id>c04bcb45-e2ca-4f70-a63a-6f354c6cbecb</id>
+			<name>Water Elemental</name>
+			<bod>F+0</bod>
+			<agi>F+1</agi>
+			<rea>F+2</rea>
+			<str>F+0</str>
+			<cha>F/2</cha>
+			<int>F/2</int>
+			<log>F/2</log>
+			<wil>F/2</wil>
+			<ini>F+(F/2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Binding</power>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Guard</power>
+				<power>Weather Control</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Fire, Severe)</weakness>
+			</weaknesses>
+			<source>FA</source>
+			<page>181</page>
+		</spirit>
+		<!-- End Region -->
 	</spirits>
 	<drainattributes>
 		<drainattribute>

@@ -491,7 +491,7 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
             _strSelectCategory = objNode["category"]?.InnerText;
 
-			if (!SelectionShared.RequirementsMet(objNode, false, _objCharacter, IgnoreQuality, null, null, _objXmlDocument))
+			if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, IgnoreQuality, null, null, _objXmlDocument))
 				return;
 			DialogResult = DialogResult.OK;
 		}

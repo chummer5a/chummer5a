@@ -1707,7 +1707,7 @@
 			<avail>16</avail>
 			<cost>30000</cost>
 			<bonus>
-				<cyberwareessmultiplier>90</cyberwareessmultiplier>
+				<adapsin />
 			</bonus>
 			<source>CF</source>
 			<page>160</page>

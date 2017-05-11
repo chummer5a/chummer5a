@@ -11943,7 +11943,7 @@
 			<doublecareer>False</doublecareer>
 			<required>
 				<allof>
-					<metamagicart>Advanced Alchemy</metamagicart>
+					<metamagic>Advanced Alchemy</metamagic>
 					<skill>
 						<name>Alchemy</name>
 						<val>4</val>
@@ -11968,7 +11968,7 @@
 			<doublecareer>False</doublecareer>
 			<required>
 				<allof>
-					<metamagicart>Advanced Alchemy</metamagicart>
+					<metamagic>Advanced Alchemy</metamagic>
 				</allof>
 				<oneof>
 					<skill>
@@ -11977,7 +11977,7 @@
 					</skill>
 					<skill>
 						<name>Alchemy</name>
-						<spec>Combat Spell</spec>
+						<spec>Combat</spec>
 						<val>4</val>
 					</skill>
 				</oneof>

@@ -23,6 +23,10 @@ Application Changes:
 - Fixed a crash caused by deleting root-level nodes on the Character Roster window. 
 - Refactored RequirementsMet code to be more consitent in approach and behave in a similar manner to AddImprovementCollection. Some weird behaviour may crop up from this, but initial testing seems okay. 
 - Fixed an issue with naming armour objects in career mode.
+- Fixed behaviour of the main Chummer window to not launch on disconnected monitors.
+- Altered the formula for Essence calculations to effectively provide -0.1 per reductive source. Seems to be correct per Word of Freelancer, but I'm not particularly happy with it.
+- Minor quality of life tweaks to cyberware selection form when changing grades. 
+- Fixed a potential crash from attempting to add plugins to Custom Items. 
 
 Data Changes:
 
@@ -35,6 +39,7 @@ Data Changes:
 - Added content from Forbidden Arcana.
 - Added missing Mentor Spirit from Book of the Lost.
 - Fixed the specialisation bonus of the LeMat 2072.
+- Restored Adapsin to being a set of separate Grades in order to support getting it at a later point and/or removing it while preserving the previous rating. 
 
 New Strings:
 

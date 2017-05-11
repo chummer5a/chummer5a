@@ -1522,7 +1522,7 @@ namespace Chummer.Backend.Equipment
 	                    decMultiplier = _objCharacter.Improvements
 							.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
 							.Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-	                    decCharacterESSMultiplier = decMultiplier;
+                        decESSMultiplier -= 1.0m - decMultiplier;
                     }
 
                     // Apply the character's Bioware Essence cost multiplier if applicable.
@@ -1531,7 +1531,7 @@ namespace Chummer.Backend.Equipment
 	                    decMultiplier = _objCharacter.Improvements
 							.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
 							.Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-	                    decCharacterESSMultiplier = decMultiplier;
+                        decESSMultiplier -= 1.0m - decMultiplier;
                     }
                 }
 
@@ -1541,11 +1541,9 @@ namespace Chummer.Backend.Equipment
                     decimal decBasicMultiplier = _objCharacter.Improvements
 						.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
 						.Aggregate<Improvement, decimal>(1, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-				    decCharacterESSMultiplier -= 1m - decBasicMultiplier;
+                    decESSMultiplier -= 1.0m - decBasicMultiplier;
                 }
 				decReturn = decReturn * decESSMultiplier;
-
-				decReturn = decReturn * decCharacterESSMultiplier;
 
 				// Check if the character has Sensitive System.
 				if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && _objCharacter != null)

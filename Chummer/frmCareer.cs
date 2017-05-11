@@ -22279,7 +22279,7 @@ namespace Chummer
 			{
 				if (treGear.SelectedNode.Level > 0)
 				{
-					if (objXmlGear.InnerXml.Contains("<addoncategory>"))
+					if (objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
 					{
 						string strCategories = string.Empty;
 						foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
