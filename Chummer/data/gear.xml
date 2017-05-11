@@ -4796,6 +4796,11 @@
 			<name>Polychromic Lens</name>
 			<category>Tools of the Trade</category>
 			<rating>0</rating>
+			<required>
+				<geardetails>
+					<name>Contacts</name>
+				</geardetails>
+			</required>
 			<armorcapacity>[1]</armorcapacity>
 			<capacity>[1]</capacity>
 			<avail>0</avail>
