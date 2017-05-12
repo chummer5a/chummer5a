@@ -13162,7 +13162,7 @@
 			<category>Alchemical Tools</category>
 			<rating>5</rating>
 			<avail>(Rating +4)R</avail>
-			<cost>2000 x Rating</cost>
+			<cost>2000 * Rating</cost>
 			<source>FA</source>
 			<page>1</page>
 		</gear>
