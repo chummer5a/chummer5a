@@ -12039,7 +12039,7 @@
 					</skill>
 				</allof>
 			</required>
-			<karma>5</karma>
+			<karma>20</karma>
 			<category>Positive</category>
 			<bonus />
 			<source>FA</source>
@@ -12176,7 +12176,7 @@
 					</skill>
 				</oneof>
 			</required>
-			<karma>5</karma>
+			<karma>10</karma>
 			<category>Positive</category>
 			<bonus />
 			<source>FA</source>
@@ -12202,7 +12202,7 @@
 					<initiategrade>1</initiategrade>
 				</allof>
 			</required>
-			<karma>5</karma>
+			<karma>15</karma>
 			<category>Positive</category>
 			<bonus />
 			<source>FA</source>
@@ -12413,7 +12413,7 @@
 			<name>Close Combat Mage</name>
 			<doublecareer>False</doublecareer>
 			<limit>3</limit>
-			<karma>10</karma>
+			<karma>5</karma>
 			<required>
 				<oneof>
 					<skill>
@@ -12823,7 +12823,7 @@
 			<id>1510e2fd-4821-4e4c-bcd3-eacb0eed5f20</id>
 			<name>Missile Deflector</name>
 			<doublecareer>False</doublecareer>
-			<karma>15</karma>
+			<karma>10</karma>
 			<required>
 				<allof>
 					<power>Missile Parry</power>
@@ -12842,7 +12842,7 @@
 			<required>
 				<allof>
 					<skill>
-						<name>Industrial Engineering</name>
+						<name>Industrial Mechanic</name>
 						<val>4</val>
 					</skill>
 					<skill>
@@ -13096,7 +13096,8 @@
 			<id>16cb1300-bdf4-42d0-9556-3b681ef517fc</id>
 			<name>Skinwalker</name>
 			<doublecareer>False</doublecareer>
-			<karma>15</karma>
+			<karma>5</karma>
+			<limit>3</limit>
 			<required>
 				<oneof>
 					<group>
@@ -13153,7 +13154,7 @@
 			<id>632aebb2-e6f2-4b38-81c7-be494964c614</id>
 			<name>Spell Jammer</name>
 			<doublecareer>False</doublecareer>
-			<karma>15</karma>
+			<karma>20</karma>
 			<required>
 				<oneof>
 					<skill>
@@ -13649,7 +13650,7 @@
 			<bonus>
 				<naturalweapons>
 					<naturalweapon>
-						<name>Crystal Jaw</name>
+						<name>Crystal Claw</name>
 						<reach>0</reach>
 						<damage>(STR+1)P</damage>
 						<ap>-1</ap>
@@ -13684,7 +13685,7 @@
 		<quality>
 			<id>beb709ac-4c40-4b05-9c49-1fe26e4fa2ab</id>
 			<name>Crystalline Grace</name>
-			<karma>134</karma>
+			<karma>10</karma>
 			<requires>
 				<oneof>
 					<quality>Crystal Limb (Leg)</quality>
