@@ -1138,6 +1138,7 @@ namespace Chummer
 		private bool _blnImplemented = true;
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
+	    private bool _blnDoubleCostCareer = true;
 		private int _intBP;
         private int _intLP;
 		private QualityType _objQualityType = QualityType.Positive;
@@ -1273,6 +1274,11 @@ namespace Chummer
 				if (objXmlQuality["contributetolimit"].InnerText == "no")
 					_blnContributeToLimit = false;
 			}
+            if (objXmlQuality["doublecareer"] != null)
+            {
+                if (objXmlQuality["doublecareer"].InnerText.ToLower() == "false")
+                    _blnDoubleCostCareer = false;
+            }
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
 			if (objXmlQuality["mutant"] != null)
@@ -1727,6 +1733,21 @@ namespace Chummer
 				_blnPrint = value;
 			}
 		}
+
+        /// <summary>
+        /// Whether or not the Qualitie's cost is doubled in Career Mode.
+        /// </summary>
+	    public bool DoubleCost
+	    {
+	        get
+	        {
+	            return _blnDoubleCostCareer;
+	        }
+	        set
+	        {
+	            _blnDoubleCostCareer = value;	            
+	        }
+	    }
 
 		/// <summary>
 		/// Whether or not the Quality has been implemented completely, or needs additional code support.

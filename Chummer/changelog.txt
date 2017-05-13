@@ -35,6 +35,7 @@ Application Changes:
 - Properly removed ineligible Submersion discounts in create mode for Technomancers.
 - Fixed an issue with Vehicle Mod category selection that prevented items from being updated. 
 - Added a source Label for Magic Traditions.
+- Implemented that <doublecost> tag in data files can prevent double quality cost in Career Mode.
 
 Data Changes:
 
