@@ -44,10 +44,11 @@ namespace Chummer.Backend.Equipment
 		private string _strWeaponMountCategories = string.Empty;
 		private bool _blnDiscountCost;
 	    private bool _blnDowngrade;
+		private string _strCapacity = string.Empty;
 
 		private readonly Character _objCharacter;
 
-        #region Constructor, Create, Save, Load, and Print Methods
+	    #region Constructor, Create, Save, Load, and Print Methods
 		public VehicleMod(Character objCharacter)
 		{
 			// Create the GUID for the new VehicleMod.
@@ -75,7 +76,8 @@ namespace Chummer.Backend.Equipment
 		        _blnDowngrade = true;
 		    }
 
-            objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+			objXmlMod.TryGetStringFieldQuickly("capacity", ref _strCapacity);
+			objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
 			objXmlMod.TryGetInt32FieldQuickly("response", ref _intResponse);
 			objXmlMod.TryGetInt32FieldQuickly("system", ref _intSystem);
 			objXmlMod.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
@@ -164,6 +166,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limit", _strLimit);
 			objWriter.WriteElementString("slots", _strSlots);
+			objWriter.WriteElementString("capacity", _strCapacity);
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("maxrating", _strMaxRating);
 			objWriter.WriteElementString("response", _intResponse.ToString());
@@ -223,7 +226,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
-            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
+			objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
+			objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
 			objNode.TryGetInt32FieldQuickly("response", ref _intResponse);
 			objNode.TryGetInt32FieldQuickly("system", ref _intSystem);
 			objNode.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
@@ -843,6 +847,155 @@ namespace Chummer.Backend.Equipment
 				strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
 				return strReturn;
+			}
+		}
+
+		/// <summary>
+		/// Caculated Capacity of the Vehicle Mod.
+		/// </summary>
+		public string CalculatedCapacity
+		{
+			get
+			{
+				string strReturn = "0";
+				if (!string.IsNullOrEmpty(_strCapacity) && _strCapacity.Contains("/["))
+				{
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					int intPos = _strCapacity.IndexOf("/[");
+					string strFirstHalf = _strCapacity.Substring(0, intPos);
+					string strSecondHalf = _strCapacity.Substring(intPos + 1, _strCapacity.Length - intPos - 1);
+					bool blnSquareBrackets = strFirstHalf.Contains('['); ;
+					string strCapacity = strFirstHalf;
+
+					if (blnSquareBrackets && strCapacity.Length > 2)
+						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+
+					if (_strCapacity == "[*]")
+						strReturn = "*";
+					else
+					{
+						if (_strCapacity.StartsWith("FixedValues"))
+						{
+							char[] chrParentheses = { '(', ')' };
+							string[] strValues = _strCapacity.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
+							if (_intRating <= strValues.Length)
+								strReturn = strValues[_intRating - 1];
+							else
+								strReturn = "0";
+						}
+						else
+						{
+							try
+							{
+								strReturn = nav.Evaluate(xprCapacity).ToString();
+							}
+							catch (XPathException)
+							{
+								strReturn = "0";
+							}
+						}
+					}
+					if (blnSquareBrackets)
+						strReturn = "[" + strCapacity + "]";
+
+					if (strSecondHalf.Contains("Rating"))
+					{
+						strSecondHalf = strSecondHalf.Replace("[", string.Empty).Replace("]", string.Empty);
+						xprCapacity = nav.Compile(strSecondHalf.Replace("Rating", _intRating.ToString()));
+						strSecondHalf = "[" + nav.Evaluate(xprCapacity).ToString() + "]";
+					}
+
+					strReturn += "/" + strSecondHalf;
+				}
+				else if (_strCapacity.Contains("Rating"))
+				{
+					// If the Capaicty is determined by the Rating, evaluate the expression.
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+					bool blnSquareBrackets = _strCapacity.Contains('[');
+					string strCapacity = _strCapacity;
+					if (blnSquareBrackets)
+						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+
+					strReturn = nav.Evaluate(xprCapacity).ToString();
+					if (blnSquareBrackets)
+						strReturn = "[" + strReturn + "]";
+				}
+				else
+				{
+					if (_strCapacity.StartsWith("FixedValues"))
+					{
+						string[] strValues = _strCapacity.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+						if (strValues.Length >= _intRating)
+							strReturn = strValues[_intRating - 1];
+					}
+					else
+					{
+						// Just a straight Capacity, so return the value.
+						strReturn = _strCapacity;
+					}
+				}
+				if (string.IsNullOrEmpty(strReturn))
+					strReturn = "0";
+				return strReturn;
+			}
+		}
+
+		/// <summary>
+		/// The amount of Capacity remaining in the Cyberware.
+		/// </summary>
+		public int CapacityRemaining
+		{
+			get
+			{
+				int intCapacity = 0;
+				if (_strCapacity == String.Empty)return intCapacity;
+				if (_strCapacity.Contains("/["))
+				{
+					// Get the Cyberware base Capacity.
+					string strBaseCapacity = CalculatedCapacity;
+					strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
+					intCapacity = Convert.ToInt32(strBaseCapacity);
+
+					// Run through its Children and deduct the Capacity costs.
+					foreach (Cyberware objChildCyberware in _lstCyberware)
+					{
+						string strCapacity = objChildCyberware.CalculatedCapacity;
+						if (strCapacity.Contains("/["))
+							strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
+						else if (strCapacity.Contains("["))
+							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+						if (strCapacity == "*")
+							strCapacity = "0";
+						intCapacity -= Convert.ToInt32(strCapacity);
+					}
+				}
+				else if (!_strCapacity.Contains("["))
+				{
+					// Get the Cyberware base Capacity.
+					intCapacity = Convert.ToInt32(CalculatedCapacity);
+
+					// Run through its Children and deduct the Capacity costs.
+					foreach (Cyberware objChildCyberware in _lstCyberware)
+					{
+						string strCapacity = objChildCyberware.CalculatedCapacity;
+						if (strCapacity.Contains("/["))
+							strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
+						else if (strCapacity.Contains("["))
+							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+						if (strCapacity == "*")
+							strCapacity = "0";
+						intCapacity -= Convert.ToInt32(strCapacity);
+					}
+				}
+
+				return intCapacity;
 			}
 		}
 

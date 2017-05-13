@@ -29,6 +29,7 @@ Application Changes:
 - Fixed a potential crash from attempting to add plugins to Custom Items. 
 - Added support for filtering gear based on the requirement to have a specific item.
 - Fixed behaviour of the Watch folder in the Character Roster to load properly if Watched characters are in the Recent or Sticky list. 
+- Improved support for Drone Arms and Legs to allow installing cyberware modifications that consume Capacity.
 
 Data Changes:
 
