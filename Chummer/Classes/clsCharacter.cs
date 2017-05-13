@@ -918,6 +918,7 @@ namespace Chummer
         {
 			Timekeeper.Start("load_xml");
             XmlDocument objXmlDocument = new XmlDocument();
+	        if (!File.Exists(_strFileName)) return false;
             using (StreamReader sr = new StreamReader(_strFileName, true))
             {
                 try
