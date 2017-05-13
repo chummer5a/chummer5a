@@ -13746,15 +13746,13 @@ namespace Chummer
                                 x.Name == "Myostatin Inhibitor") != null)
                         {
                             intBP +=
-                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) +
-                                             i) *
+                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) + i) *
                              _objOptions.KarmaAttribute) - 2;
                         }
                         else
                         {
                             intBP +=
-                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) +
-                                             i) *
+                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) + i) *
                              _objOptions.KarmaAttribute);
                         }
                     }
@@ -13767,19 +13765,19 @@ namespace Chummer
                     for (int i = 1; i <= nudKINT.Value; i++)
                     {
                         intBP +=
-                        (Convert.ToInt32(1 + Math.Max(1, _objCharacter.INT.Base - _objCharacter.INT.MetatypeMinimum) + i) *
+                        (Convert.ToInt32(Math.Max(_objCharacter.INT.Base - _objCharacter.INT.MetatypeMinimum, 1) + i) *
                          _objOptions.KarmaAttribute);
                     }
                     for (int i = 1; i <= nudKLOG.Value; i++)
                     {
                         intBP +=
-                        (Convert.ToInt32(Math.Max(1, _objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum) + i) *
+                        (Convert.ToInt32(Math.Max(_objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum, 1) + i) *
                          _objOptions.KarmaAttribute);
                     }
                     for (int i = 1; i <= nudKWIL.Value; i++)
                     {
                         intBP +=
-                        (Convert.ToInt32(Math.Max(1, _objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum) + i) *
+                        (Convert.ToInt32(Math.Max(_objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum, 1) + i) *
                          _objOptions.KarmaAttribute);
                     }
                 }
