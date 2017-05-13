@@ -4628,6 +4628,11 @@
 			<damage>0</damage>
 			<duration>I</duration>
 			<dv>F-2</dv>
+			<required>
+				<allof>
+					<quality>Alchemical Armorer</quality>
+				</allof>
+			</required>
 			<source>FA</source>
 			<page>51</page>
 		</spell>
