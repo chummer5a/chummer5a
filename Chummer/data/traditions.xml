@@ -462,7 +462,7 @@
 				<spiritmanipulation>Spirit of Fire</spiritmanipulation>
 			</spirits>
 			<source>FA</source>
-			<page>77</page>
+			<page>75</page>
 		</tradition>
 		<tradition>
 			<id>9394d173-eee7-4e5a-b520-edfdfac3cf8b</id>
@@ -470,7 +470,7 @@
 			<drain>WIL + MAG</drain>
 			<spirits />
 			<source>FA</source>
-			<page>78</page>
+			<page>76</page>
 		</tradition>
 		<tradition>
 			<id>4bbe470b-51a7-494b-8ccf-5c638e141049</id>
@@ -484,7 +484,7 @@
 				<spiritmanipulation>Spirit of Water</spiritmanipulation>
 			</spirits>
 			<source>FA</source>
-			<page>79</page>
+			<page>78</page>
 		</tradition>
 		<tradition>
 			<id>61819d3f-2ca6-4e1e-9d66-5d94c1560733</id>
@@ -562,7 +562,7 @@
 				<spiritmanipulation>Spirit of </spiritmanipulation>
 			</spirits>
 			<source>FA</source>
-			<page></page>
+			<page>87</page>
 		</tradition>
 		<tradition>
 			<id>a5c6f673-bd53-4e70-a574-af2f5a1c2e60</id>
