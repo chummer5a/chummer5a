@@ -33,6 +33,7 @@ Application Changes:
 - Fixed an issue with the house rule to have Metatype Minimums count as 1 for the purposes of Karma cost. 
 - Fixed incorrect cost discount of the Submersion Task for Technomancers (20% instead of 10%).
 - Properly removed ineligible Submersion discounts in create mode for Technomancers.
+- Fixed an issue with Vehicle Mod category selection that prevented items from being updated. 
 - Added a source Label for Magic Traditions.
 
 Data Changes:

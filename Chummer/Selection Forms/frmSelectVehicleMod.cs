@@ -36,7 +36,7 @@ namespace Chummer
 		private int _intModMultiplier = 1;
 		private string _strInputFile = "vehicles";
 		private int _intMarkup = 0;
-	    private bool _blnSkipUpdate = true;
+	    private bool _blnSkipUpdate = false;
 		private static string _strSelectCategory = string.Empty;
 
 	    readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
@@ -886,8 +886,8 @@ namespace Chummer
 				lblSource.Text = strBook + " " + strPage;
 
 				tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
-			    _blnSkipUpdate = false;
 			}
+			_blnSkipUpdate = false;
 		}
 
 		private string GetRemainingModCapacity(string strCategory, int intModSlots)
