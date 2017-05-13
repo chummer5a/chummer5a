@@ -6331,8 +6331,8 @@ namespace Chummer
                 if (chkInitiationGroup.Checked)
                     dblMultiplier -= 0.1;
                 if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= 0.1;
-                if (chkInitiationSchooling.Checked)
+					dblMultiplier -= _objCharacter.TechnomancerEnabled ? 0.2 : 0.1;
+				if (chkInitiationSchooling.Checked)
                     dblMultiplier -= 0.1;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
 

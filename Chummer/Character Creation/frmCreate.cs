@@ -1461,9 +1461,12 @@ namespace Chummer
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
                         tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
                         cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
-                        chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
                         chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
-                    }
+						//TODO: Re-enable if Technomancers ever get the ability for Group and Schooling initiation bonuses.
+						//chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
+						chkInitiationGroup.Visible = false;
+						chkInitiationSchooling.Visible = false;
+					}
                 }
             }
             else
@@ -14488,8 +14491,8 @@ namespace Chummer
                 if (objGrade.Group == true)
                     dblMultiplier -= 0.1;
                 if (objGrade.Ordeal == true)
-                    dblMultiplier -= 0.1;
-                if (objGrade.Schooling == true)
+		            dblMultiplier -= _objCharacter.TechnomancerEnabled ? 0.2 : 0.1;
+	            if (objGrade.Schooling == true)
                     dblMultiplier -= 0.1;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
                 int intMultiplier = Convert.ToInt32(dblMultiplier);
