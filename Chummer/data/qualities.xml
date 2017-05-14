@@ -13775,6 +13775,38 @@
 			<page></page>
 		</quality>
 		<!-- End Region -->
+		<!-- Region Aspects-->
+		<quality>
+			<id>c1d4d7ec-9ebb-4e85-ae72-8155b0f27478</id>
+			<name>Apprentice</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>15</karma>
+			<category>Positive</category>
+			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
+				<enabletab>
+					<name>magician</name>
+				</enabletab>
+				<unlockskills>Sorcery</unlockskills>
+				<unlockskills>Conjuring</unlockskills>
+				<limitspellcategory />
+				<limitspiritcategory />
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Aspected Magician</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<source>FA</source>
+			<page>47</page>
+		</quality>
+		<!-- End Region -->
 		<!-- End Region -->
 	</qualities>
 </chummer>

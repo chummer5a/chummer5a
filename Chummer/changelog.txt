@@ -35,8 +35,7 @@ Application Changes:
 - Properly removed ineligible Submersion discounts in create mode for Technomancers.
 - Fixed an issue with Vehicle Mod category selection that prevented items from being updated. 
 - Added a source Label for Magic Traditions.
-- Implemented that <doublecost> tag in data files can prevent double quality cost in Career Mode.
-- Adept Ways no longer cost double in Career Mode.
+- Implemented that <doublecareer> tag in data files can prevent doubling quality cost in Career Mode.
 
 Data Changes:
 
@@ -51,6 +50,7 @@ Data Changes:
 - Fixed the specialisation bonus of the LeMat 2072.
 - Restored Adapsin to being a set of separate Grades in order to support getting it at a later point and/or removing it while preserving the previous rating. 
 - Polychromatic Lenses can now only be added to Contacts. 
+- Adept Ways no longer cost double in Career Mode.
 
 New Strings:
 

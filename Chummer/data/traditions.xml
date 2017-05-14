@@ -519,11 +519,11 @@
 			<name>Necro Magic</name>
 			<drain>WIL + LOG</drain>
 			<spirits>
-				<spiritcombat>Spirit of Man</spiritcombat>
-				<spiritdetection>Spirit of Beast</spiritdetection>
-				<spirithealth>Spirit of Plant</spirithealth>
-				<spiritillusion>Spirit of Earth</spiritillusion>
-				<spiritmanipulation>Spirit of Fire</spiritmanipulation>
+				<spiritcombat>Corpse Spirit</spiritcombat>
+				<spiritdetection>Carcass Spirit</spiritdetection>
+				<spirithealth>Rot Spirit</spirithealth>
+				<spiritillusion>Detritus Spirit</spiritillusion>
+				<spiritmanipulation>Palefire Spirit</spiritmanipulation>
 			</spirits>
 			<source>FA</source>
 			<page>82</page>
@@ -1678,6 +1678,239 @@
 			</optionalpowers>
 			<source>FA</source>
 			<page>135</page>
+		</spirit>
+		<spirit>
+			<id>865881e1-4674-4808-b540-beb0d07f8dd2</id>
+			<name>Carcass Spirit</name>
+			<bod>F+3</bod>
+			<agi>F</agi>
+			<rea>F</rea>
+			<str>F+2</str>
+			<cha>F–1</cha>
+			<int>F</int>
+			<log>F</log>
+			<wil>F</wil>
+			<ini>0</ini>
+			<edg>F/2</edg>
+			<mag>F</mag>
+			<res>0</res>
+			<dep>0</dep>
+			<ess>F</ess>
+			<skills>
+				<skill>Assensing</skill>
+				<skill>Astral Combat</skill>
+				<skill>Perception</skill>
+				<skill>Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control</power>
+				<power>Astral Form</power>
+				<power>Deathly Aura</power>
+				<power select="Hearing">Enhanced Senses</power>
+				<power select="Low-Light Vision">Enhanced Senses</power>
+				<power select="Smell">Enhanced Senses</power>
+				<power>Fear</power>
+				<power>Immunity to Normal Weapons</power>
+				<power>Immunity to Pathogens</power>
+				<power>Immunity to Toxins</power>
+				<power>Movement</power>
+				<power>Possession</power>
+				<power>Sapience</power>
+			</powers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+			</bonus>
+			<source>FA</source>
+			<page>52</page>
+		</spirit>
+		<spirit>
+			<id>1b9737c5-f3dc-4ede-acdb-81ad35afcb7e</id>
+			<name>Corpse Spirit</name>
+			<bod>F+2</bod>
+			<agi>F–1</agi>
+			<rea>F+2</rea>
+			<str>F–2</str>
+			<cha>F–1</cha>
+			<int>F+1</int>
+			<log>F</log>
+			<wil>F</wil>
+			<ini>0</ini>
+			<edg>F/2</edg>
+			<mag>F</mag>
+			<res>0</res>
+			<dep>0</dep>
+			<ess>F</ess>
+			<skills>
+				<skill>Assensing</skill>
+				<skill>Astral Combat</skill>
+				<skill>Perception</skill>
+				<skill>Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Deathly Aura</power>
+				<power select="Low-Light">Enhanced Senses</power>
+				<power>Thermographic Vision)</power>
+				<power>Guard</power>
+				<power>Immunity to Normal Weapons</power>
+				<power>Immunity to Pathogens</power>
+				<power>Immunity to Toxins</power>
+				<power>Inﬂuence</power>
+				<power>Possession</power>
+				<power>Sapience</power>
+				<power>Search </power>
+			</powers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+			</bonus>
+			<source>FA</source>
+			<page>53</page>
+		</spirit>
+		<spirit>
+			<id>eeca5858-c087-4489-9ad9-469f0664726f</id>
+			<name>Rot Spirit</name>
+			<bod>F+3</bod>
+			<agi>F–2</agi>
+			<rea>F</rea>
+			<str>F+1</str>
+			<cha>F–1</cha>
+			<int>F</int>
+			<log>F–1</log>
+			<wil>F</wil>
+			<ini>0</ini>
+			<edg>F/2</edg>
+			<mag>F</mag>
+			<res>0</res>
+			<dep>0</dep>
+			<ess>F</ess>
+			<skills>
+				<skill>Assensing</skill>
+				<skill>Astral Combat</skill>
+				<skill>Counterspelling</skill>
+				<skill>Exotic Ranged Weapon</skill>
+				<skill>Perception</skill>
+				<skill>Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Deathly Aura</power>
+				<power>Engulf</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Immunity to Normal Weapons</power>
+				<power>Immunity to Pathogens</power>
+				<power>Immunity to Toxins</power>
+				<power>Magical Guard</power>
+				<power>Possession</power>
+				<power>Sapience</power>
+				<power>Silence </power>
+			</powers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+			</bonus>
+			<source>FA</source>
+			<page>53</page>
+		</spirit>
+		<spirit>
+			<id>1788c4f3-67a8-4b21-8f5a-1e0fb9ab20d0</id>
+			<name>Palefire Spirit</name>
+			<bod>F+2</bod>
+			<agi>F+1</agi>
+			<rea>F+3</rea>
+			<str>F–2</str>
+			<cha>F–1</cha>
+			<int>F+1</int>
+			<log>F</log>
+			<wil>F</wil>
+			<ini>0</ini>
+			<edg>F/2</edg>
+			<mag>F</mag>
+			<res>0</res>
+			<dep>0</dep>
+			<ess>F</ess>
+			<skills>
+				<skill>Assensing</skill>
+				<skill>Astral Combat</skill>
+				<skill>Exotic Ranged Weapon</skill>
+				<skill>Flight</skill>
+				<skill>Perception</skill>
+				<skill>Unarmed Combat </skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Confusion</power>
+				<power>Elemental Attack</power>
+				<power>Deathly Aura</power>
+				<power>Engulf</power>
+				<power>Immunity to Normal Weapons</power>
+				<power>Immunity to Pathogens</power>
+				<power>Immunity to Toxins</power>
+				<power>Possession</power>
+				<power>Sapience</power>
+			</powers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+			</bonus>
+			<source>FA</source>
+			<page>53</page>
+		</spirit>
+		<spirit>
+			<id>8e7d505f-4c97-4dad-ae15-955080c2fbaf</id>
+			<name>Detritus Spirit</name>
+			<bod>F+5</bod>
+			<agi>F–3</agi>
+			<rea>F-1</rea>
+			<str>F+4</str>
+			<cha>F–1</cha>
+			<int>F</int>
+			<log>F–1</log>
+			<wil>F</wil>
+			<ini>0</ini>
+			<edg>F/2</edg>
+			<mag>F</mag>
+			<res>0</res>
+			<dep>0</dep>
+			<ess>F</ess>
+			<skills>
+				<skill>Assensing</skill>
+				<skill>Astral Combat</skill>
+				<skill>Exotic Ranged Weapon</skill>
+				<skill>Perception</skill>
+				<skill>Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Deathly Aura</power>
+				<power>Guard</power>
+				<power>Immunity to Normal Weapons</power>
+				<power>Immunity to Pathogens</power>
+				<power>Immunity to Toxins</power>
+				<power>Possession</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+			</bonus>
+			<source>FA</source>
+			<page>53</page>
 		</spirit>
 		<spirit>
 			<id>4eb2ac59-72bd-4dda-8709-aa822614ff94</id>
