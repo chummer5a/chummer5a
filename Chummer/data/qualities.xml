@@ -1928,6 +1928,7 @@
 			<id>15b8fbbd-9d6f-43e4-acf3-97badf073ac4</id>
 			<name>The Artisan's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -1956,6 +1957,7 @@
 			<id>a61e2873-fe15-40f5-9ce3-07caa1f824d2</id>
 			<name>The Artist's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -1984,6 +1986,7 @@
 			<id>3f536570-2f0c-40b1-a056-d310e29e983d</id>
 			<name>The Athlete's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -2012,6 +2015,7 @@
 			<id>2e7424d3-5d11-4c9d-ba92-f0431bb86786</id>
 			<name>The Beast's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<costdiscount>
 				<required>
@@ -2048,6 +2052,7 @@
 			<id>7da60a93-aa53-478c-8d08-18b5638d9b87</id>
 			<name>The Burnout's Way</name>
 			<karma>15</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -2076,6 +2081,7 @@
 			<id>01181bb0-2a94-43f1-8a97-41347eac3843</id>
 			<name>The Invisible Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -2104,6 +2110,7 @@
 			<id>64165b48-d67e-4bb8-b662-ca45fbf5b3c0</id>
 			<name>The Magician's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -2132,6 +2139,7 @@
 			<id>88dd98ab-2f09-4ba9-b5c1-ff788c31fbac</id>
 			<name>The Speaker's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -2160,6 +2168,7 @@
 			<id>1a530492-7036-49fe-9ff1-ff84c9ed5d0a</id>
 			<name>The Spiritual Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>
@@ -2188,6 +2197,7 @@
 			<id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
 			<name>The Warrior's Way</name>
 			<karma>20</karma>
+			<doublecareer>False</doublecareer>
 			<category>Positive</category>
 			<bonus />
 			<required>

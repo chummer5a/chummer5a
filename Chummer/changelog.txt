@@ -36,6 +36,7 @@ Application Changes:
 - Fixed an issue with Vehicle Mod category selection that prevented items from being updated. 
 - Added a source Label for Magic Traditions.
 - Implemented that <doublecost> tag in data files can prevent double quality cost in Career Mode.
+- Adept Ways no longer cost double in Career Mode.
 
 Data Changes:
 
