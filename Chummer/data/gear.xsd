@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 <xs:include schemaLocation="../data../bonuses.xsd" />
-
+  
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -43,7 +43,6 @@
                     <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
 					<xs:element name="avail3" type="xs:string" minOccurs="0" maxOccurs="1" />
 					<xs:element name="avail6" type="xs:string" minOccurs="0" maxOccurs="1" />

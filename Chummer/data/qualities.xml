@@ -516,11 +516,11 @@
       </bonus>
 			<forbidden>
 				<oneof>
-          <metatypecategory>Shapeshifter</metatypecategory>
           <metatype>Naga</metatype>
           <metatype>Pixie</metatype>
           <metatype>Centaur</metatype>
           <metatype>Sasquatch</metatype>
+          <metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -547,11 +547,11 @@
       </bonus>
 			<forbidden>
 				<oneof>
-          <metatypecategory>Shapeshifter</metatypecategory>
           <metatype>Naga</metatype>
           <metatype>Pixie</metatype>
           <metatype>Centaur</metatype>
           <metatype>Sasquatch</metatype>
+          <metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -576,11 +576,11 @@
       </bonus>
 			<forbidden>
 				<oneof>
-          <metatypecategory>Shapeshifter</metatypecategory>
           <metatype>Naga</metatype>
           <metatype>Pixie</metatype>
           <metatype>Centaur</metatype>
           <metatype>Sasquatch</metatype>
+          <metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -605,11 +605,11 @@
       </bonus>
 			<forbidden>
 				<oneof>
-          <metatypecategory>Shapeshifter</metatypecategory>
           <metatype>Naga</metatype>
           <metatype>Pixie</metatype>
           <metatype>Centaur</metatype>
           <metatype>Sasquatch</metatype>
+          <metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
@@ -1040,12 +1040,12 @@
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
-        <enabletab>
-          <name>magician</name>
-        </enabletab>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
+        <enabletab>
+          <name>magician</name>
+        </enabletab>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1066,12 +1066,12 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
-        <enabletab>
-          <name>adept</name>
-        </enabletab>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
+        <enabletab>
+          <name>adept</name>
+        </enabletab>
 				<unlockskills>Adept</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1092,13 +1092,13 @@
 			<karma>35</karma>
 			<category>Positive</category>
 			<bonus>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>magician</name>
           <name>adept</name>
         </enabletab>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<forbidden>
@@ -1119,22 +1119,22 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-        <enabletab>
-          <name>technomancer</name>
-        </enabletab>
         <enableattribute>
           <name>RES</name>
         </enableattribute>
+        <enabletab>
+          <name>technomancer</name>
+        </enabletab>
 				<unlockskills>Technomancer</unlockskills>
 			</bonus>
 			<forbidden>
 				<oneof>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-					<quality>Aspected Magician</quality>
-					<quality>Adept</quality>
-					<metatypecategory>Metasapient</metatypecategory>
-					<metatypecategory>Shapeshifter</metatypecategory>
+          <metatypecategory>Metasapient</metatypecategory>
+          <metatypecategory>Shapeshifter</metatypecategory>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Adept</quality>
 				</oneof>
 			</forbidden>
 			<source>SR5</source>
@@ -1321,14 +1321,14 @@
 			<bonus />
 			<required>
 				<oneof>
-					<quality>Adept</quality>
-					<quality>Aspected Magician</quality>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-					<metatype>Centaur</metatype>
-					<metatype>Naga</metatype>
-					<metatype>Pixie</metatype>
-					<metatype>Sasquatch</metatype>
+          <metatype>Centaur</metatype>
+          <metatype>Naga</metatype>
+          <metatype>Pixie</metatype>
+          <metatype>Sasquatch</metatype>
+          <quality>Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
 					<quality>Infected: Mutaqua</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Wendigo</quality>
@@ -3404,20 +3404,20 @@
 			<id>81f51f6b-672f-477b-b84a-10b602d714e0</id>
 			<name>Blind</name>
 			<karma>-15</karma>
-			<costdiscount>
-				<required>
-					<oneof>
-						<power>Astral Perception</power>
-						<quality>Magician</quality>
-						<quality>Aspected Magician</quality>
-						<quality>Infected: Mutaqua</quality>
-						<quality>Infected: Nosferatu</quality>
-						<quality>Infected: Wendigo</quality>
-					</oneof>
-				</required>
-				<value>-10</value>
-			</costdiscount>
-			<category>Negative</category>
+      <category>Negative</category>
+      <costdiscount>
+        <required>
+          <oneof>
+            <power>Astral Perception</power>
+            <quality>Magician</quality>
+            <quality>Aspected Magician</quality>
+            <quality>Infected: Mutaqua</quality>
+            <quality>Infected: Nosferatu</quality>
+            <quality>Infected: Wendigo</quality>
+          </oneof>
+        </required>
+        <value>-10</value>
+      </costdiscount>
 			<bonus />
 			<forbidden>
 				<oneof>
@@ -3667,10 +3667,10 @@
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus>
-				<excon />
 				<addqualities>
 					<addquality>SINner (Criminal)</addquality>
 				</addqualities>
+        <excon />
 			</bonus>
 			<nomission />
 			<source>RF</source>
@@ -4904,14 +4904,14 @@
 			<name>Astral Perception</name>
 			<karma>0</karma>
 			<category>Positive</category>
-			<required>
-				<allof>
-					<metatype>Pixie</metatype>
-				</allof>
-			</required>
-			<bonus>
-				<unlockskills name="Assensing">Name</unlockskills>
-			</bonus>
+      <bonus>
+        <unlockskills name="Assensing">Name</unlockskills>
+      </bonus>
+      <required>
+        <allof>
+          <metatype>Pixie</metatype>
+        </allof>
+      </required>
 			<source>SR5</source>
 			<page>309</page>
 		</quality>
@@ -5840,25 +5840,23 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
-				<skillcategory>
-					<name>Social Active</name>
-					<bonus>1</bonus>
-					<exclude>Intimidation</exclude>
-				</skillcategory>
-				<sociallimit>2</sociallimit>
-			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
-			<bonus>
-			<addqualities>
-				<addquality>Distinctive Style</addquality>
-			</addqualities>
-			</bonus>
+        <addqualities>
+          <addquality>Distinctive Style</addquality>
+        </addqualities>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+          <exclude>Intimidation</exclude>
+        </skillcategory>
+        <sociallimit>2</sociallimit>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Changeling (Class I SURGE)</quality>
+          <quality>Changeling (Class II SURGE)</quality>
+          <quality>Changeling (Class III SURGE)</quality>
+        </oneof>
+      </required>
 			<source>RF</source>
 			<page>115</page>
 			<metagenetic>yes</metagenetic>
@@ -6803,7 +6801,6 @@
 			<name>Astral Hazing</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
 			<costdiscount>
 				<required>
 					<oneof>
@@ -6818,6 +6815,7 @@
 				</required>
 				<value>10</value>
 			</costdiscount>
+      <bonus />
 			<source>RF</source>
 			<page>119</page>
 			<metagenetic>yes</metagenetic>
@@ -6910,8 +6908,8 @@
 			<bonus>
 				<skillcategory>
 					<name>Physical Active</name>
-					<exclude>Perception</exclude>
-					<bonus>-2</bonus>
+          <bonus>-2</bonus>
+          <exclude>Perception</exclude>
 				</skillcategory>
 			</bonus>
 			<source>RF</source>
@@ -7159,6 +7157,11 @@
 			<karma>22</karma>
 			<category>Positive</category>
 			<bonus>
+        <critterpowers>
+          <power>Adaptive Coloration</power>
+          <power select="Sunlight, Mild">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -7210,34 +7213,29 @@
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<affectbase>yes</affectbase>
-						<val>1</val>
+            <val>1</val>
+            <affectbase>yes</affectbase>
 					</selectattribute>
 					<selectattribute>
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<affectbase>yes</affectbase>
-						<val>1</val>
+            <val>1</val>
+            <affectbase>yes</affectbase>
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<affectbase>yes</affectbase>
-						<val>1</val>
+            <val>1</val>
+            <affectbase>yes</affectbase>
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<affectbase>yes</affectbase>
-						<val>1</val>
+            <val>1</val>
+            <affectbase>yes</affectbase>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Adaptive Coloration</power>
-					<power select="Sunlight, Mild">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -7284,111 +7282,111 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
-			<required>
-				<allof>
-					<metatype>Elf</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-				</oneof>
-			</forbidden>
-			<bonus>
-				<replaceattributes>
-					<replaceattribute>
-						<name>BOD</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>AGI</name>
-						<min>2</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>REA</name>
-						<min>1</min>
-						<max>8</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>STR</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>WIL</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>LOG</name>
-						<min>1</min>
-						<max>6</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>INT</name>
-						<min>1</min>
-						<max>7</max>
-					</replaceattribute>
-					<replaceattribute>
-						<name>CHA</name>
-						<min>3</min>
-						<max>9</max>
-					</replaceattribute>
-				</replaceattributes>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<val>1</val>
-					</selectattribute>
-					<selectattribute>
-						<attribute>WIL</attribute>
-						<attribute>INT</attribute>
-						<attribute>CHA</attribute>
-						<val>1</val>
-					</selectattribute>
-				</selectattributes>
-				<initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-				</optionalpowers>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Blood">Dietary Requirement</power>
-					<power select="Silver">Vulnerability</power>
-					<power select="Wood">Vulnerability</power>
-				</critterpowers>
-			</bonus>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Essence Drain</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Blood">Dietary Requirement</power>
+          <power select="Silver">Vulnerability</power>
+          <power select="Wood">Vulnerability</power>
+        </critterpowers>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass precedence="-1">1</initiativepass>
+        <movementmultiplier>1</movementmultiplier>
+        <optionalpowers>
+          <optionalpower select="Hearing">Enhanced Senses</optionalpower>
+          <optionalpower select="Toxins">Immunity</optionalpower>
+          <optionalpower select="Smell">Enhanced Senses</optionalpower>
+          <optionalpower select="Pathogens">Immunity</optionalpower>
+        </optionalpowers>
+        <replaceattributes>
+          <replaceattribute>
+            <name>BOD</name>
+            <min>1</min>
+            <max>7</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>AGI</name>
+            <min>2</min>
+            <max>7</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>REA</name>
+            <min>1</min>
+            <max>8</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>STR</name>
+            <min>1</min>
+            <max>7</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>WIL</name>
+            <min>1</min>
+            <max>7</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>LOG</name>
+            <min>1</min>
+            <max>6</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>INT</name>
+            <min>1</min>
+            <max>7</max>
+          </replaceattribute>
+          <replaceattribute>
+            <name>CHA</name>
+            <min>3</min>
+            <max>9</max>
+          </replaceattribute>
+        </replaceattributes>
+        <selectattributes>
+          <selectattribute>
+            <attribute>BOD</attribute>
+            <attribute>REA</attribute>
+            <attribute>STR</attribute>
+            <val>1</val>
+          </selectattribute>
+          <selectattribute>
+            <attribute>BOD</attribute>
+            <attribute>REA</attribute>
+            <attribute>STR</attribute>
+            <val>1</val>
+          </selectattribute>
+          <selectattribute>
+            <attribute>WIL</attribute>
+            <attribute>INT</attribute>
+            <attribute>CHA</attribute>
+            <val>1</val>
+          </selectattribute>
+          <selectattribute>
+            <attribute>WIL</attribute>
+            <attribute>INT</attribute>
+            <attribute>CHA</attribute>
+            <val>1</val>
+          </selectattribute>
+        </selectattributes>
+      </bonus>
+      <required>
+        <allof>
+          <metatype>Elf</metatype>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <quality>Magic Resistance (Rating 1)</quality>
+          <quality>Magic Resistance (Rating 2)</quality>
+          <quality>Magic Resistance (Rating 3)</quality>
+          <quality>Magic Resistance (Rating 4)</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -7412,6 +7410,15 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Essence Drain</power>
+          <power select="Age">Immunity</power>
+          <power>Infection</power>
+          <power>Essence Loss</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -7489,15 +7496,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Infection</power>
-					<power>Essence Loss</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -7546,6 +7544,14 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Corrosive Secretions</power>
+          <power>Magical Guard</power>
+          <power>Dual Natured</power>
+          <power select="Air Pollution, Moderate">Allergy</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -7619,14 +7625,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Corrosive Secretions</power>
-					<power>Magical Guard</power>
-					<power>Dual Natured</power>
-					<power select="Air Pollution, Moderate">Allergy</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -7673,13 +7671,15 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>Dwarf</metatype>
-				</oneof>
-			</required>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -7757,14 +7757,12 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
+      <required>
+        <oneof>
+          <metatype>Dwarf</metatype>
+        </oneof>
+      </required>
 			<forbidden>
 				<oneof>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -7805,13 +7803,15 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>Elf</metatype>
-				</oneof>
-			</required>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -7889,14 +7889,12 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
+			<required>
+				<oneof>
+					<metatype>Elf</metatype>
+				</oneof>
+			</required>
 			<forbidden>
 				<oneof>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -7937,13 +7935,15 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>Human</metatype>
-				</oneof>
-			</required>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8021,14 +8021,12 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
+      <required>
+        <oneof>
+          <metatype>Human</metatype>
+        </oneof>
+      </required>
 			<forbidden>
 				<oneof>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -8069,13 +8067,15 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>Ork</metatype>
-				</oneof>
-			</required>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8153,14 +8153,12 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+        </oneof>
+      </required>
 			<forbidden>
 				<oneof>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -8201,13 +8199,15 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>Sasquatch</metatype>
-				</oneof>
-			</required>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8285,14 +8285,12 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
+      <required>
+        <oneof>
+          <metatype>Sasquatch</metatype>
+        </oneof>
+      </required>
 			<forbidden>
 				<oneof>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -8333,13 +8331,15 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>Troll</metatype>
-				</oneof>
-			</required>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8417,14 +8417,12 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
+      <required>
+        <oneof>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
 			<forbidden>
 				<oneof>
 					<quality>Magic Resistance (Rating 1)</quality>
@@ -8467,6 +8465,15 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power select="Vermin">Animal Control</power>
+          <power>Dual Natured</power>
+          <power select="Toxins">Immunity</power>
+          <power>Noxious Breath</power>
+          <power>Paralyzing Touch</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Bone">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8536,15 +8543,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-			<critterpowers>
-        <power select="Vermin">Animal Control</power>
-				<power>Dual Natured</power>
-				<power select="Toxins">Immunity</power>
-				<power>Noxious Breath</power>
-				<power>Paralyzing Touch</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Bone">Dietary Requirement</power>
-			</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8583,6 +8581,17 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Essence Drain</power>
+          <power select="Age">Immunity</power>
+          <power>Infection</power>
+          <power>Noxious Breath</power>
+          <power>Paralyzing Touch</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+          <power select="Iron">Vulnerability</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8668,17 +8677,6 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-          <power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-          <power>Infection</power>
-					<power>Noxious Breath</power>
-					<power>Paralyzing Touch</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-					<power select="Iron">Vulnerability</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8728,6 +8726,17 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Animal Control</power>
+          <power>Concealment</power>
+          <power>Dual Natured</power>
+          <power select="Toxins">Immunity</power>
+          <power>Noxious Breath</power>
+          <power>Paralyzing Touch</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+          <power select="Iron">Vulnerability</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8812,17 +8821,6 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Animal Control</power>
-					<power>Concealment</power>
-					<power>Dual Natured</power>
-					<power select="Toxins">Immunity</power>
-					<power>Noxious Breath</power>
-					<power>Paralyzing Touch</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-					<power select="Iron">Vulnerability</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8871,12 +8869,20 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>2</armor>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
+        <critterpowers>
+          <power>Movement</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power>Dual Natured</power>
+          <power select="Silver, Moderate">Allergy</power>
+          <power select="Sunlight, Moderate">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
 				<initiative>1</initiative>
+        <initiativepass precedence="-1">1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8951,14 +8957,6 @@
 					<name>LOG</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Movement</power>
-					<power select="Thermographic Vision">Enhanced Senses</power>
-					<power>Dual Natured</power>
-					<power select="Silver, Moderate">Allergy</power>
-					<power select="Sunlight, Moderate">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9006,14 +9004,24 @@
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
-        <initiativepass precedence="-1">1</initiativepass>
-				<movementmultiplier>1</movementmultiplier>
 				<armor>2</armor>
+        <critterpowers>
+          <power>Movement</power>
+          <power select="Hearing">Enhanced Senses</power>
+          <power select="Low-Light Vision">Enhanced Senses</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power>Dual Natured</power>
+          <power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
 				<initiative>1</initiative>
-				<movementmultiplier>1</movementmultiplier>
+        <initiativepass precedence="-1">1</initiativepass>
+        <movementmultiplier>1</movementmultiplier>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -9088,17 +9096,6 @@
 					<name>LOG</name>
 					<val>-1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Movement</power>
-					<power select="Hearing">Enhanced Senses</power>
-					<power select="Low-Light Vision">Enhanced Senses</power>
-					<power select="Smell">Enhanced Senses</power>
-					<power select="Thermographic Vision">Enhanced Senses</power>
-					<power>Dual Natured</power>
-					<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9144,6 +9141,7 @@
 			<name>Infected: Mutaqua</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>54</karma>
+			<category>Positive</category>
 			<costdiscount>
 				<required>
 					<oneof>
@@ -9154,12 +9152,21 @@
 				</required>
 				<value>-10</value>
 			</costdiscount>
-			<category>Positive</category>
 			<bonus>
-				<enableattribute>
-					<name>MAG</name>
-				</enableattribute>
 				<armor>1</armor>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power select="Fire">Vulnerability</power>
+          <power select="Wood, Severe">Allergy</power>
+          <power select="Sunlight, Extreme">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
 				<enabletab>
           <name>adept</name>
 				  <name>critter</name>
@@ -9241,16 +9248,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power select="Fire">Vulnerability</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Extreme">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 				<unlockskills>Adept</unlockskills>
 			</bonus>
 			<required>
@@ -9303,6 +9300,7 @@
 			<name>Infected: Nosferatu</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>48</karma>
+      <category>Positive</category>
 			<costdiscount>
 				<required>
 					<oneof>
@@ -9313,8 +9311,18 @@
 				</required>
 				<value>-10</value>
 			</costdiscount>
-			<category>Positive</category>
 			<bonus>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power>Infection</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power select="Wood, Severe">Allergy</power>
+          <power select="Sunlight, Extreme">Allergy</power>
+          <power select="Metahuman Blood">Dietary Requirement</power>
+          <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+        </critterpowers>
 				<enableattribute>
 					<name>MAG</name>
 				</enableattribute>
@@ -9403,17 +9411,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power>Infection</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Extreme">Allergy</power>
-					<power select="Metahuman Blood">Dietary Requirement</power>
-					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-				</critterpowers>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<required>
@@ -9452,6 +9449,17 @@
 			<karma>27</karma>
 			<category>Positive</category>
 			<bonus>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power>Infection</power>
+          <power select="Wood, Severe">Allergy</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Blood">Dietary Requirement</power>
+          <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -9532,17 +9540,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power>Infection</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Blood">Dietary Requirement</power>
-					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9580,6 +9577,17 @@
 			<karma>37</karma>
 			<category>Positive</category>
 			<bonus>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power>Infection</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power select="Wood, Severe">Allergy</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Blood">Dietary Requirement</power>
+          <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -9660,17 +9668,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -9706,6 +9703,18 @@
 			<karma>27</karma>
 			<category>Positive</category>
 			<bonus>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power>Infection</power>
+          <power select="Wood, Severe">Allergy</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Blood">Dietary Requirement</power>
+          <power select="Salt">Dietary Requirement</power>
+          <power select="Wood">Vulnerability</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -9786,18 +9795,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power>Infection</power>
-					<power select="Wood, Severe">Allergy</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Blood">Dietary Requirement</power>
-					<power select="Salt">Dietary Requirement</power>
-					<power select="Wood">Vulnerability</power>
-				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9835,6 +9832,18 @@
 			<karma>37</karma>
 			<category>Positive</category>
 			<bonus>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power>Infection</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power select="Wood, Severe">Allergy</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Blood">Dietary Requirement</power>
+          <power select="Salt">Dietary Requirement</power>
+          <power select="Wood">Vulnerability</power>
+        </critterpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -9915,18 +9924,6 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Salt">Dietary Requirement</power>
-				<power select="Wood">Vulnerability</power>
-			</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -9972,6 +9969,16 @@
 				<value>-10</value>
 			</costdiscount>
 			<bonus>
+        <critterpowers>
+          <power>Essence Drain</power>
+          <power>Infection</power>
+          <power select="Age">Immunity</power>
+          <power>Essence Loss</power>
+          <power>Dual Natured</power>
+          <power select="Ferrous Metals, Moderate">Allergy</power>
+          <power select="Sunlight, Severe">Allergy</power>
+          <power select="Metahuman Flesh">Dietary Requirement</power>
+        </critterpowers>
 				<enableattribute>
 					<name>MAG</name>
 				</enableattribute>
@@ -10062,16 +10069,6 @@
 						<affectbase />
 					</selectattribute>
 				</selectattributes>
-				<critterpowers>
-					<power>Essence Drain</power>
-					<power>Infection</power>
-					<power select="Age">Immunity</power>
-					<power>Essence Loss</power>
-					<power>Dual Natured</power>
-					<power select="Ferrous Metals, Moderate">Allergy</power>
-					<power select="Sunlight, Severe">Allergy</power>
-					<power select="Metahuman Flesh">Dietary Requirement</power>
-				</critterpowers>
 				<unlockskills>Magician</unlockskills>
 			</bonus>
 			<required>
@@ -10424,6 +10421,19 @@
 			<karma>25</karma>
 			<category>Positive</category>
 			<bonus>
+        <selectattributes>
+          <selectattribute>
+            <excludeattribute>EDG</excludeattribute>
+            <excludeattribute>MAG</excludeattribute>
+            <excludeattribute>RES</excludeattribute>
+            <excludeattribute>DEP</excludeattribute>
+            <excludeattribute>BOD</excludeattribute>
+            <excludeattribute>AGI</excludeattribute>
+            <excludeattribute>STR</excludeattribute>
+            <excludeattribute>REA</excludeattribute>
+            <max>96</max>
+          </selectattribute>
+        </selectattributes>
 				<specificattribute>
 					<name>CHA</name>
 					<max>3</max>
@@ -10444,19 +10454,6 @@
 					<name>DEP</name>
 					<max>99</max>
 				</specificattribute>
-				<selectattributes>
-					<selectattribute>
-						<excludeattribute>EDG</excludeattribute>
-						<excludeattribute>MAG</excludeattribute>
-						<excludeattribute>RES</excludeattribute>
-						<excludeattribute>DEP</excludeattribute>
-						<excludeattribute>BOD</excludeattribute>
-						<excludeattribute>AGI</excludeattribute>
-						<excludeattribute>STR</excludeattribute>
-						<excludeattribute>REA</excludeattribute>
-						<max>96</max>
-					</selectattribute>
-				</selectattributes>
 			</bonus>
 			<required>
 				<oneof>
@@ -10930,13 +10927,15 @@
 			<karma>27</karma>
 			<category>Positive</category>
 			<bonus>
-				<selectattribute>
-					<excludeattribute>EDG</excludeattribute>
-					<excludeattribute>MAG</excludeattribute>
-					<excludeattribute>RES</excludeattribute>
-					<excludeattribute>DEP</excludeattribute>
-					<max>1</max>
-				</selectattribute>
+        <selectattributes>
+				  <selectattribute>
+					  <excludeattribute>EDG</excludeattribute>
+					  <excludeattribute>MAG</excludeattribute>
+					  <excludeattribute>RES</excludeattribute>
+					  <excludeattribute>DEP</excludeattribute>
+					  <max>1</max>
+				  </selectattribute>
+        </selectattributes>
 			</bonus>
 			<source>CF</source>
 			<page>157</page>
@@ -11011,12 +11010,12 @@
 			<name>Cyber-snob</name>
 			<karma>-12</karma>
 			<category>Negative</category>
-			<required>
-				<oneof>
-					<ess grade="Betaware">1</ess>
-				</oneof>
-			</required>
-			<bonus />
+      <bonus />
+      <required>
+        <oneof>
+          <ess grade="Betaware">1</ess>
+        </oneof>
+      </required>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -11402,10 +11401,22 @@
 			<name>Dracoform (Eastern Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
-			<stagedpurchase>True</stagedpurchase>
+      <latentsource>Latent Dracomorphosis</latentsource>
+      <stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
+        <addqualities>
+          <addquality>Wanted</addquality>
+        </addqualities>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Shift (Dracoform)</power>
+          <power>Vestigial Wings</power>
+          <power rating="2">Hardened Armor</power>
+          <power rating="2">Hardened Mystic Armor</power>
+          <power select="Fire">Elemental Attack</power>
+        </critterpowers>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11428,19 +11439,7 @@
 					<name>LOG</name>
 					<val>1</val>
 				</specificattribute>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Shift (Dracoform)</power>
-				<power>Vestigial Wings</power>
-				<power rating="2">Hardened Armor</power>
-				<power rating="2">Hardened Mystic Armor</power>
-				<power select="Fire">Elemental Attack</power>
-			</critterpowers>
-				<addqualities>
-					<addquality>Wanted</addquality>
-				</addqualities>
 			</bonus>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Claws</name>
@@ -11461,10 +11460,22 @@
 			<name>Dracoform (Western Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
+        <addqualities>
+          <addquality>Wanted</addquality>
+        </addqualities>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Shift (Dracoform)</power>
+          <power>Vestigial Wings</power>
+          <power rating="2">Hardened Armor</power>
+          <power rating="2">Hardened Mystic Armor</power>
+          <power select="Fire">Elemental Attack</power>
+        </critterpowers>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11483,19 +11494,7 @@
 					<name>CHA</name>
 					<val>1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power>Shift (Dracoform)</power>
-					<power>Vestigial Wings</power>
-					<power rating="2">Hardened Armor</power>
-					<power rating="2">Hardened Mystic Armor</power>
-					<power select="Fire">Elemental Attack</power>
-				</critterpowers>
-				<addqualities>
-					<addquality>Wanted</addquality>
-				</addqualities>
 			</bonus>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Horns</name>
@@ -11516,10 +11515,22 @@
 			<name>Dracoform (Feathered Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
+        <addqualities>
+          <addquality>Wanted</addquality>
+        </addqualities>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Shift (Dracoform)</power>
+          <power>Vestigial Wings</power>
+          <power rating="2">Hardened Armor</power>
+          <power rating="2">Hardened Mystic Armor</power>
+          <power select="Fire">Elemental Attack</power>
+        </critterpowers>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11546,19 +11557,7 @@
 					<name>WIL</name>
 					<val>1</val>
 				</specificattribute>
-				<critterpowers>
-					<power>Dual Natured</power>
-					<power>Shift (Dracoform)</power>
-					<power>Vestigial Wings</power>
-					<power rating="2">Hardened Armor</power>
-					<power rating="2">Hardened Mystic Armor</power>
-					<power select="Fire">Elemental Attack</power>
-				</critterpowers>
-				<addqualities>
-					<addquality>Wanted</addquality>
-				</addqualities>
 			</bonus>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Tail</name>
@@ -11579,10 +11578,22 @@
 			<name>Dracoform (Sea Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
+      <latentsource>Latent Dracomorphosis</latentsource>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
+        <addqualities>
+          <addquality>Wanted</addquality>
+        </addqualities>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Shift (Dracoform)</power>
+          <power>Underwater Adapation</power>
+          <power rating="2">Hardened Armor</power>
+          <power rating="2">Hardened Mystic Armor</power>
+          <power select="Fire">Elemental Attack</power>
+        </critterpowers>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -11605,19 +11616,7 @@
 					<name>INT</name>
 					<val>1</val>
 				</specificattribute>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Shift (Dracoform)</power>
-				<power>Underwater Adapation</power>
-				<power rating="2">Hardened Armor</power>
-				<power rating="2">Hardened Mystic Armor</power>
-				<power select="Fire">Elemental Attack</power>
-			</critterpowers>
-				<addqualities>
-					<addquality>Wanted</addquality>
-				</addqualities>
 			</bonus>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Fangs</name>
@@ -11755,12 +11754,12 @@
 			<name>Mnemonic Vault</name>
 			<karma>8</karma>
 			<category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<quality>Memory Palace</quality>
 				</oneof>
 			</required>
-			<bonus />
 			<source>CA</source>
 			<page>151</page>
 		</quality>
@@ -11886,8 +11885,8 @@
 			<id>7653cadb-0092-4a94-9a17-9329fb4f6041</id>
 			<name>Social Appearance Anxiety</name>
 			<karma>-3</karma>
-			<limit>3</limit>
 			<category>Negative</category>
+      <limit>3</limit>
 			<bonus />
 			<source>CA</source>
 			<page>152</page>
@@ -11909,8 +11908,8 @@
 			<bonus>
 				<specificattribute>
 					<name>CHA</name>
-					<val>-1</val>
 					<max>-1</max>
+          <val>-1</val>
 				</specificattribute>
 			</bonus>
 			<source>CA</source>
@@ -11924,14 +11923,14 @@
 			<id>dcba5a01-849b-412c-83ba-f0ac5aa46e71</id>
 			<name>Adept Healer</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<oneof>
-					<power>Empathic Healing</power>
-				</oneof>
-			</required>
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus />
+      <required>
+        <oneof>
+          <power>Empathic Healing</power>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>31</page>
 		</quality>
@@ -11939,6 +11938,11 @@
 			<id>e508350b-f61d-4878-bd6d-98f8c9e3588b</id>
 			<name>Alchemical Armorer</name>
 			<doublecareer>False</doublecareer>
+			<karma>15</karma>
+			<category>Positive</category>
+			<bonus>
+				<addspell>Alter Ballistics</addspell>
+			</bonus>
 			<required>
 				<allof>
 					<metamagic>Advanced Alchemy</metamagic>
@@ -11952,11 +11956,6 @@
 					</skill>
 				</allof>
 			</required>
-			<karma>15</karma>
-			<category>Positive</category>
-			<bonus>
-				<addspell>Alter Ballistics</addspell>
-			</bonus>
 			<source>FA</source>
 			<page>31</page>
 		</quality>
@@ -11964,25 +11963,25 @@
 			<id>73bbf3ca-44c0-4b91-a511-9f1229b4efd3</id>
 			<name>Alchemical Bomb Maker</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<allof>
-					<metamagic>Advanced Alchemy</metamagic>
-				</allof>
-				<oneof>
-					<skill>
-						<name>Alchemy</name>
-						<val>6</val>
-					</skill>
-					<skill>
-						<name>Alchemy</name>
-						<spec>Combat</spec>
-						<val>4</val>
-					</skill>
-				</oneof>
-			</required>
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus />
+      <required>
+        <allof>
+          <metamagic>Advanced Alchemy</metamagic>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Alchemy</name>
+            <val>6</val>
+          </skill>
+          <skill>
+            <name>Alchemy</name>
+            <val>4</val>
+            <spec>Combat</spec>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>31</page>
 		</quality>
@@ -11990,6 +11989,9 @@
 			<id>3e9881c4-6556-4df1-8e9c-bc839ba683b2</id>
 			<name>Animal Familiar</name>
 			<doublecareer>False</doublecareer>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
 			<required>
 				<oneof>
 					<skill>
@@ -11998,9 +12000,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
 			<source>FA</source>
 			<page>31</page>
 		</quality>
@@ -12008,22 +12007,22 @@
 			<id>79c1be77-1da7-405e-8b2b-99a06abc4327</id>
 			<name>Apt Pupil</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<allof>
-					<skill>
-						<name>Magical Theory</name>
-						<val>4</val>
-            <type>Knowledge</type>
-					</skill>
-					<skill>
-						<name>Arcana</name>
-						<val>6</val>
-					</skill>
-				</allof>
-			</required>
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus />
+      <required>
+        <allof>
+          <skill>
+            <name>Magical Theory</name>
+            <val>4</val>
+            <type>Knowledge</type>
+          </skill>
+          <skill>
+            <name>Arcana</name>
+            <val>6</val>
+          </skill>
+        </allof>
+      </required>
 			<source>FA</source>
 			<page>32</page>
 		</quality>
@@ -12031,17 +12030,17 @@
 			<id>9f02d7f6-6fe3-4a9c-8c0e-83ae788f1985</id>
 			<name>Arcane Bodyguard</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<allof>
-					<skill>
-						<name>Counterspelling</name>
-						<val>4</val>
-					</skill>
-				</allof>
-			</required>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus />
+      <required>
+        <allof>
+          <skill>
+            <name>Counterspelling</name>
+            <val>4</val>
+          </skill>
+        </allof>
+      </required>
 			<source>FA</source>
 			<page>32</page>
 		</quality>
@@ -12049,95 +12048,95 @@
 			<id>ec302d7a-1955-43bb-9c1f-2c32da7ca8c0</id>
 			<name>Arcane Improviser</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<oneof>
-					<group>
-						<tradition>Chaos Magic</tradition>
-						<skill>
-							<name>Spellcasting</name>
-							<val>4</val>
-						</skill>
-						<skill>
-							<name>Counterspelling</name>
-							<val>4</val>
-						</skill>
-						<skill>
-							<name>Arcana</name>
-							<val>5</val>
-							<spec>Spell Design</spec>
-						</skill>
-					</group>
-					<group>
-						<tradition>Chaos Magic</tradition>
-						<skill>
-							<name>Spellcasting</name>
-							<val>4</val>
-						</skill>
-						<skill>
-							<name>Counterspelling</name>
-							<val>4</val>
-						</skill>
-						<skill>
-							<name>Arcana</name>
-							<val>7</val>
-						</skill>
-					</group>
-					<group>
-						<skill>
-							<name>Spellcasting</name>
-							<val>6</val>
-						</skill>
-						<skill>
-							<name>Counterspelling</name>
-							<val>6</val>
-						</skill>
-						<skill>
-							<name>Arcana</name>
-							<val>7</val>
-							<spec>Spell Design</spec>
-						</skill>
-					</group>
-					<group>
-						<skill>
-							<name>Spellcasting</name>
-							<val>6</val>
-						</skill>
-						<skill>
-							<name>Counterspelling</name>
-							<val>6</val>
-						</skill>
-						<skill>
-							<name>Arcana</name>
-							<val>9</val>
-						</skill>
-					</group>
-				</oneof>
-				<allof>
-					<spellcategory>
-						<name>Combat</name>
-						<count>4</count>
-					</spellcategory>
-					<spellcategory>
-						<name>Detection</name>
-						<count>4</count>
-					</spellcategory>
-					<spellcategory>
-						<name>Health</name>
-						<count>4</count>
-					</spellcategory>
-					<spellcategory>
-						<name>Illusion</name>
-						<count>4</count>
-					</spellcategory>
-					<spellcategory>
-						<name>Manipulation</name>
-						<count>4</count>
-					</spellcategory>
-				</allof>
-			</required>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <allof>
+          <spellcategory>
+            <name>Combat</name>
+            <count>4</count>
+          </spellcategory>
+          <spellcategory>
+            <name>Detection</name>
+            <count>4</count>
+          </spellcategory>
+          <spellcategory>
+            <name>Health</name>
+            <count>4</count>
+          </spellcategory>
+          <spellcategory>
+            <name>Illusion</name>
+            <count>4</count>
+          </spellcategory>
+          <spellcategory>
+            <name>Manipulation</name>
+            <count>4</count>
+          </spellcategory>
+        </allof>
+        <oneof>
+          <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>4</val>
+            </skill>
+            <skill>
+              <name>Counterspelling</name>
+              <val>4</val>
+            </skill>
+            <skill>
+              <name>Arcana</name>
+              <val>5</val>
+              <spec>Spell Design</spec>
+            </skill>
+            <tradition>Chaos Magic</tradition>
+          </group>
+          <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>4</val>
+            </skill>
+            <skill>
+              <name>Counterspelling</name>
+              <val>4</val>
+            </skill>
+            <skill>
+              <name>Arcana</name>
+              <val>7</val>
+            </skill>
+            <tradition>Chaos Magic</tradition>
+          </group>
+          <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>6</val>
+            </skill>
+            <skill>
+              <name>Counterspelling</name>
+              <val>6</val>
+            </skill>
+            <skill>
+              <name>Arcana</name>
+              <val>7</val>
+              <spec>Spell Design</spec>
+            </skill>
+          </group>
+          <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>6</val>
+            </skill>
+            <skill>
+              <name>Counterspelling</name>
+              <val>6</val>
+            </skill>
+            <skill>
+              <name>Arcana</name>
+              <val>9</val>
+            </skill>
+          </group>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>32</page>
 		</quality>
@@ -12145,6 +12144,9 @@
 			<id>f65a7108-0b57-4f82-950d-9896be68aae9</id>
 			<name>Archivist</name>
 			<doublecareer>False</doublecareer>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
 			<required>
 				<allof>
 					<skill>
@@ -12153,9 +12155,6 @@
 					</skill>
 				</allof>
 			</required>
-			<karma>10</karma>
-			<category>Positive</category>
-			<bonus />
 			<source>FA</source>
 			<page>32</page>
 		</quality>
@@ -12163,22 +12162,22 @@
 			<id>f5e31754-4270-43a0-8dbf-528dd7274afb</id>
 			<name>Astral Bouncer</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<oneof>
-					<skill>
-						<name>Assensing</name>
-						<val>4</val>
-						<spec>Aura Reading</spec>
-					</skill>
-					<skill>
-						<name>Assensing</name>
-						<val>6</val>
-					</skill>
-				</oneof>
-			</required>
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus />
+      <required>
+        <oneof>
+          <skill>
+            <name>Assensing</name>
+            <val>4</val>
+            <spec>Aura Reading</spec>
+          </skill>
+          <skill>
+            <name>Assensing</name>
+            <val>6</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>32</page>
 		</quality>
@@ -12186,25 +12185,25 @@
 			<id>0591e06b-4465-47fe-875a-89d4b52d4f61</id>
 			<name>Astral Infiltrator</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<oneof>
-					<skill>
-						<name>Astral Combat</name>
-						<val>5</val>
-						<spec>Astral Barriers</spec>
-					</skill>
-					<skill>
-						<name>Astral Combat</name>
-						<val>7</val>
-					</skill>
-				</oneof>
-				<allof>
-					<initiategrade>1</initiategrade>
-				</allof>
-			</required>
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus />
+      <required>
+        <allof>
+          <initiategrade>1</initiategrade>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Astral Combat</name>
+            <val>5</val>
+            <spec>Astral Barriers</spec>
+          </skill>
+          <skill>
+            <name>Astral Combat</name>
+            <val>7</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>32</page>
 		</quality>
@@ -12212,27 +12211,27 @@
 			<id>742caf46-a10b-4aa1-a6bc-a53feb99748c</id>
 			<name>Barehanded Adept</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<oneof>
-					<group>
-						<tradition>Buddhism</tradition>
-						<skill>
-							<name>Unarmed Combat</name>
-							<val>4</val>
-						</skill>
-					</group>
-					<skill>
-						<name>Unarmed Combat</name>
-						<val>6</val>
-					</skill>
-				</oneof>
-				<allof>
-					<quality>Adept</quality>
-				</allof>
-			</required>
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus />
+      <required>
+        <allof>
+          <quality>Adept</quality>
+        </allof>
+        <oneof>
+          <group>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>4</val>
+            </skill>
+            <tradition>Buddhism</tradition>
+          </group>
+          <skill>
+            <name>Unarmed Combat</name>
+            <val>6</val>
+          </skill>
+        </oneof>
+      </required>
 			<!-- TODO: How the fuck do I implement getting free spells based on MAG? -->
 			<source>FA</source>
 			<page>33</page>
@@ -12241,25 +12240,25 @@
 			<id>3fa061b9-c3bd-40bb-a292-eb35a8f8f5f8</id>
 			<name>Blood Necromancer</name>
 			<doublecareer>False</doublecareer>
-			<required>
-				<allof>
-					<metamagicart>Blood Magic</metamagicart>
-				</allof>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>8</val>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-						<spec>Health</spec>
-					</skill>
-				</oneof>
-			</required>
 			<karma>15</karma>
-			<category>Positive</category>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <allof>
+          <metamagicart>Blood Magic</metamagicart>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>8</val>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+            <spec>Health</spec>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>33</page>
 		</quality>
@@ -12268,15 +12267,15 @@
 			<name>Chain Breaker</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<costdiscount>
-				<required>
-					<oneof>
-						<quality>Aspected Mage</quality>
-					</oneof>
-				</required>
-				<value>-5</value>
-			</costdiscount>
-			<category>Positive</category>
+      <category>Positive</category>
+      <costdiscount>
+        <required>
+          <oneof>
+            <quality>Aspected Mage</quality>
+          </oneof>
+        </required>
+        <value>-5</value>
+      </costdiscount>
 			<bonus />
 			<source>FA</source>
 			<page>33</page>
@@ -12286,74 +12285,75 @@
 			<name>Chakra Interrupter</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<required>
-				<oneof>
-					<group>
-						<power>Nerve Strike</power>
-						<skill>
-							<name>Assensing</name>
-							<val>4</val>
-							<spec>Aura Reading</spec>
-						</skill>
-					</group>
-					<group>
-						<power>Nerve Strike</power>
-						<skill>
-							<name>Assensing</name>
-							<val>6</val>
-						</skill>
-					</group>
-					<group>
-						<skill>
-							<name>Unarmed Combat</name>
-							<val>6</val>
-							<spec>[Martial Art]</spec>
-						</skill>
-						<martialtechnique>Dim Mak</martialtechnique>
-						<skill>
-							<name>Assensing</name>
-							<val>6</val>
-						</skill>
-					</group>
-					<group>
-						<skill>
-							<name>Unarmed Combat</name>
-							<val>6</val>
-							<spec>[Martial Art]</spec>
-						</skill>
-						<martialtechnique>Dim Mak</martialtechnique>
-						<skill>
-							<name>Assensing</name>
-							<val>4</val>
-							<spec>Aura Reading</spec>
-						</skill>
-					</group>
-					<group>
-						<skill>
-							<name>Unarmed Combat</name>
-							<val>8</val>
-						</skill>
-						<martialtechnique>Dim Mak</martialtechnique>
-						<skill>
-							<name>Assensing</name>
-							<val>6</val>
-						</skill>
-					</group>
-					<group>
-						<skill>
-							<name>Unarmed Combat</name>
-							<val>8</val>
-						</skill>
-						<martialtechnique>Dim Mak</martialtechnique>
-						<skill>
-							<name>Assensing</name>
-							<val>4</val>
-							<spec>Aura Reading</spec>
-						</skill>
-					</group>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <oneof>
+          <group>
+            <power>Nerve Strike</power>
+            <skill>
+              <name>Assensing</name>
+              <val>4</val>
+              <spec>Aura Reading</spec>
+            </skill>
+          </group>
+          <group>
+            <power>Nerve Strike</power>
+            <skill>
+              <name>Assensing</name>
+              <val>6</val>
+            </skill>
+          </group>
+          <group>
+            <martialtechnique>Dim Mak</martialtechnique>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>6</val>
+              <spec>[Martial Art]</spec>
+            </skill>
+            <skill>
+              <name>Assensing</name>
+              <val>6</val>
+            </skill>
+          </group>
+          <group>
+            <martialtechnique>Dim Mak</martialtechnique>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>6</val>
+              <spec>[Martial Art]</spec>
+            </skill>
+            <skill>
+              <name>Assensing</name>
+              <val>4</val>
+              <spec>Aura Reading</spec>
+            </skill>
+          </group>
+          <group>
+            <martialtechnique>Dim Mak</martialtechnique>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>8</val>
+            </skill>
+            <skill>
+              <name>Assensing</name>
+              <val>6</val>
+            </skill>
+          </group>
+          <group>
+            <martialtechnique>Dim Mak</martialtechnique>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>8</val>
+            </skill>
+            <skill>
+              <name>Assensing</name>
+              <val>4</val>
+              <spec>Aura Reading</spec>
+            </skill>
+          </group>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>34</page>
 		</quality>
@@ -12362,35 +12362,36 @@
 			<name>Charlatan</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Palming</name>
-						<val>3</val>
-						<spec>Prestidigitation</spec>
-					</skill>
-					<skill>
-						<name>Palming</name>
-						<val>5</val>
-					</skill>
-					<skill>
-						<name>Performance</name>
-						<val>3</val>
-						<spec>Magic</spec>
-					</skill>
-					<skill>
-						<name>Performance</name>
-						<val>5</val>
-					</skill>
-				</oneof>
-				<allof>
-					<skill>
-						<name>Assensing</name>
-						<val>5</val>
-					</skill>
-				</allof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <allof>
+          <skill>
+            <name>Assensing</name>
+            <val>5</val>
+          </skill>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Palming</name>
+            <val>3</val>
+            <spec>Prestidigitation</spec>
+          </skill>
+          <skill>
+            <name>Palming</name>
+            <val>5</val>
+          </skill>
+          <skill>
+            <name>Performance</name>
+            <val>3</val>
+            <spec>Magic</spec>
+          </skill>
+          <skill>
+            <name>Performance</name>
+            <val>5</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>34</page>
 		</quality>
@@ -12399,12 +12400,13 @@
 			<name>Chosen Follower</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<required>
-				<oneof>
-					<quality>Mentor Spirit</quality>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>35</page>
 		</quality>
@@ -12412,18 +12414,19 @@
 			<id>507657d6-d882-49f3-b007-9224652c2fa7</id>
 			<name>Close Combat Mage</name>
 			<doublecareer>False</doublecareer>
-			<limit>3</limit>
 			<karma>5</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-					</skill>
-					<metamagic>Spell Shaping</metamagic>
-				</oneof>
-			</required>
+      <category>Positive</category>
+      <limit>3</limit>
 			<bonus />
+      <required>
+        <oneof>
+          <metamagic>Spell Shaping</metamagic>
+          <skill>
+            <name>Spellcasting</name>
+            <val>4</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>35</page>
 		</quality>
@@ -12432,19 +12435,20 @@
 			<name>Dark Ally</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Binding</name>
-						<val>7</val>
-					</skill>
-					<skill>
-						<name>Ritual Spellcasting</name>
-						<val>9</val>
-					</skill>
-				</oneof>
-			</required>
+      <category>Positive</category>
 			<bonus />
+      <required>
+        <oneof>
+          <skill>
+            <name>Binding</name>
+            <val>7</val>
+          </skill>
+          <skill>
+            <name>Ritual Spellcasting</name>
+            <val>9</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>35</page>
 		</quality>
@@ -12452,23 +12456,24 @@
 			<id>36e76b70-bf6a-4e66-8dac-13cd529b9274</id>
 			<name>Death Dealer</name>
 			<doublecareer>False</doublecareer>
-			<limit>3</limit>
 			<karma>15</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Combat Spells</spec>
-					</skill>
-					<power>Critical Strike</power>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <required>
+        <oneof>
+          <power>Critical Strike</power>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>4</val>
+            <spec>Combat Spells</spec>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>35</page>
 		</quality>
@@ -12477,29 +12482,24 @@
 			<name>Dedicated Conjurer</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<costdiscount>
-				<required>
-					<oneof>
-						<quality>Aspected Mage</quality>
-					</oneof>
-				</required>
-				<value>-5</value>
-			</costdiscount>
-			<required>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Combat Spells</spec>
-					</skill>
-					<power>Critical Strike</power>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <costdiscount>
+        <required>
+          <oneof>
+            <quality>Aspected Mage</quality>
+          </oneof>
+        </required>
+        <value>-5</value>
+      </costdiscount>
+      <bonus />
+      <required>
+        <oneof>
+          <skill>
+            <name>Summoning</name>
+            <val>1</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>36</page>
 		</quality>
@@ -12508,31 +12508,26 @@
 			<name>Dedicated Spellslinger</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<costdiscount>
-				<required>
-					<oneof>
-						<quality>Aspected Mage</quality>
-					</oneof>
-				</required>
-				<value>-5</value>
-			</costdiscount>
-			<required>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Combat Spells</spec>
-					</skill>
-					<power>Critical Strike</power>
-				</oneof>
-			</required>
-			<bonus>
-				<spellkarmadiscount>-1</spellkarmadiscount>
-			</bonus>
+      <category>Positive</category>
+      <costdiscount>
+        <required>
+          <oneof>
+            <quality>Aspected Mage</quality>
+          </oneof>
+        </required>
+        <value>-5</value>
+      </costdiscount>
+      <bonus>
+        <spellkarmadiscount>-1</spellkarmadiscount>
+      </bonus>
+      <required>
+        <oneof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>1</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>36</page>
 		</quality>
@@ -12541,16 +12536,17 @@
 			<name>Dual-Natured Defender</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Astral Combat</name>
-						<val>3</val>
-					</skill>
-					<critterpower>Dual Natured</critterpower>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <oneof>
+          <critterpower>Dual Natured</critterpower>
+          <skill>
+            <name>Astral Combat</name>
+            <val>3</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>36</page>
 		</quality>
@@ -12558,7 +12554,9 @@
 			<id>ef1e36f8-6c4c-4908-9155-ecef6c376c6e</id>
 			<name>Durable Preparations</name>
 			<doublecareer>False</doublecareer>
-			<karma>5</karma>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<skill>
@@ -12567,7 +12565,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>36</page>
 		</quality>
@@ -12575,79 +12572,80 @@
 			<id>05089559-972e-463c-a276-641e358a9201</id>
 			<name>Elemental Master</name>
 			<doublecareer>False</doublecareer>
-			<karma>20</karma>
-			<required>
-				<oneof>
-					<spelldescriptor>
-						<name>Elemental</name>
-						<count>5</count>
-					</spelldescriptor>
-					<group>
-						<skill>
-							<name>Summoning</name>
-							<val>4</val>
-						</skill>
-						<tradition>Wuxing</tradition>
-					</group>
-					<group>
-						<skill>
-							<name>Summoning</name>
-							<val>2</val>
-							<spec>Spirits of Fire</spec>
-						</skill>
-						<tradition>Wuxing</tradition>
-					</group>
-					<group>
-						<skill>
-							<name>Summoning</name>
-							<val>2</val>
-							<spec>Spirits of Water</spec>
-						</skill>
-						<tradition>Wuxing</tradition>
-					</group>
-					<group>
-						<skill>
-							<name>Summoning</name>
-							<val>2</val>
-							<spec>Spirits of Air</spec>
-						</skill>
-						<tradition>Wuxing</tradition>
-					</group>
-					<group>
-						<skill>
-							<name>Summoning</name>
-							<val>2</val>
-							<spec>Spirits of Earth</spec>
-						</skill>
-						<tradition>Wuxing</tradition>
-					</group>
-					<skill>
-						<name>Summoning</name>
-						<val>4</val>
-						<spec>Spirits of Fire</spec>
-					</skill>
-					<skill>
-						<name>Summoning</name>
-						<val>4</val>
-						<spec>Spirits of Water</spec>
-					</skill>
-					<skill>
-						<name>Summoning</name>
-						<val>4</val>
-						<spec>Spirits of Earth</spec>
-					</skill>
-					<skill>
-						<name>Summoning</name>
-						<val>4</val>
-						<spec>Spirits of Air</spec>
-					</skill>
-					<skill>
-						<name>Summoning</name>
-						<val>6</val>
-					</skill>
-				</oneof>
-			</required>
-			<bonus />
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <oneof>
+          <group>
+            <skill>
+              <name>Summoning</name>
+              <val>4</val>
+            </skill>
+            <tradition>Wuxing</tradition>
+          </group>
+          <group>
+            <skill>
+              <name>Summoning</name>
+              <val>2</val>
+              <spec>Spirits of Fire</spec>
+            </skill>
+            <tradition>Wuxing</tradition>
+          </group>
+          <group>
+            <skill>
+              <name>Summoning</name>
+              <val>2</val>
+              <spec>Spirits of Water</spec>
+            </skill>
+            <tradition>Wuxing</tradition>
+          </group>
+          <group>
+            <skill>
+              <name>Summoning</name>
+              <val>2</val>
+              <spec>Spirits of Air</spec>
+            </skill>
+            <tradition>Wuxing</tradition>
+          </group>
+          <group>
+            <skill>
+              <name>Summoning</name>
+              <val>2</val>
+              <spec>Spirits of Earth</spec>
+            </skill>
+            <tradition>Wuxing</tradition>
+          </group>
+          <skill>
+            <name>Summoning</name>
+            <val>4</val>
+            <spec>Spirits of Fire</spec>
+          </skill>
+          <skill>
+            <name>Summoning</name>
+            <val>4</val>
+            <spec>Spirits of Water</spec>
+          </skill>
+          <skill>
+            <name>Summoning</name>
+            <val>4</val>
+            <spec>Spirits of Earth</spec>
+          </skill>
+          <skill>
+            <name>Summoning</name>
+            <val>4</val>
+            <spec>Spirits of Air</spec>
+          </skill>
+          <skill>
+            <name>Summoning</name>
+            <val>6</val>
+          </skill>
+          <spelldescriptor>
+            <name>Elemental</name>
+            <count>5</count>
+          </spelldescriptor>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>36</page>
 		</quality>
@@ -12655,31 +12653,32 @@
 			<id>39c97163-ffab-4705-91e1-82aef058cc86</id>
 			<name>Flesh Sculpter</name>
 			<doublecareer>False</doublecareer>
-			<limit>3</limit>
-			<karma>10</karma>
-			<required>
-				<allof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Manipulation</spec>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-						<type>Knowledge</type>
-					</skill>
-				</allof>
-				<oneof>
-					<spell>Shapechange</spell>
-					<spell>[Critter] Form</spell>
-				</oneof>
-			</required>
-			<bonus />
+      <karma>10</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <required>
+        <allof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>4</val>
+            <spec>Manipulation</spec>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+            <type>Knowledge</type>
+          </skill>
+        </allof>
+        <oneof>
+          <spell>Shapechange</spell>
+          <spell>[Critter] Form</spell>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>37</page>
 		</quality>
@@ -12688,26 +12687,27 @@
 			<name>Healer</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
-			<required>
-				<allof>
-					<skill>
-						<name>First Aid</name>
-						<val>3</val>
-					</skill>
-				</allof>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Health</spec>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-					</skill>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <allof>
+          <skill>
+            <name>First Aid</name>
+            <val>3</val>
+          </skill>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>4</val>
+            <spec>Health</spec>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>37</page>
 		</quality>
@@ -12716,17 +12716,18 @@
 			<name>Illusionist</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
+      <category>Positive</category>
 			<limit>3</limit>
-			<required>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Illusion</spec>
-					</skill>
-				</oneof>
-			</required>
-			<bonus />
+      <bonus />
+      <required>
+        <oneof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>4</val>
+            <spec>Illusion</spec>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>37</page>
 		</quality>
@@ -12735,15 +12736,16 @@
 			<name>Items of Power</name>
 			<doublecareer>False</doublecareer>
 			<karma>25</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Artificing</name>
-						<val>6</val>
-					</skill>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <oneof>
+          <skill>
+            <name>Artificing</name>
+            <val>6</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12752,20 +12754,21 @@
 			<name>Mage Hunter I</name>
 			<doublecareer>False</doublecareer>
 			<karma>15</karma>
-			<required>
-				<oneof>
-					<skill>
-						<name>Spellcasting</name>
-						<val>4</val>
-						<spec>Combat</spec>
-					</skill>
-					<skill>
-						<name>Spellcasting</name>
-						<val>6</val>
-					</skill>
-				</oneof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <oneof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>4</val>
+            <spec>Combat</spec>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+          </skill>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12774,6 +12777,8 @@
 			<name>Mage Hunter II</name>
 			<doublecareer>False</doublecareer>
 			<karma>15</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<quality>Mage Hunter I</quality>
@@ -12790,7 +12795,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12799,6 +12803,8 @@
 			<name>Mage Hunter III</name>
 			<doublecareer>False</doublecareer>
 			<karma>15</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<quality>Mage Hunter II</quality>
@@ -12815,7 +12821,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12824,13 +12829,14 @@
 			<name>Missile Deflector</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<power>Missile Parry</power>
 					<power>Counterstrike</power>
 				</allof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12839,6 +12845,8 @@
 			<name>Mystic Foreman</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<skill>
@@ -12862,7 +12870,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12871,6 +12878,8 @@
 			<name>Mystic Pitcher</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<spell>Fling</spell>
@@ -12887,7 +12896,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>38</page>
 		</quality>
@@ -12896,16 +12904,17 @@
 			<name>Pacifist Adept</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
-				<oneof>
-					<quality>Pacifist I</quality>
-					<quality>Pacifist II</quality>
-				</oneof>
-				<allof>
-					<power>Cool Resolve</power>
-				</allof>
+        <allof>
+          <power>Cool Resolve</power>
+        </allof>
+        <oneof>
+          <quality>Pacifist I</quality>
+          <quality>Pacifist II</quality>
+        </oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>39</page>
 		</quality>
@@ -12914,6 +12923,8 @@
 			<name>Potion Maker</name>
 			<doublecareer>False</doublecareer>
 			<karma>15</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<skill>
@@ -12926,7 +12937,6 @@
 					</skill>
 				</allof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>39</page>
 		</quality>
@@ -12935,22 +12945,23 @@
 			<name>Practiced Alchemist</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
-					<skill>
-						<name>Alchemy</name>
-						<val>6</val>
-					</skill>
 					<group>
-						<tradition>Islam</tradition>
-						<skill>
-							<name>Alchemy</name>
-							<val>6</val>
-						</skill>
+            <skill>
+              <name>Alchemy</name>
+              <val>6</val>
+            </skill>
+            <tradition>Islam</tradition>
 					</group>
+          <skill>
+            <name>Alchemy</name>
+            <val>6</val>
+          </skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>39</page>
 		</quality>
@@ -12958,8 +12969,10 @@
 			<id>b9808fa8-744f-46e2-b769-bed5ce0b3ad1</id>
 			<name>Puppet Master</name>
 			<doublecareer>False</doublecareer>
-			<limit>3</limit>
-			<karma>10</karma>
+      <karma>10</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
 			<required>
 				<oneof>
 					<group>
@@ -12986,33 +12999,32 @@
 						</skill>
 					</group>
 					<group>
-						<tradition>Black Magic</tradition>
-						<skill>
-							<name>Psychology</name>
-							<val>3</val>
-							<type>Knowledge</type>
-						</skill>
-						<skill>
-							<name>Spellcasting</name>
-							<val>4</val>
-						</skill>
+            <skill>
+              <name>Psychology</name>
+              <val>3</val>
+              <type>Knowledge</type>
+            </skill>
+            <skill>
+              <name>Spellcasting</name>
+              <val>4</val>
+            </skill>
+            <tradition>Black Magic</tradition>
 					</group>
 					<group>
-						<tradition>Black Magic</tradition>
-						<skill>
-							<name>Psychology</name>
-							<val>3</val>
-							<type>Knowledge</type>
-						</skill>
-						<skill>
-							<name>Spellcasting</name>
-							<val>2</val>
-							<spec>Manipulation</spec>
-						</skill>
+            <skill>
+              <name>Psychology</name>
+              <val>3</val>
+              <type>Knowledge</type>
+            </skill>
+            <skill>
+              <name>Spellcasting</name>
+              <val>2</val>
+              <spec>Manipulation</spec>
+            </skill>
+            <tradition>Black Magic</tradition>
 					</group>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>39</page>
 		</quality>
@@ -13020,8 +13032,10 @@
 			<id>b15bbc5a-626c-4f04-b08e-203cb24c6b1a</id>
 			<name>Reckless Spell Master</name>
 			<doublecareer>False</doublecareer>
-			<limit>6</limit>
-			<karma>10</karma>
+      <karma>10</karma>
+      <category>Positive</category>
+      <limit>6</limit>
+      <bonus />
 			<required>
 				<oneof>
 					<skill>
@@ -13030,7 +13044,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>39</page>
 		</quality>
@@ -13039,6 +13052,8 @@
 			<name>Renaissance Ritualist</name>
 			<doublecareer>False</doublecareer>
 			<karma>8</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<group>
@@ -13057,7 +13072,6 @@
 						</skill>
 					</group>
 					<group>
-						<tradition>Chaos Magic</tradition>
 						<skill>
 							<name>Arcana</name>
 							<val>2</val>
@@ -13071,10 +13085,10 @@
 							<val>3</val>
 							<type>Knowledge</type>
 						</skill>
+            <tradition>Chaos Magic</tradition>
 					</group>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13083,12 +13097,13 @@
 			<name>Revenant Adept</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<power>Rapid Healing</power>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13097,8 +13112,13 @@
 			<name>Skinwalker</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
-			<limit>3</limit>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
 			<required>
+        <allof>
+          <spell>[Critter] Form</spell>
+        </allof>
 				<oneof>
 					<group>
 						<skill>
@@ -13132,11 +13152,7 @@
 						</skill>
 					</group>
 				</oneof>
-				<allof>
-					<spell>[Critter] Form</spell>
-				</allof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13144,9 +13160,9 @@
 			<id>25f5745d-8e1d-463f-9b96-c047bc99a587</id>
 			<name>Spectral Warden</name>
 			<doublecareer>False</doublecareer>
-			<karma>15</karma>
-			<required />
-			<bonus />
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13155,6 +13171,8 @@
 			<name>Spell Jammer</name>
 			<doublecareer>False</doublecareer>
 			<karma>20</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<skill>
@@ -13163,7 +13181,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13172,9 +13189,12 @@
 			<name>Spirit Hunter I</name>
 			<doublecareer>False</doublecareer>
 			<karma>20</karma>
-			<limit>3</limit>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
 			<required>
 				<oneof>
+          <power>Killing Hands</power>
 					<skill>
 						<name>Banishing</name>
 						<val>4</val>
@@ -13188,10 +13208,8 @@
 						<name>Astral Combat</name>
 						<val>6</val>
 					</skill>
-					<power>Killing Hands</power>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13200,29 +13218,30 @@
 			<name>Spirit Hunter II</name>
 			<doublecareer>False</doublecareer>
 			<karma>20</karma>
+      <category>Positive</category>
 			<limit>3</limit>
+      <bonus />
 			<required>
 				<allof>
 					<quality>Spirit Hunter I</quality>
 				</allof>
 				<oneof>
-					<skill>
-						<name>Banishing</name>
-						<val>8</val>
-					</skill>
-					<skill>
-						<name>Astral Combat</name>
-						<val>8</val>
-						<spec>Spirits</spec>
-					</skill>
-					<skill>
-						<name>Astral Combat</name>
-						<val>10</val>
-					</skill>
-					<power>Killing Hands</power>
+          <power>Killing Hands</power>
+          <skill>
+            <name>Banishing</name>
+            <val>8</val>
+          </skill>
+          <skill>
+            <name>Astral Combat</name>
+            <val>8</val>
+            <spec>Spirits</spec>
+          </skill>
+          <skill>
+            <name>Astral Combat</name>
+            <val>10</val>
+          </skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13231,12 +13250,15 @@
 			<name>Spirit Hunter III</name>
 			<doublecareer>False</doublecareer>
 			<karma>20</karma>
-			<limit>3</limit>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
 			<required>
 				<allof>
 					<quality>Spirit Hunter II</quality>
 				</allof>
 				<oneof>
+          <power>Killing Hands</power>
 					<skill>
 						<name>Banishing</name>
 						<val>12</val>
@@ -13250,10 +13272,8 @@
 						<name>Astral Combat</name>
 						<val>14</val>
 					</skill>
-					<power>Killing Hands</power>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>40</page>
 		</quality>
@@ -13262,19 +13282,20 @@
 			<name>Spiritual Lodge</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
-			<required>
-				<allof>
-					<skill>
-						<name>Ritual Spellcasting</name>
-						<val>6</val>
-					</skill>
-					<skill>
-						<name>Artisan</name>
-						<val>3</val>
-					</skill>
-				</allof>
-			</required>
-			<bonus />
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <allof>
+          <skill>
+            <name>Ritual Spellcasting</name>
+            <val>6</val>
+          </skill>
+          <skill>
+            <name>Artisan</name>
+            <val>3</val>
+          </skill>
+        </allof>
+      </required>
 			<source>FA</source>
 			<page>41</page>
 		</quality>
@@ -13283,6 +13304,8 @@
 			<name>Spiritual Pilgrim</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<group>
@@ -13297,7 +13320,6 @@
 						</skill>
 					</group>
 					<group>
-						<tradition>Buddhism</tradition>
 						<skill>
 							<name>Assensing</name>
 							<val>2</val>
@@ -13307,10 +13329,10 @@
 							<val>1</val>
 							<type>Knowledge</type>
 						</skill>
+            <tradition>Buddhism</tradition>
 					</group>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>41</page>
 		</quality>
@@ -13319,6 +13341,8 @@
 			<name>Sprawl Tamer</name>
 			<doublecareer>False</doublecareer>
 			<karma>10</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<skill>
@@ -13327,7 +13351,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>41</page>
 		</quality>
@@ -13336,16 +13359,17 @@
 			<name>Stalwart Ally</name>
 			<doublecareer>False</doublecareer>
 			<karma>15</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
-					<spell>Create Ally Spirit</spell>
-					<skill>
-						<name>Binding</name>
-						<val>4</val>
-					</skill>
+          <skill>
+            <name>Binding</name>
+            <val>4</val>
+          </skill>
+          <spell>Create Ally Spirit</spell>
 				</allof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>42</page>
 		</quality>
@@ -13354,6 +13378,8 @@
 			<name>Taboo Transformer</name>
 			<doublecareer>False</doublecareer>
 			<karma>15</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<group>
@@ -13454,7 +13480,6 @@
 					</group>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>42</page>
 		</quality>
@@ -13463,6 +13488,8 @@
 			<name>Vexcraft</name>
 			<doublecareer>False</doublecareer>
 			<karma>7</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<oneof>
 					<skill>
@@ -13471,7 +13498,6 @@
 					</skill>
 				</oneof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>42</page>
 		</quality>
@@ -13480,6 +13506,8 @@
 			<name>Worship Leader</name>
 			<doublecareer>False</doublecareer>
 			<karma>5</karma>
+      <category>Positive</category>
+      <bonus />
 			<required>
 				<allof>
 					<skill>
@@ -13492,88 +13520,80 @@
 					</skill>
 				</allof>
 			</required>
-			<bonus />
 			<source>FA</source>
 			<page>42</page>
 		</quality>
 		<quality>
 			<id>c2b4f018-7b14-4e04-aab9-71c891dd0a18</id>
 			<name>Crystal Breath</name>
-			<karma>5</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
-			<category>Positive</category>
-			<limit>no</limit>
-			<bonus>
-
-			</bonus>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>5</karma>
+      <category>Positive</category>
+      <limit>no</limit>
+      <bonus />
 			<source>FA</source>
 			<page>132</page>
 		</quality>
 		<quality>
 			<id>1abbf9a5-af57-4e9f-af7a-05872ae8ddad</id>
 			<name>Crystal Eye</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<bonus>
-
-			</bonus>
+			<bonus />
 			<source>FA</source>
 			<page>132</page>
 		</quality>
 		<quality>
 			<id>82ad9ac5-5ff7-4ea6-9925-a4012af6fe50</id>
 			<name>Crystal Gut</name>
-			<karma>5</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>5</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<bonus>
-
-			</bonus>
+			<bonus />
 			<source>FA</source>
 			<page>133</page>
 		</quality>
 		<quality>
 			<id>11001f88-572a-4818-97fd-e78c8bc8f619</id>
 			<name>Crystal Jaw</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<bonus>
-				<naturalweapons>
-					<naturalweapon>
-						<name>Crystal Jaw</name>
-						<reach>-1</reach>
-						<damage>(STR+2)P</damage>
-						<ap>-4</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>FA</source>
-						<page>133</page>
-					</naturalweapon>
-				</naturalweapons>
-			</bonus>
+			<bonus />
+      <naturalweapons>
+        <naturalweapon>
+          <name>Crystal Jaw</name>
+          <reach>-1</reach>
+          <damage>(STR+2)P</damage>
+          <ap>-4</ap>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>FA</source>
+          <page>133</page>
+        </naturalweapon>
+      </naturalweapons>
 			<source>FA</source>
 			<page>133</page>
 		</quality>
 		<quality>
 			<id>350844b9-db9f-4cce-83c3-e8965511e928</id>
 			<name>Crystal Limb (Arm)</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<selectside />
-				<armor>1</armor>
+        <armor>1</armor>
+        <selectside />
 			</bonus>
 			<source>FA</source>
 			<page>133</page>
@@ -13581,14 +13601,14 @@
 		<quality>
 			<id>834b6e22-5fb3-4a44-a54e-b70729cdb87e</id>
 			<name>Crystal Limb (Leg)</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<selectside />
 				<armor>1</armor>
+				<selectside />
 			</bonus>
 			<source>FA</source>
 			<page>133</page>
@@ -13596,14 +13616,14 @@
 		<quality>
 			<id>a054e8a5-f09b-46a6-8c69-5b6b44ddd312</id>
 			<name>Crystal Spine</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
 			<bonus>
-				<initiative>2</initiative>
-				<armor>1</armor>
+        <armor>1</armor>
+        <initiative>2</initiative>
 			</bonus>
 			<source>FA</source>
 			<page>133</page>
@@ -13611,43 +13631,40 @@
 		<quality>
 			<id>8779458a-5af9-4328-af57-4212eff304bf</id>
 			<name>Crystalline Blade</name>
-			<karma>10</karma>
-			<requires>
-				<allof>
-					<quality>Crystal Limb (Arm)</quality>
-					<quality>Crystalline Claws</quality>
-				</allof>
-			</requires>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
-			<limit>no</limit>
-			<bonus>
-				<naturalweapons>
-					<naturalweapon>
-						<name>Crystalline Blade</name>
-						<reach>1</reach>
-						<damage>(STR+3)P</damage>
-						<ap>-2</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>FA</source>
-						<page>133</page>
-					</naturalweapon>
-				</naturalweapons>
-			</bonus>
+      <limit>no</limit>
+      <required>
+        <allof>
+          <quality>Crystal Limb (Arm)</quality>
+          <quality>Crystalline Claws</quality>
+        </allof>
+      </required>
+      <naturalweapons>
+        <naturalweapon>
+          <name>Crystalline Blade</name>
+          <reach>1</reach>
+          <damage>(STR+3)P</damage>
+          <ap>-2</ap>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>FA</source>
+          <page>133</page>
+        </naturalweapon>
+      </naturalweapons>
 			<source>FA</source>
 			<page>133</page>
 		</quality>
 		<quality>
 			<id>b4e54478-b550-4ee4-a69f-e22944b82b66</id>
 			<name>Crystalline Claws</name>
-			<karma>5</karma>
-			<doublecareer>False</doublecareer>
 			<contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>5</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<bonus>
 				<naturalweapons>
 					<naturalweapon>
 						<name>Crystal Claw</name>
@@ -13660,107 +13677,96 @@
 						<page>133</page>
 					</naturalweapon>
 				</naturalweapons>
-			</bonus>
 			<source>FA</source>
 			<page>133</page>
 		</quality>
 		<quality>
 			<id>256dbeb8-7bb8-4369-8c93-b8b206a859b8</id>
 			<name>Crystalline Diver</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<requires>
+			<required>
 				<oneof>
 					<quality>Crystal Breath</quality>
 				</oneof>
-			</requires>
-			<bonus>
-			</bonus>
+			</required>
 			<source>FA</source>
 			<page>133</page>
 		</quality>
 		<quality>
 			<id>beb709ac-4c40-4b05-9c49-1fe26e4fa2ab</id>
 			<name>Crystalline Grace</name>
-			<karma>10</karma>
-			<requires>
-				<oneof>
-					<quality>Crystal Limb (Leg)</quality>
-				</oneof>
-			</requires>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
-			<category>Positive</category>
-			<limit>no</limit>
-			<bonus>
-
-			</bonus>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
+      <category>Positive</category>
+      <limit>no</limit>
+      <required>
+        <oneof>
+          <quality>Crystal Limb (Leg)</quality>
+        </oneof>
+      </required>
 			<source>FA</source>
 			<page>134</page>
 		</quality>
 		<quality>
 			<id>9ff65ab9-7a3c-490d-ad73-789999ab60e2</id>
 			<name>Crystalline Reflexes</name>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
 			<karma>15</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
 			<category>Positive</category>
 			<limit>no</limit>
-			<bonus>
-
-			</bonus>
 			<source>FA</source>
 			<page>134</page>
 		</quality>
 		<quality>
 			<id>2169823c-22ab-457d-93f7-a96590ed77ff</id>
 			<name>Crystalline Shards</name>
-			<karma>10</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>10</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<requires>
-				<oneof>
-					<quality>Crystal Limb (Arm)</quality>
-				</oneof>
-			</requires>
-			<bonus>
-				<naturalweapons>
-					<naturalweapon>
-						<name>Crystalline Shards</name>
-						<reach>0</reach>
-						<damage>(STR+3)P</damage>
-						<ap>4</ap>
-						<useskill>Throwing Weapons</useskill>
-						<accuracy>Physical</accuracy>
-						<source>FA</source>
-						<page>133</page>
-					</naturalweapon>
-				</naturalweapons>
-			</bonus>
+      <required>
+        <oneof>
+          <quality>Crystal Limb (Arm)</quality>
+        </oneof>
+      </required>
+      <naturalweapons>
+        <naturalweapon>
+          <name>Crystalline Shards</name>
+          <reach>0</reach>
+          <damage>(STR+3)P</damage>
+          <ap>4</ap>
+          <useskill>Throwing Weapons</useskill>
+          <accuracy>Physical</accuracy>
+          <source>FA</source>
+          <page>133</page>
+        </naturalweapon>
+      </naturalweapons>
 			<source>FA</source>
 			<page></page>
 		</quality>
 		<quality>
 			<id>e24b86ad-004b-4252-8383-3ca4aad53a26</id>
 			<name>Crystalline Vision</name>
-			<karma>15</karma>
-			<doublecareer>False</doublecareer>
-			<contributetolimit>False</contributetolimit>
+      <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
+      <karma>15</karma>
 			<category>Positive</category>
 			<limit>no</limit>
-			<requires>
+      <bonus>
+        <unlockskills name="Assensing">Name</unlockskills>
+      </bonus>
+			<required>
 				<oneof>
 					<quality>Crystal Eye</quality>
 				</oneof>
-			</requires>
-			<bonus>
-				<unlockskills name="Assensing">Name</unlockskills>
-			</bonus>
+			</required>
 			<source>FA</source>
 			<page></page>
 		</quality>

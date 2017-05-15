@@ -1,3 +1,15 @@
+Build 194
+
+Application Changes: 
+
+- Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
+
+Data Changes:
+
+- Fixed qualities.xml node layout to properly reflect XSD structure. Fixed issues with qualities that would not show up due to a lack of category. 
+- Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
+- Fixed a typo in the Giger Spit spell.
+
 Build 193
 
 Application Changes:
