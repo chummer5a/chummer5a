@@ -423,7 +423,6 @@ namespace Chummer
 
 			// Populate the Qualities list.
 			RefreshQualities(treQualities, cmsQuality);
-
 			// Populate the Magician Traditions list.
 			objXmlDocument = XmlManager.Instance.Load("traditions.xml");
             List<ListItem> lstTraditions = new List<ListItem>();
@@ -474,23 +473,32 @@ namespace Chummer
             cboDrain.DataSource = lstDrainAttributes;
             cboDrain.EndUpdate();
 
-            // Populate the Magician Custom Spirits lists - Combat.
-            objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+			HashSet<string> limit = new HashSet<string>();
+			foreach (Improvement improvement in _objCharacter.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpiritCategory))
+			{
+				limit.Add(improvement.ImprovedName);
+			}
+
+			// Populate the Magician Custom Spirits lists - Combat.
+			objXmlDocument = XmlManager.Instance.Load("traditions.xml");
             List<ListItem> lstSpirit = new List<ListItem>();
             ListItem objSpiritBlank = new ListItem();
             objSpiritBlank.Value = string.Empty;
             objSpiritBlank.Name = string.Empty;
             lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
+			{
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
             SortListItem objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
@@ -508,14 +516,17 @@ namespace Chummer
             lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
@@ -533,14 +544,17 @@ namespace Chummer
             lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
@@ -558,14 +572,17 @@ namespace Chummer
             lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
@@ -583,14 +600,17 @@ namespace Chummer
             lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
             objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
@@ -1461,9 +1481,12 @@ namespace Chummer
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
                         tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
                         cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
-                        chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
                         chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
-                    }
+						//TODO: Re-enable if Technomancers ever get the ability for Group and Schooling initiation bonuses.
+						//chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
+						chkInitiationGroup.Visible = false;
+						chkInitiationSchooling.Visible = false;
+					}
                 }
             }
             else
@@ -9651,6 +9674,7 @@ namespace Chummer
             frmPickCyberware.LockGrade();
             frmPickCyberware.ShowOnlySubsystems = true;
             frmPickCyberware.Subsystems = objMod.Subsystems;
+	        frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
             frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
             frmPickCyberware.ParentVehicle = objVehicle;
             frmPickCyberware.ShowDialog(this);
@@ -12698,6 +12722,8 @@ namespace Chummer
                 lblSpiritHealth.Visible = true;
                 lblSpiritIllusion.Visible = true;
                 lblSpiritManipulation.Visible = true;
+                lblTraditionSource.Visible = false;
+                lblTraditionSourceLabel.Visible = false;
                 cboSpiritCombat.Visible = true;
                 cboSpiritDetection.Visible = true;
                 cboSpiritHealth.Visible = true;
@@ -12722,6 +12748,8 @@ namespace Chummer
                 lblSpiritHealth.Visible = false;
                 lblSpiritIllusion.Visible = false;
                 lblSpiritManipulation.Visible = false;
+                lblTraditionSource.Visible = true;
+                lblTraditionSourceLabel.Visible = true;
                 cboSpiritCombat.Visible = false;
                 cboSpiritDetection.Visible = false;
                 cboSpiritHealth.Visible = false;
@@ -12737,7 +12765,9 @@ namespace Chummer
                     strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
                 }
                 lblDrainAttributes.Text = strDrain;
+                lblTraditionSource.Text = objXmlTradition["source"].InnerText + " " + objXmlTradition["page"].InnerText;
                 _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
+                _objCharacter.TraditionDrain = strDrain;
 
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                     objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
@@ -13382,6 +13412,11 @@ namespace Chummer
             _objFunctions.OpenPDF(lblSpellSource.Text);
         }
 
+        private void lblTraditionSource_Click(object sender, EventArgs e)
+        {
+            _objFunctions.OpenPDF(lblTraditionSource.Text);
+        }
+
         private void lblComplexFormSource_Click(object sender, EventArgs e)
         {
             _objFunctions.OpenPDF(lblComplexFormSource.Text);
@@ -13745,15 +13780,13 @@ namespace Chummer
                                 x.Name == "Myostatin Inhibitor") != null)
                         {
                             intBP +=
-                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) +
-                                             i) *
+                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) + i) *
                              _objOptions.KarmaAttribute) - 2;
                         }
                         else
                         {
                             intBP +=
-                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) +
-                                             i) *
+                            (Convert.ToInt32(Math.Max(_objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum, 1) + i) *
                              _objOptions.KarmaAttribute);
                         }
                     }
@@ -13766,19 +13799,19 @@ namespace Chummer
                     for (int i = 1; i <= nudKINT.Value; i++)
                     {
                         intBP +=
-                        (Convert.ToInt32(1 + Math.Max(1, _objCharacter.INT.Base - _objCharacter.INT.MetatypeMinimum) + i) *
+                        (Convert.ToInt32(Math.Max(_objCharacter.INT.Base - _objCharacter.INT.MetatypeMinimum, 1) + i) *
                          _objOptions.KarmaAttribute);
                     }
                     for (int i = 1; i <= nudKLOG.Value; i++)
                     {
                         intBP +=
-                        (Convert.ToInt32(Math.Max(1, _objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum) + i) *
+                        (Convert.ToInt32(Math.Max(_objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum, 1) + i) *
                          _objOptions.KarmaAttribute);
                     }
                     for (int i = 1; i <= nudKWIL.Value; i++)
                     {
                         intBP +=
-                        (Convert.ToInt32(Math.Max(1, _objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum) + i) *
+                        (Convert.ToInt32(Math.Max(_objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum, 1) + i) *
                          _objOptions.KarmaAttribute);
                     }
                 }
@@ -14489,8 +14522,8 @@ namespace Chummer
                 if (objGrade.Group == true)
                     dblMultiplier -= 0.1;
                 if (objGrade.Ordeal == true)
-                    dblMultiplier -= 0.1;
-                if (objGrade.Schooling == true)
+		            dblMultiplier -= _objCharacter.TechnomancerEnabled ? 0.2 : 0.1;
+	            if (objGrade.Schooling == true)
                     dblMultiplier -= 0.1;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
                 int intMultiplier = Convert.ToInt32(dblMultiplier);
@@ -21100,7 +21133,7 @@ namespace Chummer
             lblSpellCategory.Left = lblSpellCategoryLabel.Left + intWidth + 6;
             lblSpellRange.Left = lblSpellRangeLabel.Left + intWidth + 6;
             lblSpellDuration.Left = lblSpellDurationLabel.Left + intWidth + 6;
-            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;
+            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;          
 
             intWidth = Math.Max(lblSpellTypeLabel.Width, lblSpellDamageLabel.Width);
             intWidth = Math.Max(intWidth, lblSpellDVLabel.Width);
@@ -21116,6 +21149,7 @@ namespace Chummer
             cboTradition.Left = lblTraditionLabel.Left + intWidth + 6;
             cboDrain.Left = lblTraditionLabel.Left + intWidth + 6;
             lblDrainAttributes.Left = lblDrainAttributesLabel.Left + intWidth + 6;
+            lblTraditionSource.Left = lblTraditionSourceLabel.Left + intWidth + 6;
             lblDrainAttributesValue.Left = lblDrainAttributes.Left + 91;
             lblMentorSpirit.Left = lblMentorSpiritLabel.Left + intWidth + 6;
 
@@ -23145,6 +23179,6 @@ namespace Chummer
 		{
 			if (_blnLoading || _objCharacter.Ambidextrous) return;
 			_objCharacter.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
-		}
-	}
+		}       
+    }
 }

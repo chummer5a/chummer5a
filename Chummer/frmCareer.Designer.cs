@@ -1193,6 +1193,8 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblTraditionSource = new System.Windows.Forms.Label();
+            this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -5968,6 +5970,8 @@ namespace Chummer
             // tabMagician
             // 
             this.tabMagician.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabMagician.Controls.Add(this.lblTraditionSource);
+            this.tabMagician.Controls.Add(this.lblTraditionSourceLabel);
             this.tabMagician.Controls.Add(this.cboSpiritManipulation);
             this.tabMagician.Controls.Add(this.lblSpiritManipulation);
             this.tabMagician.Controls.Add(this.cboSpiritIllusion);
@@ -14197,6 +14201,26 @@ namespace Chummer
             this.tsAIProgramNotes.Text = "&Notes";
             this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
             // 
+            // lblTraditionSource
+            // 
+            this.lblTraditionSource.AutoSize = true;
+            this.lblTraditionSource.Location = new System.Drawing.Point(404, 260);
+            this.lblTraditionSource.Name = "lblTraditionSource";
+            this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
+            this.lblTraditionSource.TabIndex = 168;
+            this.lblTraditionSource.Text = "[Source]";
+            this.lblTraditionSource.Click += new System.EventHandler(this.lblTraditionSource_Click);
+            // 
+            // lblTraditionSourceLabel
+            // 
+            this.lblTraditionSourceLabel.AutoSize = true;
+            this.lblTraditionSourceLabel.Location = new System.Drawing.Point(309, 260);
+            this.lblTraditionSourceLabel.Name = "lblTraditionSourceLabel";
+            this.lblTraditionSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblTraditionSourceLabel.TabIndex = 167;
+            this.lblTraditionSourceLabel.Tag = "Label_Source";
+            this.lblTraditionSourceLabel.Text = "Source:";
+            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -15499,6 +15523,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.CheckBox chkIsMainMugshot;
+        private System.Windows.Forms.Label lblTraditionSource;
+        private System.Windows.Forms.Label lblTraditionSourceLabel;
     }
 }
 

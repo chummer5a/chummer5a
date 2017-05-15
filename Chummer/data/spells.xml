@@ -4505,7 +4505,7 @@
 			<id>d5312f77-833f-4942-93e5-0a109996bca6</id>
 			<name>Lash</name>
 			<descriptor>Indirect</descriptor>
-			<category>Manipulation</category>
+			<category>Combat</category>
 			<type>P</type>
 			<range>LOS</range>
 			<damage>0</damage>
@@ -4518,7 +4518,7 @@
 			<id>271cbaa4-c7fe-450a-b7e2-65ad90621b6f</id>
 			<name>Slash</name>
 			<descriptor>Indirect, Area</descriptor>
-			<category>Manipulation</category>
+			<category>Combat</category>
 			<type>P</type>
 			<range>LOS (A)</range>
 			<damage>0</damage>
@@ -4628,6 +4628,11 @@
 			<damage>0</damage>
 			<duration>I</duration>
 			<dv>F-2</dv>
+			<required>
+				<allof>
+					<quality>Alchemical Armorer</quality>
+				</allof>
+			</required>
 			<source>FA</source>
 			<page>51</page>
 		</spell>

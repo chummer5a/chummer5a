@@ -8222,6 +8222,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>15</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -8246,6 +8247,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>15</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -8270,6 +8272,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>15</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -8294,6 +8297,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>20</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -8317,6 +8321,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>20</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>

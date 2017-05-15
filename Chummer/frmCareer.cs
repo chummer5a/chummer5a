@@ -377,134 +377,155 @@ namespace Chummer
             cboDrain.DataSource = lstDrainAttributes;
             cboDrain.EndUpdate();
 
-            // Populate the Magician Custom Spirits lists - Combat.
-            objXmlDocument = XmlManager.Instance.Load("traditions.xml");
-            List<ListItem> lstSpirit = new List<ListItem>();
-            ListItem objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
-            SortListItem objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+			HashSet<string> limit = new HashSet<string>();
+			foreach (Improvement improvement in _objCharacter.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpiritCategory))
+			{
+				limit.Add(improvement.ImprovedName);
+			}
 
-            cboSpiritCombat.BeginUpdate();
-            cboSpiritCombat.ValueMember = "Value";
-            cboSpiritCombat.DisplayMember = "Name";
-            cboSpiritCombat.DataSource = lstSpirit;
-            cboSpiritCombat.EndUpdate();
+			// Populate the Magician Custom Spirits lists - Combat.
+			objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+			List<ListItem> lstSpirit = new List<ListItem>();
+			ListItem objSpiritBlank = new ListItem();
+			objSpiritBlank.Value = string.Empty;
+			objSpiritBlank.Name = string.Empty;
+			lstSpirit.Add(objSpiritBlank);
+			foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+			{
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
+			SortListItem objSpiritSort = new SortListItem();
+			lstSpirit.Sort(objSpiritSort.Compare);
 
-            // Populate the Magician Custom Spirits lists - Detection.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+			cboSpiritCombat.BeginUpdate();
+			cboSpiritCombat.ValueMember = "Value";
+			cboSpiritCombat.DisplayMember = "Name";
+			cboSpiritCombat.DataSource = lstSpirit;
+			cboSpiritCombat.EndUpdate();
 
-            cboSpiritDetection.BeginUpdate();
-            cboSpiritDetection.ValueMember = "Value";
-            cboSpiritDetection.DisplayMember = "Name";
-            cboSpiritDetection.DataSource = lstSpirit;
-            cboSpiritDetection.EndUpdate();
+			// Populate the Magician Custom Spirits lists - Detection.
+			lstSpirit = new List<ListItem>();
+			objSpiritBlank = new ListItem();
+			objSpiritBlank.Value = string.Empty;
+			objSpiritBlank.Name = string.Empty;
+			lstSpirit.Add(objSpiritBlank);
+			foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+			{
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
+			objSpiritSort = new SortListItem();
+			lstSpirit.Sort(objSpiritSort.Compare);
 
-            // Populate the Magician Custom Spirits lists - Health.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+			cboSpiritDetection.BeginUpdate();
+			cboSpiritDetection.ValueMember = "Value";
+			cboSpiritDetection.DisplayMember = "Name";
+			cboSpiritDetection.DataSource = lstSpirit;
+			cboSpiritDetection.EndUpdate();
 
-            cboSpiritHealth.BeginUpdate();
-            cboSpiritHealth.ValueMember = "Value";
-            cboSpiritHealth.DisplayMember = "Name";
-            cboSpiritHealth.DataSource = lstSpirit;
-            cboSpiritHealth.EndUpdate();
+			// Populate the Magician Custom Spirits lists - Health.
+			lstSpirit = new List<ListItem>();
+			objSpiritBlank = new ListItem();
+			objSpiritBlank.Value = string.Empty;
+			objSpiritBlank.Name = string.Empty;
+			lstSpirit.Add(objSpiritBlank);
+			foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+			{
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
+			objSpiritSort = new SortListItem();
+			lstSpirit.Sort(objSpiritSort.Compare);
 
-            // Populate the Magician Custom Spirits lists - Illusion.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+			cboSpiritHealth.BeginUpdate();
+			cboSpiritHealth.ValueMember = "Value";
+			cboSpiritHealth.DisplayMember = "Name";
+			cboSpiritHealth.DataSource = lstSpirit;
+			cboSpiritHealth.EndUpdate();
 
-            cboSpiritIllusion.BeginUpdate();
-            cboSpiritIllusion.ValueMember = "Value";
-            cboSpiritIllusion.DisplayMember = "Name";
-            cboSpiritIllusion.DataSource = lstSpirit;
-            cboSpiritIllusion.EndUpdate();
+			// Populate the Magician Custom Spirits lists - Illusion.
+			lstSpirit = new List<ListItem>();
+			objSpiritBlank = new ListItem();
+			objSpiritBlank.Value = string.Empty;
+			objSpiritBlank.Name = string.Empty;
+			lstSpirit.Add(objSpiritBlank);
+			foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+			{
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
+			objSpiritSort = new SortListItem();
+			lstSpirit.Sort(objSpiritSort.Compare);
 
-            // Populate the Magician Custom Spirits lists - Manipulation.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpirit["name"].InnerText;
-                if (objXmlSpirit["translate"] != null)
-                    objItem.Name = objXmlSpirit["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpirit["name"].InnerText;
-                lstSpirit.Add(objItem);
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+			cboSpiritIllusion.BeginUpdate();
+			cboSpiritIllusion.ValueMember = "Value";
+			cboSpiritIllusion.DisplayMember = "Name";
+			cboSpiritIllusion.DataSource = lstSpirit;
+			cboSpiritIllusion.EndUpdate();
 
-            cboSpiritManipulation.BeginUpdate();
-            cboSpiritManipulation.ValueMember = "Value";
-            cboSpiritManipulation.DisplayMember = "Name";
-            cboSpiritManipulation.DataSource = lstSpirit;
-            cboSpiritManipulation.EndUpdate();
+			// Populate the Magician Custom Spirits lists - Manipulation.
+			lstSpirit = new List<ListItem>();
+			objSpiritBlank = new ListItem();
+			objSpiritBlank.Value = string.Empty;
+			objSpiritBlank.Name = string.Empty;
+			lstSpirit.Add(objSpiritBlank);
+			foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+			{
+				if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlSpirit["name"].InnerText;
+					if (objXmlSpirit["translate"] != null)
+						objItem.Name = objXmlSpirit["translate"].InnerText;
+					else
+						objItem.Name = objXmlSpirit["name"].InnerText;
+					lstSpirit.Add(objItem);
+				}
+			}
+			objSpiritSort = new SortListItem();
+			lstSpirit.Sort(objSpiritSort.Compare);
 
-            // Populate the Technomancer Streams list.
-            objXmlDocument = XmlManager.Instance.Load("streams.xml");
+			cboSpiritManipulation.BeginUpdate();
+			cboSpiritManipulation.ValueMember = "Value";
+			cboSpiritManipulation.DisplayMember = "Name";
+			cboSpiritManipulation.DataSource = lstSpirit;
+			cboSpiritManipulation.EndUpdate();
+
+			// Populate the Technomancer Streams list.
+			objXmlDocument = XmlManager.Instance.Load("streams.xml");
 			List<ListItem> lstStreams = new List<ListItem>();
 			lstStreams.Add(objBlank);
 			foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + _objOptions.BookXPath() + "]"))
@@ -6331,8 +6352,8 @@ namespace Chummer
                 if (chkInitiationGroup.Checked)
                     dblMultiplier -= 0.1;
                 if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= 0.1;
-                if (chkInitiationSchooling.Checked)
+					dblMultiplier -= _objCharacter.TechnomancerEnabled ? 0.2 : 0.1;
+				if (chkInitiationSchooling.Checked)
                     dblMultiplier -= 0.1;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
 
@@ -7568,7 +7589,7 @@ namespace Chummer
 
 			bool blnAddItem = true;
 			int intKarmaCost = objQuality.BP * _objOptions.KarmaQuality;
-            if (!_objCharacter.Options.DontDoubleQualityPurchases)
+            if (!_objCharacter.Options.DontDoubleQualityPurchases && objQuality.DoubleCost)
                 intKarmaCost *= 2;
 
 			// Make sure the character has enough Karma to pay for the Quality.
@@ -14127,6 +14148,7 @@ namespace Chummer
 			frmPickCyberware.SetGrade = "Standard";
 			frmPickCyberware.LockGrade();
 			frmPickCyberware.ShowOnlySubsystems = true;
+			frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
 			frmPickCyberware.Subsystems = objMod.Subsystems;
 			frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
 			frmPickCyberware.ShowDialog(this);
@@ -18592,6 +18614,8 @@ namespace Chummer
                 lblSpiritHealth.Visible = true;
                 lblSpiritIllusion.Visible = true;
                 lblSpiritManipulation.Visible = true;
+                lblTraditionSource.Visible = false;
+                lblTraditionSourceLabel.Visible = false;
                 cboSpiritCombat.Visible = true;
                 cboSpiritDetection.Visible = true;
                 cboSpiritHealth.Visible = true;
@@ -18616,6 +18640,8 @@ namespace Chummer
                 lblSpiritHealth.Visible = false;
                 lblSpiritIllusion.Visible = false;
                 lblSpiritManipulation.Visible = false;
+                lblTraditionSource.Visible = true;
+                lblTraditionSourceLabel.Visible = true;
                 cboSpiritCombat.Visible = false;
                 cboSpiritDetection.Visible = false;
                 cboSpiritHealth.Visible = false;
@@ -18633,8 +18659,8 @@ namespace Chummer
                 strDrain = strDrain.Replace("WIL", _objCharacter.WIL.DisplayAbbrev);
                 strDrain = strDrain.Replace("MAG", _objCharacter.MAG.DisplayAbbrev);
                 lblDrainAttributes.Text = strDrain;
+                lblTraditionSource.Text = objXmlTradition["source"].InnerText + " " + objXmlTradition["page"].InnerText;
                 _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
-
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                     objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -20112,7 +20138,12 @@ namespace Chummer
 			_objFunctions.OpenPDF(lblSpellSource.Text);
 		}
 
-		private void lblComplexFormSource_Click(object sender, EventArgs e)
+        private void lblTraditionSource_Click(object sender, EventArgs e)
+        {
+            _objFunctions.OpenPDF(lblTraditionSource.Text);
+        }
+
+        private void lblComplexFormSource_Click(object sender, EventArgs e)
 		{
 			_objFunctions.OpenPDF(lblComplexFormSource.Text);
 		}
@@ -25147,7 +25178,8 @@ namespace Chummer
 			intWidth = Math.Max(intWidth, lblMentorSpiritLabel.Width);
 			cboTradition.Left = lblTraditionLabel.Left + intWidth + 6;
 			lblDrainAttributes.Left = lblDrainAttributesLabel.Left + intWidth + 6;
-			lblDrainAttributesValue.Left = lblDrainAttributes.Left + 91;
+			lblTraditionSource.Left = lblTraditionSourceLabel.Left + intWidth + 6;
+            lblDrainAttributesValue.Left = lblDrainAttributes.Left + 91;
 			lblMentorSpirit.Left = lblMentorSpiritLabel.Left + intWidth + 6;
 
 			cmdRollSpell.Left = lblSpellDicePool.Left + lblSpellDicePool.Width + 6;
@@ -27390,5 +27422,5 @@ namespace Chummer
 			if (_blnLoading) return;
 			_objCharacter.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
 		}
-	}
+    }
 }

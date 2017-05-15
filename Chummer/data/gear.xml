@@ -13124,7 +13124,7 @@
 			<avail>0</avail>
 			<cost>500</cost>
 			<source>FA</source>
-			<page>1</page>
+			<page>193</page>
 		</gear>
 		<gear>
 			<id>f0b6f6db-dcf9-47f4-9108-51ff196184da</id>
@@ -13134,7 +13134,7 @@
 			<avail>4</avail>
 			<cost>3000</cost>
 			<source>FA</source>
-			<page>1</page>
+			<page>193</page>
 		</gear>
 		<gear>
 			<id>f6fde2af-ec7b-4531-83a4-eafa413f0ab7</id>
@@ -13144,7 +13144,7 @@
 			<avail>4</avail>
 			<cost>1000</cost>
 			<source>FA</source>
-			<page>1</page>
+			<page>193</page>
 		</gear>
 		<gear>
 			<id>ca6e1548-2d3f-4e4d-87d1-52414eb62919</id>
@@ -13154,7 +13154,7 @@
 			<avail>2</avail>
 			<cost>500</cost>
 			<source>FA</source>
-			<page>1</page>
+			<page>193</page>
 		</gear>
 		<gear>
 			<id>580fc834-9481-40d3-9e07-787273a99535</id>
@@ -13162,9 +13162,9 @@
 			<category>Alchemical Tools</category>
 			<rating>5</rating>
 			<avail>(Rating +4)R</avail>
-			<cost>2000 x Rating</cost>
+			<cost>2000 * Rating</cost>
 			<source>FA</source>
-			<page>1</page>
+			<page>193</page>
 		</gear>
 		<!-- End Region -->
 	</gears>

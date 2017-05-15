@@ -41,6 +41,13 @@ Application Changes:
 - Fixed a potential crash from attempting to add plugins to Custom Items. 
 - Added support for filtering gear based on the requirement to have a specific item.
 - Fixed behaviour of the Watch folder in the Character Roster to load properly if Watched characters are in the Recent or Sticky list. 
+- Improved support for Drone Arms and Legs to allow installing cyberware modifications that consume Capacity.
+- Fixed an issue with the house rule to have Metatype Minimums count as 1 for the purposes of Karma cost. 
+- Fixed incorrect cost discount of the Submersion Task for Technomancers (20% instead of 10%).
+- Properly removed ineligible Submersion discounts in create mode for Technomancers.
+- Fixed an issue with Vehicle Mod category selection that prevented items from being updated. 
+- Added a source Label for Magic Traditions.
+- Implemented that <doublecareer> tag in data files can prevent doubling quality cost in Career Mode.
 
 Data Changes:
 
@@ -55,6 +62,7 @@ Data Changes:
 - Fixed the specialisation bonus of the LeMat 2072.
 - Restored Adapsin to being a set of separate Grades in order to support getting it at a later point and/or removing it while preserving the previous rating. 
 - Polychromatic Lenses can now only be added to Contacts. 
+- Adept Ways no longer cost double in Career Mode.
 
 New Strings:
 

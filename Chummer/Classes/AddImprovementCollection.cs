@@ -3899,10 +3899,7 @@ namespace Chummer.Classes
 			foreach (XmlNode objXmlNode in objXmlNodeList)
 			{
 				ListItem objItem = new ListItem();
-				if (objXmlNode["translate"] != null)
-					objItem.Name = objXmlNode["translate"].InnerText;
-				else
-					objItem.Name = objXmlNode["name"].InnerText;
+				objItem.Name = objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText;
 				objItem.Value = objItem.Name;
 				lstCritters.Add(objItem);
 			}
@@ -4425,8 +4422,7 @@ namespace Chummer.Classes
 		        objSkill.Specializations.Add(nspec);
 		    }
 		}
-
-		// Check for Skillwires.
+		
 		public void spellkarmadiscount(XmlNode bonusNode)
 		{
 			Log.Info("spellkarmadiscount");
@@ -4434,6 +4430,56 @@ namespace Chummer.Classes
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellKarmaDiscount, string.Empty,
 				ValueToInt(bonusNode.InnerText, _intRating));
+		}
+
+		public void limitspellcategory(XmlNode bonusNode)
+		{
+			Log.Info("limitspellcategory");
+			// Display the Select Spell window.
+			frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory();
+			frmPickSpellCategory.Description = LanguageManager.Instance.GetString("Title_SelectSpellCategory");
+			frmPickSpellCategory.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickSpellCategory.SelectedCategory;
+			if (_blnConcatSelectedValue)
+				SourceName += " (" + SelectedValue + ")";
+
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("SourceName = " + SourceName);
+
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement(frmPickSpellCategory.SelectedCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory,
+				_strUnique);
+		}
+
+		public void limitspiritcategory(XmlNode bonusNode)
+		{
+			Log.Info("limitspiritcategory");
+			XmlDocument spiritDoc = XmlManager.Instance.Load("traditions.xml");
+			XmlNodeList xmlSpirits = spiritDoc.SelectNodes("/chummer/spirits/spirit");
+
+			var spirits = (from XmlNode spirit in xmlSpirits
+				select new ListItem
+				{
+					Value = spirit["name"].InnerText, 
+					Name = spirit["translate"]?.InnerText ?? spirit["name"].InnerText
+				}).ToList();
+
+			frmSelectItem frmSelect = new frmSelectItem {GeneralItems = spirits};
+			frmSelect.ShowDialog();
+			
+			if (frmSelect.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+			CreateImprovement(frmSelect.SelectedItem, Improvement.ImprovementSource.Quality, SourceName,
+	Improvement.ImprovementType.LimitSpiritCategory,"");
 		}
 		#endregion
 	}
