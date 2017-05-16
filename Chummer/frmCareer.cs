@@ -19805,54 +19805,96 @@ namespace Chummer
 		#region Condition Monitors
 		private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
 		{
-            ProcessConditionMonitor((CheckBox)sender, panPhysicalCM, _objCharacter.PhysicalCMFilled);
-        }
+			CheckBox box = (CheckBox)sender;
+			bool stun = false;
+			ProcessConditionMonitor(Convert.ToInt32(box.Tag), panPhysicalCM, _objCharacter.PhysicalCM, _objCharacter.PhysicalCMFilled, stun, out int penalty);
+		}
 
 		private void chkStunCM_CheckedChanged(object sender, EventArgs e)
 		{
-            ProcessConditionMonitor((CheckBox)sender,panStunCM,_objCharacter.StunCMFilled);
+			CheckBox box = (CheckBox) sender;
+			bool stun = true;
+			ProcessConditionMonitor(Convert.ToInt32(box.Tag),panStunCM,_objCharacter.StunCM,_objCharacter.StunCMFilled, stun, out int penalty);
 		}
 
-	    private void ProcessConditionMonitor(CheckBox objCheck, Panel objPanel, int ConditionMonitorTrack)
+		/// <summary>
+		/// Manages the rendering of condition monitor checkboxes and associated improvements. 
+		/// TODO: This method is disgusting and I hate it. Refactor into something better when we move to WPF.
+		/// </summary>
+		/// <param name="boxTag">Value of the largest entry that we're activating.</param>
+		/// <param name="panel">Container panel for the condition monitor checkboxes.</param>
+		/// <param name="conditionMax">Highest value of the condition monitor type.</param>
+		/// <param name="conditionValueIn">Current value of the condition monitor type.</param>
+		/// <param name="stun">Whether or not we're working on the Stun or Physical track. Stun track == true</param>
+		/// <param name="penalty">Returns the total penalty for the condition monitor type. Expected values are 0 or a negative number.</param>
+	    private void ProcessConditionMonitor(int boxTag, Panel panel, int conditionMax, int conditionValueIn, bool stun, out int penalty)
 	    {
-            if (_blnSkipRefresh)
+			int intCMOverflow = _objCharacter.CMOverflow;
+			int intCMThreshold = _objCharacter.CMThreshold;
+		    penalty = 0;
+			if (_blnSkipRefresh)
                 return;
 
             int intFillCount = 0;
-            
-            if (objCheck.Checked)
-            {
-                // If this is being checked, make sure everything before it is checked off.
-                _blnSkipRefresh = true;
-                foreach (CheckBox cmCheckBox in objPanel.Controls.OfType<CheckBox>())
-                {
-                    if (Convert.ToInt32(cmCheckBox.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-                        cmCheckBox.Checked = true;
 
-                    if (cmCheckBox.Checked)
-                        intFillCount += 1;
-                }
-                _blnSkipRefresh = false;
-            }
-            else
-            {
-                // If this is being unchecked, make sure everything after it is unchecked.
-                _blnSkipRefresh = true;
-                foreach (CheckBox cmCheckBox in objPanel.Controls.OfType<CheckBox>())
-                {
-                    if (Convert.ToInt32(cmCheckBox.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-                        cmCheckBox.Checked = false;
+			// If this is being checked, make sure everything before it is checked off.
+			_blnSkipRefresh = true;
 
-                    if (cmCheckBox.Checked)
-                        intFillCount += 1;
-                }
-                _blnSkipRefresh = false;
-            }
+			foreach (CheckBox cmBox in panel.Controls.OfType<CheckBox>())
+			{
+				if (Convert.ToInt32(cmBox.Tag.ToString()) < boxTag)
+				{
+					cmBox.Checked = true;
+				}
+				else if (Convert.ToInt32(cmBox.Tag.ToString()) > boxTag)
+				{
+					cmBox.Checked = false;
+				}
+				if (Convert.ToInt32(cmBox.Tag.ToString()) <= conditionMax)
+				{
+					cmBox.Visible = true;
+					if ((Convert.ToInt32(cmBox.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) % intCMThreshold == 0 && Convert.ToInt32(cmBox.Tag.ToString()) > _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset))
+					{
+						int intModifiers = ((Convert.ToInt32(cmBox.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) / intCMThreshold) * -1;
+						cmBox.Text = intModifiers.ToString();
+						if (Convert.ToInt32(cmBox.Tag) == boxTag)
+						{
+							penalty = intModifiers;
+						}
+					}
+					else
+						cmBox.Text = string.Empty;
+				}
+				else if (!stun && Convert.ToInt32(cmBox.Tag.ToString()) <= conditionMax + intCMOverflow)
+				{
+					cmBox.Visible = true;
+					cmBox.BackColor = SystemColors.ControlDark;
+					if (Convert.ToInt32(cmBox.Tag.ToString()) == conditionMax + intCMOverflow)
+						cmBox.Text = "D";
+					else
+						cmBox.Text = string.Empty;
+				}
+				else
+				{
+					cmBox.Visible = false;
+					cmBox.Text = string.Empty;
+				}
+				if (cmBox.Checked)
+					intFillCount += 1;
+			}
+		    if (stun)
+		    {
+				_objCharacter.StunCMFilled = intFillCount;
+			}
+		    else
+		    {
+				_objCharacter.PhysicalCMFilled = intFillCount;
+			}
+			_blnSkipRefresh = false;
 
-            ConditionMonitorTrack = intFillCount;
+			UpdateCharacterInfo();
 
-            UpdateCharacterInfo();
-            _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.DisplayPool));
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -20646,90 +20688,19 @@ namespace Chummer
                 cmdImproveDEP.Enabled = _objCharacter.DEPEnabled && !(_objCharacter.DEP.Value >= _objCharacter.DEP.TotalMaximum);
 
                 // Condition Monitor.
-                UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip, _objImprovementManager);
-				int intCMPhysical = _objCharacter.PhysicalCM;
-				int intCMStun = _objCharacter.StunCM;
+				bool stun = false;
+				ProcessConditionMonitor(_objCharacter.PhysicalCMFilled, panPhysicalCM, _objCharacter.PhysicalCM, _objCharacter.PhysicalCMFilled, stun, out int intPhysicalCMPenalty);
+				stun = true;
+				ProcessConditionMonitor(_objCharacter.StunCMFilled, panStunCM, _objCharacter.StunCM, _objCharacter.StunCMFilled, stun, out int intStunCMPenalty);
+
+				UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip, _objImprovementManager);
+
+				int intCMPenalty = 0;
 				int intCMOverflow = _objCharacter.CMOverflow;
 				int intCMThreshold = _objCharacter.CMThreshold;
-				int intPhysicalCMPenalty = 0;
-				int intStunCMPenalty = 0;
-				int intCMPenalty = 0;
 
-				// Hide any unused Physical CM boxes.
-				foreach (CheckBox objPhysicalCM in panPhysicalCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) <= intCMPhysical + intCMOverflow)
-					{
-						if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) <= _objCharacter.PhysicalCMFilled)
-							objPhysicalCM.Checked = true;
-
-						objPhysicalCM.Visible = true;
-						
-						if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) <= intCMPhysical)
-						{
-							// If this is within the Physical CM limits, act normally.
-							objPhysicalCM.BackColor = SystemColors.Control;
-							objPhysicalCM.UseVisualStyleBackColor = true;
-							if ((Convert.ToInt32(objPhysicalCM.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) % intCMThreshold == 0 && Convert.ToInt32(objPhysicalCM.Tag.ToString()) > _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset))
-							{
-								int intModifiers = ((Convert.ToInt32(objPhysicalCM.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) / intCMThreshold) * -1;
-								objPhysicalCM.Text = intModifiers.ToString();
-								if (objPhysicalCM.Checked)
-								{
-									if (intModifiers < intPhysicalCMPenalty)
-										intPhysicalCMPenalty = intModifiers;
-								}
-							}
-							else
-								objPhysicalCM.Text = string.Empty;
-						}
-						else if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) > intCMPhysical)
-						{
-							objPhysicalCM.BackColor = SystemColors.ControlDark;
-							if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) == intCMPhysical + intCMOverflow)
-								objPhysicalCM.Text = "D";
-							else
-								objPhysicalCM.Text = string.Empty;
-						}
-					}
-					else
-					{
-						objPhysicalCM.Visible = false;
-						objPhysicalCM.Text = string.Empty;
-					}
-				}
-
-				// Hide any unused Stun CM boxes.
-				foreach (CheckBox objStunCM in panStunCM.Controls.OfType<CheckBox>())
-				{
-					if (Convert.ToInt32(objStunCM.Tag.ToString()) <= intCMStun)
-					{
-						if (Convert.ToInt32(objStunCM.Tag.ToString()) <= _objCharacter.StunCMFilled)
-							objStunCM.Checked = true;
-
-						objStunCM.Visible = true;
-						if ((Convert.ToInt32(objStunCM.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) % intCMThreshold == 0 && Convert.ToInt32(objStunCM.Tag.ToString()) > _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset))
-						{
-							int intModifiers = ((Convert.ToInt32(objStunCM.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) / intCMThreshold) * -1;
-							objStunCM.Text = intModifiers.ToString();
-							if (objStunCM.Checked)
-							{
-								if (intModifiers < intStunCMPenalty)
-									intStunCMPenalty = intModifiers;
-							}
-						}
-						else
-							objStunCM.Text = string.Empty;
-					}
-					else
-					{
-						objStunCM.Visible = false;
-						objStunCM.Text = string.Empty;
-					}
-				}
-
-                // Reduce the CM Penalties to 0 if the character has Improvements to ignore them.
-                if (_objCharacter.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyStun, true))
+				// Reduce the CM Penalties to 0 if the character has Improvements to ignore them.
+				if (_objCharacter.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyStun, true))
 					intStunCMPenalty = 0;
 				if (_objCharacter.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyPhysical, true))
 					intPhysicalCMPenalty = 0;

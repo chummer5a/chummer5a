@@ -3,6 +3,7 @@ Build 194
 Application Changes: 
 
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
+- Fixed behaviour of the ProcessConditionMonitor method to work properly.
 
 Data Changes:
 
