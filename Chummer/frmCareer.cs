@@ -19827,7 +19827,7 @@ namespace Chummer
 		/// <param name="conditionValueIn">Current value of the condition monitor type.</param>
 		/// <param name="stun">Whether or not we're working on the Stun or Physical track. Stun track == true</param>
 		/// <param name="penalty">Returns the total penalty for the condition monitor type. Expected values are 0 or a negative number.</param>
-	    private void ProcessConditionMonitor(int boxTag, Panel panel, int conditionMax, int conditionValueIn, bool stun, out int penalty)
+	    private void ProcessConditionMonitor(int boxTag, Panel panel, int conditionMax, int conditionValueIn, bool stun, out int penalty, bool current = false)
 	    {
 			int intCMOverflow = _objCharacter.CMOverflow;
 			int intCMThreshold = _objCharacter.CMThreshold;
@@ -19842,20 +19842,24 @@ namespace Chummer
 
 			foreach (CheckBox cmBox in panel.Controls.OfType<CheckBox>())
 			{
-				if (Convert.ToInt32(cmBox.Tag.ToString()) < boxTag)
+				if (Convert.ToInt32(cmBox.Tag) < boxTag)
 				{
 					cmBox.Checked = true;
 				}
-				else if (Convert.ToInt32(cmBox.Tag.ToString()) > boxTag)
+				else if (Convert.ToInt32(cmBox.Tag) > boxTag)
 				{
 					cmBox.Checked = false;
 				}
-				if (Convert.ToInt32(cmBox.Tag.ToString()) <= conditionMax)
+				else if ((Convert.ToInt32(cmBox.Tag) == boxTag) && current)
+				{
+					cmBox.Checked = true;
+				}
+				if (Convert.ToInt32(cmBox.Tag) <= conditionMax)
 				{
 					cmBox.Visible = true;
-					if ((Convert.ToInt32(cmBox.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) % intCMThreshold == 0 && Convert.ToInt32(cmBox.Tag.ToString()) > _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset))
+					if ((Convert.ToInt32(cmBox.Tag) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) % intCMThreshold == 0 && Convert.ToInt32(cmBox.Tag) > _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset))
 					{
-						int intModifiers = ((Convert.ToInt32(cmBox.Tag.ToString()) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) / intCMThreshold) * -1;
+						int intModifiers = ((Convert.ToInt32(cmBox.Tag) - _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset)) / intCMThreshold) * -1;
 						cmBox.Text = intModifiers.ToString();
 						if (Convert.ToInt32(cmBox.Tag) == boxTag)
 						{
@@ -20689,9 +20693,9 @@ namespace Chummer
 
                 // Condition Monitor.
 				bool stun = false;
-				ProcessConditionMonitor(_objCharacter.PhysicalCMFilled, panPhysicalCM, _objCharacter.PhysicalCM, _objCharacter.PhysicalCMFilled, stun, out int intPhysicalCMPenalty);
+				ProcessConditionMonitor(_objCharacter.PhysicalCMFilled, panPhysicalCM, _objCharacter.PhysicalCM, _objCharacter.PhysicalCMFilled, stun, out int intPhysicalCMPenalty, true);
 				stun = true;
-				ProcessConditionMonitor(_objCharacter.StunCMFilled, panStunCM, _objCharacter.StunCM, _objCharacter.StunCMFilled, stun, out int intStunCMPenalty);
+				ProcessConditionMonitor(_objCharacter.StunCMFilled, panStunCM, _objCharacter.StunCM, _objCharacter.StunCMFilled, stun, out int intStunCMPenalty, true);
 
 				UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip, _objImprovementManager);
 
