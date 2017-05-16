@@ -2812,7 +2812,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Geomancy</art>
+          <metamagicart>Geomancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -2843,7 +2843,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Invocation</art>
+          <metamagicart>Invocation</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -2919,7 +2919,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Divination</art>
+          <metamagicart>Divination</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -2963,7 +2963,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Necromancy</art>
+          <metamagicart>Necromancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -2994,7 +2994,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Apotropaic Magic</art>
+          <metamagicart>Apotropaic Magic</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3012,7 +3012,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Cleansing</art>
+          <metamagicart>Cleansing</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3043,7 +3043,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Necromancy</art>
+          <metamagicart>Necromancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3061,7 +3061,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Advanced Alchemy</art>
+          <metamagicart>Advanced Alchemy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3079,7 +3079,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Apotropaic Magic</art>
+          <metamagicart>Apotropaic Magic</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3110,7 +3110,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Necromancy</art>
+          <metamagicart>Necromancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3142,7 +3142,7 @@
       <dv>Special</dv>
       <required>
         <anyof>
-          <art>Advanced Rituals</art>
+          <metamagicart>Advanced Rituals</metamagicart>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </anyof>
@@ -3162,7 +3162,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Sensing</art>
+          <metamagicart>Sensing</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3180,7 +3180,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Sensing</art>
+          <metamagicart>Sensing</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3211,7 +3211,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Geomancy</art>
+          <metamagicart>Geomancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3229,7 +3229,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Centering</art>
+          <metamagicart>Centering</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3247,7 +3247,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Channeling</art>
+          <metamagicart>Channeling</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3265,7 +3265,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Channeling</art>
+          <metamagicart>Channeling</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3283,7 +3283,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Geomancy</art>
+          <metamagicart>Geomancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3301,7 +3301,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Masking</art>
+          <metamagicart>Masking</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3319,7 +3319,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Masking</art>
+          <metamagicart>Masking</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3350,7 +3350,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Geomancy</art>
+          <metamagicart>Geomancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3369,7 +3369,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Exorcism</art>
+          <metamagicart>Exorcism</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3400,7 +3400,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Cleansing</art>
+          <metamagicart>Cleansing</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3431,7 +3431,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Invocation</art>
+          <metamagicart>Invocation</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3449,7 +3449,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Quickening</art>
+          <metamagicart>Quickening</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3521,7 +3521,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Necromancy</art>
+          <metamagicart>Necromancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3540,7 +3540,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Necromancy</art>
+          <metamagicart>Necromancy</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3559,7 +3559,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Psychometry</art>
+          <metamagicart>Psychometry</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3578,7 +3578,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Psychometry</art>
+          <metamagicart>Psychometry</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3597,7 +3597,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Masking</art>
+          <metamagicart>Masking</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3616,7 +3616,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Invocation</art>
+          <metamagicart>Invocation</metamagicart>
         </allof>
       </required>
       <source>SG</source>
@@ -3635,7 +3635,7 @@
       <dv>Special</dv>
       <required>
         <allof>
-          <art>Sensing</art>
+          <metamagicart>Sensing</metamagicart>
         </allof>
       </required>
       <source>SG</source>

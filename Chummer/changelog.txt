@@ -9,6 +9,7 @@ Data Changes:
 - Fixed qualities.xml node layout to properly reflect XSD structure. Fixed issues with qualities that would not show up due to a lack of category. 
 - Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
 - Fixed a typo in the Giger Spit spell.
+- Fixed incorrect requirements for spells that require Initiate Arts. 
 
 Build 193
 
