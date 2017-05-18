@@ -388,7 +388,7 @@ namespace Chummer
 
 				}
 				intReturn += CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
-				return intReturn;
+				return Math.Min(intReturn, CharacterObject.MAG.TotalValue);
 			}
 		}
 
