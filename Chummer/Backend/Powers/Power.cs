@@ -94,7 +94,7 @@ namespace Chummer
 			_strAdeptWayDiscount = objNode["adeptway"].InnerText;
 			LevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
 			Rating = intRating;
-			objNode.TryGetField("maxlevels", out _intMaxLevel, 1);
+			objNode.TryGetField("maxlevels", out _intMaxLevel, CharacterObject.MAG.TotalValue);
 			objNode.TryGetField("discounted", out _blnDiscountedAdeptWay);
 			objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
 			objNode.TryGetField("bonussource", out _strBonusSource);
