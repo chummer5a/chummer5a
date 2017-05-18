@@ -1,5 +1,6 @@
 ﻿using Chummer.helpers;
 using System;
+using Chummer.UI.Powers;
 
 namespace Chummer
 {
@@ -58,7 +59,8 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Weapons");
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Gear");
             System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            this.StatusStrip = new System.Windows.Forms.StatusStrip();
+			this.tabPowerUc = new PowersTabUserControl();
+			this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.tssBPLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssBP = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssBPRemainLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -445,10 +447,6 @@ namespace Chummer
             this.panSpirits = new System.Windows.Forms.Panel();
             this.cmdAddSpell = new SplitButton();
             this.tabAdept = new System.Windows.Forms.TabPage();
-            this.panPowers = new System.Windows.Forms.Panel();
-            this.lblPowerPoints = new System.Windows.Forms.Label();
-            this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this.cmdAddPower = new System.Windows.Forms.Button();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
             this.lblLivingPersonaFirewall = new System.Windows.Forms.Label();
             this.lblLivingPersonaFirewallLabel = new System.Windows.Forms.Label();
@@ -942,6 +940,7 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPowerUc = new PowersTabUserControl();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -5214,61 +5213,29 @@ namespace Chummer
             // tabAdept
             // 
             this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.tabAdept.Controls.Add(this.panPowers);
-            this.tabAdept.Controls.Add(this.lblPowerPoints);
-            this.tabAdept.Controls.Add(this.lblPowerPointsLabel);
-            this.tabAdept.Controls.Add(this.cmdAddPower);
+            this.tabAdept.Controls.Add(this.tabPowerUc);
             this.tabAdept.Location = new System.Drawing.Point(4, 22);
             this.tabAdept.Name = "tabAdept";
             this.tabAdept.Size = new System.Drawing.Size(838, 611);
             this.tabAdept.TabIndex = 2;
             this.tabAdept.Tag = "Tab_Adept";
             this.tabAdept.Text = "Adept Powers";
-            // 
-            // panPowers
-            // 
-            this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panPowers.AutoScroll = true;
-            this.panPowers.Location = new System.Drawing.Point(11, 54);
-            this.panPowers.Name = "panPowers";
-            this.panPowers.Size = new System.Drawing.Size(827, 554);
-            this.panPowers.TabIndex = 4;
-            // 
-            // lblPowerPoints
-            // 
-            this.lblPowerPoints.AutoSize = true;
-            this.lblPowerPoints.Location = new System.Drawing.Point(86, 9);
-            this.lblPowerPoints.Name = "lblPowerPoints";
-            this.lblPowerPoints.Size = new System.Drawing.Size(76, 13);
-            this.lblPowerPoints.TabIndex = 3;
-            this.lblPowerPoints.Text = "0 (0 remaining)";
-            // 
-            // lblPowerPointsLabel
-            // 
-            this.lblPowerPointsLabel.AutoSize = true;
-            this.lblPowerPointsLabel.Location = new System.Drawing.Point(8, 9);
-            this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
-            this.lblPowerPointsLabel.Size = new System.Drawing.Size(72, 13);
-            this.lblPowerPointsLabel.TabIndex = 2;
-            this.lblPowerPointsLabel.Tag = "Label_PowerPoints";
-            this.lblPowerPointsLabel.Text = "Power Points:";
-            // 
-            // cmdAddPower
-            // 
-            this.cmdAddPower.Location = new System.Drawing.Point(11, 25);
-            this.cmdAddPower.Name = "cmdAddPower";
-            this.cmdAddPower.Size = new System.Drawing.Size(75, 23);
-            this.cmdAddPower.TabIndex = 1;
-            this.cmdAddPower.Tag = "Button_AddPower";
-            this.cmdAddPower.Text = "&Add Power";
-            this.cmdAddPower.UseVisualStyleBackColor = true;
-            this.cmdAddPower.Click += new System.EventHandler(this.cmdAddPower_Click);
-            // 
-            // tabTechnomancer
-            // 
-            this.tabTechnomancer.BackColor = System.Drawing.SystemColors.ButtonFace;
+ 
+			// 
+			// tabAdept
+			// 
+			this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabAdept.Controls.Add(this.tabPowerUc);
+			this.tabAdept.Location = new System.Drawing.Point(4, 22);
+			this.tabAdept.Name = "tabAdept";
+			this.tabAdept.Size = new System.Drawing.Size(838, 611);
+			this.tabAdept.TabIndex = 2;
+			this.tabAdept.Tag = "Tab_Adept";
+			this.tabAdept.Text = "Adept Powers";
+			// 
+			// tabTechnomancer
+			// 
+			this.tabTechnomancer.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.tabTechnomancer.Controls.Add(this.lblLivingPersonaFirewall);
             this.tabTechnomancer.Controls.Add(this.lblLivingPersonaFirewallLabel);
             this.tabTechnomancer.Controls.Add(this.lblLivingPersonaDataProcessing);
@@ -10808,187 +10775,195 @@ namespace Chummer
             this.cmsAdvancedProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddAdvancedProgramOption,
             this.tsAIProgramNotes});
-            this.cmsAdvancedProgram.Name = "cmsAdvancedProgram";
-            this.cmsAdvancedProgram.Size = new System.Drawing.Size(137, 48);
-            this.cmsAdvancedProgram.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			this.cmsAdvancedProgram.Name = "cmsAdvancedProgram";
+			this.cmsAdvancedProgram.Size = new System.Drawing.Size(137, 48);
+			this.cmsAdvancedProgram.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			// 
+			// tsAddAdvancedProgramOption
+			// 
+			this.tsAddAdvancedProgramOption.Image = global::Chummer.Properties.Resources.plugin_add;
+			this.tsAddAdvancedProgramOption.Name = "tsAddAdvancedProgramOption";
+			this.tsAddAdvancedProgramOption.Size = new System.Drawing.Size(136, 22);
+			this.tsAddAdvancedProgramOption.Tag = "Menu_AddOption";
+			this.tsAddAdvancedProgramOption.Text = "&Add Option";
             // 
-            // tsAddAdvancedProgramOption
+            // tabPowersUC
             // 
-            this.tsAddAdvancedProgramOption.Image = global::Chummer.Properties.Resources.plugin_add;
-            this.tsAddAdvancedProgramOption.Name = "tsAddAdvancedProgramOption";
-            this.tsAddAdvancedProgramOption.Size = new System.Drawing.Size(136, 22);
-            this.tsAddAdvancedProgramOption.Tag = "Menu_AddOption";
-            this.tsAddAdvancedProgramOption.Text = "&Add Option";
+            this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
+            this.tabPowerUc.Name = "tabPowersUC";
+            this.tabPowerUc.ObjCharacter = null;
+            this.tabPowerUc.Size = new System.Drawing.Size(838, 611);
+            this.tabPowerUc.TabIndex = 0;
             // 
             // tsAIProgramNotes
             // 
             this.tsAIProgramNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsAIProgramNotes.Name = "tsAIProgramNotes";
-            this.tsAIProgramNotes.Size = new System.Drawing.Size(136, 22);
-            this.tsAIProgramNotes.Tag = "Menu_Notes";
-            this.tsAIProgramNotes.Text = "&Notes";
-            this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
-            // 
-            // frmCreate
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1040, 664);
-            this.Controls.Add(this.splitMain);
-            this.Controls.Add(this.StatusStrip);
-            this.Controls.Add(this.toolStrip);
-            this.Controls.Add(this.mnuCreateMenu);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.mnuCreateMenu;
-            this.Name = "frmCreate";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Chummer - Create New Character";
-            this.Activated += new System.EventHandler(this.frmCreate_Activated);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCreate_FormClosing);
-            this.Load += new System.EventHandler(this.frmCreate_Load);
-            this.Shown += new System.EventHandler(this.frmCreate_Shown);
-            this.Resize += new System.EventHandler(this.frmCreate_Resize);
-            this.StatusStrip.ResumeLayout(false);
-            this.StatusStrip.PerformLayout();
-            this.cmsMartialArts.ResumeLayout(false);
-            this.cmsSpellButton.ResumeLayout(false);
-            this.cmsComplexForm.ResumeLayout(false);
-            this.cmsCyberware.ResumeLayout(false);
-            this.cmsLifestyle.ResumeLayout(false);
-            this.cmsArmor.ResumeLayout(false);
-            this.cmsWeapon.ResumeLayout(false);
-            this.cmsGearButton.ResumeLayout(false);
-            this.cmsVehicle.ResumeLayout(false);
-            this.mnuCreateMenu.ResumeLayout(false);
-            this.mnuCreateMenu.PerformLayout();
-            this.toolStrip.ResumeLayout(false);
-            this.toolStrip.PerformLayout();
-            this.cmsGear.ResumeLayout(false);
-            this.cmsVehicleWeapon.ResumeLayout(false);
-            this.cmsVehicleGear.ResumeLayout(false);
-            this.cmsArmorGear.ResumeLayout(false);
-            this.cmsArmorMod.ResumeLayout(false);
-            this.cmsQuality.ResumeLayout(false);
-            this.cmsSpell.ResumeLayout(false);
-            this.cmsCritterPowers.ResumeLayout(false);
-            this.cmsLifestyleNotes.ResumeLayout(false);
-            this.cmsWeaponAccessory.ResumeLayout(false);
-            this.cmsGearPlugin.ResumeLayout(false);
-            this.cmsComplexFormPlugin.ResumeLayout(false);
-            this.cmsBioware.ResumeLayout(false);
-            this.cmsAdvancedLifestyle.ResumeLayout(false);
-            this.cmsGearLocation.ResumeLayout(false);
-            this.cmsArmorLocation.ResumeLayout(false);
-            this.cmsCyberwareGear.ResumeLayout(false);
-            this.cmsWeaponAccessoryGear.ResumeLayout(false);
-            this.cmsVehicleLocation.ResumeLayout(false);
-            this.cmsVehicleWeaponAccessory.ResumeLayout(false);
-            this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
-            this.cmsWeaponLocation.ResumeLayout(false);
-            this.splitMain.Panel1.ResumeLayout(false);
-            this.splitMain.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
-            this.splitMain.ResumeLayout(false);
-            this.tabCharacterTabs.ResumeLayout(false);
-            this.tabCommon.ResumeLayout(false);
-            this.tabCommon.PerformLayout();
-            this.tabPeople.ResumeLayout(false);
-            this.tabContacts.ResumeLayout(false);
-            this.tabContacts.PerformLayout();
-            this.tabEnemies.ResumeLayout(false);
-            this.tabEnemies.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
-            this.panAttributes.ResumeLayout(false);
-            this.panAttributes.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDEP)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKRES)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKWIL)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKLOG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKINT)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKCHA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKSTR)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKREA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKAGI)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKBOD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudRES)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMAG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudEDG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudWIL)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLOG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudINT)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCHA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSTR)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudREA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAGI)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudBOD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).EndInit();
-            this.tabSkills.ResumeLayout(false);
-            this.tabLimits.ResumeLayout(false);
-            this.tabLimits.PerformLayout();
-            this.tabMartialArts.ResumeLayout(false);
-            this.tabMartialArts.PerformLayout();
-            this.tabMagician.ResumeLayout(false);
-            this.tabMagician.PerformLayout();
-            this.tabAdept.ResumeLayout(false);
-            this.tabAdept.PerformLayout();
-            this.tabTechnomancer.ResumeLayout(false);
-            this.tabTechnomancer.PerformLayout();
-            this.tabAdvancedPrograms.ResumeLayout(false);
-            this.tabAdvancedPrograms.PerformLayout();
-            this.tabCritter.ResumeLayout(false);
-            this.tabCritter.PerformLayout();
-            this.tabInitiation.ResumeLayout(false);
-            this.tabInitiation.PerformLayout();
-            this.tabCyberware.ResumeLayout(false);
-            this.tabCyberware.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCyberwareRating)).EndInit();
-            this.tabStreetGear.ResumeLayout(false);
-            this.tabStreetGearTabs.ResumeLayout(false);
-            this.tabLifestyle.ResumeLayout(false);
-            this.tabLifestyle.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).EndInit();
-            this.tabArmor.ResumeLayout(false);
-            this.tabArmor.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).EndInit();
-            this.tabWeapons.ResumeLayout(false);
-            this.tabWeapons.PerformLayout();
-            this.tabGear.ResumeLayout(false);
-            this.tabGear.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
-            this.tabPets.ResumeLayout(false);
-            this.tabPets.PerformLayout();
-            this.tabVehicles.ResumeLayout(false);
-            this.tabVehicles.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVehicleGearQty)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVehicleRating)).EndInit();
-            this.tabCharacterInfo.ResumeLayout(false);
-            this.tabCharacterInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
-            this.tabImprovements.ResumeLayout(false);
-            this.tabInfo.ResumeLayout(false);
-            this.tabBPSummary.ResumeLayout(false);
-            this.tabBPSummary.PerformLayout();
-            this.tabBuildSummary.ResumeLayout(false);
-            this.tabBuildSummary.PerformLayout();
-            this.tabOtherInfo.ResumeLayout(false);
-            this.tabOtherInfo.PerformLayout();
-            this.tabDefences.ResumeLayout(false);
-            this.tabDefences.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
-            this.cmsLimitModifier.ResumeLayout(false);
-            this.cmsInitiationNotes.ResumeLayout(false);
-            this.cmsMetamagic.ResumeLayout(false);
-            this.cmsTechnique.ResumeLayout(false);
-            this.cmsAdvancedProgram.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			this.tsAIProgramNotes.Name = "tsAIProgramNotes";
+			this.tsAIProgramNotes.Size = new System.Drawing.Size(136, 22);
+			this.tsAIProgramNotes.Tag = "Menu_Notes";
+			this.tsAIProgramNotes.Text = "&Notes";
+			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
+			// 
+			// frmCreate
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = true;
+			this.ClientSize = new System.Drawing.Size(1040, 664);
+			this.Controls.Add(this.splitMain);
+			this.Controls.Add(this.StatusStrip);
+			this.Controls.Add(this.toolStrip);
+			this.Controls.Add(this.mnuCreateMenu);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MainMenuStrip = this.mnuCreateMenu;
+			this.Name = "frmCreate";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Chummer - Create New Character";
+			this.Activated += new System.EventHandler(this.frmCreate_Activated);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCreate_FormClosing);
+			this.Load += new System.EventHandler(this.frmCreate_Load);
+			this.Shown += new System.EventHandler(this.frmCreate_Shown);
+			this.Resize += new System.EventHandler(this.frmCreate_Resize);
+			this.StatusStrip.ResumeLayout(false);
+			this.StatusStrip.PerformLayout();
+			this.cmsMartialArts.ResumeLayout(false);
+			this.cmsSpellButton.ResumeLayout(false);
+			this.cmsComplexForm.ResumeLayout(false);
+			this.cmsCyberware.ResumeLayout(false);
+			this.cmsLifestyle.ResumeLayout(false);
+			this.cmsArmor.ResumeLayout(false);
+			this.cmsWeapon.ResumeLayout(false);
+			this.cmsGearButton.ResumeLayout(false);
+			this.cmsVehicle.ResumeLayout(false);
+			this.mnuCreateMenu.ResumeLayout(false);
+			this.mnuCreateMenu.PerformLayout();
+			this.toolStrip.ResumeLayout(false);
+			this.toolStrip.PerformLayout();
+			this.cmsGear.ResumeLayout(false);
+			this.cmsVehicleWeapon.ResumeLayout(false);
+			this.cmsVehicleGear.ResumeLayout(false);
+			this.cmsArmorGear.ResumeLayout(false);
+			this.cmsArmorMod.ResumeLayout(false);
+			this.cmsQuality.ResumeLayout(false);
+			this.cmsSpell.ResumeLayout(false);
+			this.cmsCritterPowers.ResumeLayout(false);
+			this.cmsLifestyleNotes.ResumeLayout(false);
+			this.cmsWeaponAccessory.ResumeLayout(false);
+			this.cmsGearPlugin.ResumeLayout(false);
+			this.cmsComplexFormPlugin.ResumeLayout(false);
+			this.cmsBioware.ResumeLayout(false);
+			this.cmsAdvancedLifestyle.ResumeLayout(false);
+			this.cmsGearLocation.ResumeLayout(false);
+			this.cmsArmorLocation.ResumeLayout(false);
+			this.cmsCyberwareGear.ResumeLayout(false);
+			this.cmsWeaponAccessoryGear.ResumeLayout(false);
+			this.cmsVehicleLocation.ResumeLayout(false);
+			this.cmsVehicleWeaponAccessory.ResumeLayout(false);
+			this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
+			this.cmsWeaponLocation.ResumeLayout(false);
+			this.splitMain.Panel1.ResumeLayout(false);
+			this.splitMain.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
+			this.splitMain.ResumeLayout(false);
+			this.tabCharacterTabs.ResumeLayout(false);
+			this.tabCommon.ResumeLayout(false);
+			this.tabCommon.PerformLayout();
+			this.tabPeople.ResumeLayout(false);
+			this.tabContacts.ResumeLayout(false);
+			this.tabContacts.PerformLayout();
+			this.tabEnemies.ResumeLayout(false);
+			this.tabEnemies.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
+			this.panAttributes.ResumeLayout(false);
+			this.panAttributes.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDEP)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKRES)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKWIL)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKLOG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKINT)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKCHA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKSTR)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKREA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKAGI)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKBOD)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudRES)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMAG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudEDG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudWIL)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudLOG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudINT)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudCHA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudSTR)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudREA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudAGI)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudBOD)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).EndInit();
+			this.tabSkills.ResumeLayout(false);
+			this.tabLimits.ResumeLayout(false);
+			this.tabLimits.PerformLayout();
+			this.tabMartialArts.ResumeLayout(false);
+			this.tabMartialArts.PerformLayout();
+			this.tabMagician.ResumeLayout(false);
+			this.tabMagician.PerformLayout();
+			this.tabAdept.ResumeLayout(false);
+			this.tabTechnomancer.ResumeLayout(false);
+			this.tabTechnomancer.PerformLayout();
+			this.tabAdvancedPrograms.ResumeLayout(false);
+			this.tabAdvancedPrograms.PerformLayout();
+			this.tabCritter.ResumeLayout(false);
+			this.tabCritter.PerformLayout();
+			this.tabInitiation.ResumeLayout(false);
+			this.tabInitiation.PerformLayout();
+			this.tabCyberware.ResumeLayout(false);
+			this.tabCyberware.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCyberwareRating)).EndInit();
+			this.tabStreetGear.ResumeLayout(false);
+			this.tabStreetGearTabs.ResumeLayout(false);
+			this.tabLifestyle.ResumeLayout(false);
+			this.tabLifestyle.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).EndInit();
+			this.tabArmor.ResumeLayout(false);
+			this.tabArmor.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).EndInit();
+			this.tabWeapons.ResumeLayout(false);
+			this.tabWeapons.PerformLayout();
+			this.tabGear.ResumeLayout(false);
+			this.tabGear.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
+			this.tabPets.ResumeLayout(false);
+			this.tabPets.PerformLayout();
+			this.tabVehicles.ResumeLayout(false);
+			this.tabVehicles.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudVehicleGearQty)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudVehicleRating)).EndInit();
+			this.tabCharacterInfo.ResumeLayout(false);
+			this.tabCharacterInfo.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
+			this.tabImprovements.ResumeLayout(false);
+			this.tabInfo.ResumeLayout(false);
+			this.tabBPSummary.ResumeLayout(false);
+			this.tabBPSummary.PerformLayout();
+			this.tabBuildSummary.ResumeLayout(false);
+			this.tabBuildSummary.PerformLayout();
+			this.tabOtherInfo.ResumeLayout(false);
+			this.tabOtherInfo.PerformLayout();
+			this.tabDefences.ResumeLayout(false);
+			this.tabDefences.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
+			this.cmsLimitModifier.ResumeLayout(false);
+			this.cmsInitiationNotes.ResumeLayout(false);
+			this.cmsMetamagic.ResumeLayout(false);
+			this.cmsTechnique.ResumeLayout(false);
+			this.cmsAdvancedProgram.ResumeLayout(false);
+			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 		#endregion
@@ -11054,11 +11029,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddSprite;
         private System.Windows.Forms.Label lblSprites;
         private System.Windows.Forms.Panel panSprites;
-        private System.Windows.Forms.Button cmdAddPower;
         private System.Windows.Forms.Label lblComplexForms;
-        private System.Windows.Forms.Label lblPowerPoints;
-        private System.Windows.Forms.Label lblPowerPointsLabel;
-        private System.Windows.Forms.Panel panPowers;
         private System.Windows.Forms.Label lblCyberwareRatingLabel;
         private System.Windows.Forms.Label lblCyberwareCost;
         private System.Windows.Forms.Label lblCyberwareCostLabel;
@@ -11881,6 +11852,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMugshotDimensions;
         private System.Windows.Forms.Label lblTraditionSource;
         private System.Windows.Forms.Label lblTraditionSourceLabel;
-    }
+		private PowersTabUserControl tabPowerUc;
+	}
 }
 

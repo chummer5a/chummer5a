@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
  using System.Linq;
- using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
@@ -80,7 +80,7 @@ namespace Chummer
 			// The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
 			_objSpirit.Bound = chkBound.Checked;
 			BoundChanged(this);
-        }
+		}
         private void chkFettered_CheckedChanged(object sender, EventArgs e)
         {
             if (chkFettered.Checked)
@@ -104,7 +104,7 @@ namespace Chummer
             FetteredChanged(this);
         }
 
-        private void SpiritControl_Load(object sender, EventArgs e)
+		private void SpiritControl_Load(object sender, EventArgs e)
 		{
             DoubleBuffered = true;
             if (_blnCareer)
@@ -431,7 +431,7 @@ namespace Chummer
 				chkBound.Checked = value;
 				_objSpirit.Bound = value;
 			}
-        }
+		}
 
         /// <summary>
         /// Whether or not the Spirit is Fettered.
@@ -448,11 +448,11 @@ namespace Chummer
                 _objSpirit.Fettered = value;
             }
         }
-        #endregion
+		#endregion
 
-        #region Methods
-        // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public void RebuildSpiritList(string strTradition)
+		#region Methods
+		// Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
+		public void RebuildSpiritList(string strTradition)
 		{
 			string strCurrentValue = string.Empty;
 			if (strTradition.Length == 0)
@@ -853,7 +853,7 @@ namespace Chummer
 			}
 			return intValue.ToString();
 		}
-        #endregion
+		#endregion
 
     }
 }

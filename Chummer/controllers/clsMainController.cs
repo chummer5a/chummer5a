@@ -1141,6 +1141,7 @@ namespace Chummer
 							if (!string.IsNullOrEmpty(objGear.Extra))
 								_objImprovementManager.ForcedValue = objGear.Extra;
 							_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+							objGear.Extra = _objImprovementManager.SelectedValue;
 						}
 					}
 					else
@@ -1148,16 +1149,13 @@ namespace Chummer
 						// Stacked Foci need to be handled a little differently.
 						foreach (StackedFocus objStack in _objCharacter.StackedFoci)
 						{
-							if (objStack.GearId == objGear.InternalId)
+							if (objStack.GearId == objGear.InternalId && objStack.Bonded)
 							{
-								if (objStack.Bonded)
+								foreach (Gear objFociGear in objStack.Gear)
 								{
-									foreach (Gear objFociGear in objStack.Gear)
-									{
-										if (!string.IsNullOrEmpty(objFociGear.Extra))
-											_objImprovementManager.ForcedValue = objFociGear.Extra;
-										_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
-									}
+									if (!string.IsNullOrEmpty(objFociGear.Extra))
+										_objImprovementManager.ForcedValue = objFociGear.Extra;
+									_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
 								}
 							}
 						}

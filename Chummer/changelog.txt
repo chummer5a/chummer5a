@@ -105,6 +105,7 @@ Application Changes:
 - Added a warning message when loading an XML file if duplicate IDs exist. 
 - Fixed a stack overflow when selecting vehicle mods. 
 - When creating a new knowledge skill, the Type combobox will attempt to populate automatically. 
+- Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
 Data Changes:
 
@@ -214,6 +215,14 @@ New Strings:
 - Title_Browse
 - Checkbox_Option_HideItemsOverAvailLimit
 
+- Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
+
+New Strings: 
+
+- String_PowerFilterAll
+- Power_SortAction
+- String_PowerFilterRatingAboveZero
+- String_PowerFilterRatingZero
 Build 191
 
 Application Changes:
@@ -503,7 +512,6 @@ Application Changes:
 - Modified the Commlink class so that it always executes the methods of its parent Gear class in its overriden methods wherever applicable (greatly improves code portability, as any changes to Gear's methods will be used by Commlink's methods).
 - Fixed a crash caused by searching for a weapon to attach to a vehicle weapon mount. 
 - Corrected A.I. quality restrictions.
-
 Data Changes: 
 
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.

@@ -84,7 +84,9 @@ namespace Chummer
 			_objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
 			_objCharacter.FameChanged += objCharacter_FameChanged;
-			tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
+
+            tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
+            tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 			GlobalOptions.Instance.MainForm.OpenCharacters.Add(_objCharacter);
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -129,7 +131,7 @@ namespace Chummer
 			//{
 				TreeView objTree = (TreeView)sender;
 				objTree.SelectedNode = objTree.HitTest(e.X, e.Y).Node;
-            //}
+			//}
             if (Form.ModifierKeys == Keys.Control)
             {
                 if (!objTree.SelectedNode.IsExpanded)
@@ -137,7 +139,7 @@ namespace Chummer
                     foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
                     {
                         objNode.ExpandAll();
-                    }
+		}
                 }
                 else
                 {
@@ -160,6 +162,7 @@ namespace Chummer
 
 			_objCharacter_PropertyChanged(null, null);
 
+			tabPowerUc.ObjCharacter = _objCharacter;
 			// Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
 			if (!_objCharacter.MagicianEnabled)
 				tabCharacterTabs.TabPages.Remove(tabMagician);
@@ -226,7 +229,7 @@ namespace Chummer
 			    if (value > nudMugshotIndex.Maximum)
 			    {
 			        value = nudMugshotIndex.Maximum;
-			    }
+            }
                 nudMugshotIndex.Value = value;
             }
             else
@@ -558,6 +561,12 @@ namespace Chummer
 				lblMysticAdeptMAGAdept.Visible = true;
                 cmdIncreasePowerPoints.Visible = _objOptions.MysaddPPCareer;
 			}
+
+			if (_objCharacter.AdeptEnabled)
+			{
+				tabPowerUc.MissingDatabindingsWorkaround();
+			}
+
 			// Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
 			int i = -1;
 			
@@ -716,38 +725,6 @@ namespace Chummer
                         treSpells.Nodes[6].Expand();
                         break;
                 }
-			}
-
-			// Populate Adept Powers.
-			i = -1;
-			foreach (Power objPower in _objCharacter.Powers)
-			{
-				i++;
-				PowerControl objPowerControl = new PowerControl();
-				objPowerControl.PowerObject = objPower;
-
-				// Attach an EventHandler for the PowerRatingChanged Event.
-				objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-				objPowerControl.DeletePower += objPower_DeletePower;
-
-				objPowerControl.PowerName = objPower.Name;
-				objPowerControl.Extra = objPower.Extra;
-				objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
-                objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
-                objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-				if (objPower.MaxLevels > 0)
-					objPowerControl.MaxLevels = objPower.MaxLevels;
-				objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-				if (objPower.Rating < 1)
-					objPower.Rating = 1;
-				objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
-				if (objPower.DiscountedAdeptWay)
-					objPowerControl.DiscountedByAdeptWay = true;
-				if (objPower.DiscountedGeas)
-					objPowerControl.DiscountedByGeas = true;
-
-				objPowerControl.Top = i * objPowerControl.Height;
-				panPowers.Controls.Add(objPowerControl);
 			}
 
 			// Populate Magician Spirits.
@@ -953,7 +930,7 @@ namespace Chummer
 
             UpdateInitiationGradeTree();
 
-            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+			RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
 
 			_blnLoading = false;
 
@@ -988,16 +965,14 @@ namespace Chummer
             // Update the Fading CharacterAttribute Value.
             if (_objCharacter.RESEnabled)
             {
-                // Select the Technomancer's Stream.
-                if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
-                    cboStream.SelectedValue = _objCharacter.TechnomancerStream;
+            // Select the Technomancer's Stream.
+			if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
+				cboStream.SelectedValue = _objCharacter.TechnomancerStream;
                 CalculateTraditionDrain(_objCharacter.TechnomancerFading, _objImprovementManager, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
             }
-            // Clear the Dirty flag which gets set when creating a new Character.
-            _blnIsDirty = false;
+			// Clear the Dirty flag which gets set when creating a new Character.
+			_blnIsDirty = false;
 			UpdateWindowTitle();
-			if (_objCharacter.AdeptEnabled)
-				CalculatePowerPoints();
 
 			treGear.ItemDrag += treGear_ItemDrag;
 			treGear.DragEnter += treGear_DragEnter;
@@ -1095,7 +1070,7 @@ namespace Chummer
 			Timekeeper.Finish("loading");
 		}
 
-	    private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			//Self implemented one way databinding workaround. Ugly and should probably be done in a better way. (One day...)
 			switch (e?.PropertyName)
@@ -1197,12 +1172,6 @@ namespace Chummer
 				{
 					objContactControl.DeleteContact -= objPet_DeleteContact;
 					objContactControl.FileNameChanged -= objPet_FileNameChanged;
-				}
-
-				foreach (PowerControl objPowerControl in panPowers.Controls.OfType<PowerControl>())
-				{
-					objPowerControl.PowerRatingChanged -= objPower_PowerRatingChanged;
-					objPowerControl.DeletePower -= objPower_DeletePower;
 				}
 
 				foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
@@ -1476,12 +1445,10 @@ namespace Chummer
 			{
 				if (!tabCharacterTabs.TabPages.Contains(tabAdept))
 					tabCharacterTabs.TabPages.Insert(3, tabAdept);
-
-				CalculatePowerPoints();
 			}
 			else
 			{
-				ClearAdeptTab();
+				_objCharacter.Powers.Clear();
 				tabCharacterTabs.TabPages.Remove(tabAdept);
 			}
 
@@ -1622,7 +1589,19 @@ namespace Chummer
 			//_objCharacter.TotalPublicAwareness
 		}
 
-		private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
+        //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
+        private Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
+        private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            _blnIsDirty = true;
+
+            if (PowerPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
+            PowerPropertyChanged_StopWatch.Restart();
+            tabPowerUc.CalculatePowerPoints();
+            UpdateCharacterInfo();
+        }
+
+        private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 		private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			//HACK PERFORMANCE
@@ -3758,116 +3737,116 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
-        private void UpdateSpellDefence()
-        {
-            // Update the Spell Defence labels.
-            string strSpellTooltip = string.Empty;
+		private void UpdateSpellDefence()
+		{
+			// Update the Spell Defence labels.
+			string strSpellTooltip = string.Empty;
             string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
             string strCounterSpelling = LanguageManager.Instance.GetString("Label_CounterspellingDice");
             string strSpellResistance = LanguageManager.Instance.GetString("String_SpellResistanceDice");
-            //Indirect Dodge
-            lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
+			//Indirect Dodge
+			lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
             strSpellTooltip = $"{strModifiers}: " +
                               $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue})";
-            tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
-            //Indirect Soak
-            lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
+			tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
+			//Indirect Soak
+			lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
             strSpellTooltip = $"{strModifiers}: " +
                               $"{LanguageManager.Instance.GetString("Tip_Armor")} ({_objCharacter.TotalArmorRating}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
-            tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
-            //Direct Soak - Mana
-            lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
+			//Direct Soak - Mana
+			lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
                               $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
-            //Direct Soak - Physical
-            lblSpellDefenceDirectSoakPhysical.Text = (_objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
+			//Direct Soak - Physical
+			lblSpellDefenceDirectSoakPhysical.Text = (_objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
-            //Detection Spells
-            lblSpellDefenceDetection.Text =
-                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
+			//Detection Spells
+			lblSpellDefenceDetection.Text =
+				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
                               $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) " +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
-            //Decrease Attribute - BOD
-            lblSpellDefenceDecAttBOD.Text =
-                (_objCharacter.BOD.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
+			//Decrease Attribute - BOD
+			lblSpellDefenceDecAttBOD.Text =
+				(_objCharacter.BOD.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
-            //Decrease Attribute - AGI
-            lblSpellDefenceDecAttAGI.Text =
-                (_objCharacter.AGI.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
+			//Decrease Attribute - AGI
+			lblSpellDefenceDecAttAGI.Text =
+				(_objCharacter.AGI.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.AGI.DisplayAbbrev} ({_objCharacter.AGI.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
-            //Decrease Attribute - REA
-            lblSpellDefenceDecAttREA.Text =
-                (_objCharacter.REA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
+			//Decrease Attribute - REA
+			lblSpellDefenceDecAttREA.Text =
+				(_objCharacter.REA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
-            //Decrease Attribute - STR
-            lblSpellDefenceDecAttSTR.Text =
-                (_objCharacter.STR.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
+			//Decrease Attribute - STR
+			lblSpellDefenceDecAttSTR.Text =
+				(_objCharacter.STR.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({_objCharacter.STR.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
-            //Decrease Attribute - CHA
-            lblSpellDefenceDecAttCHA.Text =
-                (_objCharacter.CHA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
+			//Decrease Attribute - CHA
+			lblSpellDefenceDecAttCHA.Text =
+				(_objCharacter.CHA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
-            //Decrease Attribute - INT
-            lblSpellDefenceDecAttINT.Text =
-                (_objCharacter.INT.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
+			//Decrease Attribute - INT
+			lblSpellDefenceDecAttINT.Text =
+				(_objCharacter.INT.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
-            //Decrease Attribute - LOG
-            lblSpellDefenceDecAttLOG.Text =
-                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
+			//Decrease Attribute - LOG
+			lblSpellDefenceDecAttLOG.Text =
+				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
-            //Decrease Attribute - WIL
-            lblSpellDefenceDecAttWIL.Text =
-                (_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
+			//Decrease Attribute - WIL
+			lblSpellDefenceDecAttWIL.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
-            //Illusion - Mana
-            lblSpellDefenceIllusionMana.Text =
-                (_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
+			//Illusion - Mana
+			lblSpellDefenceIllusionMana.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
-            //Illusion - Physical
-            lblSpellDefenceIllusionPhysical.Text =
-                (_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
+			//Illusion - Physical
+			lblSpellDefenceIllusionPhysical.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
-            //Manipulation - Mental
-            lblSpellDefenceManipMental.Text =
-                (_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
+			//Manipulation - Mental
+			lblSpellDefenceManipMental.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
-            //Manipulation - Physical
-            lbllSpellDefenceManipPhysical.Text =
-                (_objCharacter.STR.TotalValue + _objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+			tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
+			//Manipulation - Physical
+			lbllSpellDefenceManipPhysical.Text =
+				(_objCharacter.STR.TotalValue + _objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({_objCharacter.BOD.TotalValue}) +{_objCharacter.WIL.DisplayAbbrev} +({ _objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
-            tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
-        }
+			tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
+		}
 
-        private void nudCounterspellingDice_Changed(object sender, EventArgs e)
+		private void nudCounterspellingDice_Changed(object sender, EventArgs e)
 		{
 			UpdateSpellDefence();
 		}
@@ -4240,88 +4219,6 @@ namespace Chummer
 		}
 		#endregion
 
-		#region PowerControl Events
-		private void objPower_PowerRatingChanged(Object sender)
-		{
-			// Handle the PowerRatingChange Event for the PowerControl object.
-			PowerControl objPowerControl = (PowerControl)sender;
-			if (objPowerControl.PowerLevel > _objCharacter.MAG.TotalValue)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				objPowerControl.PowerLevel = _objCharacter.MAG.TotalValue;
-			}
-			else
-			{
-				// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-				if (objPowerControl.PowerObject.Bonus != null)
-				{
-					if (objPowerControl.PowerObject.Bonus.InnerXml.Contains("Rating"))
-					{
-						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPowerControl.PowerObject.InternalId);
-						_objImprovementManager.ForcedValue = objPowerControl.Extra;
-						_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPowerControl.PowerObject.InternalId, objPowerControl.PowerObject.Bonus, false, Convert.ToInt32(objPowerControl.PowerObject.Rating), objPowerControl.PowerObject.DisplayNameShort);
-					}
-				}
-			}
-			if (objPowerControl.PowerName == "Improved Ability (skill)")
-			{
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    foreach (Power objPower in _objCharacter.Powers)
-                    {
-                        if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization +")")))
-						{
-                            int intImprovedAbilityMaximum = (3 * objSkill.Rating + 1) / 2;
-                            objPower.MaxLevels = intImprovedAbilityMaximum;
-                            objPowerControl.nudRating.Maximum = intImprovedAbilityMaximum;
-                        }
-                    }
-			    }
-			}
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
-		private void objPower_DeletePower(Object sender)
-		{
-			if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeletePower")))
-				return;
-
-			// Handle the DeletePower Event for the PowerControl.
-			PowerControl objSender = (PowerControl)sender;
-			bool blnFound = false;
-			foreach (PowerControl objPowerControl in panPowers.Controls)
-			{
-				// Set the flag to show that we have found the Power.
-				if (objPowerControl == objSender)
-					blnFound = true;
-
-				// Once the Power has been found, all of the other PowerControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-				if (blnFound)
-					objPowerControl.Top -= 25;
-			}
-
-			// Remove the Improvements that were created by the Power.
-			_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objSender.PowerObject.InternalId);
-
-			// Remove the Power.
-			_objCharacter.Powers.Remove(objSender.PowerObject);
-
-			// Update the CharacterAttribute label.
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-
-			// Remove the PowerControl that raised the Event.
-			panPowers.Controls.Remove(objSender);
-			CalculatePowerPoints();
-		}
-		#endregion
-
 		#region Martial Tab Control Events
 		private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
 		{
@@ -4672,70 +4569,6 @@ namespace Chummer
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
-		}
-
-		private void cmdAddPower_Click(object sender, EventArgs e)
-		{
-			frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-			frmPickPower.ShowDialog(this);
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickPower.DialogResult == DialogResult.Cancel)
-				return;
-
-			int i = panPowers.Controls.Count;
-
-			Power objPower = new Power(_objCharacter);
-			_objCharacter.Powers.Add(objPower);
-
-			PowerControl objPowerControl = new PowerControl();
-			objPowerControl.PowerObject = objPower;
-
-			// Attach an EventHandler for the PowerRatingChanged Event.
-			objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-			objPowerControl.DeletePower += objPower_DeletePower;
-
-			objPowerControl.PowerName = frmPickPower.SelectedPower;
-			objPowerControl.PointsPerLevel = frmPickPower.PointsPerLevel;
-            objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
-            objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
-			if (frmPickPower.MaxLevels() > 0)
-				objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-
-			// Open the Cyberware XML file and locate the selected piece.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
-			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-
-			objPower.Source = objXmlPower["source"].InnerText;
-			objPower.Page = objXmlPower["page"].InnerText;
-			if (objXmlPower["doublecost"] != null)
-				objPower.DoubleCost = false;
-
-			if (objXmlPower.InnerXml.Contains("bonus"))
-			{
-				objPower.Bonus = objXmlPower["bonus"];
-				if (!_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-				{
-					_objCharacter.Powers.Remove(objPower);
-					return;
-				}
-				objPowerControl.Extra = _objImprovementManager.SelectedValue;
-			}
-
-			// Set the control's Maximum.
-			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-			objPowerControl.Top = i * objPowerControl.Height;
-			objPowerControl.RefreshTooltip();
-			panPowers.Controls.Add(objPowerControl);
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-
-			if (frmPickPower.AddAgain)
-				cmdAddPower_Click(sender, e);
 		}
 
 		private void cmdAddCyberware_Click(object sender, EventArgs e)
@@ -7683,7 +7516,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshPowers();
             RefreshContacts();
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             _blnIsDirty = true;
@@ -7871,7 +7703,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshPowers();
             RefreshContacts();
 
 			_blnIsDirty = true;
@@ -18062,16 +17893,11 @@ namespace Chummer
                                 _objImprovementManager.ForcedValue = objSelectedFocus.Extra;
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
 
-                            foreach (Power objPower in _objCharacter.Powers)
+                            foreach (Power objPower in _objCharacter.Powers.Where(objPower => objFocus.GearId == objPower.BonusSource))
                             {
-                                if (objFocus.GearId == objPower.BonusSource)
-                                {
                                     objSelectedFocus.Extra = objPower.Name;
                                     break;
                                 }
-                            }
-
-                            RefreshPowers();
                             _objController.PopulateFocusList(treFoci);
                         }
                     }
@@ -18126,75 +17952,6 @@ namespace Chummer
                     objGear.Bonded = false;
                     _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                     _objCharacter.Foci.Remove(objFocus);
-                    foreach (Power objPower in _objCharacter.Powers)
-                    {
-                        // Known issues: 
-                        // 1) If freelevels > MAG, AND multiple sources give free levels, the calculation for the left-over free levels
-                        // will not be correct
-                        // Foci give their rating / 4 in power points - use power points per level to calculate the amount of levels this
-                        // focus is worth. May be troublesome in foci of non-integer power levels, but as foci should not be created
-                        // with such, this will be better handled in the focus rating itself.
-                        if (objPower.BonusSource == objGear.InternalId)
-                        {
-
-                            // If we do not remove the bonus source, foci completely break when binding-unbinding-rebinding, because their 
-                            // bonus is calculated twice in the improvement manager.
-                            // TODO - Clean up the improvement manager power management.
-                            objPower.BonusSource = string.Empty;
-
-                            foreach (Improvement objImprovement in _objCharacter.Improvements.ToList())
-                            {
-                                if (objImprovement.SourceName == objPower.InternalId) 
-                                {
-                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId); 
-                                }
-                            }
-                            if (objPower.Free)
-                                _objCharacter.Powers.Remove(objPower);
-                            else if (objPower.FreeLevels > 0)
-                            {
-                                int freeLevelsByThisFocus = (int)(Math.Min(objFocus.Rating * .25M, objPower.FreeLevels * objPower.PointsPerLevel) / objPower.PointsPerLevel);
-                                if (objPower.Rating > freeLevelsByThisFocus)
-                                {
-                                    objPower.Rating -= freeLevelsByThisFocus;
-                                    objPower.FreeLevels -= freeLevelsByThisFocus;
-                                }
-                                else
-                                {
-                                    _objCharacter.Powers.Remove(objPower);
-                                }
-                            }
-                            else if (objPower.FreePoints > 0)
-                            {
-                                // For complete robustness, a way should be implemented to allow to switch
-                                // between Improved Reflexes I/II/III, with Foci, according to the force
-                                // of the focus.
-
-                                //In the meantime, calculate if the free points of the focus are equal
-                                //to the point cost of the power, and remove it if it is
-                                decimal freePointsByThisFocus = Math.Min(objFocus.Rating * .25M, objPower.FreePoints);
-
-                                //This should be the case, always as implemented currently.
-                                if (objPower.PointsPerLevel * objPower.Rating == freePointsByThisFocus)
-                                {
-                                    _objCharacter.Powers.Remove(objPower);
-                                }
-                                else
-                                {
-                                    //Should never happen currently.
-                                    objPower.FreePoints -= freePointsByThisFocus;
-                                    objPower.Rating -= Convert.ToInt32(freePointsByThisFocus * objPower.PointsPerLevel);
-                                }
-                            }
-                            else
-                                _objCharacter.Powers.Remove(objPower);
-
-                            objGear.Extra = string.Empty;
-                            _objController.PopulateFocusList(treFoci);
-                            break;
-                        }
-                    }
-                    RefreshPowers();
                 }
 				else
 				{
@@ -18694,7 +18451,7 @@ namespace Chummer
                 strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
             }
             lblFadingAttributes.Text = strDrain;
-            _objCharacter.TechnomancerStream = cboStream.SelectedValue.ToString();
+			_objCharacter.TechnomancerStream = cboStream.SelectedValue.ToString();
 
 			foreach (SpiritControl objSpriteControl in panSprites.Controls)
 				objSpriteControl.RebuildSpiritList(cboStream.SelectedValue.ToString());
@@ -19729,20 +19486,6 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Clear the contents of the Adept Powers Tab.
-		/// </summary>
-		private void ClearAdeptTab()
-		{
-			_objController.ClearAdeptTab();
-
-			// Remove all of the Adept Powers from the panel.
-			panPowers.Controls.Clear();
-
-			_blnIsDirty = true;
-			UpdateCharacterInfo();
-		}
-
-		/// <summary>
 		/// Clear the contents of the Sprites and Complex Forms Tab.
 		/// </summary>
 		private void ClearTechnomancerTab()
@@ -20280,41 +20023,6 @@ namespace Chummer
 			UpdateCharacterInfo();
 		}
 
-		/// <summary>
-		/// Calculate the number of Adept Power Points used.
-		/// </summary>
-		private void CalculatePowerPoints()
-		{
-			decimal decPowerPoints = 0;
-
-			foreach (PowerControl objPowerControl in panPowers.Controls)
-			{
-				decPowerPoints += objPowerControl.PowerPoints;
-				objPowerControl.UpdatePointsPerLevel();
-			}
-
-			int intMAG = 0;
-			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-			{
-				// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-				intMAG = _objCharacter.MysticAdeptPowerPoints;
-			}
-			else
-			{
-				// The character is just an Adept, so use the full value.
-				intMAG = _objCharacter.MAG.TotalValue;
-			}
-
-			// Add any Power Point Improvements to MAG.
-			intMAG += _objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
-
-			string strRemain = (intMAG - decPowerPoints).ToString(GlobalOptions.CultureInfo);
-			while (strRemain.EndsWith("0") && strRemain.Length > 4)
-				strRemain = strRemain.Substring(0, strRemain.Length - 1);
-
-			lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
-		}
-
 	    public void RefreshContacts()
 	    {
 			HashSet<Contact> existing = new HashSet<Contact>();
@@ -20415,14 +20123,9 @@ namespace Chummer
 				// Create the Essence Loss Improvements.
 				if (intReduction > 0)
 				{
-                    _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
-                    _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
-                    _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
-
-                    if (_objCharacter.AdeptEnabled)
-                    {
-                        CalculatePowerPoints();                        
-                    }
+                    _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                    _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                    _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
                 }
 
 				int intEssenceLoss = 0;
@@ -20789,8 +20492,10 @@ namespace Chummer
 					objSpiritControl.RebuildSpiritList(_objCharacter.MagicTradition);
 				}
 
-				// Update Adept Powers.
-				RefreshPowers();
+				if (_objCharacter.AdeptEnabled)
+				{
+					tabPowerUc.MissingDatabindingsWorkaround();
+				}
 
 				// Update the Drain CharacterAttribute Value.
 				if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
@@ -20888,8 +20593,8 @@ namespace Chummer
 				// Skill Limits
 				RefreshLimits(lblPhysical, lblMental, lblSocial, lblAstral, tipTooltip);
 
-                // Initiative.
-                lblINI.Text = _objCharacter.Initiative;
+				// Initiative.
+				lblINI.Text = _objCharacter.Initiative;
                 string strInitText = LanguageManager.Instance.GetString("String_Initiative");
                 string strMatrixInitText = LanguageManager.Instance.GetString("String_MatrixInitiativeLong");
                 string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
@@ -20898,9 +20603,9 @@ namespace Chummer
                     strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
                 tipTooltip.SetToolTip(lblINI, strInitText.Replace("{0}", strInit).Replace("{1}", _objCharacter.InitiativeDice.ToString()));
 
-                // Astral Initiative.
-                lblAstralINI.Visible = _objCharacter.MAGEnabled;
-                if (_objCharacter.MAGEnabled)
+				// Astral Initiative.
+				lblAstralINI.Visible = _objCharacter.MAGEnabled;
+				if (_objCharacter.MAGEnabled)
                 {
                     lblAstralINI.Text = _objCharacter.AstralInitiative;
                     strInit = $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.Value}) x 2";
@@ -20937,8 +20642,6 @@ namespace Chummer
                     strInit += $"{strModifiers} ({_objCharacter.REA.AttributeModifiers + _objCharacter.INT.AttributeModifiers})";
                 tipTooltip.SetToolTip(lblRiggingINI, strInitText.Replace("{0}", strInit).Replace("{1}", _objCharacter.InitiativeDice.ToString()));
 
-                if (_objCharacter.AdeptEnabled)
-					CalculatePowerPoints();
 				if ((_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter) || _objCharacter.MetatypeCategory.EndsWith("Spirits"))
 				{
 					lblCritterPowerPointsLabel.Visible = true;
@@ -20965,29 +20668,29 @@ namespace Chummer
 				lblSwim.Text = _objCharacter.Swim;
 				lblFly.Text = _objCharacter.Fly;
 
-                // Special CharacterAttribute-Only Test.
-                lblComposure.Text = _objCharacter.Composure.ToString();
+				// Special CharacterAttribute-Only Test.
+				lblComposure.Text = _objCharacter.Composure.ToString();
                 strTip = $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) + {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue})";
-                tipTooltip.SetToolTip(lblComposure, strTip);
-                lblJudgeIntentions.Text = _objCharacter.JudgeIntentions.ToString();
+				tipTooltip.SetToolTip(lblComposure, strTip);
+				lblJudgeIntentions.Text = _objCharacter.JudgeIntentions.ToString();
                 strTip = $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue})";
-                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions) != 0)
-                    strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions).ToString() + ")";
-                tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
-                lblLiftCarry.Text = _objCharacter.LiftAndCarry.ToString();
+				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions) != 0)
+					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions).ToString() + ")";
+				tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
+				lblLiftCarry.Text = _objCharacter.LiftAndCarry.ToString();
                 strTip = $"{_objCharacter.STR.DisplayAbbrev} ({_objCharacter.STR.TotalValue}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
-                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry) != 0)
-                    strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry).ToString() + ")";
-                strTip += "\n" + LanguageManager.Instance.GetString("Tip_LiftAndCarry").Replace("{0}", (_objCharacter.STR.TotalValue * 15).ToString()).Replace("{1}", (_objCharacter.STR.TotalValue * 10).ToString());
-                tipTooltip.SetToolTip(lblLiftCarry, strTip);
-                lblMemory.Text = _objCharacter.Memory.ToString();
+				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry) != 0)
+					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry).ToString() + ")";
+				strTip += "\n" + LanguageManager.Instance.GetString("Tip_LiftAndCarry").Replace("{0}", (_objCharacter.STR.TotalValue * 15).ToString()).Replace("{1}", (_objCharacter.STR.TotalValue * 10).ToString());
+				tipTooltip.SetToolTip(lblLiftCarry, strTip);
+				lblMemory.Text = _objCharacter.Memory.ToString();
                 strTip = $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) + {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue})";
-                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Memory) != 0)
-                    strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory).ToString() + ")";
-                tipTooltip.SetToolTip(lblMemory, strTip);
+				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.Memory) != 0)
+					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory).ToString() + ")";
+				tipTooltip.SetToolTip(lblMemory, strTip);
 
-                // Career Karma.
-                lblCareerKarma.Text = $"{_objCharacter.CareerKarma:###,###,##0}";
+				// Career Karma.
+				lblCareerKarma.Text = $"{_objCharacter.CareerKarma:###,###,##0}";
 
 				// Career Nuyen.
 				lblCareerNuyen.Text = $"{_objCharacter.CareerNuyen:###,###,##0¥}";
@@ -21057,7 +20760,8 @@ namespace Chummer
                 lblCyberlimbSTRLabel.Visible = false;
                 return;
 			}
-            Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
+	        Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(),
+	            _objCharacter.Cyberware);
             // Locate the selected piece of Cyberware.
 			if (objCyberware != null)
 			{
@@ -21067,7 +20771,9 @@ namespace Chummer
 				string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
 				string strPage = objCyberware.Page;
 				lblCyberwareSource.Text = strBook + " " + strPage;
-				tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
+	            tipTooltip.SetToolTip(lblCyberwareSource,
+	                _objOptions.LanguageBookLong(objCyberware.Source) + " " +
+	                LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
 				lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
 				lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
@@ -21140,7 +20846,9 @@ namespace Chummer
 
 				lblCyberwareAvail.Text = objCyberware.TotalAvail;
 				lblCyberwareCost.Text = $"{objCyberware.TotalCost:###,###,##0¥}";
-				lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" + objCyberware.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+	            lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
+	                                        objCyberware.CapacityRemaining.ToString() + " " +
+	                                        LanguageManager.Instance.GetString("String_Remaining") + ")";
 				lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(GlobalOptions.CultureInfo);
 				UpdateCharacterInfo();
 			}
@@ -21148,7 +20856,8 @@ namespace Chummer
 			{
 				// Locate the selected piece of Gear.
 				Cyberware objFoundCyberware = new Cyberware(_objCharacter);
-				Gear objGear = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objFoundCyberware);
+	            Gear objGear = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(),
+	                _objCharacter.Cyberware, out objFoundCyberware);
 
                 if (objGear != null)
                 {
@@ -21158,12 +20867,18 @@ namespace Chummer
                     cboCyberwareGearFirewall.BeginUpdate();
                     if (objGear.GetType() == typeof(Commlink))
                     {
-                        Commlink objCommlink = (Commlink)objGear;
+	                    Commlink objCommlink = (Commlink) objGear;
                         lblGearDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                         _blnSkipRefresh = true;
                         chkActiveCommlink.Checked = objCommlink.IsActive;
                         _blnSkipRefresh = false;
-                        List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+	                    List<string> objASDF = new List<string>()
+	                    {
+	                        objCommlink.Attack.ToString(),
+	                        objCommlink.Sleaze.ToString(),
+	                        objCommlink.DataProcessing.ToString(),
+	                        objCommlink.Firewall.ToString()
+	                    };
 
                         cboCyberwareGearAttack.BindingContext = new BindingContext();
                         cboCyberwareGearAttack.ValueMember = "Value";
@@ -21229,63 +20944,19 @@ namespace Chummer
                     lblCyberwareCategory.Text = objGear.DisplayCategory;
                     lblCyberwareAvail.Text = objGear.TotalAvail(true);
                     lblCyberwareCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
-                    lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+	                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() +
+	                                            " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     lblCyberwareEssence.Text = "0";
                     lblCyberwareGrade.Text = string.Empty;
                     lblCyberwareRating.Text = objGear.Rating.ToString();
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblCyberwareSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
-                }
-			}
-		}
-
-        public void RefreshPowers()
-        {
-            _blnLoading = true;
-
-            foreach (PowerControl pc in panPowers.Controls)
-            {
-                pc.PowerRatingChanged += objPower_PowerRatingChanged;
-                pc.DeletePower += objPower_DeletePower;
+	                tipTooltip.SetToolTip(lblCyberwareSource,
+	                    _objOptions.LanguageBookLong(objGear.Source) + " " +
+	                    LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
             }
-
-            // Remove Adept Powers.
-            panPowers.Controls.Clear();
-
-            // Populate Adept Powers.
-            int i = -1;
-            foreach (Power objPower in _objCharacter.Powers)
-            {
-                i++;
-                PowerControl objPowerControl = new PowerControl();
-                objPowerControl.PowerObject = objPower;
-
-                // Attach an EventHandler for the PowerRatingChanged Event.
-                objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
-                objPowerControl.DeletePower += objPower_DeletePower;
-
-                objPowerControl.PowerName = objPower.Name;
-                objPowerControl.Extra = objPower.Extra;
-                objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
-                objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
-                objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-                if (objPower.MaxLevels > 0)
-                    objPowerControl.MaxLevels = objPower.MaxLevels;
-                objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-                if (objPower.Rating < 1)
-                    objPower.Rating = 1;
-                objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
-                if (objPower.DiscountedAdeptWay)
-                    objPowerControl.DiscountedByAdeptWay = true;
-                if (objPower.DiscountedGeas)
-                    objPowerControl.DiscountedByGeas = true;
-
-                objPowerControl.Top = i * objPowerControl.Height;
-                panPowers.Controls.Add(objPowerControl);
             }
-            _blnLoading = false;
         }
 
         public void RefreshAIPrograms()
@@ -24965,7 +24636,7 @@ namespace Chummer
 			}
 			tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.Instance.GetString("Tip_BurnStreetCred"));
 
-            // CharacterAttribute Labels.
+			// CharacterAttribute Labels.
             lblBODLabel.Text = $"{_objCharacter.BOD.DisplayName} ({_objCharacter.BOD.DisplayAbbrev})";
             lblAGILabel.Text = $"{_objCharacter.AGI.DisplayName} ({_objCharacter.AGI.DisplayAbbrev})";
             lblREALabel.Text = $"{_objCharacter.REA.DisplayName} ({_objCharacter.REA.DisplayAbbrev})";
@@ -24978,9 +24649,9 @@ namespace Chummer
             lblMAGLabel.Text = $"{_objCharacter.MAG.DisplayName} ({_objCharacter.MAG.DisplayAbbrev})";
             lblRESLabel.Text = $"{_objCharacter.RES.DisplayName} ({_objCharacter.RES.DisplayAbbrev})";
 
-            // Reposition controls based on their new sizes.
-            // Common Tab.
-            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
+			// Reposition controls based on their new sizes.
+			// Common Tab.
+			txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
 			txtAlias.Width = lblMetatypeLabel.Left - 6 - txtAlias.Left;
 			cmdSwapQuality.Left = cmdAddQuality.Left + cmdAddQuality.Width + 6;
 			cmdDeleteQuality.Left = cmdSwapQuality.Left + cmdSwapQuality.Width + 6;
@@ -25161,9 +24832,6 @@ namespace Chummer
 			cmdRollDrain.Left = lblDrainAttributesValue.Left + lblDrainAttributesValue.Width + 6;
 			cmdRollSpell.Visible = _objOptions.AllowSkillDiceRolling;
 			cmdRollDrain.Visible = _objOptions.AllowSkillDiceRolling;
-
-			// Adept Powers tab.
-			lblPowerPoints.Left = lblPowerPointsLabel.Left + lblPowerPointsLabel.Width + 6;
 
 			// Sprites and Complex Forms tab.
             int intLeft = lblDurationLabel.Width;
