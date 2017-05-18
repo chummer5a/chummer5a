@@ -404,7 +404,7 @@ namespace Chummer
 					return decReturn;
 				else
 				{
-					decReturn = Levels * PointsPerLevel;
+					decReturn = Rating * PointsPerLevel;
 				    if (decReturn > 0)
 				    {
 				        decReturn += ExtraPointCost;
@@ -559,29 +559,6 @@ namespace Chummer
 			set
 			{
 				_strNotes = value;
-			}
-		}
-
-		/// <summary>
-		/// Total levels of the Power.
-		/// </summary>
-		public decimal Levels
-		{
-			get
-			{
-				decimal actualRating = Rating - FreeLevels;
-				decimal newRating = actualRating + FreeLevels;
-
-				if (newRating < FreeLevels)
-				{
-					newRating = FreeLevels;
-				}
-
-				if (newRating > Convert.ToDecimal(CharacterObject.MAG.Value, GlobalOptions.InvariantCultureInfo))
-				{
-					newRating = Convert.ToDecimal(CharacterObject.MAG.Value, GlobalOptions.InvariantCultureInfo);
-				}
-				return newRating;
 			}
 		}
 
