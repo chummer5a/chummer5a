@@ -23,7 +23,7 @@ namespace Chummer.UI.Options
         private readonly HowerHelper _howerHelper = new HowerHelper();
         private readonly ToolTip _toolTip = new ToolTip();
         private RTree<string> _toolTipTree = new RTree<string>();
-        
+
         public List<IOptionWinFromControlFactory> Factories { get; set; }
 
         public OptionRender() : this(new TabAlignmentGroupLayoutProvider())
@@ -35,6 +35,7 @@ namespace Chummer.UI.Options
             _defaultGroupLayoutProvider = layoutProvider;
             IntitializeComponent();
         }
+
 
         private void IntitializeComponent()
         {

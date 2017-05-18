@@ -457,4 +457,6 @@ namespace Chummer
         #endregion
 
     }
+
+    
 }

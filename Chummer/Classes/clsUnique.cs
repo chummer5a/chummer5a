@@ -627,12 +627,12 @@ namespace Chummer
                     if (intLimbCount > 0)
                     {
                         intReturn = 0;
-                        if (intLimbCount < _objCharacter.Options.LimbCount)
+                        if (intLimbCount < _objCharacter.Options.LimbCount.GetNumberOfLimbs())
                         {
                             // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
-                            for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
+                            for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount.GetNumberOfLimbs(); i++)
                                 intLimbTotal += intMeat;
-                            intLimbCount = _objCharacter.Options.LimbCount;
+                            intLimbCount = _objCharacter.Options.LimbCount.GetNumberOfLimbs();
                         }
                         int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.Instance.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.Instance.CultureInfo)));
                         intReturn += intTotal;

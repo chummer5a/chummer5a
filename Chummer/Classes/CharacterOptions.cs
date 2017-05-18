@@ -267,8 +267,8 @@ namespace Chummer
 	    /// Number of Limbs a standard character has.
 	    /// </summary>
 	    [SavePropertyAs("limbcount")]
-	    //TODO: Handler for comboboxes
-	    public int LimbCount { get; set; } = 6;
+	    
+	    public LimbCount LimbCount { get; set; } = LimbCount.All;
 
 	    /// <summary>
 	    /// Exclude a particular Limb Slot from count towards the Limb Count.
@@ -946,4 +946,24 @@ namespace Chummer
 		[DisplayIgnore] //TODO: Do something
 	    public string RecentImageFolder { get; set; } = "";
 	}
+
+    public enum LimbCount
+    {
+        //Hack with 2 purposes. First it fixes sorting order, second it allows us to have 2 enum values with the value 5
+        All = 6,
+        NoHead = 0x100+5,
+        NoTorso = 0x200+5,
+        NoHeadNoTorso = 0x300+4
+    }
+
+    public static class LimbCountExtensions
+    {
+        public static int GetNumberOfLimbs(this LimbCount limbCount) => (int)limbCount & 0xff;
+    }
+
+    public class CreationOptions
+    {
+        public CharacterBuildMethod DefaultBuildMethod { get; set; } = CharacterBuildMethod.Priority;
+        public int PointCount { get; set; } = 25;
+    }
 }

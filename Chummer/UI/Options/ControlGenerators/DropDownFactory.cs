@@ -11,6 +11,10 @@ namespace Chummer.UI.Options.ControlGenerators
 {
     class DropDownFactory : IOptionWinFromControlFactory
     {
+        //Probably going to give errors if display scaling is enabled
+        private const int DOWN_ARRAY_SPACE = 20;
+        private const int TEXTBOX_MATCH_LABEL = 4;
+
         public bool IsSupported(OptionItem backingEntry)
         {
             OptionEntryProxy v = backingEntry as OptionEntryProxy;
@@ -18,10 +22,6 @@ namespace Chummer.UI.Options.ControlGenerators
             {
                 if (v.TargetProperty.PropertyType.IsEnum ||  v.TargetProperty.GetCustomAttribute<DropDownAttribute>() != null)
                     return true;
-
-                //TODO: DropDownAttribute or something...
-
-
             }
             return false;
         }
@@ -41,15 +41,23 @@ namespace Chummer.UI.Options.ControlGenerators
                 if (v.TargetProperty.PropertyType.IsEnum)
                 {
                     List<Enum> enums = new List<Enum>();
-
+                    string name = v.TargetProperty.PropertyType.Name;
                     foreach (var value in Enum.GetValues(v.TargetProperty.PropertyType).Cast<Enum>())
                     {
+                        string valueName = $"{name}_{value}";
                         enums.Add(value);
-                        strings.Add(value.ToString());
+                        string display;
+                        strings.Add(LanguageManager.Instance.TryGetString(valueName, out display)
+                            ? display
+                            : value.ToString());
                     }
 
                     // ReSharper disable once ObjectCreationAsStatement
                     new ComboBoxBinder<Enum>(v, backing, strings, enums);
+
+
+                    backing.Width = strings.Select(s => TextRenderer.MeasureText(s, Control.DefaultFont).Width).Max() + DOWN_ARRAY_SPACE;
+                    backing.Top -= TEXTBOX_MATCH_LABEL;
                     return backing;
                 }
                 DropDownAttribute attribute = v.TargetProperty.GetCustomAttribute<DropDownAttribute>();
