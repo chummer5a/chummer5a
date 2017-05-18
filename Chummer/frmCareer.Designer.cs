@@ -543,7 +543,6 @@ namespace Chummer
             this.cmdRollSpell = new System.Windows.Forms.Button();
             this.cmdAddSpell = new SplitButton();
             this.tabAdept = new System.Windows.Forms.TabPage();
-            this.cmdAddPower = new System.Windows.Forms.Button();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
             this.lblFV = new System.Windows.Forms.Label();
             this.lblFVLabel = new System.Windows.Forms.Label();

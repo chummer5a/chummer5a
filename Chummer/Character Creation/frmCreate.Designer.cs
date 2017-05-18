@@ -5213,57 +5213,14 @@ namespace Chummer
             // tabAdept
             // 
             this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.tabAdept.Controls.Add(this.panPowers);
-            this.tabAdept.Controls.Add(this.lblPowerPoints);
-            this.tabAdept.Controls.Add(this.lblPowerPointsLabel);
-            this.tabAdept.Controls.Add(this.cmdAddPower);
+            this.tabAdept.Controls.Add(this.tabPowerUc);
             this.tabAdept.Location = new System.Drawing.Point(4, 22);
             this.tabAdept.Name = "tabAdept";
             this.tabAdept.Size = new System.Drawing.Size(838, 611);
             this.tabAdept.TabIndex = 2;
             this.tabAdept.Tag = "Tab_Adept";
             this.tabAdept.Text = "Adept Powers";
-            // 
-            // panPowers
-            // 
-            this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panPowers.AutoScroll = true;
-            this.panPowers.Location = new System.Drawing.Point(11, 54);
-            this.panPowers.Name = "panPowers";
-            this.panPowers.Size = new System.Drawing.Size(827, 554);
-            this.panPowers.TabIndex = 4;
-            // 
-            // lblPowerPoints
-            // 
-            this.lblPowerPoints.AutoSize = true;
-            this.lblPowerPoints.Location = new System.Drawing.Point(86, 9);
-            this.lblPowerPoints.Name = "lblPowerPoints";
-            this.lblPowerPoints.Size = new System.Drawing.Size(76, 13);
-            this.lblPowerPoints.TabIndex = 3;
-            this.lblPowerPoints.Text = "0 (0 remaining)";
-            // 
-            // lblPowerPointsLabel
-            // 
-            this.lblPowerPointsLabel.AutoSize = true;
-            this.lblPowerPointsLabel.Location = new System.Drawing.Point(8, 9);
-            this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
-            this.lblPowerPointsLabel.Size = new System.Drawing.Size(72, 13);
-            this.lblPowerPointsLabel.TabIndex = 2;
-            this.lblPowerPointsLabel.Tag = "Label_PowerPoints";
-            this.lblPowerPointsLabel.Text = "Power Points:";
-            // 
-            // cmdAddPower
-            // 
-            this.cmdAddPower.Location = new System.Drawing.Point(11, 25);
-            this.cmdAddPower.Name = "cmdAddPower";
-            this.cmdAddPower.Size = new System.Drawing.Size(75, 23);
-            this.cmdAddPower.TabIndex = 1;
-            this.cmdAddPower.Tag = "Button_AddPower";
-            this.cmdAddPower.Text = "&Add Power";
-            this.cmdAddPower.UseVisualStyleBackColor = true;
-            this.cmdAddPower.Click += new System.EventHandler(this.cmdAddPower_Click);
+ 
 			// 
 			// tabAdept
 			// 
