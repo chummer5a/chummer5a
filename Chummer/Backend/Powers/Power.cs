@@ -289,7 +289,7 @@ namespace Chummer
 		{
 			get
 			{
-			    decimal decReturn = Convert.ToDecimal(_strPointsPerLevel);
+			    decimal decReturn = Convert.ToDecimal(_strPointsPerLevel,GlobalOptions.InvariantCultureInfo);
 			    return decReturn;
 			}
 			set
@@ -315,7 +315,7 @@ namespace Chummer
 		{
 			get
 			{
-			    decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount);
+			    decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalOptions.InvariantCultureInfo);
 			    return decReturn;
 			}
 			set
@@ -577,9 +577,9 @@ namespace Chummer
 					newRating = FreeLevels;
 				}
 
-				if (newRating > Convert.ToDecimal(CharacterObject.MAG.Value))
+				if (newRating > Convert.ToDecimal(CharacterObject.MAG.Value, GlobalOptions.InvariantCultureInfo))
 				{
-					newRating = Convert.ToDecimal(CharacterObject.MAG.Value);
+					newRating = Convert.ToDecimal(CharacterObject.MAG.Value, GlobalOptions.InvariantCultureInfo);
 				}
 				return newRating;
 			}

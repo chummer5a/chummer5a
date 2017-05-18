@@ -1635,7 +1635,7 @@
 			<name>Lie Detector</name>
 			<points>.25</points>
 			<adeptway>0</adeptway>
-			<levels>yes</levels>
+			<levels>true</levels>
 			<limit>1</limit>
 			<bonus>
 				<judgeintentions>Rating</judgeintentions>
@@ -1648,7 +1648,7 @@
 			<name>Osmosis</name>
 			<points>.25</points>
 			<adeptway>0</adeptway>
-			<levels>yes</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<required>
         		<oneof>

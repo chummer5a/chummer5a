@@ -133,10 +133,9 @@ namespace Chummer
 			XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + lstPowers.SelectedValue + "\"]");
 
             lblPowerPoints.Text = objXmlPower["points"].InnerText;
-			if (objXmlPower["levels"].InnerText == "yes")
+			if (Convert.ToBoolean(objXmlPower["levels"].InnerText))
 			{
-				lblPowerPoints.Text += " / ";
-				lblPowerPoints.Text += LanguageManager.Instance.GetString("Label_Power_Level");
+				lblPowerPoints.Text += $" / {LanguageManager.Instance.GetString("Label_Power_Level")}";
 			}
 
 			string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
