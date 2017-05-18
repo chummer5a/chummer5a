@@ -1346,6 +1346,11 @@ namespace Chummer
                         {
                             _objCharacter.Powers.Remove(objImprovedPower);
                         }
+                        else
+                        {
+                            // TODO Find a better way to trigger OnPropertyChanged() of the Power object
+                            objImprovedPower.TotalRating = objImprovedPower.TotalRating;
+                        }
                         break;
 				}
 			}
