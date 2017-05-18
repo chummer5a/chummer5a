@@ -400,20 +400,24 @@ namespace Chummer
 			get
 			{
 				decimal decReturn = 0;
-				if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
-					return decReturn;
-				else
-				{
-					decReturn = Rating * PointsPerLevel;
-				    if (decReturn > 0)
-				    {
-				        decReturn += ExtraPointCost;
-				    }
-				    decReturn -= Discount;
+			    if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
+			    {
+			        return decReturn;
+			    }
 
-                    return Math.Max(decReturn, 0);
-				}
-			}
+			    if (FreeLevels * PointsPerLevel >= FreePoints)
+			    {
+			        decReturn = Rating * PointsPerLevel;
+			        decReturn += ExtraPointCost;
+			    }
+			    else
+			    {
+			        decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
+			        decReturn -= FreePoints;
+			    }
+			    decReturn -= Discount;
+                return Math.Max(decReturn, 0);
+			}			
 		}
 
 	    public string DisplayPoints
