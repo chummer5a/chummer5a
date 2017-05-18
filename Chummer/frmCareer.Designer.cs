@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Chummer.UI.Powers;
 using Chummer.UI.Skills;
 using ComboBox = Chummer.helpers.ComboBox;
 using TreeView = Chummer.helpers.TreeView;
@@ -1192,7 +1193,7 @@ namespace Chummer
 			this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPowerUc = new Chummer.UI.Skills.PowersTabUserControl();
+            this.tabPowerUc = new PowersTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();

@@ -13,7 +13,8 @@ namespace Chummer.Backend.Equipment
 	/// </summary>
 	public class Gear : INamedParentWithGuid<Gear>
     {
-		protected Guid _guiID = new Guid();
+		protected Guid _guiID;
+		protected string _SourceGuid;
 		protected string _strName = string.Empty;
 		protected string _strCategory = string.Empty;
 		protected int _intMaxRating = 0;
@@ -82,7 +83,8 @@ namespace Chummer.Backend.Equipment
 		{
 		    if (objXmlGear == null)
 		        return;
-            objXmlGear.TryGetStringFieldQuickly("name", ref _strName);
+			objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid);
+			objXmlGear.TryGetStringFieldQuickly("name", ref _strName);
             objXmlGear.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlGear.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlGear.TryGetStringFieldQuickly("avail3", ref _strAvail3);
@@ -119,11 +121,8 @@ namespace Chummer.Backend.Equipment
 					_strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
 
 				objGearNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objGearNode != null)
-				{
-					if (objGearNode.Attributes?["translate"] != null)
-						_strAltCategory = objGearNode.Attributes["translate"].InnerText;
-				}
+				if (objGearNode?.Attributes?["translate"] != null)
+					_strAltCategory = objGearNode.Attributes["translate"].InnerText;
 
 				if (_strAltCategory.StartsWith("Stacked Focus"))
 					_strAltCategory = _strAltCategory.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
@@ -455,6 +454,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objWeaponNodes">List of TreeNodes for the Weapons created by the copied item.</param>
 		public void Copy(Gear objGear, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
 		{
+			_SourceGuid = objGear._SourceGuid;
 			_strName = objGear.Name;
 			_strCategory = objGear.Category;
 			_intMaxRating = objGear.MaxRating;
@@ -526,7 +526,8 @@ namespace Chummer.Backend.Equipment
 		public virtual void SaveInner(XmlTextWriter objWriter)
         {
             objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("name", _strName);
+			objWriter.WriteElementString("id", _SourceGuid);
+			objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
@@ -615,7 +616,8 @@ namespace Chummer.Backend.Equipment
 		public virtual void Load(XmlNode objNode, bool blnCopy = false)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+			objNode.TryGetStringFieldQuickly("id", ref _SourceGuid);
+			objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
@@ -701,15 +703,33 @@ namespace Chummer.Backend.Equipment
 					_strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
 
 				objGearNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objGearNode != null)
-				{
-                    objGearNode.TryGetStringFieldQuickly("translate", ref _strAltCategory);
-				}
+				objGearNode?.TryGetStringFieldQuickly("translate", ref _strAltCategory);
 
 				if (_strAltCategory.StartsWith("Stacked Focus"))
 					_strAltCategory = _strAltCategory.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
 			}
 
+			// Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements. 
+			if (_strName == "Qi Focus" || _SourceGuid != null)
+			{
+				Version.TryParse("5.193.5", out Version test);
+				if (test != null)
+				{
+					int intResult = _objCharacter.LastSavedVersion.CompareTo(test);
+					//Check for typo in Corrupter quality and correct it
+					if (intResult == -1)
+					{
+						XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+						XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strName + "\"]");
+						if (gear != null)
+						{
+							Equipped = false;
+							_objCharacter.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, InternalId);
+							Bonus = gear["bonus"];
+						}
+					}
+				}
+			}
 			if (blnCopy)
 			{
 				_guiID = Guid.NewGuid();
@@ -827,7 +847,13 @@ namespace Chummer.Backend.Equipment
 				return _guiID.ToString();
 			}
 		}
-
+		public string SourceID
+		{
+			get
+			{
+				return _SourceGuid;
+			}
+		}
 		/// <summary>
 		/// Whether or not an item is an A.I.'s Home Node.
 		/// </summary>

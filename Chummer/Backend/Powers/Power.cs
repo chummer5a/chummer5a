@@ -420,7 +420,7 @@ namespace Chummer
 	    {
 	        get
 	        {
-	            return _displayPoints ?? PowerPoints.ToString();
+	            return _displayPoints ?? PowerPoints.ToString("G29");
 	        }
 	        set { _displayPoints = value; }
 	    }

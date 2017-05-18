@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Skills
+﻿namespace Chummer.UI.Powers
 {
 	partial class PowersTabUserControl
 	{
@@ -165,7 +165,7 @@
 			this.Controls.Add(this.cboDisplayFilter);
 			this.Name = "PowersTabUserControl";
 			this.Size = new System.Drawing.Size(830, 611);
-			this.Load += new System.EventHandler(this.SkillsTabUserControl_Load);
+			this.Load += new System.EventHandler(this.PowersTabUserControl_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

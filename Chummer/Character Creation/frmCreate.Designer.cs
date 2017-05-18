@@ -1,5 +1,6 @@
 ﻿using Chummer.helpers;
 using System;
+using Chummer.UI.Powers;
 
 namespace Chummer
 {
@@ -936,7 +937,7 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPowerUc = new Chummer.UI.Skills.PowersTabUserControl();
+            this.tabPowerUc = new PowersTabUserControl();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -11812,7 +11813,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.Label lblMugshotDimensions;
-        private UI.Skills.PowersTabUserControl tabPowerUc;
+        private PowersTabUserControl tabPowerUc;
     }
 }
 

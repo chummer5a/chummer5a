@@ -8,10 +8,11 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Powers;
-using Chummer.Skills;
 using Chummer.UI.Shared;
 
-namespace Chummer.UI.Skills
+// ReSharper disable StringCompareToIsCultureSpecific
+
+namespace Chummer.UI.Powers
 {
 	public partial class PowersTabUserControl : UserControl
 	{
@@ -30,12 +31,11 @@ namespace Chummer.UI.Skills
 			CalculatePowerPoints();
 		}
 
-		private bool _loadCalled = false;
-		private bool _initialized = false;
+		private bool _loadCalled;
+		private bool _initialized;
 		private Character _character;
 		private List<Tuple<string, Predicate<Power>>> _dropDownList;
 		private List<Tuple<string, IComparer<Power>>>  _sortList;
-		private List<PowerControl> controls = new List<PowerControl>();
 		private bool _searchMode;
 
 		public Character ObjCharacter
@@ -48,7 +48,7 @@ namespace Chummer.UI.Skills
 			get { return _character; }
 		}
 
-		private void SkillsTabUserControl_Load(object sender, EventArgs e)
+		private void PowersTabUserControl_Load(object sender, EventArgs e)
 		{
 			_loadCalled = true;
 			RealLoad();
@@ -73,7 +73,7 @@ namespace Chummer.UI.Skills
 			//this.SuspendLayout();
 			MakePowerDisplays();
 
-			parts.TaskEnd("MakeSkillDisplay()");
+			parts.TaskEnd("MakePowerDisplay()");
 
 			_dropDownList = GenerateDropdownFilter();
 
@@ -106,7 +106,7 @@ namespace Chummer.UI.Skills
 			//this.ResumeLayout(false);
 			//this.PerformLayout();
 			parts.TaskEnd("visible");
-			Panel1_Resize(null, null);
+			Panel1_Resize();
 			parts.TaskEnd("resize");
 			sw.Stop();
 			Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
@@ -148,7 +148,7 @@ namespace Chummer.UI.Skills
 			ret.AddRange(
 				from XmlNode objNode 
 				in XmlManager.Instance.Load("powers.xml").SelectNodes("/chummer/categories/category")
-				let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
+				let displayName = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
 				select new Tuple<string, Predicate<Power>>(
 					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
 					power => power.Category == objNode.InnerText));
@@ -171,15 +171,13 @@ namespace Chummer.UI.Skills
 
 		}
 
-		private void Panel1_Resize(object sender, EventArgs e)
+		private void Panel1_Resize()
 		{
 			int height = pnlPowers.Height;
-			int intWidth = 255;
-			if (_powers != null)
-			{
-				_powers.Height = height - _powers.Top;
-				_powers.Size = new Size(pnlPowers.Width - (intWidth+10), pnlPowers.Height - 39);
-			}
+			const int intWidth = 255;
+			if (_powers == null) return;
+			_powers.Height = height - _powers.Top;
+			_powers.Size = new Size(pnlPowers.Width - (intWidth+10), pnlPowers.Height - 39);
 		}
 
 		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -252,7 +250,7 @@ namespace Chummer.UI.Skills
 		{
 			get
 			{
-				int intMAG = 0;
+				int intMAG;
 				if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
 				{
 					// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
