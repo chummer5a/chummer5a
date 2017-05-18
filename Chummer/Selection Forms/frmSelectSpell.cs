@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+ using Chummer.Backend.Shared_Methods;
 
 namespace Chummer
 {
@@ -70,19 +71,20 @@ namespace Chummer
 
 			// Populate the Category list.
 			XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+			HashSet<string> limit = new HashSet<string>();
+	        foreach (Improvement improvement in _objCharacter.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpellCategory))
+	        {
+				limit.Add(improvement.ImprovedName);
+			}
 			foreach (XmlNode objXmlCategory in objXmlNodeList)
 			{
-				if (string.IsNullOrEmpty(_strLimitCategory) || _strLimitCategory == objXmlCategory.InnerText)
-				{
-					TreeNode nodCategory = new TreeNode();
-					nodCategory.Tag = objXmlCategory.InnerText;
-					if (objXmlCategory.Attributes["translate"] != null)
-						nodCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
-					else
-						nodCategory.Text = objXmlCategory.InnerText;
+				if ((limit.Count <= 0 || !limit.Contains(objXmlCategory.InnerText)) && limit.Count != 0) continue;
+				if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != objXmlCategory.InnerText) continue;
+				TreeNode nodCategory = new TreeNode();
+				nodCategory.Tag = objXmlCategory.InnerText;
+				nodCategory.Text = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
 
-					treSpells.Nodes.Add(nodCategory);
-				}
+				treSpells.Nodes.Add(nodCategory);
 			}
 
 			// Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is diabled.
@@ -305,7 +307,7 @@ namespace Chummer
 						break;
 					case "S":
                         lblDamageLabel.Visible = true;
-                        lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
+						lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
 						break;
 					default:
                         lblDamageLabel.Visible = false;
@@ -437,11 +439,15 @@ namespace Chummer
 							return;
 
 						}
-					}
+                        if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, "", null, null, _objXmlDocument))
+                        {
+                            return;
+                        }
+                    }
 				}
 				if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0)
-				{
-                    AcceptForm();
+				{				    
+				    AcceptForm();
 				}
 			}
 		}

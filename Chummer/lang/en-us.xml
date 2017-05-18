@@ -794,6 +794,10 @@
       <key>String_MatrixInitiativeLong</key>
       <text>{0} + Data Processing +{1}d6</text>
     </string>
+    <string>
+      <key>Checkbox_HideOverAvailLimit</key>
+      <text>Hide Items Over Avail Limit ({0})</text>
+    </string>
 		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>
@@ -2695,6 +2699,22 @@
 			<text>Firewall</text>
 		</string>
 		<string>
+			<key>String_PowerFilterAll</key>
+			<text>Show All Powers</text>
+		</string>
+		<string>
+			<key>Power_SortAction</key>
+			<text>Action</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingAboveZero</key>
+			<text>Show Active Powers Rating &gt; 0</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingZero</key>
+			<text>Show Powers Rating = 0</text>
+		</string>
+		<string>
 			<key>String_SkillFilterAll</key>
 			<text>Show All Active Skills</text>
 		</string>
@@ -3464,6 +3484,10 @@
 			<text>Complex</text>
 		</string>
     <string>
+			<key>String_ActionInterrupt</key>
+			<text>Interrupt (-5 Initiative)</text>
+		</string>
+    <string>
       <key>String_NotSupported</key>
       <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
     </string>
@@ -3873,6 +3897,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_PowerPoints</key>
 			<text>Power Points:</text>
+		</string>
+		<string>
+			<key>Label_PowerLevels</key>
+			<text>Levels:</text>
 		</string>
 		<string>
 			<key>Button_AddPower</key>
@@ -7755,7 +7783,7 @@ Do you want to continue?</text>
 			<key>Message_SelectQuality_QualityRequirement</key>
 			<text>You do not meet the requirements for this Quality. You must meet at least one of the following criteria:</text>
 		</string>
-    <string>
+		<string>
       <key>Message_SelectQuality_RequireESSBelow</key>
       <text>Essence below {0}: You have {1}</text>
     </string>

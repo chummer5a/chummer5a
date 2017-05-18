@@ -60,9 +60,12 @@ namespace Chummer
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = string.Empty;
 			}
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
 
-			// Load the Vehicle information.
-			_objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            // Load the Vehicle information.
+            _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 
 			// Populate the Vehicle Category list.
 			XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -107,7 +110,7 @@ namespace Chummer
 			XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlVehicle in objXmlVehicleList)
 			{
-			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
 			    {
 			        if (objXmlVehicle["hidden"] != null)
 			            continue;
@@ -159,7 +162,7 @@ namespace Chummer
 			{
                 if (objXmlVehicle["hidden"] != null)
                     continue;
-			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+			    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
 			    {
 			        ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
 			        objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;

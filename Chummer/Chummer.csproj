@@ -161,6 +161,7 @@
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
+    <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
     <Compile Include="Backend\Skills\Skill.core.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
@@ -350,6 +352,12 @@
     </Compile>
     <Compile Include="UI\Shared\BindingListDisplay.Designer.cs">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Powers\PowersTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Powers\PowersTabUserControl.Designer.cs">
+      <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Skills\SkillsTabUserControl.cs">
       <SubType>UserControl</SubType>
@@ -771,10 +779,10 @@
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PowerControl.cs">
+    <Compile Include="UI\Powers\PowerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PowerControl.Designer.cs">
+    <Compile Include="UI\Powers\PowerControl.Designer.cs">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
@@ -892,6 +900,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\BindingListDisplay.resx">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Powers\PowersTabUserControl.resx">
+      <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
@@ -1106,7 +1117,7 @@
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PowerControl.resx">
+    <EmbeddedResource Include="UI\Powers\PowerControl.resx">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
@@ -1145,6 +1156,9 @@
     <None Include="data\bioware.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\bonuses.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="data\books.xsc">
       <DependentUpon>books.xsd</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1175,8 +1189,14 @@
     <None Include="data\gear.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\lifestyles.xsc">
+      <DependentUpon>lifestyles.xsd</DependentUpon>
+    </None>
     <None Include="data\lifestyles.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\lifestyles.xss">
+      <DependentUpon>lifestyles.xsd</DependentUpon>
     </None>
     <None Include="data\martialarts.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1208,6 +1228,9 @@
     </None>
     <None Include="data\ranges.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\conditions.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="data\skills.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1627,6 +1650,7 @@
     </Content>
     <Content Include="data\weapons.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="Expand.png" />
     <Content Include="export\Squad Manager.xsl">

@@ -25,6 +25,7 @@ using System.Xml;
 using System.Reflection;
  using System.Text.RegularExpressions;
  using System.Windows;
+ using System.Windows.Shapes;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
  using Application = System.Windows.Forms.Application;
@@ -32,6 +33,9 @@ using System.Reflection;
  using DragDropEffects = System.Windows.Forms.DragDropEffects;
  using DragEventArgs = System.Windows.Forms.DragEventArgs;
  using MessageBox = System.Windows.Forms.MessageBox;
+ using Path = System.IO.Path;
+ using Point = System.Drawing.Point;
+ using Rectangle = System.Drawing.Rectangle;
  using Size = System.Drawing.Size;
 
 namespace Chummer
@@ -123,7 +127,7 @@ namespace Chummer
             XmlManager.Instance.Load("critters.xml");
             XmlManager.Instance.Load("critterpowers.xml");
             XmlManager.Instance.Load("cyberware.xml");
-            XmlManager.Instance.Load("drugcomponents.xml");
+            // XmlManager.Instance.Load("drugcomponents.xml"); TODO: Re-enable when Custom Drugs branch is merged
             XmlManager.Instance.Load("echoes.xml");
             XmlManager.Instance.Load("gameplayoptions.xml");
             XmlManager.Instance.Load("gear.xml");
@@ -513,9 +517,10 @@ namespace Chummer
 
 		private void frmMain_Load(object sender, EventArgs e)
 		{
-			if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0)
+			if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
 			{
 				Size = new Size(1191, 752);
+				StartPosition = FormStartPosition.CenterScreen;
 			}
 			else
 			{
@@ -536,6 +541,11 @@ namespace Chummer
     //        {
 				//CommonFunctions objFunctions = new CommonFunctions();
     //        }
+		}
+
+		private bool IsVisibleOnAnyScreen()
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
 		}
 
 		private void frmMain_DragDrop(object sender, DragEventArgs e)

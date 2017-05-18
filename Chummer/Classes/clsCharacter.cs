@@ -213,7 +213,7 @@ namespace Chummer
         private List<Spell> _lstSpells = new List<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
-        private List<Power> _lstPowers = new List<Power>();
+        private BindingList<Power> _lstPowers = new BindingList<Power>();
         private List<ComplexForm> _lstComplexForms = new List<ComplexForm>();
         private List<AIProgram> _lstAIPrograms = new List<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
@@ -518,7 +518,7 @@ namespace Chummer
 
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
 
-            
+            objWriter.WriteElementString("ambidextrous", _ambidextrous.ToString());
 
             objWriter.WriteElementString("lightningreflexes", _blnLightningReflexes.ToString());
 
@@ -918,6 +918,7 @@ namespace Chummer
         {
 			Timekeeper.Start("load_xml");
             XmlDocument objXmlDocument = new XmlDocument();
+	        if (!File.Exists(_strFileName)) return false;
             using (StreamReader sr = new StreamReader(_strFileName, true))
             {
                 try
@@ -962,7 +963,7 @@ namespace Chummer
                 if (intResult == -1)
                 {
                     string strMessage = LanguageManager.Instance.GetString("Message_OutdatedChummerSave").Replace("{0}", _verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
-                    DialogResult result = MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DialogResult result = MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                     if (result != DialogResult.Yes)
                     {
@@ -1154,7 +1155,8 @@ namespace Chummer
 		    objXmlCharacter.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
 		    objXmlCharacter.TryGetBoolFieldQuickly("lightningreflexes", ref _blnLightningReflexes);
 		    objXmlCharacter.TryGetBoolFieldQuickly("fame", ref _blnFame);
-		    objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
+            objXmlCharacter.TryGetBoolFieldQuickly("ambidextrous", ref _ambidextrous);
+            objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
 		    objXmlCharacter.TryGetBoolFieldQuickly("erased", ref _blnErased);
             objXmlCharacter.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
 		    objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
@@ -2608,7 +2610,7 @@ namespace Chummer
             _lstSpells = new List<Spell>();
             _lstFoci = new List<Focus>();
             _lstStackedFoci = new List<StackedFocus>();
-            _lstPowers = new List<Power>();
+            _lstPowers = new BindingList<Power>();
             _lstComplexForms = new List<ComplexForm>();
             _lstAIPrograms = new List<AIProgram>();
             _lstMartialArts = new List<MartialArt>();
@@ -4962,7 +4964,7 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        public List<Power> Powers
+        public BindingList<Power> Powers
         {
             get
             {

@@ -1,5 +1,6 @@
 ﻿using Chummer.helpers;
 using System;
+using Chummer.UI.Powers;
 
 namespace Chummer
 {
@@ -33,32 +34,33 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Physical");
-            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Mental");
-            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Social");
-            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
-            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Selected Qualities");
-            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
-            System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
-            System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Selected Health Spells");
-            System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
-            System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
-            System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Selected Rituals");
-            System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Selected Enchantments");
-            System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
-            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
-            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Critter Powers");
-            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Weaknesses");
-            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Selected Cyberware");
-            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Selected Bioware");
-            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Selected Armor");
-            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Selected Gear");
-            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            this.StatusStrip = new System.Windows.Forms.StatusStrip();
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Physical");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Mental");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Social");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Qualities");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Health Spells");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Rituals");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Critter Powers");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Weaknesses");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Cyberware");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Bioware");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Armor");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Weapons");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Gear");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+			this.tabPowerUc = new PowersTabUserControl();
+			this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.tssBPLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssBP = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssBPRemainLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -398,6 +400,8 @@ namespace Chummer
             this.treMartialArts = new Chummer.helpers.TreeView();
             this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
             this.tabMagician = new System.Windows.Forms.TabPage();
+            this.lblTraditionSource = new System.Windows.Forms.Label();
+            this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
             this.cboSpiritManipulation = new Chummer.helpers.ComboBox();
             this.lblSpiritManipulation = new System.Windows.Forms.Label();
             this.cboSpiritIllusion = new Chummer.helpers.ComboBox();
@@ -443,10 +447,6 @@ namespace Chummer
             this.panSpirits = new System.Windows.Forms.Panel();
             this.cmdAddSpell = new SplitButton();
             this.tabAdept = new System.Windows.Forms.TabPage();
-            this.panPowers = new System.Windows.Forms.Panel();
-            this.lblPowerPoints = new System.Windows.Forms.Label();
-            this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this.cmdAddPower = new System.Windows.Forms.Button();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
             this.lblLivingPersonaFirewall = new System.Windows.Forms.Label();
             this.lblLivingPersonaFirewallLabel = new System.Windows.Forms.Label();
@@ -940,6 +940,7 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPowerUc = new PowersTabUserControl();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -3718,15 +3719,15 @@ namespace Chummer
             this.treQualities.Indent = 15;
             this.treQualities.Location = new System.Drawing.Point(6, 38);
             this.treQualities.Name = "treQualities";
-            treeNode26.Name = "nodPositiveQualityRoot";
-            treeNode26.Tag = "Node_SelectedPositiveQualities";
-            treeNode26.Text = "Selected Positive Qualities";
-            treeNode27.Name = "nodNegativeQualityRoot";
-            treeNode27.Tag = "Node_SelectedNegativeQualities";
-            treeNode27.Text = "Selected Negative Qualities";
+            treeNode1.Name = "nodPositiveQualityRoot";
+            treeNode1.Tag = "Node_SelectedPositiveQualities";
+            treeNode1.Text = "Selected Positive Qualities";
+            treeNode2.Name = "nodNegativeQualityRoot";
+            treeNode2.Tag = "Node_SelectedNegativeQualities";
+            treeNode2.Text = "Selected Negative Qualities";
             this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode26,
-            treeNode27});
+            treeNode1,
+            treeNode2});
             this.treQualities.ShowNodeToolTips = true;
             this.treQualities.ShowPlusMinus = false;
             this.treQualities.ShowRootLines = false;
@@ -4533,19 +4534,19 @@ namespace Chummer
             this.treLimit.HideSelection = false;
             this.treLimit.Location = new System.Drawing.Point(8, 33);
             this.treLimit.Name = "treLimit";
-            treeNode28.Name = "trePhysicalRoot";
-            treeNode28.Tag = "Node_Physical";
-            treeNode28.Text = "Physical";
-            treeNode29.Name = "treMentalRoot";
-            treeNode29.Tag = "Node_Mental";
-            treeNode29.Text = "Mental";
-            treeNode30.Name = "treSocialRoot";
-            treeNode30.Tag = "Node_Social";
-            treeNode30.Text = "Social";
+            treeNode3.Name = "trePhysicalRoot";
+            treeNode3.Tag = "Node_Physical";
+            treeNode3.Text = "Physical";
+            treeNode4.Name = "treMentalRoot";
+            treeNode4.Tag = "Node_Mental";
+            treeNode4.Text = "Mental";
+            treeNode5.Name = "treSocialRoot";
+            treeNode5.Tag = "Node_Social";
+            treeNode5.Text = "Social";
             this.treLimit.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode28,
-            treeNode29,
-            treeNode30});
+            treeNode3,
+            treeNode4,
+            treeNode5});
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
@@ -4621,14 +4622,14 @@ namespace Chummer
             this.treMartialArts.HideSelection = false;
             this.treMartialArts.Location = new System.Drawing.Point(8, 35);
             this.treMartialArts.Name = "treMartialArts";
-            treeNode31.Name = "treMartialArtsRoot";
-            treeNode31.Tag = "Node_SelectedMartialArts";
-            treeNode31.Text = "Selected Martial Arts";
-            treeNode32.Name = "treQualitiesRoot";
-            treeNode32.Text = "Selected Qualities";
+            treeNode6.Name = "treMartialArtsRoot";
+            treeNode6.Tag = "Node_SelectedMartialArts";
+            treeNode6.Text = "Selected Martial Arts";
+            treeNode7.Name = "treQualitiesRoot";
+            treeNode7.Text = "Selected Qualities";
             this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode31,
-            treeNode32});
+            treeNode6,
+            treeNode7});
             this.treMartialArts.ShowNodeToolTips = true;
             this.treMartialArts.ShowPlusMinus = false;
             this.treMartialArts.ShowRootLines = false;
@@ -4653,6 +4654,8 @@ namespace Chummer
             // tabMagician
             // 
             this.tabMagician.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabMagician.Controls.Add(this.lblTraditionSource);
+            this.tabMagician.Controls.Add(this.lblTraditionSourceLabel);
             this.tabMagician.Controls.Add(this.cboSpiritManipulation);
             this.tabMagician.Controls.Add(this.lblSpiritManipulation);
             this.tabMagician.Controls.Add(this.cboSpiritIllusion);
@@ -4706,6 +4709,26 @@ namespace Chummer
             this.tabMagician.TabIndex = 1;
             this.tabMagician.Tag = "Tab_Magician";
             this.tabMagician.Text = "Spells and Spirits";
+            // 
+            // lblTraditionSource
+            // 
+            this.lblTraditionSource.AutoSize = true;
+            this.lblTraditionSource.Location = new System.Drawing.Point(404, 244);
+            this.lblTraditionSource.Name = "lblTraditionSource";
+            this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
+            this.lblTraditionSource.TabIndex = 155;
+            this.lblTraditionSource.Text = "[Source]";
+            this.lblTraditionSource.Click += new System.EventHandler(this.lblTraditionSource_Click);
+            // 
+            // lblTraditionSourceLabel
+            // 
+            this.lblTraditionSourceLabel.AutoSize = true;
+            this.lblTraditionSourceLabel.Location = new System.Drawing.Point(309, 244);
+            this.lblTraditionSourceLabel.Name = "lblTraditionSourceLabel";
+            this.lblTraditionSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblTraditionSourceLabel.TabIndex = 154;
+            this.lblTraditionSourceLabel.Tag = "Label_Source";
+            this.lblTraditionSourceLabel.Text = "Source:";
             // 
             // cboSpiritManipulation
             // 
@@ -5103,35 +5126,35 @@ namespace Chummer
             this.treSpells.HideSelection = false;
             this.treSpells.Location = new System.Drawing.Point(8, 55);
             this.treSpells.Name = "treSpells";
-            treeNode33.Name = "nodSpellCombatRoot";
-            treeNode33.Tag = "Node_SelectedCombatSpells";
-            treeNode33.Text = "Selected Combat Spells";
-            treeNode34.Name = "nodSpellDetectionRoot";
-            treeNode34.Tag = "Node_SelectedDetectionSpells";
-            treeNode34.Text = "Selected Detection Spells";
-            treeNode35.Name = "nodSpellHealthRoot";
-            treeNode35.Tag = "Node_SelectedHealthSpells";
-            treeNode35.Text = "Selected Health Spells";
-            treeNode36.Name = "nodSpellIllusionRoot";
-            treeNode36.Tag = "Node_SelectedIllusionSpells";
-            treeNode36.Text = "Selected Illusion Spells";
-            treeNode37.Name = "nodSpellManipulationRoot";
-            treeNode37.Tag = "Node_SelectedManipulationSpells";
-            treeNode37.Text = "Selected Manipulation Spells";
-            treeNode38.Name = "nodSpellGeomancyRoot";
-            treeNode38.Tag = "Node_SelectedGeomancyRituals";
-            treeNode38.Text = "Selected Rituals";
-            treeNode39.Name = "nodSpellEnchantmentRoot";
-            treeNode39.Tag = "Node_SelectedEnchantments";
-            treeNode39.Text = "Selected Enchantments";
+            treeNode8.Name = "nodSpellCombatRoot";
+            treeNode8.Tag = "Node_SelectedCombatSpells";
+            treeNode8.Text = "Selected Combat Spells";
+            treeNode9.Name = "nodSpellDetectionRoot";
+            treeNode9.Tag = "Node_SelectedDetectionSpells";
+            treeNode9.Text = "Selected Detection Spells";
+            treeNode10.Name = "nodSpellHealthRoot";
+            treeNode10.Tag = "Node_SelectedHealthSpells";
+            treeNode10.Text = "Selected Health Spells";
+            treeNode11.Name = "nodSpellIllusionRoot";
+            treeNode11.Tag = "Node_SelectedIllusionSpells";
+            treeNode11.Text = "Selected Illusion Spells";
+            treeNode12.Name = "nodSpellManipulationRoot";
+            treeNode12.Tag = "Node_SelectedManipulationSpells";
+            treeNode12.Text = "Selected Manipulation Spells";
+            treeNode13.Name = "nodSpellGeomancyRoot";
+            treeNode13.Tag = "Node_SelectedGeomancyRituals";
+            treeNode13.Text = "Selected Rituals";
+            treeNode14.Name = "nodSpellEnchantmentRoot";
+            treeNode14.Tag = "Node_SelectedEnchantments";
+            treeNode14.Text = "Selected Enchantments";
             this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode33,
-            treeNode34,
-            treeNode35,
-            treeNode36,
-            treeNode37,
-            treeNode38,
-            treeNode39});
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11,
+            treeNode12,
+            treeNode13,
+            treeNode14});
             this.treSpells.ShowNodeToolTips = true;
             this.treSpells.ShowRootLines = false;
             this.treSpells.Size = new System.Drawing.Size(295, 333);
@@ -5190,61 +5213,29 @@ namespace Chummer
             // tabAdept
             // 
             this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.tabAdept.Controls.Add(this.panPowers);
-            this.tabAdept.Controls.Add(this.lblPowerPoints);
-            this.tabAdept.Controls.Add(this.lblPowerPointsLabel);
-            this.tabAdept.Controls.Add(this.cmdAddPower);
+            this.tabAdept.Controls.Add(this.tabPowerUc);
             this.tabAdept.Location = new System.Drawing.Point(4, 22);
             this.tabAdept.Name = "tabAdept";
             this.tabAdept.Size = new System.Drawing.Size(838, 611);
             this.tabAdept.TabIndex = 2;
             this.tabAdept.Tag = "Tab_Adept";
             this.tabAdept.Text = "Adept Powers";
-            // 
-            // panPowers
-            // 
-            this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panPowers.AutoScroll = true;
-            this.panPowers.Location = new System.Drawing.Point(11, 54);
-            this.panPowers.Name = "panPowers";
-            this.panPowers.Size = new System.Drawing.Size(827, 554);
-            this.panPowers.TabIndex = 4;
-            // 
-            // lblPowerPoints
-            // 
-            this.lblPowerPoints.AutoSize = true;
-            this.lblPowerPoints.Location = new System.Drawing.Point(86, 9);
-            this.lblPowerPoints.Name = "lblPowerPoints";
-            this.lblPowerPoints.Size = new System.Drawing.Size(76, 13);
-            this.lblPowerPoints.TabIndex = 3;
-            this.lblPowerPoints.Text = "0 (0 remaining)";
-            // 
-            // lblPowerPointsLabel
-            // 
-            this.lblPowerPointsLabel.AutoSize = true;
-            this.lblPowerPointsLabel.Location = new System.Drawing.Point(8, 9);
-            this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
-            this.lblPowerPointsLabel.Size = new System.Drawing.Size(72, 13);
-            this.lblPowerPointsLabel.TabIndex = 2;
-            this.lblPowerPointsLabel.Tag = "Label_PowerPoints";
-            this.lblPowerPointsLabel.Text = "Power Points:";
-            // 
-            // cmdAddPower
-            // 
-            this.cmdAddPower.Location = new System.Drawing.Point(11, 25);
-            this.cmdAddPower.Name = "cmdAddPower";
-            this.cmdAddPower.Size = new System.Drawing.Size(75, 23);
-            this.cmdAddPower.TabIndex = 1;
-            this.cmdAddPower.Tag = "Button_AddPower";
-            this.cmdAddPower.Text = "&Add Power";
-            this.cmdAddPower.UseVisualStyleBackColor = true;
-            this.cmdAddPower.Click += new System.EventHandler(this.cmdAddPower_Click);
-            // 
-            // tabTechnomancer
-            // 
-            this.tabTechnomancer.BackColor = System.Drawing.SystemColors.ButtonFace;
+ 
+			// 
+			// tabAdept
+			// 
+			this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabAdept.Controls.Add(this.tabPowerUc);
+			this.tabAdept.Location = new System.Drawing.Point(4, 22);
+			this.tabAdept.Name = "tabAdept";
+			this.tabAdept.Size = new System.Drawing.Size(838, 611);
+			this.tabAdept.TabIndex = 2;
+			this.tabAdept.Tag = "Tab_Adept";
+			this.tabAdept.Text = "Adept Powers";
+			// 
+			// tabTechnomancer
+			// 
+			this.tabTechnomancer.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.tabTechnomancer.Controls.Add(this.lblLivingPersonaFirewall);
             this.tabTechnomancer.Controls.Add(this.lblLivingPersonaFirewallLabel);
             this.tabTechnomancer.Controls.Add(this.lblLivingPersonaDataProcessing);
@@ -5496,11 +5487,11 @@ namespace Chummer
             this.treComplexForms.HideSelection = false;
             this.treComplexForms.Location = new System.Drawing.Point(8, 54);
             this.treComplexForms.Name = "treComplexForms";
-            treeNode40.Name = "nodProgramAdvancedRoot";
-            treeNode40.Tag = "Node_SelectedAdvancedComplexForms";
-            treeNode40.Text = "Selected Complex Forms";
+            treeNode15.Name = "nodProgramAdvancedRoot";
+            treeNode15.Tag = "Node_SelectedAdvancedComplexForms";
+            treeNode15.Text = "Selected Complex Forms";
             this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode40});
+            treeNode15});
             this.treComplexForms.ShowNodeToolTips = true;
             this.treComplexForms.ShowRootLines = false;
             this.treComplexForms.Size = new System.Drawing.Size(295, 333);
@@ -5630,11 +5621,11 @@ namespace Chummer
             this.treAIPrograms.HideSelection = false;
             this.treAIPrograms.Location = new System.Drawing.Point(8, 54);
             this.treAIPrograms.Name = "treAIPrograms";
-            treeNode41.Name = "nodAIProgramsRoot";
-            treeNode41.Tag = "Node_SelectedAIPrograms";
-            treeNode41.Text = "Selected AI Programs and Advanced Programs";
+            treeNode16.Name = "nodAIProgramsRoot";
+            treeNode16.Tag = "Node_SelectedAIPrograms";
+            treeNode16.Text = "Selected AI Programs and Advanced Programs";
             this.treAIPrograms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode41});
+            treeNode16});
             this.treAIPrograms.ShowNodeToolTips = true;
             this.treAIPrograms.ShowRootLines = false;
             this.treAIPrograms.Size = new System.Drawing.Size(295, 554);
@@ -5905,15 +5896,15 @@ namespace Chummer
             this.treCritterPowers.HideSelection = false;
             this.treCritterPowers.Location = new System.Drawing.Point(8, 32);
             this.treCritterPowers.Name = "treCritterPowers";
-            treeNode42.Name = "nodCritterPowerRoot";
-            treeNode42.Tag = "Node_CritterPowers";
-            treeNode42.Text = "Critter Powers";
-            treeNode43.Name = "nodCritterWeaknessRoot";
-            treeNode43.Tag = "Node_CritterWeaknesses";
-            treeNode43.Text = "Weaknesses";
+            treeNode17.Name = "nodCritterPowerRoot";
+            treeNode17.Tag = "Node_CritterPowers";
+            treeNode17.Text = "Critter Powers";
+            treeNode18.Name = "nodCritterWeaknessRoot";
+            treeNode18.Tag = "Node_CritterWeaknesses";
+            treeNode18.Text = "Weaknesses";
             this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode42,
-            treeNode43});
+            treeNode17,
+            treeNode18});
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
@@ -6502,15 +6493,15 @@ namespace Chummer
             this.treCyberware.HideSelection = false;
             this.treCyberware.Location = new System.Drawing.Point(8, 36);
             this.treCyberware.Name = "treCyberware";
-            treeNode44.Name = "nodCyberwareRoot";
-            treeNode44.Tag = "Node_SelectedCyberware";
-            treeNode44.Text = "Selected Cyberware";
-            treeNode45.Name = "nodBioware";
-            treeNode45.Tag = "Node_SelectedBioware";
-            treeNode45.Text = "Selected Bioware";
+            treeNode19.Name = "nodCyberwareRoot";
+            treeNode19.Tag = "Node_SelectedCyberware";
+            treeNode19.Text = "Selected Cyberware";
+            treeNode20.Name = "nodBioware";
+            treeNode20.Tag = "Node_SelectedBioware";
+            treeNode20.Text = "Selected Bioware";
             this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode44,
-            treeNode45});
+            treeNode19,
+            treeNode20});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
             this.treCyberware.Size = new System.Drawing.Size(295, 572);
@@ -6705,11 +6696,11 @@ namespace Chummer
             this.treLifestyles.HideSelection = false;
             this.treLifestyles.Location = new System.Drawing.Point(6, 36);
             this.treLifestyles.Name = "treLifestyles";
-            treeNode46.Name = "nodLifestylesRoot";
-            treeNode46.Tag = "Node_SelectedLifestyles";
-            treeNode46.Text = "Selected Lifestyles";
+            treeNode21.Name = "nodLifestylesRoot";
+            treeNode21.Tag = "Node_SelectedLifestyles";
+            treeNode21.Text = "Selected Lifestyles";
             this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode46});
+            treeNode21});
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
             this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -7119,11 +7110,11 @@ namespace Chummer
             this.treArmor.HideSelection = false;
             this.treArmor.Location = new System.Drawing.Point(6, 36);
             this.treArmor.Name = "treArmor";
-            treeNode47.Name = "nodArmorRoot";
-            treeNode47.Tag = "Node_SelectedArmor";
-            treeNode47.Text = "Selected Armor";
+            treeNode22.Name = "nodArmorRoot";
+            treeNode22.Tag = "Node_SelectedArmor";
+            treeNode22.Text = "Selected Armor";
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode47});
+            treeNode22});
             this.treArmor.ShowNodeToolTips = true;
             this.treArmor.Size = new System.Drawing.Size(295, 537);
             this.treArmor.TabIndex = 69;
@@ -7575,11 +7566,11 @@ namespace Chummer
             this.treWeapons.HideSelection = false;
             this.treWeapons.Location = new System.Drawing.Point(6, 36);
             this.treWeapons.Name = "treWeapons";
-            treeNode48.Name = "nodWeaponsRoot";
-            treeNode48.Tag = "Node_SelectedWeapons";
-            treeNode48.Text = "Selected Weapons";
+            treeNode23.Name = "nodWeaponsRoot";
+            treeNode23.Tag = "Node_SelectedWeapons";
+            treeNode23.Text = "Selected Weapons";
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode48});
+            treeNode23});
             this.treWeapons.ShowNodeToolTips = true;
             this.treWeapons.Size = new System.Drawing.Size(295, 540);
             this.treWeapons.TabIndex = 29;
@@ -8277,11 +8268,11 @@ namespace Chummer
             this.treGear.HideSelection = false;
             this.treGear.Location = new System.Drawing.Point(6, 36);
             this.treGear.Name = "treGear";
-            treeNode49.Name = "nodGearRoot";
-            treeNode49.Tag = "Node_SelectedGear";
-            treeNode49.Text = "Selected Gear";
+            treeNode24.Name = "nodGearRoot";
+            treeNode24.Tag = "Node_SelectedGear";
+            treeNode24.Text = "Selected Gear";
             this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode49});
+            treeNode24});
             this.treGear.ShowNodeToolTips = true;
             this.treGear.Size = new System.Drawing.Size(295, 540);
             this.treGear.TabIndex = 49;
@@ -9264,11 +9255,11 @@ namespace Chummer
             this.treVehicles.HideSelection = false;
             this.treVehicles.Location = new System.Drawing.Point(8, 36);
             this.treVehicles.Name = "treVehicles";
-            treeNode50.Name = "nodVehiclesRoot";
-            treeNode50.Tag = "Node_SelectedVehicles";
-            treeNode50.Text = "Selected Vehicles";
+            treeNode25.Name = "nodVehiclesRoot";
+            treeNode25.Tag = "Node_SelectedVehicles";
+            treeNode25.Text = "Selected Vehicles";
             this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode50});
+            treeNode25});
             this.treVehicles.ShowNodeToolTips = true;
             this.treVehicles.ShowRootLines = false;
             this.treVehicles.Size = new System.Drawing.Size(403, 572);
@@ -10784,187 +10775,195 @@ namespace Chummer
             this.cmsAdvancedProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddAdvancedProgramOption,
             this.tsAIProgramNotes});
-            this.cmsAdvancedProgram.Name = "cmsAdvancedProgram";
-            this.cmsAdvancedProgram.Size = new System.Drawing.Size(137, 48);
-            this.cmsAdvancedProgram.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			this.cmsAdvancedProgram.Name = "cmsAdvancedProgram";
+			this.cmsAdvancedProgram.Size = new System.Drawing.Size(137, 48);
+			this.cmsAdvancedProgram.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			// 
+			// tsAddAdvancedProgramOption
+			// 
+			this.tsAddAdvancedProgramOption.Image = global::Chummer.Properties.Resources.plugin_add;
+			this.tsAddAdvancedProgramOption.Name = "tsAddAdvancedProgramOption";
+			this.tsAddAdvancedProgramOption.Size = new System.Drawing.Size(136, 22);
+			this.tsAddAdvancedProgramOption.Tag = "Menu_AddOption";
+			this.tsAddAdvancedProgramOption.Text = "&Add Option";
             // 
-            // tsAddAdvancedProgramOption
+            // tabPowersUC
             // 
-            this.tsAddAdvancedProgramOption.Image = global::Chummer.Properties.Resources.plugin_add;
-            this.tsAddAdvancedProgramOption.Name = "tsAddAdvancedProgramOption";
-            this.tsAddAdvancedProgramOption.Size = new System.Drawing.Size(136, 22);
-            this.tsAddAdvancedProgramOption.Tag = "Menu_AddOption";
-            this.tsAddAdvancedProgramOption.Text = "&Add Option";
+            this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
+            this.tabPowerUc.Name = "tabPowersUC";
+            this.tabPowerUc.ObjCharacter = null;
+            this.tabPowerUc.Size = new System.Drawing.Size(838, 611);
+            this.tabPowerUc.TabIndex = 0;
             // 
             // tsAIProgramNotes
             // 
             this.tsAIProgramNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsAIProgramNotes.Name = "tsAIProgramNotes";
-            this.tsAIProgramNotes.Size = new System.Drawing.Size(136, 22);
-            this.tsAIProgramNotes.Tag = "Menu_Notes";
-            this.tsAIProgramNotes.Text = "&Notes";
-            this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
-            // 
-            // frmCreate
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1040, 664);
-            this.Controls.Add(this.splitMain);
-            this.Controls.Add(this.StatusStrip);
-            this.Controls.Add(this.toolStrip);
-            this.Controls.Add(this.mnuCreateMenu);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.mnuCreateMenu;
-            this.Name = "frmCreate";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Chummer - Create New Character";
-            this.Activated += new System.EventHandler(this.frmCreate_Activated);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCreate_FormClosing);
-            this.Load += new System.EventHandler(this.frmCreate_Load);
-            this.Shown += new System.EventHandler(this.frmCreate_Shown);
-            this.Resize += new System.EventHandler(this.frmCreate_Resize);
-            this.StatusStrip.ResumeLayout(false);
-            this.StatusStrip.PerformLayout();
-            this.cmsMartialArts.ResumeLayout(false);
-            this.cmsSpellButton.ResumeLayout(false);
-            this.cmsComplexForm.ResumeLayout(false);
-            this.cmsCyberware.ResumeLayout(false);
-            this.cmsLifestyle.ResumeLayout(false);
-            this.cmsArmor.ResumeLayout(false);
-            this.cmsWeapon.ResumeLayout(false);
-            this.cmsGearButton.ResumeLayout(false);
-            this.cmsVehicle.ResumeLayout(false);
-            this.mnuCreateMenu.ResumeLayout(false);
-            this.mnuCreateMenu.PerformLayout();
-            this.toolStrip.ResumeLayout(false);
-            this.toolStrip.PerformLayout();
-            this.cmsGear.ResumeLayout(false);
-            this.cmsVehicleWeapon.ResumeLayout(false);
-            this.cmsVehicleGear.ResumeLayout(false);
-            this.cmsArmorGear.ResumeLayout(false);
-            this.cmsArmorMod.ResumeLayout(false);
-            this.cmsQuality.ResumeLayout(false);
-            this.cmsSpell.ResumeLayout(false);
-            this.cmsCritterPowers.ResumeLayout(false);
-            this.cmsLifestyleNotes.ResumeLayout(false);
-            this.cmsWeaponAccessory.ResumeLayout(false);
-            this.cmsGearPlugin.ResumeLayout(false);
-            this.cmsComplexFormPlugin.ResumeLayout(false);
-            this.cmsBioware.ResumeLayout(false);
-            this.cmsAdvancedLifestyle.ResumeLayout(false);
-            this.cmsGearLocation.ResumeLayout(false);
-            this.cmsArmorLocation.ResumeLayout(false);
-            this.cmsCyberwareGear.ResumeLayout(false);
-            this.cmsWeaponAccessoryGear.ResumeLayout(false);
-            this.cmsVehicleLocation.ResumeLayout(false);
-            this.cmsVehicleWeaponAccessory.ResumeLayout(false);
-            this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
-            this.cmsWeaponLocation.ResumeLayout(false);
-            this.splitMain.Panel1.ResumeLayout(false);
-            this.splitMain.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
-            this.splitMain.ResumeLayout(false);
-            this.tabCharacterTabs.ResumeLayout(false);
-            this.tabCommon.ResumeLayout(false);
-            this.tabCommon.PerformLayout();
-            this.tabPeople.ResumeLayout(false);
-            this.tabContacts.ResumeLayout(false);
-            this.tabContacts.PerformLayout();
-            this.tabEnemies.ResumeLayout(false);
-            this.tabEnemies.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
-            this.panAttributes.ResumeLayout(false);
-            this.panAttributes.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDEP)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKRES)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKWIL)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKLOG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKINT)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKCHA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKSTR)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKREA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKAGI)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKBOD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudRES)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMAG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudEDG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudWIL)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLOG)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudINT)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCHA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSTR)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudREA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAGI)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudBOD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).EndInit();
-            this.tabSkills.ResumeLayout(false);
-            this.tabLimits.ResumeLayout(false);
-            this.tabLimits.PerformLayout();
-            this.tabMartialArts.ResumeLayout(false);
-            this.tabMartialArts.PerformLayout();
-            this.tabMagician.ResumeLayout(false);
-            this.tabMagician.PerformLayout();
-            this.tabAdept.ResumeLayout(false);
-            this.tabAdept.PerformLayout();
-            this.tabTechnomancer.ResumeLayout(false);
-            this.tabTechnomancer.PerformLayout();
-            this.tabAdvancedPrograms.ResumeLayout(false);
-            this.tabAdvancedPrograms.PerformLayout();
-            this.tabCritter.ResumeLayout(false);
-            this.tabCritter.PerformLayout();
-            this.tabInitiation.ResumeLayout(false);
-            this.tabInitiation.PerformLayout();
-            this.tabCyberware.ResumeLayout(false);
-            this.tabCyberware.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCyberwareRating)).EndInit();
-            this.tabStreetGear.ResumeLayout(false);
-            this.tabStreetGearTabs.ResumeLayout(false);
-            this.tabLifestyle.ResumeLayout(false);
-            this.tabLifestyle.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).EndInit();
-            this.tabArmor.ResumeLayout(false);
-            this.tabArmor.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).EndInit();
-            this.tabWeapons.ResumeLayout(false);
-            this.tabWeapons.PerformLayout();
-            this.tabGear.ResumeLayout(false);
-            this.tabGear.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
-            this.tabPets.ResumeLayout(false);
-            this.tabPets.PerformLayout();
-            this.tabVehicles.ResumeLayout(false);
-            this.tabVehicles.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVehicleGearQty)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVehicleRating)).EndInit();
-            this.tabCharacterInfo.ResumeLayout(false);
-            this.tabCharacterInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
-            this.tabImprovements.ResumeLayout(false);
-            this.tabInfo.ResumeLayout(false);
-            this.tabBPSummary.ResumeLayout(false);
-            this.tabBPSummary.PerformLayout();
-            this.tabBuildSummary.ResumeLayout(false);
-            this.tabBuildSummary.PerformLayout();
-            this.tabOtherInfo.ResumeLayout(false);
-            this.tabOtherInfo.PerformLayout();
-            this.tabDefences.ResumeLayout(false);
-            this.tabDefences.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
-            this.cmsLimitModifier.ResumeLayout(false);
-            this.cmsInitiationNotes.ResumeLayout(false);
-            this.cmsMetamagic.ResumeLayout(false);
-            this.cmsTechnique.ResumeLayout(false);
-            this.cmsAdvancedProgram.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			this.tsAIProgramNotes.Name = "tsAIProgramNotes";
+			this.tsAIProgramNotes.Size = new System.Drawing.Size(136, 22);
+			this.tsAIProgramNotes.Tag = "Menu_Notes";
+			this.tsAIProgramNotes.Text = "&Notes";
+			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
+			// 
+			// frmCreate
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = true;
+			this.ClientSize = new System.Drawing.Size(1040, 664);
+			this.Controls.Add(this.splitMain);
+			this.Controls.Add(this.StatusStrip);
+			this.Controls.Add(this.toolStrip);
+			this.Controls.Add(this.mnuCreateMenu);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MainMenuStrip = this.mnuCreateMenu;
+			this.Name = "frmCreate";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Chummer - Create New Character";
+			this.Activated += new System.EventHandler(this.frmCreate_Activated);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCreate_FormClosing);
+			this.Load += new System.EventHandler(this.frmCreate_Load);
+			this.Shown += new System.EventHandler(this.frmCreate_Shown);
+			this.Resize += new System.EventHandler(this.frmCreate_Resize);
+			this.StatusStrip.ResumeLayout(false);
+			this.StatusStrip.PerformLayout();
+			this.cmsMartialArts.ResumeLayout(false);
+			this.cmsSpellButton.ResumeLayout(false);
+			this.cmsComplexForm.ResumeLayout(false);
+			this.cmsCyberware.ResumeLayout(false);
+			this.cmsLifestyle.ResumeLayout(false);
+			this.cmsArmor.ResumeLayout(false);
+			this.cmsWeapon.ResumeLayout(false);
+			this.cmsGearButton.ResumeLayout(false);
+			this.cmsVehicle.ResumeLayout(false);
+			this.mnuCreateMenu.ResumeLayout(false);
+			this.mnuCreateMenu.PerformLayout();
+			this.toolStrip.ResumeLayout(false);
+			this.toolStrip.PerformLayout();
+			this.cmsGear.ResumeLayout(false);
+			this.cmsVehicleWeapon.ResumeLayout(false);
+			this.cmsVehicleGear.ResumeLayout(false);
+			this.cmsArmorGear.ResumeLayout(false);
+			this.cmsArmorMod.ResumeLayout(false);
+			this.cmsQuality.ResumeLayout(false);
+			this.cmsSpell.ResumeLayout(false);
+			this.cmsCritterPowers.ResumeLayout(false);
+			this.cmsLifestyleNotes.ResumeLayout(false);
+			this.cmsWeaponAccessory.ResumeLayout(false);
+			this.cmsGearPlugin.ResumeLayout(false);
+			this.cmsComplexFormPlugin.ResumeLayout(false);
+			this.cmsBioware.ResumeLayout(false);
+			this.cmsAdvancedLifestyle.ResumeLayout(false);
+			this.cmsGearLocation.ResumeLayout(false);
+			this.cmsArmorLocation.ResumeLayout(false);
+			this.cmsCyberwareGear.ResumeLayout(false);
+			this.cmsWeaponAccessoryGear.ResumeLayout(false);
+			this.cmsVehicleLocation.ResumeLayout(false);
+			this.cmsVehicleWeaponAccessory.ResumeLayout(false);
+			this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
+			this.cmsWeaponLocation.ResumeLayout(false);
+			this.splitMain.Panel1.ResumeLayout(false);
+			this.splitMain.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
+			this.splitMain.ResumeLayout(false);
+			this.tabCharacterTabs.ResumeLayout(false);
+			this.tabCommon.ResumeLayout(false);
+			this.tabCommon.PerformLayout();
+			this.tabPeople.ResumeLayout(false);
+			this.tabContacts.ResumeLayout(false);
+			this.tabContacts.PerformLayout();
+			this.tabEnemies.ResumeLayout(false);
+			this.tabEnemies.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
+			this.panAttributes.ResumeLayout(false);
+			this.panAttributes.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDEP)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKRES)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKWIL)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKLOG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKINT)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKCHA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKSTR)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKREA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKAGI)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKBOD)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudRES)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMAG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudEDG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudWIL)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudLOG)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudINT)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudCHA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudSTR)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudREA)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudAGI)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudBOD)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).EndInit();
+			this.tabSkills.ResumeLayout(false);
+			this.tabLimits.ResumeLayout(false);
+			this.tabLimits.PerformLayout();
+			this.tabMartialArts.ResumeLayout(false);
+			this.tabMartialArts.PerformLayout();
+			this.tabMagician.ResumeLayout(false);
+			this.tabMagician.PerformLayout();
+			this.tabAdept.ResumeLayout(false);
+			this.tabTechnomancer.ResumeLayout(false);
+			this.tabTechnomancer.PerformLayout();
+			this.tabAdvancedPrograms.ResumeLayout(false);
+			this.tabAdvancedPrograms.PerformLayout();
+			this.tabCritter.ResumeLayout(false);
+			this.tabCritter.PerformLayout();
+			this.tabInitiation.ResumeLayout(false);
+			this.tabInitiation.PerformLayout();
+			this.tabCyberware.ResumeLayout(false);
+			this.tabCyberware.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCyberwareRating)).EndInit();
+			this.tabStreetGear.ResumeLayout(false);
+			this.tabStreetGearTabs.ResumeLayout(false);
+			this.tabLifestyle.ResumeLayout(false);
+			this.tabLifestyle.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).EndInit();
+			this.tabArmor.ResumeLayout(false);
+			this.tabArmor.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).EndInit();
+			this.tabWeapons.ResumeLayout(false);
+			this.tabWeapons.PerformLayout();
+			this.tabGear.ResumeLayout(false);
+			this.tabGear.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
+			this.tabPets.ResumeLayout(false);
+			this.tabPets.PerformLayout();
+			this.tabVehicles.ResumeLayout(false);
+			this.tabVehicles.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudVehicleGearQty)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudVehicleRating)).EndInit();
+			this.tabCharacterInfo.ResumeLayout(false);
+			this.tabCharacterInfo.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
+			this.tabImprovements.ResumeLayout(false);
+			this.tabInfo.ResumeLayout(false);
+			this.tabBPSummary.ResumeLayout(false);
+			this.tabBPSummary.PerformLayout();
+			this.tabBuildSummary.ResumeLayout(false);
+			this.tabBuildSummary.PerformLayout();
+			this.tabOtherInfo.ResumeLayout(false);
+			this.tabOtherInfo.PerformLayout();
+			this.tabDefences.ResumeLayout(false);
+			this.tabDefences.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
+			this.cmsLimitModifier.ResumeLayout(false);
+			this.cmsInitiationNotes.ResumeLayout(false);
+			this.cmsMetamagic.ResumeLayout(false);
+			this.cmsTechnique.ResumeLayout(false);
+			this.cmsAdvancedProgram.ResumeLayout(false);
+			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 		#endregion
@@ -11030,11 +11029,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddSprite;
         private System.Windows.Forms.Label lblSprites;
         private System.Windows.Forms.Panel panSprites;
-        private System.Windows.Forms.Button cmdAddPower;
         private System.Windows.Forms.Label lblComplexForms;
-        private System.Windows.Forms.Label lblPowerPoints;
-        private System.Windows.Forms.Label lblPowerPointsLabel;
-        private System.Windows.Forms.Panel panPowers;
         private System.Windows.Forms.Label lblCyberwareRatingLabel;
         private System.Windows.Forms.Label lblCyberwareCost;
         private System.Windows.Forms.Label lblCyberwareCostLabel;
@@ -11855,6 +11850,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.Label lblMugshotDimensions;
-    }
+        private System.Windows.Forms.Label lblTraditionSource;
+        private System.Windows.Forms.Label lblTraditionSourceLabel;
+		private PowersTabUserControl tabPowerUc;
+	}
 }
 

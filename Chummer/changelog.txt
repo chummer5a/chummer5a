@@ -1,3 +1,18 @@
+Build 194
+
+Application Changes: 
+
+- Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
+- Fixed behaviour of the condition monitors to properly be checked and unchecked.
+- Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
+
+Data Changes:
+
+- Fixed qualities.xml node layout to properly reflect XSD structure. Fixed issues with qualities that would not show up due to a lack of category. 
+- Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
+- Fixed a typo in the Giger Spit spell.
+- Fixed incorrect requirements for spells that require Initiate Arts. 
+
 Build 193
 
 Application Changes:
@@ -19,6 +34,23 @@ Application Changes:
 - Fixed behaviour of weapon Damage to properly show damage values for weapons like flashbang grenades.
 - Added code to remove the need for different versions of the Armor mod for Drones based on Availability. 
 - If a character has the Ambidextrous improvement from cyberware or qualities, their handedness/dominant hand will not be shown as such on the Character Info tab.
+- Fixed a Bug where Chummer would show 0 Availability on every weapon without F or R Availability.
+- Fixed a crash caused by deleting root-level nodes on the Character Roster window. 
+- Refactored RequirementsMet code to be more consitent in approach and behave in a similar manner to AddImprovementCollection. Some weird behaviour may crop up from this, but initial testing seems okay. 
+- Fixed an issue with naming armour objects in career mode.
+- Fixed behaviour of the main Chummer window to not launch on disconnected monitors.
+- Altered the formula for Essence calculations to effectively provide -0.1 per reductive source. Seems to be correct per Word of Freelancer, but I'm not particularly happy with it.
+- Minor quality of life tweaks to cyberware selection form when changing grades. 
+- Fixed a potential crash from attempting to add plugins to Custom Items. 
+- Added support for filtering gear based on the requirement to have a specific item.
+- Fixed behaviour of the Watch folder in the Character Roster to load properly if Watched characters are in the Recent or Sticky list. 
+- Improved support for Drone Arms and Legs to allow installing cyberware modifications that consume Capacity.
+- Fixed an issue with the house rule to have Metatype Minimums count as 1 for the purposes of Karma cost. 
+- Fixed incorrect cost discount of the Submersion Task for Technomancers (20% instead of 10%).
+- Properly removed ineligible Submersion discounts in create mode for Technomancers.
+- Fixed an issue with Vehicle Mod category selection that prevented items from being updated. 
+- Added a source Label for Magic Traditions.
+- Implemented that <doublecareer> tag in data files can prevent doubling quality cost in Career Mode.
 
 Data Changes:
 
@@ -26,6 +58,14 @@ Data Changes:
 - Updated de_data.xml with changes by Noraser.
 - Removed the Armor Restricted (Drone) and Armor Forbidden (Drone) vehicle modifications from vehicles.xml as they're now redundant. Existing drones with the modifications will be unaffected.
 - Fixed incorrect prerequisite arts for the Efficient Ritual and Greater Ritual metamagics. 
+- Fixed an incorrect bonus applied to the Loup-Garou quality that prevented it from being added.
+- Enabled the Smart Firing Platform weapon accessory to add Autosofts to its gear list. 
+- Added content from Forbidden Arcana.
+- Added missing Mentor Spirit from Book of the Lost.
+- Fixed the specialisation bonus of the LeMat 2072.
+- Restored Adapsin to being a set of separate Grades in order to support getting it at a later point and/or removing it while preserving the previous rating. 
+- Polychromatic Lenses can now only be added to Contacts. 
+- Adept Ways no longer cost double in Career Mode.
 
 New Strings:
 
@@ -65,6 +105,7 @@ Application Changes:
 - Added a warning message when loading an XML file if duplicate IDs exist. 
 - Fixed a stack overflow when selecting vehicle mods. 
 - When creating a new knowledge skill, the Type combobox will attempt to populate automatically. 
+- Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
 Data Changes:
 
@@ -174,6 +215,14 @@ New Strings:
 - Title_Browse
 - Checkbox_Option_HideItemsOverAvailLimit
 
+- Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
+
+New Strings: 
+
+- String_PowerFilterAll
+- Power_SortAction
+- String_PowerFilterRatingAboveZero
+- String_PowerFilterRatingZero
 Build 191
 
 Application Changes:
@@ -463,7 +512,6 @@ Application Changes:
 - Modified the Commlink class so that it always executes the methods of its parent Gear class in its overriden methods wherever applicable (greatly improves code portability, as any changes to Gear's methods will be used by Commlink's methods).
 - Fixed a crash caused by searching for a weapon to attach to a vehicle weapon mount. 
 - Corrected A.I. quality restrictions.
-
 Data Changes: 
 
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.

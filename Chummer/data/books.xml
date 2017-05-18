@@ -190,5 +190,10 @@
 			<name>Book of the Lost</name>
 			<code>BOTL</code>
 		</book>
+		<book>
+			<id>6e447106-e250-41b1-855a-2dd1d2075f6d</id>
+			<name>Forbidden Arcana</name>
+			<code>FA</code>
+		</book>
 	</books>
 </chummer>
