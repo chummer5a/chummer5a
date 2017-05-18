@@ -184,7 +184,9 @@ namespace Chummer
             CritterPowerLevel,
             SwapSkillSpecAttribute,
             SpellResistance,
-	        SpellKarmaDiscount
+	        SpellKarmaDiscount,
+	        LimitSpellCategory,
+	        LimitSpiritCategory
         }
 
         public enum ImprovementSource

@@ -206,9 +206,9 @@ namespace Chummer
             }
 
             var selected = lstCyberware.SelectedValue?.ToString() ?? "";
-            txtSearch_TextChanged(sender, e);
+			txtSearch_TextChanged(sender, e);
 
-            for (var index = 0; index < lstCyberware.Items.Count; index++)
+			for (var index = 0; index < lstCyberware.Items.Count; index++)
             {
                 var item = (ListItem) lstCyberware.Items[index];
                 if (item.Value != selected) continue;
@@ -452,8 +452,8 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtSearch.Text))
             {
-                cboCategory_SelectedIndexChanged(sender, e);
-                return;
+				BuildCyberwareList();
+				return;
             }
 			
             string strCategoryFilter = _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
@@ -1160,9 +1160,9 @@ namespace Chummer
             }
             cboGrade.BeginUpdate();
             cboGrade.DataSource = null;
-            cboGrade.ValueMember = "Value";
+			cboGrade.DataSource = _lstGrade;
+			cboGrade.ValueMember = "Value";
             cboGrade.DisplayMember = "Name";
-            cboGrade.DataSource = _lstGrade;
             cboGrade.EndUpdate();
         }
 

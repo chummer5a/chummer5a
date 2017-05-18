@@ -348,17 +348,16 @@ namespace Chummer.Backend.Shared_Methods
 					
 				case "group":
 					// Check that clustered options are present (Magical Tradition + Skill 6, for example)
-					foreach (XmlNode childNode in node.ChildNodes)
+			        string result = string.Empty;
+					if (node.ChildNodes.Cast<XmlNode>().Any(childNode => !TestNodeRequirements(childNode, character, out result, strIgnoreQuality,
+					    objMetatypeDocument,
+					    objCritterDocument, objQualityDocument)))
 					{
-						if (!TestNodeRequirements(childNode, character, out string result, strIgnoreQuality,
-							objMetatypeDocument,
-							objCritterDocument, objQualityDocument))
-						{
-							name = result;
-							return false;
-						}
+					    name = result;
+					    return false;
 					}
-					break;
+			        name = result;
+			        return true;
 				case "initiategrade":
 					// Character's initiate grade must be higher than or equal to the required value.
 					name = "\n\t" + LanguageManager.Instance.GetString("String_InitiateGrade") + " >= " + node.InnerText;

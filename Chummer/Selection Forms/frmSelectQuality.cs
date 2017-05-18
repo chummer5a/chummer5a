@@ -137,8 +137,15 @@ namespace Chummer
             else
             {
                 int.TryParse(objXmlQuality["karma"]?.InnerText, out intBP);
-            }
-            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
+			}
+		    bool doubleCostCareer = true;
+		    if (objXmlQuality["doublecareer"] != null)
+		    {
+                doubleCostCareer = bool.Parse(objXmlQuality["doublecareer"].InnerText);
+		    }
+
+
+		    if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && doubleCostCareer)
             {
                 intBP *= 2;
             }

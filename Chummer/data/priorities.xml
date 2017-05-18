@@ -872,6 +872,19 @@
 					</forbidden>
 				</talent>
 				<talent>
+					<name>Apprentice - 5 Magic</name>
+					<value>Apprentice</value>
+					<qualities>
+						<quality>Apprentice</quality>
+					</qualities>
+					<magic>5</magic>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
 					<name>Technomancer - 4 Resonance/2 Complex Forms</name>
 					<value>Technomancer</value>
 					<qualities>
@@ -963,6 +976,57 @@
 					</forbidden>
 				</talent>
 				<talent>
+					<name>Explorer - 5 Magic</name>
+					<value>Explorer</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<skillgroupchoices>
+						<skillgroup>Enchanting</skillgroup>
+					</skillgroupchoices>
+					<magic>5</magic>
+					<skillqty>1</skillqty>
+					<skillval>2</skillval>
+					<skilltype>magic</skilltype>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Enchanter - 5 Magic</name>
+					<value>Enchanter</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<skillgroupchoices>
+						<skillgroup>Enchanting</skillgroup>
+					</skillgroupchoices>
+					<magic>5</magic>
+					<skillgroupqty>1</skillgroupqty>
+					<skillgroupval>4</skillgroupval>
+					<skillgrouptype>choices</skillgrouptype>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Apprentice - 3 Magic</name>
+					<value>Apprentice</value>
+					<qualities>
+						<quality>Apprentice</quality>
+					</qualities>
+					<magic>3</magic>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
 					<name>Technomancer - 3 Resonance/1 Complex Forms</name>
 					<value>Technomancer</value>
 					<qualities>
@@ -1021,6 +1085,35 @@
 					<skillgrouptype>choices</skillgrouptype>
 					<forbidden>
 						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Aware - 3 Magic</name>
+					<value>Aware</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<magic>3</magic>
+					<skillqty>1</skillqty>
+					<skillval>4</skillval>
+					<skilltype>magic</skilltype>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Apprentice - 2 Magic</name>
+					<value>Apprentice</value>
+					<qualities>
+						<quality>Apprentice</quality>
+					</qualities>
+					<magic>2</magic>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
 					</forbidden>
 				</talent>
 				<talent>
