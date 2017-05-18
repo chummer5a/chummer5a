@@ -1336,6 +1336,17 @@ namespace Chummer
                             }
                         }
                         break;
+                    case Improvement.ImprovementType.AdeptPowerFreeLevels:
+                    case Improvement.ImprovementType.AdeptPowerFreePoints:
+                        // Get the power improved by this improvement
+                        Power objImprovedPower = _objCharacter.Powers.First(objPower => objPower.Name == objImprovement.ImprovedName &&
+                                        objPower.Extra == objImprovement.UniqueName);
+
+                        if (objImprovedPower.TotalRating == 0)
+                        {
+                            _objCharacter.Powers.Remove(objImprovedPower);
+                        }
+                        break;
 				}
 			}
 
