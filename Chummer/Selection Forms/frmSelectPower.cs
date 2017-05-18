@@ -137,8 +137,12 @@ namespace Chummer
 			{
 				lblPowerPoints.Text += $" / {LanguageManager.Instance.GetString("Label_Power_Level")}";
 			}
+            if (objXmlPower["extrapointcost"] != null)
+            {
+                lblPowerPoints.Text = objXmlPower["extrapointcost"].InnerText + " + " + lblPowerPoints.Text;
+            }
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
 			string strPage = objXmlPower["page"].InnerText;
 			if (objXmlPower["altpage"] != null)
 				strPage = objXmlPower["altpage"].InnerText;
