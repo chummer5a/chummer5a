@@ -839,7 +839,7 @@ namespace Chummer
             }
             catch (XPathException) { }
             if (xprEvaluateResult != null && xprEvaluateResult.GetType() == typeof(Double))
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(),GlobalOptions.InvariantCultureInfo)));
             intValue += intOffset;
 			if (intForce > 0)
 			{

@@ -75,7 +75,8 @@ namespace Chummer
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
 				bool blnAdd = true;
-				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText);
+
+				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
 				if (objXmlPower["limit"] != null && !IgnoreLimits)
 				{
 					if (_objCharacter.Powers.Count(power => power.Name == objXmlPower["name"].InnerText) >=
@@ -88,7 +89,7 @@ namespace Chummer
 				{
 					//If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
 					if (_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.Rating > 0))
-						dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText);
+						dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 				}
 				if (_dblLimitToRating > 0 && blnAdd)
 				{
@@ -170,8 +171,8 @@ namespace Chummer
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
 				bool blnAdd = true;
-				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText);
-				dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText);
+				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
+				dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 				if (_dblLimitToRating > 0)
 				{
 					blnAdd = dblPoints <= _dblLimitToRating;

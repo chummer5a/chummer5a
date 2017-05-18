@@ -3058,7 +3058,7 @@ namespace Chummer
                     }
                     if (xprResult != null && _strDV != "Special")
                     {
-                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString())));
+                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(),GlobalOptions.InvariantCultureInfo)));
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
