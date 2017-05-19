@@ -3218,6 +3218,10 @@
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 				<gear rating="3">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
+				<gear>SmartSafety Bracelet</gear>
+				<gear>SmartSafety Bracelet</gear>
+				<gear>SmartSafety Bracelet</gear>
+				<gear>SmartSafety Bracelet</gear>
 			</gears>
 			<mods>
 				<name>Small Weapon Mount (Drone)</name>
