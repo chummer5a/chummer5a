@@ -12,6 +12,7 @@ namespace Chummer.Backend.Shared_Methods
 	internal class SelectionShared
 	{
 		//TODO: Might be a better location for this; Class names are screwy.
+        //TODO: Parameter requirements (errorTitle, errorMessage, et al) can be reduced to a single string check if we assign the Message_Generic_XXXX string locally to the method, but this reduces the ability to push in arbitrary strings. Still not sure if message presentation should be handled by the calling method or not. 
 		/// <summary>
 		///     Evaluates requirements of a given node against a given Character object.
 		/// </summary>
@@ -24,8 +25,10 @@ namespace Chummer.Backend.Shared_Methods
 		/// </param>
 		/// <returns></returns>
 		public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter,
-			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null,
-			XmlDocument objQualityDocument = null)
+			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, 
+            string errorTitle = "MessageTitle_SelectQuality_QualityRequirement", string errorMessage = "Message_SelectQuality_QualityRequirement", 
+            string forbiddenTitle = "MessageTitle_SelectQuality_QualityRestriction", string forbiddenMessage = "Message_SelectQuality_QualityRestriction",
+            string limitTitle = "MessageTitle_SelectQuality_QualityLimit", string limitMessage = "Message_SelectQuality_QualityLimit")
 		{
 			// Ignore the rules.
 			if (objCharacter.IgnoreRules)
@@ -55,8 +58,8 @@ namespace Chummer.Backend.Shared_Methods
 							{
 								if (blnShowMessage)
 									MessageBox.Show(
-										LanguageManager.Instance.GetString("Message_SelectQuality_QualityLimit"),
-										LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityLimit"),
+										LanguageManager.Instance.GetString(limitTitle),
+										LanguageManager.Instance.GetString(limitMessage),
 										MessageBoxButtons.OK, MessageBoxIcon.Information);
 								return false;
 							}
@@ -81,9 +84,9 @@ namespace Chummer.Backend.Shared_Methods
 							{
 								if (blnShowMessage)
 									MessageBox.Show(
-										LanguageManager.Instance.GetString("Message_SelectQuality_QualityRestriction") +
+										LanguageManager.Instance.GetString(forbiddenMessage) +
 										name,
-										LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityRestriction"),
+										LanguageManager.Instance.GetString(forbiddenTitle),
 										MessageBoxButtons.OK, MessageBoxIcon.Information);
 								return false;
 							}
@@ -148,12 +151,12 @@ namespace Chummer.Backend.Shared_Methods
 				if (!blnRequirementMet)
 				{
 					string strMessage =
-						LanguageManager.Instance.GetString("Message_SelectQuality_QualityRequirement");
+						LanguageManager.Instance.GetString(errorMessage);
 					strMessage += strRequirement;
 
 					if (blnShowMessage)
-						MessageBox.Show(strMessage,
-							LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityRequirement"),
+						 MessageBox.Show(strMessage,
+							LanguageManager.Instance.GetString(errorTitle),
 							MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return false;
 				}
@@ -161,7 +164,7 @@ namespace Chummer.Backend.Shared_Methods
 			return true;
 		}
 
-		private static bool TestNodeRequirements(XmlNode node, Character character, out string name,
+		public static bool TestNodeRequirements(XmlNode node, Character character, out string name,
 			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null,
 			XmlDocument objQualityDocument = null)
 		{
@@ -379,7 +382,8 @@ namespace Chummer.Backend.Shared_Methods
 						: "\n\t" + node.InnerText;
 					return character.Metamagics.Any(objMetamagic => objMetamagic.Name == node.InnerText);
                 case "metamagicart":
-					XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
+                case "art":
+                    XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
 					nameNode =
 						metamagicArtDoc.SelectSingleNode($"/chummer/arts/art[name = \"{node.InnerText}\"]");
 					name = nameNode["translate"] != null
@@ -387,6 +391,10 @@ namespace Chummer.Backend.Shared_Methods
 						: "\n\t" + node.InnerText;
 					if (character.Options.IgnoreArt)
 					{
+					    if (node.Name == "art")
+					    {
+					        return true;
+					    }
 						foreach (Metamagic metamagic in character.Metamagics)
 						{
 							XmlNode metaNode =
