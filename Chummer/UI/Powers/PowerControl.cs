@@ -64,7 +64,7 @@ namespace Chummer
 			}
 
 			tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
-			MoveControls();
+            MoveControls();
         }
 
         private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -80,13 +80,15 @@ namespace Chummer
                 case nameof(PowerObject.TotalRating):
                     PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
 					tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
-		            break;
+                    cmdDelete.Enabled = PowerObject.FreeLevels == 0;
+                    break;
             }
         }
 
         private void PowerControl_Load(object sender, EventArgs e)
 		{
 			this.Width = cmdDelete.Left + cmdDelete.Width;
+		    cmdDelete.Enabled = PowerObject.FreeLevels == 0;
         }
 
 		private void cmdDelete_Click(object sender, EventArgs e)

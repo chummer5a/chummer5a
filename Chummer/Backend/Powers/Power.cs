@@ -388,7 +388,7 @@ namespace Chummer
 
 				}
 				intReturn += CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
-				return intReturn;
+				return Math.Min(intReturn, CharacterObject.MAG.TotalValue);
 			}
 		}
 
@@ -400,20 +400,24 @@ namespace Chummer
 			get
 			{
 				decimal decReturn = 0;
-				if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
-					return decReturn;
-				else
-				{
-					decReturn = Levels * PointsPerLevel;
-				    if (decReturn > 0)
-				    {
-				        decReturn += ExtraPointCost;
-				    }
-				    decReturn -= Discount;
+			    if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
+			    {
+			        return decReturn;
+			    }
 
-                    return Math.Max(decReturn, 0);
-				}
-			}
+			    if (FreeLevels * PointsPerLevel >= FreePoints)
+			    {
+			        decReturn = Rating * PointsPerLevel;
+			        decReturn += ExtraPointCost;
+			    }
+			    else
+			    {
+			        decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
+			        decReturn -= FreePoints;
+			    }
+			    decReturn -= Discount;
+                return Math.Max(decReturn, 0);
+			}			
 		}
 
 	    public string DisplayPoints
@@ -559,29 +563,6 @@ namespace Chummer
 			set
 			{
 				_strNotes = value;
-			}
-		}
-
-		/// <summary>
-		/// Total levels of the Power.
-		/// </summary>
-		public decimal Levels
-		{
-			get
-			{
-				decimal actualRating = Rating - FreeLevels;
-				decimal newRating = actualRating + FreeLevels;
-
-				if (newRating < FreeLevels)
-				{
-					newRating = FreeLevels;
-				}
-
-				if (newRating > Convert.ToDecimal(CharacterObject.MAG.Value, GlobalOptions.InvariantCultureInfo))
-				{
-					newRating = Convert.ToDecimal(CharacterObject.MAG.Value, GlobalOptions.InvariantCultureInfo);
-				}
-				return newRating;
 			}
 		}
 

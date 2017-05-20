@@ -88,7 +88,7 @@ namespace Chummer
 				if (objXmlPower["extrapointcost"]?.InnerText != null && blnAdd)
 				{
 					//If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
-					if (_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.Rating > 0))
+					if (!_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.Rating > 0))
 						dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 				}
 				if (_dblLimitToRating > 0 && blnAdd)
@@ -137,8 +137,12 @@ namespace Chummer
 			{
 				lblPowerPoints.Text += $" / {LanguageManager.Instance.GetString("Label_Power_Level")}";
 			}
+            if (objXmlPower["extrapointcost"] != null)
+            {
+                lblPowerPoints.Text = objXmlPower["extrapointcost"].InnerText + " + " + lblPowerPoints.Text;
+            }
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
 			string strPage = objXmlPower["page"].InnerText;
 			if (objXmlPower["altpage"] != null)
 				strPage = objXmlPower["altpage"].InnerText;

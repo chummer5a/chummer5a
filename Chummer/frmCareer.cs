@@ -19652,7 +19652,7 @@ namespace Chummer
 
 		private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_blnSkipRefresh)
+			if (_blnSkipRefresh || treCyberware.SelectedNode == null)
 				return;
 
 			// Locate the selected Cyberware.

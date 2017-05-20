@@ -288,21 +288,33 @@ namespace Chummer
                     strRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
                 }
 
-				// Metamagic requirements.
-				foreach (XmlNode objXmlMetamagic in objXmlCheckMetamagic.SelectNodes("required/allof/metamagic"))
-				{
-					bool blnFound = _objCharacter.Metamagics.Any(objMetamagic => objMetamagic.Name == objXmlMetamagic.InnerText);
+                // Metamagic requirements.
+                foreach (XmlNode objXmlMetamagic in objXmlCheckMetamagic.SelectNodes("required/allof/metamagic"))
+                {
+                    bool blnFound = _objCharacter.Metamagics.Any(objMetamagic => objMetamagic.Name == objXmlMetamagic.InnerText);
 
-					if (!blnFound)
-					{
-						blnRequirementMet = false;
-						XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + strParent + "/" + strChild + "[name = \"" + objXmlMetamagic.InnerText + "\"]");
-						if (objNode["translate"] != null)
-							strRequirement += "\n\t" + objNode["translate"].InnerText;
-						else
-							strRequirement += "\n\t" + objXmlMetamagic.InnerText;
-					}
-				}
+                    if (!blnFound)
+                    {
+                        blnRequirementMet = false;
+                        XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + strParent + "/" + strChild + "[name = \"" + objXmlMetamagic.InnerText + "\"]");
+                        if (objNode["translate"] != null)
+                            strRequirement += "\n\t" + objNode["translate"].InnerText;
+                        else
+                            strRequirement += "\n\t" + objXmlMetamagic.InnerText;
+                    }
+                }
+
+                // Tradition requirements.
+                foreach (XmlNode objXmltradition in objXmlCheckMetamagic.SelectNodes("required/allof/tradition"))
+                {
+                    bool blnFound = _objCharacter.MagicTradition == objXmltradition.InnerText;
+
+                    if (!blnFound)
+                    {
+                        blnRequirementMet = false;
+                        strRequirement += "\n\t Tradition: " + objXmltradition.InnerText;
+                    }
+                }
 
                 // Power requirements.
                 foreach (XmlNode objXmlPower in objXmlCheckMetamagic.SelectNodes("required/allof/power"))
