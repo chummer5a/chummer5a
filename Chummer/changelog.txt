@@ -13,7 +13,7 @@ Data Changes:
 - Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
 - Fixed a typo in the Giger Spit spell.
 - Fixed incorrect requirements for spells that require Initiate Arts. 
-
+- Fixed missing quality requirements/restrictions for the Apprentice quality. 
 
 New Strings:
 
