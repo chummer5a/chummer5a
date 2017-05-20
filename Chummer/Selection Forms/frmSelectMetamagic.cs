@@ -201,26 +201,26 @@ namespace Chummer
 			else
 				objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
             string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-		    Debug.Assert(objXmlMetamagicList != null, "objXmlMetamagicList != null");
-		    foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
-			{
-			    if (chkLimitList.Checked &&
-			        (!chkLimitList.Checked ||
-			         !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, "",
-			             _objMetatypeDocument, _objCritterDocument, _objQualityDocument,
-			             "MessageTitle_SelectGeneric_Requirement".Replace("{0}", s),
-			             "Message_SelectGeneric_Requirement".Replace("{0}", s),
-			             "MessageTitle_SelectGeneric_Restriction".Replace("{0}", s),
-			             "Message_SelectGeneric_Restriction".Replace("{0}", s)))) continue;
-			    bool blnNew =
-			        _objCharacter.Metamagics.All(
-			            meta => meta.Name != objXmlMetamagic["name"]?.InnerText && objXmlMetamagic["limit"]?.InnerText == "no");
 
-			    if (!blnNew) continue;
-			    ListItem objItem = new ListItem();
-			    objItem.Value = objXmlMetamagic["name"]?.InnerText;
-			    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText;
-			    lstMetamagics.Add(objItem);
+			if (objXmlMetamagicList != null)
+			foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
+			{
+				if (chkLimitList.Checked &&
+				    (!chkLimitList.Checked ||
+										  !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, 
+						 _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s))) continue;
+					bool blnNew =
+					_objCharacter.Metamagics.All(
+						meta => meta.Name != objXmlMetamagic["name"]?.InnerText && objXmlMetamagic["limit"]?.InnerText == "no");
+				if (!blnNew) continue;
+				ListItem objItem = new ListItem();
+				objItem.Value = objXmlMetamagic["name"]?.InnerText;
+				objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText;
+				lstMetamagics.Add(objItem);
+			}
+			else
+			{
+				Utils.BreakIfDebug();
 			}
 			SortListItem objSort = new SortListItem();
 			lstMetamagics.Sort(objSort.Compare);
@@ -248,11 +248,7 @@ namespace Chummer
 		        : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
 
             string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true,_objCharacter,"",_objMetatypeDocument,_objCritterDocument,_objQualityDocument, 
-                "MessageTitle_SelectGeneric_Requirement".Replace("{0}",s), 
-                "Message_SelectGeneric_Requirement".Replace("{0}", s), 
-                "MessageTitle_SelectGeneric_Restriction".Replace("{0}", s), 
-                "Message_SelectGeneric_Restriction".Replace("{0}", s)))
+			if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s))
 				return;
 			DialogResult = DialogResult.OK;
 		}

@@ -14,6 +14,7 @@ Data Changes:
 - Fixed a typo in the Giger Spit spell.
 - Fixed incorrect requirements for spells that require Initiate Arts. 
 
+
 New Strings:
 
 - String_Metatype
@@ -22,6 +23,7 @@ New Strings:
 - String_SpellCategory
 - String_Tradition
 - String_DamageResistance
+- String_Quality
 
 Build 193
 

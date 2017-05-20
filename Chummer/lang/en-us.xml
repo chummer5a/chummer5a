@@ -691,6 +691,10 @@
 			<text>Qualities</text>
 		</string>
 		<string>
+			<key>String_Quality</key>
+			<text>Quality</text>
+		</string>
+		<string>
 			<key>Label_Metavariant</key>
 			<text>Metavariant:</text>
 		</string>
@@ -7436,7 +7440,7 @@ Do you want to continue?</text>
 			<text>Choose One:</text>
 		</string>
 		<!-- End Region-->
-		<!-- Region Select Metamagic Window -->
+		<!-- Region Select Generic -->
 		<string>
 			<key>Title_SelectGeneric</key>
 			<text>Select {0}</text>
@@ -7457,6 +7461,14 @@ Do you want to continue?</text>
       <key>MessageTitle_SelectGeneric_Restriction</key>
       <text>{0} Restriction</text>
     </string>
+		<string>
+			<key>Message_SelectGeneric_Limit</key>
+			<text>This {0} cannot be taken more than {1} times.</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Limit</key>
+			<text>{0} Limit</text>
+		</string>
 		<string>
 			<key>Checkbox_SelectGeneric_LimitList</key>
 			<text>Show only {0} I can take</text>
