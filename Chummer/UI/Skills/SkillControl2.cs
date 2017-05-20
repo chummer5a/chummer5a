@@ -229,7 +229,7 @@ namespace Chummer.UI.Skills
 			//TODO turn this into a databinding, but i don't care enough right now
 			lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName));
 
-            parrent?.UpdateCharacterInfo();
+            parrent?.ScheduleCharacterUpdate();
 		}
 
 		private void SetupDropdown()

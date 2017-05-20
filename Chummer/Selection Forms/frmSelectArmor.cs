@@ -412,9 +412,9 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter,chkHideOverAvailLimit.Checked,
-		                    Convert.ToInt32(nudRating.Value)))
-	                    {
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
+                            Convert.ToInt32(nudRating.Value)))
+                        {
 		                    TreeNode objNode = new TreeNode();
 		                    Armor objArmor = new Armor(_objCharacter);
 		                    List<Weapon> lstWeapons = new List<Weapon>();
@@ -457,9 +457,9 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-	                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
-		                    Convert.ToInt32(nudRating.Value)))
-	                    {
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
+                            Convert.ToInt32(nudRating.Value)))
+                        {
 		                    ListItem objItem = new ListItem();
 		                    objItem.Value = objXmlArmor["id"]?.InnerText;
 		                    objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;

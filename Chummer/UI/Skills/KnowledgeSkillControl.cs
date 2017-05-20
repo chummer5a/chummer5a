@@ -165,7 +165,7 @@ namespace Chummer.UI.Skills
 			//TODO turn this into a databinding, but i don't care enough right now
             lblSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.Name));
 
-            parrent?.UpdateCharacterInfo();
+            parrent?.ScheduleCharacterUpdate();
 		}
 
         private void cboSpec_TextChanged(object sender, EventArgs e)

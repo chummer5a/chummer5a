@@ -307,7 +307,7 @@ namespace Chummer
 						break;
 					case "S":
                         lblDamageLabel.Visible = true;
-                        lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
+						lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
 						break;
 					default:
                         lblDamageLabel.Visible = false;

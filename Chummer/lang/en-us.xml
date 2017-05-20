@@ -2699,6 +2699,22 @@
 			<text>Firewall</text>
 		</string>
 		<string>
+			<key>String_PowerFilterAll</key>
+			<text>Show All Powers</text>
+		</string>
+		<string>
+			<key>Power_SortAction</key>
+			<text>Action</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingAboveZero</key>
+			<text>Show Active Powers Rating &gt; 0</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingZero</key>
+			<text>Show Powers Rating = 0</text>
+		</string>
+		<string>
 			<key>String_SkillFilterAll</key>
 			<text>Show All Active Skills</text>
 		</string>
@@ -3468,12 +3484,40 @@
 			<text>Complex</text>
 		</string>
     <string>
+			<key>String_ActionInterrupt</key>
+			<text>Interrupt (-5 Initiative)</text>
+		</string>
+    <string>
       <key>String_NotSupported</key>
       <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
     </string>
 		<string>
 			<key>Warning_NoLimitFound</key>
 			<text>Couldn't find appropriate Limit to modify. Make sure you have selected a custom Limit Modifier.</text>
+		</string>
+		<string>
+			<key>String_Metatype</key>
+			<text>Metatype</text>
+		</string>
+		<string>
+			<key>String_Metavariant</key>
+			<text>Metavariant</text>
+		</string>
+		<string>
+			<key>String_MartialArt</key>
+			<text>Martial Art</text>
+		</string>
+		<string>
+			<key>String_SpellCategory</key>
+			<text>Spell Category</text>
+		</string>
+		<string>
+			<key>String_Tradition</key>
+			<text>Tradition</text>
+		</string>
+		<string>
+			<key>String_DamageResistance</key>
+			<text>Damage Resistance</text>
 		</string>
 		<!-- End Region -->
 		<!-- Region Common Tab -->
@@ -3877,6 +3921,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_PowerPoints</key>
 			<text>Power Points:</text>
+		</string>
+		<string>
+			<key>Label_PowerLevels</key>
+			<text>Levels:</text>
 		</string>
 		<string>
 			<key>Button_AddPower</key>
@@ -7687,7 +7735,7 @@ Do you want to continue?</text>
 			<key>Message_SelectQuality_QualityRequirement</key>
 			<text>You do not meet the requirements for this Quality. You must meet at least one of the following criteria:</text>
 		</string>
-    <string>
+		<string>
       <key>Message_SelectQuality_RequireESSBelow</key>
       <text>Essence below {0}: You have {1}</text>
     </string>

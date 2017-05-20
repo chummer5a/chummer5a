@@ -1823,7 +1823,7 @@ namespace Chummer
             }
             catch (XPathException) { }
             if (xprEvaluateResult is double)
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(), GlobalOptions.InvariantCultureInfo)));
             intValue += intOffset;
 			if (intForce > 0)
 			{

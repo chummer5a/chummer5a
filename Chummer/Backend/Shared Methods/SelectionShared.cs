@@ -296,7 +296,7 @@ namespace Chummer.Backend.Shared_Methods
 				case "damageresistance":
 					// Damage Resistance must be a particular value.
 					ImprovementManager objImprovementManager = new ImprovementManager(character);
-					name = "\n\t" + LanguageManager.Instance.GetString("String_StreetCred");
+					name = "\n\t" + LanguageManager.Instance.GetString("String_DamageResistance");
 					return character.BOD.TotalValue + objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >=
 						   Convert.ToInt32(node.InnerText);
 				case "ess":
@@ -372,6 +372,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_MartialArt")})";
 					return character.MartialArts.Any(martialart => martialart.Advantages.Any(technique => technique.Name == node.InnerText));
 				case "metamagic":
 					XmlNode metamagicDoc = XmlManager.Instance.Load("metamagic.xml");
@@ -380,6 +381,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Metamagic")})";
 					return character.Metamagics.Any(objMetamagic => objMetamagic.Name == node.InnerText);
                 case "metamagicart":
                 case "art":
@@ -389,6 +391,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Art")})";
 					if (character.Options.IgnoreArt)
 					{
 					    if (node.Name == "art")
@@ -422,6 +425,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += LanguageManager.Instance.GetString("String_Metatype");
 					return node.InnerText == character.Metatype;
 
 				case "metatypecategory":
@@ -432,6 +436,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode?.Attributes["translate"] != null
 						? "\n\t" + nameNode.Attributes["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += LanguageManager.Instance.GetString("String_MetatypeCategory");
 					return node.InnerText == character.MetatypeCategory;
 
 				case "metavariant":
@@ -442,6 +447,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += LanguageManager.Instance.GetString("String_Metavariant");
 					return node.InnerText == character.Metavariant;
 
 				case "power":
@@ -477,6 +483,7 @@ namespace Chummer.Backend.Shared_Methods
 						name = nameNode?["translate"] != null
 							? "\n\t" + nameNode["translate"].InnerText
 							: "\n\t" + node.InnerText;
+						name += $" ({LanguageManager.Instance.GetString("String_Qualities")})";
 						return false;
 					}
 
@@ -540,6 +547,7 @@ namespace Chummer.Backend.Shared_Methods
 					{
 						name += $" {node["val"].InnerText}";
 					}
+					name += $" ({LanguageManager.Instance.GetString("Tab_Skills")})";
 					return false;
 
 				case "skillgrouptotal":
@@ -557,6 +565,7 @@ namespace Chummer.Backend.Shared_Methods
 									break;
 								}
 						name = outString;
+						name += $" ({LanguageManager.Instance.GetString("String_ExpenseSkillGroup")})";
 						return intTotal >= Convert.ToInt32(node["val"].InnerText);
 					}
 				case "spell":
@@ -567,6 +576,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_DescSpell")})";
 					return character.Spells.Any(spell => spell.Name == node.InnerText);
 				case "spellcategory":
 					// Check for a specified amount of a particular Spell category.
@@ -576,6 +586,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_SpellCategory")})";
 					return character.Spells.Count(objSpell => objSpell.Category == node["name"].InnerText) >= Convert.ToInt32(node["count"].InnerText);
 				case "spelldescriptor":
 					// Check for a specified amount of a particular Spell Descriptor.
@@ -594,6 +605,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Tradition")})";
 					return character.MagicTradition == node.InnerText;
 				default:
 					Utils.BreakIfDebug();
