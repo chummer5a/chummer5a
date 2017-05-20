@@ -8067,7 +8067,7 @@
 			<reach>0</reach>
 			<damage>8P</damage>
 			<ap>-1</ap>
-			<mode>SA</mode>
+			<mode>SS</mode>
 			<rc>0</rc>
 			<ammo>9(cy)</ammo>
 			<avail>8R</avail>
@@ -8097,7 +8097,7 @@
 			<hide>yes</hide>
 			<type>Ranged</type>
 			<conceal>0</conceal>
-			<spec>Semi-Automatics</spec>
+			<spec>Revolvers</spec>
 			<accuracy>5</accuracy>
 			<reach>0</reach>
 			<damage>10P(f)</damage>

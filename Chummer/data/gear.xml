@@ -3853,6 +3853,17 @@
 			<source>SR5</source>
 			<page>439</page>
 		</gear>
+		<gear>
+			<id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
+			<name>SmartSafety Bracelet</name>
+			<category>Electronics Accessories</category>
+			<rating>0</rating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>R5</source>
+			<page>133</page>
+		</gear>
 		<!-- End Region -->
 		<!-- Region RFID Tags -->
 		<gear>
@@ -8316,6 +8327,17 @@
 			<cost>175</cost>
 			<source>SR5</source>
 			<page>432</page>
+		</gear>
+		<gear>
+			<id>82334694-a630-42c4-95d6-eb1345e4ed82</id>
+			<name>Concealed Quick-Draw Holster</name>
+			<category>Armor Enhancements</category>
+			<rating>0</rating>
+			<armorcapacity>[4]</armorcapacity>
+			<avail>6</avail>
+			<cost>275</cost>
+			<source>RG</source>
+			<page>51</page>
 		</gear>
 		<gear>
 			<id>f77fc093-d5cf-4be6-bfeb-311653ecd64e</id>
