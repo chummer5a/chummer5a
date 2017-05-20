@@ -5,6 +5,7 @@ Application Changes:
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
 - Fixed behaviour of the condition monitors to properly be checked and unchecked.
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
+- Converted UpdateCharacterInfo to be triggered by Application.Idle. This should reduce some latency caused by loading components of the interface, at the cost of a slightly deferred update of character details. In practice this should not be noticable under standard operating conditions. 
 
 Data Changes:
 
@@ -12,6 +13,15 @@ Data Changes:
 - Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
 - Fixed a typo in the Giger Spit spell.
 - Fixed incorrect requirements for spells that require Initiate Arts. 
+
+New Strings:
+
+- String_Metatype
+- String_Metavariant
+- String_MartialArt
+- String_SpellCategory
+- String_Tradition
+- String_DamageResistance
 
 Build 193
 

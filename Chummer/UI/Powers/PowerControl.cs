@@ -110,12 +110,12 @@ namespace Chummer
 			if (_objPower.CharacterObject.Created)
 			{
 				frmCareer parent = frmParent as frmCareer;
-				parent.UpdateCharacterInfo();
+				parent.ScheduleCharacterUpdate();
 			}
 			else
 			{
 				frmCreate parent = frmParent as frmCreate;
-				parent.UpdateCharacterInfo();
+				parent.ScheduleCharacterUpdate();
 			}
 		}
 

@@ -3495,6 +3495,30 @@
 			<key>Warning_NoLimitFound</key>
 			<text>Couldn't find appropriate Limit to modify. Make sure you have selected a custom Limit Modifier.</text>
 		</string>
+		<string>
+			<key>String_Metatype</key>
+			<text>Metatype</text>
+		</string>
+		<string>
+			<key>String_Metavariant</key>
+			<text>Metavariant</text>
+		</string>
+		<string>
+			<key>String_MartialArt</key>
+			<text>Martial Art</text>
+		</string>
+		<string>
+			<key>String_SpellCategory</key>
+			<text>Spell Category</text>
+		</string>
+		<string>
+			<key>String_Tradition</key>
+			<text>Tradition</text>
+		</string>
+		<string>
+			<key>String_DamageResistance</key>
+			<text>Damage Resistance</text>
+		</string>
 		<!-- End Region -->
 		<!-- Region Common Tab -->
 		<string>
