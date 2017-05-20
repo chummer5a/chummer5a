@@ -220,12 +220,8 @@ namespace Chummer
             {
                 if (chkLimitList.Checked &&
                     (!chkLimitList.Checked ||
-                     !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, "",
-                         null, null, _objQualityDocument,
-                         "MessageTitle_SelectGeneric_Requirement".Replace("{0}", _strLocalName),
-                         "Message_SelectGeneric_Requirement".Replace("{0}", _strLocalName),
-                         "MessageTitle_SelectGeneric_Restriction".Replace("{0}", _strLocalName),
-                         "Message_SelectGeneric_Restriction".Replace("{0}", _strLocalName)))) continue;
+                     !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, 
+						 null, null, _objQualityDocument, "", _strLocalName))) continue;
                 bool blnNew = true;
                 switch (_objMode)
                 {
@@ -298,13 +294,9 @@ namespace Chummer
             else
                 objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Rituals\" and name = \"" + lstArt.SelectedValue + "\"]");
 
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, "",
-                         null, null, _objQualityDocument,
-                         "MessageTitle_SelectGeneric_Requirement".Replace("{0}", _strLocalName),
-                         "Message_SelectGeneric_Requirement".Replace("{0}", _strLocalName),
-                         "MessageTitle_SelectGeneric_Restriction".Replace("{0}", _strLocalName),
-                         "Message_SelectGeneric_Restriction".Replace("{0}", _strLocalName)))
-                return;
+			if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, 
+			 null, null, _objQualityDocument, "", _strLocalName))
+				return;
 
             DialogResult = DialogResult.OK;
         }

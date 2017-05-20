@@ -4916,6 +4916,7 @@
 			<name>Astral Perception</name>
 			<karma>0</karma>
 			<category>Positive</category>
+			<hide>yes</hide>
       <bonus>
         <unlockskills name="Assensing">Name</unlockskills>
       </bonus>

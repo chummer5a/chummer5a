@@ -149,21 +149,18 @@ namespace Chummer
 			_objDictionary.Clear();
 			XmlDocument objEnglishDocument = new XmlDocument();
 			string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
-            if (File.Exists(strFilePath))
-            {
-                objEnglishDocument.Load(strFilePath);
-                if (objEnglishDocument != null)
-                {
-                    foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
-                    {
-                        if (objNode["key"] != null && objNode["text"] != null)
-                        {
-                            _objDictionary.Add(objNode["key"].InnerText, objNode["text"].InnerText);
-                        }
-                    }
-                    _blnLoaded = true;
-                }
-            }
+			if (!File.Exists(strFilePath)) return;
+			objEnglishDocument.Load(strFilePath);
+			foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
+			{
+				if (objNode["key"] == null || objNode["text"] == null) continue;
+				if (_objDictionary.ContainsKey(objNode["key"].InnerText))
+				{
+					Utils.BreakIfDebug();
+				}
+				_objDictionary.Add(objNode["key"].InnerText, objNode["text"].InnerText);
+			}
+			_blnLoaded = true;
 		}
 
 		/// <summary>

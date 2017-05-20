@@ -19,16 +19,16 @@ namespace Chummer.Backend.Shared_Methods
 		/// <param name="objXmlNode">XmlNode of the object.</param>
 		/// <param name="blnShowMessage">Should warning messages about whether the object has failed to validate be shown?</param>
 		/// <param name="objCharacter">Character Object.</param>
+		/// <param name="objQualityDocument"></param>
 		/// <param name="strIgnoreQuality">
 		///     Name of a Quality that should be ignored. Typically used when swapping Qualities in
 		///     career mode.
 		/// </param>
+		/// <param name="strLocalName"></param>
+		/// <param name="objMetatypeDocument"></param>
+		/// <param name="objCritterDocument"></param>
 		/// <returns></returns>
-		public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter,
-			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, 
-            string errorTitle = "MessageTitle_SelectQuality_QualityRequirement", string errorMessage = "Message_SelectQuality_QualityRequirement", 
-            string forbiddenTitle = "MessageTitle_SelectQuality_QualityRestriction", string forbiddenMessage = "Message_SelectQuality_QualityRestriction",
-            string limitTitle = "MessageTitle_SelectQuality_QualityLimit", string limitMessage = "Message_SelectQuality_QualityLimit")
+		public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "")
 		{
 			// Ignore the rules.
 			if (objCharacter.IgnoreRules)
@@ -39,36 +39,44 @@ namespace Chummer.Backend.Shared_Methods
 				objCritterDocument = XmlManager.Instance.Load("critters.xml");
 			if (objQualityDocument == null)
 				objQualityDocument = XmlManager.Instance.Load("qualities.xml");
-			// See if the character already has this Quality and whether or not multiple copies are allowed.
 			if (objXmlNode == null) return false;
+			// See if the character already has this Quality and whether or not multiple copies are allowed.
 			if (objXmlNode["limit"]?.InnerText != "no")
+			{
+				string limitTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
+				string limitMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
+				int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
+
 				switch (objXmlNode.Name)
 				{
 					case "quality":
+					{
+						int intCount =
+							objCharacter.Qualities.Count(
+								objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
+						if (intCount > intLimit &&
+						    objCharacter.Qualities.Any(
+							    objItem =>
+								    objItem.Name == objXmlNode["name"]?.InnerText &&
+								    objItem.Name != strIgnoreQuality))
 						{
-							int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
-							int intCount =
-								objCharacter.Qualities.Count(
-									objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-							if (intCount > intLimit &&
-								objCharacter.Qualities.Any(
-									objItem =>
-										objItem.Name == objXmlNode["name"]?.InnerText &&
-										objItem.Name != strIgnoreQuality))
-							{
-								if (blnShowMessage)
-									MessageBox.Show(
-										LanguageManager.Instance.GetString(limitTitle),
-										LanguageManager.Instance.GetString(limitMessage),
-										MessageBoxButtons.OK, MessageBoxIcon.Information);
-								return false;
-							}
-							break;
+						if (blnShowMessage)
+						{
+							limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
+							MessageBox.Show(limitMessage, limitTitle,
+								MessageBoxButtons.OK, MessageBoxIcon.Information);
 						}
+						return false;
+						}
+						break;
+					}
 				}
+			}
 
 			if (objXmlNode.InnerXml.Contains("forbidden"))
 			{
+				string forbiddenTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName);
+				string forbiddenMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Restriction").Replace("{0}", strLocalName);
 				// Loop through the oneof requirements.
 				XmlNodeList objXmlForbiddenList = objXmlNode.SelectNodes("forbidden/oneof");
 				if (objXmlForbiddenList != null)
@@ -96,6 +104,8 @@ namespace Chummer.Backend.Shared_Methods
 
 			if (objXmlNode.InnerXml.Contains("required"))
 			{
+				string requiredTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Requirement").Replace("{0}", strLocalName);
+				string requiredMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Requirement").Replace("{0}", strLocalName);
 				string strRequirement = string.Empty;
 				bool blnRequirementMet = true;
 
@@ -150,13 +160,10 @@ namespace Chummer.Backend.Shared_Methods
 				// The character has not met the requirements, so display a message and uncheck the item.
 				if (!blnRequirementMet)
 				{
-					string strMessage =
-						LanguageManager.Instance.GetString(errorMessage);
-					strMessage += strRequirement;
+					requiredMessage += strRequirement;
 
 					if (blnShowMessage)
-						 MessageBox.Show(strMessage,
-							LanguageManager.Instance.GetString(errorTitle),
+						 MessageBox.Show(requiredMessage, requiredTitle,
 							MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return false;
 				}
@@ -425,7 +432,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
-					name += LanguageManager.Instance.GetString("String_Metatype");
+					name += $" ({LanguageManager.Instance.GetString("String_Metatype")})";
 					return node.InnerText == character.Metatype;
 
 				case "metatypecategory":
@@ -447,7 +454,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
-					name += LanguageManager.Instance.GetString("String_Metavariant");
+					name += $" ({LanguageManager.Instance.GetString("String_Metavariant")})";
 					return node.InnerText == character.Metavariant;
 
 				case "power":
@@ -483,7 +490,7 @@ namespace Chummer.Backend.Shared_Methods
 						name = nameNode?["translate"] != null
 							? "\n\t" + nameNode["translate"].InnerText
 							: "\n\t" + node.InnerText;
-						name += $" ({LanguageManager.Instance.GetString("String_Qualities")})";
+						name += $" ({LanguageManager.Instance.GetString("String_Quality")})";
 						return false;
 					}
 
