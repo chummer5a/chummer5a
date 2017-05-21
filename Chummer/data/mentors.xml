@@ -1862,12 +1862,46 @@
 							<name>Detection</name>
 							<val>2</val>
 						</spellcategory>
+						<skillcategory>
+							<name>Academic</name>
+							<bonus>2</bonus>
+						</skillcategory>
+						<skillcategory>
+							<name>Interest</name>
+							<bonus>2</bonus>
+						</skillcategory>
+						<skillcategory>
+							<name>Language</name>
+							<bonus>2</bonus>
+						</skillcategory>
+						<skillcategory>
+							<name>Professional</name>
+							<bonus>2</bonus>
+						</skillcategory>
+						<skillcategory>
+							<name>Street</name>
+							<bonus>2</bonus>
+						</skillcategory>
 					</bonus>
 				</choice>
 				<choice>
 					<name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
 					<bonus>
-
+						<specificskill>
+							<name>Summoning</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 2 free levels of Enhanced Perception.</name>
+					<bonus>
+						<specificpower>
+							<name>Enhanced Perception</name>
+							<val>1</val>
+							<free>yes</free>
+						</specificpower>
 					</bonus>
 				</choice>
 			</choices>

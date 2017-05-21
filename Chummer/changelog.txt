@@ -14,6 +14,8 @@ Data Changes:
 - Fixed a typo in the Giger Spit spell.
 - Fixed incorrect requirements for spells that require Initiate Arts. 
 - Fixed missing quality requirements/restrictions for the Apprentice quality. 
+- The Athlete's Way can now properly allow discounting the Skate power.
+- Added missing bonuses for the Raven (Alt) Mentor Spirit. 
 
 New Strings:
 

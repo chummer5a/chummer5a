@@ -1184,6 +1184,7 @@
 			<adeptwayrequires>
 				<required>
 					<oneof>
+						<quality>The Athlete's Way</quality>
 						<quality>The Beast's Way</quality>
 						<quality>The Invisible Way</quality>
 						<quality>The Magician's Way</quality>
