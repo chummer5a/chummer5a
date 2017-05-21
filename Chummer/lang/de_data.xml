@@ -11755,18 +11755,8 @@
 				<name>Bear</name>
 				<page>320</page>
 				<translate>Bär</translate>
-				<description>
-					Bär ist ein Totem, das in allen Kulturen zu finden ist, denen Bären bekannt sind, von Nordamerika bis Europa und Asien. Bär ist stark, doch auch sanft und weise. Er scheint langsam
-					und entspannt, doch nur bis er gezwungen ist zu rennen. Es ist nicht leicht, Bär zu verärgern, doch sein Zorn und seine Raserei im Kampf sind weithin gefürchtet. In den meisten Fällen ist Bär
-					ruhig, bedächtig und gelassen. Er ist der Heiler und Beschützer der Natur. Bär darf niemanden abweisen, der seiner Heilkräfte bedarf, ohne einen guten Grund dafür zu haben.
-				</description>
-				<advantage>+2 Würfel auf Heilzauber, +2 Würfel für Widerstandsproben gegen körperlichen Schaden.</advantage>
-				<disadvantage>
-					Ein Bärzauberer kann zum Berserker werden, wenn er im Kampf verwundet wird(körperlichen Schaden erleidet) oder jemand, der unter seinem Schutz steht. In diesem Fall muss der
-					Charakter eine WIL + CHR Probe ablegen(Verletzungsmodifikatoren gelten). Der Zauberer läuft 3 Runden lang Amok, minus einer Runde pro Erfolg. Drei oder mehr Erfolge wenden den Berserkerrausch
-					vollständig ab. Ein Zauberer im Berserkerrauscht geht auf seine Angreifer los, ohne dabei Rücksicht auf seine eigene Gesundheit zu nehmen. Falls der Zauberer einen Gegner kampfunfähig macht,
-					bevor die Zeit vorüber ist, verflüchtigt sich der Rest seines Berserkerrausches.
-				</disadvantage>
+				<advantage>Allgemein: +2 für Schadenswiderstand (nicht bei Entzug)</advantage>
+				<disadvantage>Der Charakter kann zum Berserker werden, wenn er im Kampf Körperlichen Schaden erleidet oder jemand, den er beschützt, schwer verletzt wird. Legen Sie (mit Verletzungsmodifikatoren) eine Probe auf Charisma + Willenskraft ab. Der Charakter verfällt für 3 minus 1 Runde pro Erfolg in einen Berserkerrausch. 3 oder mehr Erfolge können den Berserkerrausch komplett verhindern. Wenn der Charakter bereits im Berserkerrausch ist, erhöht sich die Dauer entsprechend. In diesem Zustand stürzt sich der Charakter auf seine(n) Gegner, ohne auf seine eigeneSicherheit zu achten. Wenn er seine(n) Gegner vor Ablauf des Berserkerrausches kampfunfähig macht, endet dieser vorzeitig.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Health spells</name>
@@ -11774,23 +11764,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 freie Stufe für Beschleunigte Heilung</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Health spells</name>
-						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 freie Stufe für Beschleunigte Heilung</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Health spells</name>
-						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 freie Stufe für Beschleunigte Heilung</translate>
+						<translate>Adept: 1 Stufe Beschleunigte Heilung gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -11799,11 +11773,8 @@
 				<name>Cat</name>
 				<page>322</page>
 				<translate>Katze</translate>
-				<advantage>+2 Würfel auf Illusionszauber, +2 Würfel auf Akrobatik- oder Inflitrationsproben(Spieler muss eins wählen).</advantage>
-				<disadvantage>
-					Katze spielen gern mit ihrer Beute. Um einen Angriff aus seinem Repertoire durchzuführen, der einen Gegner außer Gefecht setzen würde(z.B. einen Kampfzauber mit einer Kraft, der das
-					Ziel ausschalten würde) muss der Charakter zunächst eine Willenskraft + Charisma(3)-Probe gelingen. Sobald der Charakter verwundet wird, ist es aus mit der Spielerei.
-				</disadvantage>
+				<advantage>Allgemein: +2 Würfel auf Akrobatik- oder Schleichenproben</advantage>
+				<disadvantage>Zauberer, die der Katze folgen, spielen mit ihren Opfern. Wenn der Charakter zu Kampfbeginn eine Probe auf Charisma + Willenskraft (3) nicht schaft, kann er keinen Angriff durchführen, der sein Ziel handlungsunfähig machen würde (z.B. keine Kampfzauber mit einer Kraftstufe wirken, die das Ziel ausschalten würde). Wenn der Charakter Körperlichen Schaden erleidet, hört dieses Herumspielen sofort auf.</disadvantage>
 				<choices>
 					<choice>
 						<name>+2 dice on Gymnastics Tests</name>
@@ -11811,7 +11782,7 @@
 					</choice>
 					<choice>
 						<name>+2 dice on Sneaking Tests</name>
-						<translate>+2 Würfel für Inflitrationsproben</translate>
+						<translate>+2 Würfel für Schleichenproben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Illusion spells</name>
@@ -11819,39 +11790,7 @@
 					</choice>
 					<choice set="2">
 						<name>Adept: 2 free levels of Light Body</name>
-						<translate>Adept: 2 freie Stufen auf Leichter Körper</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Gymnastics Tests</name>
-						<translate>+2 Würfel für Akrobatikproben</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Sneaking Tests</name>
-						<translate>+2 Würfel für Inflitrationsproben</translate>
-					</choice>
-					<choice set="2">
-						<name>Magician: +2 dice for Illusion spells</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
-					</choice>
-					<choice set="2">
-						<name>Adept: 2 free levels of Light Body</name>
-						<translate>Adept: 2 freie Stufen auf Leichter Körper</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Gymnastics Tests</name>
-						<translate>+2 Würfel für Akrobatikproben</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Sneaking Tests</name>
-						<translate>+2 Würfel für Inflitrationsproben</translate>
-					</choice>
-					<choice set="2">
-						<name>Magician: +2 dice for Illusion spells</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
-					</choice>
-					<choice set="2">
-						<name>Adept: 2 free levels of Light Body</name>
-						<translate>Adept: 2 freie Stufen auf Leichter Körper</translate>
+						<translate>Adept: 2 Stufen Leichter Körper gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -11860,28 +11799,9 @@
 				<name>Dog</name>
 				<page>321</page>
 				<translate>Hund</translate>
-				<advantage>+2 Würfel auf Wahrnehmungszauber, +2 Würfel für Geister des Menschen</advantage>
-				<disadvantage>
-					Ein Charakter der Hund folgt, ist loyal bis zur Sturheit. Er kann niemanden zurücklassen, seine Freunde verraten oder zulassen, dass sich jemand anderes für ihn opfert, solange bis
-					ihm keine Willenskraft + Charisma(3)-Probe gelingt.
-				</disadvantage>
+				<advantage>Allgemein: +2 Würfel auf Spurenlesen</advantage>
+				<disadvantage>Ein Zauberer, der dem Hund folgt, ist unverbrüchlich loyal. Er kann niemanden im Stick lassen, seine Freunde verraten oder es zulassen, das jemand sich für ihn opfert, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</disadvantage>
 				<choices>
-					<choice>
-						<name>Magician: +2 dice for Detection spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free Improved Sense powers</name>
-						<translate>Adept: 2 Geschärfte Sinne gratis</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Detection spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free Improved Sense powers</name>
-						<translate>Adept:  2 Geschärfte Sinne gratis</translate>
-					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection spells</name>
 						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
@@ -11959,11 +11879,8 @@
 				<name>Dragonslayer</name>
 				<page>321</page>
 				<translate>Drachentöter</translate>
-				<advantage>+2 Würfel auf Kampfzauber, +2 Würfel für Proben auf eine soziale Fertigkeit nach Wahl</advantage>
-				<disadvantage>
-					Wenn ein Drachentöter-Anhänger ein Versprechen bricht, sei es freiwillig oder durch Zufall, erleidet er einen Würfelpool-Modifikator von -1, bis er das Versprechen erfüllt oder auf
-					andere Weise seinen Fehler wieder gutgemacht hat.
-				</disadvantage>
+				<advantage>Allgemein: +2 Würfel für eine soziale Fertigkeit</advantage>
+				<disadvantage>Wenn ein Anhänger des Drachentöters (absichtlich oder unabsichtlich) ein Versprechen bricht, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er es wiedergutgemacht hat.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
@@ -11971,23 +11888,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Enhanced Accuracy and Danger Sense</name>
-						<translate>Adept: 1 freie Stufe für Enhanced Accuracy and Danger Sense</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Enhanced Accuracy and Danger Sense</name>
-						<translate>Adept: 1 freie Stufe für Enhanced Accuracy and Danger Sense</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Magician: +2 Würfel auf Kampfzauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Enhanced Accuracy and Danger Sense</name>
-						<translate>Adept: 1 free level of Enhanced Accuracy and Danger Sense</translate>
+						<translate>Adept: Einmal Erhöhte Präzision (Fertigkeit) und 1 Stufe Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -11996,32 +11897,16 @@
 				<name>Eagle</name>
 				<page>320</page>
 				<translate>Adler</translate>
-				<advantage>+2 Würfel Wahrnehmungszauber, +2 Würfel für Luftgeister</advantage>
-				<disadvantage>Adlerschamanen erhalten das Allergie-Handicap(Schadstoffe, leicht) siehe SR4.01D, S. 80 und bekommen dafür keine Generierungspunkte gutgeschrieben.</disadvantage>
+				<advantage>Allgemein: +2 Würfel Wahrnehmungsproben</advantage>
+				<disadvantage>Ein Anhänger von Adler erhält den Nachteil Allergie (Schadstoffe, Leicht) (S. 88) ohne Karmabonus.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice summoning spirits of air</name>
-						<translate>Zauberer: +2 Würfel summoning spirits of air</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Luftgeistern</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Combat Sense</name>
-						<translate>Adept: 1 freie Stufe für Combat Sense</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice summoning spirits of air</name>
-						<translate>Zauberer: +2 Würfel summoning spirits of air</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Combat Sense</name>
-						<translate>Adept: 1 freie Stufe für Combat Sense</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice summoning spirits of air</name>
-						<translate>Magician: +2 dice summoning spirits of air</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Combat Sense</name>
-						<translate>Adept: 1 free level of Combat Sense</translate>
+						<translate>Adept: 1 Stufe Kampfsinn gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12030,56 +11915,24 @@
 				<name>Fire-Bringer</name>
 				<page>321</page>
 				<translate>Feuerbringer</translate>
-				<advantage>+2 Würfel auf Manipulationszauber, +2 Würfel auf Feuergeister</advantage>
-				<disadvantage>-1 Würfel auf Illusionszauber</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Handwerk- oder Alchemieproben</advantage>
+				<disadvantage>Wenn jemand eindringlich um Hilfe bittet, kann ein Anhänger des Feuerbringers diese nicht verweigern, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</disadvantage>
 				<choices>
 					<choice>
 						<name>+2 dice on Artisan Tests</name>
-						<translate>+2 Würfel on Artisan Tests</translate>
+						<translate>+2 Würfel für Handwerkproben</translate>
 					</choice>
 					<choice>
 						<name>+2 dice on Alchemy Tests</name>
-						<translate>+2 Würfel on Alchemy Tests</translate>
+						<translate>+2 Würfel für Alchemieproben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Zauberer: +2 Würfel for Manipulation spells</translate>
+						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 1 free level of Improved Ability on a non-combat skill</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability on a non-combat skill</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Artisan Tests</name>
-						<translate>+2 Würfel on Artisan Tests</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Alchemy Tests</name>
-						<translate>+2 Würfel on Alchemy Tests</translate>
-					</choice>
-					<choice set="2">
-						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Zauberer: +2 Würfel for Manipulation spells</translate>
-					</choice>
-					<choice set="2">
-						<name>Adept: 1 free level of Improved Ability on a non-combat skill</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability on a non-combat skill</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Artisan Tests</name>
-						<translate>+2 dice on Artisan Tests</translate>
-					</choice>
-					<choice>
-						<name>+2 dice on Alchemy Tests</name>
-						<translate>+2 dice on Alchemy Tests</translate>
-					</choice>
-					<choice set="2">
-						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Magician: +2 dice for Manipulation spells</translate>
-					</choice>
-					<choice set="2">
-						<name>Adept: 1 free level of Improved Ability on a non-combat skill</name>
-						<translate>Adept: 1 free level of Improved Ability on a non-combat skill</translate>
+						<translate>Adept: 1 Stufe Verbesserte Fertigkeit (Fertigkeit); nicht für Kampffertigkeiten</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12146,35 +11999,16 @@
 				<name>Mountain</name>
 				<page>320</page>
 				<translate>Berg</translate>
-				<advantage>+2 Würfel auf Antimagie-Proben, +2 Würfel für Luftgeister.</advantage>
-				<disadvantage>
-					Wenn sich ein Anhänger des Berges erst einmal für eine bestimmte Vorgehensweise entschieden hat, muss ihm Willenskraft + Charisma(3)-Probe gelingen um seinen ursprünglichen Pan zu
-					ändern. Scheitert die Probe, verfolgt er weiter den ursprünglichen Plan, selbst wenn das bedeutet das er auf sich allein gestellt ist.
-				</disadvantage>
+				<advantage>Allgemein: +2 Würfel auf Survivalproben</advantage>
+				<disadvantage>Wenn ein Anhänger von Berg einen Plan gefasst hat, bleibt er dabei. Er muss eine Probe auf Charisma + Willenskraft (3) schaffen, um ein geplantes Vorgehen aufzugeben und einem neuen Plan zu folgen. Wenn die Probe misslingt, muss er dem ursprünglichen Plan folgen - wenn nötig auch alleine. Genauso muss er eine Probe auf Charisma + Willenskraft (3) schaffen, um bei irgendetwas ganz ohne Plan vorzugehen.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Counterspelling and anchored rituals</name>
-						<translate>Zauberer: +2 Würfel for Counterspelling and anchored rituals</translate>
+						<translate>Zauberer: +2 Würfel für Antimagieproben und Verankerte Rituale</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Mystic Armor</name>
-						<translate>Adept: 1 freie Stufe für Mystic Armor</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Counterspelling and anchored rituals</name>
-						<translate>Zauberer: +2 Würfel for Counterspelling and anchored rituals</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Mystic Armor</name>
-						<translate>Adept: 1 freie Stufe für Mystic Armor</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Counterspelling and anchored rituals</name>
-						<translate>Magician: +2 dice for Counterspelling and anchored rituals</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Mystic Armor</name>
-						<translate>Adept: 1 free level of Mystic Armor</translate>
+						<translate>Adept: 1 Stufe Mystischer Panzer gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12258,35 +12092,16 @@
 				<name>Rat</name>
 				<page>322</page>
 				<translate>Ratte</translate>
-				<advantage>+2 Würfel auf Inflitrationsproben, +2 Würfel für Widerstandsproben gegen Krankheiten und Toxine</advantage>
-				<disadvantage>
-					Einem Rattenschamanen muss eine Willenskraft + Charisma(3)-Probe gelingen, um nicht sofort zu fliehen oder in Deckung zu gehen, wenn er in eine Kampfsituation gerät. Wenn er nicht
-					fliehen kann, ist er dagegen zum Kampf gezwungen.
-				</disadvantage>
+				<advantage>Allgemein: +2 Würfel auf Schleichenproben</advantage>
+				<disadvantage>Ein Charakter, der Ratte folgt, muss eine Probe auf Charisma + Willenskraft (3) schaffen, um im Kampf nicht sofort zu fliehen. Wenn er nicht fliehen kann, muss er kämpfen.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 to Alchemy for harvesting, and you may use any reagents</name>
-						<translate>Zauberer: +2 to Alchemy for harvesting, and you may use any reagents</translate>
+						<translate>Zauberer: +2 für Alchemieproben beim Sammeln von Reagenzien; kann Reagenzien aller Traditionen benutzen</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Natural Immunity</name>
-						<translate>Adept: 2 freie Stufen auf Natural Immunity</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 to Alchemy for harvesting, and you may use any reagents</name>
-						<translate>Zauberer: +2 to Alchemy for harvesting, and you may use any reagents</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free levels of Natural Immunity</name>
-						<translate>Adept: 2 freie Stufen auf Natural Immunity</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 to Alchemy for harvesting, and you may use any reagents</name>
-						<translate>Magician: +2 to Alchemy for harvesting, and you may use any reagents</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free levels of Natural Immunity</name>
-						<translate>Adept: 2 free levels of Natural Immunity</translate>
+						<translate>Adept: 2 Stufen Natürliche Immunität gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12295,32 +12110,16 @@
 				<name>Raven</name>
 				<page>322</page>
 				<translate>Rabe</translate>
-				<advantage>+2 Würfel auf Manipulationszauber, +2 Würfel auf Luftgeister</advantage>
+				<advantage>Allgemein: +2 Würfel für Überredenproben</advantage>
 				<disadvantage>Ein Anhänger von Rabe muss eine Willenskraft + Charisma(3)-Probe schaffen, um das Unglück eines anderen nicht für seine Zwecke auszunutzen.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Zauberer: +2 Würfel for Manipulation spells</translate>
+						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Traceless Walk and 1 level of Voice Control</name>
-						<translate>Adept: Free Traceless Walk and 1 level of Voice Control</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Zauberer: +2 Würfel for Manipulation spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: Free Traceless Walk and 1 level of Voice Control</name>
-						<translate>Adept: Free Traceless Walk and 1 level of Voice Control</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Magician: +2 dice for Manipulation spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: Free Traceless Walk and 1 level of Voice Control</name>
-						<translate>Adept: Free Traceless Walk and 1 level of Voice Control</translate>
+						<translate>Adept: Spurloser Schritt und 1 Stufe Stimmkontrolle gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12329,32 +12128,16 @@
 				<name>Sea</name>
 				<page>322</page>
 				<translate>Meer</translate>
-				<advantage>+2 Würfel für Wassergeister, +2 Würfel für Schwimmenproben.</advantage>
-				<disadvantage>-1 Würfel auf Verhandlungsproben</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Schwimmenproben.</advantage>
+				<disadvantage>Ein Anhänger von Meer muss eine Probe auf Charisma + Willenskraft (3) schaffen, um etwas herzugeben, das ihm gehört, oder auf irgendeine Weise wohltätig zu sein.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice summoning spirits of water</name>
-						<translate>Zauberer: +2 Würfel summoning spirits of water</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Wassergeistern</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Improved Ability on an athletic skill</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability on an athletic skill</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice summoning spirits of water</name>
-						<translate>Zauberer: +2 Würfel summoning spirits of water</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Improved Ability on an athletic skill</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability on an athletic skill</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice summoning spirits of water</name>
-						<translate>Magician: +2 dice summoning spirits of water</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Improved Ability on an athletic skill</name>
-						<translate>Adept: 1 free level of Improved Ability on an athletic skill</translate>
+						<translate>Adept: 1 Stufe Verbesserte Fertigkeit auf eine Athletikfertigkeit</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12363,35 +12146,16 @@
 				<name>Shark</name>
 				<page>321</page>
 				<translate>Hai</translate>
-				<advantage>+2 Würfel auf Kampfzauber, +2 Würfel für Wassergeister</advantage>
-				<disadvantage>
-					Anhänger von Hai können ähnlich wie Bärenschamanen in einen Blutrausch(siehe S. 194 Strassenmagie) geraten, wenn sie im Kampf verwundet werden oder einen Gegner verwunden. Ein
-					Charakter der sich in einem solchen Blutrausch befindet, kann anstatt lebender Ziele weiter die Leiche seines letzten Opfers angreifen, wenn der Spieler dies will.
-				</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Proben auf Waffenlosen Kampf</advantage>
+				<disadvantage>Der Charakter kann zum Berserker werden, wenn er im Kampf Körperlichen Schaden erleidet oder jemand, den er beschützt, schwer verletzt wird. Legen Sie (mit Verletzungsmodifikatoren) eine Probe auf Charisma + Willenskraft ab. Der Charakter verfällt für 3 minus 1 Runde pro Erfolg in einen Berserkerrausch. 3 oder mehr Erfolge können den Berserkerrausch komplett verhindern. Wenn der Charakter bereits im Berserkerrausch ist, erhöht sich die Dauer entsprechend. In diesem Zustand stürzt sich der Charakter auf seine(n) Gegner, ohne auf seine eigeneSicherheit zu achten. Wenn er seine(n) Gegner vor Ablauf des Berserkerrausches kampfunfähig macht, endet dieser vorzeitig.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel für Kampfzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Killing Hands</name>
-						<translate>Adept: Free Killing Hands</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel for Combat spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: Free Killing Hands</name>
-						<translate>Adept: Free Killing Hands</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Magician: +2 dice for Combat spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: Free Killing Hands</name>
-						<translate>Adept: Free Killing Hands</translate>
+						<translate>Adept: Todeskralle gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12400,8 +12164,8 @@
 				<name>Snake</name>
 				<page>323</page>
 				<translate>Schlange</translate>
-				<advantage>+2 Würfel auf Wahrnehmungszauber, +2 Würfel für Bindungsproben</advantage>
-				<disadvantage>-1 Würfel auf Kampfzauber</disadvantage>
+				<advantage>Allgemein: +2 Würfel auf Arkanaproben</advantage>
+				<disadvantage>Einem Anhänger von Schlange muss eine Probe auf Charisma + Willenskraft (3) gelingen, damit er Hinweisen auf Geheimnisse oder Wissen, das nur wenigen bekannt ist, nicht folgt.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection spells</name>
@@ -12409,23 +12173,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Kinesics</name>
-						<translate>Adept: 2 freie Stufen auf Kinesics</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Detection spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free levels of Kinesics</name>
-						<translate>Adept: 2 freie Stufen auf Kinesics</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Detection spells</name>
-						<translate>Magician: +2 dice for Detection spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free levels of Kinesics</name>
-						<translate>Adept: 2 free levels of Kinesics</translate>
+						<translate>Adept: 2 Stufen Körpersprache gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12434,32 +12182,16 @@
 				<name>Thunderbird</name>
 				<page>321</page>
 				<translate>Donnervogel</translate>
-				<advantage>+2 Würfel für Luftgeister, +2 Würfel auf Einschüchtern-Proben</advantage>
-				<disadvantage>Ein Donnervogelcharakter muss eine Willenskraft + Charisma (3)-Probe schaffen, um eine Beleidigung zu ignorieren und nicht auf sie zu reagieren.</disadvantage>
+				<advantage>Allgemein: +2 Würfel auf Einschüchternproben</advantage>
+				<disadvantage>Ein Anhänger von Donnervogel muss eine Probe auf Charisma + Willenskraft (3) schaffen, um auf eine Beleidigung nicht scharf zu reagieren.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning spirits of air</name>
-						<translate>Zauberer: +2 Würfel for summoning spirits of air</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Luftgeistern</translate>
 					</choice>
 					<choice>
-						<name>Adept: 1 free level of Critical Strike (skill)</name>
-						<translate>Adept: 1 freie Stufe für Critical Strike (skill)</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for summoning spirits of air</name>
-						<translate>Zauberer: +2 Würfel for summoning spirits of air</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Critical Strike (skill)</name>
-						<translate>Adept: 1 freie Stufe für Critical Strike (skill)</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for summoning spirits of air</name>
-						<translate>Magician: +2 dice for summoning spirits of air</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Critical Strike (skill)</name>
-						<translate>Adept: 1 free level of Critical Strike (skill)</translate>
+						<name>Adept: 1 free level of Critical Strike</name>
+						<translate>Adept: Einmal Kritischer Schlag (Fertigkeit) gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12468,56 +12200,24 @@
 				<name>Wise Warrior</name>
 				<page>323</page>
 				<translate>Weiser Krieger</translate>
-				<advantage>+2 Würfel auf Kampfzauber, +2 Würfel auf Wahrnehmungszauber</advantage>
-				<disadvantage>-1 Würfelpool-Modifikator auf alle Proben, wenn der Charakter unehrenhaft gehandelt hat, bis er Gelegenheit hatte, sein Fehlverhalten wieder gutzumachen.</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Führungs- oder Unterrichtsproben</advantage>
+				<disadvantage>Wenn sich ein Anhänger des Weisen Kriegers (absichtlich oder unabsichtlich) ehrlos oder unhöflich verhält, erhält er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er für sein Verhalten gebüßt hat.</disadvantage>
 				<choices>
 					<choice>
 						<name>+2 dice for Leadership skill tests</name>
-						<translate>+2 Würfel for Leadership skill tests</translate>
+						<translate>+2 Würfel für Führungsproben</translate>
 					</choice>
 					<choice>
 						<name>+2 dice for Instruction skill tests</name>
-						<translate>+2 Würfel for Instruction skill tests</translate>
+						<translate>+2 Würfel für Unterrichtsproben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Zauberer:+2 Würfel for Combat spells</translate>
+						<translate>Zauberer:+2 Würfel für Kampfzauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 1 free level of Improved Ability on a Combat skill</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability on a Combat skill</translate>
-					</choice>
-					<choice>
-						<name>+2 dice for Leadership skill tests</name>
-						<translate>+2 Würfel for Leadership skill tests</translate>
-					</choice>
-					<choice>
-						<name>+2 dice for Instruction skill tests</name>
-						<translate>+2 Würfel for Instruction skill tests</translate>
-					</choice>
-					<choice set="2">
-						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Zauberer:+2 Würfel for Combat spells</translate>
-					</choice>
-					<choice set="2">
-						<name>Adept: 1 free level of Improved Ability on a Combat skill</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability on a Combat skill</translate>
-					</choice>
-					<choice>
-						<name>+2 dice for Leadership skill tests</name>
-						<translate>+2 dice for Leadership skill tests</translate>
-					</choice>
-					<choice>
-						<name>+2 dice for Instruction skill tests</name>
-						<translate>+2 dice for Instruction skill tests</translate>
-					</choice>
-					<choice set="2">
-						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Magician:+2 dice for Combat spells</translate>
-					</choice>
-					<choice set="2">
-						<name>Adept: 1 free level of Improved Ability on a Combat skill</name>
-						<translate>Adept: 1 free level of Improved Ability on a Combat skill</translate>
+						<translate>Adept: 1 Stufe Verbesserte Fertigkeit für eine Kampffertigkeit</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12526,32 +12226,16 @@
 				<name>Wolf</name>
 				<page>323</page>
 				<translate>Wolf</translate>
-				<advantage>+2 Würfel auf Kampfzauber, +2 Würfel für Geister des Tieres</advantage>
-				<disadvantage>Ein Wolfcharakter muss eine Willenskraft + Charisma(3)-Probe schaffen, um sich aus einem Kampf zurückzuziehen.</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Spurenlesen</advantage>
+				<disadvantage>Ein Anhänger von Wolf muss eine Probe auf Charisma + Willenskraft (3) schaffen, um sich aus einem Kampf zurückzuziehen.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Zauberer:+2 Würfel for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel for Kampfzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Attribute Boost (Agility)</name>
-						<translate>Adept: 2 freie Stufen auf Attribute Boost (Agility)</translate>
-					</choice>
-					<choice>
-						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Zauberer:+2 Würfel for Combat spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free levels of Attribute Boost (Agility)</name>
-						<translate>Adept: 2 freie Stufen auf Attribute Boost (Agility)</translate>
-					</choice>
-					<choice>
-						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Magician:+2 dice for Combat spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: 2 free levels of Attribute Boost (Agility)</name>
-						<translate>Adept: 2 free levels of Attribute Boost (Agility)</translate>
+						<translate>Adept: 2 Stufen auf Attributschub (Geschicklichkeit) gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12560,8 +12244,8 @@
 				<name>Seducer</name>
 				<translate>Verführer</translate>
 				<page>323</page>
-				<advantage>All: +2 dice for Con Tests.</advantage>
-				<disadvantage>You must succeed in a Charisma + Willpower (3) Test to avoid pursuing a vice or indulgence (drugs, BTLs, sex, and so on) when it is made available.</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Überredenproben</advantage>
+				<disadvantage>Der Charakter muss eine Probe auf Charisma + Willenskraft (3) schaffen, um einem Laster oder einer Neigung (Drogen, BTLs, Sex usw.) nicht bei erster Gelegenheit nachzugeben.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion spells</name>
@@ -12569,23 +12253,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Improved Ability</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Illusion spells</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Improved Ability</name>
-						<translate>Adept: 1 freie Stufe für Improved Ability</translate>
-					</choice>
-					<choice>
-						<name>Magician: +2 dice for Illusion spells</name>
-						<translate>Magician: +2 dice for Illusion spells</translate>
-					</choice>
-					<choice>
-						<name>Adept: 1 free level of Improved Ability</name>
-						<translate>Adept: 1 free level of Improved Ability</translate>
+						<translate>Adept: 1 Verbesserte Fertigkeit aus den Gruppen Schauspielerei oder Einfluss</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -12786,22 +12454,22 @@
 			<mentor>
 				<id>1bd89b48-f900-476f-9278-1128ecdd6f14</id>
 				<name>Raven (German)</name>
-				<translate>Raven (German)</translate>
+				<translate>Rabe (Deutsch)</translate>
 				<page>323</page>
-				<advantage>All: +2 dice for Con tests.</advantage>
-				<disadvantage>You must make a Charisma + Willpower (3) Test to avoid exploiting someone else’s misfortune to your own advantage or to pull a clever trick or prank even if it’s to the disadvantage of your friends.</disadvantage>
+				<advantage>Allgemein: +2 Würfel für Überredenproben</advantage>
+				<disadvantage>Ein Anhänger von Rabe muss eine Probe auf Charisma + Willenskraft (3) schaffen, um das Unglück anderer nicht zu seinem Vorteil zu nutzen, oder um sich einen schlauen Trick oder Scherz zu verkeifen, selbst wenn dieser seinen Freunden zum Nachteil gereichen würde.</disadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Magician: +2 dice for Manipulation spells</translate>
+						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Traceless Walk</name>
-						<translate>Adept: Free Traceless Walk</translate>
+						<translate>Adept: Spurloser Schritt gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 level of Voice Control</name>
-						<translate>Adept: 1 level of Voice Control</translate>
+						<translate>Adept: 1 Stufe Stimmkontrolle gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
