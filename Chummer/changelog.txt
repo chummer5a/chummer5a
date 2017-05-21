@@ -7,6 +7,7 @@ Application Changes:
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
 - Converted UpdateCharacterInfo to be triggered by Application.Idle. This should reduce some latency caused by loading components of the interface, at the cost of a slightly deferred update of character details. In practice this should not be noticable under standard operating conditions. 
 - Fixed unused translation strings in the Armour, Weapon and Priority selection windows. 
+- Fixed an issue when selecting the Aware priority type that prevented it from properly receiving the correct skill bonus.
 
 Data Changes:
 

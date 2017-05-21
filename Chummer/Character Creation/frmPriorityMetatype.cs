@@ -604,18 +604,18 @@ namespace Chummer
 					switch (strSkillType)
 					{
 						case "magic":
-							{
-								objXmlSkillsList = GetMagicalSkillList();
-								break;
-							}
+						{
+							objXmlSkillsList = objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"] != null ? GetNamedSkill(objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"].InnerText) : GetMagicalSkillList();
+							break;
+						}
 						case "resonance":
 							{
-								objXmlSkillsList = GetResonanceSkillList();
+								objXmlSkillsList = objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"] != null ? GetNamedSkill(objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"].InnerText) : GetResonanceSkillList();
 								break;
 							}
 						case "matrix":
 							{
-								objXmlSkillsList = GetMatrixSkillList();
+								objXmlSkillsList = objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"] != null ? GetNamedSkill(objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"].InnerText) : GetMatrixSkillList();
 								break;
 							}
 						case "choices":
@@ -2151,6 +2151,13 @@ namespace Chummer
 	        XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
             var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill");
             return objXmlSkillList;
+		}
+
+		private XmlNodeList GetNamedSkill(string name)
+		{
+			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+			var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[name = \""+ name +"\"]");
+			return objXmlSkillList;
 		}
 
 		private XmlNodeList BuildSkillCategoryList(XmlNodeList objSkillList)

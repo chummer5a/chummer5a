@@ -1096,7 +1096,7 @@
 					<magic>3</magic>
 					<skillqty>1</skillqty>
 					<skillval>4</skillval>
-					<skilltype>magic</skilltype>
+					<skilltype name="Assensing">magic</skilltype>
 					<forbidden>
 						<oneof>
 							<metatype>A.I.</metatype>
