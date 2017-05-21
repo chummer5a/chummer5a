@@ -20101,6 +20101,7 @@ namespace Chummer
 		/// </summary>
 		public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
 		{
+			this.SuspendLayout();
 			if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate)
 				return;
 
@@ -20906,7 +20907,7 @@ namespace Chummer
 			lblEDGInfo.Text = strEDG;
 
 			_blnSkipUpdate = false;
-
+			_blnRequestCharacterUpdate = false;
 			_objImprovementManager.Commit();
 
 			// If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
@@ -20922,6 +20923,7 @@ namespace Chummer
 			{
 				AutoSaveCharacter();
 			}
+			this.ResumeLayout(false);
 		}
 
 		/// <summary>
