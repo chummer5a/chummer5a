@@ -275,7 +275,7 @@ namespace Chummer
                         objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
 
                         string strID = objWeapon.SourceID.ToString();
-                        string strWeaponName = objWeapon.Name;
+                        string strWeaponName = objWeapon.DisplayName;
                         string strDice = objWeapon.DicePool;
                         int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
                         string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
@@ -292,7 +292,7 @@ namespace Chummer
                         {
                             if (strAccessories.Length > 0)
                                 strAccessories += "\n";
-                            strAccessories += objAccessory.Name;
+                            strAccessories += objAccessory.DisplayName;
                         }
                         string strAvail = objWeapon.Avail;
                         string strSource = objWeapon.Source + " " + objWeapon.Page;

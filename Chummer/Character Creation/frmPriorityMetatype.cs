@@ -290,8 +290,8 @@ namespace Chummer
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objXmlPriority["value"].InnerText;
-                        objItem.Name = objXmlPriority["name"].InnerText;
-                        lstItems.Add(objItem);
+	                    objItem.Name = objXmlPriority["translate"]?.InnerText ?? objXmlPriority["name"].InnerText;
+						lstItems.Add(objItem);
                     }
                     SortListItem objPrioritySort = new SortListItem();
                     lstItems.Sort(objPrioritySort.Compare);
@@ -503,10 +503,7 @@ namespace Chummer
 				{
 					ListItem objMetavariant = new ListItem();
 					objMetavariant.Value = objXmlMetavariant["name"].InnerText;
-					if (objXmlMetavariant["translate"] != null)
-						objMetavariant.Name = objXmlMetavariant["translate"].InnerText;
-					else
-						objMetavariant.Name = objXmlMetavariant["name"].InnerText;
+					objMetavariant.Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText;
 					lstMetavariants.Add(objMetavariant);
 				}
 
@@ -1981,10 +1978,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlMetatype["name"].InnerText;
-                    if (objXmlMetatype["translate"] != null)
-                        objItem.Name = objXmlMetatype["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlMetatype["name"].InnerText;
+                    objItem.Name = objXmlMetatype["translate"]?.InnerText ?? objXmlMetatype["name"].InnerText;
                     lstMetatype.Add(objItem);
                 }
             }
@@ -2085,10 +2079,7 @@ namespace Chummer
                     objItem.Value = objXmlCategory.InnerText;
                     if (objXmlCategory.Attributes != null)
                     {
-                        if (objXmlCategory.Attributes["translate"] != null)
-                            objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlCategory.InnerText;
+                        objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
                     }
                     else
                         objItem.Name = objXmlCategory.InnerXml;
