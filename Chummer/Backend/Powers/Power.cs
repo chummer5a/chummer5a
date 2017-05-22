@@ -124,6 +124,7 @@ namespace Chummer
 					!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false,
 						Convert.ToInt32(Rating), DisplayNameShort))
 				{
+					this.Deleting = true;
 					CharacterObject.Powers.Remove(this);
 					return;
 				}
@@ -642,13 +643,6 @@ namespace Chummer
 				{
 					intReturn = CharacterObject.MAG.TotalValue;
 				}
-				// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-				if (Bonus?.InnerXml.Contains("Rating") == true)
-				{
-					CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
-					CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-					CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
-				}
 				return intReturn;
 			}
 		}
@@ -696,7 +690,20 @@ namespace Chummer
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+			if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating) && !Deleting)
+			{
+				CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+				CharacterObject.ObjImprovementManager.ForcedValue = Extra;
+				CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
+			}
 		}
+
+		/// <summary>
+		/// Is the currently power being deleted? 
+		/// Ugly hack to prevent powers with Ratings recreating their improvments when they're being deleted. TODO: FIX THIS BETTER
+		/// </summary>
+		public bool Deleting { internal get; set; }
 
 		public string Category { get; set; }
 
