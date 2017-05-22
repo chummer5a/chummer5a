@@ -18,6 +18,7 @@ Data Changes:
 - Fixed missing quality requirements/restrictions for the Apprentice quality. 
 - The Athlete's Way can now properly allow discounting the Skate power.
 - Added missing bonuses for the Raven (Alt) Mentor Spirit. 
+- Fixed the drain attributes for the Red Magic tradition. 
 
 New Strings:
 

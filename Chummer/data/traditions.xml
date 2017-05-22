@@ -567,7 +567,7 @@
 		<tradition>
 			<id>a5c6f673-bd53-4e70-a574-af2f5a1c2e60</id>
 			<name>Red Magic</name>
-			<drain>WIL + LOG</drain>
+			<drain>WIL + INT</drain>
 			<spirits>
 				<spiritcombat>Spirit of Beasts</spiritcombat>
 				<spiritdetection>Spirit of Air</spiritdetection>
