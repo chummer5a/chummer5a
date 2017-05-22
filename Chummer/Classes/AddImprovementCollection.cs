@@ -3150,6 +3150,16 @@ namespace Chummer.Classes
 		}
 
 		// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
+		public void essencepenalty(XmlNode bonusNode)
+		{
+			Log.Info("essencepenalty");
+			Log.Info("essencepenalty = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, string.Empty,
+				ValueToInt(bonusNode.InnerText, _intRating));
+		}
+
+		// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
 		public void essencemax(XmlNode bonusNode)
 		{
 			Log.Info("essencemax");

@@ -8,6 +8,7 @@ Application Changes:
 - Converted UpdateCharacterInfo to be triggered by Application.Idle. This should reduce some latency caused by loading components of the interface, at the cost of a slightly deferred update of character details. In practice this should not be noticable under standard operating conditions. 
 - Fixed unused translation strings in the Armour, Weapon and Priority selection windows. 
 - Fixed an issue when selecting the Aware priority type that prevented it from properly receiving the correct skill bonus.
+- HMHVV Strain II and III characters can now properly improve their Magic rating and should suffer the appropriate Magic penalty if taken in career mode. 
 
 Data Changes:
 

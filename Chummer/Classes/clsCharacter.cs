@@ -4329,12 +4329,9 @@ namespace Chummer
             get
             {
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                foreach (Improvement objImprovement in _lstImprovements)
+                if (_lstImprovements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled)
-                    {
-                        return 0.1m;
-                    }
+	                return 0.1m;
                 }
                 decimal decESS = EssenceMaximum;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
@@ -4362,7 +4359,9 @@ namespace Chummer
 						decBioware = 0;
 					}
 				}
-                decESS -= decCyberware + decBioware;
+	            decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
+
+				decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
 

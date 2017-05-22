@@ -186,8 +186,9 @@ namespace Chummer
             SpellResistance,
 	        SpellKarmaDiscount,
 	        LimitSpellCategory,
-	        LimitSpiritCategory
-        }
+	        LimitSpiritCategory,
+			EssencePenalty
+		}
 
         public enum ImprovementSource
         {
@@ -619,7 +620,7 @@ namespace Chummer
 			List<string> lstUniqueName = new List<string>();
 			List<Tuple<string, int>> lstUniquePair = new List<Tuple<string, int>>();
 			int intValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == objImprovementType))
 			{
 			    if (objImprovement.Enabled && !objImprovement.Custom)
 			    {

@@ -7246,9 +7246,13 @@
           <power select="Sunlight, Mild">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<reach>1</reach>
 				<replaceattributes>
 					<replaceattribute>
@@ -7636,9 +7640,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<optionalpowers>
 					<optionalpower>Armor</optionalpower>
 				</optionalpowers>
@@ -7764,9 +7772,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -7896,9 +7908,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8028,9 +8044,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8160,9 +8180,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8292,9 +8316,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8424,9 +8452,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8558,9 +8590,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Bone">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<replaceattributes>
 					<replaceattribute>
 						<name>BOD</name>
@@ -8821,9 +8857,13 @@
           <power select="Metahuman Flesh">Dietary Requirement</power>
           <power select="Iron">Vulnerability</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<initiative>1</initiative>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -8961,9 +9001,13 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
@@ -9100,9 +9144,13 @@
           <power select="Sunlight, Severe">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
+				<essencepenalty>-1</essencepenalty>
 				<initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
         <movementmultiplier>1</movementmultiplier>
