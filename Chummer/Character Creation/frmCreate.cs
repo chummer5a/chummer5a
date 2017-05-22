@@ -14375,6 +14375,11 @@ namespace Chummer
 				}
 				_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier;
 
+				if (_objCharacter.AdeptEnabled)
+				{
+					tabPowerUc.MissingDatabindingsWorkaround();
+				}
+
 				UpdateSkillRelatedInfo();
 				
                 UpdateConditionMonitor(lblCMPhysical,lblCMStun,tipTooltip, _objImprovementManager);

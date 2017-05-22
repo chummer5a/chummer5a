@@ -20114,6 +20114,11 @@ namespace Chummer
 			cmdIncreasePowerPoints.Enabled = (_objCharacter.MysticAdeptPowerPoints < _objCharacter.MAG.TotalValue) &&
 			                                 _objCharacter.Karma >= 5;
 
+			if (_objCharacter.AdeptEnabled)
+			{
+				tabPowerUc.MissingDatabindingsWorkaround();
+			}
+
 			decimal decESS = Math.Round(_objCharacter.Essence, _objCharacter.Options.EssenceDecimals,
 				MidpointRounding.AwayFromZero);
 			lblESSMax.Text = decESS.ToString(GlobalOptions.CultureInfo);
