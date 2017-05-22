@@ -176,6 +176,7 @@
 			<limit>6</limit>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
@@ -206,6 +207,7 @@
 			<limit>3</limit>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
@@ -236,6 +238,7 @@
 			<limit>2</limit>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
@@ -265,6 +268,7 @@
 			<category>Positive</category>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
@@ -294,6 +298,7 @@
 			<category>Positive</category>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
@@ -323,6 +328,7 @@
 			<category>Positive</category>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
@@ -530,6 +536,7 @@
           <metatype>Sasquatch</metatype>
           <metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Adept</quality>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
@@ -564,6 +571,7 @@
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+					<quality>Aware</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Apprentice</quality>
 					<quality>Magic Resistance (Rating 3)</quality>
@@ -594,6 +602,7 @@
 					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+					<quality>Aware</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Apprentice</quality>
 					<quality>Magic Resistance (Rating 2)</quality>
@@ -623,6 +632,7 @@
           <metatypecategory>Shapeshifter</metatypecategory>
 					<quality>Adept</quality>
 					<quality>Magician</quality>
+					<quality>Aware</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Apprentice</quality>
@@ -793,6 +803,7 @@
 			</bonus>
 			<required>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
@@ -1091,6 +1102,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Aspected Magician</quality>
@@ -1119,6 +1131,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Magician</quality>
 					<quality>Adept</quality>
 					<quality>Aspected Magician</quality>
@@ -1148,6 +1161,7 @@
 				<oneof>
           <metatypecategory>Metasapient</metatypecategory>
           <metatypecategory>Shapeshifter</metatypecategory>
+					<quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
@@ -1175,7 +1189,33 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Apprentice</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<source>SR5</source>
+			<page>69</page>
+		</quality>
+		<quality>
+			<id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
+			<name>Aware</name>
+			<contributetolimit>no</contributetolimit>
+			<hide>yes</hide>
+			<karma>15</karma>
+			<category>Positive</category>
+			<bonus>
+				<enableattribute>
+					<name>MAG</name>
+				</enableattribute>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Apprentice</quality>
+					<quality>ASpected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Adept</quality>
@@ -1345,6 +1385,7 @@
           <metatype>Pixie</metatype>
           <metatype>Sasquatch</metatype>
           <quality>Adept</quality>
+					<quality>Aware</quality>
           <quality>Aspected Magician</quality>
 					<quality>Apprentice</quality>
           <quality>Magician</quality>
@@ -1828,6 +1869,8 @@
 				<oneof>
 					<quality>Aspected Magician</quality>
 					<quality>Apprentice</quality>
+					<quality>Aware</quality>
+					<quality>Adept</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Infected: Mutaqua</quality>
@@ -3064,6 +3107,7 @@
 					<quality>Aspected Magician</quality>
 					<quality>Apprentice</quality>
 					<quality>Magician</quality>
+					<quality>Adept</quality>
 					<quality>Mystic Adept</quality>
 					<quality>Infected: Mutaqua</quality>
 					<quality>Infected: Nosferatu</quality>
@@ -3441,6 +3485,7 @@
         <required>
           <oneof>
             <power>Astral Perception</power>
+						<quality>Aware</quality>
             <quality>Magician</quality>
             <quality>Aspected Magician</quality>
 						<quality>Apprentice</quality>
@@ -4836,7 +4881,9 @@
 			<required>
 				<oneof>
 					<quality>Magician</quality>
+					<quality>Aware</quality>
 					<quality>Aspected Magician</quality>
+					<quality>Mystic Adept</quality>
 					<quality>Apprentice</quality>
 					<quality>Infected: Mutaqua</quality>
 					<quality>Infected: Nosferatu</quality>
@@ -6842,6 +6889,7 @@
 						<quality>Aspected Magician</quality>
 						<quality>Apprentice</quality>
 						<quality>Magician</quality>
+						<quality>Aware</quality>
 						<quality>Mystic Adept</quality>
 						<quality>Adept</quality>
 						<quality>Infected: Mutaqua</quality>
@@ -13828,6 +13876,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
+					<quality>Aware</quality>
 					<quality>Aspected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>

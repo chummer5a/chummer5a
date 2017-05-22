@@ -1091,12 +1091,12 @@
 					<name>Aware - 3 Magic</name>
 					<value>Aware</value>
 					<qualities>
-						<quality>Aspected Magician</quality>
+						<quality>Aware</quality>
 					</qualities>
 					<magic>3</magic>
 					<skillqty>1</skillqty>
 					<skillval>4</skillval>
-					<skilltype name="Assensing">magic</skilltype>
+					<skilltype>magic</skilltype>
 					<forbidden>
 						<oneof>
 							<metatype>A.I.</metatype>

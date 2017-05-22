@@ -604,18 +604,18 @@ namespace Chummer
 					switch (strSkillType)
 					{
 						case "magic":
-						{
-							objXmlSkillsList = objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"] != null ? GetNamedSkill(objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"].InnerText) : GetMagicalSkillList();
-							break;
-						}
+							{
+								objXmlSkillsList = GetMagicalSkillList();
+								break;
+							}
 						case "resonance":
 							{
-								objXmlSkillsList = objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"] != null ? GetNamedSkill(objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"].InnerText) : GetResonanceSkillList();
+								objXmlSkillsList = GetResonanceSkillList();
 								break;
 							}
 						case "matrix":
 							{
-								objXmlSkillsList = objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"] != null ? GetNamedSkill(objTalentsNode.SelectSingleNode("skilltype").Attributes?["name"].InnerText) : GetMatrixSkillList();
+								objXmlSkillsList = GetMatrixSkillList();
 								break;
 							}
 						case "choices":
@@ -1629,22 +1629,14 @@ namespace Chummer
                 if (objXmlTalentList[0]["maxdepth"] != null)
                     _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["depth"].InnerText);
 
-                // Set Free Skills/Skill Groups
-                int intFreeLevels = 0;
-                switch ((cboTalent.SelectedValue.ToString().Split(',')[0]))
-                {
-	                case "A":
-		                intFreeLevels = 5;
-		                break;
-	                case "B":
-		                intFreeLevels = 4;
-		                break;
-	                case "C":
-		                intFreeLevels = 2;
-		                break;
-                }
+				// Set Free Skills/Skill Groups
+				XmlNode objTalentsNode =
+					objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" +
+															cboTalent.SelectedValue + "\"]/talents/talent[value = \"" +
+															cboTalents.SelectedValue + "\"]");
+				int intFreeLevels = Convert.ToInt32(objTalentsNode.SelectSingleNode("skillval")?.InnerText ?? objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
 
-	            AddFreeSkills(intFreeLevels);
+				AddFreeSkills(intFreeLevels);
 
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);
@@ -1727,6 +1719,13 @@ namespace Chummer
 
 			if (cboSkill1.Visible)
 			{
+				if ("Aware".Equals(cboTalents.SelectedValue))
+				{
+					SkillsSection.FilterOptions skills = SkillsSection.FilterOptions.Name;;
+					_objCharacter.SkillsSection.AddSkills(skills, cboSkill1.SelectedValue.ToString());
+					manager.CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
+						Improvement.ImprovementType.SpecialSkills, string.Empty);
+				}
 				manager.CreateImprovement(cboSkill1.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
 					type, string.Empty, intFreeLevels);
 			}
@@ -2151,13 +2150,6 @@ namespace Chummer
 	        XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
             var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill");
             return objXmlSkillList;
-		}
-
-		private XmlNodeList GetNamedSkill(string name)
-		{
-			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-			var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[name = \""+ name +"\"]");
-			return objXmlSkillList;
 		}
 
 		private XmlNodeList BuildSkillCategoryList(XmlNodeList objSkillList)
