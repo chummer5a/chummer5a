@@ -207,7 +207,7 @@ namespace Chummer
 			{
 				if (chkLimitList.Checked &&
 				    (!chkLimitList.Checked ||
-										  !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, 
+										  !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, 
 						 _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s))) continue;
 					bool blnNew =
 					_objCharacter.Metamagics.All(
