@@ -12143,6 +12143,23 @@
 			<category>Positive</category>
 			<bonus />
       <required>
+				<oneof>
+					<skill>
+						<name>Magical Theory (Academic)</name>
+						<val>4</val>
+						<type>Knowledge</type>
+					</skill>
+					<skill>
+						<name>Magical Theory (Street)</name>
+						<val>4</val>
+						<type>Knowledge</type>
+					</skill>
+					<skill>
+						<name>Magical Theory</name>
+						<val>4</val>
+						<type>Knowledge</type>
+					</skill>
+				</oneof>
         <allof>
           <skill>
             <name>Magical Theory</name>
@@ -13454,6 +13471,28 @@
 					<group>
 						<skill>
 							<name>Assensing</name>
+							<val>4</val>
+						</skill>
+						<skill>
+							<name>Magical Theory (Street)</name>
+							<val>3</val>
+							<type>Knowledge</type>
+						</skill>
+					</group>
+					<group>
+						<skill>
+							<name>Assensing</name>
+							<val>4</val>
+						</skill>
+						<skill>
+							<name>Magical Theory (Academic)</name>
+							<val>3</val>
+							<type>Knowledge</type>
+						</skill>
+					</group>
+					<group>
+						<skill>
+							<name>Assensing</name>
 							<val>2</val>
 						</skill>
 						<skill>
@@ -13462,6 +13501,30 @@
 							<type>Knowledge</type>
 						</skill>
             <tradition>Buddhism</tradition>
+					</group>
+					<group>
+						<skill>
+							<name>Assensing</name>
+							<val>2</val>
+						</skill>
+						<skill>
+							<name>Magical Theory (Academic)</name>
+							<val>1</val>
+							<type>Knowledge</type>
+						</skill>
+						<tradition>Buddhism</tradition>
+					</group>
+					<group>
+						<skill>
+							<name>Assensing</name>
+							<val>2</val>
+						</skill>
+						<skill>
+							<name>Magical Theory (Street)</name>
+							<val>1</val>
+							<type>Knowledge</type>
+						</skill>
+						<tradition>Buddhism</tradition>
 					</group>
 				</oneof>
 			</required>
