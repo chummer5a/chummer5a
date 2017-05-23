@@ -41,37 +41,82 @@ namespace Chummer.Backend.Shared_Methods
 				objQualityDocument = XmlManager.Instance.Load("qualities.xml");
 			if (objXmlNode == null) return false;
 			// See if the character already has this Quality and whether or not multiple copies are allowed.
-			if (objXmlNode["limit"]?.InnerText != "no")
+			if (objXmlNode["limit"] != null && objXmlNode["limit"]?.InnerText != "no")
 			{
 				string limitTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
 				string limitMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
 				int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
+			    int intCount;
+			    bool allow = true;
 
-				switch (objXmlNode.Name)
+                switch (objXmlNode.Name)
 				{
 					case "quality":
-					{
-						int intCount =
-							objCharacter.Qualities.Count(
-								objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-						if (intCount > intLimit &&
-						    objCharacter.Qualities.Any(
-							    objItem =>
-								    objItem.Name == objXmlNode["name"]?.InnerText &&
-								    objItem.Name != strIgnoreQuality))
-						{
-						if (blnShowMessage)
-						{
-							limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-							MessageBox.Show(limitMessage, limitTitle,
-								MessageBoxButtons.OK, MessageBoxIcon.Information);
-						}
-						return false;
-						}
-						break;
-					}
-				}
-			}
+				        {
+                            intCount =
+                                objCharacter.Qualities.Count(
+                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
+                            allow = intCount > intLimit &&
+                                    objCharacter.Qualities.Any(
+                                        objItem =>
+                                            objItem.Name == objXmlNode["name"]?.InnerText &&
+                                            objItem.Name != strIgnoreQuality);
+                            break;
+                        }
+                    case "metamagic":
+                        {
+                            intCount =
+                                objCharacter.Metamagics.Count(
+                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
+                            allow = intCount > intLimit &&
+                                    objCharacter.Metamagics.Any(
+                                        objItem =>
+                                            objItem.Name == objXmlNode["name"]?.InnerText &&
+                                            objItem.Name != strIgnoreQuality);
+                            break;
+                        }
+                    case "art":
+                        {
+                            intCount =
+                                objCharacter.Arts.Count(
+                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
+                            allow = intCount > intLimit &&
+                                    objCharacter.Arts.Any(
+                                        objItem =>
+                                            objItem.Name == objXmlNode["name"]?.InnerText &&
+                                            objItem.Name != strIgnoreQuality);
+                            break;
+                        }
+                    case "enhancement":
+                        {
+                            intCount =
+                                objCharacter.Enhancements.Count(
+                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
+                            allow = intCount > intLimit &&
+                                    objCharacter.Enhancements.Any(
+                                        objItem =>
+                                            objItem.Name == objXmlNode["name"]?.InnerText &&
+                                            objItem.Name != strIgnoreQuality);
+                            break;
+                        }
+                    default:
+				        {
+				            Utils.BreakIfDebug();
+				            break;
+				        }
+                }
+                if (!allow)
+                {
+                    if (blnShowMessage)
+                    {
+                        limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
+                        MessageBox.Show(limitMessage, limitTitle,
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return false;
+                    }
+                    return false;
+                }
+            }
 
 			if (objXmlNode.InnerXml.Contains("forbidden"))
 			{
