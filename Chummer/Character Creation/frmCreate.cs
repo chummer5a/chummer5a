@@ -14354,7 +14354,9 @@ namespace Chummer
 
 	        if (!_blnRequestCharacterUpdate)
 		        return;
-
+			// Due to the indirect execution of UpdateCharacterInfo, it is occasionally possible for this method to run after a character has been closed. Fail out early in that case. 
+	        if (_objCharacter == null)
+		        return;
             if (!_blnSkipUpdate)
             {
                 string strTip = string.Empty;

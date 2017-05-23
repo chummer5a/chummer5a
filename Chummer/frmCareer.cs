@@ -20102,7 +20102,7 @@ namespace Chummer
 		public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
 		{
 			this.SuspendLayout();
-			if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate)
+			if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate || _objCharacter == null)
 				return;
 
 			string strTip = string.Empty;
