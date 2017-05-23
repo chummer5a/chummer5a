@@ -208,7 +208,7 @@ namespace Chummer
 				         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM).ToString() + ")";
 			tipTooltip.SetToolTip(lblPhysical, strCM);
 			strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
-            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
+			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 				         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
 			tipTooltip.SetToolTip(lblStun, strCM);
@@ -311,7 +311,7 @@ namespace Chummer
                 objLoopImprovment => (objLoopImprovment.ImproveType == Improvement.ImprovementType.PhysicalLimit 
                 || objLoopImprovment.ImproveType == Improvement.ImprovementType.SocialLimit 
                 || objLoopImprovment.ImproveType == Improvement.ImprovementType.MentalLimit) && objLoopImprovment.Enabled))
-		    {
+		        {
 		            switch (objLoopImprovement.ImproveType)
 		            {
                         case Improvement.ImprovementType.PhysicalLimit:
@@ -324,7 +324,7 @@ namespace Chummer
                             strSocial += $" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})";
                             break;
                     }
-		    }
+		        }
 
             tipTooltip.SetToolTip(lblPhysical, strPhysical);
             tipTooltip.SetToolTip(lblMental, strMental);

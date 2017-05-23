@@ -5,6 +5,10 @@ Application Changes:
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
 - Fixed behaviour of the condition monitors to properly be checked and unchecked.
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
+- Converted UpdateCharacterInfo to be triggered by Application.Idle. This should reduce some latency caused by loading components of the interface, at the cost of a slightly deferred update of character details. In practice this should not be noticable under standard operating conditions. 
+- Fixed unused translation strings in the Armour, Weapon and Priority selection windows. 
+- Fixed an issue when selecting the Aware priority type that prevented it from properly receiving the correct skill bonus.
+- HMHVV Strain II and III characters can now properly improve their Magic rating and should suffer the appropriate Magic penalty if taken in career mode. 
 - Implemented an ImprovementType to support replacing your base movement speed entirely, used for the Satyr Legs quality. Fixes #1646
 
 Data Changes:
@@ -13,6 +17,21 @@ Data Changes:
 - Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
 - Fixed a typo in the Giger Spit spell.
 - Fixed incorrect requirements for spells that require Initiate Arts. 
+- Fixed missing quality requirements/restrictions for the Apprentice quality. 
+- The Athlete's Way can now properly allow discounting the Skate power.
+- Added missing bonuses for the Raven (Alt) Mentor Spirit. 
+- Fixed the drain attributes for the Red Magic tradition. 
+- Fixed the movement modification of the Satyr quality. 
+
+New Strings:
+
+- String_Metatype
+- String_Metavariant
+- String_MartialArt
+- String_SpellCategory
+- String_Tradition
+- String_DamageResistance
+- String_Quality
 
 Build 193
 
@@ -106,6 +125,7 @@ Application Changes:
 - Added a warning message when loading an XML file if duplicate IDs exist. 
 - Fixed a stack overflow when selecting vehicle mods. 
 - When creating a new knowledge skill, the Type combobox will attempt to populate automatically. 
+- Renamed the AdeptLinguistics Improvement to NativeLanguageLimit.
 
 Data Changes:
 
@@ -215,6 +235,14 @@ New Strings:
 - Title_Browse
 - Checkbox_Option_HideItemsOverAvailLimit
 
+- Added the NativeLanguageLimit improvement bonus to the Linguistics Power and Bilingual Quality. 
+
+New Strings: 
+
+- String_PowerFilterAll
+- Power_SortAction
+- String_PowerFilterRatingAboveZero
+- String_PowerFilterRatingZero
 Build 191
 
 Application Changes:
@@ -504,7 +532,6 @@ Application Changes:
 - Modified the Commlink class so that it always executes the methods of its parent Gear class in its overriden methods wherever applicable (greatly improves code portability, as any changes to Gear's methods will be used by Commlink's methods).
 - Fixed a crash caused by searching for a weapon to attach to a vehicle weapon mount. 
 - Corrected A.I. quality restrictions.
-
 Data Changes: 
 
 - Added several cosmetic standard upgrades to vehicles from Rigger 5.0.

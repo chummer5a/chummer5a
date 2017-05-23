@@ -307,7 +307,7 @@ namespace Chummer
 						break;
 					case "S":
                         lblDamageLabel.Visible = true;
-                        lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
+						lblDamage.Text = LanguageManager.Instance.GetString("String_DamageStun");
 						break;
 					default:
                         lblDamageLabel.Visible = false;
@@ -407,7 +407,6 @@ namespace Chummer
 					int intSpellCount = 0;
 					int intRitualCount = 0;
 					int intAlchPrepCount = 0;
-					int intSpellLimit = 0;
 
 					foreach (Spell objspell in _objCharacter.Spells)
 					{
@@ -420,26 +419,26 @@ namespace Chummer
 					}
 					if (!_objCharacter.IgnoreRules)
 					{
-						intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
+						int intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
 						if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
 						{
 
 							MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 						}
-						else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
+						if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
 						{
 							MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 						}
-						else if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
+						if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
 						{
 							MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"),
 								LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 
 						}
-                        if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, "", null, null, _objXmlDocument))
+						if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, null, null, _objXmlDocument, "", LanguageManager.Instance.GetString("String_DescSpell")))
                         {
                             return;
                         }
@@ -486,10 +485,7 @@ namespace Chummer
 				{
 					TreeNode nodCategory = new TreeNode();
 					nodCategory.Tag = objXmlCategory.InnerText;
-					if (objXmlCategory.Attributes["translate"] != null)
-						nodCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
-					else
-						nodCategory.Text = objXmlCategory.InnerText;
+					nodCategory.Text = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
 
 					treSpells.Nodes.Add(nodCategory);
 				}
@@ -505,15 +501,11 @@ namespace Chummer
 
                 if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                 {
-                    if (objXmlSpell["descriptor"].InnerText.Contains("Adept"))
-                        blnInclude = true;
-                }
+					blnInclude = objXmlSpell["descriptor"].InnerText.Contains("Adept");
+				}
                 else if (!_objCharacter.AdeptEnabled)
                 {
-                    if (objXmlSpell["descriptor"].InnerText.Contains("Adept"))
-                        blnInclude = false;
-                    else
-                        blnInclude = true;
+                    blnInclude = !objXmlSpell["descriptor"].InnerText.Contains("Adept");
                 }
                 else
                     blnInclude = true;
@@ -522,10 +514,7 @@ namespace Chummer
                 {
                     TreeNode nodSpell = new TreeNode();
                     TreeNode nodParent = new TreeNode();
-                    if (objXmlSpell["translate"] != null)
-                        nodSpell.Text = objXmlSpell["translate"].InnerText;
-                    else
-                        nodSpell.Text = objXmlSpell["name"].InnerText;
+                    nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
                     nodSpell.Tag = objXmlSpell["name"].InnerText;
                     // Check to see if there is already a Category node for the Spell's category.
                     foreach (TreeNode nodCategory in treSpells.Nodes)

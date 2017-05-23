@@ -213,7 +213,7 @@ namespace Chummer
         private List<Spell> _lstSpells = new List<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
-        private List<Power> _lstPowers = new List<Power>();
+        private BindingList<Power> _lstPowers = new BindingList<Power>();
         private List<ComplexForm> _lstComplexForms = new List<ComplexForm>();
         private List<AIProgram> _lstAIPrograms = new List<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
@@ -2610,7 +2610,7 @@ namespace Chummer
             _lstSpells = new List<Spell>();
             _lstFoci = new List<Focus>();
             _lstStackedFoci = new List<StackedFocus>();
-            _lstPowers = new List<Power>();
+            _lstPowers = new BindingList<Power>();
             _lstComplexForms = new List<ComplexForm>();
             _lstAIPrograms = new List<AIProgram>();
             _lstMartialArts = new List<MartialArt>();
@@ -4329,12 +4329,9 @@ namespace Chummer
             get
             {
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                foreach (Improvement objImprovement in _lstImprovements)
+                if (_lstImprovements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled)
-                    {
-                        return 0.1m;
-                    }
+	                return 0.1m;
                 }
                 decimal decESS = EssenceMaximum;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
@@ -4362,7 +4359,9 @@ namespace Chummer
 						decBioware = 0;
 					}
 				}
-                decESS -= decCyberware + decBioware;
+	            decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
+
+				decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
 
@@ -4964,7 +4963,7 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        public List<Power> Powers
+        public BindingList<Power> Powers
         {
             get
             {

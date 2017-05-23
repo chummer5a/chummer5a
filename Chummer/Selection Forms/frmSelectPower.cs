@@ -26,16 +26,10 @@ namespace Chummer
 {
     public partial class frmSelectPower : Form
     {
-        private string _strSelectedPower = string.Empty;
-        private bool _blnLevels = false;
-        private decimal _decPointsPerLevel = 0;
-        private decimal _decAdeptWayDiscount = 0;
-		private int _intMaxLevels = 0;
-		private string _strLimitToPowers = string.Empty;
+        private string _strLimitToPowers;
+	    private double _dblLimitToRating;
 
-		private bool _blnAddAgain = false;
-
-		private readonly Character _objCharacter;
+        private readonly Character _objCharacter;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -80,13 +74,34 @@ namespace Chummer
 			}
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
+				bool blnAdd = true;
+
+				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
+				if (objXmlPower["limit"] != null && !IgnoreLimits)
+				{
+					if (_objCharacter.Powers.Count(power => power.Name == objXmlPower["name"].InnerText) >=
+					    Convert.ToInt32(objXmlPower["limit"].InnerText))
+					{
+						blnAdd = false;
+					}
+				}
+				if (objXmlPower["extrapointcost"]?.InnerText != null && blnAdd)
+				{
+					//If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
+					if (!_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.Rating > 0))
+						dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+				}
+				if (_dblLimitToRating > 0 && blnAdd)
+				{
+					blnAdd = dblPoints <= _dblLimitToRating;
+				}
+				if (blnAdd)
+				{
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlPower["name"].InnerText;
-				if (objXmlPower["translate"] != null)
-					objItem.Name = objXmlPower["translate"].InnerText;
-				else
-					objItem.Name = objXmlPower["name"].InnerText;
+					objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 				lstPower.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
@@ -118,13 +133,16 @@ namespace Chummer
 			XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + lstPowers.SelectedValue + "\"]");
 
             lblPowerPoints.Text = objXmlPower["points"].InnerText;
-			if (objXmlPower["levels"].InnerText == "yes")
+			if (Convert.ToBoolean(objXmlPower["levels"].InnerText))
 			{
-				lblPowerPoints.Text += " / ";
-				lblPowerPoints.Text += LanguageManager.Instance.GetString("Label_Power_Level");
+				lblPowerPoints.Text += $" / {LanguageManager.Instance.GetString("Label_Power_Level")}";
 			}
+            if (objXmlPower["extrapointcost"] != null)
+            {
+                lblPowerPoints.Text = objXmlPower["extrapointcost"].InnerText + " + " + lblPowerPoints.Text;
+            }
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
 			string strPage = objXmlPower["page"].InnerText;
 			if (objXmlPower["altpage"] != null)
 				strPage = objXmlPower["altpage"].InnerText;
@@ -140,7 +158,7 @@ namespace Chummer
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
-			_blnAddAgain = true;
+			AddAgain = true;
 			cmdOK_Click(sender, e);
 		}
 
@@ -155,13 +173,20 @@ namespace Chummer
 			List<ListItem> lstPower = new List<ListItem>();
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
+				bool blnAdd = true;
+				double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
+				dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+				if (_dblLimitToRating > 0)
+				{
+					blnAdd = dblPoints <= _dblLimitToRating;
+				}
+				if (blnAdd)
+				{
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlPower["name"].InnerText;
-				if (objXmlPower["translate"] != null)
-					objItem.Name = objXmlPower["translate"].InnerText;
-				else
-					objItem.Name = objXmlPower["name"].InnerText;
+					objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 				lstPower.Add(objItem);
+			}
 			}
 			SortListItem objSort = new SortListItem();
 			lstPower.Sort(objSort.Compare);
@@ -210,77 +235,44 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the user wants to add another item after this one.
 		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
+		public bool AddAgain { get; private set; }
 
-		/// <summary>
+        /// <summary>
+        /// Whether or not we should ignore how many of a given power may be taken. Generally used when bonding Qi Foci.
+        /// </summary>
+        public bool IgnoreLimits { get; set; }
+
+        /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower
-        {
-            get
-            {
-                return _strSelectedPower;
-            }
-        }
+        public string SelectedPower { get; private set; } = "";
+
 
         /// <summary>
-        /// Is Power level enabled for this Power?
+		/// Only the provided Powers should be shown in the list.
         /// </summary>
-        public bool LevelEnabled
-        {
-            get
-            {
-                return _blnLevels;
-            }
-        }
-
-        /// <summary>
-        /// Power Points per level cost for the Power.
-        /// </summary>
-        public decimal PointsPerLevel
-        {
-            get
-            {
-                return _decPointsPerLevel;
-            }
-        }
-
-        /// <summary>
-        /// Power Point discount for an Adept Way.
-        /// </summary>
-        public decimal AdeptWayDiscount
-        {
-            get
-            {
-                return _decAdeptWayDiscount;
-            }
-        }
-
-        /// <summary>
-		/// Maximum number of levels allowed by the Power. Standard rules apply if this is 0.
-		/// </summary>
-		public int MaxLevels()
-		{
-			return _intMaxLevels;
-		}
-
-		/// <summary>
-		/// Only the provided Skills should be shown in the list.
-		/// </summary>
 		public string LimitToPowers
-		{
+        {
 			set
-			{
+            {
 				_strLimitToPowers = value;
-			}
-		}
-		#endregion
+            }
+        }
+
+        /// <summary>
+		/// Limit the selections based on the Rating of an external source, where 1 Rating = 0.25 PP.
+        /// </summary>
+	    public int LimitToRating 
+        {
+			set { _dblLimitToRating = value * PointsPerLevel; } 
+        }
+
+        /// <summary>
+	    /// Value of the PP per level if using LimitToRating. Defaults to 0.25.
+        /// </summary>
+	    public double PointsPerLevel { set; get; } = 0.25;
+
+        #endregion
 
 		#region Methods
 		/// <summary>
@@ -300,15 +292,7 @@ namespace Chummer
 				// Quality requirements.
 				foreach (XmlNode objXmlQuality in objXmlPower.SelectNodes("required/allof/quality"))
 				{
-					bool blnFound = false;
-					foreach (Quality objQuality in _objCharacter.Qualities)
-					{
-						if (objQuality.Name == objXmlQuality.InnerText)
-						{
-							blnFound = true;
-							break;
-						}
-					}
+					bool blnFound = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText);
 
 					if (!blnFound)
 					{
@@ -319,15 +303,7 @@ namespace Chummer
 
 				foreach (XmlNode objXmlQuality in objXmlPower.SelectNodes("required/oneof/quality"))
 				{
-					blnRequirementMet = false;
-					foreach (Quality objQuality in _objCharacter.Qualities)
-					{
-						if (objQuality.Name == objXmlQuality.InnerText)
-						{
-							blnRequirementMet = true;
-							break;
-						}
-					}
+					blnRequirementMet = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText);
 
 					if (!blnRequirementMet)
 						strRequirement += "\n\t" + objXmlQuality.InnerText;
@@ -344,23 +320,8 @@ namespace Chummer
 					return;
 				}
 			}
-
-            // Retrieve the Power Level information.
-			if (objXmlPower["levels"].InnerText != "no")
-			{
-				_blnLevels = true;
-                if (objXmlPower["maxlevel"] != null)
-                    _intMaxLevels = Convert.ToInt32(objXmlPower["maxlevel"].InnerText);
-                else
-                    _intMaxLevels = 100;
-			}
-			else
-				_blnLevels = false;
-
-			_decPointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
-            _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.InvariantCultureInfo);
 			
-            _strSelectedPower = lstPowers.SelectedValue.ToString();
+            SelectedPower = lstPowers.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 

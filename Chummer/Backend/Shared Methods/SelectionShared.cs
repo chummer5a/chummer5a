@@ -12,20 +12,23 @@ namespace Chummer.Backend.Shared_Methods
 	internal class SelectionShared
 	{
 		//TODO: Might be a better location for this; Class names are screwy.
+        //TODO: Parameter requirements (errorTitle, errorMessage, et al) can be reduced to a single string check if we assign the Message_Generic_XXXX string locally to the method, but this reduces the ability to push in arbitrary strings. Still not sure if message presentation should be handled by the calling method or not. 
 		/// <summary>
 		///     Evaluates requirements of a given node against a given Character object.
 		/// </summary>
 		/// <param name="objXmlNode">XmlNode of the object.</param>
 		/// <param name="blnShowMessage">Should warning messages about whether the object has failed to validate be shown?</param>
 		/// <param name="objCharacter">Character Object.</param>
+		/// <param name="objQualityDocument"></param>
 		/// <param name="strIgnoreQuality">
 		///     Name of a Quality that should be ignored. Typically used when swapping Qualities in
 		///     career mode.
 		/// </param>
+		/// <param name="strLocalName"></param>
+		/// <param name="objMetatypeDocument"></param>
+		/// <param name="objCritterDocument"></param>
 		/// <returns></returns>
-		public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter,
-			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null,
-			XmlDocument objQualityDocument = null)
+		public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "")
 		{
 			// Ignore the rules.
 			if (objCharacter.IgnoreRules)
@@ -36,36 +39,44 @@ namespace Chummer.Backend.Shared_Methods
 				objCritterDocument = XmlManager.Instance.Load("critters.xml");
 			if (objQualityDocument == null)
 				objQualityDocument = XmlManager.Instance.Load("qualities.xml");
-			// See if the character already has this Quality and whether or not multiple copies are allowed.
 			if (objXmlNode == null) return false;
+			// See if the character already has this Quality and whether or not multiple copies are allowed.
 			if (objXmlNode["limit"]?.InnerText != "no")
+			{
+				string limitTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
+				string limitMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
+				int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
+
 				switch (objXmlNode.Name)
 				{
 					case "quality":
+					{
+						int intCount =
+							objCharacter.Qualities.Count(
+								objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
+						if (intCount > intLimit &&
+						    objCharacter.Qualities.Any(
+							    objItem =>
+								    objItem.Name == objXmlNode["name"]?.InnerText &&
+								    objItem.Name != strIgnoreQuality))
 						{
-							int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
-							int intCount =
-								objCharacter.Qualities.Count(
-									objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-							if (intCount > intLimit &&
-								objCharacter.Qualities.Any(
-									objItem =>
-										objItem.Name == objXmlNode["name"]?.InnerText &&
-										objItem.Name != strIgnoreQuality))
-							{
-								if (blnShowMessage)
-									MessageBox.Show(
-										LanguageManager.Instance.GetString("Message_SelectQuality_QualityLimit"),
-										LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityLimit"),
-										MessageBoxButtons.OK, MessageBoxIcon.Information);
-								return false;
-							}
-							break;
+						if (blnShowMessage)
+						{
+							limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
+							MessageBox.Show(limitMessage, limitTitle,
+								MessageBoxButtons.OK, MessageBoxIcon.Information);
 						}
+						return false;
+						}
+						break;
+					}
 				}
+			}
 
 			if (objXmlNode.InnerXml.Contains("forbidden"))
 			{
+				string forbiddenTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName);
+				string forbiddenMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Restriction").Replace("{0}", strLocalName);
 				// Loop through the oneof requirements.
 				XmlNodeList objXmlForbiddenList = objXmlNode.SelectNodes("forbidden/oneof");
 				if (objXmlForbiddenList != null)
@@ -81,9 +92,9 @@ namespace Chummer.Backend.Shared_Methods
 							{
 								if (blnShowMessage)
 									MessageBox.Show(
-										LanguageManager.Instance.GetString("Message_SelectQuality_QualityRestriction") +
+										LanguageManager.Instance.GetString(forbiddenMessage) +
 										name,
-										LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityRestriction"),
+										LanguageManager.Instance.GetString(forbiddenTitle),
 										MessageBoxButtons.OK, MessageBoxIcon.Information);
 								return false;
 							}
@@ -93,6 +104,8 @@ namespace Chummer.Backend.Shared_Methods
 
 			if (objXmlNode.InnerXml.Contains("required"))
 			{
+				string requiredTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Requirement").Replace("{0}", strLocalName);
+				string requiredMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Requirement").Replace("{0}", strLocalName);
 				string strRequirement = string.Empty;
 				bool blnRequirementMet = true;
 
@@ -147,13 +160,10 @@ namespace Chummer.Backend.Shared_Methods
 				// The character has not met the requirements, so display a message and uncheck the item.
 				if (!blnRequirementMet)
 				{
-					string strMessage =
-						LanguageManager.Instance.GetString("Message_SelectQuality_QualityRequirement");
-					strMessage += strRequirement;
+					requiredMessage += strRequirement;
 
 					if (blnShowMessage)
-						MessageBox.Show(strMessage,
-							LanguageManager.Instance.GetString("MessageTitle_SelectQuality_QualityRequirement"),
+						 MessageBox.Show(requiredMessage, requiredTitle,
 							MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return false;
 				}
@@ -161,7 +171,7 @@ namespace Chummer.Backend.Shared_Methods
 			return true;
 		}
 
-		private static bool TestNodeRequirements(XmlNode node, Character character, out string name,
+		public static bool TestNodeRequirements(XmlNode node, Character character, out string name,
 			string strIgnoreQuality = "", XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null,
 			XmlDocument objQualityDocument = null)
 		{
@@ -293,7 +303,7 @@ namespace Chummer.Backend.Shared_Methods
 				case "damageresistance":
 					// Damage Resistance must be a particular value.
 					ImprovementManager objImprovementManager = new ImprovementManager(character);
-					name = "\n\t" + LanguageManager.Instance.GetString("String_StreetCred");
+					name = "\n\t" + LanguageManager.Instance.GetString("String_DamageResistance");
 					return character.BOD.TotalValue + objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >=
 						   Convert.ToInt32(node.InnerText);
 				case "ess":
@@ -369,6 +379,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_MartialArt")})";
 					return character.MartialArts.Any(martialart => martialart.Advantages.Any(technique => technique.Name == node.InnerText));
 				case "metamagic":
 					XmlNode metamagicDoc = XmlManager.Instance.Load("metamagic.xml");
@@ -377,16 +388,23 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Metamagic")})";
 					return character.Metamagics.Any(objMetamagic => objMetamagic.Name == node.InnerText);
                 case "metamagicart":
-					XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
+                case "art":
+                    XmlNode metamagicArtDoc = XmlManager.Instance.Load("metamagic.xml");
 					nameNode =
 						metamagicArtDoc.SelectSingleNode($"/chummer/arts/art[name = \"{node.InnerText}\"]");
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Art")})";
 					if (character.Options.IgnoreArt)
 					{
+					    if (node.Name == "art")
+					    {
+					        return true;
+					    }
 						foreach (Metamagic metamagic in character.Metamagics)
 						{
 							XmlNode metaNode =
@@ -414,6 +432,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Metatype")})";
 					return node.InnerText == character.Metatype;
 
 				case "metatypecategory":
@@ -424,6 +443,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode?.Attributes["translate"] != null
 						? "\n\t" + nameNode.Attributes["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += LanguageManager.Instance.GetString("String_MetatypeCategory");
 					return node.InnerText == character.MetatypeCategory;
 
 				case "metavariant":
@@ -434,6 +454,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Metavariant")})";
 					return node.InnerText == character.Metavariant;
 
 				case "power":
@@ -469,6 +490,7 @@ namespace Chummer.Backend.Shared_Methods
 						name = nameNode?["translate"] != null
 							? "\n\t" + nameNode["translate"].InnerText
 							: "\n\t" + node.InnerText;
+						name += $" ({LanguageManager.Instance.GetString("String_Quality")})";
 						return false;
 					}
 
@@ -532,6 +554,7 @@ namespace Chummer.Backend.Shared_Methods
 					{
 						name += $" {node["val"].InnerText}";
 					}
+					name += $" ({LanguageManager.Instance.GetString("Tab_Skills")})";
 					return false;
 
 				case "skillgrouptotal":
@@ -549,6 +572,7 @@ namespace Chummer.Backend.Shared_Methods
 									break;
 								}
 						name = outString;
+						name += $" ({LanguageManager.Instance.GetString("String_ExpenseSkillGroup")})";
 						return intTotal >= Convert.ToInt32(node["val"].InnerText);
 					}
 				case "spell":
@@ -559,6 +583,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_DescSpell")})";
 					return character.Spells.Any(spell => spell.Name == node.InnerText);
 				case "spellcategory":
 					// Check for a specified amount of a particular Spell category.
@@ -568,6 +593,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_SpellCategory")})";
 					return character.Spells.Count(objSpell => objSpell.Category == node["name"].InnerText) >= Convert.ToInt32(node["count"].InnerText);
 				case "spelldescriptor":
 					// Check for a specified amount of a particular Spell Descriptor.
@@ -586,6 +612,7 @@ namespace Chummer.Backend.Shared_Methods
 					name = nameNode["translate"] != null
 						? "\n\t" + nameNode["translate"].InnerText
 						: "\n\t" + node.InnerText;
+					name += $" ({LanguageManager.Instance.GetString("String_Tradition")})";
 					return character.MagicTradition == node.InnerText;
 				default:
 					Utils.BreakIfDebug();
