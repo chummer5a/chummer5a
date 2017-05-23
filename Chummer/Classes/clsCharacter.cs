@@ -5831,6 +5831,13 @@ namespace Chummer
 			string[] strReturn = _strWalk.Split('/');
 
             int intTmp = 0;
+            if (Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
+            {
+                int impValue = 0;
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
             switch (strType)
             {
                 case "Fly":
@@ -5854,10 +5861,16 @@ namespace Chummer
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
 		private int RunningRate(string strType = "Ground")
-		{
-			string[] strReturn = _strRun.Split('/');
-
+        {
+            if (Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.RunSpeed && imp.ImprovedName == strType))
+            {
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
+            string[] strReturn = _strRun.Split('/');
             int intTmp = 0;
+
             switch (strType)
             {
                 case "Fly":
@@ -5881,8 +5894,14 @@ namespace Chummer
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
 		private int SprintingRate(string strType = "Ground")
-		{
-			string[] strReturn = _strSprint.Split('/');
+        {
+            if (Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.SprintSpeed && imp.ImprovedName == strType))
+            {
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
+            string[] strReturn = _strSprint.Split('/');
 
             int intTmp = 0;
             switch (strType)

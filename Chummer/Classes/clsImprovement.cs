@@ -183,7 +183,10 @@ namespace Chummer
             SpellResistance,
 	        SpellKarmaDiscount,
 	        LimitSpellCategory,
-	        LimitSpiritCategory
+	        LimitSpiritCategory,
+            WalkSpeed,
+            RunSpeed,
+            SprintSpeed
         }
 
         public enum ImprovementSource

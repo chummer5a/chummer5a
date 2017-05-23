@@ -1022,6 +1022,9 @@
 					<depmin>0</depmin>
 					<depmax>0</depmax>
 					<depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>2/1/0</sprint>
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>

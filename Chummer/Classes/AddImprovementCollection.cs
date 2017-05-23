@@ -4481,8 +4481,31 @@ namespace Chummer.Classes
 			CreateImprovement(frmSelect.SelectedItem, Improvement.ImprovementSource.Quality, SourceName,
 	Improvement.ImprovementType.LimitSpiritCategory,"");
 		}
-		#endregion
-	}
+        public void movementreplace(XmlNode bonusNode)
+        {
+            Log.Info("movementreplace");
+            Log.Info("movementreplace = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+
+            Improvement.ImprovementType imp = Improvement.ImprovementType.WalkSpeed;
+            switch (bonusNode["speed"].InnerText.ToLower())
+            {
+                case "walk":
+                    imp = Improvement.ImprovementType.WalkSpeed;
+                    break;
+                case "run":
+                    imp = Improvement.ImprovementType.RunSpeed;
+                    break;
+                case "sprint":
+                    imp = Improvement.ImprovementType.SprintSpeed;
+                    break;
+            }
+
+            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, imp, string.Empty,
+                ValueToInt(bonusNode["val"].InnerText, _intRating));
+        }
+        #endregion
+    }
 
 	internal class AbortedException : Exception
 	{

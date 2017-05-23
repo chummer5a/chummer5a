@@ -5,6 +5,7 @@ Application Changes:
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
 - Fixed behaviour of the condition monitors to properly be checked and unchecked.
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
+- Implemented an ImprovementType to support replacing your base movement speed entirely, used for the Satyr Legs quality. Fixes #1646
 
 Data Changes:
 
