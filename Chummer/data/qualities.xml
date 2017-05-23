@@ -6667,7 +6667,16 @@
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus>
-				<movementpercent>50</movementpercent>
+				<movementreplace>
+          <category>ground</category>
+          <type>run</type>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>ground</category>
+          <type>sprint</type>
+          <val>2</val>
+        </movementreplace>
 			</bonus>
 			<required>
 				<oneof>

@@ -218,49 +218,16 @@ namespace Chummer
 
             foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
             {
-                if (chkLimitList.Checked &&
-                    (!chkLimitList.Checked ||
-                     !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, null, null, _objQualityDocument, "", _strLocalName))) continue;
-                bool blnNew = true;
-                switch (_objMode)
-                {
-                    case Mode.Art:
-                        if (_objCharacter.Arts.Any(objArt => objArt.Name == objXmlMetamagic["name"].InnerText))
-                        {
-                            blnNew = false;
-                        }
-                        break;
-                    case Mode.Enhancement:
-                        if (_objCharacter.Enhancements.Any(objEnhancement => objEnhancement.Name == objXmlMetamagic["name"].InnerText))
-                        {
-                            blnNew = false;
-                        }
-                        foreach(Power objPower in _objCharacter.Powers)
-                        {
-                            if (objPower.Enhancements.Any(objEnhancement => objEnhancement.Name == objXmlMetamagic["name"].InnerText))
-                            {
-                                blnNew = false;
-                            }
-                        }
-                        break;
-                    case Mode.Enchantment:
-                    case Mode.Ritual:
-                        if (_objCharacter.Spells.Any(objSpell => objSpell.Name == objXmlMetamagic["name"].InnerText))
-                        {
-                            blnNew = false;
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                if (blnNew)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMetamagic["name"].InnerText;
-                    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText;
-                    lstArts.Add(objItem);
-                }
+                bool add = (!chkLimitList.Checked ||
+                               (chkLimitList.Checked &&
+                                Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false,
+                                    _objCharacter, null,
+                                    null, _objQualityDocument, "", _strLocalName)));
+                if (!add) continue;
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlMetamagic["name"].InnerText;
+                objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText;
+                lstArts.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
             lstArts.Sort(objSort.Compare);

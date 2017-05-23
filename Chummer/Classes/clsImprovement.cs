@@ -187,8 +187,11 @@ namespace Chummer
 	        SpellKarmaDiscount,
 	        LimitSpellCategory,
 	        LimitSpiritCategory,
-			EssencePenalty
-		}
+            WalkSpeed,
+            RunSpeed,
+            SprintSpeed,
+            EssencePenalty
+        }
 
         public enum ImprovementSource
         {

@@ -9,6 +9,7 @@ Application Changes:
 - Fixed unused translation strings in the Armour, Weapon and Priority selection windows. 
 - Fixed an issue when selecting the Aware priority type that prevented it from properly receiving the correct skill bonus.
 - HMHVV Strain II and III characters can now properly improve their Magic rating and should suffer the appropriate Magic penalty if taken in career mode. 
+- Implemented an ImprovementType to support replacing your base movement speed entirely, used for the Satyr Legs quality. Fixes #1646
 
 Data Changes:
 
@@ -20,6 +21,7 @@ Data Changes:
 - The Athlete's Way can now properly allow discounting the Skate power.
 - Added missing bonuses for the Raven (Alt) Mentor Spirit. 
 - Fixed the drain attributes for the Red Magic tradition. 
+- Fixed the movement modification of the Satyr quality. 
 
 New Strings:
 

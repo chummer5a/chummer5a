@@ -66,7 +66,7 @@ namespace Chummer
 		{
 		    // Update the window title if needed.
 		    string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-		    Text = LanguageManager.Instance.GetString("Title_SelectGeneric");
+		    Text = LanguageManager.Instance.GetString("Title_SelectGeneric").Replace("{0}", s);
             chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", s);
 
             foreach (Label objLabel in Controls.OfType<Label>())
@@ -204,20 +204,17 @@ namespace Chummer
 
 			if (objXmlMetamagicList != null)
 			foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
-			{
-				if (chkLimitList.Checked &&
-				    (!chkLimitList.Checked ||
-										  !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, 
-						 _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s))) continue;
-					bool blnNew =
-					_objCharacter.Metamagics.All(
-						meta => meta.Name != objXmlMetamagic["name"]?.InnerText && objXmlMetamagic["limit"]?.InnerText == "no");
-				if (!blnNew) continue;
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlMetamagic["name"]?.InnerText;
-				objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText;
-				lstMetamagics.Add(objItem);
-			}
+			    {
+			        bool add = !chkLimitList.Checked ||
+			                      (chkLimitList.Checked &&
+			                       Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter,
+			                           _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s));
+                    if (!add) continue;
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objXmlMetamagic["name"]?.InnerText;
+                    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText;
+                    lstMetamagics.Add(objItem);
+                }
 			else
 			{
 				Utils.BreakIfDebug();
