@@ -56,11 +56,11 @@ namespace Chummer.Backend.Shared_Methods
                             intCount =
                                 objCharacter.Qualities.Count(
                                     objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = intCount > intLimit &&
+                            allow = !(intCount > intLimit &&
                                     objCharacter.Qualities.Any(
                                         objItem =>
                                             objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality);
+                                            objItem.Name != strIgnoreQuality));
                             break;
                         }
                     case "metamagic":
@@ -68,11 +68,11 @@ namespace Chummer.Backend.Shared_Methods
                             intCount =
                                 objCharacter.Metamagics.Count(
                                     objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = intCount > intLimit &&
+                            allow = !(intCount > intLimit &&
                                     objCharacter.Metamagics.Any(
                                         objItem =>
                                             objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality);
+                                            objItem.Name != strIgnoreQuality));
                             break;
                         }
                     case "art":
@@ -80,11 +80,11 @@ namespace Chummer.Backend.Shared_Methods
                             intCount =
                                 objCharacter.Arts.Count(
                                     objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = intCount > intLimit &&
+                            allow = !(intCount > intLimit &&
                                     objCharacter.Arts.Any(
                                         objItem =>
                                             objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality);
+                                            objItem.Name != strIgnoreQuality));
                             break;
                         }
                     case "enhancement":
@@ -92,11 +92,11 @@ namespace Chummer.Backend.Shared_Methods
                             intCount =
                                 objCharacter.Enhancements.Count(
                                     objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = intCount > intLimit &&
+                            allow = !(intCount > intLimit &&
                                     objCharacter.Enhancements.Any(
                                         objItem =>
                                             objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality);
+                                            objItem.Name != strIgnoreQuality));
                             break;
                         }
                     default:
