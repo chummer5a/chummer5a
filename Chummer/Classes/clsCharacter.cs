@@ -2010,8 +2010,15 @@ namespace Chummer
 					objWriter.WriteElementString("attr",drainAttribute);
 				}
 				objWriter.WriteEndElement();
-
-	            if (_strMagicTradition != "Custom")
+                if (_strMagicTradition == "Custom")
+                {
+                    objWriter.WriteElementString("spiritcombat", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spiritdetection", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spirithealth", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spiritillusion", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spiritmanipulation", LanguageManager.Instance.GetString("String_All"));
+                }
+                else if (_strMagicTradition != "Custom")
 	            {
 		            objWriter.WriteElementString("spiritcombat",
 			            objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
