@@ -135,7 +135,7 @@ namespace Chummer
 				TreeView objTree = (TreeView)sender;
 				objTree.SelectedNode = objTree.HitTest(e.X, e.Y).Node;
 			//}
-            if (Form.ModifierKeys == Keys.Control)
+            if (ModifierKeys == Keys.Control)
             {
                 if (!objTree.SelectedNode.IsExpanded)
                 {
@@ -20101,7 +20101,7 @@ namespace Chummer
 		/// </summary>
 		public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
 		{
-			this.SuspendLayout();
+			SuspendLayout();
 			if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate || _objCharacter == null)
 				return;
 
@@ -20928,7 +20928,7 @@ namespace Chummer
 			{
 				AutoSaveCharacter();
 			}
-			this.ResumeLayout(false);
+			ResumeLayout(false);
 		}
 
 		/// <summary>

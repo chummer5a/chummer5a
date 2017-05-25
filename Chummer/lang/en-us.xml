@@ -4755,6 +4755,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Spells</text>
 		</string>
 		<string>
+			<key>Label_SummaryRituals</key>
+			<text>Rituals</text>
+		</string>
+		<string>
+			<key>Label_SummaryPreparations</key>
+			<text>Preparations</text>
+		</string>
+		<string>
 			<key>Label_SummaryFoci</key>
 			<text>Foci</text>
 		</string>

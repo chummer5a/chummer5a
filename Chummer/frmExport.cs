@@ -112,11 +112,9 @@ namespace Chummer
 
 		private void rtbText_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (!_blnSelected && this.rtbText.SelectionLength == 0)
-			{
-				_blnSelected = true;
-				this.rtbText.SelectAll();
-			}
+			if (_blnSelected || rtbText.SelectionLength != 0) return;
+			_blnSelected = true;
+			rtbText.SelectAll();
 		}
 
 		#endregion

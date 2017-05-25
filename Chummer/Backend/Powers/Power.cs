@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
@@ -57,17 +58,17 @@ namespace Chummer
 			objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
 			objWriter.WriteElementString("action", _strAction);
 			objWriter.WriteElementString("rating", Rating.ToString());
-			objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString());
+			objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("levels", LevelsEnabled.ToString());
-			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString());
+			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
 			objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
 			objWriter.WriteElementString("bonussource", _strBonusSource);
-			objWriter.WriteElementString("freepoints", _decFreePoints.ToString());
+			objWriter.WriteElementString("freepoints", _decFreePoints.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("free", _blnFree.ToString());
-			objWriter.WriteElementString("freelevels", _intFreeLevels.ToString());
+			objWriter.WriteElementString("freelevels", _intFreeLevels.ToString(CultureInfo.InvariantCulture));
 			if (Bonus != null)
 				objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
 			else

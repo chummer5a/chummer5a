@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -531,16 +532,16 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
-            objWriter.WriteElementString("minrating", _intMinRating.ToString());
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-            objWriter.WriteElementString("rating", _intRating.ToString());
-            objWriter.WriteElementString("qty", _intQty.ToString());
+            objWriter.WriteElementString("minrating", _intMinRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("qty", _intQty.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("avail3", _strAvail3);
             objWriter.WriteElementString("avail6", _strAvail6);
             objWriter.WriteElementString("avail10", _strAvail10);
             if (_intCostFor > 1)
-                objWriter.WriteElementString("costfor", _intCostFor.ToString());
+                objWriter.WriteElementString("costfor", _intCostFor.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("cost3", _strCost3);
             objWriter.WriteElementString("cost6", _strCost6);
@@ -559,15 +560,15 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
+            objWriter.WriteElementString("devicerating", _intDeviceRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("gearname", _strGearName);
-            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
-            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString());
+            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
             if (_intChildCostMultiplier != 1)
-                objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString());
+                objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString(CultureInfo.InvariantCulture));
             if (_intChildAvailModifier != 0)
-                objWriter.WriteElementString("childavailmodifier", _intChildAvailModifier.ToString());
+                objWriter.WriteElementString("childavailmodifier", _intChildAvailModifier.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in _objChildren)
             {
@@ -774,14 +775,14 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("issin", false.ToString());
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString());
-            objWriter.WriteElementString("qty", _intQty.ToString());
+            objWriter.WriteElementString("qty", _intQty.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("avail", TotalAvail(true));
             objWriter.WriteElementString("avail_english", TotalAvail(true, true));
-            objWriter.WriteElementString("cost", TotalCost.ToString());
-            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("cost", TotalCost.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
@@ -1524,18 +1525,15 @@ namespace Chummer.Backend.Equipment
 					// Remove the trailing character if it is "F" or "R".
 					strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
 				}
-				XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
-				strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
+				XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture)));
+				strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
 			}
 			else
 			{
 				// Just a straight cost, so return the value.
-				if (_strAvail.Contains("F") || _strAvail.Contains("R"))
-				{
-					strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
-				}
-				else
-					strCalculated = Convert.ToInt32(_strAvail).ToString();
+				strCalculated = _strAvail.Contains("F") || _strAvail.Contains("R")
+					? Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + _strAvail.Substring(_strAvail.Length - 1, 1)
+					: Convert.ToInt32(_strAvail).ToString();
 			}
 
 			int intAvail;
@@ -1578,7 +1576,7 @@ namespace Chummer.Backend.Equipment
 			if (_objParent != null)
 				intAvail += _objParent.ChildAvailModifier;
 
-			string strReturn = intAvail.ToString() + strAvailText;
+			string strReturn = intAvail + strAvailText;
 
 			// Translate the Avail string.
 			if (!blnForceEnglish)
@@ -1628,7 +1626,7 @@ namespace Chummer.Backend.Equipment
                     strReturn += "/" + strSecondHalf;
 					return strReturn;
 				}
-				else if (_strCapacity.Contains("Rating"))
+				if (_strCapacity.Contains("Rating"))
 				{
 					// If the Capaicty is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -1654,11 +1652,8 @@ namespace Chummer.Backend.Equipment
 					return strReturn;
 				}
                 // Just a straight Capacity, so return the value.
-                else if (string.IsNullOrEmpty(_strCapacity))
-                    return "0";
-                else
-                    return _strCapacity;
-            }
+                return string.IsNullOrEmpty(_strCapacity) ? "0" : _strCapacity;
+			}
 		}
 
 		/// <summary>
@@ -2207,9 +2202,9 @@ namespace Chummer.Backend.Equipment
 				string strReturn = DisplayNameShort;
 
 				if (_intQty > 1)
-					strReturn = _intQty.ToString() + " " + strReturn;
+					strReturn = _intQty + " " + strReturn;
 				if (_intRating > 0)
-					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating + ")";
 				if (!string.IsNullOrEmpty(_strExtra))
 					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 

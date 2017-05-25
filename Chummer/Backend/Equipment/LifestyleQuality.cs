@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Documents;
 using System.Windows.Forms;
@@ -154,9 +155,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("cost", _intCost.ToString());
-			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
-            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString());
+			objWriter.WriteElementString("cost", _intCost.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("multiplier", _intMultiplier.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("lp", _intLP.ToString());
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
 			objWriter.WriteElementString("print", _blnPrint.ToString());

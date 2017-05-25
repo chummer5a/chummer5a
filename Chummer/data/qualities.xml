@@ -12677,6 +12677,7 @@
       </costdiscount>
       <bonus>
         <spellkarmadiscount>-1</spellkarmadiscount>
+				<freespells attribute="MAG" />
       </bonus>
       <required>
         <oneof>

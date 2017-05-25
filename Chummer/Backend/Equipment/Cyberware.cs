@@ -364,7 +364,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limbslot", _strLimbSlot);
-            objWriter.WriteElementString("limbslotcount", _intLimbSlotCount.ToString());
+            objWriter.WriteElementString("limbslotcount", _intLimbSlotCount.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("inheritattributes", _blnInheritAttributes.ToString());
             objWriter.WriteElementString("ess", _strESS);
 			objWriter.WriteElementString("capacity", _strCapacity);
@@ -372,16 +372,16 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("minrating", _intMinRating.ToString());
-			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("minrating", _intMinRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("subsystems", _strAllowSubsystems);
 			objWriter.WriteElementString("grade", _objGrade.Name);
 			objWriter.WriteElementString("location", _strLocation);
 			objWriter.WriteElementString("suite", _blnSuite.ToString());
-			objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString());
+			objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("forcegrade", _strForceGrade);
-			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
+			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("vehiclemounted", _blnVehicleMounted.ToString());
             if (_nodBonus != null)
 				objWriter.WriteRaw(_nodBonus.OuterXml);

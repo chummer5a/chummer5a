@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
@@ -312,8 +313,8 @@ namespace Chummer.Skills
 		{
 			writer.WriteStartElement("newskills");
 
-			writer.WriteElementString("skillptsmax", SkillPointsMaximum.ToString());
-			writer.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString());
+			writer.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(CultureInfo.InvariantCulture));
+			writer.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(CultureInfo.InvariantCulture));
 			writer.WriteElementString("uneducated", Uneducated.ToString());
 			writer.WriteElementString("uncouth", Uncouth.ToString());
 			writer.WriteElementString("schoolofhardknocks", SchoolOfHardKnocks.ToString());

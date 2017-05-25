@@ -4581,6 +4581,7 @@ namespace Chummer
             if (objSpell.InternalId == Guid.Empty.ToString())
                 return;
 
+	        objSpell.FreeBonus = frmPickSpell.FreeBonus;
             _objCharacter.Spells.Add(objSpell);
 
             switch (objSpell.Category)
@@ -14043,24 +14044,23 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Spells.
             int intSpellPointsUsed = 0;
-            if (_objCharacter.MagicianEnabled)
+			int intRitualPointsUsed = 0;
+			int intPrepPointsUsed = 0;
+			int spellPoints = 0;
+			int ritualPoints = 0;
+			int prepPoints = 0;
+			if (_objCharacter.MagicianEnabled)
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
-                int intSpellCount = 0;
-                foreach (TreeNode nodCategory in treSpells.Nodes)
-                {
-                    foreach (TreeNode nodSpell in nodCategory.Nodes)
-                    {
-                        intSpellCount++;
-                    }
-                }
+                int spells = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category != "Rituals" && !spell.FreeBonus).Count();
+	            int rituals = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category == "Rituals" && !spell.FreeBonus).Count();
+				int preps = _objCharacter.Spells.Where(spell => spell.Alchemical && !spell.FreeBonus).Count();
 
                 if (nudMysticAdeptMAGMagician.Value > 0)
                 {
                     if (_objOptions.PrioritySpellsAsAdeptPowers)
                     {
-                        intSpellCount += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
+						spells += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
                     }
                     else
                     {
@@ -14068,14 +14068,44 @@ namespace Chummer
                         intKarmaPointsRemain -= intAttributePointsUsed;
                     }
                 }
-
+	            for (int i = _objCharacter.SpellLimit; i >= 0; i--)
+	            {
+		            if (spells > 0)
+		            {
+			            spells--;
+			            spellPoints++;
+		            }
+					else if (rituals > 0)
+		            {
+			            rituals--;
+			            ritualPoints++;
+		            }
+					else if (preps > 0)
+		            {
+			            preps--;
+			            prepPoints++;
+		            }
+		            else
+		            {
+			            break;
+		            }
+	            }
                 // Each spell costs KarmaSpell.
-                intKarmaPointsRemain -= Math.Max(0, intSpellCount - _objCharacter.SpellLimit) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
-                intSpellPointsUsed += Math.Max(0, intSpellCount - _objCharacter.SpellLimit) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
-                tipTooltip.SetToolTip(lblSpellsBP, intSpellCount.ToString() + " x " + _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount) + " " + LanguageManager.Instance.GetString("String_Karma") + " = " + intSpellPointsUsed.ToString() + " " + LanguageManager.Instance.GetString("String_Karma"));
-            }
-            lblSpellsBP.Text = string.Format("{0} " + strPoints, intSpellPointsUsed.ToString());
-            intFreestyleBP += intSpellPointsUsed;
+                intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps - _objCharacter.SpellLimit) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
+                intSpellPointsUsed += Math.Max(Math.Max(0, spells) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount), 0);
+				intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount), 0);
+				intPrepPointsUsed += Math.Max(Math.Max(0, preps) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount), 0);
+				tipTooltip.SetToolTip(lblSpellsBP, $"{spells} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+				tipTooltip.SetToolTip(lblRitualsBP, $"{rituals} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+				tipTooltip.SetToolTip(lblPreparationsBP, $"{preps} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+			}
+	        lblBuildPrepsBP.Text = $"{intPrepPointsUsed} {strPoints}";
+			lblSpellsBP.Text = $"{intSpellPointsUsed} {strPoints}";
+			lblBuildRitualsBP.Text = $"{intRitualPointsUsed} {strPoints}";
+			lblPBuildSpells.Text = string.Format($"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2}: {intSpellPointsUsed} {strPoints}");
+			lblRitualsBP.Text = string.Format($"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2}: {intRitualPointsUsed} {strPoints}");
+			lblPreparationsBP.Text = string.Format($"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2}: {intPrepPointsUsed} {strPoints}");
+			intFreestyleBP += intSpellPointsUsed + intRitualPointsUsed + intPrepPointsUsed;
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Foci.
@@ -14482,18 +14512,18 @@ namespace Chummer
                         }
                         objSpiritControl.RebuildSpiritList(_objCharacter.MagicTradition);
                     }
-
-					//Update Build Summary for Spells.
-					int intSpellCount = treSpells.Nodes.Cast<TreeNode>().SelectMany(nodCategory => nodCategory.Nodes.Cast<TreeNode>()).Count();
-                    if (nudMysticAdeptMAGMagician.Value > 0 && _objOptions.PrioritySpellsAsAdeptPowers)
-                    {
-                        intSpellCount += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
-                    }
-                    lblPBuildSpells.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
 				}
 
-                // If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
-                if (_objCharacter.RESEnabled)
+				foreach (
+					Improvement imp in
+					_objCharacter.Improvements.Where(imp => imp.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+				{
+					CharacterAttrib att = _objCharacter.GetAttribute(imp.ImprovedName);
+					imp.Value = _objCharacter.MAG.TotalValue;
+				}
+
+				// If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
+				if (_objCharacter.RESEnabled)
                 {
                     foreach (SpiritControl objSpiritControl in panSprites.Controls)
                     {

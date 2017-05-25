@@ -32,7 +32,7 @@ namespace Chummer
 		#region Control Events
 		public PowerControl(Power objPower)
 		{
-			this.PowerObject = objPower;
+			PowerObject = objPower;
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, 

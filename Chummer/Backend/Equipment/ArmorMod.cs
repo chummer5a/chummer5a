@@ -196,10 +196,10 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
-			objWriter.WriteElementString("armor", _intA.ToString());
+			objWriter.WriteElementString("armor", _intA.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
-			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
+			objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			if (_nodBonus != null)

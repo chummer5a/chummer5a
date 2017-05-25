@@ -3068,6 +3068,25 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
+		// Check for Free Spells.
+		public void freespells(XmlNode bonusNode)
+		{
+			Log.Info("freespells");
+			Log.Info("freespells = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			if (bonusNode.Attributes?["attribute"] != null)
+			{
+				CharacterAttrib att = _objCharacter.GetAttribute(bonusNode.Attributes?["attribute"].InnerText);
+				CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, string.Empty,
+					att.TotalValue);
+			}
+			else
+			{
+				CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, string.Empty,
+					ValueToInt(bonusNode.InnerText, _intRating));
+			}
+		}
+
 		// Check for Spell Category bonuses.
 		public void spellcategory(XmlNode bonusNode)
 		{

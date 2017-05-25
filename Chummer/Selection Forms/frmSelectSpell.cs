@@ -108,8 +108,8 @@ namespace Chummer
                 TreeNode nodSpell = new TreeNode();
                 TreeNode nodParent = new TreeNode();
                 bool blnInclude = false;
-
-	            if (_blnIgnoreRequirements)
+				
+				if (_blnIgnoreRequirements)
 	            {
 		            blnInclude = true;
 	            }
@@ -124,39 +124,17 @@ namespace Chummer
                 }
                 else if (!_objCharacter.AdeptEnabled)
                 {
-                    if (objXmlSpell["descriptor"].InnerText.Contains("Adept"))
-                        blnInclude = false;
-                    else
-                        blnInclude = true;
+                    blnInclude = !objXmlSpell["descriptor"].InnerText.Contains("Adept");
                 }
                 else
                     blnInclude = true;
 
-                // Art requirements.
-                bool blnStreetGrimoire = (_objCharacter.Options.Books.Contains("SG"));
-                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArt)
-                {
-                    foreach (XmlNode objXmlArt in objXmlSpell.SelectNodes("required/allof/art"))
-                    {
-                        bool blnFound = false;
-                        foreach (Art objArt in _objCharacter.Arts)
-                        {
-                            if (objArt.Name == objXmlArt.InnerText)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                        blnInclude = blnInclude && blnFound;
-                    }
-                }
+				if (blnInclude)
+					blnInclude = SelectionShared.RequirementsMet(objXmlSpell, false, _objCharacter);
 
-                if (blnInclude)
+				if (blnInclude)
                 {
-                    if (objXmlSpell["translate"] != null)
-                        nodSpell.Text = objXmlSpell["translate"].InnerText;
-                    else
-                        nodSpell.Text = objXmlSpell["name"].InnerText;
+                    nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
                     nodSpell.Tag = objXmlSpell["name"].InnerText;
                     // Check to see if there is already a Category node for the Spell's category.
                     foreach (TreeNode nodCategory in treSpells.Nodes)
@@ -188,9 +166,13 @@ namespace Chummer
 					}
 				}
 			}
+			
+			txtSearch.Enabled = string.IsNullOrEmpty(_strLimitCategory);
 
-			if (!string.IsNullOrEmpty(_strLimitCategory))
-				txtSearch.Enabled = false;
+	        int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) +
+	                         _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpellsATT);
+
+			chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
         }
 
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
@@ -700,20 +682,23 @@ namespace Chummer
 			    _blnIgnoreRequirements = value;
 		    }
 
-	    }
+		}
+
+		public bool FreeBonus { get; set; }
 		#endregion
 
 		#region Methods
 		/// <summary>
 		/// Accept the selected item and close the form.
 		/// </summary>
-        private void AcceptForm()
+		private void AcceptForm()
         {
 			_strSelectedSpell = treSpells.SelectedNode.Tag.ToString();
+	        FreeBonus = chkFreeBonus.Checked;
 			DialogResult = DialogResult.OK;
 		}
 
-		private void MoveControls()
+	    private void MoveControls()
 		{
 			int intWidth = Math.Max(lblDescriptorsLabel.Width, lblTypeLabel.Width);
 			intWidth = Math.Max(intWidth, lblTypeLabel.Width);
