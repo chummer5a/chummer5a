@@ -14,6 +14,9 @@ Application Changes:
 - Updated the Build Summary tab to properly show the spell limits in create mode. Fixes #1662
 - Implemented the Free Spell bonus type for Dedicated Spellslinger. 
 - Fixed behaviour of the Draconic Tradition when printing it to not cause a crash. 
+- Fixed behaviour of the Select Mentor Spirit window to not rely on names. Fixes an issue with the duplicate Oak mentors. 
+- Cleaned up some minor issues with the Select Vehicle Mod window.
+- Added a SourceID to Vehicles. 
 
 Data Changes:
 
