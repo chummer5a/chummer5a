@@ -1856,7 +1856,7 @@
 			<disadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</disadvantage>
 			<choices>
 				<choice>
-					<name>Magician: +2 dice to Detection spells, preparations, and rituals or +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
+					<name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
 					<bonus>
 						<spellcategory>
 							<name>Detection</name>
@@ -1870,6 +1870,15 @@
 
 					</bonus>
 				</choice>
+        <choice>
+          <name>Adept: 2 free levels of Enhanced Perception.</name>
+          <bonus>
+              <specificpower>
+                <name>Enhanced Perception</name>
+                <val>2</val>
+              </specificpower>
+          </bonus>
+        </choice>
 			</choices>
 			<source>BOTL</source>
 			<page>121</page>
