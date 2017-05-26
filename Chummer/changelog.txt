@@ -5,6 +5,18 @@ Application Changes:
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
 - Fixed behaviour of the condition monitors to properly be checked and unchecked.
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
+- Converted UpdateCharacterInfo to be triggered by Application.Idle. This should reduce some latency caused by loading components of the interface, at the cost of a slightly deferred update of character details. In practice this should not be noticable under standard operating conditions. 
+- Fixed unused translation strings in the Armour, Weapon and Priority selection windows. 
+- Fixed an issue when selecting the Aware priority type that prevented it from properly receiving the correct skill bonus.
+- HMHVV Strain II and III characters can now properly improve their Magic rating and should suffer the appropriate Magic penalty if taken in career mode. 
+- Implemented an ImprovementType to support replacing your base movement speed entirely, used for the Satyr Legs quality.
+- Converted the save formats for decimal and integer values to not use the local culture. This should prevent issues with decimals not saving in a safe manner for non-English users. 
+- Updated the Build Summary tab to properly show the spell limits in create mode. Fixes #1662
+- Implemented the Free Spell bonus type for Dedicated Spellslinger. 
+- Fixed behaviour of the Draconic Tradition when printing it to not cause a crash. 
+- Fixed behaviour of the Select Mentor Spirit window to not rely on names. Fixes an issue with the duplicate Oak mentors. 
+- Cleaned up some minor issues with the Select Vehicle Mod window.
+- Added a SourceID to Vehicles. 
 
 Data Changes:
 
@@ -12,6 +24,23 @@ Data Changes:
 - Refactored XSDs to use a common conditions.xsd file in order to prevent incorrect data entry.
 - Fixed a typo in the Giger Spit spell.
 - Fixed incorrect requirements for spells that require Initiate Arts. 
+- Fixed missing quality requirements/restrictions for the Apprentice quality. 
+- The Athlete's Way can now properly allow discounting the Skate power.
+- Added missing bonuses for the Raven (Alt) Mentor Spirit. 
+- Fixed the drain attributes for the Red Magic tradition. 
+- Fixed the movement modification of the Satyr quality. 
+
+New Strings:
+
+- String_Metatype
+- String_Metavariant
+- String_MartialArt
+- String_SpellCategory
+- String_Tradition
+- String_DamageResistance
+- String_Quality
+- Label_SummaryRituals
+- Label_SummaryPreparations
 
 Build 193
 

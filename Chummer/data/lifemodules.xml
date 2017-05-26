@@ -1497,7 +1497,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1555,7 +1555,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1613,7 +1613,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1671,7 +1671,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -2062,7 +2062,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -2453,7 +2453,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -2778,7 +2778,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -3104,7 +3104,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -4942,7 +4942,7 @@
 							<val>3</val>
 						</knowledgeskilllevel>
 						<knowledgeskilllevel>
-							<name>Magical Theory</name>
+							<name>Magical Theory (Street)</name>
 							<group>Street</group>
 							<val>1</val>
 						</knowledgeskilllevel>

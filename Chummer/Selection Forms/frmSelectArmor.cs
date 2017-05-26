@@ -128,8 +128,8 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
 
-            lblArmor.Text = objXmlArmor["name"]?.InnerText;
-            lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
+            lblArmor.Text = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
+			lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
             lblAvail.Text = objArmor.TotalAvail;
 
             if (objXmlArmor["rating"] != null)
@@ -418,10 +418,10 @@ namespace Chummer
 		                    TreeNode objNode = new TreeNode();
 		                    Armor objArmor = new Armor(_objCharacter);
 		                    List<Weapon> lstWeapons = new List<Weapon>();
-		                    objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
+		                    objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, false, true, true);
 
 		                    string strArmorGuid = objArmor.SourceID.ToString();
-		                    string strArmorName = objArmor.Name;
+		                    string strArmorName = objArmor.DisplayName;
 		                    int intArmor = objArmor.TotalArmor;
 		                    int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
 		                    string strAvail = objArmor.Avail;
@@ -430,13 +430,13 @@ namespace Chummer
 		                    {
 			                    if (strAccessories.Length > 0)
 				                    strAccessories += "\n";
-			                    strAccessories += objMod.Name;
+			                    strAccessories += objMod.DisplayName;
 		                    }
 		                    foreach (Gear objGear in objArmor.Gear)
 		                    {
 			                    if (strAccessories.Length > 0)
 				                    strAccessories += "\n";
-			                    strAccessories += objGear.Name;
+			                    strAccessories += objGear.DisplayName;
 		                    }
 		                    string strSource = objArmor.Source + " " + objArmor.Page;
 		                    int intCost = objArmor.Cost;

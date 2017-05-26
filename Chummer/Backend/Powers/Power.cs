@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
@@ -57,17 +58,17 @@ namespace Chummer
 			objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
 			objWriter.WriteElementString("action", _strAction);
 			objWriter.WriteElementString("rating", Rating.ToString());
-			objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString());
+			objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("levels", LevelsEnabled.ToString());
-			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString());
+			objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
 			objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
 			objWriter.WriteElementString("bonussource", _strBonusSource);
-			objWriter.WriteElementString("freepoints", _decFreePoints.ToString());
+			objWriter.WriteElementString("freepoints", _decFreePoints.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("free", _blnFree.ToString());
-			objWriter.WriteElementString("freelevels", _intFreeLevels.ToString());
+			objWriter.WriteElementString("freelevels", _intFreeLevels.ToString(CultureInfo.InvariantCulture));
 			if (Bonus != null)
 				objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
 			else
@@ -124,6 +125,7 @@ namespace Chummer
 					!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false,
 						Convert.ToInt32(Rating), DisplayNameShort))
 				{
+					this.Deleting = true;
 					CharacterObject.Powers.Remove(this);
 					return;
 				}
@@ -642,13 +644,6 @@ namespace Chummer
 				{
 					intReturn = CharacterObject.MAG.TotalValue;
 				}
-				// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-				if (Bonus?.InnerXml.Contains("Rating") == true)
-				{
-					CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
-					CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-					CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
-				}
 				return intReturn;
 			}
 		}
@@ -696,7 +691,20 @@ namespace Chummer
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+			if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating) && !Deleting)
+			{
+				CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+				CharacterObject.ObjImprovementManager.ForcedValue = Extra;
+				CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
+			}
 		}
+
+		/// <summary>
+		/// Is the currently power being deleted? 
+		/// Ugly hack to prevent powers with Ratings recreating their improvments when they're being deleted. TODO: FIX THIS BETTER
+		/// </summary>
+		public bool Deleting { internal get; set; }
 
 		public string Category { get; set; }
 

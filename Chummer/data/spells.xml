@@ -2346,7 +2346,7 @@
     <spell>
       <id>05088798-a160-4080-90bb-fed9880435ba</id>
       <name>Clean [Element]</name>
-      <descriptor>Environmental, Area</descriptor>
+      <descriptor>Environmental, Area, Elemental</descriptor>
       <category>Manipulation</category>
       <type>P</type>
       <range>LOS (A)</range>
@@ -2414,7 +2414,7 @@
     <spell>
       <id>90b5f888-bc04-45c2-9b5e-11d95b787c6e</id>
       <name>[Element] Aura</name>
-      <descriptor>Environmental</descriptor>
+      <descriptor>Environmental, Elemental</descriptor>
       <category>Manipulation</category>
       <type>P</type>
       <range>LOS</range>
@@ -2430,7 +2430,7 @@
     <spell>
       <id>ac8c938d-3aa1-4911-a812-c770e858de92</id>
       <name>[Element] Wall</name>
-      <descriptor>Environmental, Area</descriptor>
+      <descriptor>Environmental, Area, Elemental</descriptor>
       <category>Manipulation</category>
       <type>P</type>
       <range>LOS (A)</range>

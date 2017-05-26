@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -305,7 +306,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("type", _strType);
 			objWriter.WriteElementString("spec", _strSpec);
 			objWriter.WriteElementString("spec2", _strSpec2);
-			objWriter.WriteElementString("reach", _intReach.ToString());
+			objWriter.WriteElementString("reach", _intReach.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("damage", _strDamage);
 			objWriter.WriteElementString("ap", _strAP);
 			objWriter.WriteElementString("mode", _strMode);
@@ -321,14 +322,14 @@ namespace Chummer.Backend.Equipment
 			}
 			objWriter.WriteEndElement();
 
-			objWriter.WriteElementString("conceal", _intConceal.ToString());
+			objWriter.WriteElementString("conceal", _intConceal.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("avail", _strAvail);
-			objWriter.WriteElementString("cost", _intCost.ToString());
+			objWriter.WriteElementString("cost", _intCost.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("useskill", _strUseSkill);
 			objWriter.WriteElementString("range", _strRange);
 			objWriter.WriteElementString("rangemultiply", _dblRangeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-			objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
-			objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
+			objWriter.WriteElementString("fullburst", _intFullBurst.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("suppressive", _intSuppressive.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("weaponname", _strWeaponName);

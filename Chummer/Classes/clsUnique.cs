@@ -22,7 +22,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
+ using System.Globalization;
+ using System.Linq;
 using System.Runtime.CompilerServices;
  using System.Text;
  using System.Threading;
@@ -74,15 +75,15 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("attribute");
 			objWriter.WriteElementString("name", _strAbbrev);
-			objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString());
-			objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString());
-			objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString());
-			objWriter.WriteElementString("value", Value.ToString());
-            objWriter.WriteElementString("base", _intBase.ToString());
-            objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("augmodifier", _intAugModifier.ToString());
+			objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("value", Value.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("base", _intBase.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("karma", _intKarma.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("augmodifier", _intAugModifier.ToString(CultureInfo.InvariantCulture));
 			// External reader friendly stuff.
-			objWriter.WriteElementString("totalvalue", TotalValue.ToString());
+			objWriter.WriteElementString("totalvalue", TotalValue.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteEndElement();
 		}
 
@@ -1402,7 +1403,7 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("bp", _intBP.ToString());
+			objWriter.WriteElementString("bp", _intBP.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("implemented", _blnImplemented.ToString());
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
 			if (_strMetagenetic != null)
@@ -2163,8 +2164,8 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiId.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("crittername", _strCritterName);
-			objWriter.WriteElementString("services", _intServicesOwed.ToString());
-			objWriter.WriteElementString("force", _intForce.ToString());
+			objWriter.WriteElementString("services", _intServicesOwed.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("force", _intForce.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("bound", _blnBound.ToString());
 			objWriter.WriteElementString("type", _objEntityType.ToString());
 			objWriter.WriteElementString("file", _strFileName);
@@ -2521,6 +2522,7 @@ namespace Chummer
 		private string _strAltCategory = string.Empty;
 		private string _strAltPage = string.Empty;
         private bool _blnAlchemical;
+		private bool _blnFreeBonus;
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
@@ -2554,11 +2556,7 @@ namespace Chummer
                 }
 
                 objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objSpellNode != null)
-                {
-                    if (objSpellNode.Attributes["translate"] != null)
-                        _strAltCategory = objSpellNode.Attributes["translate"].InnerText;
-                }
+		            _strAltCategory = objSpellNode?.Attributes?["translate"].InnerText;
             }
 
             ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
@@ -2653,8 +2651,9 @@ namespace Chummer
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            objWriter.WriteElementString("grade", _intGrade.ToString());
+			objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString());
+			objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteEndElement();
 			_objCharacter.SourceProcess(_strSource);
 		}
@@ -2682,7 +2681,8 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
             objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited);
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
-            objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
+			objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
+			objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -2700,11 +2700,7 @@ namespace Chummer
 				}
 
 				objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objSpellNode != null)
-				{
-					if (objSpellNode.Attributes["translate"] != null)
-						_strAltCategory = objSpellNode.Attributes["translate"].InnerText;
-				}
+					_strAltCategory = objSpellNode?.Attributes?["translate"].InnerText;
 			}
 		}
 
@@ -3355,6 +3351,15 @@ namespace Chummer
 				return strReturn;
 			}
 		}
+
+		/// <summary>
+		/// Does the spell cost Karma? Typically provided by improvements.
+		/// </summary>
+		public bool FreeBonus
+		{
+			get { return _blnFreeBonus; }
+			set { _blnFreeBonus = value; }
+		}
 		#endregion
 
 		#region ComplexProperties
@@ -3862,7 +3867,7 @@ namespace Chummer
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("paidwithkarma", _blnPaidWithKarma.ToString());
 			objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("grade", _intGrade.ToString());
+            objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
 			if (_nodBonus != null)
 				objWriter.WriteRaw(_nodBonus.OuterXml);
 			else
@@ -4184,7 +4189,7 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("grade", _intGrade.ToString());
+            objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
@@ -4469,7 +4474,7 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("grade", _intGrade.ToString());
+            objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
@@ -5379,7 +5384,7 @@ namespace Chummer
 			objWriter.WriteElementString("guid", InternalId);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("rating", _intRating.ToString());
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("isquality", _blnIsQuality.ToString());
             objWriter.WriteStartElement("martialartadvantages");
             foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
@@ -6087,7 +6092,7 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("limit", _strLimit);
             objWriter.WriteElementString("condition", _strCondition);
-            objWriter.WriteElementString("bonus", _intBonus.ToString());
+            objWriter.WriteElementString("bonus", _intBonus.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -6327,8 +6332,8 @@ namespace Chummer
 			objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("role", _strRole);
             objWriter.WriteElementString("location", _strLocation);
-            objWriter.WriteElementString("connection", _intConnection.ToString());
-			objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
+            objWriter.WriteElementString("connection", _intConnection.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("loyalty", _intLoyalty.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("type", _objContactType.ToString());
 			objWriter.WriteElementString("file", _strFileName);
 			objWriter.WriteElementString("relative", _strRelativeName);
@@ -6777,7 +6782,7 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("type", _strType);
 			objWriter.WriteElementString("action", _strAction);
@@ -6785,7 +6790,7 @@ namespace Chummer
 			objWriter.WriteElementString("duration", _strDuration);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("karma", _intKarma.ToString());
+            objWriter.WriteElementString("karma", _intKarma.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("counttowardslimit", _blnCountTowardsLimit.ToString());
 			if (_nodBonus != null)
@@ -7323,7 +7328,7 @@ namespace Chummer
 			objWriter.WriteStartElement("initiationgrade");
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("res", _blnTechnomancer.ToString());
-			objWriter.WriteElementString("grade", _intGrade.ToString());
+			objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("group", _blnGroup.ToString());
 			objWriter.WriteElementString("ordeal", _blnOrdeal.ToString());
             objWriter.WriteElementString("schooling", _blnSchooling.ToString());
@@ -7552,8 +7557,8 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("week");
 			objWriter.WriteElementString("guid", _guiID.ToString());
-			objWriter.WriteElementString("year", _intYear.ToString());
-			objWriter.WriteElementString("week", _intWeek.ToString());
+			objWriter.WriteElementString("year", _intYear.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("week", _intWeek.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}

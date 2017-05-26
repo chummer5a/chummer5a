@@ -2010,8 +2010,15 @@ namespace Chummer
 					objWriter.WriteElementString("attr",drainAttribute);
 				}
 				objWriter.WriteEndElement();
-
-	            if (_strMagicTradition != "Custom")
+                if (_strMagicTradition == "Custom")
+                {
+                    objWriter.WriteElementString("spiritcombat", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spiritdetection", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spirithealth", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spiritillusion", LanguageManager.Instance.GetString("String_All"));
+                    objWriter.WriteElementString("spiritmanipulation", LanguageManager.Instance.GetString("String_All"));
+                }
+                else if (_strMagicTradition != "Custom")
 	            {
 		            objWriter.WriteElementString("spiritcombat",
 			            objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
@@ -4329,12 +4336,9 @@ namespace Chummer
             get
             {
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                foreach (Improvement objImprovement in _lstImprovements)
+                if (_lstImprovements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled)
-                    {
-                        return 0.1m;
-                    }
+	                return 0.1m;
                 }
                 decimal decESS = EssenceMaximum;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
@@ -4362,7 +4366,9 @@ namespace Chummer
 						decBioware = 0;
 					}
 				}
-                decESS -= decCyberware + decBioware;
+	            decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
+
+				decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
 
@@ -5831,6 +5837,13 @@ namespace Chummer
 			string[] strReturn = _strWalk.Split('/');
 
             int intTmp = 0;
+            if (Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
+            {
+                int impValue = 0;
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
             switch (strType)
             {
                 case "Fly":
@@ -5854,10 +5867,16 @@ namespace Chummer
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
 		private int RunningRate(string strType = "Ground")
-		{
-			string[] strReturn = _strRun.Split('/');
-
+        {
+            if (Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.RunSpeed && imp.ImprovedName == strType))
+            {
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
+            string[] strReturn = _strRun.Split('/');
             int intTmp = 0;
+
             switch (strType)
             {
                 case "Fly":
@@ -5881,8 +5900,14 @@ namespace Chummer
 		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
 		/// </summary>
 		private int SprintingRate(string strType = "Ground")
-		{
-			string[] strReturn = _strSprint.Split('/');
+        {
+            if (Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.SprintSpeed && imp.ImprovedName == strType))
+            {
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
+            string[] strReturn = _strSprint.Split('/');
 
             int intTmp = 0;
             switch (strType)

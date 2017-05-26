@@ -3068,6 +3068,25 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
+		// Check for Free Spells.
+		public void freespells(XmlNode bonusNode)
+		{
+			Log.Info("freespells");
+			Log.Info("freespells = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			if (bonusNode.Attributes?["attribute"] != null)
+			{
+				CharacterAttrib att = _objCharacter.GetAttribute(bonusNode.Attributes?["attribute"].InnerText);
+				CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, string.Empty,
+					att.TotalValue);
+			}
+			else
+			{
+				CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, string.Empty,
+					ValueToInt(bonusNode.InnerText, _intRating));
+			}
+		}
+
 		// Check for Spell Category bonuses.
 		public void spellcategory(XmlNode bonusNode)
 		{
@@ -3147,6 +3166,16 @@ namespace Chummer.Classes
 			Log.Info("cyborgessence = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyborgEssence, string.Empty);
+		}
+
+		// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
+		public void essencepenalty(XmlNode bonusNode)
+		{
+			Log.Info("essencepenalty");
+			Log.Info("essencepenalty = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, string.Empty,
+				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
 		// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
@@ -3753,8 +3782,31 @@ namespace Chummer.Classes
 			CreateImprovement(frmSelect.SelectedItem, Improvement.ImprovementSource.Quality, SourceName,
 	Improvement.ImprovementType.LimitSpiritCategory,"");
 		}
-		#endregion
-	}
+        public void movementreplace(XmlNode bonusNode)
+        {
+            Log.Info("movementreplace");
+            Log.Info("movementreplace = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+
+            Improvement.ImprovementType imp = Improvement.ImprovementType.WalkSpeed;
+            switch (bonusNode["speed"].InnerText.ToLower())
+            {
+                case "walk":
+                    imp = Improvement.ImprovementType.WalkSpeed;
+                    break;
+                case "run":
+                    imp = Improvement.ImprovementType.RunSpeed;
+                    break;
+                case "sprint":
+                    imp = Improvement.ImprovementType.SprintSpeed;
+                    break;
+            }
+
+            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, imp, string.Empty,
+                ValueToInt(bonusNode["val"].InnerText, _intRating));
+        }
+        #endregion
+    }
 
 	internal class AbortedException : Exception
 	{

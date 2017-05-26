@@ -365,7 +365,7 @@ namespace Chummer
 
                     if (objXmlQuality["hide"] == null && blnQualityAllowed)
                     {
-                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality,false,_objCharacter, IgnoreQuality,objXmlMetatypeDocument,objXmlCrittersDocument,_objXmlDocument))
+						if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlQuality["name"]?.InnerText;
@@ -445,8 +445,8 @@ namespace Chummer
                     }
 					if (blnQualityAllowed)
 					{
-                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, IgnoreQuality, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument))
-                        {
+						if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+						{
                             if (objXmlQuality["hide"] == null)
                             {
                                 ListItem objItem = new ListItem();
@@ -498,7 +498,7 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
             _strSelectCategory = objNode["category"]?.InnerText;
 
-			if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, IgnoreQuality, null, null, _objXmlDocument))
+			if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
 				return;
 			DialogResult = DialogResult.OK;
 		}

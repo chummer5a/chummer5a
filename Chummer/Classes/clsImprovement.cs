@@ -186,7 +186,13 @@ namespace Chummer
             SpellResistance,
 	        SpellKarmaDiscount,
 	        LimitSpellCategory,
-	        LimitSpiritCategory
+	        LimitSpiritCategory,
+            WalkSpeed,
+            RunSpeed,
+            SprintSpeed,
+            EssencePenalty,
+			FreeSpellsATT,
+	        FreeSpells
         }
 
         public enum ImprovementSource
@@ -619,7 +625,7 @@ namespace Chummer
 			List<string> lstUniqueName = new List<string>();
 			List<Tuple<string, int>> lstUniquePair = new List<Tuple<string, int>>();
 			int intValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == objImprovementType))
 			{
 			    if (objImprovement.Enabled && !objImprovement.Custom)
 			    {
@@ -1032,20 +1038,9 @@ namespace Chummer
 				_objCharacter.Improvements.Remove(objImprovement);
 
                 // See if the character has anything else that is granting them the same bonus as this improvement
-			    bool blnHasDuplicate = false;
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
-				{
-			        if (objLoopImprovement.UniqueName == objImprovement.UniqueName &&
-			            objLoopImprovement.ImprovedName == objImprovement.ImprovedName &&
-                        objLoopImprovement.ImproveType == objImprovement.ImproveType &&
-                        objLoopImprovement.SourceName != objImprovement.SourceName)
-			        {
-                        blnHasDuplicate = true;
-			            break;
-			        }
-			    }
+			    bool blnHasDuplicate = _objCharacter.Improvements.Any(objLoopImprovement => objLoopImprovement.UniqueName == objImprovement.UniqueName && objLoopImprovement.ImprovedName == objImprovement.ImprovedName && objLoopImprovement.ImproveType == objImprovement.ImproveType && objLoopImprovement.SourceName != objImprovement.SourceName);
 
-                switch (objImprovement.ImproveType)
+				switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
 					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
@@ -1344,6 +1339,7 @@ namespace Chummer
 
                         if (objImprovedPower.TotalRating == 0)
                         {
+	                        objImprovedPower.Deleting = true;
                             _objCharacter.Powers.Remove(objImprovedPower);
                         }
                         else

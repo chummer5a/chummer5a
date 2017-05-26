@@ -134,7 +134,7 @@ namespace Chummer.Backend.Equipment
 
                     string strCostExpression = _strCost;
 
-                    string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+                    string strCost = strCostExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture));
                     XPathExpression xprCost = nav.Compile(strCost);
                     _strCost = nav.Evaluate(xprCost).ToString();
                 }
@@ -350,7 +350,7 @@ namespace Chummer.Backend.Equipment
 		{
 			objWriter.WriteStartElement("armor");
             objWriter.WriteElementString("sourceid", _sourceID.ToString());
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid",InternalId);
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("armor", _strA);
@@ -363,9 +363,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("armorname", _strArmorName);
 			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("damage", _intDamage.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("rating", _intMaxRating.ToString());
+			objWriter.WriteElementString("damage", _intDamage.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("rating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteStartElement("armormods");
 			foreach (ArmorMod objMod in _lstArmorMods)
 			{

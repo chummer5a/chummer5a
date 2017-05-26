@@ -102,7 +102,7 @@
             this.chkLimitList.Name = "chkLimitList";
             this.chkLimitList.Size = new System.Drawing.Size(186, 52);
             this.chkLimitList.TabIndex = 3;
-            this.chkLimitList.Tag = "Checkbox_SelectMetamagic_LimitList";
+            this.chkLimitList.Tag = "Checkbox_SelectGeneric_LimitList";
             this.chkLimitList.Text = "Show only Metamagics I can take";
             this.chkLimitList.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkLimitList.UseVisualStyleBackColor = true;
@@ -136,7 +136,7 @@
             this.Name = "frmSelectMetamagic";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Tag = "Title_SelectMetamagic";
+            this.Tag = "Title_SelectGeneric";
             this.Text = "Select a Metamagic";
             this.Load += new System.EventHandler(this.frmSelectMetamagic_Load);
             this.ResumeLayout(false);
