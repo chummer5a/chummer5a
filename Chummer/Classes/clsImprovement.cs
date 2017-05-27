@@ -194,8 +194,6 @@ namespace Chummer
             EssencePenalty,
 			FreeSpellsATT,
 	        FreeSpells
-        }
-            SwapSkillSpecAttribute
 		}
 
         public enum ImprovementSource
@@ -1083,14 +1081,14 @@ namespace Chummer
 	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
                         break;
                     case Improvement.ImprovementType.Attribute:
-                            CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
+						/*    CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
                         if (objImprovement.Minimum > 0)
                         {
                             objChangedAttribute.Value -= objImprovement.Minimum;
-                        }
+                        }*/
 
-                // Determine if access to any Special Attributes have been lost.
-                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
+						// Determine if access to any Special Attributes have been lost.
+						if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
 				{
                             switch (objImprovement.ImprovedName)
 					{

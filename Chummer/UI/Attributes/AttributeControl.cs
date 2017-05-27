@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Chummer.Backend.Attributes;
+using Chummer.helpers;
 
 namespace Chummer.UI.Attributes
 {
@@ -41,14 +42,19 @@ namespace Chummer.UI.Attributes
 				nudBase.DataBindings.Add("Minimum", attribute, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.TotalMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.Visible = true;
+				nudBase.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.Visible = true;
 
 				nudKarma.Minimum = 0;
 				nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.TotalMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.Visible = true;
+				nudKarma.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
 	            cmdBurnEdge.Visible = false;
+				
             }
         }
 

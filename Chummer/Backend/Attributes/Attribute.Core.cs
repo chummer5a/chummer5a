@@ -1028,7 +1028,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Amount of BP/Karma spent on this CharacterAttribute.
         /// </summary>
-        private int CalculatedBP()
+        public int CalculatedBP()
         {
             int intBP = 0;
 
@@ -1081,7 +1081,9 @@ namespace Chummer.Backend.Attributes
             return intBP;
         }
 
-        /// <summary>
+	    public int SpentPriorityPoints => Base - TotalMinimum;
+
+	    /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
         /// <returns>Price in karma</returns>
@@ -1306,8 +1308,9 @@ namespace Chummer.Backend.Attributes
         private string _strDisplayNameLong;
         private string _strDisplayNameFormatted;
 	    private Enum _enumCategory;
+		private string _strDisplayAbbrev;
 
-	    public static HashSet<string> PhysicalAttributes
+		public static HashSet<string> PhysicalAttributes
         {
             get { return _physicalAttributes.Value; }
         }
@@ -1320,7 +1323,22 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public void Upgrade()
+		/// <summary>
+		/// Translated abbreviation of the attribute.
+		/// </summary>
+		public string DisplayAbbrev
+		{
+			get
+			{
+				if (string.IsNullOrWhiteSpace(_strDisplayAbbrev))
+				{
+					_strDisplayAbbrev = LanguageManager.Instance.GetString($"String_Attribute{Abbrev}Short");
+				}
+				return _strDisplayAbbrev;
+			}
+		}
+
+		public void Upgrade()
         {
             if (!CanUpgradeCareer) return;
 

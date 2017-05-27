@@ -1424,11 +1424,20 @@ namespace Chummer
                     tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddMetamagic");
 					chkJoinGroup.Text = LanguageManager.Instance.GetString("Checkbox_JoinedGroup");
 				}
+
+				if (!lstSpecialAttributes.Contains(_objCharacter.MAG))
+				{
+					lstSpecialAttributes.Add(_objCharacter.MAG);
+				}
 			}
 			else
 			{
 				ClearInitiationTab();
 				tabCharacterTabs.TabPages.Remove(tabInitiation);
+				if (lstSpecialAttributes.Contains(_objCharacter.MAG))
+				{
+					lstSpecialAttributes.Remove(_objCharacter.MAG);
+				}
 			}
 
 		}
@@ -1448,11 +1457,19 @@ namespace Chummer
                     tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
 					chkJoinGroup.Text = LanguageManager.Instance.GetString("Checkbox_JoinedNetwork");
 				}
+				if (!lstSpecialAttributes.Contains(_objCharacter.RES))
+				{
+					lstSpecialAttributes.Add(_objCharacter.RES);
+				}
 			}
 			else
 			{
 				ClearInitiationTab();
 				tabCharacterTabs.TabPages.Remove(tabInitiation);
+				if (lstSpecialAttributes.Contains(_objCharacter.RES))
+				{
+					lstSpecialAttributes.Remove(_objCharacter.RES);
+				}
 			}
 		}
 
@@ -26654,7 +26671,7 @@ namespace Chummer
 		private void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_blnLoading) return;
-			_objCharacter.PrimaryArm = cboHandedness.SelectedValue.ToString();
+			_objCharacter.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
         }
 
         private void BuildAttributePanel()

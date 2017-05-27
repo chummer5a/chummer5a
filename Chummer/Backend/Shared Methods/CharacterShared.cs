@@ -30,6 +30,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace Chummer

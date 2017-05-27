@@ -3079,11 +3079,24 @@ namespace Chummer
                 CharacterNameChanged?.Invoke(this);
             }
         }
-
-        /// <summary>
-        /// Character's portraits encoded using Base64.
-        /// </summary>
-        public List<string> Mugshots
+		/// <summary>
+		/// Character's Attributes.
+		/// </summary>
+		public Dictionary<string, CharacterAttrib> AttributeList
+		{
+			get
+			{
+				return _attributes;
+			}
+			set
+			{
+				_attributes = value;
+			}
+		}
+		/// <summary>
+		/// Character's portraits encoded using Base64.
+		/// </summary>
+		public List<string> Mugshots
         {
             get
                 {
@@ -4020,8 +4033,6 @@ namespace Chummer
                     return _attBOD;
             }
         }
-
-		public CharacterAttrib.AttributeCategory ActiveAttributeCategory { get; set; }
 
         /// <summary>
         /// Body (BOD) CharacterAttribute.

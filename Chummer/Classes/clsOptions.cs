@@ -134,11 +134,11 @@ namespace Chummer
         private static bool _blnUseLogging = false;
 		private static string _strCharacterRosterPath;
 
-        #region Constructor and Instance
-        /// <summary>
-        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
+		#region Constructor and Instance
+		/// <summary>
+		/// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+		/// </summary>
+		private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
         {
 			object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
 			if (objRegistryResult != null)

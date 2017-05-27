@@ -13,6 +13,9 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Input;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace Chummer.helpers
 {
@@ -51,6 +54,7 @@ namespace Chummer.helpers
 			// are not working properly)
 			_textbox.MouseEnter += _mouseEnterLeave;
 			_textbox.MouseLeave += _mouseEnterLeave;
+			_textbox.KeyDown += txt_KeyDown;
 			_upDownButtons.MouseEnter += _mouseEnterLeave;
 			_upDownButtons.MouseLeave += _mouseEnterLeave;
 			base.MouseEnter += _mouseEnterLeave;
@@ -67,6 +71,18 @@ namespace Chummer.helpers
 			base.OnPaint(e);
 		}
 
+		private void txt_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				if (!Parent.Parent.Focus())
+				{
+					Utils.BreakIfDebug();
+				}
+				e.SuppressKeyPress = true;
+				e.Handled = true;
+			}
+		}
 
 		/// <summary>
 		/// WndProc override to kill WN_MOUSEWHEEL message
@@ -89,6 +105,12 @@ namespace Chummer.helpers
 						if (_mouseOver)
 						{
 							// standard message
+							base.WndProc(ref m);
+						}
+						break;
+					case InterceptMouseWheelMode.WhenFocus:
+						if (_haveFocus)
+						{
 							base.WndProc(ref m);
 						}
 						break;
@@ -158,6 +180,8 @@ namespace Chummer.helpers
 			Always,
 			/// <summary>MouseWheel works only when mouse is over the (focused) control</summary>
 			WhenMouseOver,
+			/// <summary>UpDownButtons are visible only when control has focus</summary>
+			WhenFocus,
 			/// <summary>MouseWheel never works</summary>
 			Never
 		}

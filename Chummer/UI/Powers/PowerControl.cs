@@ -43,6 +43,8 @@ namespace Chummer
 				DataSourceUpdateMode.OnPropertyChanged);
 			nudRating.DataBindings.Add("Value", PowerObject, nameof(PowerObject.TotalRating), false,
 				DataSourceUpdateMode.OnPropertyChanged);
+			nudRating.DataBindings.Add("InterceptMouseWheel", PowerObject.CharacterObject.Options, 
+				nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 			lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false, 
 				DataSourceUpdateMode.OnPropertyChanged);
 			lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayPoints), false, 

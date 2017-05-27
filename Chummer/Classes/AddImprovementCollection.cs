@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 

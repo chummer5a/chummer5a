@@ -64,6 +64,9 @@ namespace Chummer
 			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
 			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
 			System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Improvements");
+			this.lblTraditionSource = new System.Windows.Forms.Label();
+			this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
+			this.tabPowerUc = new PowersTabUserControl();
 			this.StatusStrip = new System.Windows.Forms.StatusStrip();
 			this.tssKarmaLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tssKarma = new System.Windows.Forms.ToolStripStatusLabel();
@@ -531,10 +534,6 @@ namespace Chummer
 			this.cmdRollSpell = new System.Windows.Forms.Button();
 			this.cmdAddSpell = new SplitButton();
 			this.tabAdept = new System.Windows.Forms.TabPage();
-			this.panPowers = new System.Windows.Forms.Panel();
-			this.lblPowerPoints = new System.Windows.Forms.Label();
-			this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-			this.cmdAddPower = new System.Windows.Forms.Button();
 			this.tabTechnomancer = new System.Windows.Forms.TabPage();
 			this.lblFV = new System.Windows.Forms.Label();
 			this.lblFVLabel = new System.Windows.Forms.Label();
@@ -1062,7 +1061,7 @@ namespace Chummer
 			this.cmdFireVehicleWeapon = new SplitButton();
 			this.cmdDeleteVehicle = new SplitButton();
 			this.tabCharacterInfo = new System.Windows.Forms.TabPage();
-			this.cboHandedness = new Chummer.helpers.ComboBox();
+			this.cboPrimaryArm = new Chummer.helpers.ComboBox();
 			this.lblHandedness = new System.Windows.Forms.Label();
 			this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
 			this.lblNumMugshots = new System.Windows.Forms.Label();
@@ -14573,8 +14572,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblTraditionSource;
         private System.Windows.Forms.Label lblTraditionSourceLabel;
 		private PowersTabUserControl tabPowerUc;
+		private FlowLayoutPanel pnlAttributes;
 	}
-        private FlowLayoutPanel pnlAttributes;
-    }
 }
 

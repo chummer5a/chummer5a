@@ -1,4 +1,5 @@
-﻿using Chummer.Backend.Equipment;
+﻿using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System;
 using System.Globalization;
