@@ -230,7 +230,7 @@ namespace Chummer.UI.Skills
 			//TODO turn this into a databinding, but i don't care enough right now
 			lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName));
 
-            parrent?.UpdateCharacterInfo();
+            parrent?.ScheduleCharacterUpdate();
 		}
 
 		private void SetupDropdown()
@@ -315,6 +315,14 @@ namespace Chummer.UI.Skills
         private void lblName_Click(object sender, EventArgs e)
         {
             CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
+        }
+
+        private void cboSpec_TextChanged(object sender, EventArgs e)
+        {
+            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            {
+                chkKarma.Checked = true;
+            }
         }
     }
 }

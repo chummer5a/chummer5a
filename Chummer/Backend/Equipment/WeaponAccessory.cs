@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -198,8 +199,8 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("mount", _strMount);
 			objWriter.WriteElementString("extramount", _strExtraMount);
 			objWriter.WriteElementString("rc", _strRC);
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
 			objWriter.WriteElementString("conceal", _strConceal);
 			if (!string.IsNullOrEmpty(_strDicePool))
@@ -212,7 +213,7 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteRaw(_nodAllowGear.OuterXml);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("accuracy", _intAccuracy.ToString());
+			objWriter.WriteElementString("accuracy", _intAccuracy.ToString(CultureInfo.InvariantCulture));
 			if (_lstGear.Count > 0)
 			{
 				objWriter.WriteStartElement("gears");
@@ -825,14 +826,14 @@ namespace Chummer.Backend.Equipment
 						strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
 					}
 					XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
-					strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
+					strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
 				}
 				else
 				{
 					// Just a straight cost, so return the value.
 					if (_strAvail.Contains("F") || _strAvail.Contains("R"))
 					{
-						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
+						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + _strAvail.Substring(_strAvail.Length - 1, 1);
 					}
 					else
 						strCalculated = Convert.ToInt32(_strAvail).ToString();
@@ -848,7 +849,7 @@ namespace Chummer.Backend.Equipment
 				else
 					intAvail = Convert.ToInt32(strCalculated);
 
-				strReturn = intAvail.ToString() + strAvailText;
+				strReturn = intAvail + strAvailText;
 
 				// Translate the Avail string.
 				strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));

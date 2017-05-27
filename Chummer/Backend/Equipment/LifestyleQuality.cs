@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -87,6 +89,8 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
             if (objXmlLifestyleQuality["category"] != null)
 			    _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
 			_objLifestyleQualitySource = objLifestyleQualitySource;
@@ -151,9 +155,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("cost", _intCost.ToString());
-			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
-            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString());
+			objWriter.WriteElementString("cost", _intCost.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("multiplier", _intMultiplier.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("lp", _intLP.ToString());
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
 			objWriter.WriteElementString("print", _blnPrint.ToString());
@@ -226,7 +230,31 @@ namespace Chummer.Backend.Equipment
 			if (_objCharacter.LastSavedVersion <= Version.Parse("5.190.0"))
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+				XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + _guiID + "\"]") ??
+				                                  objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+			    if (objLifestyleQualityNode == null)
+			    {
+			        var lstQualities = new List<ListItem>();
+                    lstQualities.AddRange(
+                             from XmlNode objNode in
+                             objXmlDocument.SelectNodes("/chummer/qualities/quality")
+                             select new ListItem
+                             {
+                                 Value = objNode["name"].InnerText,
+                                 Name = objNode["translate"]?.InnerText ?? objNode["name"].InnerText
+                             });
+                    var frmSelect = new frmSelectItem
+			        {
+			            DropdownItems = lstQualities,
+			            Description =
+                        LanguageManager.Instance.GetString("String_CannotFindLifestyleQuality").Replace("{0}", _strName)
+			        };
+			        frmSelect.ShowDialog();
+			        if (frmSelect.DialogResult == DialogResult.Cancel)
+			            return;
+
+                    objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelect.SelectedItem + "\"]");
+                }
 			    int intTemp = 0;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("cost", ref intTemp))
                     Cost = intTemp;
@@ -434,7 +462,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return Free || FreeByLifestyle ? 0 : _intLP;
+				return Free ? 0 : _intLP;
 			}
 			set
 			{
@@ -510,7 +538,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public int Cost
 		{
-			get { return (Free || FreeByLifestyle) ? 0 : _intCost; }
+			get { return Free || FreeByLifestyle ? 0 : _intCost; }
 			set { _intCost = value; }
 		}
 
@@ -519,7 +547,7 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public bool Free
 		{
-			get { return _blnFree; }
+			get { return _blnFree || OriginSource == QualitySource.BuiltIn; }
 			set { _blnFree = value; }
 		}
 

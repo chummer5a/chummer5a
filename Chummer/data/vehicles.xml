@@ -3218,6 +3218,10 @@
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 				<gear rating="3">[Weapon] Targeting Autosoft</gear>
 				<gear>Smartsoft</gear>
+				<gear>SmartSafety Bracelet</gear>
+				<gear>SmartSafety Bracelet</gear>
+				<gear>SmartSafety Bracelet</gear>
+				<gear>SmartSafety Bracelet</gear>
 			</gears>
 			<mods>
 				<name>Small Weapon Mount (Drone)</name>
@@ -5644,7 +5648,7 @@
 			<page>139</page>
 		</vehicle>
 		<vehicle>
-			<id>b5f962ae-d541-4271-812b-3a4d0eb812e4</id>
+			<id>53079aac-250a-4ec5-9f0d-b8fbc6368e46</id>
 			<name>Ares Garuda</name>
 			<category>Drones: Missile</category>
 			<handling>6</handling>
@@ -5779,7 +5783,7 @@
 			<page>190</page>
 		</vehicle>
 		<vehicle>
-			<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
+			<id>54807634-4472-4c86-87ad-5d07b7116ef5</id>
 			<name>Clockwork Greyhound</name>
 			<category>Drones: Medium</category>
 			<handling>3</handling>
@@ -5860,6 +5864,675 @@
 			<source>CA</source>
 			<page>147</page>
 		</vehicle>
+		<!-- SR5 2050 -->
+		<!-- Motorräder -->
+		<vehicle>
+			<id>baac8c9e-5604-4329-9757-f82de25a5d3c</id>
+			<name>Dodge Scoot (2050)</name>
+			<category>Bikes</category>
+			<handling>4/3</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>1</pilot>
+			<body>4</body>
+			<armor>4</armor>
+			<seats>1</seats>
+			<sensor>1</sensor>
+			<gears>
+				<gear rating="1" maxrating="6">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Improved Economy</name>
+			</mods>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>cf205096-7a6c-4bf1-99c1-5c24cfff8fb5</id>
+			<name>Yamaha Rapier (2050)</name>
+			<category>Bikes</category>
+			<handling>5/3</handling>
+			<accel>3</accel>
+			<speed>6</speed>
+			<pilot>1</pilot>
+			<body>5</body>
+			<armor>6</armor>
+			<seats>1</seats>
+			<sensor>1</sensor>
+			<gears>
+				<gear rating="2" maxrating="6">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>7927db78-1e79-4332-8cc7-4d4db162a68b</id>
+			<name>Harley-Davidson Scorpion (2050)</name>
+			<category>Bikes</category>
+			<handling>4/3</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>8</body>
+			<armor>9</armor>
+			<seats>1</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="6">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<!-- Motoräder Ende -->
+		<!-- Autos -->
+		<vehicle>
+			<id>0e7f4ed0-749f-4743-8b95-dbcb376b48b7</id>
+			<name>Mitsubishi Runabout (2050)</name>
+			<category>Cars</category>
+			<handling>3/2</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>8</body>
+			<armor>6</armor>
+			<seats>2</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>	
+		<vehicle>
+			<id>6975423f-43c7-4960-98bb-7363b491856c</id>
+			<name>Chrysler-Nissan Jackrabbit (2050)</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<speed>3</speed>
+			<accel>2</accel>
+			<body>8</body>
+			<armor>4</armor>			
+			<pilot>1</pilot>
+			<sensor>2</sensor>
+			<seats>2</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>3d699295-5943-4d9a-8712-006a1dffe4aa</id>
+			<name>Ford Americar (2050)</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<speed>3</speed>
+			<accel>2</accel>
+			<body>11</body>
+			<armor>6</armor>			
+			<pilot>1</pilot>
+			<sensor>2</sensor>
+			<seats>4</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>74265b60-46cf-4c25-b2ff-7ed7364c3961</id>
+			<name>Eurocar Westwind 2000 (2050)</name>
+			<category>Cars</category>
+			<handling>6/4</handling>
+			<speed>6</speed>
+			<accel>3</accel>
+			<body>10</body>
+			<armor>8</armor>			
+			<pilot>3</pilot>
+			<sensor>5</sensor>
+			<seats>2</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>100000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>a2581e31-30fa-45de-8d60-ffd3d5a3a5b0</id>
+			<name>Toyota Elite (2050)</name>
+			<category>Cars</category>
+			<handling>5/4</handling>
+			<speed>5</speed>
+			<accel>2</accel>
+			<body>12</body>
+			<armor>12</armor>			
+			<pilot>2</pilot>
+			<sensor>4</sensor>
+			<seats>4</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>125000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>0bd8157d-510f-4920-b8c8-c65cb6e95c4e</id>
+			<name>Mitsubishi Nightsky (2050)</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<speed>4</speed>
+			<accel>2</accel>
+			<body>15</body>
+			<armor>15</armor>			
+			<pilot>3</pilot>
+			<sensor>5</sensor>
+			<seats>8</seats>
+			<gears>
+				<gear rating="5" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>250000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>b6d6d319-1b29-4f76-a52c-3fc177a153da</id>
+			<name>Bulldog Step-Van (2050)</name>
+			<category>Cars</category>
+			<handling>3/3</handling>
+			<speed>3</speed>
+			<accel>1</accel>
+			<body>16</body>
+			<armor>12</armor>			
+			<pilot>1</pilot>
+			<sensor>2</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>35000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<!-- Autos Ende -->
+		<!-- Boote -->
+		<vehicle>
+			<id>f5511048-ddd7-41dc-abe1-33750779ab8f</id>
+			<name>Samuvani-Criscraft Otter (2050)</name>
+			<category>Boats</category>
+			<handling>4</handling>
+			<speed>3</speed>
+			<accel>2</accel>
+			<body>12</body>
+			<armor>6</armor>			
+			<pilot>2</pilot>
+			<sensor>2</sensor>
+			<seats>8</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>4cf620da-e273-494d-b2a7-1252cc2de3dd</id>
+			<name>Aztech Nightrunner (2050)</name>
+			<category>Boats</category>
+			<handling>4</handling>
+			<speed>3</speed>
+			<accel>2</accel>
+			<body>12</body>
+			<armor>6</armor>			
+			<pilot>2</pilot>
+			<sensor>2</sensor>
+			<seats>2</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>4R</avail>
+			<cost>30000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<vehicle>
+			<id>76f4dc51-66d0-4f6b-bd0a-622ae5fe04e3</id>
+			<name>Sendanko Marlin (2050)</name>
+			<category>Boats</category>
+			<handling>2</handling>
+			<speed>2</speed>
+			<accel>2</accel>
+			<body>14</body>
+			<armor>4</armor>			
+			<pilot>1</pilot>
+			<sensor>2</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>208</page>
+		</vehicle>
+		<!-- Boote Ende -->
+		<!-- Flugzeuge -->
+		<vehicle>
+			<id>3b7d96d2-9b1b-4eea-8f64-aa63804b1197</id>
+			<name>Cessna C750 (2050)</name>
+			<category>Fixed-Wing Aircraft</category>
+			<handling>3</handling>
+			<speed>5</speed>
+			<accel>3</accel>
+			<body>18</body>
+			<armor>4</armor>			
+			<pilot>2</pilot>
+			<sensor>2</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>4</avail>
+			<cost>200000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>8e8dfd57-0257-4978-865c-54bc62f80903</id>
+			<name>Lear-Cessna Platinum 1 (2050)</name>
+			<category>Fixed-Wing Aircraft</category>
+			<handling>4</handling>
+			<speed>5</speed>
+			<accel>4</accel>
+			<body>20</body>
+			<armor>6</armor>			
+			<pilot>3</pilot>
+			<sensor>2</sensor>
+			<seats>8</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>8</avail>
+			<cost>500000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>c442e6d1-cd77-40f0-926c-3b4771718706</id>
+			<name>Federated-Boeing Commuter (2050)</name>
+			<category>VTOL/VSTOL</category>
+			<handling>3</handling>
+			<speed>3</speed>
+			<accel>3</accel>
+			<body>16</body>
+			<armor>8</armor>			
+			<pilot>3</pilot>
+			<sensor>3</sensor>
+			<seats>30</seats>
+			<gears>
+				<gear rating="3" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>8R</avail>
+			<cost>625000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>bc26a329-cf64-4a2d-841a-599f480762ff</id>
+			<name>Hughes Stallion WK-4 (2050)</name>
+			<category>Rotorcraft</category>
+			<handling>5</handling>
+			<speed>4</speed>
+			<accel>3</accel>
+			<body>16</body>
+			<armor>10</armor>			
+			<pilot>2</pilot>
+			<sensor>4</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="4" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>6</avail>
+			<cost>300000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>096c56ab-b706-4a68-ae35-163b499f0b7c</id>
+			<name>Ares Dragon (2050)</name>
+			<category>Rotorcraft</category>
+			<handling>4</handling>
+			<speed>4</speed>
+			<accel>3</accel>
+			<body>22</body>
+			<armor>8</armor>			
+			<pilot>3</pilot>
+			<sensor>3</sensor>
+			<seats>18</seats>
+			<gears>
+				<gear rating="3" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>6</avail>
+			<cost>600000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>26a5632c-8d13-4e63-a4d4-158c9254bf84</id>
+			<name>Hughes Airstar (2050)</name>
+			<category>Rotorcraft</category>
+			<handling>4</handling>
+			<speed>4</speed>
+			<accel>3</accel>
+			<body>16</body>
+			<armor>8</armor>			
+			<pilot>2</pilot>
+			<sensor>4</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="4" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>7</avail>
+			<cost>900000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<!-- Flugzeuge Ende -->
+		<!-- Militärfahrzeuge -->
+		<vehicle>
+			<id>1e39f946-a56d-4a37-8d55-fe15fdae47cd</id>
+			<name>EFA-Variant (2050)</name>
+			<category>Fixed-Wing Aircraft</category>
+			<handling>5</handling>
+			<speed>8</speed>
+			<accel>6</accel>
+			<body>18</body>
+			<armor>12</armor>			
+			<pilot>3</pilot>
+			<sensor>5</sensor>
+			<seats>2</seats>
+			<gears>
+				<gear rating="5" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>13F</avail>
+			<cost>5000000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>84b7f212-4a74-436e-b6f4-d19b8f5fb500</id>
+			<name>GMC-Banshee (2050)</name>
+			<category>VTOL/VSTOL</category>
+			<handling>6</handling>
+			<speed>8</speed>
+			<accel>4</accel>
+			<body>20</body>
+			<armor>18</armor>			
+			<pilot>4</pilot>
+			<sensor>6</sensor>
+			<seats>12</seats>
+			<gears>
+				<gear rating="6" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>82d76453-1823-497f-a48a-128063892787</id>
+			<name>Ares Citymaster (2050)</name>
+			<category>Trucks</category>
+			<handling>3/3</handling>
+			<speed>3</speed>
+			<accel>1</accel>
+			<body>18</body>
+			<armor>18</armor>			
+			<pilot>3</pilot>
+			<sensor>3</sensor>
+			<seats>8</seats>
+			<gears>
+				<gear rating="3" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>20R</avail>
+			<cost>500000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>a2e7da3b-2cde-4ab3-9fd5-a19f1e830784</id>
+			<name>Chrysler-Nissan Patrol-1 (2050)</name>
+			<category>Trucks</category>
+			<handling>5/4</handling>
+			<speed>3</speed>
+			<accel>3</accel>
+			<body>12</body>
+			<armor>12</armor>			
+			<pilot>1</pilot>
+			<sensor>2</sensor>
+			<seats>4</seats>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>12R</avail>
+			<cost>100000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>88834716-41e6-4bb8-90e1-3bd16df01753</id>
+			<name>GMC Beachcraft Patroller (2050)</name>
+			<category>Municipal/Construction</category>
+			<handling>5</handling>
+			<speed>3</speed>
+			<accel>2</accel>
+			<body>20</body>
+			<armor>10</armor>			
+			<pilot>3</pilot>
+			<sensor>5</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="5" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>16R</avail>
+			<cost>750000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>9f68e8ba-bffa-4bc5-91bf-e6c600910e28</id>
+			<name>GMC Riverine (2050)</name>
+			<category>Boats</category>
+			<handling>5</handling>
+			<speed>4</speed>
+			<accel>4</accel>
+			<body>14</body>
+			<armor>10</armor>			
+			<pilot>3</pilot>
+			<sensor>4</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="4" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>16R</avail>
+			<cost>125000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>23402e3c-8f96-4e56-a2a4-65cd16a7516d</id>
+			<name>Northrup PRC-42B Wasp (2050)</name>
+			<category>Rotorcraft</category>
+			<handling>5</handling>
+			<speed>5</speed>
+			<accel>3</accel>
+			<body>10</body>
+			<armor>8</armor>			
+			<pilot>3</pilot>
+			<sensor>3</sensor>
+			<seats>1</seats>
+			<gears>
+				<gear rating="3" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>12R</avail>
+			<cost>220000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>d05f15cc-6a54-4d43-9453-6e56aaf676d6</id>
+			<name>Northrup PRC-44B Yellowjacket (2050)</name>
+			<category>Rotorcraft</category>
+			<handling>5</handling>
+			<speed>5</speed>
+			<accel>3</accel>
+			<body>10</body>
+			<armor>10</armor>			
+			<pilot>3</pilot>
+			<sensor>3</sensor>
+			<seats>1</seats>
+			<gears>
+				<gear rating="3" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>12R</avail>
+			<cost>280000</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<vehicle>
+			<id>1b843cb9-66b6-4f85-b4a1-888116d23f13</id>
+			<name>Federated-Boeing Eagle (2050)</name>
+			<category>VTOL/VSTOL</category>
+			<handling>5</handling>
+			<speed>7</speed>
+			<accel>4</accel>
+			<body>16</body>
+			<armor>14</armor>			
+			<pilot>4</pilot>
+			<sensor>4</sensor>
+			<seats>6</seats>
+			<gears>
+				<gear rating="4" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>26F</avail>
+			<cost>0</cost>
+			<source>2050</source>
+			<page>210</page>
+		</vehicle>
+		<!-- Drones 2050-->
+		<vehicle>
+			<id>f9a409cd-e7ef-4049-94af-a9e812602f84</id>
+			<name>Surveillance Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>4</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>4</modslots>
+			<gears>
+				<gear rating="2" maxrating="2">Sensor Array</gear>
+			</gears>
+
+			<avail>6</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>7ac00990-31a3-4314-a114-9cd6468fb66d</id>
+			<name>Spotter Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>3</accel>
+			<speed>5</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>2</armor>
+			<seats>0</seats>
+			<sensor>2</sensor>
+			<modslots>4</modslots>
+			<gears>
+				<gear rating="2" maxrating="2">Sensor Array</gear>
+			</gears>
+			<avail>4</avail>
+			<cost>15000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>11418c52-6c1f-477f-a660-2451fb3ee8fa</id>
+			<name>Hunter Drone (2050)</name>
+			<category>Drones: Medium</category>
+			<handling>5</handling>
+			<accel>3</accel>
+			<speed>5</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>5</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Standard Weapon Mount (Drone)</name>
+				<name>Standard Weapon Mount (Drone)</name>
+			</mods>
+			<avail>6R</avail>
+			<cost>20000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>
+		<vehicle>
+			<id>d28b349e-6580-4a04-8dfe-d09ebdb261f0</id>
+			<name>Patrol Vehicle (2050)</name>
+			<category>Drones: Large</category>
+			<handling>5</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>6</body>
+			<armor>12</armor>
+			<seats>0</seats>
+			<sensor>3</sensor>
+			<modslots>0</modslots>
+			<gears>
+				<gear rating="3" maxrating="3">Sensor Array</gear>
+			</gears>
+			<mods>
+				<name>Standard Weapon Mount (Drone)</name>
+				<name>Standard Weapon Mount (Drone)</name>
+			</mods>
+			<avail>6R</avail>
+			<cost>10000</cost>
+			<source>2050</source>
+			<page>212</page>
+		</vehicle>		
+		<!-- End Region -->		
+		<!-- End Region -->			
 	</vehicles>
 	<mods>
 		<!-- Region Vehicle Weapon Mount -->
@@ -6683,7 +7356,7 @@
 			<rating>0</rating>
 			<slots>4</slots>
 			<!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
-			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Missile Launchers,Lasers</weaponmountcategories>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
 			<avail>10F</avail>
 			<cost>4000</cost>
 			<source>R5</source>
@@ -6967,8 +7640,8 @@
 			<category>Body</category>
 			<rating>0</rating>
 			<slots>1</slots>
-			<avail>12</avail>
-			<cost>50000</cost>
+			<avail>8</avail>
+			<cost>5000</cost>
 			<source>R5</source>
 			<page>166</page>
 		</mod>
@@ -7553,6 +8226,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>15</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -7561,6 +8235,7 @@
 			</subsystems>
 			<slots>1</slots>
 			<avail>0</avail>
+      <conditionmonitor>1</conditionmonitor>
 			<cost>7500</cost>
 			<required>
 				<vehicledetails>
@@ -7576,6 +8251,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>15</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -7584,6 +8260,7 @@
 			</subsystems>
 			<slots>1</slots>
 			<avail>0</avail>
+      <conditionmonitor>1</conditionmonitor>
 			<cost>10000</cost>
 			<required>
 				<vehicledetails>
@@ -7599,6 +8276,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>15</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -7607,6 +8285,7 @@
 			</subsystems>
 			<slots>1</slots>
 			<avail>0</avail>
+      <conditionmonitor>1</conditionmonitor>
 			<cost>1500</cost>
 			<required>
 				<vehicledetails>
@@ -7622,6 +8301,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>20</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -7645,6 +8325,7 @@
 			<category>All</category>
 			<optionaldrone/>
 			<rating>0</rating>
+			<capacity>20</capacity>
 			<subsystems>
 				<subsystem>Bodyware</subsystem>
 				<subsystem>Cyberlimb Enhancement</subsystem>
@@ -7998,6 +8679,39 @@
 			<source>R5</source>
 			<page>152</page>
 		</mod>
+    <mod>
+      <id>7eb3fa91-2774-490d-8ce2-8472daa4ae91</id>
+      <name>Spike Strip</name>
+      <category>All</category>
+      <rating>0</rating>
+      <slots>0</slots>
+      <avail>8R</avail>
+      <cost>200</cost>
+      <source>R5</source>
+      <page>152</page>
+    </mod>
+    <mod>
+      <id>e81d0225-ca52-487e-8681-0d4a97482c50</id>
+      <name>Zapper Strip</name>
+      <category>All</category>
+      <rating>0</rating>
+      <slots>0</slots>
+      <avail>12R</avail>
+      <cost>2500</cost>
+      <source>R5</source>
+      <page>152</page>
+    </mod>
+    <mod>
+      <id>8cc0dcc0-e5d0-46a4-8b61-a9e0ee1fe3f6</id>
+      <name>Tracking Strip</name>
+      <category>All</category>
+      <rating>0</rating>
+      <slots>0</slots>
+      <avail>8R</avail>
+      <cost>600</cost>
+      <source>R5</source>
+      <page>153</page>
+    </mod>
 		<mod>
 			<id>f7926ae0-bba6-4de0-964d-f535a8adeed5</id>
 			<name>Off-Road Tires</name>
@@ -8138,51 +8852,9 @@
 			<category>Armor</category>
 			<optionaldrone/>
 			<minrating>Armor + 1</minrating>
-			<rating>6</rating>
-			<slots>Rating</slots>
-			<avail>Rating</avail>
-			<cost>Rating * Body * 200</cost>
-			<bonus>
-				<armor>Rating</armor>
-			</bonus>
-			<required>
-				<vehicledetails>
-					<category operation="contains">Drones</category>
-				</vehicledetails>
-			</required>
-			<source>R5</source>
-			<page>123</page>
-		</mod>
-		<mod>
-			<id>dd69f1cb-459b-4832-8675-fa8664dc76af</id>
-			<name>Armor Restricted (Drone)</name>
-			<category>Armor</category>
-			<optionaldrone/>
-			<minrating>6</minrating>
-			<rating>12</rating>
-			<slots>Rating</slots>
-			<avail>RatingR</avail>
-			<cost>Rating * Body * 200</cost>
-			<bonus>
-				<armor>Rating</armor>
-			</bonus>
-			<required>
-				<vehicledetails>
-					<category operation="contains">Drones</category>
-				</vehicledetails>
-			</required>
-			<source>R5</source>
-			<page>123</page>
-		</mod>
-		<mod>
-			<id>a3482baa-c2d9-4fab-8c58-c4bd5d2b6e35</id>
-			<name>Armor Forbidden(Drone)</name>
-			<category>Armor</category>
-			<optionaldrone/>
-			<minrating>12</minrating>
 			<rating>99</rating>
 			<slots>Rating</slots>
-			<avail>RatingF</avail>
+			<avail>Range(6[],12[R],MaxRating[F])</avail>
 			<cost>Rating * Body * 200</cost>
 			<bonus>
 				<armor>Rating</armor>
@@ -8217,7 +8889,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>f56c3103-e5e7-4b7c-8cdf-7d74d7196f35</id>
 			<name>Handling Downgrade (Drone)</name>
 			<category>Handling</category>
 			<optionaldrone/>
@@ -8239,7 +8911,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>16aed61a-a163-4927-9b5d-7949c763abe3</id>
 			<name>Speed Downgrade (Drone)</name>
 			<category>Speed</category>
 			<optionaldrone/>
@@ -8261,7 +8933,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>57a3c9c6-76ec-4f65-9747-001ca3f7515b</id>
 			<name>Acceleration Downgrade (Drone)</name>
 			<category>Acceleration</category>
 			<optionaldrone/>
@@ -8283,7 +8955,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>e6de30bf-310e-4a3d-b44a-9d98f4618964</id>
 			<name>Body Downgrade (Drone)</name>
 			<category>Body</category>
 			<optionaldrone/>
@@ -8304,7 +8976,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>616bad95-cc17-47b2-b85b-14fdd0bcb27f</id>
 			<name>Armor Downgrade (Drone)</name>
 			<category>Armor</category>
 			<optionaldrone/>
@@ -8325,7 +8997,7 @@
 			<page>123</page>
 		</mod>
 		<mod>
-			<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
+			<id>df14f2ec-c85c-4b5f-9765-98bbc7c8b7d5</id>
 			<name>Sensor Downgrade (Drone)</name>
 			<category>Sensor</category>
 			<optionaldrone/>
@@ -8346,5 +9018,47 @@
 			<page>123</page>
 		</mod>
 	<!-- End Region -->
+	<!-- SR 5 2050 -->
+		<mod>
+			<id>f62c6ac8-66cf-4606-893c-76386afd0f9b</id>
+			<name>Rigger Adaptation (2050)</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>2800</cost>
+			<source>2050</source>
+			<page>212</page>
+		</mod>
+		<mod>
+			<id>160eab98-7fb6-437c-b0b7-9c960ed95543</id>
+			<name>Remote Adaptation (2050)</name>
+			<category>Cosmetic</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>Body * 1000</cost>
+			<required>
+				<vehicledetails>
+					<OR>
+				<category>Bikes</category>
+				<category>Cars</category>
+				<category>Trucks</category>
+				<category>Municipal/Construction</category>
+				<category>Corpsec/Police/Military</category>
+				<category>Boats</category>
+				<category>Submarines</category>
+				<category>Fixed-Wing Aircraft</category>
+				<category>LTAV</category>
+				<category>Rotorcraft</category>
+				<category>VTOL/VSTOL</category>
+				<category operation="contains">Drones</category>
+					</OR>
+				</vehicledetails>			
+			</required>			
+			<source>2050</source>
+			<page>212</page>
+		</mod>
+		<!-- End Region -->
 	</mods>
 </chummer>

@@ -42,7 +42,7 @@
 		</book>
 		<book>
 			<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-			<name>Shadowrun 5th Edition (German)</name>
+			<name>Shadowrun 5th Edition (German-exclusive Content)</name>
 			<code>SR5G</code>
 		</book>
 		<book>
@@ -52,7 +52,7 @@
 		</book>
 		<book>
 			<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
-			<name>Street Grimoire (German)</name>
+			<name>Street Grimoire (German-exclusive Content)</name>
 			<code>SGG</code>
 		</book>
 		<book>
@@ -71,19 +71,22 @@
 			<code>SS</code>
 		</book>
 		<book>
+			<id>0b2e86c9-98b7-4265-800f-9f1b98ce7f96</id>
 			<name>Run Faster</name>
 			<code>RF</code>
 		</book>
 		<book>
 			<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-			<name>Run Faster (German)</name>
+			<name>Run Faster (German-exclusive Content)</name>
 			<code>RFG</code>
 		</book>
 		<book>
+			<id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
 			<name>Shadow Spells</name>
 			<code>SSP</code>
 		</book>
 		<book>
+			<id>07bfdff7-1331-4791-9334-6b299548f8f4</id>
 			<name>Nothing Personal</name>
 			<code>NP</code>
 		</book>
@@ -93,7 +96,7 @@
 			<code>DT</code>
 		</book>
 		<book>
-			<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
+			<id>0b082117-8eb2-42d1-82e3-11454536c480</id>
 			<name>Data Trails (Dissonant Echoes)</name>
 			<code>DTD</code>
 		</book>
@@ -129,7 +132,7 @@
 		</book>
 		<book>
 			<id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
-			<name>Rigger 5.0 German</name>
+			<name>Rigger 5.0 (German-exclusive Content)</name>
 			<code>R5G</code>
 		</book>
 		<book>
@@ -176,6 +179,21 @@
 			<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
 			<name>Cutting Aces</name>
 			<code>CA</code>
+		</book>
+		<book>
+			<id>71a6304e-03dc-41db-be01-a86acab1517b</id>
+			<name>Shadowrun 2050 (5th Edition)</name>
+			<code>2050</code>
+		</book>
+		<book>
+			<id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
+			<name>Book of the Lost</name>
+			<code>BOTL</code>
+		</book>
+		<book>
+			<id>6e447106-e250-41b1-855a-2dd1d2075f6d</id>
+			<name>Forbidden Arcana</name>
+			<code>FA</code>
 		</book>
 	</books>
 </chummer>

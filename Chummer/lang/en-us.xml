@@ -217,8 +217,32 @@
 		<string>
 			<key>Message_SumtoTenComplexFormLimit</key>
 			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
-		</string>			
+		</string>
+    <string>
+      <key>Message_FailedLoad</key>
+      <text>This file failed to load with the following XML error:\n{0}</text>
+    </string>
+    <string>
+      <key>MessageTitle_FailedLoad</key>
+      <text>Could Not Load</text>
+    </string>
+    <string>
+      <key>Message_FailedSave</key>
+      <text>This file failed to save with the following XML error:\n{0}</text>
+    </string>
+    <string>
+      <key>MessageTitle_FailedSave</key>
+      <text>Could Not Save</text>
+    </string>
 		<string>
+			<key>Message_OverCapacityLimit</key>
+			<text>This item's capacity is too high for the parent item: Maximum Capacity {0}, {1} needed</text>
+		</string>
+		<string>
+			<key>MessageTitle_OverCapacityLimit</key>
+			<text>Over Capacity Limit</text>
+		</string>
+    <string>
 			<key>String_BuyWithKarma</key>
 			<text>Buy With Karma</text>
 		</string>
@@ -667,6 +691,10 @@
 			<text>Qualities</text>
 		</string>
 		<string>
+			<key>String_Quality</key>
+			<text>Quality</text>
+		</string>
+		<string>
 			<key>Label_Metavariant</key>
 			<text>Metavariant:</text>
 		</string>
@@ -758,6 +786,22 @@
 			<key>String_StackedFocus</key>
 			<text>Stacked Focus</text>
 		</string>
+    <string>
+      <key>String_Initiative</key>
+      <text>{0} +{1}d6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiative</key>
+      <text>{0} + DP +{1}d6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiativeLong</key>
+      <text>{0} + Data Processing +{1}d6</text>
+    </string>
+    <string>
+      <key>Checkbox_HideOverAvailLimit</key>
+      <text>Hide Items Over Avail Limit ({0})</text>
+    </string>
 		<!-- End Region -->
 		<!-- Region Printout Strings -->
 		<string>
@@ -2595,6 +2639,10 @@
 			<text>The Spirit must first be saved before it can Possess or Inhabit a Vessel. Save changes now?</text>
 		</string>
 		<string>
+			<key>String_Ambidextrous</key>
+			<text>Ambidextrous</text>
+		</string>
+		<string>
 			<key>String_Possessed</key>
 			<text>Possessed</text>
 		</string>
@@ -2653,6 +2701,22 @@
 		<string>
 			<key>String_AttributeFirewall</key>
 			<text>Firewall</text>
+		</string>
+		<string>
+			<key>String_PowerFilterAll</key>
+			<text>Show All Powers</text>
+		</string>
+		<string>
+			<key>Power_SortAction</key>
+			<text>Action</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingAboveZero</key>
+			<text>Show Active Powers Rating &gt; 0</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingZero</key>
+			<text>Show Powers Rating = 0</text>
 		</string>
 		<string>
 			<key>String_SkillFilterAll</key>
@@ -2991,7 +3055,11 @@
 			<key>String_ExpenseLeaveNetwork</key>
 			<text>Left a Network</text>
 		</string>
-		<string>
+    <string>
+      <key>String_ExpenseFetteredSpirit</key>
+      <text>Fettered a Spirit</text>
+    </string>
+    <string>
 			<key>String_CloningMachineNumber</key>
 			<text>How many clones would you like to create?</text>
 		</string>
@@ -3420,12 +3488,40 @@
 			<text>Complex</text>
 		</string>
     <string>
+			<key>String_ActionInterrupt</key>
+			<text>Interrupt (-5 Initiative)</text>
+		</string>
+    <string>
       <key>String_NotSupported</key>
       <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
     </string>
 		<string>
 			<key>Warning_NoLimitFound</key>
 			<text>Couldn't find appropriate Limit to modify. Make sure you have selected a custom Limit Modifier.</text>
+		</string>
+		<string>
+			<key>String_Metatype</key>
+			<text>Metatype</text>
+		</string>
+		<string>
+			<key>String_Metavariant</key>
+			<text>Metavariant</text>
+		</string>
+		<string>
+			<key>String_MartialArt</key>
+			<text>Martial Art</text>
+		</string>
+		<string>
+			<key>String_SpellCategory</key>
+			<text>Spell Category</text>
+		</string>
+		<string>
+			<key>String_Tradition</key>
+			<text>Tradition</text>
+		</string>
+		<string>
+			<key>String_DamageResistance</key>
+			<text>Damage Resistance</text>
 		</string>
 		<!-- End Region -->
 		<!-- Region Common Tab -->
@@ -3519,8 +3615,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Base Attribute value.</text>
 		</string>
 		<string>
-			<key>Tip_OptionsKnucks</key>
-			<text>Allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
+			<key>Tip_OptionsUnarmedSkillImprovements</key>
+			<text>Allows weapons that use the Unarmed Combat skill to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
@@ -3829,6 +3925,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_PowerPoints</key>
 			<text>Power Points:</text>
+		</string>
+		<string>
+			<key>Label_PowerLevels</key>
+			<text>Levels:</text>
 		</string>
 		<string>
 			<key>Button_AddPower</key>
@@ -4484,6 +4584,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_BurnStreetCred</key>
 			<text>Burn Street Cred</text>
 		</string>
+    <string>
+      <key>Message_KarmaNuyenExchange</key>
+      <text>Nuyen can only be exchanged in multiples of 2,000¥.</text>
+    </string>
+    <string>
+      <key>MessageTitle_KarmaNuyenExchange</key>
+      <text>Cannot Convert</text>
+    </string>
 		<string>
 			<key>String_CareerKarma</key>
 			<text>Career Karma</text>
@@ -4647,6 +4755,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Spells</text>
 		</string>
 		<string>
+			<key>Label_SummaryRituals</key>
+			<text>Rituals</text>
+		</string>
+		<string>
+			<key>Label_SummaryPreparations</key>
+			<text>Preparations</text>
+		</string>
+		<string>
 			<key>Label_SummaryFoci</key>
 			<text>Foci</text>
 		</string>
@@ -4722,6 +4838,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_PreferNightlyBuilds</key>
 			<text>Prefer Nightly Builds</text>
 		</string>
+    <string>
+      <key>Checkbox_Option_HideItemsOverAvailLimit</key>
+      <text>Hide items that are over the Availability Limit during character creation</text>
+    </string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
@@ -4920,7 +5040,7 @@ Do you want to continue?</text>
 		<string>
 			<key>Tip_OtherCareerKarma</key>
 			<text>The amount of Karma the character has accumulated over their career.</text>
-		</string>
+		</string>s
 		<!-- End Region-->
 		<!-- Region Condition Monitor Tab -->
 		<string>
@@ -4965,6 +5085,10 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Spell Defence Tab-->
+    <string>
+      <key>String_SpellResistanceDice</key>
+      <text>Spell Resistance Dice</text>
+    </string>
 		<string>
 			<key>Label_CounterspellingDice</key>
 			<text>Counterspelling Dice</text>
@@ -5296,6 +5420,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Spirit_Bound</key>
 			<text>Bound</text>
 		</string>
+    <string>
+      <key>Checkbox_Spirit_Fettered</key>
+      <text>Fettered</text>
+    </string>
 		<string>
 			<key>Label_Sprite_Rating</key>
 			<text>Rating:</text>
@@ -5621,6 +5749,14 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Expense_RefundNuyen</key>
 			<text>Refund (does not count towards Total Career Nuyen)</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheMan</key>
+			<text>Working for the Man</text>
+		</string>
+		<string>
+			<key>String_WorkingForThePeople</key>
+			<text>Working for the People</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region History Window -->
@@ -6539,8 +6675,8 @@ Do you want to continue?</text>
 			<text>Restore Defaults</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_Knucks</key>
-			<text>Knucks Benefit from Unarmed Attack Bonuses</text>
+			<key>Checkbox_Options_UnarmedSkillImprovements</key>
+			<text>Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
@@ -6727,6 +6863,10 @@ Do you want to continue?</text>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
     <string>
+      <key>Checkbox_Options_ReverseAttributePriorityOrder</key>
+      <text>Spend Karma on Attributes before Priority Points</text>
+    </string>
+    <string>
       <key>Checkbox_Option_AllowMysadPowerPointCareer</key>
       <text>Allow Mystic Adepts to buy power points during career</text>
     </string>
@@ -6737,6 +6877,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
 			<text>Allow spending of free spells from Magic Priority as power points</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
+			<text>Education qualities give karma discount for knowledge skills in create mode</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
@@ -7144,7 +7288,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Label_SelectCyberware_ESSDiscount</key>
-			<text>Additional Discount:</text>
+			<text>Essence Discount:</text>
 		</string>
 		<string>
 			<key>Checkbox_Transgenic</key>
@@ -7233,7 +7377,11 @@ Do you want to continue?</text>
 			<key>String_SelectItemFocus</key>
 			<text>Select a Focus to add to the Stacked Focus. Click Cancel if you are done adding Foci to the Stacked Focus.</text>
 		</string>
-		<!-- End Region-->
+    <string>
+      <key>String_CannotFindLifestyleQuality</key>
+      <text>The quality {0} could not be found. Please select the appropriate quality from the below list.</text>
+    </string>
+    <!-- End Region-->
 		<!-- Region Select Lifestyle Window -->
 		<string>
 			<key>Title_SelectLifestyle</key>
@@ -7300,102 +7448,38 @@ Do you want to continue?</text>
 			<text>Choose One:</text>
 		</string>
 		<!-- End Region-->
-		<!-- Region Select Metamagic Window -->
+		<!-- Region Select Generic -->
 		<string>
-			<key>Title_SelectMetamagic</key>
-			<text>Select a Metamagic</text>
+			<key>Title_SelectGeneric</key>
+			<text>Select {0}</text>
 		</string>
 		<string>
-			<key>Title_SelectMetamagic_Echo</key>
-			<text>Select an Echo</text>
+			<key>Message_SelectGeneric_Requirement</key>
+			<text>You do not meet the requirements for this {0}. You must meet all of the following criteria:</text>
 		</string>
 		<string>
-			<key>Title_SelectArt</key>
-			<text>Select an Art</text>
+			<key>MessageTitle_SelectGeneric_Requirement</key>
+			<text>{0} Requirement</text>
+		</string>
+    <string>
+      <key>Message_SelectGeneric_Restriction</key>
+      <text>You cannot select this {0} because of the following Forbidden items you have already taken.</text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectGeneric_Restriction</key>
+      <text>{0} Restriction</text>
+    </string>
+		<string>
+			<key>Message_SelectGeneric_Limit</key>
+			<text>This {0} cannot be taken more than {1} times.</text>
 		</string>
 		<string>
-			<key>Title_SelectEnhancement</key>
-			<text>Select an Enhancement</text>
+			<key>MessageTitle_SelectGeneric_Limit</key>
+			<text>{0} Limit</text>
 		</string>
 		<string>
-			<key>Title_SelectEnchantment</key>
-			<text>Select an Enchantment</text>
-		</string>
-		<string>
-			<key>Title_SelectRitual</key>
-			<text>Select an Ritual</text>
-		</string>
-		<string>
-			<key>Message_SelectMetamagic_MetamagicRequirement</key>
-			<text>You do not meet the requirements for this Metamagic. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectMetamagic_MetamagicRequirement</key>
-			<text>Metamagic Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectMetamagic_EchoRequirement</key>
-			<text>You do not meet the requirements for this Echo. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectMetamagic_EchoRequirement</key>
-			<text>Echo Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_ArtRequirement</key>
-			<text>You do not meet the requirements for this Art. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_ArtRequirement</key>
-			<text>Art Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_EnchantmentRequirement</key>
-			<text>You do not meet the requirements for this Enchantment. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_EnchantmentRequirement</key>
-			<text>Enchantment Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_EnhancementRequirement</key>
-			<text>You do not meet the requirements for this Enhancement. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_EnhancementRequirement</key>
-			<text>Enhancement Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_RitualRequirement</key>
-			<text>You do not meet the requirements for this Ritual. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_RitualRequirement</key>
-			<text>Ritual Requirement</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectMetamagic_LimitList</key>
-			<text>Show only Metamagics I can take</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEcho_LimitList</key>
-			<text>Show only Echoes I can take</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectArt_LimitList</key>
-			<text>Show only Arts I can take</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEnhancement_LimitList</key>
-			<text>Show only Enhancements I can take</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEnchantment_LimitList</key>
-			<text>Show only Enchantments I can take</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectRitual_LimitList</key>
-			<text>Show only Rituals I can take</text>
+			<key>Checkbox_SelectGeneric_LimitList</key>
+			<text>Show only {0} I can take</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Nexus Window -->
@@ -7574,7 +7658,7 @@ Do you want to continue?</text>
 			<text>Select a Program Option</text>
 		</string>
 		<!-- End Region-->
-		<!-- Advanced Programs Tab -->
+		<!-- Region Advanced Programs Tab -->
 		<string>
 			<key>Tab_AdvancedPrograms</key>
 			<text>Advanced Programs</text>
@@ -7596,7 +7680,7 @@ Do you want to continue?</text>
 			<text>Selected AI Programs and Advanced Programs</text>
 		</string>
 		<!-- End Region-->
-		<!-- Select AI Program Window -->
+		<!-- Region Select AI Program Window -->
 		<string>
 			<key>Title_SelectAIProgram</key>
 			<text>Select AI Program or Advanced Program</text>
@@ -7672,6 +7756,22 @@ Do you want to continue?</text>
 			<text>You do not meet the requirements for this Quality. You must meet at least one of the following criteria:</text>
 		</string>
 		<string>
+      <key>Message_SelectQuality_RequireESSBelow</key>
+      <text>Essence below {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSAbove</key>
+      <text>Essence above {0}: You have {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeBelow</key>
+      <text>Less then {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeAbove</key>
+      <text>At least {0} Essence consumed by {1} Grade: You have {2}</text>
+    </string>
+    <string>
 			<key>MessageTitle_SelectQuality_QualityRequirement</key>
 			<text>Quality Requirement</text>
 		</string>
@@ -7765,7 +7865,15 @@ Do you want to continue?</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Weapon Window -->
-		<string>
+    <string>
+      <key>Title_Browse</key>
+      <text>Browse</text>
+    </string>
+    <string>
+      <key>Title_ListView</key>
+      <text>List View</text>
+    </string>    
+    <string>
 			<key>Title_SelectWeapon</key>
 			<text>Select Weapon</text>
 		</string>
@@ -8311,5 +8419,9 @@ Do you want to continue?</text>
 			<key>Message_DroneIllegalDowngrade</key>
 			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
 		</string>
+    <string>
+      <key>Message_DuplicateGuidWarning</key>
+      <text>{0} items were found in the file {1} with the same GUID. If you are using custom content, please ensure that you use a new GUID for each item you add. Duplicate GUIDs found:\n{2}</text>
+    </string>
 	</strings>
 </chummer>

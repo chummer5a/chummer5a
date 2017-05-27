@@ -998,15 +998,8 @@ namespace Chummer
 					Skill.FromData(objXmlSkillNode, _objCharacter);
 					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
 					{
-						if (objXmlSkill.Attributes?["rating"]?.InnerText == "F")
-						{
-							objSkill.Karma = intForce;
-						}
-						else if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
-						{
-							objSkill.Karma = Convert.ToInt32(objXmlSkill.Attributes?["rating"]?.InnerText);
-						}
-					}
+                        objSkill.Karma = objXmlSkill.Attributes["rating"].InnerText == "F" ? intForce : Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+                    }
                 }
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
@@ -1015,14 +1008,7 @@ namespace Chummer
                     {
                         if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
                         {
-                            if (objXmlSkill.Attributes["rating"].InnerText == "F")
-                            {
-                                objSkill.Karma = intForce;
-                            }
-                            else
-                            {
-                                objSkill.Karma = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-                            }
+                            objSkill.Karma = objXmlSkill.Attributes["rating"].InnerText == "F" ? intForce : Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
                         }
                     }
                 }
@@ -1031,14 +1017,49 @@ namespace Chummer
                 foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
 				{
 					XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + objXmlSkill.InnerText + "\"]");
-					Skill.FromData(objXmlSkillNode, _objCharacter);
-					if (intForce > 0)
-					{
-						foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
-						{
-							objSkill.Karma = intForce;
-						}
-					}
+				    if (_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == objXmlSkill.InnerText))
+				    {
+				        foreach (
+				            KnowledgeSkill objSkill in
+				            _objCharacter.SkillsSection.KnowledgeSkills.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
+				        {
+				            if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
+				            {
+				                objSkill.Karma = objXmlSkill.Attributes["rating"].InnerText == "F"
+				                    ? intForce
+				                    : Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+				            }
+				        }
+				    }
+				    else
+				    {
+				        if (objXmlSkillNode != null)
+				        {
+				            KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter) as KnowledgeSkill;
+				            if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
+				            {
+				                objSkill.Karma = objXmlSkill.Attributes["rating"].InnerText == "F"
+				                    ? intForce
+				                    : Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+                            }
+                            _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
+                        }
+				        else
+				        {
+				            var objSkill = new KnowledgeSkill(_objCharacter, objXmlSkill.InnerText)
+				            {
+				                Type = objXmlSkill.Attributes?["category"]?.InnerText
+				            };
+
+				            if (objXmlSkill.Attributes?["rating"]?.InnerText != null)
+                            {
+                                objSkill.Karma = objXmlSkill.Attributes["rating"].InnerText == "F"
+                                    ? intForce
+                                    : Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+                            }
+                            _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
+                        }
+				    }
 				}
 
             	// Add any Complex Forms the Critter comes with (typically Sprites)
@@ -1142,8 +1163,8 @@ namespace Chummer
 			}
 			catch(XPathException) { }
             if (xprEvaluateResult is double)
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
-			intValue += intOffset;
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+            intValue += intOffset;
 			if (intForce > 0)
 			{
 				if (intValue < 1)

@@ -290,8 +290,8 @@ namespace Chummer
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objXmlPriority["value"].InnerText;
-                        objItem.Name = objXmlPriority["name"].InnerText;
-                        lstItems.Add(objItem);
+	                    objItem.Name = objXmlPriority["translate"]?.InnerText ?? objXmlPriority["name"].InnerText;
+						lstItems.Add(objItem);
                     }
                     SortListItem objPrioritySort = new SortListItem();
                     lstItems.Sort(objPrioritySort.Compare);
@@ -503,10 +503,7 @@ namespace Chummer
 				{
 					ListItem objMetavariant = new ListItem();
 					objMetavariant.Value = objXmlMetavariant["name"].InnerText;
-					if (objXmlMetavariant["translate"] != null)
-						objMetavariant.Name = objXmlMetavariant["translate"].InnerText;
-					else
-						objMetavariant.Name = objXmlMetavariant["name"].InnerText;
+					objMetavariant.Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText;
 					lstMetavariants.Add(objMetavariant);
 				}
 
@@ -1614,22 +1611,14 @@ namespace Chummer
                 if (objXmlTalentList[0]["maxdepth"] != null)
                     _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["depth"].InnerText);
 
-                // Set Free Skills/Skill Groups
-                int intFreeLevels = 0;
-                switch ((cboTalent.SelectedValue.ToString().Split(',')[0]))
-                {
-	                case "A":
-		                intFreeLevels = 5;
-		                break;
-	                case "B":
-		                intFreeLevels = 4;
-		                break;
-	                case "C":
-		                intFreeLevels = 2;
-		                break;
-                }
+				// Set Free Skills/Skill Groups
+				XmlNode objTalentsNode =
+					objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" +
+															cboTalent.SelectedValue + "\"]/talents/talent[value = \"" +
+															cboTalents.SelectedValue + "\"]");
+				int intFreeLevels = Convert.ToInt32(objTalentsNode.SelectSingleNode("skillval")?.InnerText ?? objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
 
-	            AddFreeSkills(intFreeLevels);
+				AddFreeSkills(intFreeLevels);
 
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);
@@ -1712,6 +1701,13 @@ namespace Chummer
 
 			if (cboSkill1.Visible)
 			{
+				if ("Aware".Equals(cboTalents.SelectedValue))
+				{
+					SkillsSection.FilterOptions skills = SkillsSection.FilterOptions.Name;;
+					_objCharacter.SkillsSection.AddSkills(skills, cboSkill1.SelectedValue.ToString());
+					manager.CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
+						Improvement.ImprovementType.SpecialSkills, string.Empty);
+				}
 				manager.CreateImprovement(cboSkill1.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
 					type, string.Empty, intFreeLevels);
 			}
@@ -1805,8 +1801,8 @@ namespace Chummer
 			}
             catch (XPathException) { }
             if (xprEvaluateResult is double)
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
-			intValue += intOffset;
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+            intValue += intOffset;
 			if (intForce > 0)
 			{
 				if (intValue < 1)
@@ -1963,10 +1959,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlMetatype["name"].InnerText;
-                    if (objXmlMetatype["translate"] != null)
-                        objItem.Name = objXmlMetatype["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlMetatype["name"].InnerText;
+                    objItem.Name = objXmlMetatype["translate"]?.InnerText ?? objXmlMetatype["name"].InnerText;
                     lstMetatype.Add(objItem);
                 }
             }
@@ -2067,10 +2060,7 @@ namespace Chummer
                     objItem.Value = objXmlCategory.InnerText;
                     if (objXmlCategory.Attributes != null)
                     {
-                        if (objXmlCategory.Attributes["translate"] != null)
-                            objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlCategory.InnerText;
+                        objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
                     }
                     else
                         objItem.Name = objXmlCategory.InnerXml;

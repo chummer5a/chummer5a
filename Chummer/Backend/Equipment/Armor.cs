@@ -14,7 +14,8 @@ namespace Chummer.Backend.Equipment
 	/// </summary>
 	public class Armor : INamedItemWithGuid
 	{
-		private Guid _guiID = new Guid();
+        private Guid _sourceID = new Guid();
+        private Guid _guiID = new Guid();
 		private Guid _guiWeaponID = new Guid();
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
@@ -61,6 +62,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
         public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
 		{
+            objXmlArmorNode.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strA);
@@ -132,7 +134,7 @@ namespace Chummer.Backend.Equipment
 
                     string strCostExpression = _strCost;
 
-                    string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+                    string strCost = strCostExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture));
                     XPathExpression xprCost = nav.Compile(strCost);
                     _strCost = nav.Evaluate(xprCost).ToString();
                 }
@@ -323,9 +325,11 @@ namespace Chummer.Backend.Equipment
 				// More than one Weapon can be added, so loop through all occurrences.
 				foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
 				{
-					XmlNode objXmlWeapon = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
+				    var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
+				        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
+				        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-					TreeNode objGearWeaponNode = new TreeNode();
+				    TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(_objCharacter);
 					objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
 					objWeapons.Add(objGearWeapon);
@@ -345,7 +349,8 @@ namespace Chummer.Backend.Equipment
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("armor");
-			objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("sourceid", _sourceID.ToString());
+            objWriter.WriteElementString("guid",InternalId);
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("armor", _strA);
@@ -358,9 +363,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("armorname", _strArmorName);
 			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("damage", _intDamage.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("rating", _intMaxRating.ToString());
+			objWriter.WriteElementString("damage", _intDamage.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("rating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteStartElement("armormods");
 			foreach (ArmorMod objMod in _lstArmorMods)
 			{
@@ -415,7 +420,21 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.Parse(objNode["guid"].InnerText);
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             }
+
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode["sourceid"] == null)
+            {
+                XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
+                XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
+                if (objArmorNode != null)
+                {
+                    _sourceID = Guid.Parse(objArmorNode["id"].InnerText);
+                }
+            }
+            else
+            {
+                _sourceID = Guid.Parse(objNode["sourceid"].InnerText);
+            }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strA);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -474,16 +493,13 @@ namespace Chummer.Backend.Equipment
 				XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
 				if (objArmorNode != null)
 				{
-                    objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
 				}
 
 				objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objArmorNode != null)
-				{
-                    if (objArmorNode.Attributes["translate"] != null)
-                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-                }
+			    if (objArmorNode?.Attributes["translate"] != null)
+			        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
 			}
 		}
 
@@ -1056,13 +1072,20 @@ namespace Chummer.Backend.Equipment
 				_blnDiscountCost = value;
 			}
 		}
-		#endregion
+        public Guid SourceID
+        {
+            get
+            {
+                return _sourceID;
+            }
+        }
+        #endregion
 
-		#region Complex Properties
-		/// <summary>
-		/// Total Availablility of the Armor and its Modifications and Gear.
-		/// </summary>
-		public string TotalAvail
+        #region Complex Properties
+        /// <summary>
+        /// Total Availablility of the Armor and its Modifications and Gear.
+        /// </summary>
+        public string TotalAvail
 		{
 			get
 			{

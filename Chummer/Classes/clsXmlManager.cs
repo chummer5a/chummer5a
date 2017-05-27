@@ -19,12 +19,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+ using System.Linq;
+ using System.Text;
 using System.Xml;
 using System.Windows.Forms;
+ using System.Xml.Linq;
 
 namespace Chummer
 {
+    // ReSharper disable InconsistentNaming
 	public sealed class XmlManager
 	{
 		/// <summary>
@@ -32,57 +35,28 @@ namespace Chummer
 		/// </summary>
 		private class XmlReference
 		{
-			private DateTime _datDate;
-			private string _strFileName = string.Empty;
-			private XmlDocument _objXmlDocument = new XmlDocument();
-
-			/// <summary>
+		    /// <summary>
 			/// Date/Time stamp on the XML file.
 			/// </summary>
-			public DateTime FileDate
-			{
-				get
-				{
-					return _datDate;
-				}
-				set
-				{
-					_datDate = value;
-				}
-			}
+			public DateTime FileDate { get; set; }
 
-			/// <summary>
+		    /// <summary>
 			/// Name of the XML file.
 			/// </summary>
-			public string FileName
-			{
-				get
-				{
-					return _strFileName;
-				}
-				set
-				{
-					_strFileName = value;
-				}
-			}
+			public string FileName { get; set; } = string.Empty;
+
+		    /// <summary>
+            /// Whether or not the XML file has been successfully checked for duplicate guids.
+            /// </summary>
+		    public bool DuplicatesChecked { get; set; }
 
 			/// <summary>
 			/// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
 			/// </summary>
-			public XmlDocument XmlContent
-			{
-				get
-				{
-					return _objXmlDocument;
-				}
-				set
-				{
-					_objXmlDocument = value;
-				}
-			}
+			public XmlDocument XmlContent { get; set; } = new XmlDocument();
 		}
-		private static readonly XmlManager _objInstance = new XmlManager();
-		private static readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
+
+	    private static readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
 
 		#region Constructor and Instance
 		static XmlManager()
@@ -97,14 +71,9 @@ namespace Chummer
 		/// <summary>
 		/// Glboal XmlManager instance.
 		/// </summary>
-		public static XmlManager Instance
-		{
-			get
-			{
-				return _objInstance;
-			}
-		}
-		#endregion
+		public static XmlManager Instance { get; } = new XmlManager();
+
+	    #endregion
 
 		#region Methods
 		/// <summary>
@@ -115,8 +84,11 @@ namespace Chummer
 		{
 			string strPath = Path.Combine(Application.StartupPath, "data", strFileName);
 		    if (!File.Exists(strPath))
+		    {
+		        Utils.BreakIfDebug();
 		        return null;
-			DateTime datDate = File.GetLastWriteTime(strPath);
+		    }
+		    DateTime datDate = File.GetLastWriteTime(strPath);
 
 			// Look to see if this XmlDocument is already loaded.
             bool blnLoadFile = false;
@@ -147,13 +119,15 @@ namespace Chummer
                 objDoc.AppendChild(objCont);
                 // Load the base file and retrieve all of the child nodes.
                 objXmlFile.Load(strPath);
-				foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-				{
-					// Append the entire child node to the new document.
-					objDoc.DocumentElement.AppendChild(objDoc.ImportNode(objNode, true));
-				}
+			    XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*");
+			    if (xmlNodeList != null)
+			        foreach (XmlNode objNode in xmlNodeList)
+			        {
+			            // Append the entire child node to the new document.
+			            objDoc.DocumentElement.AppendChild(objDoc.ImportNode(objNode, true));
+			        }
 
-				// Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
+			    // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
 				if (strFileName != "improvements.xml")
 				{
                     strPath = Path.Combine(Application.StartupPath, "data");
@@ -426,7 +400,40 @@ namespace Chummer
 			    }
 			}
 
-			return objDoc;
+            //Check for non-unique guids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
+		    if (strFileName == "improvements.xml" || objReference.DuplicatesChecked) return objDoc;
+		    {
+		        foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
+		        {
+                    //Ignore the version node, if present. 
+		            if (objNode.Name == "version" || !objNode.HasChildNodes) continue;
+                    //Parse the node into an XDocument for LINQ parsing. 
+		            XDocument y = XDocument.Parse(objNode.OuterXml);
+		            string strNode = (from XmlNode o in objNode.ChildNodes where o.NodeType != XmlNodeType.Comment select o.Name).FirstOrDefault();
+
+		            //Grab the first XML node that isn't a comment. 
+		            if (strNode == null) continue;
+		            var duplicatesList = y.Descendants(strNode)
+		                .GroupBy(g => (string) g.Element("id") ?? "")
+		                .Where(g => g.Count() > 1)
+		                .Select(g => g.Key)
+		                .ToList();
+		            int i = duplicatesList.Count(o => !string.IsNullOrWhiteSpace(o));
+		            if (i <= 0)
+		            {
+		                objReference.DuplicatesChecked = true;
+		                continue;
+		            }
+		            string duplicates = string.Join("\n", duplicatesList);
+		            MessageBox.Show(
+		                LanguageManager.Instance.GetString("Message_DuplicateGuidWarning")
+		                    .Replace("{0}", i.ToString())
+		                    .Replace("{1}", strFileName)
+		                    .Replace("{2}", duplicates));
+		        }
+		    }
+
+		    return objDoc;
 		}
 
 		/// <summary>

@@ -25,7 +25,6 @@ namespace Chummer.UI.Skills
             cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
-
 			if (skill.CharacterObject.Created)
 			{
 				nudKarma.Visible = false;
@@ -52,7 +51,7 @@ namespace Chummer.UI.Skills
 				btnCareerIncrease.Visible = true;
 
 				lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-			}
+            }
 			else
 			{
 				//Up down boxes
@@ -166,7 +165,20 @@ namespace Chummer.UI.Skills
 			//TODO turn this into a databinding, but i don't care enough right now
             lblSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.Name));
 
-            parrent?.UpdateCharacterInfo();
+            parrent?.ScheduleCharacterUpdate();
 		}
-	}
+
+        private void cboSpec_TextChanged(object sender, EventArgs e)
+        {
+            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            {
+                chkKarma.Checked = true;
+            }
+        }
+
+	    private void cboSkill_SelectedIndexChanged(object sender, EventArgs e)
+	    {
+            _skill.LoadDefaultType(_skill.Name);
+        }
+    }
 }

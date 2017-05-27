@@ -18,7 +18,7 @@
 		<Button
             x:Name="button"
             Margin="0,0,10,10"
-            Click="button_Click"
+            Click="CreateCritter"
             Content="Create as Critter" HorizontalAlignment="Right" Width="98" Height="20" VerticalAlignment="Bottom" />
 		<TextBox
 	  x:Name="txtName"
@@ -44,6 +44,11 @@
 	  Margin="0,72,10,0"
 	  AcceptsReturn="True"
 	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="157" />
+		<Button
+	  x:Name="button_Copy"
+	  Margin="0,0,113,10"
+	  Click="CreateSpirit"
+	  Content="Create as Spirit" HorizontalAlignment="Right" Width="98" Height="20" VerticalAlignment="Bottom" />
 
 	</Grid>
 </Window>

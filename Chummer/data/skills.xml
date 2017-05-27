@@ -1350,7 +1350,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>9f348c99-27e8-47ac-a098-a8a6a54c446a</id>
+			<id>60156c75-78e9-4d79-af3f-494baa20edb7</id>
 			<name>Alchemy</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -2003,7 +2003,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>5227212f-507d-4aa7-8894-7d35a1eb98cf</id>
+			<id>c9ca1da3-11d0-4921-8a87-4726f342a04b</id>
 			<name>Drones</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -2129,7 +2129,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>b21c9f0f-9db0-4de1-b901-2a911d9abd62</id>
+			<id>cee3de6f-4947-4947-b2e1-75fde02a5d78</id>
 			<name>Fashion Design</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -2634,7 +2634,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>9843709f-803a-4424-88a2-d972d3405955</id>
+			<id>a02ee5ad-42a4-4f3c-8e9f-24730fadd440</id>
 			<name>Mathematics</name>
 			<attribute>LOG</attribute>
 			<category>Academic</category>
@@ -2777,7 +2777,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>1862a5ed-7b7b-4fa8-bf25-5d10ec45223f</id>
+			<id>a068c0d8-5c87-46f2-a13d-f981fda80a06</id>
 			<name>Tir Military Vehicles</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -4161,7 +4161,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>47c41bfc-2cfa-47ca-b20e-ec3351979791</id>
+			<id>cd7444d3-8eb4-41f7-a8a9-753df5958d0c</id>
 			<name>Foster System</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -4461,7 +4461,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>af8ea3b6-5ffd-41b6-892a-7e77ee8e247a</id>
+			<id>1d68ed58-91ff-495a-a456-2bc04d82a3b7</id>
 			<name>Lone Star Procedures</name>
 			<attribute>INT</attribute>
 			<category>Street</category>

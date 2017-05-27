@@ -73,14 +73,14 @@ namespace Chummer.Skills
 		{
 			AttributeObject = character.LOG;
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
-			_type = string.Empty;
-			SuggestedSpecializations = new List<ListItem>();
+            SuggestedSpecializations = new List<ListItem>();
 		}
 
 		public KnowledgeSkill(Character character, string forcedName) : this(character)
 		{
 			WriteableName = forcedName;
-			ForcedName = true;
+            LoadDefaultType(Name);
+            ForcedName = true;
 		}
 
 		public List<ListItem> KnowledgeSkillCatagories
@@ -131,6 +131,15 @@ namespace Chummer.Skills
 				OnPropertyChanged(nameof(CGLSpecializations));
 			}
 		}
+
+	    public void LoadDefaultType(string name)
+	    {
+	        if (name == null) return;
+            //TODO: Should this be targeted against guid for uniqueness? Creating a knowledge skill in career always generates a new SkillId instead of using the one from skills.
+	        XmlNode skillNode = XmlManager.Instance.Load("skills.xml").SelectSingleNode($"chummer/knowledgeskills/skill[name = \"{name}\"]");
+	        _type = skillNode?["category"].InnerText ?? "";
+	        AttributeObject = CharacterObject.GetAttribute(skillNode?["attribute"].InnerText ?? "LOG");
+	    }
 
 		public override string SkillCategory
 		{
@@ -219,7 +228,7 @@ namespace Chummer.Skills
 		public override int CurrentKarmaCost()
 		{
 			int cost = 0;
-			if (HasRelatedBoost())
+			if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
 			{
 				int lower = Base + FreeKarma();
 
@@ -257,7 +266,7 @@ namespace Chummer.Skills
 		}
 
 		/// <summary>
-		/// Karma price to upgrade. Returns negative if impossible
+		/// Karma price to upgrade. Returns negative if impossible. Minimum value is always 1.
 		/// </summary>
 		/// <returns>Price in karma</returns>
 		public override int UpgradeKarmaCost()
@@ -269,9 +278,9 @@ namespace Chummer.Skills
             int adjustment = 0;
 			if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
 			{
-				adjustment = LearnedRating > 5 ? 2 : -1;
+				adjustment = LearnedRating >= 5 ? 2 : -1;
 			}
-			if (HasRelatedBoost() && CharacterObject.Created && LearnedRating >= 3)
+			if (HasRelatedBoost() && CharacterObject.Created && LearnedRating >= 2)
 			{
 				adjustment -= 1;
 			}
@@ -280,6 +289,7 @@ namespace Chummer.Skills
                 CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment :
                 (LearnedRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill + adjustment;
 
+		    value = Math.Max(value, 1);
 			if (UneducatedEffect())
                 value *= 2;
 			return value;

@@ -418,7 +418,7 @@ namespace Chummer.Skills
 			int masterAdjustment = 0;
 			if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
 			{
-				masterAdjustment = LearnedRating > 5 ? 2 : -1;
+				masterAdjustment = LearnedRating >= 5 ? 2 : -1;
 			}
 
 			int upgrade;

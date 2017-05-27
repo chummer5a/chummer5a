@@ -40,6 +40,7 @@ namespace Chummer
 		private int _intCostMultiplier = 1;
 
 		private string _strAllowedCategories = string.Empty;
+		private string _strParent = string.Empty;
 		private int _intMaximumCapacity = -1;
 		private bool _blnAddAgain = false;
 		private static string _strSelectCategory = string.Empty;
@@ -55,7 +56,7 @@ namespace Chummer
 		private List<ListItem> _lstCategory = new List<ListItem>();
 
 		#region Control Events
-		public frmSelectGear(Character objCharacter, bool blnCareer = false, int intAvailModifier = 0, int intCostMultiplier = 1)
+		public frmSelectGear(Character objCharacter, bool blnCareer = false, int intAvailModifier = 0, int intCostMultiplier = 1, string strParent = "")
 		{
 			InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -65,6 +66,7 @@ namespace Chummer
 			_intAvailModifier = intAvailModifier;
 			_intCostMultiplier = intCostMultiplier;
 			_objCharacter = objCharacter;
+			_strParent = strParent;
 			// Stack Checkbox is only available in Career Mode.
 			if (!_objCharacter.Created)
 			{
@@ -82,8 +84,10 @@ namespace Chummer
 				if (objLabel.Text.StartsWith("["))
 					objLabel.Text = string.Empty;
 			}
-
-			XmlNodeList objXmlCategoryList;
+            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
+                    _objCharacter.Options.Availability.ToString());
+            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            XmlNodeList objXmlCategoryList;
 
 			// Load the Gear information.
 			_objXmlDocument = XmlManager.Instance.Load("gear.xml");
@@ -244,17 +248,36 @@ namespace Chummer
 				}
 			}
 
+			XmlNode objXmlGearNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strParent + "\"]");
+
 			foreach (XmlNode objXmlGear in objXmlGearList)
 			{
                 if (objXmlGear["hidden"] != null)
                     continue;
-                ListItem objItem = new ListItem();
-				objItem.Value = objXmlGear["name"].InnerText;
-				if (objXmlGear["translate"] != null)
-					objItem.Name = objXmlGear["translate"].InnerText;
-				else
-					objItem.Name = objXmlGear["name"].InnerText;
-				lstGears.Add(objItem);
+
+				if (objXmlGear["forbidden"]?["geardetails"] != null)
+				{
+					// Assumes topmost parent is an AND node
+					if (objXmlGearNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+					{
+						continue;
+					}
+				}
+				if (objXmlGear["required"]?["geardetails"] != null)
+				{
+					// Assumes topmost parent is an AND node
+					if (!objXmlGearNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+					{
+						continue;
+					}
+				}
+				if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter,chkHideOverAvailLimit.Checked,Convert.ToInt32(nudRating.Value), _intAvailModifier))
+			    {
+			        ListItem objItem = new ListItem();
+			        objItem.Value = objXmlGear["name"].InnerText;
+			        objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
+			        lstGears.Add(objItem);
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstGears.Sort(objSort.Compare);
@@ -358,27 +381,46 @@ namespace Chummer
 			if (!string.IsNullOrEmpty(_strAllowedCategories))
 			{
 				string[] strAllowed = _strAllowedCategories.Split(',');
-				foreach (string strAllowedMount in strAllowed)
+				for (int index = 0; index < strAllowed.Length; index++)
 				{
+					if (index == 0)
+					{
+						strCategoryFilter = $"and category = \"{strAllowed[index]}\"";
+					}
+					string strAllowedMount = strAllowed[index];
 					if (!string.IsNullOrEmpty(strAllowedMount))
-						strCategoryFilter += ". = \"" + strAllowedMount + "\" or ";
+						strCategoryFilter += $"or category = \"{strAllowed[index]}\"";
 				}
-				strCategoryFilter += "category = \"General\"";
 			}
-			else
-				strCategoryFilter += "category != \"General\"";
 
-			// Treat everything as being uppercase so the search is case-insensitive.
-			string strSearch = "/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
+            // Treat everything as being uppercase so the search is case-insensitive.
+			string strSearch = $"/chummer/gears/gear[({_objCharacter.Options.BookXPath()}) {strCategoryFilter} and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"{txtSearch.Text.ToUpper()}\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"{txtSearch.Text.ToUpper()}\"))]";
 
 			XmlNodeList objXmlGearList = _objXmlDocument.SelectNodes(strSearch);
+			XmlNode objXmlGearNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strParent + "\"]");
 			List<ListItem> lstGears = new List<ListItem>();
 			bool blnAddToList;
 			foreach (XmlNode objXmlGear in objXmlGearList)
 			{
                 if (objXmlGear["hidden"] != null)
                     continue;
-                blnAddToList = true;
+				if (objXmlGear["forbidden"]?["geardetails"] != null)
+				{
+					// Assumes topmost parent is an AND node
+					if (objXmlGearNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+					{
+						continue;
+					}
+				}
+				if (objXmlGear["required"]?["geardetails"] != null)
+				{
+					// Assumes topmost parent is an AND node
+					if (!objXmlGearNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+					{
+						continue;
+					}
+				}
+				blnAddToList = true;
 				if (_blnShowArmorCapacityOnly)
 				{
 					if (objXmlGear["armorcapacity"] == null)
@@ -398,15 +440,17 @@ namespace Chummer
 				if (!blnFound)
 					blnAddToList = false;
 
-				if (blnAddToList)
+			    if (blnAddToList)
+			    {
+                    blnAddToList = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier, blnAddToList);
+			    }
+
+			    if (blnAddToList)
 				{
 					ListItem objItem = new ListItem();
 					// When searching, Category needs to be added to the Value so we can identify the English Category name.
 					objItem.Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText;
-					if (objXmlGear["translate"] != null)
-						objItem.Name = objXmlGear["translate"].InnerText;
-					else
-						objItem.Name = objXmlGear["name"].InnerText;
+					objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
 
                     if (objXmlGear["category"] != null)
                     {
@@ -430,7 +474,7 @@ namespace Chummer
             lstGear.EndUpdate();
         }
 
-		private void lstGear_DoubleClick(object sender, EventArgs e)
+	    private void lstGear_DoubleClick(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(lstGear.Text))
 				AcceptForm();

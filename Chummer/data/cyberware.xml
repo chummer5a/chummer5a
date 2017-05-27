@@ -20,6 +20,7 @@
 <chummer>
 	<version>0</version>
 	<grades>
+    <!-- Region Standard -->
 		<grade>
 			<id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
 			<name>Standard</name>
@@ -95,6 +96,81 @@
 			<source>CF</source>
 			<page>72</page>
 		</grade>
+    <!-- End Region -->
+    <!-- Region Adapsin -->
+    <grade>
+      <id>5fc14253-7bf8-4266-af24-072607a86d45</id>
+      <name>Standard (Adapsin)</name>
+      <ess>0.9</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>4db89466-a1e7-4507-9849-9ce3eef56fc9</id>
+      <name>Standard (Burnout's Way) (Adapsin)</name>
+      <ess>0.7</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SG</source>
+      <page>177</page>
+    </grade>
+    <grade>
+      <id>f248cee4-4629-40ca-83c6-fbf6422d0cd9</id>
+      <name>Used (Adapsin)</name>
+      <ess>1.125</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>aa2393f5-0d01-4b93-988c-d743c35ec22b</id>
+      <name>Alphaware (Adapsin)</name>
+      <ess>0.7</ess>
+      <cost>1.2</cost>
+      <avail>+2</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>0b15b0c5-4b98-4884-b080-e55a93491507</id>
+      <name>Betaware (Adapsin)</name>
+      <ess>0.6</ess>
+      <cost>1.5</cost>
+      <avail>+4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>ccb47e88-b940-41de-85fd-8d0f52c04c6e</id>
+      <name>Deltaware (Adapsin)</name>
+      <ess>0.4</ess>
+      <cost>2.5</cost>
+      <avail>+8</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>210703b8-6df1-4d1b-b5e7-7f1f8a167f74</id>
+      <name>Gammaware (Adapsin)</name>
+      <ess>0.3</ess>
+      <cost>5</cost>
+      <avail>+12</avail>
+      <source>CF</source>
+      <page>72</page>
+    </grade>
+    <grade>
+      <id>453dcb77-f1b2-46d6-9e96-227ecb053297</id>
+      <name>Omegaware (Adapsin)</name>
+      <ess>0.9</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>CF</source>
+      <page>71</page>
+    </grade>
+    <!-- End Region -->
 	</grades>
 	<categories>
 		<category>Bodyware</category>
@@ -361,7 +437,7 @@
 			<avail>(Rating * 3)</avail>
 			<cost>FixedValues(4000,6000,10000,14000)</cost>
 			<allowgear>
-				<gearcategory>Vision Devices</gearcategory>
+				<gearcategory>Vision Enhancements</gearcategory>
 			</allowgear>
 			<allowsubsystems>
 				<category>Eyeware</category>
@@ -493,6 +569,9 @@
 			<capacity>Rating * 4</capacity>
 			<avail>Rating * 3</avail>
 			<cost>FixedValues(3000,4500,7500,11000)</cost>
+			<allowgear>
+				<gearcategory>Audio Enhancements</gearcategory>
+			</allowgear>
 			<allowsubsystems>
 				<category>Earware</category>
 			</allowsubsystems>
@@ -2590,7 +2669,7 @@
 			<page>87</page>
 		</cyberware>
 		<cyberware>
-			<id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
+			<id>215e0563-b23c-42c0-9d11-aa4ccc8acf6d</id>
 			<name>Remote Cyberhand</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.25</ess>
@@ -3715,5 +3794,761 @@
 			<page>182</page>
 		</cyberware>
 		<!-- End Region -->
+		<!-- Shadowrun 2050 SR5 -->
+		<cyberware>
+			<id>13ade3a3-1811-4ca6-9937-61dc6cfaccfb</id>
+			<name>Datajack (2050)</name>
+			<category>Headware</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>
+		<cyberware>
+			<id>5437471e-f0cc-49a6-839d-13218e256bdd</id>
+			<name>Chipjack (2050)</name>
+			<category>Headware</category>
+			<rating>4</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>3</avail>
+			<cost>Rating * 2000</cost>
+			<bonus>
+				<skillsoftaccess />
+			</bonus>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>		
+		<cyberware>
+			<id>9e961542-91fd-4ea3-bffc-9e19111610bf</id>
+			<name>Cortexbombe (2050)</name>
+			<category>Headware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>20F</avail>
+			<cost>40000</cost>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>
+		<cyberware>
+			<id>7cea6881-2fa0-4fa2-ae8d-1013cf957b15</id>
+			<name>Data Lock (2050)</name>
+			<category>Headware</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>
+		<cyberware>
+			<id>d5eb44ac-eaa3-4b8a-9a53-3b8889752a25</id>
+			<name>Radio (2050)</name>
+			<category>Headware</category>
+			<ess>0.75</ess>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>4000</cost>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>
+		<cyberware>
+			<id>908000b8-5c97-402d-947f-bd54768ac5f0</id>
+			<name>Headware Memory (2050)</name>
+			<category>Headware</category>
+			<rating>11980</rating>
+			<ess>(((Rating - 11) * 0.0005) +0.01)</ess>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Rating * 25</cost>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>
+		<cyberware>
+			<id>b12d9c62-ea7e-41de-bafd-88c05ae92b2c</id>
+			<name>Telephone (2050)</name>
+			<category>Headware</category>
+			<ess>0.5</ess>
+			<capacity>0</capacity>
+			<avail>3</avail>
+			<cost>3700</cost>
+			<source>2050</source>
+			<page>199</page>
+		</cyberware>
+		<cyberware>
+			<id>bf0b9e14-f771-4490-8868-69e5f488ce68</id>
+			<name>Cybereyes (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.2</ess>
+			<capacity>4</capacity>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<allowgear>
+				<gearcategory>Vision Enhancements</gearcategory>
+			</allowgear>
+			<allowsubsystems>
+				<category>Eyeware</category>
+			</allowsubsystems>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>3917dd4a-0f77-48c7-bf80-62b90f8f0fff</id>
+			<name>Camera (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>6</avail>
+			<cost>5000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>	
+		<cyberware>
+			<id>f6774ee8-50cb-4524-acd7-2e2357071916</id>
+			<name>Flare Compensation (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>5</avail>
+			<cost>2000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>ab435e23-7ff8-4516-942c-cf3467706e50</id>
+			<name>Display Link (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>4382ca25-5400-4640-8fcd-a60e0b7e6f81</id>
+			<name>Thermographic (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.2</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>3000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
+			<name>Cosmetic Modifcations Eye (2050)</name>
+			<category>Eyeware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>e9c59df9-9009-4e4a-a257-45eaab5885a4</id>
+			<name>Low-Light (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.2</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>3000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>3904a4cc-d5d4-463a-aab9-7ffc50229389</id>
+			<name>Retinal Duplication (2050)</name>
+			<category>Eyeware</category>
+			<rating>6</rating>
+			<ess>0.2</ess>
+			<capacity>[1]</capacity>
+			<avail>12F</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>	
+		<cyberware>
+			<id>9ac9d78f-6a33-4bd1-bb9c-539b487ae618</id>
+			<name>Vision Magnifcation (2050)</name>
+			<category>Eyeware</category>
+			<ess>0.2</ess>
+			<capacity>[2]</capacity>
+			<avail>5</avail>
+			<cost>8500</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>c8d6fe4e-f55b-4111-bbbb-ad89b6c99074</id>
+			<name>Cyberears (2050)</name>
+			<category>Earware</category>
+			<ess>0.2</ess>
+			<capacity>4</capacity>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<allowgear>
+				<gearcategory>Audio Enhancements</gearcategory>
+			</allowgear>
+			<subsystems>
+				<subsystem>Earware</subsystem>
+			</subsystems>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>75f71536-b34a-452e-9045-17ce7ef02daf</id>
+			<name>Hearing Amplifcation (2050)</name>
+			<category>Earware</category>
+			<ess>0.2</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>3500</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>d48eb2ff-f959-4b0b-a0c2-8bbb82d1c910</id>
+			<name>Damper (2050)</name>
+			<category>Earware</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>3500</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>9554cf97-b63a-4014-bd73-b020fa33a951</id>
+			<name>Expanded Frequency (2050)</name>
+			<category>Earware</category>
+			<ess>0.2</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>6000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>832c737d-d76a-4a28-9615-c09ae2f1d2aa</id>
+			<name>Sound Recorder (2050)</name>
+			<category>Earware</category>
+			<ess>0.3</ess>
+			<capacity>[1]</capacity>
+			<avail>8R</avail>
+			<cost>7000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>c6fc9433-b33f-45ac-b05a-6341b4d5accc</id>
+			<name>Cosmetic Modifcations Ear</name>
+			<category>Earware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>1000</cost>
+			<source>2050</source>
+			<page>201</page>
+		</cyberware>
+		<cyberware>
+			<id>fd3f6510-e145-492b-8c47-9063ea24da2f</id>
+			<name>Cyberlimb Full Arm , Obvious (2050)</name>
+			<category>Bodyware</category>
+			<limbslot>arm</limbslot>
+			<ess>1</ess>
+			<capacity>15</capacity>
+			<avail>4</avail>
+			<cost>45000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
+			<bonus>
+				<conditionmonitor>
+					<physical>1</physical>
+				</conditionmonitor>
+				<selectside />
+			</bonus>
+			<subsystems>
+				<subsystem>Bodyware</subsystem>
+				<subsystem>Cyberlimb Enhancement</subsystem>
+				<subsystem>Cyberlimb Accessory</subsystem>
+				<subsystem>Cyber Implant Weapon</subsystem>
+			</subsystems>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>4ca30ddc-f990-40bc-bf1f-4789996ae34c</id>
+			<name>Cyberlimb Full Leg , Obvious (2050)</name>
+			<category>Bodyware</category>
+			<limbslot>leg</limbslot>
+			<ess>1</ess>
+			<capacity>20</capacity>
+			<avail>4</avail>
+			<cost>45000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
+			<bonus>
+				<conditionmonitor>
+					<physical>1</physical>
+				</conditionmonitor>
+				<selectside />
+			</bonus>
+			<subsystems>
+				<subsystem>Bodyware</subsystem>
+				<subsystem>Cyberlimb Enhancement</subsystem>
+				<subsystem>Cyberlimb Accessory</subsystem>
+				<subsystem>Cyber Implant Weapon</subsystem>
+			</subsystems>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>1839428f-b8a2-4461-af47-c821ae808dde</id>
+			<name>Cyberlimb Full Arm, Synthetic (2050)</name>
+			<category>Bodyware</category>
+			<limbslot>arm</limbslot>
+			<ess>1</ess>
+			<capacity>8</capacity>
+			<avail>4</avail>
+			<cost>50000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
+			<bonus>
+				<conditionmonitor>
+					<physical>1</physical>
+				</conditionmonitor>
+				<selectside />
+			</bonus>
+			<subsystems>
+				<subsystem>Bodyware</subsystem>
+				<subsystem>Cyberlimb Enhancement</subsystem>
+				<subsystem>Cyberlimb Accessory</subsystem>
+				<subsystem>Cyber Implant Weapon</subsystem>
+			</subsystems>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>b8d74993-2ae6-4c42-98ef-f72e96415d7b</id>
+			<name>Cyberlimb Full Leg, Synthetic (2050)</name>
+			<category>Bodyware</category>
+			<limbslot>leg</limbslot>
+			<ess>1</ess>
+			<capacity>10</capacity>
+			<avail>4</avail>
+			<cost>50000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
+			<bonus>
+				<conditionmonitor>
+					<physical>1</physical>
+				</conditionmonitor>
+				<selectside />
+			</bonus>
+			<subsystems>
+				<subsystem>Bodyware</subsystem>
+				<subsystem>Cyberlimb Enhancement</subsystem>
+				<subsystem>Cyberlimb Accessory</subsystem>
+				<subsystem>Cyber Implant Weapon</subsystem>
+			</subsystems>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>4415180f-c3a0-4bb9-8580-3ed689ab6863</id>
+			<name>Cyberlimb Customization, Strength (2050)</name>
+			<category>Bodyware</category>
+			<rating>MaximumSTR</rating>
+			<minrating>MinimumSTR</minrating>
+			<ess>0</ess>
+			<forbidden>
+				<oneof>
+					<metatype>Pixie</metatype>
+				</oneof>
+			</forbidden>
+			<capacity>[0]</capacity>
+			<avail>+Rating - MinRating</avail>
+			<cost>(Rating - MinRating) * 2000</cost>
+			<bonus />
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>c6abcc8b-78fb-44a4-a105-450c1b60a57b</id>
+			<name>Cyberlimb Customization, Agility (2050)</name>
+			<category>Bodyware</category>
+			<rating>MaximumAGI</rating>
+			<minrating>MinimumAGI</minrating>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<avail>+Rating - MinRating</avail>
+			<cost>(Rating - MinRating) * 2000</cost>
+			<bonus />
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
+			<name>Cyberlimb Augmentation, Armor (2050)</name>
+			<category>Bodyware</category>
+			<rating>3</rating>
+			<ess>0</ess>
+			<capacity>[Rating]</capacity>
+			<avail>Rating * 3</avail>
+			<cost>Rating * 500</cost>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>		
+		<cyberware>
+			<id>55738f72-0344-435d-8f92-b1e16a66c445</id>
+			<name>Cyberlimb Augmentation, Strength (2050)</name>
+			<category>Bodyware</category>
+			<rating>3</rating>
+			<ess>0</ess>
+			<capacity>[Rating * 1]</capacity>
+			<avail>(Rating)R</avail>
+			<cost>Rating * 350</cost>
+			<bonus />
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
+			<name>Cyberlimb Augmentation, Agility (2050)</name>
+			<category>Bodyware</category>
+			<rating>3</rating>
+			<ess>0</ess>
+			<capacity>[Rating * 1]</capacity>
+			<avail>(Rating)R</avail>
+			<cost>Rating * 400</cost>
+			<bonus />
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>c7d7d1cb-2506-4b0d-9ae4-7fb1c1135a82</id>
+			<name>Filtration System, Cybergill (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.5</ess>
+			<capacity>0</capacity>
+			<avail>0</avail>
+			<cost>60000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>a541294c-dac9-4e11-b1c0-fbb9e354afe3</id>
+			<name>Dermal Plating (2050)</name>
+			<category>Bodyware</category>
+			<rating>3</rating>
+			<ess>Rating * 0.5</ess>
+			<capacity>0</capacity>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 5000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Orthoskin</cyberware>
+				</oneof>
+			</forbidden>
+			<bonus>
+				<armor group="0">Rating</armor>
+			</bonus>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>c47951dc-b81b-4942-87e3-947ecb9e4d9d</id>
+			<name>Filtration System, Blood (2050)</name>
+			<category>Bodyware</category>
+			<rating>6</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>727ca1f1-7547-479e-8365-645ce765a2c6</id>
+			<name>Filtration System, Air (2050)</name>
+			<category>Bodyware</category>
+			<rating>6</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>Rating * 15000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>97d4590d-61b9-4a33-91e7-d5877c2f2ae6</id>
+			<name>Fingertip Compartment (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>3</avail>
+			<cost>3000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>be1f861f-a8ea-4066-b3c8-ebed9844caef</id>
+			<name>Olfactory Booster (2050)</name>
+			<category>Bodyware</category>
+			<rating>6</rating>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>Rating * 1000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>df427266-60ea-4289-94ee-a30bb46ceb89</id>
+			<name>Cosmetic Modifcations (2050)</name>
+			<category>Bodyware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Variable(2000-10000)</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>6cd1b94e-a122-469c-8739-ba2a0a5bbae9</id>
+			<name>Muscle Replacement (2050)</name>
+			<category>Bodyware</category>
+			<rating>4</rating>
+			<ess>Rating * 1</ess>
+			<capacity>0</capacity>
+			<avail>4R</avail>
+			<cost>Rating * 20000</cost>
+			<bonus>
+				<specificattribute>
+					<name precedence="0">AGI</name>
+					<val>Rating</val>
+				</specificattribute>
+				<specificattribute>
+					<name precedence="0">STR</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>c2a4d517-0f92-4f89-97cc-7aef5ee5d047</id>
+			<name>Hand Razors, Fixed (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>3F</avail>
+			<addweapon>Hand Razors, Fixed (2050)</addweapon>
+			<cost>4500</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
+			<name>Hand Razors, Retractable (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.2</ess>
+			<capacity>[2]</capacity>
+			<avail>5F</avail>
+			<addweapon>Hand Razors, Retractable (2050)</addweapon>
+			<cost>9000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
+			<name>Spur, Fixed (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>3F</avail>
+			<addweapon>Spur, Fixed (2050)</addweapon>
+			<cost>7000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>0ed1c1e6-d938-48b1-bf41-9680d04e237f</id>
+			<name>Spur, Retractable (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.3</ess>
+			<capacity>[3]</capacity>
+			<avail>3F</avail>
+			<addweapon>Spur, Retractable (2050)</addweapon>
+			<cost>11500</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>1fd9fa93-a617-4261-b0ab-9255a4750fcb</id>
+			<name>Boosted Refexes (2050)</name>
+			<category>Bodyware</category>
+			<rating>3</rating>
+			<ess>FixedValues(2,3,5)</ess>
+			<capacity>0</capacity>
+			<avail>FixedValues(4R,4R,8R)</avail>
+			<cost>FixedValues(55000,165000,500000)</cost>
+			<bonus>
+				<initiativepass precedence="0">Rating</initiativepass>
+				<specificattribute>
+					<name precedence="0">REA</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>35203a28-d5fa-477f-b2e1-fd6b00aa6649</id>
+			<name>Vehicle Control Rig (2050)</name>
+			<category>Bodyware</category>
+			<rating>3</rating>
+			<ess>FixedValues(2,3,5)</ess>
+			<capacity>0</capacity>
+			<avail>FixedValues(6,8,8)</avail>
+			<cost>FixedValues(12000,60000,300000)</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>72bde95c-31ce-46e4-a44a-488f28c886b7</id>
+			<name>Smartlink (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.5</ess>
+			<capacity>0</capacity>
+			<avail>3R</avail>
+			<cost>2500</cost>
+			<bonus>
+				<smartlink />
+			</bonus>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>	
+		<cyberware>
+			<id>20f91caf-b639-4f62-b248-33c0c9fc5134</id>
+			<name>Voice Modulator (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>50000</cost>
+			<subsystems>
+				<subsystem>Voiceware</subsystem>
+			</subsystems>
+			<source>2050</source>
+			<page>302</page>
+		</cyberware>
+		<cyberware>
+			<id>7996ff21-d75c-4c5a-8990-1527b22b53b8</id>
+			<name>Voice Modulator, Playback Feature (2050)</name>
+			<category>Bodyware</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>40000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>90ee4cbc-7911-4fe7-b6b3-952eb8ba9a9e</id>
+			<name>Voice Modulator, Second Voiceprint (2050)</name>
+			<category>Bodyware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>6F</avail>
+			<cost>50000</cost>
+			<source>2050</source>
+			<page>203</page>
+		</cyberware>
+		<cyberware>
+			<id>f06e1949-6416-4015-841e-f3fbaa61a434</id>
+			<name>Cyber Holdout Pistol (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>0.1</ess>
+			<capacity>[2]</capacity>
+			<avail>8R</avail>
+			<addweapon>Cyber Holdout Pistol (2050)</addweapon>
+			<cost>250</cost>
+			<source>2050</source>
+			<page>204</page>
+		</cyberware>
+		<cyberware>
+			<id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
+			<name>Cyber Light Pistol (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>0.25</ess>
+			<capacity>[4]</capacity>
+			<avail>8F</avail>
+			<addweapon>Cyber Light Pistol (2050)</addweapon>
+			<cost>650</cost>
+			<source>2050</source>
+			<page>204</page>
+		</cyberware>
+		<cyberware>
+			<id>ce0e344f-4428-499e-8cb9-f83f9041dc9a</id>
+			<name>Cyber Machine Pistol (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>0.5</ess>
+			<capacity>[6]</capacity>
+			<avail>8F</avail>
+			<addweapon>Cyber Machine Pistol (2050)</addweapon>
+			<cost>900</cost>
+			<source>2050</source>
+			<page>204</page>
+		</cyberware>
+		<cyberware>
+			<id>acffef6c-d88f-4e80-bfd3-924c516ce6f9</id>
+			<name>Cyber Heavy Pistol (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>0.5</ess>
+			<capacity>[6]</capacity>
+			<avail>8F</avail>
+			<addweapon>Cyber Heavy Pistol (2050)</addweapon>
+			<cost>800</cost>
+			<source>2050</source>
+			<page>204</page>
+		</cyberware>		
+		<cyberware>
+			<id>f1413ac9-d373-4080-a373-60e5b890b304</id>
+			<name>Cyber Submachine Gun (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>1</ess>
+			<capacity>[10]</capacity>
+			<avail>8F</avail>
+			<addweapon>Cyber Submachine Gun (2050)</addweapon>
+			<cost>1800</cost>
+			<source>2050</source>
+			<page>204</page>
+		</cyberware>
+		<cyberware>
+			<id>dbf70a83-ce18-4c55-b937-f326392ddee5</id>
+			<name>Cyber Shotgun (2050)</name>
+			<category>Cyber Implant Weapon</category>
+			<ess>1.25</ess>
+			<capacity>[10]</capacity>
+			<avail>8F</avail>
+			<addweapon>Cyber Shotgun (2050)</addweapon>
+			<cost>1200</cost>
+			<source>2050</source>
+			<page>204</page>
+		</cyberware>
+		<!-- End Region 2050 -->
 	</cyberwares>
 </chummer>

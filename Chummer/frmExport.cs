@@ -112,11 +112,9 @@ namespace Chummer
 
 		private void rtbText_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (!_blnSelected && this.rtbText.SelectionLength == 0)
-			{
-				_blnSelected = true;
-				this.rtbText.SelectAll();
-			}
+			if (_blnSelected || rtbText.SelectionLength != 0) return;
+			_blnSelected = true;
+			rtbText.SelectAll();
 		}
 
 		#endregion
@@ -197,7 +195,8 @@ namespace Chummer
 		{
 			SaveFileDialog1.AddExtension = true;
 			SaveFileDialog1.DefaultExt = "json";
-			SaveFileDialog1.Title = "Save JSON as";
+            SaveFileDialog1.Filter = "JSON File|*.json";
+            SaveFileDialog1.Title = "Save JSON as";
 			SaveFileDialog1.ShowDialog();
 
 			if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))

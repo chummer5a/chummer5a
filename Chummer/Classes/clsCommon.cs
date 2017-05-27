@@ -699,7 +699,7 @@ namespace Chummer
 					{
 						if (objPower.BonusSource == objFocus.GearId)
 						{
-							objPower.FreeLevels -= (objFocus.Rating / 4);
+							//objPower.FreeLevels -= (objFocus.Rating / 4);
 						}
 					}
 					_objCharacter.Foci.Remove(objFocus);
@@ -1054,6 +1054,7 @@ namespace Chummer
 		/// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
 		/// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
+	    /// <param name="cmsWeaponAccessoryGear"></param>
 		/// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
 		public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
 		{
@@ -1303,10 +1304,10 @@ namespace Chummer
         public static void LogWrite(LogType logType, string strClass, string strLine)
         {
 	        Log.Info(new object[] {logType, strLine}, "LEGACY_LOG_CALL", strClass);
-        } 
+        }
         #endregion
 
-
+        #region Text Functions
         /// <summary>
         /// Word wraps the given text to fit within the specified width.
         /// </summary>
@@ -1381,5 +1382,8 @@ namespace Chummer
             // Return length of text before whitespace
             return i + 1;
         }
-	}
+        #endregion
+
+
+    }
 }

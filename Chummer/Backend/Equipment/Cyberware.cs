@@ -255,9 +255,11 @@ namespace Chummer.Backend.Equipment
 				// More than one Weapon can be added, so loop through all occurrences.
 				foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
 				{
-					XmlNode objXmlWeapon = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]"); // and starts-with(category, \"Cyberware\")]");
+                    var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
+                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
+                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-					TreeNode objGearWeaponNode = new TreeNode();
+                    TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(objCharacter);
 					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
@@ -276,7 +278,9 @@ namespace Chummer.Backend.Equipment
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                 {
-                    XmlNode objXmlVehicle = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlAddVehicle.InnerText + "\"]"); // and starts-with(category, \"Cyberware\")]");
+                    var objXmlVehicle = helpers.Guid.IsGuid(objXmlAddVehicle.InnerText)
+                        ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + objXmlAddVehicle.InnerText + "\"]")
+                        : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlAddVehicle.InnerText + "\"]");
 
                     TreeNode objVehicleNode = new TreeNode();
                     Vehicle objVehicle = new Vehicle(_objCharacter);
@@ -360,7 +364,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limbslot", _strLimbSlot);
-            objWriter.WriteElementString("limbslotcount", _intLimbSlotCount.ToString());
+            objWriter.WriteElementString("limbslotcount", _intLimbSlotCount.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("inheritattributes", _blnInheritAttributes.ToString());
             objWriter.WriteElementString("ess", _strESS);
 			objWriter.WriteElementString("capacity", _strCapacity);
@@ -368,16 +372,16 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("minrating", _intMinRating.ToString());
-			objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
+			objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("minrating", _intMinRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("subsystems", _strAllowSubsystems);
 			objWriter.WriteElementString("grade", _objGrade.Name);
 			objWriter.WriteElementString("location", _strLocation);
 			objWriter.WriteElementString("suite", _blnSuite.ToString());
-			objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString());
+			objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("forcegrade", _strForceGrade);
-			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
+			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("vehiclemounted", _blnVehicleMounted.ToString());
             if (_nodBonus != null)
 				objWriter.WriteRaw(_nodBonus.OuterXml);
@@ -553,7 +557,7 @@ namespace Chummer.Backend.Equipment
 			else
 			{
 				int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) / 3;
-				objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + " " + TotalAgility.ToString() + ", " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + " " + TotalStrength.ToString() + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
+				objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
 			}
 			objWriter.WriteElementString("category", DisplayCategory);
 			objWriter.WriteElementString("ess", CalculatedESS.ToString(GlobalOptions.CultureInfo));
@@ -1515,55 +1519,38 @@ namespace Chummer.Backend.Equipment
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && objImprovementManager.ValueOf(Improvement.ImprovementType.CyberwareEssCost) != 0)
                     {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
-                        {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                                decMultiplier -= 1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m;
-                        }
-                        decCharacterESSMultiplier = decMultiplier;
+	                    decMultiplier = _objCharacter.Improvements
+							.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
+							.Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                        decESSMultiplier -= 1.0m - decMultiplier;
                     }
 
                     // Apply the character's Bioware Essence cost multiplier if applicable.
                     else if (_objImprovementSource == Improvement.ImprovementSource.Bioware && objImprovementManager.ValueOf(Improvement.ImprovementType.BiowareEssCost) != 0)
                     {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
-                        {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                                decMultiplier -= 1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m;
-                        }
-                        decCharacterESSMultiplier = decMultiplier;
+	                    decMultiplier = _objCharacter.Improvements
+							.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
+							.Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                        decESSMultiplier -= 1.0m - decMultiplier;
                     }
                 }
 
 				// Apply the character's Basic Bioware Essence cost multiplier if applicable.
 			    if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware && objImprovementManager.ValueOf(Improvement.ImprovementType.BasicBiowareEssCost) != 0)
 			    {
-                    decimal decBasicMultiplier = 1;
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                            decBasicMultiplier -= 1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m;
-                    }
-                    decCharacterESSMultiplier -= 1m - decBasicMultiplier;
+                    decimal decBasicMultiplier = _objCharacter.Improvements
+						.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
+						.Aggregate<Improvement, decimal>(1, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                    decESSMultiplier -= 1.0m - decBasicMultiplier;
                 }
-
-				decCharacterESSMultiplier -= 1m - decESSMultiplier;
-
-				decReturn = decReturn * decCharacterESSMultiplier;
+				decReturn = decReturn * decESSMultiplier;
 
 				// Check if the character has Sensitive System.
-				if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
+				if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && _objCharacter != null)
 				{
-					if (_objCharacter != null)
+					if (_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled))
 					{
-						foreach (Improvement objImprovement in _objCharacter.Improvements)
-						{
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled)
-                            {
-                                decReturn *= 2.0m;
-                                break;
-                            }
-						}
+						decReturn *= 2.0m;
 					}
 				}
 
@@ -1676,10 +1663,6 @@ namespace Chummer.Backend.Equipment
 						else
 							intReturn += objChild.TotalCostWithoutModifiers;
 					}
-
-					// Add in the cost of any Plugin Gear plugins.
-					foreach (Gear objGear in objChild.Gear)
-						intReturn += objGear.TotalCost;
 				}
 
 				// Add in the cost of all Gear plugins.
@@ -1795,10 +1778,6 @@ namespace Chummer.Backend.Equipment
                         else
                             intReturn += objChild.TotalCostWithoutModifiers;
                     }
-
-                    // Add in the cost of any Plugin Gear plugins.
-                    foreach (Gear objGear in objChild.Gear)
-                        intReturn += objGear.TotalCost;
                 }
 
                 // Add in the cost of all Gear plugins.

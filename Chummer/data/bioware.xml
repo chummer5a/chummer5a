@@ -911,7 +911,7 @@
 			<category>Biosculpting</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
-			<avail>2</avail>
+			<avail>4</avail>
 			<cost>Variable(500-2000)</cost>
 			<bonus>
 				<selecttext />
@@ -920,12 +920,12 @@
 			<page>108</page>
 		</bioware>
 		<bioware>
-			<id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
+			<id>a4ca355b-6188-42c1-88c7-93947f233314</id>
 			<name>Severe Biosculpting Modification</name>
 			<category>Biosculpting</category>
-			<ess>0</ess>
+			<ess>0.25</ess>
 			<capacity>0</capacity>
-			<avail>2</avail>
+			<avail>8</avail>
 			<cost>Variable(2000-10000)</cost>
 			<bonus>
 				<selecttext />
@@ -1707,7 +1707,7 @@
 			<avail>16</avail>
 			<cost>30000</cost>
 			<bonus>
-				<cyberwareessmultiplier>90</cyberwareessmultiplier>
+				<adapsin />
 			</bonus>
 			<source>CF</source>
 			<page>160</page>
@@ -2455,5 +2455,344 @@
 			<page>185</page>
 		</bioware>
 		<!-- End Region -->
+		<!-- SR5 2050 -->
+		<bioware>
+			<id>9343f6b7-6d02-4706-aa7d-6c357b22c947</id>
+			<name>Adrenaline Pump (2050)</name>
+			<category>Basic</category>
+			<rating>3</rating>
+			<ess>Rating * 0.75</ess>
+			<capacity>0</capacity>
+			<avail>10F</avail>
+			<cost>Rating * 50000</cost>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>b843eb04-8234-4fb4-a33d-87bd369cc8dc</id>
+			<name>Enhanced Articulation (2050)</name>
+			<category>Basic</category>
+			<ess>0.3</ess>
+			<capacity>0</capacity>
+			<avail>5</avail>
+			<cost>40000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+					<condition>Only for Escape Artist</condition>
+				</limitmodifier>
+				<specificskill>
+					<name>Escape Artist</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>	
+		<bioware>
+			<id>29711788-69f5-4b7a-8dd9-2ed615a448e3</id>
+			<name>Suprathyroid Gland (2050)</name>
+			<category>Basic</category>
+			<ess>0.7</ess>
+			<capacity>0</capacity>
+			<avail>8F</avail>
+			<cost>50000</cost>
+			<bonus>
+				<lifestylecost>25</lifestylecost>
+				<specificattribute>
+					<name>BOD</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>AGI</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name precedence="0">REA</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name precedence="0">STR</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>bebdde65-cd72-4690-8436-945312c507ab</id>
+			<name>Tracheal Filter (2050)</name>
+			<category>Basic</category>
+			<rating>6</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>Rating * 30000</cost>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>		
+		<bioware>
+			<id>9c66557a-5757-42ee-ac00-a875b7013ad8</id>
+			<name>Tailored Pheromones (2050)</name>
+			<category>Basic</category>
+			<rating>3</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>12</avail>
+			<cost>Rating * 22000</cost>
+			<bonus>
+				<sociallimit>Rating</sociallimit>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>aa992c89-3fc0-47bf-9275-f31acf83a615</id>
+			<name>Mnemonic Enhancer (2050)</name>
+			<category>Cultured</category>
+			<rating>3</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>Rating * 15000</cost>
+			<bonus>
+				<memory>Rating</memory>
+				<mentallimit>Rating</mentallimit>
+				<skillcategory>
+					<name>Academic</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Interest</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Language</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Professional</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Street</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>0603401c-183d-43e6-902e-fbdcc5a20fc4</id>
+			<name>Muscle Toner (2050)</name>
+			<category>Basic</category>
+			<rating>4</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>(Rating * 5)R</avail>
+			<cost>Rating * 25000</cost>
+			<bonus>
+				<specificattribute>
+					<name precedence="0">AGI</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>d563a110-b8d8-460c-8fb2-da7d87d033a0</id>
+			<name>Muscle Augmentation (2050)</name>
+			<category>Basic</category>
+			<rating>4</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>(Rating * 5)R</avail>
+			<cost>Rating * 20000</cost>
+			<bonus>
+				<specificattribute>
+					<name precedence="0">STR</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>fd8d10ee-4a08-4e0d-a9a4-eec8f4633467</id>
+			<name>Nephritic Screen (2050)</name>
+			<category>Basic</category>
+			<rating>6</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>Rating * 24000</cost>
+			<bonus>
+				<specificattribute>
+					<name precedence="0">STR</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>d52e5797-416f-414a-ba7f-8ba3c6aef35a</id>
+			<name>Orthoskin (2050)</name>
+			<category>Basic</category>
+			<rating>3</rating>
+			<ess>Rating * 0.25</ess>
+			<capacity>0</capacity>
+			<avail>8R</avail>
+			<cost>Rating * 30000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Dermal Plating</cyberware>
+				</oneof>
+			</forbidden>
+			<bonus>
+				<armor group="0">Rating</armor>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>0dcfb784-e30b-4d29-b8a9-46786770c5d0</id>
+			<name>Pathogenic Defense (2050)</name>
+			<category>Basic</category>
+			<rating>6</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>Rating * 10000</cost>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>	
+		<bioware>
+			<id>20658b19-28c0-4e38-8523-768636510c7b</id>
+			<name>Reflex Recorder (2050)</name>
+			<category>Cultured</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>5</avail>
+			<cost>10000</cost>
+			<bonus>
+				<selectskill limittoattribute="BOD,AGI,REA,STR">
+					<val>1</val>
+					<applytorating>yes</applytorating>
+				</selectskill>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>9300c974-1591-4dca-95d4-53755c27126e</id>
+			<name>Damage Compensators (2050)</name>
+			<category>Cultured</category>
+			<rating>12</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>10F</avail>
+			<cost>Rating * 50000</cost>
+			<bonus>
+				<conditionmonitor>
+					<thresholdoffset>Rating</thresholdoffset>
+				</conditionmonitor>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>
+			<name>Pain Editor (2050)</name>
+			<category>Cultured</category>
+			<ess>0.3</ess>
+			<capacity>0</capacity>
+			<avail>6F</avail>
+			<cost>60000</cost>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>596c2f2c-e76e-49db-996b-d05fb56d994d</id>
+			<name>Symbiotes (2050)</name>
+			<category>Basic</category>
+			<rating>3</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>5</avail>
+			<cost>Rating * 20000</cost>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>	
+		<bioware>
+			<id>418fc791-2ae8-4457-80ec-e89244f1497b</id>
+			<name>Synaptic Accelerator (2050)</name>
+			<category>Cultured</category>
+			<rating>3</rating>
+			<ess>Rating * 0.5</ess>
+			<capacity>0</capacity>
+			<avail>6R</avail>
+			<cost>Rating * 100000</cost>
+			<bonus>
+				<initiativepass precedence="0">Rating</initiativepass>
+				<specificattribute>
+					<name precedence="0">REA</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>7ec6348a-2edd-4629-a984-e88f258e8599</id>
+			<name>Synthacardium (2050)</name>
+			<category>Basic</category>
+			<rating>3</rating>
+			<ess>Rating * 0.1</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>Rating * 10000</cost>
+			<bonus>
+				<skillgroup>
+					<name>Athletics</name>
+					<bonus>Rating</bonus>
+				</skillgroup>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>8cf8dfaa-64b1-4b46-90a1-7fe01a43ad74</id>
+			<name>Platelet Factories (2050)</name>
+			<category>Basic</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>5</avail>
+			<cost>30000</cost>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<bioware>
+			<id>773956b3-427b-4ed0-9510-8db622f01b66</id>
+			<name>Cerebral Booster (2050)</name>
+			<category>Cultured</category>
+			<rating>3</rating>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>Rating * 55000</cost>
+			<bonus>
+				<specificattribute>
+					<name>LOG</name>
+					<val>Rating</val>
+				</specificattribute>
+			</bonus>
+			<source>2050</source>
+			<page>205</page>
+		</bioware>
+		<!-- Ende SR5 2050 -->		
 	</biowares>
 </chummer>
