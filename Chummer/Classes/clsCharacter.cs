@@ -2010,7 +2010,7 @@ namespace Chummer
 					objWriter.WriteElementString("attr",drainAttribute);
 				}
 				objWriter.WriteEndElement();
-                if (_strMagicTradition == "Custom")
+                if (_strMagicTradition == "Draconic")
                 {
                     objWriter.WriteElementString("spiritcombat", LanguageManager.Instance.GetString("String_All"));
                     objWriter.WriteElementString("spiritdetection", LanguageManager.Instance.GetString("String_All"));

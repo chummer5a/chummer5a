@@ -467,13 +467,13 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
             }
 
+			objNode.TryGetStringFieldQuickly("name", ref _strName);
 			if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
 			{
 				XmlDocument doc = XmlManager.Instance.Load("vehicles.xml");
 				XmlNode sourceNode = doc.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
 				sourceNode.TryGetField("id", Guid.TryParse, out _sourceID);
 			}
-			objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["handling"] != null)
             {
