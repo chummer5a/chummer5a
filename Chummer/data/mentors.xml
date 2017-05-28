@@ -1839,7 +1839,7 @@
               <name>Attribute Boost</name>
               <val>2</val>
               <selectattribute>
-                <attribute>AGI</attribute>
+                <attribute>STR</attribute>
               </selectattribute>
               <free>yes</free>
             </specificpower>
@@ -1854,34 +1854,36 @@
 			<name>Raven (Alt)</name>
 			<advantage>All: +2 dice pool modifer for knowledge skill tests.</advantage>
 			<disadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</disadvantage>
+      <bonus>
+        <skillcategory>
+					<name>Academic</name>
+					<bonus>2</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Interest</name>
+					<bonus>2</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Language</name>
+					<bonus>2</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Professional</name>
+					<bonus>2</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Street</name>
+					<bonus>2</bonus>
+				</skillcategory>
+      </bonus>
 			<choices>
 				<choice>
-					<name>Magician: +2 dice to Detection spells, preparations, and rituals or +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
+					<name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
 					<bonus>
 						<spellcategory>
 							<name>Detection</name>
 							<val>2</val>
 						</spellcategory>
-						<skillcategory>
-							<name>Academic</name>
-							<bonus>2</bonus>
-						</skillcategory>
-						<skillcategory>
-							<name>Interest</name>
-							<bonus>2</bonus>
-						</skillcategory>
-						<skillcategory>
-							<name>Language</name>
-							<bonus>2</bonus>
-						</skillcategory>
-						<skillcategory>
-							<name>Professional</name>
-							<bonus>2</bonus>
-						</skillcategory>
-						<skillcategory>
-							<name>Street</name>
-							<bonus>2</bonus>
-						</skillcategory>
 					</bonus>
 				</choice>
 				<choice>
@@ -1899,7 +1901,7 @@
 					<bonus>
 						<specificpower>
 							<name>Enhanced Perception</name>
-							<val>1</val>
+							<val>2</val>
 							<free>yes</free>
 						</specificpower>
 					</bonus>
