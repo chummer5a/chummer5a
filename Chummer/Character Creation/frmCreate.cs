@@ -12838,27 +12838,6 @@ namespace Chummer
 		#endregion
 
 		#region Custom Methods
-		/// <summary>
-		/// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
-		/// </summary>
-		public void ShowAttributeRule()
-        {
-            MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"), LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        /// <summary>
-        /// Show the message that describes the number of BP/Karma the character can spend on Primary Attributes.
-        /// </summary>
-        public void ShowAttributeBPRule()
-        {
-            int intPoints = 0;
-            string strMethod = string.Empty;
-            intPoints = (_objCharacter.BuildKarma / 2) + (_objCharacter.MetatypeBP * 2);
-            strMethod = LanguageManager.Instance.GetString("String_Karma");
-            strMethod = intPoints.ToString() + " " + strMethod;
-            MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeBuildPoints").Replace("{0}", strMethod), LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         /// <summary>
         /// Let the application know that a Metatype has been selected.
         /// </summary>
@@ -13137,18 +13116,11 @@ namespace Chummer
             // Update Primary Attributes and Special Attributes values.
             int intAttributePointsUsed = CalculateAttributeBP();
             intKarmaPointsRemain -= intAttributePointsUsed;
-
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
-            {
-                intFreestyleBPMin = intAttributePointsUsed * 2;
-                intFreestyleBP += intAttributePointsUsed;
-            }
-
             lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
-
-            // ------------------------------------------------------------------------------
-            // Include the BP used by Martial Arts.
-            int intMartialArtsPoints = 0;
+	        lblPBuildAttributes.Text = BuildAttributes;
+			// ------------------------------------------------------------------------------
+			// Include the BP used by Martial Arts.
+			int intMartialArtsPoints = 0;
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
                 if (!objMartialArt.IsQuality)

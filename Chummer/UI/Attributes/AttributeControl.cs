@@ -18,6 +18,8 @@ namespace Chummer.UI.Attributes
 		public event ValueChangedHandler ValueChanged;
 		private readonly CharacterAttrib attribute;
 		private object sender;
+		private decimal _oldBase;
+		private decimal _oldKarma;
 
 		public AttributeControl(CharacterAttrib attribute)
         {
@@ -26,9 +28,9 @@ namespace Chummer.UI.Attributes
 			
 			//Display
 			lblName.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.Value), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
             lblLimits.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
-            
+            lblValue.DataBindings.Add("TooltipText", attribute, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             if (attribute._objCharacter.Created)
             {
                 nudBase.Visible = false;
@@ -88,20 +90,38 @@ namespace Chummer.UI.Attributes
 
 		private void nudBase_ValueChanged(object sender, EventArgs e)
 		{
+			decimal d = ((NumericUpDownEx) sender).Value;
+			if (!ShowAttributeRule(d))
+			{
+				nudBase.Value = _oldBase;
+				return;
+			}
 			ValueChanged?.Invoke(this);
+			_oldBase = d;
 		}
 
 		private void nudKarma_ValueChanged(object sender, EventArgs e)
 		{
+			decimal d = ((NumericUpDownEx)sender).Value;
+			if (!ShowAttributeRule(d))
+			{
+				nudKarma.Value = _oldKarma;
+				return;
+			}
 			ValueChanged?.Invoke(this);
+			_oldKarma = d;
 		}
 
 		/// <summary>
 		/// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
 		/// </summary>
-		public void ShowAttributeRule()
+		private bool ShowAttributeRule(decimal value)
 		{
-			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"), LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+			if (value < attribute.TotalMaximum) return true;
+			if (!attribute._objCharacter.AttributeList.Any(att => att.Value.AtMetatypeMaximum)) return true;
+			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
+				LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+			return false;
 		}
 
 	    public string AttributeName

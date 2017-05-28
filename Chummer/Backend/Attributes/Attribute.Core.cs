@@ -216,6 +216,17 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+		/// <summary>
+		/// Formatted Value of the attribute, including the sum of any modifiers in brackets.
+		/// </summary>
+	    public string DisplayValue
+	    {
+		    get
+		    {
+			    return HasModifiers ? $"{Value} ({CalculatedTotalValue()})" : $"{Value}";
+		    }
+	    }
+
         /// <summary>
         /// Augmentation modifier value for the CharacterAttribute.
         /// </summary>
@@ -849,180 +860,202 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
         /// </summary>
-        public string ToolTip()
+        public string ToolTip
         {
-            string strReturn = "";
-            strReturn += _strAbbrev + " (" + Value.ToString() + ")";
-            string strModifier = "";
+	        get
+	        {
+		        string strReturn = "";
+		        strReturn += _strAbbrev + " (" + Value.ToString() + ")";
+		        string strModifier = "";
 
-            List<string> lstUniqueName = new List<string>();
-            List<string[,]> lstUniquePair = new List<string[,]>();
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
-            {
-                if (objImprovement.Enabled && !objImprovement.Custom)
-                {
-                    if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                    {
-                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                        bool blnFound = false;
-                        foreach (string strName in lstUniqueName)
-                        {
-                            if (strName == objImprovement.UniqueName)
-                                blnFound = true;
-                            break;
-                        }
-                        if (!blnFound)
-                            lstUniqueName.Add(objImprovement.UniqueName);
+		        List<string> lstUniqueName = new List<string>();
+		        List<string[,]> lstUniquePair = new List<string[,]>();
+		        foreach (Improvement objImprovement in _objCharacter.Improvements)
+		        {
+			        if (objImprovement.Enabled && !objImprovement.Custom)
+			        {
+				        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+				            objImprovement.ImprovedName == _strAbbrev)
+				        {
+					        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+					        bool blnFound = false;
+					        foreach (string strName in lstUniqueName)
+					        {
+						        if (strName == objImprovement.UniqueName)
+							        blnFound = true;
+						        break;
+					        }
+					        if (!blnFound)
+						        lstUniqueName.Add(objImprovement.UniqueName);
 
-                        // Add the values to the UniquePair List so we can check them later.
-                        string[,] strValues = new string[,] { { objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString(), _objCharacter.GetObjectName(objImprovement) } };
-                        lstUniquePair.Add(strValues);
-                    }
-                    else
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && !(objImprovement.Value == 0 && objImprovement.Augmented == 0))
-                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
-                    }
-                }
-            }
+					        // Add the values to the UniquePair List so we can check them later.
+					        string[,] strValues = new string[,]
+					        {
+						        {
+							        objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString(),
+							        _objCharacter.GetObjectName(objImprovement)
+						        }
+					        };
+					        lstUniquePair.Add(strValues);
+				        }
+				        else
+				        {
+					        if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+					            objImprovement.ImprovedName == _strAbbrev &&
+					            !(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+						        strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
+						                       (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
+				        }
+			        }
+		        }
 
-            if (lstUniqueName.Contains("precedence0"))
-            {
-                // Retrieve only the highest precedence0 value.
-                // Run through the list of UniqueNames and pick out the highest value for each one.
-                int intHighest = -999;
+		        if (lstUniqueName.Contains("precedence0"))
+		        {
+			        // Retrieve only the highest precedence0 value.
+			        // Run through the list of UniqueNames and pick out the highest value for each one.
+			        int intHighest = -999;
 
-                foreach (string[,] strValues in lstUniquePair)
-                {
-                    if (strValues[0, 0] == "precedence0")
-                    {
-                        if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                        {
-                            intHighest = Convert.ToInt32(strValues[0, 1]);
-                            strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
-                        }
-                    }
-                }
-                if (lstUniqueName.Contains("precedence-1"))
-                {
-                    foreach (string[,] strValues in lstUniquePair)
-                    {
-                        if (strValues[0, 0] == "precedence-1")
-                        {
-                            intHighest += Convert.ToInt32(strValues[0, 1]);
-                            strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
-                        }
-                    }
-                }
-            }
-            else if (lstUniqueName.Contains("precedence1"))
-            {
-                // Retrieve all of the items that are precedence1 and nothing else.
-                strModifier = "";
-                foreach (string[,] strValues in lstUniquePair)
-                {
-                    if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
-                        strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
-                }
-            }
-            else
-            {
-                // Run through the list of UniqueNames and pick out the highest value for each one.
-                foreach (string strName in lstUniqueName)
-                {
-                    int intHighest = -999;
-                    foreach (string[,] strValues in lstUniquePair)
-                    {
-                        if (strValues[0, 0] == strName)
-                        {
-                            if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                            {
-                                intHighest = Convert.ToInt32(strValues[0, 1]);
-                                strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
-                            }
-                        }
-                    }
-                }
-            }
+			        foreach (string[,] strValues in lstUniquePair)
+			        {
+				        if (strValues[0, 0] == "precedence0")
+				        {
+					        if (Convert.ToInt32(strValues[0, 1]) > intHighest)
+					        {
+						        intHighest = Convert.ToInt32(strValues[0, 1]);
+						        strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+					        }
+				        }
+			        }
+			        if (lstUniqueName.Contains("precedence-1"))
+			        {
+				        foreach (string[,] strValues in lstUniquePair)
+				        {
+					        if (strValues[0, 0] == "precedence-1")
+					        {
+						        intHighest += Convert.ToInt32(strValues[0, 1]);
+						        strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+					        }
+				        }
+			        }
+		        }
+		        else if (lstUniqueName.Contains("precedence1"))
+		        {
+			        // Retrieve all of the items that are precedence1 and nothing else.
+			        strModifier = "";
+			        foreach (string[,] strValues in lstUniquePair)
+			        {
+				        if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
+					        strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+			        }
+		        }
+		        else
+		        {
+			        // Run through the list of UniqueNames and pick out the highest value for each one.
+			        foreach (string strName in lstUniqueName)
+			        {
+				        int intHighest = -999;
+				        foreach (string[,] strValues in lstUniquePair)
+				        {
+					        if (strValues[0, 0] == strName)
+					        {
+						        if (Convert.ToInt32(strValues[0, 1]) > intHighest)
+						        {
+							        intHighest = Convert.ToInt32(strValues[0, 1]);
+							        strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+						        }
+					        }
+				        }
+			        }
+		        }
 
-            // Factor in Custom Improvements.
-            lstUniqueName = new List<string>();
-            lstUniquePair = new List<string[,]>();
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
-            {
-                if (objImprovement.Enabled && objImprovement.Custom)
-                {
-                    if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                    {
-                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                        bool blnFound = false;
-                        foreach (string strName in lstUniqueName)
-                        {
-                            if (strName == objImprovement.UniqueName)
-                                blnFound = true;
-                            break;
-                        }
-                        if (!blnFound)
-                            lstUniqueName.Add(objImprovement.UniqueName);
+		        // Factor in Custom Improvements.
+		        lstUniqueName = new List<string>();
+		        lstUniquePair = new List<string[,]>();
+		        foreach (Improvement objImprovement in _objCharacter.Improvements)
+		        {
+			        if (objImprovement.Enabled && objImprovement.Custom)
+			        {
+				        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+				            objImprovement.ImprovedName == _strAbbrev)
+				        {
+					        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+					        bool blnFound = false;
+					        foreach (string strName in lstUniqueName)
+					        {
+						        if (strName == objImprovement.UniqueName)
+							        blnFound = true;
+						        break;
+					        }
+					        if (!blnFound)
+						        lstUniqueName.Add(objImprovement.UniqueName);
 
-                        // Add the values to the UniquePair List so we can check them later.
-                        string[,] strValues = new string[,] { { objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString(), _objCharacter.GetObjectName(objImprovement) } };
-                        lstUniquePair.Add(strValues);
-                    }
-                    else
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
-                    }
-                }
-            }
+					        // Add the values to the UniquePair List so we can check them later.
+					        string[,] strValues = new string[,]
+					        {
+						        {
+							        objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString(),
+							        _objCharacter.GetObjectName(objImprovement)
+						        }
+					        };
+					        lstUniquePair.Add(strValues);
+				        }
+				        else
+				        {
+					        if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+					            objImprovement.ImprovedName == _strAbbrev)
+						        strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
+						                       (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
+				        }
+			        }
+		        }
 
-            // Run through the list of UniqueNames and pick out the highest value for each one.
-            foreach (string strName in lstUniqueName)
-            {
-                int intHighest = -999;
-                foreach (string[,] strValues in lstUniquePair)
-                {
-                    if (strValues[0, 0] == strName)
-                    {
-                        if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                        {
-                            intHighest = Convert.ToInt32(strValues[0, 1]);
-                            strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
-                        }
-                    }
-                }
-            }
+		        // Run through the list of UniqueNames and pick out the highest value for each one.
+		        foreach (string strName in lstUniqueName)
+		        {
+			        int intHighest = -999;
+			        foreach (string[,] strValues in lstUniquePair)
+			        {
+				        if (strValues[0, 0] == strName)
+				        {
+					        if (Convert.ToInt32(strValues[0, 1]) > intHighest)
+					        {
+						        intHighest = Convert.ToInt32(strValues[0, 1]);
+						        strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+					        }
+				        }
+			        }
+		        }
 
-            //// If this is AGI or STR, factor in any Cyberlimbs.
-            StringBuilder strCyberlimb = new StringBuilder();
-            if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
-            {
-                LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                {
-                    if (objCyberware.Category == "Cyberlimb")
-                    {
-                        if (_strAbbrev == "AGI")
-                        {
-                            strCyberlimb.Append("\n");
-                            strCyberlimb.Append(objCyberware.DisplayName + " (");
-                            strCyberlimb.Append(objCyberware.TotalAgility.ToString());
-                            strCyberlimb.Append(")");
-                        }
-                        else
-                        {
-                            strCyberlimb.Append("\n");
-                            strCyberlimb.Append(objCyberware.DisplayName + " (");
-                            strCyberlimb.Append(objCyberware.TotalStrength.ToString());
-                            strCyberlimb.Append(")");
-                        }
-                    }
-                }
-                strModifier += strCyberlimb;
-            }
+		        //// If this is AGI or STR, factor in any Cyberlimbs.
+		        StringBuilder strCyberlimb = new StringBuilder();
+		        if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
+		        {
+			        LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+			        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+			        {
+				        if (objCyberware.Category == "Cyberlimb")
+				        {
+					        if (_strAbbrev == "AGI")
+					        {
+						        strCyberlimb.Append("\n");
+						        strCyberlimb.Append(objCyberware.DisplayName + " (");
+						        strCyberlimb.Append(objCyberware.TotalAgility.ToString());
+						        strCyberlimb.Append(")");
+					        }
+					        else
+					        {
+						        strCyberlimb.Append("\n");
+						        strCyberlimb.Append(objCyberware.DisplayName + " (");
+						        strCyberlimb.Append(objCyberware.TotalStrength.ToString());
+						        strCyberlimb.Append(")");
+					        }
+				        }
+			        }
+			        strModifier += strCyberlimb;
+		        }
 
-            return strReturn + strModifier;
+		        return strReturn + strModifier;
+	        }
         }
 
         /// <summary>
@@ -1081,7 +1114,9 @@ namespace Chummer.Backend.Attributes
             return intBP;
         }
 
-	    public int SpentPriorityPoints => Base - TotalMinimum;
+	    public int SpentPriorityPoints => Math.Max(Base - TotalMinimum, 0);
+
+	    public bool AtMetatypeMaximum => Value == TotalMaximum;
 
 	    /// <summary>
         /// Karma price to upgrade. Returns negative if impossible

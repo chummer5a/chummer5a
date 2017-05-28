@@ -159,8 +159,9 @@ namespace Chummer
 		// Attributes.
         public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
         private Dictionary<string, CharacterAttrib> _attributes = new Dictionary<string, CharacterAttrib>();
-        
-        private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
+		private Dictionary<string, CharacterAttrib> _specialAttributes = new Dictionary<string, CharacterAttrib>();
+
+		private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
         private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
         private CharacterAttrib _attREA = new CharacterAttrib("REA");
         private CharacterAttrib _attSTR = new CharacterAttrib("STR");
@@ -174,7 +175,6 @@ namespace Chummer
         private CharacterAttrib _attRES = new CharacterAttrib("RES");
         private CharacterAttrib _attESS = new CharacterAttrib("ESS");
         private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
-
 
         // Shapeshifter Attributes.
 
@@ -312,6 +312,20 @@ namespace Chummer
             RES._objCharacter = this;
             ESS._objCharacter = this;
 			DEP._objCharacter = this;
+
+			_attributes.Add("BOD", _attBOD);
+			_attributes.Add("AGI", _attAGI);
+			_attributes.Add("REA", _attREA);
+			_attributes.Add("STR", _attSTR);
+			_attributes.Add("CHA", _attCHA);
+			_attributes.Add("INT", _attINT);
+			_attributes.Add("LOG", _attLOG);
+			_attributes.Add("WIL", _attWIL);
+			_specialAttributes.Add("EDG", _attEDG);
+			_specialAttributes.Add("MAG", _attMAG);
+			_specialAttributes.Add("RES", _attRES);
+			_specialAttributes.Add("DEP", _attDEP);
+
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
 			SkillsSection = new SkillsSection(this);
@@ -1238,62 +1252,62 @@ namespace Chummer
             if (objXmlCharacter != null)
             {
                 _attAGI.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
             if (objXmlCharacter != null)
             {
                 _attREA.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
             if (objXmlCharacter != null)
             {
                 _attSTR.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
             if (objXmlCharacter != null)
             {
                 _attCHA.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
             if (objXmlCharacter != null)
             {
                 _attINT.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
             if (objXmlCharacter != null)
             {
                 _attLOG.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
             if (objXmlCharacter != null)
             {
                 _attWIL.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
             if (objXmlCharacter != null)
             {
                 _attINI.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
             if (objXmlCharacter != null)
             {
                 _attEDG.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
             if (objXmlCharacter != null)
             {
                 _attMAG.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
             if (objXmlCharacter != null)
             {
                 _attRES.Load(objXmlCharacter);
-            }
+			}
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
             if (objXmlCharacter != null)
             {
                 _attESS.Load(objXmlCharacter);
-            }
+			}
 
             // A.I. Attributes.
             try
@@ -1302,7 +1316,7 @@ namespace Chummer
                 if (objXmlCharacter != null)
                 {
                     _attDEP.Load(objXmlCharacter);
-                }
+				}
             }
             catch
             {
@@ -3091,6 +3105,20 @@ namespace Chummer
 			set
 			{
 				_attributes = value;
+			}
+		}
+		/// <summary>
+		/// Character's Attributes.
+		/// </summary>
+		public Dictionary<string, CharacterAttrib> SpecialAttributeList
+		{
+			get
+			{
+				return _specialAttributes;
+			}
+			set
+			{
+				_specialAttributes = value;
 			}
 		}
 		/// <summary>
@@ -7240,8 +7268,8 @@ namespace Chummer
 			Improvement.ImprovementType.SpecialSkills,
 			Improvement.ImprovementType.ReflexRecorderOptimization,
 		};
-
-        //To get when things change in improvementmanager
+		
+	    //To get when things change in improvementmanager
 		//Ugly, ugly done, but we cannot get events out of it today
 		// FUTURE REFACTOR HERE
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]

@@ -212,6 +212,9 @@
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </Compile>
     <Compile Include="helpers\Guid.cs" />
+    <Compile Include="helpers\Label.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>

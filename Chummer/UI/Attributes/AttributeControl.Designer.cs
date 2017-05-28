@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
 			this.cmdImproveATT = new System.Windows.Forms.Button();
-			this.lblValue = new System.Windows.Forms.Label();
-			this.lblName = new System.Windows.Forms.Label();
-			this.lblLimits = new System.Windows.Forms.Label();
+			this.lblValue = new Chummer.helpers.Label();
+			this.lblName = new Chummer.helpers.Label();
+			this.lblLimits = new Chummer.helpers.Label();
 			this.cmdBurnEdge = new System.Windows.Forms.Button();
 			this.nudKarma = new Chummer.helpers.NumericUpDownEx();
 			this.nudBase = new Chummer.helpers.NumericUpDownEx();
@@ -139,9 +139,9 @@
         #endregion
 
         private System.Windows.Forms.Button cmdImproveATT;
-        internal System.Windows.Forms.Label lblValue;
-        internal System.Windows.Forms.Label lblName;
-        internal System.Windows.Forms.Label lblLimits;
+        internal Chummer.helpers.Label lblValue;
+        internal Chummer.helpers.Label lblName;
+        internal Chummer.helpers.Label lblLimits;
         internal Chummer.helpers.NumericUpDownEx nudKarma;
         internal Chummer.helpers.NumericUpDownEx nudBase;
 		private System.Windows.Forms.Button cmdBurnEdge;
