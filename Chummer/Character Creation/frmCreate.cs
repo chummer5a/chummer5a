@@ -770,10 +770,7 @@ namespace Chummer
             PopulateCyberwareList();
 
             // Populate Spell list.
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                treSpells.Add(objSpell, cmsSpell, _objCharacter);
-                }
+            RefreshSpells(treSpells, cmsSpell, _objCharacter);
 
             // Populate Magician Spirits.
             i = -1;
@@ -6810,7 +6807,8 @@ namespace Chummer
             RefreshAIPrograms();
             RefreshLimitModifiers();
             RefreshContacts();
-			RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
+            RefreshSpells(treSpells, cmsSpell, _objCharacter);
+            RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
             _blnIsDirty = true;
             UpdateWindowTitle();
 
@@ -7053,7 +7051,7 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            
+            RefreshSpells(treSpells, cmsSpell, _objCharacter);
             RefreshContacts();
 			_blnIsDirty = true;
             UpdateWindowTitle();

@@ -20604,11 +20604,12 @@ namespace Chummer
 			//Update the Spell Defence tab.
 			UpdateSpellDefence();
 
+            RefreshSpells(treSpells, cmsSpell, _objCharacter);
 
-			// Update the CharacterAttribute information.
+            // Update the CharacterAttribute information.
 
-			// Character Attribute: BOD
-			UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip);
+            // Character Attribute: BOD
+            UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip);
 
 			// Character Attribute: AGI
 			UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip);

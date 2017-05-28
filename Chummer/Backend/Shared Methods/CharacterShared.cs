@@ -406,12 +406,31 @@ namespace Chummer
 			objSelectedNode.Remove();
 		}
 
-		/// <summary>
-		/// Clears and updates the treeview for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
-		/// </summary>
-		/// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
-		/// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
-		protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
+        /// <summary>
+        /// Clears and updates the treeview for Spells. Typically called as part of AddQuality or UpdateCharacterInfo.
+        /// </summary>
+        /// <param name="treSpells">Treenode that will be cleared and populated.</param>
+        /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
+        protected void RefreshSpells(helpers.TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
+        {
+            //Clear the default nodes of entries.
+            foreach (TreeNode objNode in treSpells.Nodes)
+            {
+                objNode.Nodes.Clear();
+            }
+            //Add the Spells that exist.
+            foreach (Spell s in _objCharacter.Spells)
+            {
+                treSpells.Add(s, cmsSpell, _objCharacter);
+            }
+        }
+
+        /// <summary>
+        /// Clears and updates the treeview for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
+        /// </summary>
+        /// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
+        /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
+        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
 		{
 			//Clear the default nodes of entries.
 			foreach (TreeNode objNode in treCritterPowers.Nodes)

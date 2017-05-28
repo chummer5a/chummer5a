@@ -172,7 +172,7 @@ namespace Chummer
 	        int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) +
 	                         _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpellsATT);
 
-			chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
+            chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
         }
 
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)

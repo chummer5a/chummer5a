@@ -14,6 +14,7 @@ Application Changes:
 - Updated the Build Summary tab to properly show the spell limits in create mode. Fixes #1662
 - Implemented the Free Spell bonus type for Dedicated Spellslinger. 
 - Fixed behaviour of the Draconic Tradition when printing it to not cause a crash. 
+- Implemented the AddSpell improvement type for the Alchemical Armorer quality. 
 
 Data Changes:
 

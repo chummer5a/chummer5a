@@ -9,6 +9,7 @@ using Chummer.Annotations;
 using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
+// ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
 {
@@ -1044,6 +1045,52 @@ namespace Chummer.Classes
 			CreateImprovement(frmPickSpell.SelectedSpell, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
 				_strUnique);
 		}
+
+        // Add a specific Spell to the Character.
+        public void addspell(XmlNode bonusNode)
+        {
+            Log.Info("addspell");
+
+            Log.Info("addspell = " + bonusNode.OuterXml.ToString());
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            XmlDocument objXmlSpellDocument = XmlManager.Instance.Load("spells.xml");
+
+            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + bonusNode.InnerText + "\"]");
+
+            if (node == null) return;
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            if (node["bonus"]?["selecttext"] != null)
+            {
+                
+                frmSelectText frmPickText = new frmSelectText();
+                frmPickText.Description =
+                    LanguageManager.Instance.GetString("String_Improvement_SelectText")
+                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText);
+                frmPickText.ShowDialog();
+                strExtra = frmPickText.SelectedValue;
+            }
+
+            Spell spell = new Spell(_objCharacter);
+            spell.Create(node, _objCharacter, new TreeNode(), strExtra);
+            if (spell.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.Spells.Add(spell);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Spell,
+                _strUnique);
+        }
 
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)

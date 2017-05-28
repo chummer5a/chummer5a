@@ -192,7 +192,8 @@ namespace Chummer
             SprintSpeed,
             EssencePenalty,
 			FreeSpellsATT,
-	        FreeSpells
+	        FreeSpells,
+            Spell
         }
 
         public enum ImprovementSource
