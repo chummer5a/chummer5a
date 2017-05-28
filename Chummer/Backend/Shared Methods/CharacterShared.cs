@@ -30,6 +30,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace Chummer
@@ -246,43 +247,6 @@ namespace Chummer
 					Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
 				objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
 					Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-			}
-		}
-
-		/// <summary>
-		/// Update the labels and tooltips for the character's Attributes.
-		/// </summary>
-		/// <param name="objAttribute"></param>
-		/// <param name="lblATTMetatype"></param>
-		/// <param name="lblATTAug"></param>
-		/// <param name="tipTooltip"></param>
-		/// <param name="nudATT"></param>
-		protected void UpdateCharacterAttribute(CharacterAttrib objAttribute, Label lblATTMetatype, Label lblATTAug,
-			HtmlToolTip tipTooltip, [Optional] NumericUpDown nudATT, [Optional] NumericUpDown nudKATT)
-		{
-			if (nudATT != null)
-			{
-				nudATT.Minimum = objAttribute.TotalMinimum;
-				nudATT.Maximum = objAttribute.TotalMaximum;
-				nudATT.Value = Math.Max(objAttribute.Value - objAttribute.Karma, objAttribute.Base);
-			}
-			if (nudKATT != null)
-			{
-				nudKATT.Minimum = 0;
-				nudKATT.Maximum = objAttribute.TotalMaximum;
-				nudKATT.Value = objAttribute.Karma;
-			}
-			lblATTMetatype.Text =
-			    $"{objAttribute.TotalMinimum} / {objAttribute.TotalMaximum} ({objAttribute.TotalAugmentedMaximum})";
-			if (objAttribute.HasModifiers)
-			{
-				lblATTAug.Text = $"{objAttribute.Value} ({objAttribute.TotalValue})";
-				tipTooltip.SetToolTip(lblATTAug, objAttribute.ToolTip());
-			}
-			else
-			{
-				lblATTAug.Text = $"{objAttribute.Value}";
-				tipTooltip.SetToolTip(lblATTAug, string.Empty);
 			}
 		}
 

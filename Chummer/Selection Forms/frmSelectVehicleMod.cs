@@ -71,56 +71,19 @@ namespace Chummer
             // Load the Mod information.
             _objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
 
-			// Populate the Weapon Category list.
-			if (!string.IsNullOrEmpty(_strLimitToCategories))
-			{
-				string[] strValues = _strLimitToCategories.Split(',');
+			string[] strValues = _strLimitToCategories.Split(',');
 
-				// Populate the Category list.
-				XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
-				foreach (XmlNode objXmlCategory in objXmlNodeList)
-				{
-					foreach (string strCategory in strValues)
-					{
-						if (strCategory == objXmlCategory.InnerText)
-						{
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlCategory.InnerText;
-							if (objXmlCategory.Attributes != null)
-							{
-								if (objXmlCategory.Attributes["translate"] != null)
-									objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-								else
-									objItem.Name = objXmlCategory.InnerText;
-							}
-							else
-							{
-								objItem.Name = objXmlCategory.InnerXml;
-							}
-							_lstCategory.Add(objItem);
-						}
-					}
-				}
-			}
-			else
+			// Populate the Category list.
+			// Populate the Category list.
+			XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
+			foreach (XmlNode objXmlCategory in objXmlNodeList)
 			{
-				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
-
-				foreach (XmlNode objXmlCategory in objXmlCategoryList)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objXmlCategory.InnerText;
-					if (objXmlCategory.Attributes != null)
-					{
-						if (objXmlCategory.Attributes["translate"] != null)
-							objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-						else
-							objItem.Name = objXmlCategory.InnerText;
-					}
-					else
-						objItem.Name = objXmlCategory.InnerXml;
-					_lstCategory.Add(objItem);
-				}
+				if (_strLimitToCategories != "" && strValues.All(value => value != objXmlCategory.InnerText))
+					continue;
+				ListItem objItem = new ListItem();
+				objItem.Value = objXmlCategory.InnerText;
+				objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+				_lstCategory.Add(objItem);
 			}
 			SortListItem objSort = new SortListItem();
 			_lstCategory.Sort(objSort.Compare);
@@ -150,12 +113,14 @@ namespace Chummer
             // Load the Vehicle information.
             _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 
-            XmlNode objXmlVehicleNode = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _objVehicle.Name + "\"]");
+            XmlNode objXmlVehicleNode = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _objVehicle.SourceID + "\"]");
 
             List<ListItem> lstMods = new List<ListItem>();
 			XmlNodeList objXmlModList = null;
 			// Populate the Mod list.
-			objXmlModList = cboCategory.SelectedValue?.ToString() != "All" ? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]") : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
+			objXmlModList = cboCategory.SelectedValue != null && (string) cboCategory.SelectedValue != "All" 
+			? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]") 
+			: _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
 			if (objXmlModList != null)
 				foreach (XmlNode objXmlMod in objXmlModList)
 				{
@@ -216,8 +181,8 @@ namespace Chummer
 					{
 						continue;
 					}
-					ListItem objItem = new ListItem {Value = objXmlMod["name"]?.InnerText};
-					objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
+					ListItem objItem = new ListItem {Value = objXmlMod["id"]?.InnerText};
+					objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"]?.InnerText;
 					lstMods.Add(objItem);
 				}
 			lstMod.BeginUpdate();
@@ -609,7 +574,7 @@ namespace Chummer
 					}
 
 					ListItem objItem = new ListItem();
-					objItem.Value = objXmlMod["name"].InnerText;
+					objItem.Value = objXmlMod["id"].InnerText;
 					objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
 					lstMods.Add(objItem);
                 NextItem:;
@@ -648,7 +613,7 @@ namespace Chummer
 			{
 				// Retireve the information for the selected Mod.
 				// Filtering is also done on the Category in case there are non-unique names across categories.
-				XmlNode objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + lstMod.SelectedValue + "\"]");
+				XmlNode objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + lstMod.SelectedValue + "\"]");
 
 				// Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
 				// This is done using XPathExpression.

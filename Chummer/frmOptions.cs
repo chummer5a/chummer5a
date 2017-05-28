@@ -189,9 +189,10 @@ namespace Chummer
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
 		    _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
 		    _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
+			_characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
 
-            // Build Priority options.
-            _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
+			// Build Priority options.
+			_characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
             _characterOptions.UseContactPoints = chkContactPoints.Checked;
 
             // Build method options.
@@ -649,6 +650,7 @@ namespace Chummer
 			chkStrictSkillGroups.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
 			chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
 	        chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
+		    chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
 			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;

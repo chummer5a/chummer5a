@@ -652,7 +652,7 @@ namespace Chummer
 						_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgaug"].InnerText, intForce, 0));
 						_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
                         _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
-                    }
+					}
 					else
 					{
 						int intMinModifier = -3;
@@ -669,9 +669,9 @@ namespace Chummer
 						_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3));
 						_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
                         _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 3));
-                    }
+					}
 
-					// If we're working with a Critter, set the Attributes to their default values.
+					/* If we're working with a Critter, set the Attributes to their default values.
 					if (strFile == "critters.xml")
 					{
 						_objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
@@ -748,7 +748,7 @@ namespace Chummer
 						_objCharacter.Qualities.Add(objQuality);
 					}
 
-					// Run through the character's Attributes one more time and make sure their value matches their minimum value.
+					/* Run through the character's Attributes one more time and make sure their value matches their minimum value.
 					if (strFile == "metatypes.xml")
 					{
 						_objCharacter.BOD.Value = _objCharacter.BOD.TotalMinimum;
@@ -759,7 +759,7 @@ namespace Chummer
 						_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 						_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 						_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
-					}
+					}*/
 
 					// Add any Critter Powers the Metatype/Critter should have.
 					XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 // ReSharper disable InconsistentNaming
@@ -2560,6 +2561,20 @@ namespace Chummer.Classes
 				}
 				ForcedValue = strForce;
 				_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
+			}
+
+			if (frmPickMentorSpirit.MentorsMask)
+			{
+				Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
+				Log.Info("Calling CreateImprovement");
+				bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+					_blnConcatSelectedValue, _intRating, _strFriendlyName);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
+				if (!blnSuccess)
+				{
+					throw new AbortedException();
+				}
 			}
 
 			SelectedValue = strHoldValue;

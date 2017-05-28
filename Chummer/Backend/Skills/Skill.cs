@@ -13,6 +13,7 @@ using Chummer.Annotations;
 using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Skills
 {

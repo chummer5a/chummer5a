@@ -23,6 +23,9 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Shared_Methods;
+using Chummer.Backend.Equipment;
+using Chummer.Skills;
+using Chummer.Backend.Attributes;
 
 namespace Chummer
 {

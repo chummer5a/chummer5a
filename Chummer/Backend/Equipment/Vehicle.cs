@@ -58,6 +58,7 @@ namespace Chummer.Backend.Equipment
 		// Condition Monitor Progress.
 		private int _intPhysicalCMFilled = 0;
 		private int _intMatrixCMFilled = 0;
+		private Guid _sourceID;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Vehicle(Character objCharacter)
@@ -77,7 +78,8 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
-            objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
+			objXmlVehicle.TryGetField("id", Guid.TryParse, out _sourceID);
+			objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
             objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objXmlVehicle["handling"] != null)
             {
@@ -183,11 +185,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objVehicleNode != null)
-				{
-					if (objVehicleNode.Attributes["translate"] != null)
-						_strAltCategory = objVehicleNode.Attributes["translate"].InnerText;
-				}
+				_strAltCategory = objVehicleNode?.Attributes?["translate"].InnerText;
 			}
 
 			objNode.Text = DisplayName;
@@ -379,6 +377,7 @@ namespace Chummer.Backend.Equipment
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("vehicle");
+			objWriter.WriteElementString("id", _sourceID.ToString());
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
@@ -467,8 +466,14 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.Parse(objNode["guid"].InnerText);
                 objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
             }
-            
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+
+			objNode.TryGetStringFieldQuickly("name", ref _strName);
+			if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
+			{
+				XmlDocument doc = XmlManager.Instance.Load("vehicles.xml");
+				XmlNode sourceNode = doc.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
+				sourceNode.TryGetField("id", Guid.TryParse, out _sourceID);
+			}
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["handling"] != null)
             {
@@ -551,11 +556,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objVehicleNode != null)
-				{
-					if (objVehicleNode.Attributes["translate"] != null)
-						_strAltCategory = objVehicleNode.Attributes["translate"].InnerText;
-				}
+				_strAltCategory = objVehicleNode?.Attributes?["translate"].InnerText;
 			}
 
 			if (objNode.InnerXml.Contains("<mods>"))
@@ -692,6 +693,14 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				return _guiID.ToString();
+			}
+		}
+
+		public Guid SourceID
+		{
+			get
+			{
+				return _sourceID;
 			}
 		}
 
