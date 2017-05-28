@@ -785,49 +785,6 @@ namespace Chummer
 					}
 				}
 
-				// Run through the character's Attributes one more time and make sure their value matches their minimum value.
-				if (_strXmlFile == "metatypes.xml")
-				{
-					/*_objCharacter.BOD.Value = _objCharacter.BOD.TotalMinimum;
-					_objCharacter.AGI.Value = _objCharacter.AGI.TotalMinimum;
-					_objCharacter.REA.Value = _objCharacter.REA.TotalMinimum;
-					_objCharacter.STR.Value = _objCharacter.STR.TotalMinimum;
-					_objCharacter.CHA.Value = _objCharacter.CHA.TotalMinimum;
-					_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
-					_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
-					_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
-                    _objCharacter.EDG.Value = _objCharacter.EDG.TotalMinimum;
-					_objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
-					_objCharacter.RES.Value = _objCharacter.RES.TotalMinimum;
-					_objCharacter.DEP.Value = _objCharacter.DEP.TotalMinimum;*/
-
-					_objCharacter.BOD.Base = _objCharacter.BOD.TotalMinimum;
-					_objCharacter.AGI.Base = _objCharacter.AGI.TotalMinimum;
-					_objCharacter.REA.Base = _objCharacter.REA.TotalMinimum;
-					_objCharacter.STR.Base = _objCharacter.STR.TotalMinimum;
-					_objCharacter.CHA.Base = _objCharacter.CHA.TotalMinimum;
-					_objCharacter.INT.Base = _objCharacter.INT.TotalMinimum;
-					_objCharacter.LOG.Base = _objCharacter.LOG.TotalMinimum;
-                    _objCharacter.EDG.Base = _objCharacter.EDG.TotalMinimum;
-					_objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
-					_objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
-					_objCharacter.RES.Base = _objCharacter.RES.TotalMinimum;
-					_objCharacter.DEP.Base = _objCharacter.DEP.TotalMinimum;
-
-					_objCharacter.BOD.Karma = 0;
-					_objCharacter.AGI.Karma = 0;
-					_objCharacter.REA.Karma = 0;
-					_objCharacter.STR.Karma = 0;
-					_objCharacter.CHA.Karma = 0;
-					_objCharacter.INT.Karma = 0;
-					_objCharacter.LOG.Karma = 0;
-					_objCharacter.WIL.Karma = 0;
-					_objCharacter.EDG.Karma = 0;
-					_objCharacter.MAG.Karma = 0;
-					_objCharacter.RES.Karma = 0;
-					_objCharacter.DEP.Karma = 0;
-				}
-
 				// Add any Critter Powers the Metatype/Critter should have.
 				XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 

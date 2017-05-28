@@ -167,7 +167,7 @@
             0,
             0});
 			this.nudSkill.Name = "nudSkill";
-			this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.WhenFocusOrMouseOver;
+			this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
 			this.nudSkill.Size = new System.Drawing.Size(40, 20);
 			this.nudSkill.TabIndex = 15;
 			// 
@@ -181,7 +181,7 @@
             0,
             0});
 			this.nudKarma.Name = "nudKarma";
-			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.WhenFocusOrMouseOver;
+			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
 			this.nudKarma.Size = new System.Drawing.Size(40, 20);
 			this.nudKarma.TabIndex = 14;
 			// 

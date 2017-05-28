@@ -1935,7 +1935,7 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strDV.Replace('/', '÷');
+				string strReturn = DV.Replace('/', '÷');
 				strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_SpellForce"));
 				strReturn = strReturn.Replace("Overflow damage", LanguageManager.Instance.GetString("String_SpellOverflowDamage"));
 				strReturn = strReturn.Replace("Damage Value", LanguageManager.Instance.GetString("String_SpellDamageValue"));
@@ -1943,7 +1943,7 @@ namespace Chummer
 				strReturn = strReturn.Replace("Disease DV", LanguageManager.Instance.GetString("String_SpellDiseaseDV"));
 				strReturn = strReturn.Replace("Radiation Power", LanguageManager.Instance.GetString("String_SpellRadiationPower"));
 
-                //if (_blnExtended)
+				//if (_blnExtended)
                 //{
                 //    // Add +2 to the DV value if Extended is selected.
                 //    int intPos = strReturn.IndexOf(')') + 1;
@@ -1980,44 +1980,49 @@ namespace Chummer
 
 				if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
 				{
-					if (_objCharacter.Options.SpiritForceBasedOnTotalMAG)
-						intMAG = _objCharacter.MAG.TotalValue;
-					else
-						intMAG = _objCharacter.MAG.Value;
+					intMAG = _objCharacter.Options.SpiritForceBasedOnTotalMAG ? _objCharacter.MAG.TotalValue : _objCharacter.MAG.Value;
 				}
 
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				XPathExpression xprDV;
-                object xprResult = null;
 
-					for (int i = 1; i <= intMAG * 2; i++)
-					{
-						// Calculate the Spell's Drain for the current Force.
-						xprDV = nav.Compile(_strDV.Replace("F", i.ToString()).Replace("/", " div "));
-                    
-                    try
-                    {
-                        xprResult = nav.Evaluate(xprDV);
-                    }
-                    catch (XPathException)
-                    {
-                        xprResult = null;
-                    }
-                    if (xprResult != null && _strDV != "Special")
-                    {
-                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(),GlobalOptions.InvariantCultureInfo)));
-                        // Drain cannot be lower than 2.
-                        if (intDV < 2)
-                            intDV = 2;
-                        strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
-                    }
-                    else
+				for (int i = 1; i <= intMAG * 2; i++)
 				{
-					strTip = LanguageManager.Instance.GetString("Tip_SpellDrainSeeDescription");
-                        break;
+					// Calculate the Spell's Drain for the current Force.
+					XPathExpression xprDV = nav.Compile(DV.Replace("F", i.ToString()).Replace("/", " div "));
+
+					object xprResult = null;
+					try
+					{
+						xprResult = nav.Evaluate(xprDV);
+					}
+					catch (XPathException)
+					{
+						xprResult = null;
+					}
+
+					if (xprResult != null && DV != "Special")
+					{
+						int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+
+						// Drain cannot be lower than 2.
+						if (intDV < 2)
+							intDV = 2;
+						strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i + ": " + intDV;
+					}
+					else
+					{
+						strTip = LanguageManager.Instance.GetString("Tip_SpellDrainSeeDescription");
+						break;
+					}
 				}
-                }
+				if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category)))
+				{
+					strTip += $"\n {LanguageManager.Instance.GetString("Label_Bonus")}";
+					strTip = _objCharacter.Improvements
+						.Where(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category))
+						.Aggregate(strTip, (current, imp) => current + $"\n {imp.ImprovedName} ({imp.Value:+0;-0;0})");
+				}
 
 				return strTip;
 			}
@@ -2146,7 +2151,47 @@ namespace Chummer
 		{
 			get
 			{
-				return _strDV;
+				string strReturn = _strDV;
+				bool force = _strDV.StartsWith("F");
+				if (_objCharacter.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.DrainValue))
+				{
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+					XPathExpression xprDV;
+					int intPos = 0;
+					string dv = string.Empty;
+					if (strReturn.Contains('-'))
+					{
+						dv = strReturn.Substring(strReturn.LastIndexOf('-'));
+					}
+					else if (strReturn.Contains('+'))
+					{
+						dv = strReturn.Substring(strReturn.LastIndexOf('+'));
+					}
+					foreach (
+						Improvement imp in
+						_objCharacter.Improvements.Where(
+							i =>
+								i.ImproveType == Improvement.ImprovementType.DrainValue &&
+								(i.UniqueName == string.Empty || i.UniqueName == Category)))
+					{
+						dv += $" + {imp.Value:+0;-0;0}";
+					}
+
+					object xprResult = null;
+					xprDV = nav.Compile(dv);
+
+					xprResult = nav.Evaluate(xprDV);
+					if (force)
+					{
+						strReturn = $"F{xprResult:+0;-0;0}";
+					}
+					else
+					{
+						strReturn += xprResult;
+					}
+				}
+				return strReturn;
 			}
 			set
 			{

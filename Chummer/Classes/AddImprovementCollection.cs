@@ -2516,6 +2516,20 @@ namespace Chummer.Classes
 				_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
 			}
 
+			if (frmPickMentorSpirit.MentorsMask)
+			{
+				Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
+				Log.Info("Calling CreateImprovement");
+				bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+					_blnConcatSelectedValue, _intRating, _strFriendlyName);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
+				if (!blnSuccess)
+				{
+					throw new AbortedException();
+				}
+			}
+
 			SelectedValue = strHoldValue;
 			Log.Info("_strSelectedValue = " + SelectedValue);
 			Log.Info("_strForcedValue = " + ForcedValue);

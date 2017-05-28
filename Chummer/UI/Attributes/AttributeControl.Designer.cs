@@ -96,7 +96,7 @@
 			this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
 			this.nudKarma.Location = new System.Drawing.Point(165, 1);
 			this.nudKarma.Name = "nudKarma";
-			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.WhenFocusOrMouseOver;
+			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
 			this.nudKarma.Size = new System.Drawing.Size(40, 20);
 			this.nudKarma.TabIndex = 77;
 			this.nudKarma.ValueChanged += new System.EventHandler(this.nudKarma_ValueChanged);
@@ -106,7 +106,7 @@
 			this.nudBase.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
 			this.nudBase.Location = new System.Drawing.Point(119, 1);
 			this.nudBase.Name = "nudBase";
-			this.nudBase.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.WhenFocusOrMouseOver;
+			this.nudBase.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
 			this.nudBase.Size = new System.Drawing.Size(40, 20);
 			this.nudBase.TabIndex = 76;
 			this.nudBase.Value = new decimal(new int[] {

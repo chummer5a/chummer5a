@@ -212,7 +212,7 @@ namespace Chummer.Backend.Attributes
             {
                 //This amount of object allocation is uglier than the US national dept, but improvementmanager is due for a rewrite anyway
                 ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
-                return Base + Karma + MetatypeMinimum + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
+                return Base + Karma + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
             }
         }
 

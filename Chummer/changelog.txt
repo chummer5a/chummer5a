@@ -17,6 +17,8 @@ Application Changes:
 - Fixed behaviour of the Select Mentor Spirit window to not rely on names. Fixes an issue with the duplicate Oak mentors. 
 - Cleaned up some minor issues with the Select Vehicle Mod window.
 - Added a SourceID to Vehicles. 
+- Fixed display of attribute Value to not include metatype minimum multiple times
+- Implemented the Mentor's Mask from Forbidden Arcana. 
 
 Data Changes:
 

@@ -146,18 +146,20 @@ namespace Chummer
 					cboChoice2.ValueMember = "Value";
 					cboChoice2.DisplayMember = "Name";
 					cboChoice2.DataSource = lstChoice2;
+					chkMentorMask.Top = cboChoice2.Top + cboChoice2.Height + 6;
 				}
                 else 
                 {
                     lblChoice2.Visible = false;
                     cboChoice2.Visible = false;
-                }
+					chkMentorMask.Top = cboChoice1.Top + cboChoice1.Height + 6;
+				}
 
                 lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
                 cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
                 lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
                 cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
-            }
+			}
 			else
 			{
 				lblChoice1.Visible = false;
@@ -220,6 +222,10 @@ namespace Chummer
 		/// </summary>
 		public XmlNode Choice2BonusNode => _nodChoice2Bonus;
 
+		/// <summary>
+		/// Whether the character manifests the Mentor's Mask. Used externally to create improvements.
+		/// </summary>
+		public bool MentorsMask => chkMentorMask.Checked;
 		#endregion
 
 		#region Methods
