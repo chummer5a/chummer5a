@@ -18,7 +18,8 @@ Application Changes:
 - Cleaned up some minor issues with the Select Vehicle Mod window.
 - Added a SourceID to Vehicles. 
 - Fixed display of attribute Value to not include metatype minimum multiple times
-- Implemented the Mentor's Mask from Forbidden Arcana. 
+- Implemented the Mentor's Mask from Forbidden Arcana, accessed through the Select Mentor Spirit window. Existing characters should remove and re-add the quality to choose this property. 
+- Added missing dice and multipliers for basic lifestyles. Existing characters should open any current lifestyles in order to refresh the values.
 
 Data Changes:
 
