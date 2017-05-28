@@ -26680,14 +26680,14 @@ namespace Chummer
             pnlAttributes.Controls.Clear();
             lstPrimaryAttributes.Clear();
             lstSpecialAttributes.Clear();
-            lstPrimaryAttributes.Add(_objCharacter.STR);
-            lstPrimaryAttributes.Add(_objCharacter.AGI);
             lstPrimaryAttributes.Add(_objCharacter.BOD);
+            lstPrimaryAttributes.Add(_objCharacter.AGI);
             lstPrimaryAttributes.Add(_objCharacter.REA);
-            lstPrimaryAttributes.Add(_objCharacter.WIL);
-            lstPrimaryAttributes.Add(_objCharacter.LOG);
+            lstPrimaryAttributes.Add(_objCharacter.STR);
             lstPrimaryAttributes.Add(_objCharacter.CHA);
             lstPrimaryAttributes.Add(_objCharacter.INT);
+            lstPrimaryAttributes.Add(_objCharacter.LOG);
+            lstPrimaryAttributes.Add(_objCharacter.WIL);
 
             lstSpecialAttributes.Add(_objCharacter.EDG);
             if (_objCharacter.MAGEnabled)
