@@ -4778,7 +4778,7 @@ namespace Chummer
             // Open the Weapons XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
@@ -7509,7 +7509,7 @@ namespace Chummer
             // Open the Weapons XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
@@ -7640,7 +7640,7 @@ namespace Chummer
             // Open the Weapons XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
@@ -8173,7 +8173,7 @@ namespace Chummer
             // Open the Weapons XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
@@ -12873,60 +12873,69 @@ namespace Chummer
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
-        private int CalculateAttributeBP()
+        private int CalculateAttributeBP(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null)
         {
             int intBP = 0;
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
-            foreach (CharacterAttrib att in _objCharacter.AttributeList.Values)
+            foreach (CharacterAttrib att in attribs)
             {
                 intBP += att.TotalKarmaCost();
             }
-            foreach (CharacterAttrib att in _objCharacter.SpecialAttributeList.Values)
-            {
-                intBP += att.TotalKarmaCost();
-            }
-            return intBP;
+	        if (extraAttribs != null)
+	        {
+		        foreach (CharacterAttrib att in extraAttribs)
+		        {
+			        intBP += att.TotalKarmaCost();
+		        }
+	        }
+	        return intBP;
         }
 
-		private int CalculteAttributePriorityPoints()
+		private int CalculteAttributePriorityPoints(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null)
 		{
 			int intAtt = 0;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
 				_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
 				// Get the total of "free points" spent
-				foreach (CharacterAttrib att in _objCharacter.AttributeList.Values)
+				foreach (CharacterAttrib att in attribs)
 				{
 					intAtt += att.SpentPriorityPoints;
+				}
+				if (extraAttribs != null)
+				{
+					// Get the total of "free points" spent
+					foreach (CharacterAttrib att in extraAttribs)
+					{
+						intAtt += att.SpentPriorityPoints;
+					}
 				}
 			}
 			return intAtt;
 		}
 
-		private string BuildAttributes
+		private string BuildAttributes(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null, bool special = false)
 		{
-			get
+			string s = string.Empty;
+			int bp = CalculateAttributeBP(attribs, extraAttribs);
+			int att = CalculteAttributePriorityPoints(attribs, extraAttribs);
+			int total = special ? _objCharacter.TotalSpecial : _objCharacter.TotalAttributes;
+			if ((_objCharacter.BuildMethod == CharacterBuildMethod.Priority) ||
+				(_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen))
 			{
-				string s = string.Empty;
-				int intBP = CalculateAttributeBP();
-				int intAtt = CalculteAttributePriorityPoints();
-				if ((_objCharacter.BuildMethod == CharacterBuildMethod.Priority) ||
-				    (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen))
+				if (bp > 0)
 				{
-					if (intBP > 0)
-					{
-						s = string.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"),
-							(_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString(), intBP.ToString());
-					}
-					else
-					{
-						s = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}",
-							(_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString());
-					}
+					s = string.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"),
+						(total - att).ToString(), total.ToString(), bp.ToString());
 				}
-				return s;
+				else
+				{
+					s = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}",
+						(total - att).ToString(), total.ToString());
+				}
 			}
+			return s;
 		}
 		
 		/// <summary>
@@ -13119,10 +13128,12 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = CalculateAttributeBP();
-            intKarmaPointsRemain -= intAttributePointsUsed;
-            lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
-	        lblPBuildAttributes.Text = BuildAttributes;
+            int intAttributePointsUsed = CalculateAttributeBP(_objCharacter.AttributeList);
+	        lblPBuildAttributes.Text = BuildAttributes(_objCharacter.AttributeList);
+			intAttributePointsUsed += CalculateAttributeBP(_objCharacter.SpecialAttributeList);
+			lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
+			intKarmaPointsRemain -= intAttributePointsUsed;
+			lblPBuildSpecial.Text = BuildAttributes(_objCharacter.SpecialAttributeList,null,true);
 			// ------------------------------------------------------------------------------
 			// Include the BP used by Martial Arts.
 			int intMartialArtsPoints = 0;

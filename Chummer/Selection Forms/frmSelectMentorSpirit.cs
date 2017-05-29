@@ -237,7 +237,7 @@ namespace Chummer
 			if (string.IsNullOrEmpty(lstMentor.Text)) return;
 			XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
 
-			SelectedMentor = objXmlMentor["name"].InnerText;
+			SelectedMentor = objXmlMentor["id"].InnerText;
 
 			if (objXmlMentor.InnerXml.Contains("<bonus>"))
 				_nodBonus = objXmlMentor.SelectSingleNode("bonus");

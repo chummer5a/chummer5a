@@ -886,6 +886,8 @@ namespace Chummer
 			this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.lblPBuildSpecial = new System.Windows.Forms.Label();
+			this.lblPBuildSpecialLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1385,10 +1387,10 @@ namespace Chummer
 			this.lblBuildPrimaryAttributes.AutoSize = true;
 			this.lblBuildPrimaryAttributes.Location = new System.Drawing.Point(6, 31);
 			this.lblBuildPrimaryAttributes.Name = "lblBuildPrimaryAttributes";
-			this.lblBuildPrimaryAttributes.Size = new System.Drawing.Size(88, 13);
+			this.lblBuildPrimaryAttributes.Size = new System.Drawing.Size(51, 13);
 			this.lblBuildPrimaryAttributes.TabIndex = 57;
-			this.lblBuildPrimaryAttributes.Tag = "Label_SummaryPrimaryAttributes";
-			this.lblBuildPrimaryAttributes.Text = "Primary Attributes";
+			this.lblBuildPrimaryAttributes.Tag = "Label_Attributes";
+			this.lblBuildPrimaryAttributes.Text = "Attributes";
 			this.tipTooltip.SetToolTip(this.lblBuildPrimaryAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
         "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
         " character creation.");
@@ -1420,7 +1422,7 @@ namespace Chummer
 			// lblPBuildEssenceLabel
 			// 
 			this.lblPBuildEssenceLabel.AutoSize = true;
-			this.lblPBuildEssenceLabel.Location = new System.Drawing.Point(7, 273);
+			this.lblPBuildEssenceLabel.Location = new System.Drawing.Point(7, 282);
 			this.lblPBuildEssenceLabel.Name = "lblPBuildEssenceLabel";
 			this.lblPBuildEssenceLabel.Size = new System.Drawing.Size(48, 13);
 			this.lblPBuildEssenceLabel.TabIndex = 122;
@@ -1431,7 +1433,7 @@ namespace Chummer
 			// lblPBuildNuyenLabel
 			// 
 			this.lblPBuildNuyenLabel.AutoSize = true;
-			this.lblPBuildNuyenLabel.Location = new System.Drawing.Point(7, 97);
+			this.lblPBuildNuyenLabel.Location = new System.Drawing.Point(7, 114);
 			this.lblPBuildNuyenLabel.Name = "lblPBuildNuyenLabel";
 			this.lblPBuildNuyenLabel.Size = new System.Drawing.Size(38, 13);
 			this.lblPBuildNuyenLabel.TabIndex = 112;
@@ -1442,7 +1444,7 @@ namespace Chummer
 			// lblPBuildComplexFormsLabel
 			// 
 			this.lblPBuildComplexFormsLabel.AutoSize = true;
-			this.lblPBuildComplexFormsLabel.Location = new System.Drawing.Point(7, 251);
+			this.lblPBuildComplexFormsLabel.Location = new System.Drawing.Point(7, 261);
 			this.lblPBuildComplexFormsLabel.Name = "lblPBuildComplexFormsLabel";
 			this.lblPBuildComplexFormsLabel.Size = new System.Drawing.Size(78, 13);
 			this.lblPBuildComplexFormsLabel.TabIndex = 108;
@@ -1453,7 +1455,7 @@ namespace Chummer
 			// lblPBuildSpellsLabel
 			// 
 			this.lblPBuildSpellsLabel.AutoSize = true;
-			this.lblPBuildSpellsLabel.Location = new System.Drawing.Point(7, 185);
+			this.lblPBuildSpellsLabel.Location = new System.Drawing.Point(7, 198);
 			this.lblPBuildSpellsLabel.Name = "lblPBuildSpellsLabel";
 			this.lblPBuildSpellsLabel.Size = new System.Drawing.Size(35, 13);
 			this.lblPBuildSpellsLabel.TabIndex = 105;
@@ -1464,7 +1466,7 @@ namespace Chummer
 			// lblPBuildKnowledgeSkillsLabel
 			// 
 			this.lblPBuildKnowledgeSkillsLabel.AutoSize = true;
-			this.lblPBuildKnowledgeSkillsLabel.Location = new System.Drawing.Point(7, 163);
+			this.lblPBuildKnowledgeSkillsLabel.Location = new System.Drawing.Point(7, 177);
 			this.lblPBuildKnowledgeSkillsLabel.Name = "lblPBuildKnowledgeSkillsLabel";
 			this.lblPBuildKnowledgeSkillsLabel.Size = new System.Drawing.Size(87, 13);
 			this.lblPBuildKnowledgeSkillsLabel.TabIndex = 100;
@@ -1476,7 +1478,7 @@ namespace Chummer
 			// lblPBuildActiveSkillsLabel
 			// 
 			this.lblPBuildActiveSkillsLabel.AutoSize = true;
-			this.lblPBuildActiveSkillsLabel.Location = new System.Drawing.Point(7, 141);
+			this.lblPBuildActiveSkillsLabel.Location = new System.Drawing.Point(7, 156);
 			this.lblPBuildActiveSkillsLabel.Name = "lblPBuildActiveSkillsLabel";
 			this.lblPBuildActiveSkillsLabel.Size = new System.Drawing.Size(64, 13);
 			this.lblPBuildActiveSkillsLabel.TabIndex = 99;
@@ -1487,7 +1489,7 @@ namespace Chummer
 			// lblPBuildSkillGroupsLabel
 			// 
 			this.lblPBuildSkillGroupsLabel.AutoSize = true;
-			this.lblPBuildSkillGroupsLabel.Location = new System.Drawing.Point(7, 119);
+			this.lblPBuildSkillGroupsLabel.Location = new System.Drawing.Point(7, 135);
 			this.lblPBuildSkillGroupsLabel.Name = "lblPBuildSkillGroupsLabel";
 			this.lblPBuildSkillGroupsLabel.Size = new System.Drawing.Size(63, 13);
 			this.lblPBuildSkillGroupsLabel.TabIndex = 98;
@@ -1498,7 +1500,7 @@ namespace Chummer
 			// lblPBuildContactsLabel
 			// 
 			this.lblPBuildContactsLabel.AutoSize = true;
-			this.lblPBuildContactsLabel.Location = new System.Drawing.Point(7, 295);
+			this.lblPBuildContactsLabel.Location = new System.Drawing.Point(7, 303);
 			this.lblPBuildContactsLabel.Name = "lblPBuildContactsLabel";
 			this.lblPBuildContactsLabel.Size = new System.Drawing.Size(49, 13);
 			this.lblPBuildContactsLabel.TabIndex = 95;
@@ -1509,7 +1511,7 @@ namespace Chummer
 			// lblPBuildNegativeQualitiesLabel
 			// 
 			this.lblPBuildNegativeQualitiesLabel.AutoSize = true;
-			this.lblPBuildNegativeQualitiesLabel.Location = new System.Drawing.Point(7, 75);
+			this.lblPBuildNegativeQualitiesLabel.Location = new System.Drawing.Point(7, 93);
 			this.lblPBuildNegativeQualitiesLabel.Name = "lblPBuildNegativeQualitiesLabel";
 			this.lblPBuildNegativeQualitiesLabel.Size = new System.Drawing.Size(93, 13);
 			this.lblPBuildNegativeQualitiesLabel.TabIndex = 90;
@@ -1521,7 +1523,7 @@ namespace Chummer
 			// lblPBuildPositiveQualitiesLabel
 			// 
 			this.lblPBuildPositiveQualitiesLabel.AutoSize = true;
-			this.lblPBuildPositiveQualitiesLabel.Location = new System.Drawing.Point(7, 53);
+			this.lblPBuildPositiveQualitiesLabel.Location = new System.Drawing.Point(7, 72);
 			this.lblPBuildPositiveQualitiesLabel.Name = "lblPBuildPositiveQualitiesLabel";
 			this.lblPBuildPositiveQualitiesLabel.Size = new System.Drawing.Size(87, 13);
 			this.lblPBuildPositiveQualitiesLabel.TabIndex = 86;
@@ -1953,7 +1955,7 @@ namespace Chummer
 			// lblBuildRituals
 			// 
 			this.lblBuildRituals.AutoSize = true;
-			this.lblBuildRituals.Location = new System.Drawing.Point(7, 229);
+			this.lblBuildRituals.Location = new System.Drawing.Point(7, 240);
 			this.lblBuildRituals.Name = "lblBuildRituals";
 			this.lblBuildRituals.Size = new System.Drawing.Size(39, 13);
 			this.lblBuildRituals.TabIndex = 129;
@@ -1964,7 +1966,7 @@ namespace Chummer
 			// lblBuildPreparations
 			// 
 			this.lblBuildPreparations.AutoSize = true;
-			this.lblBuildPreparations.Location = new System.Drawing.Point(7, 207);
+			this.lblBuildPreparations.Location = new System.Drawing.Point(7, 219);
 			this.lblBuildPreparations.Name = "lblBuildPreparations";
 			this.lblBuildPreparations.Size = new System.Drawing.Size(66, 13);
 			this.lblBuildPreparations.TabIndex = 127;
@@ -9327,6 +9329,8 @@ namespace Chummer
 			// tabBuildSummary
 			// 
 			this.tabBuildSummary.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabBuildSummary.Controls.Add(this.lblPBuildSpecial);
+			this.tabBuildSummary.Controls.Add(this.lblPBuildSpecialLabel);
 			this.tabBuildSummary.Controls.Add(this.lblBuildRituals);
 			this.tabBuildSummary.Controls.Add(this.lblRitualsBP);
 			this.tabBuildSummary.Controls.Add(this.lblBuildPreparations);
@@ -9364,7 +9368,7 @@ namespace Chummer
 			// lblRitualsBP
 			// 
 			this.lblRitualsBP.AutoSize = true;
-			this.lblRitualsBP.Location = new System.Drawing.Point(124, 229);
+			this.lblRitualsBP.Location = new System.Drawing.Point(124, 240);
 			this.lblRitualsBP.Name = "lblRitualsBP";
 			this.lblRitualsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblRitualsBP.TabIndex = 128;
@@ -9373,7 +9377,7 @@ namespace Chummer
 			// lblPreparationsBP
 			// 
 			this.lblPreparationsBP.AutoSize = true;
-			this.lblPreparationsBP.Location = new System.Drawing.Point(124, 207);
+			this.lblPreparationsBP.Location = new System.Drawing.Point(124, 219);
 			this.lblPreparationsBP.Name = "lblPreparationsBP";
 			this.lblPreparationsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblPreparationsBP.TabIndex = 126;
@@ -9401,7 +9405,7 @@ namespace Chummer
 			// lblPBuildEssence
 			// 
 			this.lblPBuildEssence.AutoSize = true;
-			this.lblPBuildEssence.Location = new System.Drawing.Point(124, 273);
+			this.lblPBuildEssence.Location = new System.Drawing.Point(124, 282);
 			this.lblPBuildEssence.Name = "lblPBuildEssence";
 			this.lblPBuildEssence.Size = new System.Drawing.Size(28, 13);
 			this.lblPBuildEssence.TabIndex = 123;
@@ -9410,7 +9414,7 @@ namespace Chummer
 			// lblPBuildNuyen
 			// 
 			this.lblPBuildNuyen.AutoSize = true;
-			this.lblPBuildNuyen.Location = new System.Drawing.Point(124, 97);
+			this.lblPBuildNuyen.Location = new System.Drawing.Point(124, 114);
 			this.lblPBuildNuyen.Name = "lblPBuildNuyen";
 			this.lblPBuildNuyen.Size = new System.Drawing.Size(19, 13);
 			this.lblPBuildNuyen.TabIndex = 113;
@@ -9419,7 +9423,7 @@ namespace Chummer
 			// lblPBuildAttributes
 			// 
 			this.lblPBuildAttributes.AutoSize = true;
-			this.lblPBuildAttributes.Location = new System.Drawing.Point(123, 31);
+			this.lblPBuildAttributes.Location = new System.Drawing.Point(123, 30);
 			this.lblPBuildAttributes.Name = "lblPBuildAttributes";
 			this.lblPBuildAttributes.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildAttributes.TabIndex = 110;
@@ -9428,7 +9432,7 @@ namespace Chummer
 			// lblPBuildAttributesLabel
 			// 
 			this.lblPBuildAttributesLabel.AutoSize = true;
-			this.lblPBuildAttributesLabel.Location = new System.Drawing.Point(7, 31);
+			this.lblPBuildAttributesLabel.Location = new System.Drawing.Point(7, 30);
 			this.lblPBuildAttributesLabel.Name = "lblPBuildAttributesLabel";
 			this.lblPBuildAttributesLabel.Size = new System.Drawing.Size(51, 13);
 			this.lblPBuildAttributesLabel.TabIndex = 109;
@@ -9438,7 +9442,7 @@ namespace Chummer
 			// lblPBuildComplexForms
 			// 
 			this.lblPBuildComplexForms.AutoSize = true;
-			this.lblPBuildComplexForms.Location = new System.Drawing.Point(124, 251);
+			this.lblPBuildComplexForms.Location = new System.Drawing.Point(124, 261);
 			this.lblPBuildComplexForms.Name = "lblPBuildComplexForms";
 			this.lblPBuildComplexForms.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildComplexForms.TabIndex = 97;
@@ -9447,7 +9451,7 @@ namespace Chummer
 			// lblPBuildKnowledgeSkills
 			// 
 			this.lblPBuildKnowledgeSkills.AutoSize = true;
-			this.lblPBuildKnowledgeSkills.Location = new System.Drawing.Point(124, 163);
+			this.lblPBuildKnowledgeSkills.Location = new System.Drawing.Point(124, 177);
 			this.lblPBuildKnowledgeSkills.Name = "lblPBuildKnowledgeSkills";
 			this.lblPBuildKnowledgeSkills.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildKnowledgeSkills.TabIndex = 104;
@@ -9456,7 +9460,7 @@ namespace Chummer
 			// lblPBuildActiveSkills
 			// 
 			this.lblPBuildActiveSkills.AutoSize = true;
-			this.lblPBuildActiveSkills.Location = new System.Drawing.Point(124, 141);
+			this.lblPBuildActiveSkills.Location = new System.Drawing.Point(124, 156);
 			this.lblPBuildActiveSkills.Name = "lblPBuildActiveSkills";
 			this.lblPBuildActiveSkills.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildActiveSkills.TabIndex = 103;
@@ -9465,7 +9469,7 @@ namespace Chummer
 			// lblPBuildSpells
 			// 
 			this.lblPBuildSpells.AutoSize = true;
-			this.lblPBuildSpells.Location = new System.Drawing.Point(124, 185);
+			this.lblPBuildSpells.Location = new System.Drawing.Point(124, 198);
 			this.lblPBuildSpells.Name = "lblPBuildSpells";
 			this.lblPBuildSpells.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildSpells.TabIndex = 87;
@@ -9474,7 +9478,7 @@ namespace Chummer
 			// lblPBuildSkillGroups
 			// 
 			this.lblPBuildSkillGroups.AutoSize = true;
-			this.lblPBuildSkillGroups.Location = new System.Drawing.Point(124, 119);
+			this.lblPBuildSkillGroups.Location = new System.Drawing.Point(124, 135);
 			this.lblPBuildSkillGroups.Name = "lblPBuildSkillGroups";
 			this.lblPBuildSkillGroups.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildSkillGroups.TabIndex = 101;
@@ -9483,7 +9487,7 @@ namespace Chummer
 			// lblPBuildPositiveQualities
 			// 
 			this.lblPBuildPositiveQualities.AutoSize = true;
-			this.lblPBuildPositiveQualities.Location = new System.Drawing.Point(124, 53);
+			this.lblPBuildPositiveQualities.Location = new System.Drawing.Point(124, 72);
 			this.lblPBuildPositiveQualities.Name = "lblPBuildPositiveQualities";
 			this.lblPBuildPositiveQualities.Size = new System.Drawing.Size(30, 13);
 			this.lblPBuildPositiveQualities.TabIndex = 89;
@@ -9492,7 +9496,7 @@ namespace Chummer
 			// lblPBuildNegativeQualities
 			// 
 			this.lblPBuildNegativeQualities.AutoSize = true;
-			this.lblPBuildNegativeQualities.Location = new System.Drawing.Point(124, 75);
+			this.lblPBuildNegativeQualities.Location = new System.Drawing.Point(124, 93);
 			this.lblPBuildNegativeQualities.Name = "lblPBuildNegativeQualities";
 			this.lblPBuildNegativeQualities.Size = new System.Drawing.Size(30, 13);
 			this.lblPBuildNegativeQualities.TabIndex = 91;
@@ -9501,7 +9505,7 @@ namespace Chummer
 			// lblPBuildContacts
 			// 
 			this.lblPBuildContacts.AutoSize = true;
-			this.lblPBuildContacts.Location = new System.Drawing.Point(124, 295);
+			this.lblPBuildContacts.Location = new System.Drawing.Point(124, 303);
 			this.lblPBuildContacts.Name = "lblPBuildContacts";
 			this.lblPBuildContacts.Size = new System.Drawing.Size(34, 13);
 			this.lblPBuildContacts.TabIndex = 96;
@@ -10107,6 +10111,25 @@ namespace Chummer
 			this.tsAIProgramNotes.Tag = "Menu_Notes";
 			this.tsAIProgramNotes.Text = "&Notes";
 			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
+			// 
+			// lblPBuildSpecial
+			// 
+			this.lblPBuildSpecial.AutoSize = true;
+			this.lblPBuildSpecial.Location = new System.Drawing.Point(123, 51);
+			this.lblPBuildSpecial.Name = "lblPBuildSpecial";
+			this.lblPBuildSpecial.Size = new System.Drawing.Size(34, 13);
+			this.lblPBuildSpecial.TabIndex = 131;
+			this.lblPBuildSpecial.Text = "0 of 0";
+			// 
+			// lblPBuildSpecialLabel
+			// 
+			this.lblPBuildSpecialLabel.AutoSize = true;
+			this.lblPBuildSpecialLabel.Location = new System.Drawing.Point(7, 51);
+			this.lblPBuildSpecialLabel.Name = "lblPBuildSpecialLabel";
+			this.lblPBuildSpecialLabel.Size = new System.Drawing.Size(89, 13);
+			this.lblPBuildSpecialLabel.TabIndex = 130;
+			this.lblPBuildSpecialLabel.Tag = "String_Special";
+			this.lblPBuildSpecialLabel.Text = "Special Attributes";
 			// 
 			// frmCreate
 			// 
@@ -11074,5 +11097,7 @@ namespace Chummer
 		private System.Windows.Forms.Label lblBuildPrepsBPLabel;
 		private System.Windows.Forms.Label lblBuildPrepsBP;
 		private System.Windows.Forms.FlowLayoutPanel pnlAttributes;
+		private System.Windows.Forms.Label lblPBuildSpecial;
+		private System.Windows.Forms.Label lblPBuildSpecialLabel;
 	}
 }

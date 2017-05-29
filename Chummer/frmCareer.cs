@@ -4714,7 +4714,7 @@ namespace Chummer
 			// Open the Weapons XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
@@ -8832,7 +8832,7 @@ namespace Chummer
 			// Open the Weapons XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
@@ -9049,7 +9049,7 @@ namespace Chummer
 			// Open the Weapons XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
@@ -11258,7 +11258,7 @@ namespace Chummer
 			// Open the Weapons XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
-			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + frmPickWeapon.SelectedWeapon + "\"]");
+			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);

@@ -158,8 +158,8 @@ namespace Chummer
 
 		// Attributes.
         public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-        private Dictionary<string, CharacterAttrib> _attributes = new Dictionary<string, CharacterAttrib>();
-		private Dictionary<string, CharacterAttrib> _specialAttributes = new Dictionary<string, CharacterAttrib>();
+        private List<CharacterAttrib> _attributes = new List<CharacterAttrib>();
+		private List<CharacterAttrib> _specialAttributes = new List<CharacterAttrib>();
 
 		private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
         private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
@@ -312,19 +312,6 @@ namespace Chummer
             RES._objCharacter = this;
             ESS._objCharacter = this;
 			DEP._objCharacter = this;
-
-			_attributes.Add("BOD", _attBOD);
-			_attributes.Add("AGI", _attAGI);
-			_attributes.Add("REA", _attREA);
-			_attributes.Add("STR", _attSTR);
-			_attributes.Add("CHA", _attCHA);
-			_attributes.Add("INT", _attINT);
-			_attributes.Add("LOG", _attLOG);
-			_attributes.Add("WIL", _attWIL);
-			_specialAttributes.Add("EDG", _attEDG);
-			_specialAttributes.Add("MAG", _attMAG);
-			_specialAttributes.Add("RES", _attRES);
-			_specialAttributes.Add("DEP", _attDEP);
 
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
@@ -571,9 +558,9 @@ namespace Chummer
 
 			// <attributes>
 			objWriter.WriteStartElement("attributes");
-            foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+            foreach (CharacterAttrib objAttribute in _attributes)
 			{
-                objAttribute.Value.Save(objWriter);
+                objAttribute.Save(objWriter);
             }
             // </attributes>
             objWriter.WriteEndElement();
@@ -1321,7 +1308,22 @@ namespace Chummer
             catch
             {
             }
-            Timekeeper.Finish("load_char_attrib");
+
+
+			AttributeList.Add(_attBOD);
+			AttributeList.Add(_attAGI);
+			AttributeList.Add(_attREA);
+			AttributeList.Add(_attSTR);
+			AttributeList.Add(_attCHA);
+			AttributeList.Add(_attINT);
+			AttributeList.Add(_attLOG);
+			AttributeList.Add(_attWIL);
+			SpecialAttributeList.Add(_attEDG);
+			SpecialAttributeList.Add(_attMAG);
+			SpecialAttributeList.Add(_attRES);
+			SpecialAttributeList.Add(_attDEP);
+
+			Timekeeper.Finish("load_char_attrib");
 			Timekeeper.Start("load_char_misc2");
 
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
@@ -2104,9 +2106,9 @@ namespace Chummer
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
                 string strDrain = strDrainAtt;
-                foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+                foreach (CharacterAttrib objAttribute in _attributes)
                 {
-                    strDrain = strDrain.Replace(objAttribute.Key, objAttribute.Value.TotalValue.ToString());
+                    strDrain = strDrain.Replace(objAttribute.Abbrev, objAttribute.TotalValue.ToString());
                 }
                 if (string.IsNullOrEmpty(strDrain))
                 {
@@ -2183,9 +2185,9 @@ namespace Chummer
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
                 string strDrain = strDrainAtt;
-                foreach (KeyValuePair<string, CharacterAttrib> objAttribute in _attributes)
+                foreach (CharacterAttrib objAttribute in _attributes)
                 {
-                    strDrain = strDrain.Replace(objAttribute.Key, objAttribute.Value.TotalValue.ToString());
+                    strDrain = strDrain.Replace(objAttribute.Abbrev, objAttribute.TotalValue.ToString());
                 }
 				XPathExpression xprDrain = nav.Compile(strDrain);
 
@@ -2714,7 +2716,6 @@ namespace Chummer
             {
                 CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute);
                 objLoopAttrib._objCharacter = this;
-                _attributes.Add(strAttribute, objLoopAttrib);
             }
 			_blnMAGEnabled = false;
             _blnRESEnabled = false;
@@ -3096,7 +3097,7 @@ namespace Chummer
 		/// <summary>
 		/// Character's Attributes.
 		/// </summary>
-		public Dictionary<string, CharacterAttrib> AttributeList
+		public List<CharacterAttrib> AttributeList
 		{
 			get
 			{
@@ -3110,7 +3111,7 @@ namespace Chummer
 		/// <summary>
 		/// Character's Attributes.
 		/// </summary>
-		public Dictionary<string, CharacterAttrib> SpecialAttributeList
+		public List<CharacterAttrib> SpecialAttributeList
 		{
 			get
 			{

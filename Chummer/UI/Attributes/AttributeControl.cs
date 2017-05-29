@@ -25,7 +25,7 @@ namespace Chummer.UI.Attributes
         {
             this.attribute = attribute;
             InitializeComponent();
-			
+
 			//Display
 			lblName.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -91,7 +91,7 @@ namespace Chummer.UI.Attributes
 		private void nudBase_ValueChanged(object sender, EventArgs e)
 		{
 			decimal d = ((NumericUpDownEx) sender).Value;
-			if (!ShowAttributeRule(d))
+			if (!ShowAttributeRule(d + nudKarma.Value))
 			{
 				nudBase.Value = _oldBase;
 				return;
@@ -103,7 +103,7 @@ namespace Chummer.UI.Attributes
 		private void nudKarma_ValueChanged(object sender, EventArgs e)
 		{
 			decimal d = ((NumericUpDownEx)sender).Value;
-			if (!ShowAttributeRule(d))
+			if (!ShowAttributeRule(d + nudBase.Value))
 			{
 				nudKarma.Value = _oldKarma;
 				return;
@@ -118,14 +118,12 @@ namespace Chummer.UI.Attributes
 		private bool ShowAttributeRule(decimal value)
 		{
 			if (value < attribute.TotalMaximum) return true;
-			if (!attribute._objCharacter.AttributeList.Any(att => att.Value.AtMetatypeMaximum && att.Value.Abbrev != attribute.Abbrev)) return true;
-		    if (!attribute.AtMetatypeMaximum)
-		    {
-		        MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
-		            LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
-		            MessageBoxIcon.Information);
-		    }
-		    return false;
+			bool any = attribute._objCharacter.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != attribute.Abbrev);
+			if (!any || attribute.AtMetatypeMaximum) return true;
+			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
+				LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
+				MessageBoxIcon.Information);
+			return false;
 		}
 
         public string AttributeName
