@@ -17,6 +17,7 @@ namespace Chummer.helpers
 			_tt.UseFading = true;
 			_tt.Active = true;
 			this.MouseEnter += this.Label_MouseEnter;
+		    this.MouseLeave += this.Label_MouseLeave;
 		}
 
 		private void Label_MouseEnter(object sender, EventArgs ea)
@@ -25,5 +26,9 @@ namespace Chummer.helpers
 			_tt.SetToolTip(this, this.TooltipText);
 			_tt.Show(this.TooltipText, this.Parent);
 		}
-	}
+        private void Label_MouseLeave(object sender, EventArgs ea)
+        {
+            _tt.Hide(this);
+        }
+    }
 }

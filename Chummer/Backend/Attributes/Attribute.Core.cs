@@ -522,6 +522,11 @@ namespace Chummer.Backend.Attributes
                             return true;
                     }
                 }
+
+                if ((_objCharacter.MAGEnabled || _objCharacter.RESEnabled) && _objCharacter.EssencePenalty > 0)
+                {
+                    return true;
+                }
                 return false;
             }
         }
@@ -625,7 +630,10 @@ namespace Chummer.Backend.Attributes
 					intReturn += intTotal;
 				}
 			}
-
+		    if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP"))
+		    {
+		        intReturn -= _objCharacter.EssencePenalty;
+		    }
 			// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 			if (intReturn > TotalAugmentedMaximum)
 				intReturn = TotalAugmentedMaximum;
@@ -874,7 +882,7 @@ namespace Chummer.Backend.Attributes
 		        {
 			        if (objImprovement.Enabled && !objImprovement.Custom)
 			        {
-				        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+				        if (objImprovement.UniqueName != "" && objImprovement.UniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
 				            objImprovement.ImprovedName == _strAbbrev)
 				        {
 					        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
@@ -1054,7 +1062,12 @@ namespace Chummer.Backend.Attributes
 			        strModifier += strCyberlimb;
 		        }
 
-		        return strReturn + strModifier;
+                if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
+                {
+                    strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.Instance.GetString("String_AttributeESSLong")})";
+                }
+
+                return strReturn + strModifier;
 	        }
         }
 
@@ -1118,7 +1131,9 @@ namespace Chummer.Backend.Attributes
 
 	    public bool AtMetatypeMaximum => Value == TotalMaximum;
 
-	    /// <summary>
+        public int KarmaMaximum => TotalMaximum - Base;
+        public int PriorityMaximum => TotalMaximum - Karma;
+        /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
         /// <returns>Price in karma</returns>

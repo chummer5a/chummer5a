@@ -12875,11 +12875,18 @@ namespace Chummer
         /// </summary>
         private int CalculateAttributeBP()
         {
+            int intBP = 0;
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
-			int intBP = _objCharacter.BOD.TotalKarmaCost() + _objCharacter.STR.TotalKarmaCost() +
-			_objCharacter.AGI.TotalKarmaCost() + _objCharacter.REA.TotalKarmaCost();
-			return intBP;
+            foreach (CharacterAttrib att in _objCharacter.AttributeList.Values)
+            {
+                intBP += att.TotalKarmaCost();
+            }
+            foreach (CharacterAttrib att in _objCharacter.SpecialAttributeList.Values)
+            {
+                intBP += att.TotalKarmaCost();
+            }
+            return intBP;
         }
 
 		private int CalculteAttributePriorityPoints()

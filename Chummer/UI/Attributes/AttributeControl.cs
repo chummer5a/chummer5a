@@ -42,14 +42,14 @@ namespace Chummer.UI.Attributes
 			{
 				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Base), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("Minimum", attribute, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.TotalMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.Visible = true;
 
 				nudKarma.Minimum = 0;
-				nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.TotalMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.KarmaMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
 					DataSourceUpdateMode.OnPropertyChanged);
@@ -118,13 +118,17 @@ namespace Chummer.UI.Attributes
 		private bool ShowAttributeRule(decimal value)
 		{
 			if (value < attribute.TotalMaximum) return true;
-			if (!attribute._objCharacter.AttributeList.Any(att => att.Value.AtMetatypeMaximum)) return true;
-			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
-				LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-			return false;
+			if (!attribute._objCharacter.AttributeList.Any(att => att.Value.AtMetatypeMaximum && att.Value.Abbrev != attribute.Abbrev)) return true;
+		    if (!attribute.AtMetatypeMaximum)
+		    {
+		        MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
+		            LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
+		            MessageBoxIcon.Information);
+		    }
+		    return false;
 		}
 
-	    public string AttributeName
+        public string AttributeName
 	    {
 		    get { return attribute.Abbrev; }
 	    }
@@ -145,5 +149,21 @@ namespace Chummer.UI.Attributes
 			attribute.Degrade(1);
 			ValueChanged?.Invoke(this);
 		}
-	}
+
+        private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
+        {
+            if (nudBase.Value + nudKarma.Value == attribute.TotalMaximum && nudKarma.Value != nudKarma.Minimum)
+            {
+                nudKarma.Value -= nudBase.Increment;
+            }
+        }
+
+        private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
+        {
+            if (nudBase.Value + nudKarma.Value == attribute.TotalMaximum && nudBase.Value != nudBase.Minimum)
+            {
+                nudBase.Value -= nudKarma.Increment;
+            }
+        }
+    }
 }
