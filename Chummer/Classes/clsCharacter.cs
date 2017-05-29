@@ -1826,6 +1826,20 @@ namespace Chummer
 		        _intGameplayOptionQualityLimit = _intMaxKarma;
 	        }
 			Timekeeper.Finish("load_char_maxkarmafix");
+			Timekeeper.Start("load_char_mentorspiritfix");
+			// If the character doesn't have an Improvement marker that uniquely identifies what the Mentor Spirit is, create it now. 
+	        if (Qualities.Any(q => q.Name == "Mentor Spirit") && Improvements.All(imp => imp.ImproveType != Improvement.ImprovementType.MentorSpirit))
+	        {
+		        Quality mentorQuality = Qualities.First(q => q.Name == "Mentor Spirit");
+		        if (!string.IsNullOrWhiteSpace(mentorQuality.Extra))
+		        {
+			        XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
+			        XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[name = \"" + mentorQuality.Extra + "\"]");
+			        _objImprovementManager.CreateImprovement("", Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
+				        Improvement.ImprovementType.MentorSpirit, mentorDoc["id"].InnerText);
+		        }
+	        }
+	        Timekeeper.Finish("load_char_mentorspiritfix");
 
 			//// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
 			//      if (blnHasOldQualities)

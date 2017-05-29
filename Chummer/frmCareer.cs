@@ -24168,8 +24168,9 @@ namespace Chummer
 		/// </summary>
 		private void UpdateMentorSpirits()
 		{
-			MentorSpirit objMentor = _objController.MentorInformation(MainController.MentorType.Mentor);
-			MentorSpirit objParagon = _objController.MentorInformation(MainController.MentorType.Paragon);
+			MentorSpirit objMentor = _objCharacter.MAGEnabled
+				? _objController.MentorInformation()
+				: _objController.MentorInformation(Improvement.ImprovementType.Paragon);
 
 			if (objMentor == null)
 			{

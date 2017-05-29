@@ -2507,7 +2507,9 @@ namespace Chummer.Classes
 				throw new AbortedException();
 			}
 
-			SelectedValue = frmPickMentorSpirit.SelectedMentor;
+			XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
+			XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+			SelectedValue = mentorDoc["name"].InnerText;
 
 			string strHoldValue = SelectedValue;
 			if (_blnConcatSelectedValue)
@@ -2563,6 +2565,8 @@ namespace Chummer.Classes
 				_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
 			}
 
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
+
 			if (frmPickMentorSpirit.MentorsMask)
 			{
 				Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
@@ -2596,11 +2600,16 @@ namespace Chummer.Classes
 			{
 				throw new AbortedException();
 			}
+			
+			XmlDocument doc = XmlManager.Instance.Load("paragons.xml");
+			XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+			SelectedValue = mentorDoc["name"].InnerText;
 
-			SelectedValue = frmPickMentorSpirit.SelectedMentor;
 			string strHoldValue = SelectedValue;
 			if (_blnConcatSelectedValue)
 				SourceName += " (" + SelectedValue + ")";
+
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
 
 			if (frmPickMentorSpirit.BonusNode != null)
 			{
