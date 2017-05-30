@@ -108,8 +108,13 @@ namespace Chummer
 
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
             tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
+			//TODO: Can't bind visibility to the IsMysticAdept property for some reason. 
+			nudMysticAdeptMAGMagician.DataBindings.Add("Maximum", this._objCharacter.MAG, nameof(_objCharacter.MAG.TotalValue), false,
+							DataSourceUpdateMode.OnPropertyChanged);
+			nudMysticAdeptMAGMagician.DataBindings.Add("Value", this._objCharacter, nameof(_objCharacter.MysticAdeptPowerPoints), false,
+							DataSourceUpdateMode.OnPropertyChanged);
 
-	        Application.Idle += UpdateCharacterInfo;
+			Application.Idle += UpdateCharacterInfo;
             GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -377,8 +382,8 @@ namespace Chummer
 	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
-            // Define the XML objects that will be used.
-            XmlDocument objXmlDocument = new XmlDocument();
+			// Define the XML objects that will be used.
+			XmlDocument objXmlDocument = new XmlDocument();
 
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
 			{
@@ -591,17 +596,17 @@ namespace Chummer
             // to UpdateCharacterInformation();
             MetatypeSelected();
 
-            // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-            {
-                nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
-                nudMysticAdeptMAGMagician.Value = _objCharacter.MysticAdeptPowerPoints;
+			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
+			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
+			{
+				nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
+				nudMysticAdeptMAGMagician.Value = _objCharacter.MysticAdeptPowerPoints;
 
-                lblMysticAdeptAssignment.Visible = true;
-                nudMysticAdeptMAGMagician.Visible = true;
-            }
+				lblMysticAdeptAssignment.Visible = true;
+				nudMysticAdeptMAGMagician.Visible = true;
+			}
 
-	        if (_objCharacter.AdeptEnabled)
+			if (_objCharacter.AdeptEnabled)
 	        {
 				tabPowerUc.MissingDatabindingsWorkaround();
 			}
@@ -1416,20 +1421,10 @@ namespace Chummer
                 ClearAdeptTab();
                 tabCharacterTabs.TabPages.Remove(tabAdept);
             }
-
-            // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-            {
-                lblMysticAdeptAssignment.Visible = true;
-                nudMysticAdeptMAGMagician.Visible = true;
-                nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
-            }
-            else
-            {
-                lblMysticAdeptAssignment.Visible = false;
-                nudMysticAdeptMAGMagician.Visible = false;
-            }
-        }
+			//TODO: Can't bind visibility to the IsMysticAdept property for some reason. 
+			lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
+			nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
+		}
 		
 		private void objCharacter_AmbidextrousChanged(object sender)
 		{
@@ -1487,21 +1482,12 @@ namespace Chummer
             {
                 ClearSpellTab();
                 tabCharacterTabs.TabPages.Remove(tabMagician);
-            }
+			}
 
-            // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-            {
-                lblMysticAdeptAssignment.Visible = true;
-                nudMysticAdeptMAGMagician.Visible = true;
-                nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
-            }
-            else
-            {
-                lblMysticAdeptAssignment.Visible = false;
-                nudMysticAdeptMAGMagician.Visible = false;
-            }
-        }
+			// Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
+			lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
+			nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
+		}
 
         private void objCharacter_TechnomancerTabEnabledChanged(object sender)
         {
@@ -4306,7 +4292,7 @@ namespace Chummer
             objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
             int intMAG = Convert.ToInt32(_objCharacter.MAG.TotalValue);
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
+            if (_objCharacter.IsMysticAdept)
             {
                 intMAG = _objCharacter.MAG.TotalValue;
             }
@@ -13614,13 +13600,7 @@ namespace Chummer
                     _objImprovementManager.CreateImprovement("LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                     _objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 }
-
-                // Update the MAG pseudo-Attributes if applicable.
-                if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-                {
-                    _objCharacter.MysticAdeptPowerPoints = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
-                }
-
+				
                 // If MAG is enabled, update the Force for Spirits (equal to Magician MAG Rating) and Adept Powers.
                 if (_objCharacter.MAGEnabled)
                 {

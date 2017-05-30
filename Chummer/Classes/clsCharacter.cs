@@ -7248,6 +7248,14 @@ namespace Chummer
 			}
 	    }
 
+		/// <summary>
+		/// Is the character a mystic adept (MagicianEnabled && AdeptEnabled)? Used for databinding properties. 
+		/// </summary>
+	    public bool IsMysticAdept
+		{
+			get { return AdeptEnabled && MagicianEnabled; }
+		}
+
 	    public event PropertyChangedEventHandler PropertyChanged;
 
 	    [NotifyPropertyChangedInvocator]
