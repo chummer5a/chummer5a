@@ -1150,7 +1150,7 @@
 			<page>137</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
 			<name>Oak</name>
 			<advantage>All: +2 dice to memory test.</advantage>
 			<disadvantage>A follower of Oak has to succeed in a CHA+WIL (3) test to retreat from a dangerous area instead of waiting till the danger passes.</disadvantage>
@@ -1181,7 +1181,7 @@
 			<page>179</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>f8f32157-2dbf-42b3-9ea6-2e60640875c7</id>
 			<name>Artist</name>
 			<advantage>All: +2 dice to Artisan or Forgery.</advantage>
 			<disadvantage>If for more than two weeks the Artist fails to find an audience for a presentation of her ability, she has to make a WIL+ CHA (3) test. Should she fail, she fall into depression (-2 dice for every skill linked to LOG, INT or CHA) for 1d6 days. After that (or if she succeeded in the the WIL+CHA test) a new 14 day period begins in which she has to show off her skills.</disadvantage>
@@ -1214,7 +1214,7 @@
 			<page>179</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>66f968d6-96da-404e-b1ef-a4d7377ac3cf</id>
 			<name>Blacksmith</name>
 			<advantage>All: +2 dice to Artisan or Alchemy tests.</advantage>
 			<disadvantage>You have to pass a CHA + WIL (3) check to refrain from instantanously avenging an insult.</disadvantage>
@@ -1254,7 +1254,7 @@
 			<page>179</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>f152ddfc-13b2-46fa-b8d0-77e2a518acf5</id>
 			<name>Gambler</name>
 			<advantage>All: +2 to Etiquette or Palming.</advantage>
 			<disadvantage>Gain the Distinctive Style negative quality.</disadvantage>
@@ -1291,7 +1291,7 @@
 			<page>179</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>5ec3f3d5-8ae7-4ddd-a38c-2b21f135945f</id>
 			<name>Dachshund</name>
 			<advantage>All: +2 dice to Tracking.</advantage>
 			<disadvantage>A follower of Dachshund must succeed in a WIL+CHA (3) test, to follow the orders of a leader or a abide to a group decision.</disadvantage>
@@ -1326,7 +1326,7 @@
 			<page>231</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>ce5caf76-0c0e-4c91-98a4-78e15b73b5fe</id>
 			<name>Electro Marten</name>
 			<advantage>All: +2 dice to Hardware or Electronic Warfare</advantage>
 			<disadvantage>Electro Marten has problems discerning between different signals. A follower of Electro Marten has to succeed in a CHA + WIL (3) test to not lose himself in the signals or hunt after the wrong one. In stressful situations, he is distracted for 3 combat rounds (minus 1 for each success). If he has no successes, he involuntarily attracts attention in the system.</disadvantage>
@@ -1360,7 +1360,7 @@
 			<page>232</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
 			<name>Klabautermann</name>
 			<advantage>All: +2 dice to Nautical Mechanic</advantage>
 			<disadvantage>Whenever a follower of Klabautermann is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA+WIL(3) test. Should he fail, he is convinced he saw the Klabautermann, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</disadvantage>
@@ -1395,7 +1395,7 @@
 			<page>232</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>fd791bde-7887-43d7-a5af-9750b25c5948</id>
 			<name>Luna</name>
 			<advantage>All: +2 dice for Negotiation tests.</advantage>
 			<disadvantage>Luna is independent and free. A follower of Luna must pass a CHA+WIL(3) test to follow a direct order that does not correlate to her momentary personal wishes - especially if her own logic tells her that it would be better to disregard her own desires for the moment.</disadvantage>
@@ -1451,7 +1451,7 @@
 			<page>233</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>66377dd9-49ee-46cb-a67a-405d796056f0</id>
 			<name>Tatzelwurm</name>
 			<advantage>All: +2 dice to Unarmed Combat.</advantage>
 			<disadvantage>Combat Junkie quality is gained for free.</disadvantage>
@@ -1483,7 +1483,7 @@
 			<page>234</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
 			<name>Wolpertinger</name>
 			<advantage>All: +2 dice to dodge tests.</advantage>
 			<disadvantage>Whenever a follower of Wolpertinger is in danger (in reality or only in his imagination), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
@@ -1512,7 +1512,7 @@
 			<page>234</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>16bd99dd-49df-41aa-a8a2-9b8962fac44c</id>
 			<name>Boar</name>
 			<advantage>All: Home Ground Quality is gained for free.</advantage>
 			<disadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower’s friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</disadvantage>
@@ -1537,7 +1537,7 @@
 			<page>41</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>19154c75-9fa9-4e7e-aeee-da1faaaca3e2</id>
 			<name>Giraffe</name>
 			<advantage>All: +2 Assensing skill tests or +2 to Judge Intentions test (choose one)</advantage>
 			<disadvantage>A follower of Giraffe stumbles through social etiquette, as she believes the small talk and chitchat that are the core of social chatter are fundamentally dishonest and not worthy of her efforts. She can make a wide range of situations awkward and receives –2 dice for Etiquette skill tests. </disadvantage>
@@ -1575,7 +1575,7 @@
 			<page>42</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>e8e25c51-bca0-4647-b345-f7f1d7a06be3</id>
 			<name>Dolphin</name>
 			<advantage>All: +2 dice on Artisan skill tests or Pilot (Watercraft) skill tests (choose one)</advantage>
 			<disadvantage>Followers are altruistic when it comes to helping people and cannot turn a blind eye to those who they believe deserve their help. It is difficult for them not to get involved when they see someone being bullied or obviously polluting the environment. If they see such a situation, it takes a Charisma + Willpower (3) Test for a follower of Dolphin not to intervene. If the job that the follower of Dolphin is on involves polluting the environment or becoming the bully/enforcer on those less deserving, then the follower loses 2 dice after each such deed until she atones. Atonement is up to the gamemaster but can involve time and money spent with charities.</disadvantage>
@@ -1623,7 +1623,7 @@
 			<page>43</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>cf290b67-e417-4cd6-a36e-d28f35bdc18d</id>
 			<name>Whale</name>
 			<advantage>All: +2 dice to Swimming or Pilot (Watercraft) skill tests (choose one)</advantage>
 			<disadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion.</disadvantage>
@@ -1665,7 +1665,7 @@
 			<page>43</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>9ca5be05-1420-4592-81a5-1b59bb93545d</id>
 			<name>Horse</name>
 			<advantage>All: +2 dice to Running or Pilot Ground Craft) tests (choose one)</advantage>
 			<disadvantage>Followers of the Horse can’t sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</disadvantage>
@@ -1701,7 +1701,7 @@
 			<page>46</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>dd6aa95d-5112-493e-9ba1-557dc43b6708</id>
 			<name>Raccoon</name>
 			<advantage>All: +2 to Palming skill tests</advantage>
 			<disadvantage>The Raccoon is commonly one of the Thief totems, so the followers can tend to err on the side of greed. A follower of Raccoon must make a Charisma + Willpower (3) Test to resist the urge to open that next locked door to look for something to steal, or to follow that Matrix rabbit trail in the quest for more paydata.</disadvantage>
@@ -1728,11 +1728,11 @@
 						<specificpower>
 							<name>Improved Sense</name>
 							<selecttext/>
-						</specificpower>						
+						</specificpower>
 						<specificpower>
 							<name>Improved Sense</name>
 							<selecttext/>
-						</specificpower>						
+						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
@@ -1740,7 +1740,7 @@
 			<page>46</page>
 		</mentor>
 		<mentor>
-			<id/>
+			<id>924e0d72-a83a-44c2-90ba-24455c389207</id>
 			<name>Spider</name>
 			<advantage>All:+2 dice to Computer skill tests</advantage>
 			<disadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such detailsfrom casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamas in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theatres, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</disadvantage>
@@ -1774,88 +1774,88 @@
 			<source>HS</source>
 			<page>46</page>
 		</mentor>
-    <mentor>
-      <id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
-      <name>Goddess</name>
-      <advantage>All: +2 dice pool modifer for Instruction Tests.</advantage>
-      <disadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</disadvantage>
-      <bonus>
-        <specificskill>
-          <name>Instruction</name>
-          <bonus>2</bonus>
-          <applytorating>no</applytorating>
-        </specificskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Ritual Spellcasting Tests</name>
-          <bonus>
-            <specificskill>
-              <name>Ritual Spellcasting</name>
-              <bonus>2</bonus>
-              <applytorating>no</applytorating>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 1 free level of Authoritative Tone</name>
-          <bonus>
-            <specificpower>
-              <name>Authoritative Tone</name>
-              <val>1</val>
-              <free>yes</free>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>BOTL</source>
-      <page>129</page>
-    </mentor>
-    <mentor>
-      <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
-      <name>Lion</name>
-      <advantage>All: +2 dice pool modifer for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
-      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
-      <bonus>
-        <selectskill limittoskill="Survival,Running,Tracking">
-          <val>2</val>
-          <applytorating>no</applytorating>
-        </selectskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
-            <bonus>
-              <spellcategory>
-                <name>Combat</name>
-                <val>2</val>
-              </spellcategory>
-            </bonus>
-          </choice>
-        <choice>
-          <name>Adept: 2 free levels of Attribute Boost (Strength)</name>
-          <bonus>
-            <specificpower>
-              <name>Attribute Boost</name>
-              <val>2</val>
-              <selectattribute>
-                <attribute>STR</attribute>
-              </selectattribute>
-              <free>yes</free>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>BOTL</source>
-      <page>129</page>
-    </mentor>
+		<mentor>
+			<id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
+			<name>Goddess</name>
+			<advantage>All: +2 dice pool modifer for Instruction Tests.</advantage>
+			<disadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Instruction</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for Ritual Spellcasting Tests</name>
+					<bonus>
+						<specificskill>
+							<name>Ritual Spellcasting</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 1 free level of Authoritative Tone</name>
+					<bonus>
+						<specificpower>
+							<name>Authoritative Tone</name>
+							<val>1</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>BOTL</source>
+			<page>129</page>
+		</mentor>
+		<mentor>
+			<id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
+			<name>Lion</name>
+			<advantage>All: +2 dice pool modifer for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
+			<disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
+			<bonus>
+				<selectskill limittoskill="Survival,Running,Tracking">
+					<val>2</val>
+					<applytorating>no</applytorating>
+				</selectskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Combat</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 2 free levels of Attribute Boost (Strength)</name>
+					<bonus>
+						<specificpower>
+							<name>Attribute Boost</name>
+							<val>2</val>
+							<selectattribute>
+								<attribute>STR</attribute>
+							</selectattribute>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>BOTL</source>
+			<page>129</page>
+		</mentor>
 		<mentor>
 			<id>d1089dd2-68b8-4e2a-977e-718e720f44d3</id>
 			<name>Raven (Alt)</name>
 			<advantage>All: +2 dice pool modifer for knowledge skill tests.</advantage>
 			<disadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</disadvantage>
-      <bonus>
-        <skillcategory>
+			<bonus>
+				<skillcategory>
 					<name>Academic</name>
 					<bonus>2</bonus>
 				</skillcategory>
@@ -1875,7 +1875,7 @@
 					<name>Street</name>
 					<bonus>2</bonus>
 				</skillcategory>
-      </bonus>
+			</bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
@@ -2451,5 +2451,5 @@
 			<source>FA</source>
 			<page>95</page>
 		</mentor>
-  </mentors>
+	</mentors>
 </chummer>
