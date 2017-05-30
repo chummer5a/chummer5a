@@ -8653,7 +8653,7 @@ namespace Chummer
 			// Open the Vehicles XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 			
-			XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickVehicleMod.SelectedMod + "\"]");
+			XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
 			TreeNode objNode = new TreeNode();
 			VehicleMod objMod = new VehicleMod(_objCharacter);
