@@ -1664,7 +1664,7 @@
 			<name>Ventriloquism</name>
 			<points>.25</points>
 			<adeptway>0</adeptway>
-			<levels>no</levels>
+			<levels>false</levels>
 			<limit>1</limit>
 			<source>CA</source>
 			<page>153</page>
