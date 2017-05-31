@@ -20,7 +20,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+ using System.Windows.Documents;
+ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 
@@ -886,43 +887,44 @@ namespace Chummer
 			int intFociTotal = 0;
 			bool blnWarned = false;
 
-			foreach (Gear objGear in _objCharacter.Gear)
+			foreach (Gear objGear in _objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
 			{
-				if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
+				List<Focus> removeFoci = new List<Focus>();
+				TreeNode objNode = new TreeNode();
+				objNode.Text = objGear.DisplayName.Replace(LanguageManager.Instance.GetString("String_Rating"), LanguageManager.Instance.GetString("String_Force"));
+				objNode.Tag = objGear.InternalId;
+				foreach (Focus objFocus in _objCharacter.Foci)
 				{
-					TreeNode objNode = new TreeNode();
-					objNode.Text = objGear.DisplayName.Replace(LanguageManager.Instance.GetString("String_Rating"), LanguageManager.Instance.GetString("String_Force"));
-					objNode.Tag = objGear.InternalId;
-					foreach (Focus objFocus in _objCharacter.Foci)
+					if (objFocus.GearId == objGear.InternalId)
 					{
-						if (objFocus.GearId == objGear.InternalId)
+						objNode.Checked = true;
+						objFocus.Rating = objGear.Rating;
+						intFociTotal += objFocus.Rating;
+						// Do not let the number of BP spend on bonded Foci exceed MAG * 5.
+						if (intFociTotal > _objCharacter.MAG.TotalValue * 5 && !_objCharacter.IgnoreRules)
 						{
-							objNode.Checked = true;
-							objFocus.Rating = objGear.Rating;
-							intFociTotal += objFocus.Rating;
-							// Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-							if (intFociTotal > _objCharacter.MAG.TotalValue * 5 && !_objCharacter.IgnoreRules)
+							// Mark the Gear a Bonded.
+							foreach (Gear objCharacterGear in _objCharacter.Gear)
 							{
-								// Mark the Gear a Bonded.
-								foreach (Gear objCharacterGear in _objCharacter.Gear)
-								{
-									if (objCharacterGear.InternalId == objFocus.GearId)
-										objCharacterGear.Bonded = false;
-								}
-
-								_objCharacter.Foci.Remove(objFocus);
-								if (!blnWarned)
-								{
-									objNode.Checked = false;
-									MessageBox.Show(LanguageManager.Instance.GetString("Message_FocusMaximumForce"), LanguageManager.Instance.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-									blnWarned = true;
-									break;
-								}
+								if (objCharacterGear.InternalId == objFocus.GearId)
+									objCharacterGear.Bonded = false;
+							}
+							removeFoci.Add(objFocus);
+							if (!blnWarned)
+							{
+								objNode.Checked = false;
+								MessageBox.Show(LanguageManager.Instance.GetString("Message_FocusMaximumForce"), LanguageManager.Instance.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+								blnWarned = true;
+								break;
 							}
 						}
 					}
-					treFoci.Nodes.Add(objNode);
 				}
+				foreach (Focus f in removeFoci)
+				{
+					_objCharacter.Foci.Remove(f);
+				}
+				treFoci.Nodes.Add(objNode);
 			}
 
 			// Add Stacked Foci.
