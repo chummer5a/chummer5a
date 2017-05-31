@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				_strAltCategory = objVehicleNode?.Attributes?["translate"].InnerText;
+				_strAltCategory = objVehicleNode?.Attributes?["translate"]?.InnerText;
 			}
 
 			objNode.Text = DisplayName;
@@ -556,7 +556,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				_strAltCategory = objVehicleNode?.Attributes?["translate"].InnerText;
+				_strAltCategory = objVehicleNode?.Attributes?["translate"]?.InnerText;
 			}
 
 			if (objNode.InnerXml.Contains("<mods>"))

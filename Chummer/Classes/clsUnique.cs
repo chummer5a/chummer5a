@@ -1508,7 +1508,7 @@ namespace Chummer
                 }
 
                 objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-		            _strAltCategory = objSpellNode?.Attributes?["translate"].InnerText;
+		            _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
 
             ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
@@ -1652,7 +1652,7 @@ namespace Chummer
 				}
 
 				objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-					_strAltCategory = objSpellNode?.Attributes?["translate"].InnerText;
+					_strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
 			}
 		}
 
