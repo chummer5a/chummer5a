@@ -2119,12 +2119,8 @@ namespace Chummer
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = strDrainAtt;
-                foreach (CharacterAttrib objAttribute in _attributes)
-                {
-                    strDrain = strDrain.Replace(objAttribute.Abbrev, objAttribute.TotalValue.ToString());
-                }
-                if (string.IsNullOrEmpty(strDrain))
+                string strDrain = AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+				if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
                 }
@@ -2198,15 +2194,11 @@ namespace Chummer
                 strDrainAtt = objXmlTradition["drain"].InnerText;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = strDrainAtt;
-                foreach (CharacterAttrib objAttribute in _attributes)
-                {
-                    strDrain = strDrain.Replace(objAttribute.Abbrev, objAttribute.TotalValue.ToString());
-                }
-				XPathExpression xprDrain = nav.Compile(strDrain);
+                string strDrain = AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+	            XPathExpression xprDrain = nav.Compile(strDrain);
 
-                // Add any Improvements for Fading Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
+				// Add any Improvements for Fading Resistance.
+				int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
             }
