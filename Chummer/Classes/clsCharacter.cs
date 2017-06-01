@@ -161,20 +161,20 @@ namespace Chummer
         private List<CharacterAttrib> _attributes = new List<CharacterAttrib>();
 		private List<CharacterAttrib> _specialAttributes = new List<CharacterAttrib>();
 
-		private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
-        private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
-        private CharacterAttrib _attREA = new CharacterAttrib("REA");
-        private CharacterAttrib _attSTR = new CharacterAttrib("STR");
-        private CharacterAttrib _attCHA = new CharacterAttrib("CHA");
-        private CharacterAttrib _attINT = new CharacterAttrib("INT");
-        private CharacterAttrib _attLOG = new CharacterAttrib("LOG");
-        private CharacterAttrib _attWIL = new CharacterAttrib("WIL");
-        private CharacterAttrib _attINI = new CharacterAttrib("INI");
-        private CharacterAttrib _attEDG = new CharacterAttrib("EDG");
-        private CharacterAttrib _attMAG = new CharacterAttrib("MAG");
-        private CharacterAttrib _attRES = new CharacterAttrib("RES");
-        private CharacterAttrib _attESS = new CharacterAttrib("ESS");
-        private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
+		private CharacterAttrib _attBOD;
+        private CharacterAttrib _attAGI;
+        private CharacterAttrib _attREA;
+        private CharacterAttrib _attSTR;
+        private CharacterAttrib _attCHA;
+        private CharacterAttrib _attINT;
+        private CharacterAttrib _attLOG;
+        private CharacterAttrib _attWIL;
+        private CharacterAttrib _attINI;
+        private CharacterAttrib _attEDG;
+        private CharacterAttrib _attMAG;
+        private CharacterAttrib _attRES;
+        private CharacterAttrib _attESS;
+        private CharacterAttrib _attDEP;
 
         // Shapeshifter Attributes.
 
@@ -298,7 +298,22 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            BOD._objCharacter = this;
+			_attBOD = new CharacterAttrib("BOD", this);
+			_attAGI = new CharacterAttrib("AGI", this);
+			_attREA = new CharacterAttrib("REA", this);
+			_attSTR = new CharacterAttrib("STR", this);
+			_attCHA = new CharacterAttrib("CHA", this);
+			_attINT = new CharacterAttrib("INT", this);
+			_attLOG = new CharacterAttrib("LOG", this);
+			_attWIL = new CharacterAttrib("WIL", this);
+			_attEDG = new CharacterAttrib("EDG", this, CharacterAttrib.AttributeCategory.Special);
+			_attMAG = new CharacterAttrib("MAG", this, CharacterAttrib.AttributeCategory.Special);
+			_attRES = new CharacterAttrib("RES", this, CharacterAttrib.AttributeCategory.Special);
+			_attDEP = new CharacterAttrib("DEP", this,CharacterAttrib.AttributeCategory.Special);
+			_attINI = new CharacterAttrib("INI", this);
+			_attESS = new CharacterAttrib("ESS", this);
+
+			BOD._objCharacter = this;
             AGI._objCharacter = this;
             REA._objCharacter = this;
             STR._objCharacter = this;
@@ -2720,8 +2735,7 @@ namespace Chummer
             _attributes.Clear();
             foreach (string strAttribute in AttributeStrings)
             {
-                CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute);
-                objLoopAttrib._objCharacter = this;
+                CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute,this);
             }
 			_blnMAGEnabled = false;
             _blnRESEnabled = false;

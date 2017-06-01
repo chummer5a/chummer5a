@@ -36,11 +36,12 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         /// <param name="strAbbrev">CharacterAttribute abbreviation.</param>
         /// <param name="enumCategory"></param>
-        public CharacterAttrib(string strAbbrev, AttributeCategory enumCategory = AttributeCategory.Standard)
+        public CharacterAttrib(string strAbbrev, Character character, AttributeCategory enumCategory = AttributeCategory.Standard)
         {
             _strAbbrev = strAbbrev;
 	        Category = enumCategory;
-        }
+			character.ImprovementEvent += OnImprovementEvent;
+		}
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -178,16 +179,21 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return _intBase;
+                return _intBase + FreeBase();
             }
             set
             {
-                _intBase = value;
+                _intBase = Math.Max(value - FreeBase(), 0);
 				OnPropertyChanged(nameof(Value));
 			}
         }
 
-        /// <summary>
+	    protected int FreeBase()
+	    {
+			return Math.Min(_objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
+	    }
+
+	    /// <summary>
         /// Current karma value of the CharacterAttribute.
         /// </summary>
         public int Karma
@@ -210,9 +216,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                //This amount of object allocation is uglier than the US national dept, but improvementmanager is due for a rewrite anyway
-                ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
-                return Math.Max(Base + Karma + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum),TotalMinimum);
+                return Math.Max(Base + Karma,TotalMinimum);
             }
         }
 
@@ -818,7 +822,7 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
+        /// Is it possible to place points in Base or is it prevented by their build method?
         /// </summary>
         public bool BaseUnlocked
         {
@@ -1207,107 +1211,6 @@ namespace Chummer.Backend.Attributes
             get { return _objCharacter.Karma >= UpgradeKarmaCost() && TotalMaximum > Value; }
         }
 
-		/// <summary>
-		/// Check if any other CharacterAttribute is already at its Metatype Maximum.
-		/// </summary>
-		public bool CanImproveAttribute()
-		{
-			CharacterAttrib objAttribute = this;
-			bool blnAtMaximum = false;
-			if (_objCharacter.Created)
-			{
-				return CanUpgradeCareer;
-			}
-			if (_objCharacter.Options.Allow2ndMaxAttribute)
-			{
-				if (objAttribute.Abbrev != "STR")
-				{
-					if (((_objCharacter.STR.Base + _objCharacter.STR.Karma) == _objCharacter.STR.TotalMaximum) && _objCharacter.STR.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "BOD")
-				{
-					if (((_objCharacter.BOD.Base + _objCharacter.BOD.Karma) == _objCharacter.BOD.TotalMaximum) && _objCharacter.BOD.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "AGI")
-				{
-					if (((_objCharacter.AGI.Base + _objCharacter.AGI.Karma) == _objCharacter.AGI.TotalMaximum) && _objCharacter.AGI.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "REA")
-				{
-					if (((_objCharacter.REA.Base + _objCharacter.REA.Karma) == _objCharacter.REA.TotalMaximum) && _objCharacter.REA.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "CHA")
-				{
-					if (((_objCharacter.CHA.Base + _objCharacter.CHA.Karma) == _objCharacter.CHA.TotalMaximum) && _objCharacter.CHA.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "INT")
-				{
-					if (((_objCharacter.INT.Base + _objCharacter.INT.Karma) == _objCharacter.INT.TotalMaximum) && _objCharacter.INT.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "WIL")
-				{
-					if (((_objCharacter.WIL.Base + _objCharacter.WIL.Karma) == _objCharacter.WIL.TotalMaximum) && _objCharacter.WIL.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "LOG")
-				{
-					if (((_objCharacter.LOG.Base + _objCharacter.LOG.Karma) == _objCharacter.LOG.TotalMaximum) && _objCharacter.LOG.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-			}
-			else
-			{
-				if (objAttribute.Abbrev != "STR")
-				{
-					if (((_objCharacter.STR.Base + _objCharacter.STR.Karma) == _objCharacter.STR.TotalMaximum) && _objCharacter.STR.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "BOD")
-				{
-					if (((_objCharacter.BOD.Base + _objCharacter.BOD.Karma) == _objCharacter.BOD.TotalMaximum) && _objCharacter.BOD.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "AGI")
-				{
-					if (((_objCharacter.AGI.Base + _objCharacter.AGI.Karma) == _objCharacter.AGI.TotalMaximum) && _objCharacter.AGI.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "REA")
-				{
-					if (((_objCharacter.REA.Base + _objCharacter.REA.Karma) == _objCharacter.REA.TotalMaximum) && _objCharacter.REA.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "CHA")
-				{
-					if (((_objCharacter.CHA.Base + _objCharacter.CHA.Karma) == _objCharacter.CHA.TotalMaximum) && _objCharacter.CHA.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "INT")
-				{
-					if (((_objCharacter.INT.Base + _objCharacter.INT.Karma) == _objCharacter.INT.TotalMaximum) && _objCharacter.INT.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "WIL")
-				{
-					if (((_objCharacter.WIL.Base + _objCharacter.WIL.Karma) == _objCharacter.WIL.TotalMaximum) && _objCharacter.WIL.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-				if (objAttribute.Abbrev != "LOG")
-				{
-					if (((_objCharacter.LOG.Base + _objCharacter.LOG.Karma) == _objCharacter.LOG.TotalMaximum) && _objCharacter.LOG.TotalMaximum != 0)
-						blnAtMaximum = true;
-				}
-			}
-
-			return !blnAtMaximum;
-		}
-
 		[NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -1421,6 +1324,23 @@ namespace Chummer.Backend.Attributes
 				    return;
 		    }
 	    }
-        #endregion
-    }
+		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
+		private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+		{
+			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled))
+			{
+				OnPropertyChanged(nameof(AttributeModifiers));
+			}
+			else if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
+			{
+				OnPropertyChanged(nameof(AttributeModifiers));
+			}
+			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
+			{
+				OnPropertyChanged(nameof(AttributeModifiers));
+				OnPropertyChanged(nameof(Base));
+			}
+		}
+		#endregion
+	}
 }
