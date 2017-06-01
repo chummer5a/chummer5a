@@ -7275,8 +7275,9 @@ namespace Chummer
 	    }
 
 		//I also think this prevents GC. But there is no good way to do it...
-		internal event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
-		
+		internal event Action<List<Improvement>, ImprovementManager> SkillImprovementEvent;
+		internal event Action<List<Improvement>, ImprovementManager> AttributeImprovementEvent;
+
 		//List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down
 		private static readonly Improvement.ImprovementType[] skillRelated = {
 			Improvement.ImprovementType.Skillwire,
@@ -7297,8 +7298,14 @@ namespace Chummer
 			Improvement.ImprovementType.SpecialSkills,
 			Improvement.ImprovementType.ReflexRecorderOptimization,
 		};
-		
-	    //To get when things change in improvementmanager
+
+		//List of events that might be able to affect attributes. TODO: Should this just be merged into skillRelated?
+		private static readonly Improvement.ImprovementType[] attribRelated = {
+			Improvement.ImprovementType.Attributelevel,
+			Improvement.ImprovementType.Attribute
+			,
+		};
+		//To get when things change in improvementmanager
 		//Ugly, ugly done, but we cannot get events out of it today
 		// FUTURE REFACTOR HERE
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
@@ -7306,7 +7313,11 @@ namespace Chummer
 		{
 			if (_lstTransaction.Any(x => skillRelated.Any(y => y == x.ImproveType)))
 			{
-				ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+				SkillImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+			}
+			if (_lstTransaction.Any(x => attribRelated.Any(y => y == x.ImproveType)))
+			{
+				AttributeImprovementEvent?.Invoke(_lstTransaction, improvementManager);
 			}
 		}
 	}

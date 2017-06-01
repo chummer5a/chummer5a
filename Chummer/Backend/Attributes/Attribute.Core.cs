@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Chummer.Datastructures;
 
 namespace Chummer.Backend.Attributes
 {
@@ -40,7 +41,7 @@ namespace Chummer.Backend.Attributes
         {
             _strAbbrev = strAbbrev;
 	        Category = enumCategory;
-			character.ImprovementEvent += OnImprovementEvent;
+			character.AttributeImprovementEvent += OnImprovementEvent;
 		}
 
         /// <summary>
@@ -179,14 +180,26 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return _intBase + FreeBase();
+                return _intBase;
             }
             set
             {
-                _intBase = Math.Max(value - FreeBase(), 0);
+                _intBase = value;
 				OnPropertyChanged(nameof(Value));
 			}
         }
+
+		/// <summary>
+		/// Value of Base as used for attribute controls. 
+		/// </summary>
+	    public int TotalBase
+	    {
+			get { return Math.Max(Base + FreeBase(), TotalMinimum); }
+			set
+			{
+				_intBase = Math.Max(value - FreeBase() - TotalMinimum, 0);
+			}
+	    }
 
 	    protected int FreeBase()
 	    {
@@ -216,7 +229,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Math.Max(Base + Karma,TotalMinimum);
+                return Math.Max(TotalBase + Karma,TotalMinimum);
             }
         }
 
@@ -561,15 +574,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                int intModifier = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && objImprovement.Enabled)
-                    {
-                        intModifier += objImprovement.Maximum * objImprovement.Rating;
-                    }
-                }
-                return intModifier;
+	            return _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && objImprovement.Enabled).Sum(objImprovement => objImprovement.Maximum * objImprovement.Rating);
             }
         }
 
@@ -1131,11 +1136,11 @@ namespace Chummer.Backend.Attributes
             return intBP;
         }
 
-	    public int SpentPriorityPoints => Math.Max(Base - TotalMinimum, 0);
+	    public int SpentPriorityPoints => Base;
 
 	    public bool AtMetatypeMaximum => Value == TotalMaximum;
 
-        public int KarmaMaximum => TotalMaximum - Base;
+        public int KarmaMaximum => TotalMaximum - TotalBase;
         public int PriorityMaximum => TotalMaximum - Karma;
         /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
@@ -1179,11 +1184,11 @@ namespace Chummer.Backend.Attributes
 				    if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
 					    x.Name == "Myostatin Inhibitor") != null)
 				    {
-					    intCost += ((Convert.ToInt32(Base) + i)*_objCharacter.Options.KarmaAttribute) - 2;
+					    intCost += ((Convert.ToInt32(TotalBase) + i)*_objCharacter.Options.KarmaAttribute) - 2;
 				    }
 				    else
 				    {
-					    intCost += ((Convert.ToInt32(Base) + i)*_objCharacter.Options.KarmaAttribute);
+					    intCost += ((Convert.ToInt32(TotalBase) + i)*_objCharacter.Options.KarmaAttribute);
 				    }
 			    }
 		    }
@@ -1214,7 +1219,11 @@ namespace Chummer.Backend.Attributes
 		[NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			foreach (string s in DependencyTree.Find(propertyName))
+			{
+				var v = new PropertyChangedEventArgs(s);
+				PropertyChanged?.Invoke(this, v);
+			}
 
 		}
 
@@ -1267,8 +1276,22 @@ namespace Chummer.Backend.Attributes
         {
             get { return _physicalAttributes.Value; }
         }
-
-        public string UpgradeKarmaCostString
+		//A tree of dependencies. Once some of the properties are changed, 
+		//anything they depend on, also needs to raise OnChanged
+		//This tree keeps track of dependencies
+	    private static readonly ReverseTree<string> DependencyTree =
+		    new ReverseTree<string>(nameof(ToolTip),
+			    new ReverseTree<string>(nameof(DisplayValue),
+					new ReverseTree<string>(nameof(Augmented),
+					new ReverseTree<string>(nameof(TotalValue),
+					    new ReverseTree<string>(nameof(AttributeModifiers)),
+								    new ReverseTree<string>(nameof(Karma)),
+									new ReverseTree<string>(nameof(Base)),
+										new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
+											new ReverseTree<string>(nameof(TotalMinimum)),
+											new ReverseTree<string>(nameof(TotalMaximum)),
+											new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
+		public string UpgradeKarmaCostString
         {
             get
             {
@@ -1327,9 +1350,27 @@ namespace Chummer.Backend.Attributes
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
 		private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
 		{
-			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled))
+			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled && imp.Augmented != 0))
 			{
-				OnPropertyChanged(nameof(AttributeModifiers));
+				OnPropertyChanged(nameof(Augmented));
+			}
+			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled && imp.AugmentedMaximum != 0 || imp.Maximum != 0))
+			{
+				foreach (Improvement i in improvements.Where(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled))
+				{
+					if (i.Maximum != 0 || i.AugmentedMaximum != 0)
+					{
+						OnPropertyChanged(nameof(TotalAugmentedMaximum));
+					}
+					if (i.Minimum != 0)
+					{
+						OnPropertyChanged(nameof(TotalMinimum));
+					}
+					if (i.Value != 0)
+					{
+						OnPropertyChanged(nameof(TotalValue));
+					}
+				}
 			}
 			else if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
 			{
@@ -1337,7 +1378,6 @@ namespace Chummer.Backend.Attributes
 			}
 			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
 			{
-				OnPropertyChanged(nameof(AttributeModifiers));
 				OnPropertyChanged(nameof(Base));
 			}
 		}

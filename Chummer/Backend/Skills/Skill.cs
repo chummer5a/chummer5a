@@ -337,7 +337,7 @@ namespace Chummer.Skills
 				SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
 			}
 
-			character.ImprovementEvent += OnImprovementEvent;
+			character.SkillImprovementEvent += OnImprovementEvent;
 			Specializations.ListChanged += SpecializationsOnListChanged;
 		}
 

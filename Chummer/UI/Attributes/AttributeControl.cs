@@ -40,7 +40,7 @@ namespace Chummer.UI.Attributes
             }
             else
 			{
-				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Base), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("Minimum", attribute, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
