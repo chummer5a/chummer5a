@@ -577,6 +577,10 @@ namespace Chummer
 			{
                 objAttribute.Save(objWriter);
             }
+            foreach (CharacterAttrib objAttribute in _specialAttributes)
+            {
+                objAttribute.Save(objWriter);
+            }
             // </attributes>
             objWriter.WriteEndElement();
 

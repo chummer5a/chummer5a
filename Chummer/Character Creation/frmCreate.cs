@@ -13922,11 +13922,11 @@ namespace Chummer
                 lblCyberwareSource.Text = $"{strBook} {strPage}";
                 tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
                 // Enable and set the Rating values as needed.
-                if (objCyberware.Rating == 0)
+                if (objCyberware.MaxRating == 0)
                 {
-                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Maximum = 0;
                     nudCyberwareRating.Minimum = 0;
-                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Value = 0;
                     nudCyberwareRating.Enabled = false;
                 }
                 else

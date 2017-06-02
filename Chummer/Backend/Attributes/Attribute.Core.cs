@@ -194,16 +194,23 @@ namespace Chummer.Backend.Attributes
 		/// </summary>
 	    public int TotalBase
 	    {
-			get { return Math.Max(Base + FreeBase(), TotalMinimum); }
+            //TODO: Ugly ugly ugly, may cause UI confusion.
+			get { return Math.Max(Base + FreeBase + TotalMinimum, TotalMinimum); }
 			set
 			{
-				_intBase = Math.Max(value - FreeBase() - TotalMinimum, 0);
+				Base = Math.Max(value - FreeBase - TotalMinimum, 0);
 			}
 	    }
 
-	    protected int FreeBase()
+	    protected int FreeBase
 	    {
-			return Math.Min(_objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
+	        get
+	        {
+	            return
+	                Math.Min(
+	                    _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.Attributelevel, false,
+	                        Abbrev), MetatypeMaximum - MetatypeMinimum);
+	        }
 	    }
 
 	    /// <summary>
