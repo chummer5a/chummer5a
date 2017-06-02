@@ -7,8 +7,10 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
+// ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
 {
@@ -1044,6 +1046,52 @@ namespace Chummer.Classes
 			CreateImprovement(frmPickSpell.SelectedSpell, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
 				_strUnique);
 		}
+
+        // Add a specific Spell to the Character.
+        public void addspell(XmlNode bonusNode)
+        {
+            Log.Info("addspell");
+
+            Log.Info("addspell = " + bonusNode.OuterXml.ToString());
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            XmlDocument objXmlSpellDocument = XmlManager.Instance.Load("spells.xml");
+
+            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + bonusNode.InnerText + "\"]");
+
+            if (node == null) return;
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            if (node["bonus"]?["selecttext"] != null)
+            {
+                
+                frmSelectText frmPickText = new frmSelectText();
+                frmPickText.Description =
+                    LanguageManager.Instance.GetString("String_Improvement_SelectText")
+                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText);
+                frmPickText.ShowDialog();
+                strExtra = frmPickText.SelectedValue;
+            }
+
+            Spell spell = new Spell(_objCharacter);
+            spell.Create(node, _objCharacter, new TreeNode(), strExtra);
+            if (spell.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.Spells.Add(spell);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Spell,
+                _strUnique);
+        }
 
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)
@@ -2459,7 +2507,9 @@ namespace Chummer.Classes
 				throw new AbortedException();
 			}
 
-			SelectedValue = frmPickMentorSpirit.SelectedMentor;
+			XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
+			XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+			SelectedValue = mentorDoc["name"].InnerText;
 
 			string strHoldValue = SelectedValue;
 			if (_blnConcatSelectedValue)
@@ -2515,6 +2565,22 @@ namespace Chummer.Classes
 				_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
 			}
 
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
+
+			if (frmPickMentorSpirit.MentorsMask)
+			{
+				Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
+				Log.Info("Calling CreateImprovement");
+				bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+					_blnConcatSelectedValue, _intRating, _strFriendlyName);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
+				if (!blnSuccess)
+				{
+					throw new AbortedException();
+				}
+			}
+
 			SelectedValue = strHoldValue;
 			Log.Info("_strSelectedValue = " + SelectedValue);
 			Log.Info("_strForcedValue = " + ForcedValue);
@@ -2534,11 +2600,16 @@ namespace Chummer.Classes
 			{
 				throw new AbortedException();
 			}
+			
+			XmlDocument doc = XmlManager.Instance.Load("paragons.xml");
+			XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+			SelectedValue = mentorDoc["name"].InnerText;
 
-			SelectedValue = frmPickMentorSpirit.SelectedMentor;
 			string strHoldValue = SelectedValue;
 			if (_blnConcatSelectedValue)
 				SourceName += " (" + SelectedValue + ")";
+
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
 
 			if (frmPickMentorSpirit.BonusNode != null)
 			{

@@ -67,6 +67,7 @@ namespace Chummer.Backend.Equipment
 		{
 		    if (objParent == null) throw new ArgumentNullException(nameof(objParent));
 		    Parent = objParent;
+			if (objXmlMod == null) Utils.BreakIfDebug();
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);

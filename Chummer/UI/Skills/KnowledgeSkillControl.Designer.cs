@@ -28,8 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.nudKarma = new System.Windows.Forms.NumericUpDown();
-            this.nudSkill = new System.Windows.Forms.NumericUpDown();
             this.lblModifiedRating = new System.Windows.Forms.Label();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
@@ -41,33 +39,11 @@
             this.lblSpec = new System.Windows.Forms.Label();
             this.btnCareerIncrease = new System.Windows.Forms.Button();
             this.btnAddSpec = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
+			this.nudSkill = new Chummer.helpers.NumericUpDownEx();
+			this.nudKarma = new Chummer.helpers.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             this.SuspendLayout();
-            // 
-            // nudKarma
-            // 
-            this.nudKarma.Location = new System.Drawing.Point(248, 1);
-            this.nudKarma.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudKarma.Name = "nudKarma";
-            this.nudKarma.Size = new System.Drawing.Size(40, 20);
-            this.nudKarma.TabIndex = 14;
-            // 
-            // nudSkill
-            // 
-            this.nudSkill.Location = new System.Drawing.Point(206, 1);
-            this.nudSkill.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudSkill.Name = "nudSkill";
-            this.nudSkill.Size = new System.Drawing.Size(40, 20);
-            this.nudSkill.TabIndex = 15;
             // 
             // lblModifiedRating
             // 
@@ -181,6 +157,34 @@
             this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
+			// nudSkill
+			// 
+			this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+			this.nudSkill.Location = new System.Drawing.Point(206, 1);
+			this.nudSkill.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+			this.nudSkill.Name = "nudSkill";
+			this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
+			this.nudSkill.Size = new System.Drawing.Size(40, 20);
+			this.nudSkill.TabIndex = 15;
+			// 
+			// nudKarma
+			// 
+			this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+			this.nudKarma.Location = new System.Drawing.Point(248, 1);
+			this.nudKarma.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+			this.nudKarma.Name = "nudKarma";
+			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
+			this.nudKarma.Size = new System.Drawing.Size(40, 20);
+			this.nudKarma.TabIndex = 14;
+			// 
             // KnowledgeSkillControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -201,16 +205,16 @@
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "KnowledgeSkillControl";
             this.Size = new System.Drawing.Size(800, 23);
+			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
 		}
 
 		#endregion
-		private System.Windows.Forms.NumericUpDown nudKarma;
-		private System.Windows.Forms.NumericUpDown nudSkill;
+		private Chummer.helpers.NumericUpDownEx nudKarma;
+		private Chummer.helpers.NumericUpDownEx nudSkill;
 		private System.Windows.Forms.Label lblModifiedRating;
 		private System.Windows.Forms.ComboBox cboSpec;
 		private System.Windows.Forms.CheckBox chkKarma;

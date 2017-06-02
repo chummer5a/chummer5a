@@ -17,6 +17,11 @@ Application Changes:
 - Fixed behaviour of the Select Mentor Spirit window to not rely on names. Fixes an issue with the duplicate Oak mentors. 
 - Cleaned up some minor issues with the Select Vehicle Mod window.
 - Added a SourceID to Vehicles. 
+- Fixed display of attribute Value to not include metatype minimum multiple times
+- Implemented the Mentor's Mask from Forbidden Arcana, accessed through the Select Mentor Spirit window. Existing characters should remove and re-add the quality to choose this property. 
+- Added missing dice and multipliers for basic lifestyles. Existing characters should open any current lifestyles in order to refresh the values.
+- Implemented the AddSpell improvement type for the Alchemical Armorer quality. 
+- Fixed an issue with cyberware decreasing to Rating 0 in create mode. 
 
 Data Changes:
 

@@ -137,6 +137,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
@@ -211,6 +212,12 @@
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </Compile>
     <Compile Include="helpers\Guid.cs" />
+    <Compile Include="helpers\Label.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\NumericUpDownEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Interfaces\INamedItemWithGuid.cs" />
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>
@@ -328,7 +335,12 @@
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </Compile>
-    <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
+    <Compile Include="UI\Attributes\AttributeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
+      <DependentUpon>AttributeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -889,6 +901,9 @@
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
+      <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1146,6 +1161,8 @@
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
+    <Compile Include="Backend\Attributes\Attribute.Core.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

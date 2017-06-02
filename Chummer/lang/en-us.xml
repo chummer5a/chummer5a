@@ -4802,7 +4802,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_BuildPositiveQualities</key>
 			<text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
 		</string>
-    <string>
+		<string>
+			<key>Checkbox_Options_AllowHoverIncrement</key>
+			<text>Allow incrementing values of numericupdown controls by hovering over the control</text>
+		</string>
+		<string>
       <key>Checkbox_Options_OmaeEnabled</key>
       <text>Enable Omae character exchange</text>      
     </string>

@@ -551,7 +551,7 @@ namespace Chummer
 		            if (objNode != null)
 		            {
 		                _strSelectCategory = objNode["category"]?.InnerText;
-		                _strSelectedWeapon = objNode["name"]?.InnerText;
+		                _strSelectedWeapon = objNode["id"]?.InnerText;
                         _intMarkup = Convert.ToInt32(nudMarkup.Value);
                         _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
@@ -575,7 +575,7 @@ namespace Chummer
 		                if (objNode != null)
 		                {
 		                    _strSelectCategory = objNode["category"]?.InnerText;
-		                    _strSelectedWeapon = objNode["name"]?.InnerText;
+		                    _strSelectedWeapon = objNode["id"]?.InnerText;
 		                }
 		                _intMarkup = Convert.ToInt32(nudMarkup.Value);
 

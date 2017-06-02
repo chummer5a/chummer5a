@@ -38,8 +38,8 @@ namespace Chummer.UI.Skills
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
-            this.nudKarma = new System.Windows.Forms.NumericUpDown();
-            this.nudSkill = new System.Windows.Forms.NumericUpDown();
+			this.nudKarma = new Chummer.helpers.NumericUpDownEx();
+			this.nudSkill = new Chummer.helpers.NumericUpDownEx();
             this.lblModifiedRating = new System.Windows.Forms.Label();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
@@ -95,6 +95,7 @@ namespace Chummer.UI.Skills
             // 
             // nudKarma
             // 
+			this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(210, 1);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
@@ -102,11 +103,13 @@ namespace Chummer.UI.Skills
             0,
             0});
             this.nudKarma.Name = "nudKarma";
+			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
             this.nudKarma.TabIndex = 14;
             // 
             // nudSkill
             // 
+			this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(168, 1);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
@@ -114,6 +117,7 @@ namespace Chummer.UI.Skills
             0,
             0});
             this.nudSkill.Name = "nudSkill";
+			this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudSkill.Size = new System.Drawing.Size(40, 20);
             this.nudSkill.TabIndex = 15;
             // 
@@ -276,8 +280,8 @@ namespace Chummer.UI.Skills
 
 		private System.Windows.Forms.Label lblName;
 		private System.Windows.Forms.Label lblAttribute;
-		private System.Windows.Forms.NumericUpDown nudKarma;
-		private System.Windows.Forms.NumericUpDown nudSkill;
+		private Chummer.helpers.NumericUpDownEx nudKarma;
+		private Chummer.helpers.NumericUpDownEx nudSkill;
 		private System.Windows.Forms.Label lblModifiedRating;
 		private System.Windows.Forms.ComboBox cboSpec;
 		private System.Windows.Forms.CheckBox chkKarma;

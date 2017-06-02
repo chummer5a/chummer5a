@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Skills
 {

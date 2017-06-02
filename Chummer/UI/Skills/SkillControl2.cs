@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Chummer.Skills;
+using Chummer.Backend.Attributes;
+using Chummer.helpers;
 
 namespace Chummer.UI.Skills
 {
@@ -81,7 +83,11 @@ namespace Chummer.UI.Skills
 
 				nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false,
 					DataSourceUpdateMode.OnPropertyChanged);
+				nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, 
+					DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, 
 					DataSourceUpdateMode.OnPropertyChanged);
 				if (skill.CharacterObject.BuildMethod.HaveSkillPoints())
 				{
@@ -129,7 +135,7 @@ namespace Chummer.UI.Skills
 
             ResumeLayout();
 		}
-
+		
 		private void ContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)

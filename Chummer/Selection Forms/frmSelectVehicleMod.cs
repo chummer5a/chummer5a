@@ -78,7 +78,7 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
 			foreach (XmlNode objXmlCategory in objXmlNodeList)
 			{
-				if ((strValues.Length <= 0 || strValues.All(value => value != objXmlCategory.InnerText)) && strValues.Length != 0)
+				if (_strLimitToCategories != "" && strValues.All(value => value != objXmlCategory.InnerText))
 					continue;
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlCategory.InnerText;
@@ -118,7 +118,9 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
 			XmlNodeList objXmlModList = null;
 			// Populate the Mod list.
-			objXmlModList = cboCategory.SelectedValue?.ToString() != "All" ? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]") : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
+			objXmlModList = cboCategory.SelectedValue != null && (string) cboCategory.SelectedValue != "All" 
+			? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]") 
+			: _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
 			if (objXmlModList != null)
 				foreach (XmlNode objXmlMod in objXmlModList)
 				{
@@ -180,7 +182,7 @@ namespace Chummer
 						continue;
 					}
 					ListItem objItem = new ListItem {Value = objXmlMod["id"]?.InnerText};
-					objItem.Name = objXmlMod["translate"]?.InnerText ?? objItem.Value;
+					objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"]?.InnerText;
 					lstMods.Add(objItem);
 				}
 			lstMod.BeginUpdate();
@@ -611,7 +613,7 @@ namespace Chummer
 			{
 				// Retireve the information for the selected Mod.
 				// Filtering is also done on the Category in case there are non-unique names across categories.
-				XmlNode objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + lstMod.SelectedValue + "\"]");
+				XmlNode objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + lstMod.SelectedValue + "\"]");
 
 				// Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
 				// This is done using XPathExpression.

@@ -35,7 +35,7 @@ namespace Chummer.Skills
 			_character.LOG.PropertyChanged += (sender, args) => KnoChanged();
 			_character.INT.PropertyChanged += (sender, args) => KnoChanged();
 
-			_character.ImprovementEvent += CharacterOnImprovementEvent;
+			_character.SkillImprovementEvent += CharacterOnImprovementEvent;
 
 		}
 

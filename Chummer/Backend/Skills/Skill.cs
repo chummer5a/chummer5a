@@ -13,6 +13,7 @@ using Chummer.Annotations;
 using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Skills
 {
@@ -336,7 +337,7 @@ namespace Chummer.Skills
 				SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
 			}
 
-			character.ImprovementEvent += OnImprovementEvent;
+			character.SkillImprovementEvent += OnImprovementEvent;
 			Specializations.ListChanged += SpecializationsOnListChanged;
 		}
 

@@ -257,6 +257,8 @@ namespace Chummer
 			_objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
 			_objLifestyle.LifestyleQualities.Clear();
 			_objLifestyle.StyleType = _objType;
+			_objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
+			_objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
 
 			Guid source;
 			if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out source))

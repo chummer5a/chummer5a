@@ -182,8 +182,9 @@ namespace Chummer
 	    private bool _mysaddPpCareer;
 	    private bool _blnReverseAttributePriorityOrder;
 	    private bool _blnHhideItemsOverAvailLimit = true;
+		private bool _blnAllowHoverIncrement;
 
-	    #region Initialization, Save, and Load Methods
+		#region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
 		{
 			_character = character;
@@ -402,6 +403,8 @@ namespace Chummer
 			objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
 			// <technomancerallowautosoft />
 			objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
+			// <allowhoverincrement />
+			objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
 			// <autobackstory />
 			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
 			// <freemartialartspecialization />
@@ -777,6 +780,8 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("specialattributekarmalimit", ref _blnSpecialAttributeKarmaLimit);
 			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
 			objXmlNode.TryGetBoolFieldQuickly("technomancerallowautosoft", ref _blnTechnomancerAllowAutosoft);
+			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
+			objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
 			// Optional Rule: Whether Life Modules should automatically create a character back story.
 			objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
 			// House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
@@ -3409,7 +3414,18 @@ namespace Chummer
 	        set { _blnHhideItemsOverAvailLimit = value; }
 	    }
 
-	    #endregion
+		/// <summary>
+		/// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+		/// </summary>
+		public bool AllowHoverIncrement
+		{
+			get { return _blnAllowHoverIncrement; }
+			internal set { _blnAllowHoverIncrement = value; }
+		}
 
-    }
+		public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+		#endregion
+
+	}
 }

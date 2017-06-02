@@ -30,7 +30,7 @@
 			this.components = new System.ComponentModel.Container();
 			this.lblPowerName = new System.Windows.Forms.Label();
 			this.cmdDelete = new System.Windows.Forms.Button();
-			this.nudRating = new System.Windows.Forms.NumericUpDown();
+			this.nudRating = new Chummer.helpers.NumericUpDownEx();
 			this.lblPowerPoints = new System.Windows.Forms.Label();
 			this.chkDiscountedAdeptWay = new System.Windows.Forms.CheckBox();
 			this.chkDiscountedGeas = new System.Windows.Forms.CheckBox();
@@ -81,8 +81,9 @@
 			this.nudRating.Name = "nudRating";
 			this.nudRating.Size = new System.Drawing.Size(40, 18);
 			this.nudRating.TabIndex = 2;
+	        this.nudRating.Increment = 1;
 			this.nudRating.Value = new decimal(new int[] {
-            1,
+			1,
             0,
             0,
             0});
@@ -182,7 +183,7 @@
 		private System.Windows.Forms.CheckBox chkDiscountedGeas;
 		private System.Windows.Forms.PictureBox imgNotes;
 		private System.Windows.Forms.ToolTip tipTooltip;
-        public System.Windows.Forms.NumericUpDown nudRating;
+        public Chummer.helpers.NumericUpDownEx nudRating;
 		private System.Windows.Forms.Label lblActivation;
 	}
 }
