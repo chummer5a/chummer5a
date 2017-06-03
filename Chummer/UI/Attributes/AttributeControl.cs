@@ -35,15 +35,18 @@ namespace Chummer.UI.Attributes
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
-                cmdImproveATT.Visible = true;
-	            cmdBurnEdge.Visible = AttributeName == "EDG";
+				cmdImproveATT.DataBindings.Add("TooltipText", attribute, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+				cmdImproveATT.Visible = true;
+				cmdImproveATT.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
+				cmdBurnEdge.Visible = AttributeName == "EDG";
+	            cmdBurnEdge.TooltipText = LanguageManager.Instance.GetString("Tip_CommonBurnEdge");
             }
             else
 			{
-				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("Minimum", attribute, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.Visible = true;

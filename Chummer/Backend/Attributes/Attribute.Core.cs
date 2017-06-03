@@ -22,10 +22,9 @@ namespace Chummer.Backend.Attributes
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;
         private int _intMetatypeAugMax = 9;
-        private int _intValue = 0;
-        private int _intAugModifier = 0;
-        private int _intBase = 0;
-        private int _intKarma = 0;
+		private int _intAugModifier;
+        private int _intBase;
+        private int _intKarma;
         private string _strAbbrev = "";
         public Character _objCharacter;
 
@@ -41,7 +40,9 @@ namespace Chummer.Backend.Attributes
         {
             _strAbbrev = strAbbrev;
 	        Category = enumCategory;
-			character.AttributeImprovementEvent += OnImprovementEvent;
+	        _objCharacter = character;
+			_objCharacter.AttributeImprovementEvent += OnImprovementEvent;
+			_objCharacter.PropertyChanged += OnCharacterChanged;
 		}
 
         /// <summary>
@@ -55,7 +56,6 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString());
             objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString());
             objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString());
-            objWriter.WriteElementString("value", Value.ToString());
             objWriter.WriteElementString("base", _intBase.ToString());
             objWriter.WriteElementString("karma", _intKarma.ToString());
             objWriter.WriteElementString("augmodifier", _intAugModifier.ToString());
@@ -879,12 +879,20 @@ namespace Chummer.Backend.Attributes
             MetatypeMinimum = Convert.ToInt32(strMin);
             MetatypeMaximum = Convert.ToInt32(strMax);
             MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
-        }
+		}
 
-        /// <summary>
-        /// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
-        /// </summary>
-        public string ToolTip
+		public string UpgradeToolTip
+		{
+			get
+			{
+				return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Value + 1), UpgradeKarmaCost());
+			}
+		}
+
+		/// <summary>
+		/// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
+		/// </summary>
+		public string ToolTip
         {
 	        get
 	        {
@@ -1166,7 +1174,7 @@ namespace Chummer.Backend.Attributes
             }
             else
             {
-                upgrade = (Value + 1) * _objCharacter.Options.KarmaImproveActiveSkill;
+                upgrade = (Value + 1) * _objCharacter.Options.KarmaAttribute;
             }
             if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 upgrade -= (_objCharacter.STR.MetatypeMinimum - 1) * _objCharacter.Options.KarmaAttribute;
@@ -1222,6 +1230,16 @@ namespace Chummer.Backend.Attributes
         {
             get { return _objCharacter.Karma >= UpgradeKarmaCost() && TotalMaximum > Value; }
         }
+
+		// Caching the value prevents calling the event multiple times. 
+		private bool _oldUpgrade;
+		private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			if (propertyChangedEventArgs.PropertyName != nameof(Character.Karma)) return;
+			if (_oldUpgrade == CanUpgradeCareer) return;
+			_oldUpgrade = CanUpgradeCareer;
+			OnPropertyChanged(nameof(CanUpgradeCareer));
+		}
 
 		[NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -1298,7 +1316,8 @@ namespace Chummer.Backend.Attributes
 											new ReverseTree<string>(nameof(TotalMinimum)),
 											new ReverseTree<string>(nameof(TotalMaximum)),
 											new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
-		public string UpgradeKarmaCostString
+
+	    public string UpgradeKarmaCostString
         {
             get
             {

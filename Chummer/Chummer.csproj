@@ -211,6 +211,9 @@
     <Compile Include="frmCharacterRoster.Designer.cs">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\Button.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="helpers\Guid.cs" />
     <Compile Include="helpers\Label.cs">
       <SubType>Component</SubType>
