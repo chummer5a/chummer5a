@@ -77,9 +77,14 @@ namespace Chummer.Backend.Attributes
             _intMetatypeAugMax = Convert.ToInt32(objNode["metatypeaugmax"].InnerText);
             objNode.TryGetField("base", out _intBase);
             objNode.TryGetField("karma", out _intKarma);
-			if (_intBase == _intMetatypeMax && _intMetatypeMax > 0)
+			if (!BaseUnlocked)
 			{
-				_intBase -= _intMetatypeMin;
+				_intBase = 0;
+			}
+			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time. 
+			if (objNode["value"] != null && BaseUnlocked)
+			{
+				_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
 			}
 			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
             _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
