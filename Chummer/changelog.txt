@@ -22,6 +22,7 @@ Application Changes:
 - Added missing dice and multipliers for basic lifestyles. Existing characters should open any current lifestyles in order to refresh the values.
 - Implemented the AddSpell improvement type for the Alchemical Armorer quality. 
 - Fixed an issue with cyberware decreasing to Rating 0 in create mode. 
+- Fixed a legacy issue in which an attribute's Base value also included the Metatype Minimum value.
 
 Data Changes:
 
@@ -34,6 +35,7 @@ Data Changes:
 - Added missing bonuses for the Raven (Alt) Mentor Spirit. 
 - Fixed the drain attributes for the Red Magic tradition. 
 - Fixed the movement modification of the Satyr quality. 
+- Fixed a typo in the Spells template for character sheets that made Rituals show up as an Unknown category.
 
 New Strings:
 

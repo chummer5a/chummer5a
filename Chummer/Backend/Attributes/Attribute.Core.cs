@@ -75,9 +75,12 @@ namespace Chummer.Backend.Attributes
             _intMetatypeMin = Convert.ToInt32(objNode["metatypemin"].InnerText);
             _intMetatypeMax = Convert.ToInt32(objNode["metatypemax"].InnerText);
             _intMetatypeAugMax = Convert.ToInt32(objNode["metatypeaugmax"].InnerText);
-
             objNode.TryGetField("base", out _intBase);
             objNode.TryGetField("karma", out _intKarma);
+			if (_intBase == _intMetatypeMax && _intMetatypeMax > 0)
+			{
+				_intBase -= _intMetatypeMin;
+			}
 			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
             _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
         }
