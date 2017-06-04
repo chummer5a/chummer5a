@@ -1055,26 +1055,6 @@ namespace Chummer
 			ToolStripManager.RevertMerge("toolStrip");
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.Contains("Sprite"))
-			{
-				lblBODLabel.Enabled = false;
-				lblAGILabel.Enabled = false;
-				lblREALabel.Enabled = false;
-				lblSTRLabel.Enabled = false;
-				lblCHALabel.Text = LanguageManager.Instance.GetString("String_Attack");
-				lblINTLabel.Text = LanguageManager.Instance.GetString("String_Sleaze");
-				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_DataProcessing");
-				lblWILLabel.Text = LanguageManager.Instance.GetString("String_Firewall");
-            }
-            else if (_objCharacter.Metatype.Contains("Protosapients") || _objCharacter.Metatype.Contains("A.I."))
-            {
-                lblBODLabel.Enabled = false;
-                lblAGILabel.Enabled = false;
-                lblREALabel.Enabled = false;
-                lblSTRLabel.Enabled = false;
-			}
-
 			mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
 
 			if (_objCharacter.MetatypeCategory == "Cyberzombie")
@@ -1388,7 +1368,6 @@ namespace Chummer
 		{
 			TabPage objPage = tabCharacterTabs.SelectedTab;
 			// Reseize the form elements with the form.
-
 			// Character Info Tab.
 			int intHeight = ((objPage.Height - lblDescription.Top) / 4 - 20);
 			txtDescription.Height = intHeight;
@@ -1518,12 +1497,6 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-
-            // Change to the status of DEP being enabled.
-            lblDEPLabel.Enabled = _objCharacter.DEPEnabled;
-            lblDEPAug.Enabled = _objCharacter.DEPEnabled;
-            lblDEP.Enabled = _objCharacter.DEPEnabled;
-            lblDEPMetatype.Enabled = _objCharacter.DEPEnabled;
         }
 
 		private void objCharacter_AdeptTabEnabledChanged(object sender)
@@ -19731,10 +19704,6 @@ namespace Chummer
 
 			RedlinerCheck();
 
-			//needs to be somewhere...
-			cmdIncreasePowerPoints.Enabled = (_objCharacter.MysticAdeptPowerPoints < _objCharacter.MAG.TotalValue) &&
-			                                 _objCharacter.Karma >= 5;
-
 			if (_objCharacter.AdeptEnabled)
 			{
 				tabPowerUc.MissingDatabindingsWorkaround();
@@ -24193,10 +24162,6 @@ namespace Chummer
 		/// </summary>
 		private void SetTooltips()
 		{
-			// Common Tab.
-			tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
-			tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
-			tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
 			// Spells Tab.
 			tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.Instance.GetString("Tip_DiceRoller"));
 			tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.Instance.GetString("Tip_DiceRoller"));
