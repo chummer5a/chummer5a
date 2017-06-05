@@ -214,6 +214,7 @@
 				<xs:element name="movement" type="xs:string" minOccurs="0" maxOccurs="1" />
 				<xs:element name="movementmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
 				<xs:element name="movementpercent" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="nativelanguagelimit" type="xs:integer" minOccurs="0" maxOccurs="1" />
 				<xs:element name="notoriety" type="xs:string" minOccurs="0" maxOccurs="1" />
 				<xs:element name="nuyenamt" type="xs:string" minOccurs="0" maxOccurs="1" />
 				<xs:element name="nuyenmaxbp" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -333,7 +334,15 @@
 						<xs:sequence>
 							<xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
 							<xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="applytoaccuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
 							<xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
 						</xs:sequence>
 						<xs:attribute name="excludecategory" type="xs:string" use="optional" />
 						<xs:attribute name="limittoattribute" type="xs:string" use="optional" />
@@ -354,7 +363,11 @@
 				<xs:element name="selectspell" minOccurs="0" maxOccurs="1" />
 				<xs:element name="selectsprite" minOccurs="0" maxOccurs="1" />
 				<xs:element name="selecttext" minOccurs="0" maxOccurs="1" />
-				<xs:element name="selectweapon" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="selectweapon" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:attribute name="excludecategory" type="xs:string" use="optional" />
+					</xs:complexType>				
+				</xs:element>
 				<xs:element name="sensitivesystem" minOccurs="0" maxOccurs="1" />
 				<xs:element name="skillarticulation" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
@@ -484,7 +497,7 @@
 				</xs:element>
 				<xs:element name="spellkarmadiscount" type="xs:integer" minOccurs="0" maxOccurs="1" />
 				<xs:element name="spelllimit" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="spellresistance" type="xs:integer" minOccurs="0" maxOccurs="1" />
+				<xs:element name="spellresistance" type="xs:string" minOccurs="0" maxOccurs="1" />
 				<xs:element name="submersion" type="xs:string" minOccurs="0" maxOccurs="1" />
 				<xs:element name="swapskillattribute" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
@@ -526,8 +539,17 @@
 				<xs:element name="weaponcategorydv" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="selectskill" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="skillcategory" type="xs:string" use="optional" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>							
+							</xs:element>
 							<xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>

@@ -88,1118 +88,1118 @@
 				<name>Throwing Syringe</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
-				<avail>6F</avail>
-				<addweapon>Throwing Syringe</addweapon>
-				<costfor>1</costfor>
-				<cost>40</cost>
 				<source>HT</source>
 				<page>183</page>
+				<avail>6F</avail>
+				<addweapon>Throwing Syringe</addweapon>
+				<cost>40</cost>
+				<costfor>1</costfor>
 			</gear>
 			<gear>
 				<id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
 				<name>Arrow: Seeker Shaft</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
-				<avail>12F</avail>
-				<costfor>1</costfor>
-				<cost>45</cost>
 				<source>HT</source>
 				<page>187</page>
+				<avail>12F</avail>
+				<cost>45</cost>
+				<costfor>1</costfor>
 			</gear>
 			<gear>
 				<id>39042c0a-4b22-4762-8d56-623033860178</id>
 				<name>Arrow: Monotip Head</name>
 				<category>Ammunition</category>
 				<rating>10</rating>
+				<source>HT</source>
+				<page>187</page>
 				<avail>8R</avail>
-				<costfor>1</costfor>
 				<cost>(Rating * 30)</cost>
+				<costfor>1</costfor>
         <weaponbonus>
           <ap>-2</ap>
         </weaponbonus>
-				<source>HT</source>
-				<page>187</page>
 			</gear>
 			<gear>
 				<id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
 				<name>Ammo: Depleted Uranium</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>HT</source>
+				<page>189</page>
 				<avail>28F</avail>
-				<costfor>10</costfor>
 				<cost>1000</cost>
+				<costfor>10</costfor>
 				<weaponbonus>
 					<ap>-5</ap>
 					<damage>1</damage>
 				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
 			</gear>
 			<gear>
 				<id>adef0fa4-67b7-41e1-b534-f15308c9c8c1</id>
 				<name>Ammo: Silver</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>HT</source>
+				<page>189</page>
 				<avail>12R</avail>
-				<costfor>10</costfor>
 				<cost>250</cost>
+				<costfor>10</costfor>
 				<weaponbonus>
 					<ap>+2</ap>
 				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
 			</gear>
 			<gear>
 				<id>60b7ad79-55b7-4803-8d1f-9145218eaf5b</id>
 				<name>Ammo: Wood Pulp</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>HT</source>
+				<page>189</page>
 				<avail>6R</avail>
-				<costfor>10</costfor>
 				<cost>10</cost>
+				<costfor>10</costfor>
 				<weaponbonus>
 					<ap>+4</ap>
 					<damage>-4</damage>
 				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
 			</gear>
 			<gear>
 				<id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
 				<name>Ammo: Hi-De Rounds</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
-				<avail>10F</avail>
-				<costfor>10</costfor>
-				<cost>150</cost>
 				<source>HT</source>
 				<page>189</page>
+				<avail>10F</avail>
+				<cost>150</cost>
+				<costfor>10</costfor>
 			</gear>
 			<gear>
 				<id>c429fc81-d11b-434b-b98b-5fbdda9db905</id>
 				<name>Ammo: Subsonic</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>HT</source>
+				<page>189</page>
 				<avail>8F</avail>
-				<costfor>10</costfor>
 				<cost>40</cost>
+				<costfor>10</costfor>
 				<weaponbonus>
 					<damage>-1</damage>
 				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
 			</gear>
 			<gear>
 				<id>75ccb148-e774-429c-b854-a27816439626</id>
 				<name>Spare Clip</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>SR5</source>
+				<page>433</page>
 				<avail>4</avail>
-				<cost>5</cost>
 				<bonus>
 					<selectweapon excludecategory="Melee" />
 				</bonus>
-				<source>SR5</source>
-				<page>433</page>
+				<cost>5</cost>
 			</gear>
 			<gear>
 				<id>18ad29eb-33d2-4032-9520-47b69979ebf3</id>
 				<name>Vindicator 200-Round Belt</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>RG</source>
+				<page>42</page>
 				<avail>4</avail>
-				<cost>100</cost>
 				<bonus>
 					<selectweapon />
 				</bonus>
-				<source>RG</source>
-				<page>42</page>
+				<cost>100</cost>
 			</gear>
 			<gear>
 				<id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
 				<name>Speed Loader</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>SR5</source>
+				<page>433</page>
 				<avail>2</avail>
-				<cost>25</cost>
 				<bonus>
 					<selectweapon />
 				</bonus>
-				<source>SR5</source>
-				<page>433</page>
+				<cost>25</cost>
 			</gear>
 			<gear>
 				<id>ef9c8aae-26df-4fe6-88b3-79fbb5eb77c5</id>
 			<name>Ammo: APDS</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>434</page>
 			<avail>12F</avail>
-			<costfor>10</costfor>
-			<cost>120</cost>
+				<cost>120</cost>
+				<costfor>10</costfor>
 			<weaponbonus>
 				<ap>-4</ap>
 			</weaponbonus>
-			<source>SR5</source>
-			<page>434</page>
 		</gear>
 		<gear>
 			<id>0bf4113c-dedb-411d-8981-7b6af169f056</id>
 			<name>Ammo: Assault Cannon</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>12F</avail>
-			<costfor>10</costfor>
-			<cost>400</cost>
 			<source>SR5</source>
 			<page>434</page>
+			<avail>12F</avail>
+			<cost>400</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>1315cecd-1c13-4d69-9828-a3ea535675da</id>
 			<name>Ammo: Explosive Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>434</page>
 			<avail>9F</avail>
-			<costfor>10</costfor>
 			<cost>80</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>-1</ap>
 				<damage>1</damage>
 			</weaponbonus>
-			<source>SR5</source>
-			<page>434</page>
 		</gear>
 		<gear>
 			<id>95bff6e2-d788-407b-9069-093250f89fcb</id>
 			<name>Ammo: Flechette Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>434</page>
 			<avail>6R</avail>
-			<costfor>10</costfor>
 			<cost>65</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>5</ap>
 				<damage>2</damage>
 				<damagetype>P(f)</damagetype>
 			</weaponbonus>
-			<source>SR5</source>
-			<page>434</page>
 		</gear>
 		<gear>
 			<id>0c8d16cb-6e96-4d95-8454-104a36091cf9</id>
 			<name>Ammo: Gel Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>434</page>
 			<avail>2R</avail>
-			<costfor>10</costfor>
 			<cost>25</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>1</ap>
 				<damagetype>S</damagetype>
 			</weaponbonus>
-			<source>SR5</source>
-			<page>434</page>
 		</gear>
 		<gear>
 			<id>f486f414-ee2c-46db-92ea-c682861d8fe0</id>
 			<name>Ammo: Hollow Points</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>434</page>
 			<avail>4F</avail>
-			<costfor>10</costfor>
 			<cost>70</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>2</ap>
 				<damage>1</damage>
 			</weaponbonus>
-			<source>SR5</source>
-			<page>434</page>
 		</gear>
 		<gear>
 			<id>638c81a2-328b-4e22-8fb0-ee37c5e2f6c9</id>
 			<name>Ammo: Injection Darts</name>
 			<category>Ammunition</category>
-			<addoncategory>Drugs</addoncategory>
-			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
-			<avail>4R</avail>
-			<costfor>10</costfor>
-			<cost>75</cost>
 			<source>SR5</source>
 			<page>434</page>
+			<avail>4R</avail>
+			<addoncategory>Drugs</addoncategory>
+			<addoncategory>Toxins</addoncategory>
+			<cost>75</cost>
+			<costfor>10</costfor>
 		</gear>
 			<gear>
 				<id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
 				<name>Ammo: Taurus Omni-6 Heavy</name>
 				<category>Ammunition</category>
 				<rating>0</rating>
+				<source>SR5</source>
+				<page>434</page>
 				<avail>2R</avail>
-				<costfor>10</costfor>
 				<cost>20</cost>
+				<costfor>10</costfor>
 				<weaponbonus>
 					<apreplace>-1</apreplace>
 					<damagereplace>7P</damagereplace>
 					<modereplace>SS</modereplace>
 				</weaponbonus>
-				<source>SR5</source>
-				<page>434</page>
 			</gear>
 		<gear>
 			<id>d27dfc89-095d-440c-ad1c-c7f888df2824</id>
 			<name>Ammo: Peak-Discharge Energy Units</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>0</avail>
-			<cost>0</cost>
 			<source>RG</source>
 			<page>22</page>
+			<avail>0</avail>
+			<cost>0</cost>
 		</gear>
 		<gear>
 			<id>b2a0b340-c793-4322-8422-8b03d18a6fae</id>
 			<name>Ammo: Regular Ammo</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>2R</avail>
-			<costfor>10</costfor>
-			<cost>20</cost>
 			<source>SR5</source>
 			<page>434</page>
+			<avail>2R</avail>
+			<cost>20</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>d9f69780-93eb-41ff-9a9c-893f8c52794e</id>
 			<name>Ammo: Stick-n-Shock</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>434</page>
 			<avail>6R</avail>
-			<costfor>10</costfor>
 			<cost>80</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<apreplace>-5</apreplace>
 				<damage>-2</damage>
 				<damagetype>S(e)</damagetype>
 			</weaponbonus>
-			<source>SR5</source>
-			<page>434</page>
 		</gear>
 		<gear>
 			<id>e0d7aea7-52ac-4670-bac3-b13ce144257c</id>
 			<name>Ammo: Tracer</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>6R</avail>
-			<costfor>10</costfor>
-			<cost>60</cost>
 			<source>SR5</source>
 			<page>434</page>
+			<avail>6R</avail>
+			<cost>60</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>8afe5065-5815-4a98-b047-2a7fed85db55</id>
 			<name>Ammo: Taser Dart</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>3</avail>
-			<costfor>10</costfor>
-			<cost>50</cost>
 			<source>SR5</source>
 			<page>434</page>
+			<avail>3</avail>
+			<cost>50</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>96eb3f57-26e0-40c5-8dac-62cf8a0bc52f</id>
 			<name>Ammo: EX-Explosive Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>54</page>
 			<avail>14F</avail>
-			<costfor>10</costfor>
 			<cost>120</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>-1</ap>
 				<damage>2</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>54</page>
 		</gear>
 		<gear>
 			<id>ecc8aafc-f8a3-408b-9b47-6f85a473de13</id>
 			<name>Ammo: Frangible Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>54</page>
 			<avail>2R</avail>
-			<costfor>10</costfor>
 			<cost>10</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>4</ap>
 				<damage>-1</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>54</page>
 		</gear>
 		<gear>
 			<id>506dd9c6-ea57-4ae2-8887-81ce93e5a7b2</id>
 			<name>Ammo: Flare Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>55</page>
 			<avail>6R</avail>
-			<costfor>10</costfor>
 			<cost>20</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>+2</ap>
 				<damage>-2</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>55</page>
 		</gear>
 		<gear>
 			<id>f29f0642-65a5-4461-bca1-396907dbf82e</id>
 			<name>Ammo: Tracker Rounds, Security Tag</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>8R</avail>
-			<costfor>10</costfor>
-			<cost>150</cost>
 			<source>RG</source>
 			<page>55</page>
+			<avail>8R</avail>
+			<cost>150</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>4b844ac3-20e8-4982-8711-20579b5295a8</id>
 			<name>Ammo: Tracker Rounds, Stealth Tag</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>8R</avail>
-			<costfor>10</costfor>
-			<cost>75</cost>
 			<source>RG</source>
 			<page>55</page>
+			<avail>8R</avail>
+			<cost>75</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>4257a39e-41eb-45ee-976e-41c3c0bf960c</id>
 			<name>Ammo: Capsule Rounds</name>
 			<category>Ammunition</category>
+			<rating>0</rating>
+			<source>RG</source>
+			<page>55</page>
+			<avail>2</avail>
 			<addoncategory>Drugs</addoncategory>
 			<addoncategory>Toxins</addoncategory>
-			<rating>0</rating>
-			<avail>2</avail>
-			<costfor>10</costfor>
 			<cost>5</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>4</ap>
 				<damage>-4</damage>
 				<userange>Light Pistol</userange>
 			</weaponbonus>
-			<source>RG</source>
-			<page>55</page>
 		</gear>
 		<gear>
 			<id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
 			<name>Arrow: Standard</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
-			<avail>Rating</avail>
-			<costfor>1</costfor>
-			<cost>Rating * 2</cost>
 			<source>SR5</source>
 			<page>423</page>
+			<avail>Rating</avail>
+			<cost>Rating * 2</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>775d2fed-57ab-4e63-b2e4-638ccf4a21d0</id>
 			<name>Arrow: Injection</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
-			<avail>(Rating + 2)R</avail>
-			<costfor>1</costfor>
-			<cost>Rating * 20</cost>
 			<source>SR5</source>
 			<page>424</page>
+			<avail>(Rating + 2)R</avail>
+			<cost>Rating * 20</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>c3c2fa27-36a7-4296-aadd-627078e6e052</id>
 			<name>Bolt: Standard</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>2</avail>
-			<costfor>1</costfor>
-			<cost>5</cost>
 			<source>SR5</source>
 			<page>424</page>
+			<avail>2</avail>
+			<cost>5</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>7d697849-0a11-4a38-8f07-2e5becf8efe0</id>
 			<name>Bolt: Injection</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>8R</avail>
-			<costfor>1</costfor>
-			<cost>50</cost>
 			<source>SR5</source>
 			<page>424</page>
+			<avail>8R</avail>
+			<cost>50</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>d9bf2003-1911-4e65-b6a1-8babb761dd85</id>
 			<name>Throwing Knife</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>4R</avail>
-			<addweapon>Throwing Knife</addweapon>
-			<costfor>1</costfor>
-			<cost>25</cost>
 			<source>SR5</source>
 			<page>424</page>
+			<avail>4R</avail>
+			<addweapon>Throwing Knife</addweapon>
+			<cost>25</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>b4bbdbd3-1f65-44e5-b196-6ccbee1cc182</id>
 			<name>Shuriken</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>4R</avail>
-			<addweapon>Shuriken</addweapon>
-			<costfor>1</costfor>
-			<cost>25</cost>
 			<source>SR5</source>
 			<page>424</page>
+			<avail>4R</avail>
+			<addweapon>Shuriken</addweapon>
+			<cost>25</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>dd6e4f80-8200-47fa-8f78-9204e9c0f70d</id>
 			<name>Arrow: Barbed Head</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>23</page>
 			<avail>(Rating)R</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 2) + 10</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<damage>1</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>23</page>
 		</gear>
 		<gear>
 			<id>d09f3ebd-28fb-4375-ad0f-49fd1b521c12</id>
 			<name>Arrow: Explosive Head</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>23</page>
 			<avail>(Rating)F</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 2) + 15</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<accuracy>-1</accuracy>
 				<ap>-1</ap>
 				<damage>2</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>23</page>
 		</gear>
 		<gear>
 			<id>8fb09c1d-f890-444b-bb2b-cf1a5e6825b8</id>
 			<name>Arrow: Hammerhead</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>Rating</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 2) + 5</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>2</ap>
 				<damage>1</damage>
 				<damagetype>S</damagetype>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>f245f0d0-22ba-4367-97ee-6762df9137bc</id>
 			<name>Arrow: Incendiary Head</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>12F</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 2) + 100</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<accuracy>-1</accuracy>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>1cdea5f7-df85-4ebe-bc32-f8dbfa27dad3</id>
 			<name>Arrow: Screamer Head</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>Rating</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 2) + 5</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>6</ap>
 				<damage>-2</damage>
 				<damagetype>S</damagetype>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>4ddbecdf-fc04-4b1d-851b-63d5e9e57dbb</id>
 			<name>Arrow: Stick-n-Shock</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>(Rating)R</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 2) + 25</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>258049dc-6f94-4d41-be97-cadeba20ff36</id>
 			<name>Arrow: Stick-n-Shock w/Static Shaft</name>
 			<category>Ammunition</category>
 			<rating>10</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>6R</avail>
-			<costfor>1</costfor>
 			<cost>(Rating * 25) + 25</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>12S(e)</damagereplace>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>9517a1df-5e00-46e5-92f7-4669b8b72380</id>
 			<name>Bolt: Barbed Head</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>23</page>
 			<avail>5R</avail>
-			<costfor>1</costfor>
 			<cost>15</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<damage>1</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>23</page>
 		</gear>
 		<gear>
 			<id>945c0c98-9996-44ca-bc70-013389434d25</id>
 			<name>Bolt: Explosive Head</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>23</page>
 			<avail>9F</avail>
-			<costfor>1</costfor>
 			<cost>20</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<accuracy>-1</accuracy>
 				<ap>-1</ap>
 				<damage>2</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>23</page>
 		</gear>
 		<gear>
 			<id>7057d386-6398-4e7f-8f14-1f74bddc7dba</id>
 			<name>Bolt: Hammerhead</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>5</avail>
-			<costfor>1</costfor>
 			<cost>10</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>2</ap>
 				<damage>1</damage>
 				<damagetype>S</damagetype>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>5acb7b20-ffe5-49fa-8ff7-372a59999fb6</id>
 			<name>Bolt: Incendiary Head</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>12F</avail>
-			<costfor>1</costfor>
 			<cost>105</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<accuracy>-1</accuracy>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>8939b519-657a-4081-920f-3a4021eb6704</id>
 			<name>Bolt: Screamer Head</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>2</avail>
-			<costfor>1</costfor>
 			<cost>10</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>6</ap>
 				<damage>-2</damage>
 				<damagetype>S</damagetype>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>aa378f89-8f73-4f05-b920-fe7e35b7b3bd</id>
 			<name>Bolt: Stick-n-Shock</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>6R</avail>
-			<costfor>1</costfor>
 			<cost>30</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
 			<name>Bolt: Stick-n-Shock w/Static Shaft</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>24</page>
 			<avail>6R</avail>
-			<costfor>1</costfor>
 			<cost>50</cost>
+			<costfor>1</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>12S(e)</damagereplace>
 			</weaponbonus>
-			<source>RG</source>
-			<page>24</page>
 		</gear>
 		<gear>
 			<id>c1df71d5-845b-46c9-ab8d-9166c5cbac70</id>
 			<name>Boomerang</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>4</avail>
-			<addweapon>Boomerang</addweapon>
-			<costfor>1</costfor>
-			<cost>50</cost>
 			<source>RG</source>
 			<page>24</page>
+			<avail>4</avail>
+			<addweapon>Boomerang</addweapon>
+			<cost>50</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>d3d99f54-4176-4a11-a8cb-8447e285d977</id>
 			<name>Harpoon</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>6</avail>
-			<addweapon>Harpoon</addweapon>
-			<costfor>1</costfor>
-			<cost>125</cost>
 			<source>RG</source>
 			<page>24</page>
+			<avail>6</avail>
+			<addweapon>Harpoon</addweapon>
+			<cost>125</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>42404ae5-f203-4780-a575-a644d6443d20</id>
 			<name>Javelin</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>6</avail>
-			<addweapon>Javelin</addweapon>
-			<costfor>1</costfor>
-			<cost>125</cost>
 			<source>RG</source>
 			<page>24</page>
+			<avail>6</avail>
+			<addweapon>Javelin</addweapon>
+			<cost>125</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>d37cd956-84de-40a7-a327-0185fe8bca3c</id>
 			<name>Net</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>6</avail>
-			<addweapon>Net</addweapon>
-			<costfor>1</costfor>
-			<cost>350</cost>
 			<source>RG</source>
 			<page>24</page>
+			<avail>6</avail>
+			<addweapon>Net</addweapon>
+			<cost>350</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>7752a51c-b39f-4270-a5ed-e3de956cceb1</id>
 			<name>Net Gun Reload (Shocknet)</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>28</page>
 			<avail>10R</avail>
-			<costfor>4</costfor>
 			<cost>600</cost>
+			<costfor>4</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
 			</weaponbonus>
-			<source>RG</source>
-			<page>28</page>
 		</gear>
 		<gear>
 			<id>5200ce56-c541-4a7a-8db2-ed4385f0d94f</id>
 			<name>XL Net Gun Reload (Shocknet)</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>28</page>
 			<avail>10R</avail>
-			<costfor>2</costfor>
 			<cost>650</cost>
+			<costfor>2</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damagereplace>8S(e)</damagereplace>
 			</weaponbonus>
-			<source>RG</source>
-			<page>28</page>
 		</gear>
 		<gear>
 			<id>608324BB-E4CE-40B7-AC76-FF3F67B2C8E0</id>
 			<name>Ammo: Fuel Canister</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>16F</avail>
-			<costfor>4</costfor>
-			<cost>40</cost>
 			<source>RG</source>
 			<page>55</page>
+			<avail>16F</avail>
+			<cost>40</cost>
+			<costfor>4</costfor>
 		</gear>
 		<gear>
 			<id>8C9AE7B4-EF1F-4983-9008-795D3592B417</id>
 			<name>Ammo: AV Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>55</page>
 			<avail>14R</avail>
-			<costfor>10</costfor>
 			<cost>175</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>-1</ap>
 			</weaponbonus>
-			<source>RG</source>
-			<page>55</page>
 		</gear>
 		<gear>
 			<id>911BB20E-E325-4399-8F7A-82FDCE13AE51</id>
 			<name>Ammo: Gyrojet</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>28</page>
 			<avail>15</avail>
-			<costfor>10</costfor>
 			<cost>160</cost>
+			<costfor>10</costfor>
 			<weaponbonus>
 				<ap>-5</ap>
 				<damage>-2S(e)</damage>
 			</weaponbonus>
-			<source>RG</source>
-			<page>28</page>
 		</gear>
 		<gear>
 			<id>FE737992-B03B-484C-8F5C-B3BD554B9381</id>
 			<name>Ammo: Gauss</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>18F</avail>
-			<costfor>10</costfor>
-			<cost>400</cost>
 			<source>RG</source>
 			<page>55</page>
+			<avail>18F</avail>
+			<cost>400</cost>
+			<costfor>10</costfor>
 		</gear>
 		<gear>
 			<id>784dfff3-7c0e-4166-8687-e3012ef3b434</id>
 			<name>Net Gun Reload (Standard)</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>9</avail>
-			<costfor>4</costfor>
-			<cost>350</cost>
 			<source>RG</source>
 			<page>28</page>
+			<avail>9</avail>
+			<cost>350</cost>
+			<costfor>4</costfor>
 		</gear>
 		<gear>
 			<id>6ac1a45c-d8cc-42fd-9306-63ec3f4618e2</id>
 			<name>XL Net Gun Reload (Standard)</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>9</avail>
-			<costfor>2</costfor>
-			<cost>400</cost>
 			<source>RG</source>
 			<page>28</page>
+			<avail>9</avail>
+			<cost>400</cost>
+			<costfor>2</costfor>
 		</gear>
 		<gear>
 			<id>48c4b8ed-80cd-4744-83b8-06842fd917aa</id>
 			<name>Urban Tribe Tomahawk</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>4</avail>
-			<addweapon>Urban Tribe Tomahawk</addweapon>
-			<costfor>1</costfor>
-			<cost>200</cost>
 			<source>RG</source>
 			<page>25</page>
+			<avail>4</avail>
+			<addweapon>Urban Tribe Tomahawk</addweapon>
+			<cost>200</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>9d1f9b41-0a43-4835-9dc4-a2f04f8a20a8</id>
 			<name>Bola: Standard</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>6</avail>
-			<addweapon>Bola</addweapon>
-			<costfor>1</costfor>
-			<cost>75</cost>
 			<source>RG</source>
 			<page>26</page>
+			<avail>6</avail>
+			<addweapon>Bola</addweapon>
+			<cost>75</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>f7b819d7-9f6a-446e-b916-82b5973883d6</id>
 			<name>Bola: Monofilament</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>18F</avail>
-			<addweapon>Monofilament Bola</addweapon>
-			<costfor>1</costfor>
-			<cost>4000</cost>
 			<source>RG</source>
 			<page>26</page>
+			<avail>18F</avail>
+			<addweapon>Monofilament Bola</addweapon>
+			<cost>4000</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
 			<name>Grenade: Flash-Bang</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<avail>6R</avail>
-			<addweapon>Grenade: Flash-Bang</addweapon>
-			<costfor>1</costfor>
-			<cost>100</cost>
 			<source>SR5</source>
 			<page>435</page>
+			<avail>6R</avail>
+			<addweapon>Grenade: Flash-Bang</addweapon>
+			<cost>100</cost>
+			<costfor>1</costfor>
 		</gear>
 		<gear>
 			<id>8e04c493-b04d-4511-ba68-7b2e0edbf3aa</id>
 			<name>Grenade: Flash-Pak</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>4</avail>
 			<addweapon>Grenade: Flash-Pak</addweapon>
 			<cost>125</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>7c5e7573-d75e-43e3-949c-cb4c9d70329b</id>
 			<name>Grenade: Fragmentation</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>11F</avail>
 			<addweapon>Grenade: Fragmentation</addweapon>
 			<cost>100</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>e61c5487-2074-4fc8-8da0-9891b15482e7</id>
 			<name>Grenade: High Explosive</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>11F</avail>
 			<addweapon>Grenade: High Explosive</addweapon>
 			<cost>100</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>06798b15-40bb-4464-b6a8-a01466ee9b9e</id>
 			<name>Grenade: Gas</name>
 			<category>Ammunition</category>
-			<addoncategory>Drugs</addoncategory>
-			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
-			<avail>4R</avail>
-			<addweapon>Grenade: Gas</addweapon>
-			<cost>40</cost>
 			<source>SR5</source>
 			<page>435</page>
+			<avail>4R</avail>
+			<addoncategory>Drugs</addoncategory>
+			<addoncategory>Toxins</addoncategory>
+			<addweapon>Grenade: Gas</addweapon>
+			<cost>40</cost>
 		</gear>
 		<gear>
 			<id>84c6921e-dfa0-42ca-a01f-87c459ffc000</id>
 			<name>Grenade: Smoke</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>4R</avail>
 			<addweapon>Grenade: Smoke</addweapon>
 			<cost>40</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>f3472dc1-4c7b-403a-8001-6441bb65a687</id>
 			<name>Grenade: Thermal Smoke</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>6R</avail>
 			<addweapon>Grenade: Thermal Smoke</addweapon>
 			<cost>60</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>f092fca8-46a9-4351-a06a-362846e6546a</id>
 			<name>Minigrenade: Flash-Bang</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>6R</avail>
 			<addweapon>Minigrenade: Flash-Bang</addweapon>
 			<cost>100</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>7c00891f-6554-497d-9726-058d7c4a598e</id>
 			<name>Minigrenade: Flash-Pak</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>4</avail>
 			<addweapon>Minigrenade: Flash-Pak</addweapon>
 			<cost>125</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>8e1583bf-4cc5-4498-a800-36cb61d3fb27</id>
 			<name>Minigrenade: Fragmentation</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>11F</avail>
 			<addweapon>Minigrenade: Fragmentation</addweapon>
 			<cost>100</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>daecdfc8-15d5-4864-9e20-13e4a0dca88e</id>
 			<name>Minigrenade: High Explosive</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>11F</avail>
 			<addweapon>Minigrenade: High Explosive</addweapon>
 			<cost>100</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>74284124-57a0-479b-9ab1-3433bdb9e3b7</id>
 			<name>Minigrenade: Gas</name>
 			<category>Ammunition</category>
-			<addoncategory>Drugs</addoncategory>
-			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
-			<avail>4R</avail>
-			<addweapon>Minigrenade: Gas</addweapon>
-			<cost>40</cost>
 			<source>SR5</source>
 			<page>435</page>
+			<avail>4R</avail>
+			<addoncategory>Drugs</addoncategory>
+			<addoncategory>Toxins</addoncategory>
+			<addweapon>Minigrenade: Gas</addweapon>
+			<cost>40</cost>
 		</gear>
 		<gear>
 			<id>b6381691-1a96-4299-b9df-129ffee64c45</id>
 			<name>Minigrenade: Smoke</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>4R</avail>
 			<addweapon>Minigrenade: Smoke</addweapon>
 			<cost>40</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>e2252b3c-1bae-496e-adbb-f1c3d6e0b32b</id>
 			<name>Minigrenade: Thermal Smoke</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>435</page>
 			<avail>6R</avail>
 			<addweapon>Minigrenade: Thermal Smoke</addweapon>
 			<cost>60</cost>
-			<source>SR5</source>
-			<page>435</page>
 		</gear>
 		<gear>
 			<id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
 			<name>Paint Grenade</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>RG</source>
+			<page>102</page>
 			<avail>8R</avail>
 			<addweapon>Grenade: Paint</addweapon>
 			<cost>100</cost>
-			<source>RG</source>
-			<page>102</page>
 		</gear>
 		<gear>
 			<id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
 			<name>Smokebomb</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>HT</source>
+			<page>187</page>
 			<avail>6</avail>
 			<addweapon>Smokebomb</addweapon>
 			<cost>25</cost>
-			<source>HT</source>
-			<page>187</page>
 		</gear>
 		<gear>
 			<id>60d28c15-42dd-4837-bc5f-8d8a15393655</id>
 			<name>Rocket: Anti-Vehicle</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>436</page>
 			<avail>18F</avail>
 			<addweapon>Rocket: Anti-Vehicle</addweapon>
 			<cost>2800</cost>
-			<source>SR5</source>
-			<page>436</page>
 		</gear>
 		<gear>
 			<id>4c5be084-c975-42d2-962c-dc2add203b6b</id>
 			<name>Rocket: Fragmentation</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>436</page>
 			<avail>12F</avail>
 			<addweapon>Rocket: Fragmentation</addweapon>
 			<cost>2000</cost>
-			<source>SR5</source>
-			<page>436</page>
 		</gear>
 		<gear>
 			<id>d5136e8b-bf34-401d-967d-c52f8cc175c1</id>
 			<name>Rocket: High Explosive</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>436</page>
 			<avail>18F</avail>
 			<addweapon>Rocket: High Explosive</addweapon>
 			<cost>2100</cost>
-			<source>SR5</source>
-			<page>436</page>
 		</gear>
 		<gear>
 			<id>a42b7377-5a2e-456d-b729-8783873465f0</id>
 			<name>Missile: Anti-Vehicle</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>436</page>
 			<avail>18F</avail>
 			<addweapon>Missile: Anti-Vehicle</addweapon>
 			<cost>2800</cost>
-			<source>SR5</source>
-			<page>436</page>
 		</gear>
 		<gear>
 			<id>bb40694a-59de-4fb8-9cee-697f37377a55</id>
 			<name>Missile: Fragmentation</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>436</page>
 			<avail>12F</avail>
 			<addweapon>Missile: Fragmentation</addweapon>
 			<cost>2000</cost>
-			<source>SR5</source>
-			<page>436</page>
 		</gear>
 		<gear>
 			<id>838a308e-a638-433e-b5bc-54222fb645c9</id>
 			<name>Missile: High Explosive</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
+			<source>SR5</source>
+			<page>436</page>
 			<avail>18F</avail>
 			<addweapon>Missile: High Explosive</addweapon>
 			<cost>2100</cost>
-			<source>SR5</source>
-			<page>436</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Explosives -->
@@ -1208,293 +1208,293 @@
 			<name>Commercial Explosive</name>
 			<category>Explosives</category>
 			<rating>5</rating>
-			<minrating>5</minrating>
-			<avail>8R</avail>
-			<cost>100</cost>
 			<source>SR5</source>
 			<page>436</page>
+			<avail>8R</avail>
+			<cost>100</cost>
+			<minrating>5</minrating>
 		</gear>
 		<gear>
 			<id>df3efeef-661f-41fd-9007-01ba7db42dee</id>
 			<name>Dynamite</name>
 			<category>Explosives</category>
 			<rating>3</rating>
-			<minrating>3</minrating>
-			<avail>8R</avail>
-			<cost>350</cost>
 			<source>RG</source>
 			<page>190</page>
+			<avail>8R</avail>
+			<cost>350</cost>
+			<minrating>3</minrating>
 		</gear>
 		<gear>
 			<id>381a235b-5282-45b4-a4c1-9c75d20f71b3</id>
 			<name>Nitroglycerin</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<minrating>6</minrating>
-			<avail>11F</avail>
-			<cost>350</cost>
 			<source>RG</source>
 			<page>190</page>
+			<avail>11F</avail>
+			<cost>350</cost>
+			<minrating>6</minrating>
 		</gear>
 		<gear>
 			<id>733504c5-f2bb-4114-9132-e92979dc2010</id>
 			<name>TNT</name>
 			<category>Explosives</category>
 			<rating>5</rating>
-			<minrating>5</minrating>
-			<avail>12R</avail>
-			<cost>200</cost>
 			<source>RG</source>
 			<page>190</page>
+			<avail>12R</avail>
+			<cost>200</cost>
+			<minrating>5</minrating>
 		</gear>
 		<gear>
 			<id>0183db3c-974e-40f8-ab73-ccf733beadd5</id>
 			<name>Foam Explosive</name>
 			<category>Explosives</category>
 			<rating>25</rating>
-			<minrating>6</minrating>
-			<avail>12F</avail>
-			<cost>Rating * 100</cost>
 			<source>SR5</source>
 			<page>436</page>
+			<avail>12F</avail>
+			<cost>Rating * 100</cost>
+			<minrating>6</minrating>
 		</gear>
 		<gear>
 			<id>0b5b01f5-9c02-4513-8393-7bd64e1ca86c</id>
 			<name>Plastic Explosive</name>
 			<category>Explosives</category>
 			<rating>25</rating>
-			<minrating>6</minrating>
-			<avail>16F</avail>
-			<cost>Rating * 100</cost>
 			<source>SR5</source>
 			<page>436</page>
+			<avail>16F</avail>
+			<cost>Rating * 100</cost>
+			<minrating>6</minrating>
 		</gear>
 		<gear>
 			<id>de117700-4b5f-45f0-ae65-aab803d39220</id>
 			<name>Ammonium Nitrate</name>
 			<category>Explosives</category>
 			<rating>4</rating>
-			<minrating>4</minrating>
-			<avail>5</avail>
-			<cost>80</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>5</avail>
+			<cost>80</cost>
+			<minrating>4</minrating>
 		</gear>
 		<gear>
 			<id>6625fd1b-53d0-4f17-a4ec-f6645fc1707f</id>
 			<name>ANFO</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<minrating>6</minrating>
-			<avail>7</avail>
-			<cost>100</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>7</avail>
+			<cost>100</cost>
+			<minrating>6</minrating>
 		</gear>
 		<gear>
 			<id>89549b33-b3fa-48ac-bd6f-8b0aec288ae7</id>
 			<name>Detonating Cord, Low Yield (meter)</name>
 			<category>Explosives</category>
 			<rating>3</rating>
-			<minrating>3</minrating>
-			<avail>10R</avail>
-			<cost>100</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>10R</avail>
+			<cost>100</cost>
+			<minrating>3</minrating>
 		</gear>
 		<gear>
 			<id>6a38466e-f5ea-451b-bdf9-51aacc5e1537</id>
 			<name>Detonating Cord, High Yield (meter)</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<minrating>6</minrating>
-			<avail>14R</avail>
-			<cost>150</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>14R</avail>
+			<cost>150</cost>
+			<minrating>6</minrating>
 		</gear>
 		<gear>
 			<id>ded12d46-347a-424f-9e18-0d8c8cdfa48e</id>
 			<name>Binary Explosives</name>
 			<category>Explosives</category>
 			<rating>20</rating>
-			<minrating>1</minrating>
-			<avail>18F</avail>
-			<cost>Rating * 125</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>18F</avail>
+			<cost>Rating * 125</cost>
+			<minrating>1</minrating>
 		</gear>
 		<gear>
 			<id>38268be5-dd9a-439c-932b-aae2ead8bcc6</id>
 			<name>Linear Charge</name>
 			<category>Explosives</category>
 			<rating>25</rating>
-			<minrating>1</minrating>
-			<avail>16R</avail>
-			<cost>Rating * 250</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>16R</avail>
+			<cost>Rating * 250</cost>
+			<minrating>1</minrating>
 		</gear>
 		<gear>
 			<id>de29bcc2-025f-40dd-87e7-d15c6ca1ec10</id>
 			<name>Liquid Explosives</name>
 			<category>Explosives</category>
 			<rating>25</rating>
-			<minrating>1</minrating>
-			<avail>16F</avail>
-			<cost>Rating * 150</cost>
 			<source>RG</source>
 			<page>193</page>
+			<avail>16F</avail>
+			<cost>Rating * 150</cost>
+			<minrating>1</minrating>
 		</gear>
 		<gear>
 			<id>2c98be77-22d7-4116-90fc-e8489944578d</id>
 			<name>Detonator Cap</name>
 			<category>Explosives</category>
 			<rating>0</rating>
-			<avail>8R</avail>
-			<cost>75</cost>
 			<source>SR5</source>
 			<page>436</page>
+			<avail>8R</avail>
+			<cost>75</cost>
 		</gear>
     <gear>
       <id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
       <name>Detonator, Blasting Cap</name>
       <category>Explosives</category>
       <rating>0</rating>
-      <avail>8R</avail>
-      <cost>20</cost>
-      <source>RG</source>
-      <page>195</page>
+			<source>RG</source>
+			<page>195</page>
+			<avail>8R</avail>
+			<cost>20</cost>
     </gear>
 		<gear>
 			<id>15a39069-3ee5-4ad8-9906-93f6c325c326</id>
 			<name>Detonator, Electrical</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<avail>(Rating * 4)R</avail>
-			<cost>Rating * 30</cost>
 			<source>RG</source>
 			<page>195</page>
+			<avail>(Rating * 4)R</avail>
+			<cost>Rating * 30</cost>
 		</gear>
 		<gear>
 			<id>8e429087-b97a-43f9-8f51-0677b82d14a8</id>
 			<name>Detonator, Optical</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<avail>(Rating * 7)F</avail>
-			<cost>Rating * 200</cost>
 			<source>RG</source>
 			<page>195</page>
+			<avail>(Rating * 7)F</avail>
+			<cost>Rating * 200</cost>
 		</gear>
 		<gear>
 			<id>22c45dbe-e087-457a-b34c-4cb800cacfe8</id>
 			<name>Detonator, Pull</name>
 			<category>Explosives</category>
 			<rating>0</rating>
-			<avail>9F</avail>
-			<cost>80</cost>
 			<source>RG</source>
 			<page>195</page>
+			<avail>9F</avail>
+			<cost>80</cost>
 		</gear>
 		<gear>
 			<id>f6b0829d-1da1-42e9-a643-69d7727d0dca</id>
 			<name>Detonator, Push</name>
 			<category>Explosives</category>
 			<rating>0</rating>
-			<avail>9F</avail>
-			<cost>80</cost>
 			<source>RG</source>
 			<page>195</page>
+			<avail>9F</avail>
+			<cost>80</cost>
 		</gear>
 		<gear>
 			<id>9d1b9437-ffc8-4827-91b6-b61c75354692</id>
 			<name>Detonator, Radio</name>
 			<category>Explosives</category>
 			<rating>3</rating>
-			<avail>10R</avail>
-			<cost>75</cost>
 			<source>RG</source>
 			<page>195</page>
+			<avail>10R</avail>
+			<cost>75</cost>
 		</gear>
 		<gear>
 			<id>0d8955b7-1df7-4079-b4d6-2f8dc075830e</id>
 			<name>Detonator, Timer</name>
 			<category>Explosives</category>
 			<rating>3</rating>
-			<avail>(Rating * 6)F</avail>
-			<cost>Rating * 50</cost>
 			<source>RG</source>
 			<page>195</page>
+			<avail>(Rating * 6)F</avail>
+			<cost>Rating * 50</cost>
 		</gear>
 		<gear>
 			<id>65aa34c9-8c66-4909-bd24-34d47c851055</id>
 			<name>Atomizer</name>
 			<category>Explosives</category>
 			<rating>10</rating>
-			<avail>(Rating * 2)R</avail>
-			<cost>Rating * 300</cost>
 			<source>RG</source>
 			<page>196</page>
+			<avail>(Rating * 2)R</avail>
+			<cost>Rating * 300</cost>
 		</gear>
 		<gear>
 			<id>9f37ddb0-faf7-4741-9523-0c444a8ac83b</id>
 			<name>Exploder, Electrical</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<avail>8R</avail>
-			<cost>Rating * 150</cost>
 			<source>RG</source>
 			<page>196</page>
+			<avail>8R</avail>
+			<cost>Rating * 150</cost>
 		</gear>
 		<gear>
 			<id>b68ced74-55f6-4017-8953-4bfa2c73b1ea</id>
 			<name>Exploder, Optical</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<avail>14R</avail>
-			<cost>Rating * 250</cost>
 			<source>RG</source>
 			<page>196</page>
+			<avail>14R</avail>
+			<cost>Rating * 250</cost>
 		</gear>
 		<gear>
 			<id>b82c6383-5ff7-4376-8e58-f63bb8ecdd20</id>
 			<name>Hard-Shell Briefcase</name>
 			<category>Explosives</category>
 			<rating>12</rating>
-			<avail>10R</avail>
-			<cost>Rating * 100</cost>
 			<source>RG</source>
 			<page>196</page>
+			<avail>10R</avail>
+			<cost>Rating * 100</cost>
 		</gear>
 		<gear>
 			<id>7b14565a-ac42-4dcc-930d-34740c79358c</id>
 			<name>Safety Fuse (meter)</name>
 			<category>Explosives</category>
 			<rating>0</rating>
-			<avail>8R</avail>
-			<cost>5</cost>
 			<source>RG</source>
 			<page>197</page>
+			<avail>8R</avail>
+			<cost>5</cost>
 		</gear>
 		<gear>
 			<id>620f10c6-c08b-43d6-a072-a734f11b536b</id>
 			<name>Redundant Power Supply</name>
 			<category>Explosives</category>
 			<rating>0</rating>
-			<avail>6R</avail>
-			<cost>Variable(50-500)</cost>
 			<source>RG</source>
 			<page>194</page>
+			<avail>6R</avail>
+			<cost>Variable(50-500)</cost>
 		</gear>
 		<gear>
 			<id>8d2257ec-8079-4e8f-b0b3-f3312f0bec8e</id>
 			<name>Nanoprint Scanners</name>
 			<category>Explosives</category>
 			<rating>6</rating>
-			<avail>16F</avail>
-			<cost>Rating * 500</cost>
 			<source>RG</source>
 			<page>187</page>
+			<avail>16F</avail>
+			<cost>Rating * 500</cost>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Extraction Devices -->
@@ -1503,71 +1503,71 @@
 			<name>Houdini Machine I</name>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>12F</avail>
-			<cost>8500</cost>
 			<source>SS</source>
 			<page>172</page>
+			<avail>12F</avail>
+			<cost>8500</cost>
 		</gear>
 		<gear>
 			<id>73923b5b-0ab2-4735-9a06-db42317c6bc2</id>
 			<name>Houdini Machine II</name>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>12F</avail>
-			<cost>12000</cost>
 			<source>SS</source>
 			<page>172</page>
+			<avail>12F</avail>
+			<cost>12000</cost>
 		</gear>
 		<gear>
 			<id>563e2286-6ceb-40e8-81aa-acd29ce3ff82</id>
 			<name>Ambulance Gurney</name>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>8</avail>
-			<cost>2000</cost>
 			<source>SS</source>
 			<page>173</page>
+			<avail>8</avail>
+			<cost>2000</cost>
 		</gear>
 		<gear>
 			<id>902585b9-5806-41cf-8498-e47444284236</id>
 			<name>Body Bag</name>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>6</avail>
-			<cost>50</cost>
 			<source>SS</source>
 			<page>173</page>
+			<avail>6</avail>
+			<cost>50</cost>
 		</gear>
 		<gear>
 			<id>5da1b0fa-3315-4fcd-a339-6db8e163cbab</id>
 			<name>Fake DocWagon Wrist Band</name>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>10F</avail>
-			<cost>100</cost>
 			<source>SS</source>
 			<page>173</page>
+			<avail>10F</avail>
+			<cost>100</cost>
 		</gear>
 		<gear>
 			<id>5d2fc041-c0cf-4a90-8918-be487a781e13</id>
 			<name>Stimtouch Hosiery</name>
-			<addweapon>Stimtouch Hosiery</addweapon>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>6R</avail>
-			<cost>250</cost>
 			<source>SS</source>
 			<page>178</page>
+			<avail>6R</avail>
+			<addweapon>Stimtouch Hosiery</addweapon>
+			<cost>250</cost>
 		</gear>
 		<gear>
 			<id>234e4665-b483-43a1-bc89-8f1bfe1661b7</id>
 			<name>Laced Lipstick</name>
 			<category>Extraction Devices</category>
 			<rating>0</rating>
-			<avail>10F</avail>
-			<cost>50</cost>
 			<source>SS</source>
 			<page>178</page>
+			<avail>10F</avail>
+			<cost>50</cost>
 		</gear>
 		<!-- End Region-->
 		<!-- Region Disguises-->
@@ -1576,10 +1576,10 @@
 			<name>Uniforms</name>
 			<category>Disguises</category>
 			<rating>0</rating>
-			<avail>16F</avail>
-			<cost>Variable(2000-15000)</cost>
 			<source>SS</source>
 			<page>178</page>
+			<avail>16F</avail>
+			<cost>Variable(2000-15000)</cost>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Commlinks and Cyberdecks -->
@@ -1588,626 +1588,627 @@
 			<name>Meta Link</name>
 			<category>Commlinks</category>
 			<rating>0</rating>
-			<capacity>0</capacity>
-			<armorcapacity>[2]</armorcapacity>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>2</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>100</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>d808ba12-db93-4a7b-85a1-9e9f6229087f</id>
 			<name>Sony Emperor</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>4</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>700</cost>
+			<dataprocessing>2</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>15a6c42b-12a4-494e-8ca5-e6c3a1052314</id>
 			<name>Renraku Sensei</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>3</firewall>
-			<avail>6</avail>
-			<cost>1000</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>6</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>1000</cost>
+			<dataprocessing>3</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>3</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>72d1ca07-71b1-4085-8a4d-bd720a6b1908</id>
 			<name>Erika Elite</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>4</firewall>
-			<avail>8</avail>
-			<cost>2500</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>8</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>2500</cost>
+			<dataprocessing>4</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>4</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>6de5a1b0-30e2-4c74-8646-971f698cb231</id>
 			<name>Hermes Ikon</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>5</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>5</dataprocessing>
-			<firewall>5</firewall>
-			<avail>10</avail>
-			<cost>3000</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>10</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>3000</cost>
+			<dataprocessing>5</dataprocessing>
+			<devicerating>5</devicerating>
+			<firewall>5</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>01077e2d-4f67-428a-850d-250faad2007c</id>
 			<name>Transys Avalon</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>6</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>6</firewall>
-			<avail>12</avail>
-			<cost>5000</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>12</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>5000</cost>
+			<dataprocessing>6</dataprocessing>
+			<devicerating>6</devicerating>
+			<firewall>6</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>1522dd91-99d9-42f9-ab19-b43e8e3c7322</id>
 			<name>Fairlight Caliban</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>7</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>7</dataprocessing>
-			<firewall>7</firewall>
-			<avail>14</avail>
-			<cost>8000</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>14</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>8000</cost>
+			<dataprocessing>7</dataprocessing>
+			<devicerating>7</devicerating>
+			<firewall>7</firewall>
+			<sleaze>0</sleaze>
 		</gear>
     <gear>
       <id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
       <name>Spinrad Industries Trompe L'Oeil</name>
       <category>Commlinks</category>
-      <armorcapacity>[2]</armorcapacity>
-      <capacity>0</capacity>
-      <rating>0</rating>
-      <devicerating>6</devicerating>
-      <attack>0</attack>
-      <sleaze>0</sleaze>
-      <dataprocessing>6</dataprocessing>
-      <firewall>6</firewall>
-      <avail>16</avail>
-      <cost>50000</cost>
-      <source>BOTL</source>
-      <page>126</page>
+			<rating>0</rating>
+			<source>BOTL</source>
+			<page>126</page>
+			<avail>16</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>50000</cost>
+			<dataprocessing>6</dataprocessing>
+			<devicerating>6</devicerating>
+			<firewall>6</firewall>
+			<sleaze>0</sleaze>
     </gear>
 		<gear>
 			<id>d589142e-a71f-4cd9-b916-967168721eea</id>
 			<name>Sim Module</name>
 			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
 			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>100</cost>
 			<source>SR5</source>
 			<page>438</page>
+			<avail>0</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<cost>100</cost>
+			<devicerating>0</devicerating>
 		</gear>
 		<gear>
 			<id>b7da0596-da6e-4122-adc3-21d7f3f9e3f1</id>
 			<name>Sim Module, Hot</name>
 			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
 			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>4F</avail>
-			<cost>250</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>4F</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<cost>250</cost>
+			<devicerating>0</devicerating>
 		</gear>
 		<gear>
 			<id>b6d1476d-a08c-43fc-be0e-68ca9330a43e</id>
 			<name>Erika MCD-1</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attributearray>4,3,2,1</attributearray>
-			<attack>4</attack>
-			<sleaze>3</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>1</firewall>
-			<programs>1</programs>
-			<avail>3R</avail>
-			<cost>49500</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>3R</avail>
+			<attack>4</attack>
+			<attributearray>4,3,2,1</attributearray>
+			<capacity>0</capacity>
+			<cost>49500</cost>
+			<dataprocessing>2</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<programs>1</programs>
+			<sleaze>3</sleaze>
 		</gear>
 		<gear>
 			<id>540831fa-7866-443a-9187-112c5c5cbf7b</id>
 			<name>Microdeck Summit</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attributearray>4,3,3,1</attributearray>
-			<attack>4</attack>
-			<sleaze>3</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>1</firewall>
-			<programs>1</programs>
-			<avail>3R</avail>
-			<cost>58000</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>3R</avail>
+			<attack>4</attack>
+			<attributearray>4,3,3,1</attributearray>
+			<capacity>0</capacity>
+			<cost>58000</cost>
+			<dataprocessing>3</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<programs>1</programs>
+			<sleaze>3</sleaze>
 		</gear>
 		<gear>
 			<id>d0815d76-b7b7-4f50-b700-9eb873096408</id>
 			<name>Microtrónica Azteca 200</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attributearray>5,4,3,2</attributearray>
-			<attack>5</attack>
-			<sleaze>4</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>2</firewall>
-			<programs>2</programs>
-			<avail>6R</avail>
-			<cost>110250</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>6R</avail>
+			<attack>5</attack>
+			<attributearray>5,4,3,2</attributearray>
+			<capacity>0</capacity>
+			<cost>110250</cost>
+			<dataprocessing>3</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<programs>2</programs>
+			<sleaze>4</sleaze>
 		</gear>
 		<gear>
 			<id>785179f5-1500-46b6-b04f-063effa3a457</id>
 			<name>Hermes Chariot</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attributearray>5,4,4,2</attributearray>
-			<attack>5</attack>
-			<sleaze>4</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>2</firewall>
-			<programs>2</programs>
-			<avail>6R</avail>
-			<cost>123000</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>6R</avail>
+			<attack>5</attack>
+			<attributearray>5,4,4,2</attributearray>
+			<capacity>0</capacity>
+			<cost>123000</cost>
+			<dataprocessing>4</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<programs>2</programs>
+			<sleaze>4</sleaze>
 		</gear>
 		<gear>
 			<id>ab0a7547-3cb4-4816-a65a-cb03dd2186ac</id>
 			<name>Novatech Navigator</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>6,5,4,3</attributearray>
-			<attack>6</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>3</firewall>
-			<programs>3</programs>
-			<avail>9R</avail>
-			<cost>205750</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>9R</avail>
+			<attack>6</attack>
+			<attributearray>6,5,4,3</attributearray>
+			<capacity>0</capacity>
+			<cost>205750</cost>
+			<dataprocessing>4</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>3</firewall>
+			<programs>3</programs>
+			<sleaze>5</sleaze>
 		</gear>
 		<gear>
 			<id>5f4c41eb-abaa-4725-86ce-62fe11eeee0b</id>
 			<name>Renraku Tsurugi</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>6,5,5,3</attributearray>
-			<attack>6</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>5</dataprocessing>
-			<firewall>3</firewall>
-			<programs>3</programs>
-			<avail>9R</avail>
-			<cost>214125</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>9R</avail>
+			<attack>6</attack>
+			<attributearray>6,5,5,3</attributearray>
+			<capacity>0</capacity>
+			<cost>214125</cost>
+			<dataprocessing>5</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>3</firewall>
+			<programs>3</programs>
+			<sleaze>5</sleaze>
 		</gear>
 		<gear>
 			<id>79134070-7441-416a-8f14-922a5b7f490d</id>
 			<name>Sony CIY-720</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>7,6,5,4</attributearray>
-			<attack>7</attack>
-			<sleaze>6</sleaze>
-			<dataprocessing>5</dataprocessing>
-			<firewall>4</firewall>
-			<programs>4</programs>
-			<avail>12R</avail>
-			<cost>345000</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>12R</avail>
+			<attack>7</attack>
+			<attributearray>7,6,5,4</attributearray>
+			<capacity>0</capacity>
+			<cost>345000</cost>
+			<dataprocessing>5</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>4</firewall>
+			<programs>4</programs>
+			<sleaze>6</sleaze>
 		</gear>
 		<gear>
 			<id>c3f15a4a-1987-4879-ba74-5b93d602ca8c</id>
 			<name>Shiawase Cyber-5</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>5</devicerating>
-			<attributearray>8,7,6,5</attributearray>
-			<attack>8</attack>
-			<sleaze>7</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>5</firewall>
-			<programs>5</programs>
-			<avail>15R</avail>
-			<cost>549375</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>15R</avail>
+			<attack>8</attack>
+			<attributearray>8,7,6,5</attributearray>
+			<capacity>0</capacity>
+			<cost>549375</cost>
+			<dataprocessing>6</dataprocessing>
+			<devicerating>5</devicerating>
+			<firewall>5</firewall>
+			<programs>5</programs>
+			<sleaze>7</sleaze>
 		</gear>
 		<gear>
 			<id>5d649de9-aa6f-450e-893b-63e5ad166388</id>
 			<name>Fairlight Excalibur</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>6</devicerating>
-			<attributearray>9,8,7,6</attributearray>
-			<attack>9</attack>
-			<sleaze>8</sleaze>
-			<dataprocessing>7</dataprocessing>
-			<firewall>6</firewall>
-			<programs>6</programs>
-			<avail>18R</avail>
-			<cost>823250</cost>
 			<source>SR5</source>
 			<page>439</page>
+			<avail>18R</avail>
+			<attack>9</attack>
+			<attributearray>9,8,7,6</attributearray>
+			<capacity>0</capacity>
+			<cost>823250</cost>
+			<dataprocessing>7</dataprocessing>
+			<devicerating>6</devicerating>
+			<firewall>6</firewall>
+			<programs>6</programs>
+			<sleaze>8</sleaze>
 		</gear>
 		<gear>
 			<id>73e98bb9-4521-45a2-9185-13067fe6b90b</id>
 			<name>Renraku Aguchi</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>2</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>100</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>ca8c8e4f-39a2-4e91-a6c7-239dd772e4d9</id>
 			<name>Sony Angel</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>2</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>100</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>8bd42918-2c19-4738-8945-b93be3d8e26d</id>
 			<name>Transys Arthur</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>2</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>100</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>22210eac-768e-42c9-94a0-84077cbcec53</id>
 			<name>Common Denominator Element</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>4</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>700</cost>
+			<dataprocessing>2</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>00342e9b-4c68-4f9d-88e3-f43bfe94069d</id>
 			<name>Leviathan Technical LT-2100</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>4</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>700</cost>
+			<dataprocessing>2</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
 			<name>Microtronica Azteca Raptor</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>4</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>700</cost>
+			<dataprocessing>2</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>40a1ee23-8d27-4360-95ce-00557c773134</id>
 			<name>Xiao Technologies XT-2G</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>4</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>700</cost>
+			<dataprocessing>2</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>da11a064-34bb-409d-a5c5-8fad6ef602e4</id>
 			<name>Matrix Systems GridGopher</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>3</firewall>
-			<avail>6</avail>
-			<cost>1000</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>6</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>1000</cost>
+			<dataprocessing>3</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>3</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>d3ea65d9-833a-47be-93c1-001bd437eb9c</id>
 			<name>MCT-3500</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>3</firewall>
-			<avail>6</avail>
-			<cost>1000</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>6</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>1000</cost>
+			<dataprocessing>3</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>3</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>146a6f15-f00f-45bb-abea-f574b2241915</id>
 			<name>FTL Quark</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>4</firewall>
-			<avail>8</avail>
-			<cost>2500</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>8</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>2500</cost>
+			<dataprocessing>4</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>4</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>117bb53e-3f24-4e53-b861-29564bad7281</id>
 			<name>Novatech NetNinja</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>5</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>5</dataprocessing>
-			<firewall>5</firewall>
-			<avail>10</avail>
-			<cost>3000</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>10</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>3000</cost>
+			<dataprocessing>5</dataprocessing>
+			<devicerating>5</devicerating>
+			<firewall>5</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>b141098a-1bb3-4003-91fa-fff6958ab68f</id>
 			<name>Pulse Wave</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>6</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>6</firewall>
-			<avail>12</avail>
-			<cost>5000</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>12</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>5000</cost>
+			<dataprocessing>6</dataprocessing>
+			<devicerating>6</devicerating>
+			<firewall>6</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>07bb0fb2-a84c-4324-8a33-2cdc8f6955a2</id>
 			<name>Fuchi Cyber-X7</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>7</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>7</dataprocessing>
-			<firewall>7</firewall>
-			<avail>14</avail>
-			<cost>8000</cost>
 			<source>DT</source>
 			<page>17</page>
+			<avail>14</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>8000</cost>
+			<dataprocessing>7</dataprocessing>
+			<devicerating>7</devicerating>
+			<firewall>7</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>d3de4703-7215-4046-bf17-a8e11f92b3e5</id>
 			<name>EvoTech Himitsu</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>2</firewall>
-			<avail>8R</avail>
-			<cost>11000</cost>
 			<source>DT</source>
 			<page>61</page>
+			<avail>8R</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>11000</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>2</firewall>
+			<sleaze>5</sleaze>
 		</gear>
 		<gear>
 			<id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
 			<name>MCT Blue Defender</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>5</firewall>
-			<avail>7</avail>
-			<cost>2000</cost>
 			<source>DT</source>
 			<page>61</page>
+			<avail>7</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>2000</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>5</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>4055ed01-a419-4b69-bbac-00260bfa653f</id>
 			<name>Nixdorf Sekretar</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>2</firewall>
-			<avail>5</avail>
-			<cost>4000</cost>
 			<source>DT</source>
 			<page>61</page>
+			<avail>5</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>4000</cost>
+			<dataprocessing>6</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>784babc6-170b-4bcc-9572-699368e898de</id>
 			<name>Nixdorf Sekretar w/ Liebesekretar</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>2</firewall>
-			<avail>6</avail>
-			<cost>6000</cost>
 			<source>DT</source>
 			<page>61</page>
+			<avail>6</avail>
+			<armorcapacity>[2]</armorcapacity>
+			<attack>0</attack>
+			<capacity>0</capacity>
+			<cost>6000</cost>
+			<dataprocessing>6</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>2</firewall>
+			<sleaze>0</sleaze>
 		</gear>
 		<gear>
 			<id>de794f9c-505f-4a09-8be9-f43749240799</id>
 			<name>MCT Trainee</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attributearray>2,1,1,2</attributearray>
+			<source>DT</source>
+			<page>64</page>
+			<avail>3R</avail>
 			<attack>2</attack>
-			<sleaze>1</sleaze>
+			<attributearray>2,1,1,2</attributearray>
+			<capacity>0</capacity>
+			<cost>17250</cost>
 			<dataprocessing>1</dataprocessing>
+			<devicerating>1</devicerating>
 			<firewall>2</firewall>
-			<programs>1</programs>
 			<gears>
 				<gear>
 					<name>Builtin Biofeedback Filter</name>
@@ -2218,42 +2219,42 @@
 					<category>Specialty Condition</category>
 				</gear>
 			</gears>
-			<avail>3R</avail>
-			<cost>17250</cost>
-			<source>DT</source>
-			<page>64</page>
+			<programs>1</programs>
+			<sleaze>1</sleaze>
 		</gear>
 		<gear>
 			<id>0f8d360a-8c9a-41f4-ba5c-f4f8c5677145</id>
 			<name>Radio Shack PCD-500</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attributearray>2,2,1,1</attributearray>
-			<attack>2</attack>
-			<sleaze>2</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<programs>1</programs>
-			<avail>2</avail>
-			<cost>21000</cost>
 			<source>DT</source>
 			<page>64</page>
+			<avail>2</avail>
+			<attack>2</attack>
+			<attributearray>2,2,1,1</attributearray>
+			<capacity>0</capacity>
+			<cost>21000</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>1</devicerating>
+			<firewall>1</firewall>
+			<programs>1</programs>
+			<sleaze>2</sleaze>
 		</gear>
 		<gear>
 			<id>1658d851-21a0-455e-9b87-ed04b4e010a5</id>
 			<name>C-K Analyst</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attributearray>1,5,4,3</attributearray>
+			<source>DT</source>
+			<page>64</page>
+			<avail>5R</avail>
 			<attack>1</attack>
-			<sleaze>5</sleaze>
+			<attributearray>1,5,4,3</attributearray>
+			<capacity>0</capacity>
+			<cost>83800</cost>
 			<dataprocessing>4</dataprocessing>
+			<devicerating>2</devicerating>
 			<firewall>3</firewall>
-			<programs>1</programs>
 			<gears>
 				<gear>
 					<name>Builtin Edit Program</name>
@@ -2264,168 +2265,168 @@
 					<category>Specialty Condition</category>
 				</gear>
 			</gears>
-			<avail>5R</avail>
-			<cost>83800</cost>
-			<source>DT</source>
-			<page>64</page>
+			<programs>1</programs>
+			<sleaze>5</sleaze>
 		</gear>
 		<gear>
 			<id>b9d996cd-b670-4bf4-a021-047a887891a2</id>
 			<name>Little Hornet</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attributearray>5,4,1,1</attributearray>
-			<attack>5</attack>
-			<sleaze>4</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<programs>2</programs>
-			<avail>5R</avail>
-			<cost>89700</cost>
 			<source>DT</source>
 			<page>64</page>
+			<avail>5R</avail>
+			<attack>5</attack>
+			<attributearray>5,4,1,1</attributearray>
+			<capacity>0</capacity>
+			<cost>89700</cost>
+			<dataprocessing>1</dataprocessing>
+			<devicerating>2</devicerating>
+			<firewall>1</firewall>
+			<programs>2</programs>
+			<sleaze>4</sleaze>
 		</gear>
 		<gear>
 			<id>98a97367-8747-4ba9-ae97-ea371baaec13</id>
 			<name>Aztechnology Emissary</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>2,3,3,8</attributearray>
+			<source>DT</source>
+			<page>64</page>
+			<avail>8R</avail>
 			<attack>2</attack>
-			<sleaze>3</sleaze>
+			<attributearray>2,3,3,8</attributearray>
+			<capacity>0</capacity>
+			<cost>168000</cost>
 			<dataprocessing>3</dataprocessing>
+			<devicerating>3</devicerating>
 			<firewall>8</firewall>
-			<programs>1</programs>
 			<gears>
 				<gear>
 					<name>Locked Array</name>
 					<category>Specialty Condition</category>
 				</gear>
 			</gears>
-			<avail>8R</avail>
-			<cost>168000</cost>
-			<source>DT</source>
-			<page>64</page>
+			<programs>1</programs>
+			<sleaze>3</sleaze>
 		</gear>
 		<gear>
 			<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
 			<name>Microtronica Azteca 300</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>7,5,3,1</attributearray>
-			<attack>7</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>1</firewall>
-			<programs>3</programs>
-			<avail>9R</avail>
-			<cost>200000</cost>
 			<source>DT</source>
 			<page>64</page>
+			<avail>9R</avail>
+			<attack>7</attack>
+			<attributearray>7,5,3,1</attributearray>
+			<capacity>0</capacity>
+			<cost>200000</cost>
+			<dataprocessing>3</dataprocessing>
+			<devicerating>3</devicerating>
+			<firewall>1</firewall>
+			<programs>3</programs>
+			<sleaze>5</sleaze>
 		</gear>
 		<gear>
 			<id>85828a80-cf4a-4f9f-8eb5-c2c5db5e98ab</id>
 			<name>Yak Killer</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>7,6,2,3</attributearray>
+			<source>DT</source>
+			<page>64</page>
+			<avail>13R</avail>
 			<attack>7</attack>
-			<sleaze>6</sleaze>
+			<attributearray>7,6,2,3</attributearray>
+			<capacity>0</capacity>
+			<cost>194000</cost>
 			<dataprocessing>2</dataprocessing>
+			<devicerating>3</devicerating>
 			<firewall>3</firewall>
-			<programs>2</programs>
 			<gears>
 				<gear>
 					<name>Locked Array</name>
 					<category>Specialty Condition</category>
 				</gear>
 			</gears>
-			<avail>13R</avail>
-			<cost>194000</cost>
-			<source>DT</source>
-			<page>64</page>
+			<programs>2</programs>
+			<sleaze>6</sleaze>
 		</gear>
 		<gear>
 			<id>88ad69c3-7e45-4a27-b6a2-bcc525fe3a73</id>
 			<name>Ring of Light Special</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>8,1,2,6</attributearray>
+			<source>DT</source>
+			<page>64</page>
+			<avail>10R</avail>
 			<attack>8</attack>
-			<sleaze>1</sleaze>
+			<attributearray>8,1,2,6</attributearray>
+			<capacity>0</capacity>
+			<cost>242000</cost>
 			<dataprocessing>2</dataprocessing>
+			<devicerating>4</devicerating>
 			<firewall>6</firewall>
-			<programs>3</programs>
 			<gears>
 				<gear>
 					<name>Locked Array</name>
 					<category>Specialty Condition</category>
 				</gear>
 			</gears>
-			<avail>10R</avail>
-			<cost>242000</cost>
-			<source>DT</source>
-			<page>64</page>
+			<programs>3</programs>
+			<sleaze>1</sleaze>
 		</gear>
 		<gear>
 			<id>396eb5a2-57d3-4a6f-b30d-d3809b073d54</id>
 			<name>Shiawase Cyber-4</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>8,6,4,2</attributearray>
-			<attack>8</attack>
-			<sleaze>6</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>2</firewall>
-			<programs>3</programs>
-			<avail>12R</avail>
-			<cost>331000</cost>
 			<source>DT</source>
 			<page>64</page>
+			<avail>12R</avail>
+			<attack>8</attack>
+			<attributearray>8,6,4,2</attributearray>
+			<capacity>0</capacity>
+			<cost>331000</cost>
+			<dataprocessing>4</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>2</firewall>
+			<programs>3</programs>
+			<sleaze>6</sleaze>
 		</gear>
 		<gear>
 			<id>aa94122a-6991-46d4-986d-13d72bff1c22</id>
 			<name>Xiao MPG-1</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>8,5,4,3</attributearray>
-			<attack>8</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>3</firewall>
-			<programs>3</programs>
-			<avail>13R</avail>
-			<cost>302000</cost>
 			<source>DT</source>
 			<page>64</page>
+			<avail>13R</avail>
+			<attack>8</attack>
+			<attributearray>8,5,4,3</attributearray>
+			<capacity>0</capacity>
+			<cost>302000</cost>
+			<dataprocessing>4</dataprocessing>
+			<devicerating>4</devicerating>
+			<firewall>3</firewall>
+			<programs>3</programs>
+			<sleaze>5</sleaze>
 		</gear>
 		<gear>
 			<id>e19c44a6-02bd-445c-8def-e43c1a5704e0</id>
 			<name>Ares Echo Unlimited</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>5</devicerating>
-			<attributearray>9,6,4,5</attributearray>
+			<source>DT</source>
+			<page>64</page>
+			<avail>15R</avail>
 			<attack>9</attack>
-			<sleaze>6</sleaze>
+			<attributearray>9,6,4,5</attributearray>
+			<capacity>0</capacity>
+			<cost>395900</cost>
 			<dataprocessing>4</dataprocessing>
+			<devicerating>5</devicerating>
 			<firewall>5</firewall>
-			<programs>3</programs>
 			<gears>
 				<gear>
 					<name>Ruggedized Case</name>
@@ -2436,28 +2437,26 @@
 					<category>Specialty Condition</category>
 				</gear>
 			</gears>
-			<avail>15R</avail>
-			<cost>395900</cost>
-			<source>DT</source>
-			<page>64</page>
+			<programs>3</programs>
+			<sleaze>6</sleaze>
 		</gear>
 		<gear>
 			<id>c9cdce54-8b00-48c2-be2a-7e81a3d5a426</id>
 			<name>Fairlight Paladin</name>
 			<category>Cyberdecks</category>
-			<capacity>0</capacity>
 			<rating>0</rating>
-			<devicerating>6</devicerating>
-			<attributearray>9,9,8,8</attributearray>
-			<attack>9</attack>
-			<sleaze>9</sleaze>
-			<dataprocessing>8</dataprocessing>
-			<firewall>8</firewall>
-			<programs>6</programs>
-			<avail>20R</avail>
-			<cost>1050000</cost>
 			<source>DT</source>
 			<page>64</page>
+			<avail>20R</avail>
+			<attack>9</attack>
+			<attributearray>9,9,8,8</attributearray>
+			<capacity>0</capacity>
+			<cost>1050000</cost>
+			<dataprocessing>8</dataprocessing>
+			<devicerating>6</devicerating>
+			<firewall>8</firewall>
+			<programs>6</programs>
+			<sleaze>9</sleaze>
 		</gear>
 		<gear>
 			<id>caa889d9-7bd6-4745-84f7-4454951e3d53</id>
