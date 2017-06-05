@@ -1194,6 +1194,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\complexforms.xsd" />
     <None Include="data\critterpowers.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1246,26 +1247,56 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\ranges.xsc">
+      <DependentUpon>ranges.xsd</DependentUpon>
+    </None>
     <None Include="data\ranges.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="data\conditions.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="data\ranges.xss">
+      <DependentUpon>ranges.xsd</DependentUpon>
+    </None>
+    <None Include="data\skills.xsc">
+      <DependentUpon>skills.xsd</DependentUpon>
+    </None>
     <None Include="data\skills.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\skills.xss">
+      <DependentUpon>skills.xsd</DependentUpon>
     </None>
     <None Include="data\spells.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\streams.xsc">
+      <DependentUpon>streams.xsd</DependentUpon>
+    </None>
     <None Include="data\streams.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\streams.xss">
+      <DependentUpon>streams.xsd</DependentUpon>
+    </None>
+    <None Include="data\traditions.xsc">
+      <DependentUpon>traditions.xsd</DependentUpon>
     </None>
     <None Include="data\traditions.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\traditions.xss">
+      <DependentUpon>traditions.xsd</DependentUpon>
+    </None>
+    <None Include="data\vehicles.xsc">
+      <DependentUpon>vehicles.xsd</DependentUpon>
+    </None>
     <None Include="data\vehicles.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\vehicles.xss">
+      <DependentUpon>vehicles.xsd</DependentUpon>
     </None>
     <None Include="data\vessels.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

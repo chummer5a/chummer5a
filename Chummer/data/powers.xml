@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema powers.xsd">
 	<version>0</version>
 	<powers>
 		<!-- Region SR5 -->
@@ -25,10 +25,10 @@
 			<id>8caaadf4-75b4-4535-928a-5648d395c13a</id>
 			<name>Adrenaline Boost</name>
 			<points>.25</points>
-			<adeptway>0</adeptway>
-			<action>Free</action>
-			<levels>true</levels>
-			<limit>1</limit>
+      <levels>true</levels>
+      <limit>1</limit>
+      <action>Free</action>
+      <adeptway>0</adeptway>
 			<source>SR5</source>
 			<page>309</page>
 		</power>
@@ -36,23 +36,23 @@
 			<id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
 			<name>Astral Perception</name>
 			<points>1</points>
-			<adeptway>.5</adeptway>
-			<adeptwayrequires>
-				<required>
-					<oneof>
-						<quality>The Artist's Way</quality>
-						<quality>The Beast's Way</quality>
-						<quality>The Magician's Way</quality>
-						<quality>The Spiritual Way</quality>
-					</oneof>
-				</required>
-			</adeptwayrequires>
-			<action>Simple</action>
-			<bonus>
-				<unlockskills name="Assensing">Name</unlockskills>
-			</bonus>
 			<levels>false</levels>
 			<limit>1</limit>
+      <action>Simple</action>
+      <adeptway>.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artist's Way</quality>
+            <quality>The Beast's Way</quality>
+            <quality>The Magician's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <unlockskills name="Assensing">Name</unlockskills>
+      </bonus>
 			<source>SR5</source>
 			<page>309</page>
 		</power>
