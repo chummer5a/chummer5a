@@ -2025,7 +2025,9 @@
 				<choice>
 					<name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
 					<bonus>
-						<selectpower limittopowers="Mystic Armor, Empathic Healing" />
+            <selectpowers>
+						  <selectpower limittopowers="Mystic Armor, Empathic Healing" />
+            </selectpowers>
 					</bonus>
 				</choice>
 			</choices>
@@ -2047,7 +2049,9 @@
 				<choice>
 					<name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
 					<bonus>
-						<selectpower limittopowers="Killing Hands, Plague Cloud" />
+            <selectpowers>
+						  <selectpower limittopowers="Killing Hands, Plague Cloud" />
+            </selectpowers>
 					</bonus>
 				</choice>
 			</choices>
