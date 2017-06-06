@@ -555,7 +555,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if ((_objCharacter.MAGEnabled || _objCharacter.RESEnabled) && _objCharacter.EssencePenalty > 0)
+                if ((_objCharacter.MAGEnabled && Abbrev == "MAG" || _objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0)
                 {
                     return true;
                 }
@@ -656,7 +656,7 @@ namespace Chummer.Backend.Attributes
 			}
 		    if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP"))
 		    {
-		        intReturn -= _objCharacter.EssencePenalty;
+		        //intReturn -= _objCharacter.EssencePenalty;
 		    }
 			// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 			if (intReturn > TotalAugmentedMaximum)
