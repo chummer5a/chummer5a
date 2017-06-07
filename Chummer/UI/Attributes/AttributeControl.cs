@@ -153,7 +153,9 @@ namespace Chummer.UI.Attributes
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value == attribute.TotalMaximum && nudKarma.Value != nudKarma.Minimum)
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attribute.TotalMaximum ||
+                nudKarma.Value == nudKarma.Minimum) return;
+            if (nudKarma.Value - nudBase.Increment >= 0)
             {
                 nudKarma.Value -= nudBase.Increment;
             }
@@ -161,7 +163,8 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value == attribute.TotalMaximum && nudBase.Value != nudBase.Minimum)
+            if (nudBase.Value + nudKarma.Value != attribute.TotalMaximum || nudBase.Value == nudBase.Minimum) return;
+            if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;
             }
