@@ -195,5 +195,10 @@
 			<name>Forbidden Arcana</name>
 			<code>FA</code>
 		</book>
+		<book>
+			<id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
+			<name>State of the Art ADL (German Handbook)</name>
+			<code>SAG</code>
+		</book>
 	</books>
 </chummer>

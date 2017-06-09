@@ -1031,6 +1031,7 @@ namespace Chummer
 						continue;
 					if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
 						chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier)) continue;
+                    //if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter)) continue;
 					ListItem objItem = new ListItem
 					{
 						Value = objXmlCyberware["name"]?.InnerText,

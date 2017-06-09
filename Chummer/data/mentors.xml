@@ -2451,5 +2451,411 @@
 			<source>FA</source>
 			<page>95</page>
 		</mentor>
+		<mentor>
+			<id>3244e940-4666-4510-b1a1-c34df97797fe</id>
+			<name>Eurasian Jay</name>
+			<advantage>All: +1 dice pool modifer for tests using the Perception and Palming skills.</advantage>
+			<disadvantage>Eurasian Jay loves to split his posessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Illusion</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Manipulation</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 1 free level of Voice Control.</name>
+					<bonus>
+						<specificpower>
+							<name>Voice Control</name>
+							<val>1</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 2 free levels of Danger Sense.</name>
+					<bonus>
+						<specificpower>
+							<name>Danger Sense</name>
+							<val>2</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Palming</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+				<specificskill>
+					<name>Perception</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>120</page>
+		</mentor>
+		<mentor>
+			<id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
+			<name>Squirrel</name>
+			<advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
+			<disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Chrisma (3) Tets or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Detection</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 2 free levels of Light Body.</name>
+					<bonus>
+						<specificpower>
+							<name>Light Body</name>
+							<val>2</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Gymnastics</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>121</page>
+		</mentor>
+		<mentor>
+			<id>50b20b8c-8cf4-4b92-95ea-b0c8bbf560b0</id>
+			<name>Fox</name>
+			<advantage>All: +2 dice pool modifer for tests using the Perception skill.</advantage>
+			<disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Charisma (3) Test to spare a bettered foe.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Illusion</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 2 free levels of Combat Sense.</name>
+					<bonus>
+						<specificpower>
+							<name>Combat Sense</name>
+							<val>2</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Perception</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>121</page>
+		</mentor>
+		<mentor>
+			<id>b83bab65-bbda-4367-aa50-3069def5b2e4</id>
+			<name>Tide</name>
+			<advantage>All: +2 dice pool modifer for tests using the Ritual Spellcasting skill.</advantage>
+			<disadvantage>Followers of Tide live in transition, but in the consistency of a cycle. They also design their lives this way. If their normal life cycle is lastingly impaired by Sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice summoning spirits of water or earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
+				</choice>
+				<choice>
+					<name>Adept: Gain 2 free levels of Heightened Concentration.</name>
+					<bonus>
+						<specificpower>
+							<name>Heightened Concentration</name>
+							<val>2</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Ritual Spellcasting</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>121</page>
+		</mentor>
+		<mentor>
+			<id>62188234-323a-4c8e-96c4-b8b8a750e272</id>
+			<name>Heinzelmännchen</name>
+			<advantage>All: +2 dice pool modifer for tests using the Artisan skill and the Engineering skill group.</advantage>
+			<disadvantage>Heinzelmännchen works in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic cease to function for the moment.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Manipulation</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 1 free level of Improved Ability (Artisan or a skill from the Engineering group).</name>
+					<bonus>
+						<specificpower>
+							<name>Improved Ability (skill)</name>
+							<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic">
+								<val>1</val>
+								<applytorating>no</applytorating>
+							</selectskill>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Artisan</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+				<skillgrouplevel>
+					<name>Engineering</name>
+					<val>1</val>
+					<applytorating>no</applytorating>
+				</skillgrouplevel>
+			</bonus>
+			<source>SAG</source>
+			<page>121</page>
+		</mentor>
+		<mentor>
+			<id>128ba60a-7825-4d29-8b94-8dd291fdc468</id>
+			<name>Groundhog</name>
+			<advantage>All: +1 dice pool modifer for tests using the Perception and Etiquette skills.</advantage>
+			<disadvantage>If a follower of Grounghog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Chraisma (3) Test to not flee immediately.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Detection</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 2 free levels of Attribute Boost (Reaction).</name>
+					<bonus>
+						<specificpower>
+							<name>Attribute Boost</name>
+							<val>2</val>
+							<selectattribute>
+								<attribute>REA</attribute>
+							</selectattribute>
+						</specificpower>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain the Motion Sense power for free.</name>
+					<bonus>
+						<specificpower>
+							<name>Motion Sense</name>
+							<val>1</val>
+							<free>yes</free>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Perception</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+				<specificskill>
+					<name>Etiquette</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>122</page>
+		</mentor>
+		<mentor>
+			<id>ad1bc54f-1f59-4972-8791-a1c36860f196</id>
+			<name>Seal</name>
+			<advantage>All: +2 dice pool modifer for Judge Intentions tests.</advantage>
+			<disadvantage>Seal has compassion, but she is lacking in tact dealing with the feelings of others. Whenever a follower of Seal gains insight into the emotional world of an other, it's difficult for him to respect private boundaries and not address the subject. In order to remain discreet in such situations, they must make a Charisma + Willpower (3) test. Glitches in social test are automatically critical.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice summoning spirits of water.</name>
+				</choice>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Illusion</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain the Astral Perception Power for free.</name>
+					<bonus>
+						<specificpower>
+							<name>Astral Perception</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<judgeintentions>2</judgeintentions>
+			</bonus>
+			<source>SAG</source>
+			<page>122</page>
+		</mentor>
+		<mentor>
+			<id>255affd2-1a85-422e-bb64-3dd7ab2faa77</id>
+			<name>Pig</name>
+			<advantage>All: +2 dice pool modifer for tests using the Con skill.</advantage>
+			<disadvantage>A follower of Pig must make a Willpower + Charisma (3) Test to break free from pleasurable activities like sleeping, eating, drinking or consuming drugs.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Manipulation</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 1 free level of Improved Ability for a skill from the Influence or Acting group.</name>
+					<bonus>
+						<specificpower>
+							<name>Improved Ability (skill)</name>
+							<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation">
+								<val>1</val>
+								<applytorating>no</applytorating>
+							</selectskill>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Con</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>122</page>
+		</mentor>
+		<mentor>
+			<id>7c904908-81e5-448b-a60e-9b7b3af53842</id>
+			<name>Capricorn</name>
+			<advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
+			<disadvantage>Capricorn may not be stubborn, but he decides and acts quickly. He has neither tolerance nor time for hesitation. If a follower of Capricorn is confronted with long decision-making processes, discussions, or indecision, he must make a Charisma + Willpower (3) test in order not to immediately choose the in his opinion best decision available and to put it into practice immediately.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice summoning spirits of earth.</name>
+				</choice>
+				<choice>
+					<name>Adept: 2 free levels of Hang Time.</name>
+					<bonus>
+						<specificpower>
+							<name>Hang Time</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<bonus>
+				<specificskill>
+					<name>Gymnastics</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<source>SAG</source>
+			<page>123</page>
+		</mentor>
+		<mentor>
+			<id>88b517e3-a3c8-4028-9a69-d947f3384aab</id>
+			<name>Wild Hunt</name>
+			<advantage>All: +2 dice pool modifer for tests using the Pilot Ground Craft or Intimidation skill.</advantage>
+			<disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he wouldn't take any consideration. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
+			<choices>
+				<choice>
+					<name>+2 dice on Pilot Ground Craft Tets</name>
+					<bonus>
+						<specificskill>
+							<name>Pilot Ground Craft</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>+2 dice on Intimidation Tets</name>
+					<bonus>
+						<specificskill>
+							<name>Intimidation</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Magician: +2 dice summoning spirits of man.</name>
+				</choice>
+				<choice set="2">
+					<name>Magician: +2 dice summoning guardian spirits.</name>
+				</choice>
+				<choice set="2">
+					<name>Adept: Gain the Berserker power for free.</name>
+					<bonus>
+						<specificpower>
+							<name>Berserker</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>SAG</source>
+			<page>123</page>
+		</mentor>
 	</mentors>
 </chummer>

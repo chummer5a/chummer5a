@@ -607,6 +607,92 @@
 			<page>91</page>
 		</tradition>
 		<!-- End Region -->
+		<!-- Region SotA ADL-->
+		<tradition>
+			<id>9147b372-b55f-4b4b-8f24-04a4dd05aa1a</id>
+			<name>Armanentradition</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spiritcombat>Guardian Spirit</spiritcombat>
+				<spiritdetection>Spirit of Guidance</spiritdetection>
+				<spirithealth>Spirit of Earth</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Task Spirit</spiritmanipulation>
+			</spirits>
+			<source>SAG</source>
+			<page>111</page>
+		</tradition>
+		<tradition>
+			<id>7d2ee0fa-92ab-4fec-86c9-e2f3964456e7</id>
+			<name>Dianism</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spiritcombat>Spirit of Beasts</spiritcombat>
+				<spiritdetection>Spirit of Fire</spiritdetection>
+				<spirithealth>Spirit of Air</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Spirit of Man</spiritmanipulation>
+			</spirits>
+			<source>SAG</source>
+			<page>112</page>
+		</tradition>
+		<tradition>
+			<id>a8f9687a-0999-4509-87a2-4b122fb2187c</id>
+			<name>Frisian Magic</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spiritcombat>Spirit of Water</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Spirit of Guidance</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Plants</spiritmanipulation>
+			</spirits>
+			<source>SAG</source>
+			<page>113</page>
+		</tradition>
+		<tradition>
+			<id>27109795-aead-463c-848c-fa63e5aa11cd</id>
+			<name>Magic of Roma and Street Nomads</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spiritcombat>Guardian Spirit</spiritcombat>
+				<spiritdetection>Spirit of Beasts</spiritdetection>
+				<spirithealth>Spirit of Plants</spirithealth>
+				<spiritillusion>Spirit of Air</spiritillusion>
+				<spiritmanipulation>Spirit of Man</spiritmanipulation>
+			</spirits>
+			<source>SAG</source>
+			<page>114</page>
+		</tradition>
+		<tradition>
+			<id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
+			<name>Svetoid</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spiritcombat>Spirit of Earth</spiritcombat>
+				<spiritdetection>Spirit of Guidance</spiritdetection>
+				<spirithealth>Spirit of Plants</spirithealth>
+				<spiritillusion>Spirit of Man</spiritillusion>
+				<spiritmanipulation>Spirit of Water</spiritmanipulation>
+			</spirits>
+			<source>SAG</source>
+			<page>115</page>
+		</tradition>
+		<tradition>
+			<id>232c8cfe-b70a-4fb8-9dc3-ecc993cf6203</id>
+			<name>Troll Shamanism</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spiritcombat>Spirit of Fire</spiritcombat>
+				<spiritdetection>Spirit of Earth</spiritdetection>
+				<spirithealth>Guardian Spirit</spirithealth>
+				<spiritillusion>Spirit of Water</spiritillusion>
+				<spiritmanipulation>Spirit of Plants</spiritmanipulation>
+			</spirits>
+			<source>SAG</source>
+			<page>115</page>
+		</tradition>
+		<!-- End Region -->
 	</traditions>
 	<spirits>
 		<!--Corebook spirits-->

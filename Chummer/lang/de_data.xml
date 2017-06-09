@@ -1062,6 +1062,66 @@
 				<page>182</page>
 				<translate>Critter-Körperpanzerung</translate>
 			</armor>
+			<armor>
+				<id>7f87a60e-67f8-4952-8c3a-8de22fd76a06</id>
+				<name>E'lyzée Elio: Bra's Suit</name>
+				<translate>E'lyzée Elio: Anzug Bra's</translate>
+			</armor>
+			<armor>
+				<id>1af8a121-e0b6-4ea1-bcb1-a51e200d05a1</id>
+				<name>E'lyzée Elio: Tha'il Dress</name>
+				<translate>E'lyzée Elio: Kleid Tha'il</translate>
+			</armor>
+			<armor>
+				<id>7418141b-ec31-4334-a642-6acf469c0e5f</id>
+				<name>E'lyzée Elio: Bra's Cloak</name>
+				<translate>E'lyzée Elio: Umhang Bra's</translate>
+			</armor>
+			<armor>
+				<id>7cc0ee32-7f67-495c-91d1-2ab9e19ec54b</id>
+				<name>E'lyzée Elio: Tha'il Cloak</name>
+				<translate>E'lyzée Elio: Umhang Tha'il</translate>
+			</armor>
+			<armor>
+				<id>60c7a349-d3a9-4a5c-a9cc-6e9d473c1e20</id>
+				<name>Franzinger Fashion Tenor: Tailcoat Combination</name>
+				<translate>Franzinger Fashion Tenor: Frack-Kombination</translate>
+			</armor>
+			<armor>
+				<id>6dad32b2-8714-4dab-a9e7-0692f233a2e7</id>
+				<name>Franzinger Fashion Tenor: Coat</name>
+				<translate>Franzinger Fashion Tenor: Mantel</translate>
+			</armor>
+			<armor>
+				<id>afa5351a-8da5-48f4-90c3-5baf04178534</id>
+				<name>Rheingold Pro Tec Plus: Suit</name>
+				<translate>Rheingold Pro Tec Plus: Anzug</translate>
+			</armor>
+			<armor>
+				<id>92123f54-66ae-4945-a4c5-c0baf36801fa</id>
+				<name>Rheingold Pro Tec Plus: Coat</name>
+				<translate>Rheingold Pro Tec Plus: Mantel</translate>
+			</armor>
+			<armor>
+				<id>afbd4fed-07ef-4ff2-ba8e-b5a6696d4b6b</id>
+				<name>StattKrieg: Armor Vest</name>
+				<translate>StattKrieg: Panzerweste</translate>
+			</armor>
+			<armor>
+				<id>81a3db95-9248-4645-bc9d-b65e422455a5</id>
+				<name>StattKrieg: Armor Jacket</name>
+				<translate>StattKrieg: Panzerjacke</translate>
+			</armor>
+			<armor>
+				<id>2d77e609-b848-468d-bac0-ed3ae296f2dd</id>
+				<name>StattKrieg: Padded Overall</name>
+				<translate>StattKrieg: Gefütterter Overall</translate>
+			</armor>
+			<armor>
+				<id>369adf84-0fe4-41b4-a837-ad2a34201f81</id>
+				<name>StattKrieg: Helmet</name>
+				<translate>StattKrieg: Helm</translate>
+			</armor>
 		</armors>
 		<mods>
 			<mod>
@@ -2736,6 +2796,11 @@
 				<id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
 				<name>Shadowrun Forum Post 1</name>
 				<translate>Shadowrun Forum Post 1</translate>
+			</book>
+			<book>
+				<id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
+				<name>State of the Art ADL (German Handbook)</name>
+				<translate>State of the Art ADL</translate>
 			</book>
 		</books>
 	</chummer>
@@ -17526,7 +17591,7 @@
 			<mentor>
 				<id>97c804c5-4107-495b-a821-29d1fc3aa4f5</id>
 				<name>Doom</name>
-				<page>323</page>
+				<page>90</page>
 				<translate>Untergang</translate>
 				<advantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres(Spieler muss eins auswählen),+2 Würfel auf überreden-Proben.</advantage>
 				<disadvantage>
@@ -17650,7 +17715,7 @@
 			<mentor>
 				<id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
 				<name>Great Mother</name>
-				<page>323</page>
+				<page>232</page>
 				<translate>Große Mutter</translate>
 				<advantage>+2 Würfel auf Heilzauber, +2 Würfel für Erd- oder Pflanzengeister(Spieler muss eins auswählen)</advantage>
 				<disadvantage>-1 Würfel auf Kampfzauber</disadvantage>
@@ -17726,7 +17791,7 @@
 			<mentor>
 				<id>f58d7493-864f-430d-b75c-a4f78575ed44</id>
 				<name>Mutation</name>
-				<page>140</page>
+				<page>90</page>
 				<translate>Mutation</translate>
 				<advantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres(Speiler muss eins wählen), +2 Würfel auf Heilzauber</advantage>
 				<disadvantage>
@@ -17764,7 +17829,7 @@
 			<mentor>
 				<id>424398e1-8909-4237-8315-48b6e06d62b5</id>
 				<name>Pollution</name>
-				<page>141</page>
+				<page>90</page>
 				<translate>Verschmutzung</translate>
 				<advantage>+2 Würfel für toxische Wasser-,Luft- oder Erdgeister(Spieler muss eins auswählen), +2 Würfel beim Widerstand gegen Pathogene und Toxine</advantage>
 				<disadvantage>
@@ -17972,7 +18037,7 @@
 				<id>796d5046-572e-427e-a49d-3fb66972d07e</id>
 				<name>Berserker</name>
 				<translate>Berserker</translate>
-				<page>199</page>
+				<page>231</page>
 				<advantage>All: +2 dice pool modifier for Composure Tests</advantage>
 				<disadvantage>Berserker’s followers have very short fuses. Whenever someone strongly disagrees with you (gamemaster’s discretion), you must pass a Charisma + Willpower (3) Test to keep from striking out against the offender. If the test fails, the attack can be in any form you choose (fist, spell, etc.), but it must have the intent to cause damage.</disadvantage>
 				<choices>
@@ -18030,7 +18095,7 @@
 				<id>2c6a5ac3-0d61-46dd-86a3-a630ebc91070</id>
 				<name>Chaos</name>
 				<translate>Chaos</translate>
-				<page>200</page>
+				<page>231</page>
 				<advantage>All: +2 dice pool modifier for Con Tests</advantage>
 				<disadvantage>You are an inveterate gossip trying to stir up trouble, especially between friends, and thus cannot keep damaging secrets to yourself. Also, anytime you encounter a public situation deemed too quiet or stable (gamemaster’s discretion), make a Willpower + Intuition (3) Test. Failure means that you are compelled to stir the pot in any way you desire, be it attacking, telling lies, or throwing a drink on someone nearby.</disadvantage>
 				<choices>
@@ -18063,8 +18128,8 @@
 			<mentor>
 				<id>68e34866-96d6-420e-a595-10bdbf37f011</id>
 				<name>Peacemaker</name>
-				<translate>Peacemaker</translate>
-				<page>200</page>
+				<translate>Friedensstifter</translate>
+				<page>232</page>
 				<advantage>All: +2 dice pool modifier for Negotiation Tests</advantage>
 				<disadvantage>You see even enemies as potential friends and go out of your way to keep from hurting anyone unless the situation truly warrants it. At the very beginning of combat, you must pass a Charisma + Intuition (3) Test; failure means you are unable to take actions that cause Physical damage for the duration of combat. At the beginning of a new Combat Turn, you may choose to retake the test if you failed the first time and you or a member of your team suffered damage in the previous Combat Turn.</disadvantage>
 				<choices>
@@ -18097,8 +18162,8 @@
 			<mentor>
 				<id>f7f30f82-babe-419a-b7df-8dcc98dcada3</id>
 				<name>Oracle</name>
-				<translate>Oracle</translate>
-				<page>200</page>
+				<translate>Orakel</translate>
+				<page>234</page>
 				<advantage>All: +2 dice pool modifier for Arcana Tests</advantage>
 				<disadvantage>You hate mysteries with a passion and can disappear for days trying to track down the answer. When confronted by a particularly haunting question (gamemaster’s discretion), you must take a Willpower + Intuition (3) Test. Failure means you must undertake an Intuition + Logic [Mental] (5, 1 hour) Extended Test to try researching the answer. Completion of the Extended Test does not necessarily mean you found the answer, but it at least silences the question in your mind for the time being. When a follower of Oracle becomes a Grade 1 initiate, she must choose Divination for her first metamagic rather than a Power Point or any other benefit.</disadvantage>
 				<choices>
@@ -18131,8 +18196,8 @@
 			<mentor>
 				<id>dc5c1f63-743f-475d-9a94-02fcbfbb437f</id>
 				<name>Disease</name>
-				<translate>Disease</translate>
-				<page>86</page>
+				<translate>Krankheit</translate>
+				<page>89</page>
 				<advantage>All: +2 to resist all pathogens and toxins</advantage>
 				<disadvantage>Followers of Disease must make a Charisma + Willpower (3) Test to not flee or seek cover whenever in a combat situation, unless they outnumber their opponents. If they begin a fight with greater numbers but then their side is reduced so that they no longer outnumber their opponents, they must make a test to avoid fleeing.</disadvantage>
 				<choices>
@@ -18166,7 +18231,7 @@
 				<id>1bd89b48-f900-476f-9278-1128ecdd6f14</id>
 				<name>Raven (German)</name>
 				<translate>Rabe (Deutsch)</translate>
-				<page>323</page>
+				<page>322</page>
 				<advantage>Allgemein: +2 Würfel für Überredenproben</advantage>
 				<disadvantage>Ein Anhänger von Rabe muss eine Probe auf Charisma + Willenskraft (3) schaffen, um das Unglück anderer nicht zu seinem Vorteil zu nutzen, oder um sich einen schlauen Trick oder Scherz zu verkeifen, selbst wenn dieser seinen Freunden zum Nachteil gereichen würde.</disadvantage>
 				<choices>
@@ -18209,61 +18274,259 @@
 				<translate>Affe</translate>
 			</mentor>
 			<mentor>
-				<id/>
+				<id>5ec3f3d5-8ae7-4ddd-a38c-2b21f135945f</id>
 				<name>Dachshund</name>
 				<translate>Dackel</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>ce5caf76-0c0e-4c91-98a4-78e15b73b5fe</id>
 				<name>Electro Marten</name>
 				<translate>Elektromarder</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>fd791bde-7887-43d7-a5af-9750b25c5948</id>
 				<name>Luna</name>
 				<translate>Mondin</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>16bd99dd-49df-41aa-a8a2-9b8962fac44c</id>
 				<name>Boar</name>
 				<page>42</page>
 				<translate>Wildschwein</translate>
 			</mentor>
 			<mentor translated="True">
-				<id />
+				<id>19154c75-9fa9-4e7e-aeee-da1faaaca3e2</id>
 				<name>Giraffe</name>
 				<page>41</page>
 				<translate>Giraffe</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>e8e25c51-bca0-4647-b345-f7f1d7a06be3</id>
 				<name>Dolphin</name>
 				<page>42</page>
 				<translate>Delphin</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>cf290b67-e417-4cd6-a36e-d28f35bdc18d</id>
 				<name>Whale</name>
 				<page>43</page>
 				<translate>Wal</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>9ca5be05-1420-4592-81a5-1b59bb93545d</id>
 				<name>Horse</name>
 				<page>45</page>
 				<translate>Pferd</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>dd6aa95d-5112-493e-9ba1-557dc43b6708</id>
 				<name>Raccoon</name>
 				<page>47</page>
 				<translate>Waschbär</translate>
 			</mentor>
 			<mentor>
-				<id />
+				<id>924e0d72-a83a-44c2-90ba-24455c389207</id>
 				<name>Spider</name>
 				<page>46</page>
 				<translate>Spinne</translate>
+			</mentor>
+			<mentor>
+				<id>3244e940-4666-4510-b1a1-c34df97797fe</id>
+				<name>Eurasian Jay</name>
+				<translate>Eichelhäher</translate>
+				<advantage>Allgemein: +1 Würfel für Fingerfertigkeits- und Wahrnehmungsproben</advantage>
+				<disadvantage>Eichelhäher teilt seinen Besitz gerne auf. Wenn ein Anhänger eine aufteilbare Belohnung erhält, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, sonst muss er diese auf verschiedene Konten oder Räumlichkeiten verteilen.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
+					</choice>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 1 free level of Voice Control.</name>
+						<translate>Adept: 1 Stufe Stimmenkontrolle gratis</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free levels of Danger Sense.</name>
+						<translate>2 Stufen Gefahrensinn gratis</translate>
+					</choice>
+				</choices>			
+			</mentor>
+			<mentor>
+				<id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
+				<name>Squirrel</name>
+				<translate>Eichhörnchen</translate>
+				<advantage>Allgemein: +2 Würfel für Akrobatikproben, die Balancieren, Klettern oder Springen betreffen</advantage>
+				<disadvantage>Wenn sich ein Anhänger von Eichhörnchen in engen Räumen befindet, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, sonst erhält er für die Dauer, in der er sich eingeengt fühlt, einen Würfelpoolmalus von -1 auf alle Proben.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free levels of Light Body.</name>
+						<translate>Adept: 2 Stufen Leichter Körper gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>50b20b8c-8cf4-4b92-95ea-b0c8bbf560b0</id>
+				<name>Fox</name>
+				<translate>Fuchs</translate>
+				<advantage>Allgemein: +2 Würfel für Wahrnehmungsproben</advantage>
+				<disadvantage>Wenn Fuchs kämpft, dann um zu töten. Einem Anhänger dieses Schutzgeistes muss eine Probe auf Willenskraft + Intuition (3) gelingen, damit er einen überwundenen Gegner verschont.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free levels of Combat Sense.</name>
+						<translate>Adepten: 2 Stufe Kampfsinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>b83bab65-bbda-4367-aa50-3069def5b2e4</id>
+				<name>Tide</name>
+				<translate>Gezeiten</translate>
+				<advantage>Allgemein: +2 Würfel für Ritualzaubereiproben</advantage>
+				<disadvantage>Anhänger von Gezeiten leben zwar im Wandel, allerdings in stetiger Beständigkeit eines Zyklus. So gestalten sie auch ihr Leben. Wird ihr normaler Lebenszyklus durch Schlafentzug oder Krankheit nachhaltig beeinträchtigt, erleiden sie einen Würfelpoolmalus von -1 auf alle Proben, bis der Zyklus wiederhergestellt ist.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice summoning spirits of water or earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
+						<translate>+2 Würfel für das Herbeirufen von Wasserund Erdgeistern (die Geisterart, für die der Vorteil gerade gilt, wechselt alle sechs Stunden im Rhythmus der Gezeiten)</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free levels of Heightened Concentration.</name>
+						<translate>Adept: 2 Stufen Erhöhte Konzentration gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor translated="true">
+				<id>62188234-323a-4c8e-96c4-b8b8a750e272</id>
+				<name>Heinzelmännchen</name>
+				<translate>Heinzelmännchen</translate>
+				<advantage>Allgemein: +1 Würfel für Proben auf Handwerk und Fertigkeiten der Mechanik-Fertigkeitsgruppe</advantage>
+				<disadvantage>Heinzelmännchen wirkt gerne im Verborgenen. Will ein Anhänger in der Öffentlichkeit oder unter genauer Beobachtung Magie wirken, so muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen – ansonsten versagt seine Magie für den Moment.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 1 free level of Improved Ability (Artisan or a skill from the Engineering group).</name>
+						<translate>Adept: 1 Stufe Verbesserte Fertigkeit (Handwerk oder eine beliebige Fertigkeit der Mechanik-Fertigkeitsgruppe) gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>128ba60a-7825-4d29-8b94-8dd291fdc468</id>
+				<name>Groundhog</name>
+				<translate>Murmeltier</translate>
+				<advantage>Allgemein: +1 Würfel für Gebräuche- und Wahrnehmungsproben</advantage>
+				<disadvantage>Gerät ein Anhänger von Murmeltier in einen Kampf (ob nun absichtlich oder unabsichtlich), muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort zu fliehen</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free levels of Attribute Boost (Reaction).</name>
+						<translate>Adept: 2 Stufen Attributsschub (Reaktion) gratis</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain the Motion Sense power for free.</name>
+						<translate>Adept: Bewegungsgespür gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>ad1bc54f-1f59-4972-8791-a1c36860f196</id>
+				<name>Seal</name>
+				<translate>Robbe</translate>
+				<advantage>Allgemein: +2 Würfel auf Menschenkenntnis-Proben</advantage>
+				<disadvantage>Robbe hat Mitgefühl, aber es mangelt ihr an Takt im Umgang mit den Gefühlen anderer. Immer wenn ein Anhänger von Robbe Einblicke in die Gefühlswelt eines anderen erhält, fällt es ihm schwer, private Grenzen zu respektieren und das Thema nicht anzusprechen oder zu vertiefen. Um in solchen Situationen diskret zu bleiben, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen. Patzer bei sozialen Proben sind automatisch kritisch.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice summoning spirits of water.</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Wassergeistern</translate>
+					</choice>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain the Astral Perception Power for free.</name>
+						<translate>Adept: Astrale Wahrnehmung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>255affd2-1a85-422e-bb64-3dd7ab2faa77</id>
+				<name>Pig</name>
+				<translate>Schwein</translate>
+				<advantage>Allgemein: +2 Würfel für Überredenproben</advantage>
+				<disadvantage>Einem Anhänger von Schwein muss eine Probe auf Charisma + Willenskraft (3) gelingen, um sich von einer angenehmen, genussvollen Tätigkeit wie Schlafen, Essen, Trinken oder Drogenkonsum loszureißen.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 1 free level of Improved Ability for a skill from the Influence or Acting group.</name>
+						<translate>Adept: 1 Stufe Verbesserte Fertigkeit für eine Fertigkeit aus der Fertigkeitsgruppe Schauspielerei oder Einfluss</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>7c904908-81e5-448b-a60e-9b7b3af53842</id>
+				<name>Capricorn</name>
+				<translate>Steinbock</translate>
+				<advantage>Allgemein: +2 Würfel auf Akrobatikproben</advantage>
+				<disadvantage>Steinbock mag nicht stur sein, doch er entscheidet und handelt schnell. Fürs Zögern hat er weder Toleranz noch Zeit. Wird ein Anhänger von Steinbock mit langen Entscheidungsprozessen, Diskussionen oder Unentschlossenheit konfrontiert, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen, um nicht umgehend die seiner Meinung nach beste verfügbare Entscheidung zu treffen und sie augenblicklich in die Tat umzusetzen.</disadvantage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice summoning spirits of earth.</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Erdgeistern</translate>
+					</choice>
+					<choice>
+						<name>Adept: 2 free levels of Hang Time.</name>
+						<translate>Adept: 2 Stufen Fester Halt gratis</translate>
+					</choice>
+				</choices>			
+			</mentor>
+			<mentor>
+				<id>88b517e3-a3c8-4028-9a69-d947f3384aab</id>
+				<name>Wild Hunt</name>
+				<translate>Wilde Jagd</translate>
+				<advantage>Allgemein: +2 Würfel für Proben auf Bodenfahrzeuge oder Einschüchtern</advantage>
+				<disadvantage>Ein Anhänger der Wilden Jagd hinterlässt stets eine Schneise der Verwüstung. Wenn im Kampf Gegenstände oder Unbeteiligte zu Schaden kommen könnten, nimmt er darauf keine Rücksicht. Möchte ein Anhänger der Wilden Jagd im Kampf bewusst rücksichtsvoll agieren, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen, sonst ist er so gehemmt, dass er einen Würfelpoolmalus von -2 auf alle Handlungen erleidet.</disadvantage>
+				<choices>
+					<choice>
+						<name>+2 dice on Pilot Ground Craft Tets</name>
+						<translate>+2 Würfel für Proben auf Bodenfahrzeuge</translate>
+					</choice>
+					<choice>
+						<name>+2 dice on Intimidation Tets</name>
+						<translate>+2 Würfel für Proben auf Einschüchtern</translate>
+					</choice>
+					<choice set="2">
+						<name>Magician: +2 dice summoning spirits of man.</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützergeistern</translate>
+					</choice>
+					<choice set="2">
+						<name>Magician: +2 dice summoning guardian spirits.</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Geistern des Menschen</translate>
+					</choice>
+					<choice set="2">
+						<name>Adept: Gain the Berserker power for free.</name>
+						<translate>Adepten: Berserker gratis</translate>
+					</choice>
+				</choices>
 			</mentor>
 		</mentors>
 	</chummer>
@@ -23673,6 +23936,19 @@
 				<page>159</page>
 				<translate>Drake (Seedrake)</translate>
 			</quality>
+			<quality>
+				<id>2c1fece2-e950-41c0-a020-2671334e1610</id>
+				<name>Arcology Tantrum</name>
+				<translate>Arkologiekoller</translate>
+			</quality>
+			<quality>
+				<id>97615a7e-33aa-4013-b146-98175ac0f6c9</id>
+				<name>VolksSIN</name>
+			</quality>
+			<quality>
+				<id>3e2eac9a-e256-4755-a66a-ffbaac751cfa</id>
+				<name>VolksSIN (Criminal)</name>	
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -28719,25 +28995,25 @@
 				<translate>Insektenschamanen</translate>
 				<page>99</page>
 			</tradition>
-			<!--<tradition>
+			<tradition>
 				<name>Aboriginal</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
+				<page>3</page>
+				<translate>Tradition der Aborigines</translate>
 			</tradition>
 			<tradition>
 				<name>Egyptian</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
+				<page>3</page>
+				<translate>Ägyptische Tradition</translate>
 			</tradition>
 			<tradition>
 				<name>Norse</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
+				<page>4</page>
+				<translate>Nordische Tradition</translate>
 			</tradition>
 			<tradition>
 				<name>Psionic</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
+				<page>5</page>
+				<translate>Psionische Tradition</translate>
 			</tradition>-->
 			<tradition translated="True">
 				<id>acbf5a08-cd21-410d-8d04-4e12cca8a927</id>
@@ -28770,6 +29046,36 @@
 				<id>72374b26-89da-4ca3-aab7-b25a58c7a130</id>
 				<name>Street Witches</name>
 				<translate>Straßenhexen</translate>
+			</tradition>
+			<tradition>
+				<id>9147b372-b55f-4b4b-8f24-04a4dd05aa1a</id>
+				<name>Armanentradition</name>
+				<translate>Armenentradition</translate>
+			</tradition>
+			<tradition>
+				<id>7d2ee0fa-92ab-4fec-86c9-e2f3964456e7</id>
+				<name>Dianism</name>
+				<translate>Dianismus</translate>
+			</tradition>
+			<tradition>
+				<id>a8f9687a-0999-4509-87a2-4b122fb2187c</id>
+				<name>Frisian Magic</name>
+				<translate>Friesenmagie</translate>
+			</tradition>
+			<tradition>
+				<id>27109795-aead-463c-848c-fa63e5aa11cd</id>
+				<name>Magic of Roma and Street Nomads</name>
+				<translate>Magie der Roma und Straßennomaden</translate>
+			</tradition>
+			<tradition>
+				<id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
+				<name>Svetoid</name>
+				<translate>Svetoid</translate>
+			</tradition>
+			<tradition>
+				<id>232c8cfe-b70a-4fb8-9dc3-ecc993cf6203</id>
+				<name>Troll Shamanism</name>
+				<translate>Trollschamanismus</translate>
 			</tradition>
 		</traditions>
 		<spirits>
@@ -33905,6 +34211,51 @@
 				<page>TODO</page>
 				<translate>TODO</translate>
 			</weapon>-->
+			<weapon>
+				<id>028d08a4-456a-4a4d-9aef-c74ff4a2c97e</id>
+				<name>Steyr AUG-CSL III (Assault Rifle)</name>
+				<translate>Steyr AUG-CSL III (Sturmgewehr)</translate>
+			</weapon>
+			<weapon>
+				<id>037bfd07-2130-4fcf-bbd5-2413f74ca23f</id>
+				<name>Steyr AUG-CSL III (Carbine)</name>
+				<translate>Steyr AUG-CSL III (Karabiner)</translate>
+			</weapon>
+			<weapon>
+				<id>36da55bb-52bf-4bbd-bef5-8acdeae95039</id>
+				<name>Steyr AUG-CSL III (LMG)</name>
+				<translate>Steyr AUG-CSL III (LMG)</translate>
+			</weapon>
+			<weapon>
+				<id>c4192384-d538-4ca7-b3ec-693e46f94cc3</id>
+				<name>Steyr AUG-CSL III (Sniper Rifle)</name>
+				<translate>Steyr AUG-CSL III (Scharfschützengewehr)</translate>
+			</weapon>
+			<weapon>
+				<id>f7f4e4b6-49c7-4c08-870c-0ad9bd3594ff</id>
+				<name>HK Urban Enforcer Microgrenade Launcher</name>
+				<translate>HK Urban Enforcer Mikrogranatenwerfer</translate>
+			</weapon>
+			<weapon>
+				<id>e4adef4a-3f34-4315-8575-e3906e8c6f66</id>
+				<name>HK G12A4 Grenade Launcher</name>
+				<translate>HK G12A4 Granatenwerfer</translate>
+			</weapon>
+			<weapon>
+				<id>5057a725-87eb-409b-8fd1-004b3e3d614f</id>
+				<name>Steyr UCR Underbarrel Shotgun</name>
+				<translate>Unterlauf-Schrotflinte</translate>
+			</weapon>
+			<weapon>
+				<id>d7d1f16d-9e55-4629-ae3f-f5d3bd57e52f</id>
+				<name>PJSS Model 75-III (Shotgun Barrel)</name>
+				<translate>PJSS Modell 75-III (Flintenlauf)</translate>
+			</weapon>
+			<weapon>
+				<id>43c1c5b4-250f-4f44-8b23-20aa4173b768</id>
+				<name>PJSS Model 75-III (Rifle Barrel)</name>
+				<translate>PJSS Modell 75-III (Büchsenlauf)</translate>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -34557,10 +34908,14 @@
 				<translate>Ausgebauter Abzug</translate>
 			</accessory>
 			<accessory>
-				<id>f277db83-e5f0-47c8-a465-e0307105796f</id>
-				<name>Collapsible Traditional Bow</name>
-				<page>191</page>
-				<translate>Zerlegbarer traditioneller Bogen</translate>
+				<id>75cf7909-ac1b-4659-977a-371a950fcda9</id>
+				<name>Silencer (HK Urban Fighter)</name>
+				<translate>Schalldämpfer (HK Urban Fighter)</translate>
+			</accessory>
+			<accessory>
+				<id>112122f6-71de-43fd-b4bf-7db2e309590e</id>
+				<name>Silencer (Onotari Arms Pressure KS-X)</name>
+				<translate>Schalldämpfer (Onotari Arms Pressure KS-X)</translate>
 			</accessory>
 		</accessories>
 		<mods>

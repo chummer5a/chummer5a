@@ -23,6 +23,7 @@ Application Changes:
 - Implemented the AddSpell improvement type for the Alchemical Armorer quality. 
 - Fixed an issue with cyberware decreasing to Rating 0 in create mode. 
 - Fixed a legacy issue in which an attribute's Base value also included the Metatype Minimum value.
+- Changed the way Cyber-/Bioware Requirements are implemented.
 
 Data Changes:
 
@@ -36,6 +37,7 @@ Data Changes:
 - Fixed the drain attributes for the Red Magic tradition. 
 - Fixed the movement modification of the Satyr quality. 
 - Fixed a typo in the Spells template for character sheets that made Rituals show up as an Unknown category.
+- Added Content from 'State of the Art ADL' and its german translation (excluding critters and life modules).
 
 New Strings:
 

@@ -138,9 +138,7 @@ namespace Chummer.Backend.Shared_Methods
 							{
 								if (blnShowMessage)
 									MessageBox.Show(
-										LanguageManager.Instance.GetString(forbiddenMessage) +
-										name,
-										LanguageManager.Instance.GetString(forbiddenTitle),
+										forbiddenMessage + name, forbiddenTitle,
 										MessageBoxButtons.OK, MessageBoxIcon.Information);
 								return false;
 							}
@@ -244,7 +242,13 @@ namespace Chummer.Backend.Shared_Methods
 					XPathExpression xprAttributes = nav.Compile(strAttributes);
 					return Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(node["val"].InnerText);
 
-				case "careerkarma":
+			    case "bioware":
+			        name = "\n\t" +
+			                      LanguageManager.Instance.GetString("Label_Bioware") + " " +
+			                      node.InnerText; ;
+			        return character.Cyberware.Any(objCyberware => objCyberware.Name == node.InnerText);
+
+                case "careerkarma":
 					// Check Career Karma requirement.
 					name = "\n\t" + LanguageManager.Instance.GetString("Message_SelectQuality_RequireKarma")
 							   .Replace("{0}", node.InnerText);
@@ -270,83 +274,13 @@ namespace Chummer.Backend.Shared_Methods
 						return false;
 					}
 					break;
-				case "cyberwares":
-					{
-						// Check to see if the character has a number of the required Cyberware/Bioware items.
-						int intTotal = 0;
+                case "cyberware":
+                    name = "\n\t" +
+                           LanguageManager.Instance.GetString("Label_Cyberware") + " " +
+                           node.InnerText; ;
+                    return character.Cyberware.Any(objCyberware => objCyberware.Name == node.InnerText);
 
-						name = null;
-						// Check Cyberware.
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("cyberware"))
-						{
-							name += "\n\t" +
-									LanguageManager.Instance.GetString("Label_Cyberware") +
-									node.InnerText;
-							if (character.Cyberware.Where(
-									objCyberware => objCyberware.Name == objXmlCyberware.InnerText)
-								.Any(
-									objCyberware =>
-										objXmlCyberware.Attributes?["select"] == null ||
-										objXmlCyberware.Attributes["select"].InnerText ==
-										objCyberware.Location))
-								intTotal++;
-						}
-
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("bioware"))
-						{
-							name += "\n\t" +
-									LanguageManager.Instance.GetString("Label_Bioware") +
-									node.InnerText;
-							if (character.Cyberware.Where(
-									objCyberware => objCyberware.Name == objXmlCyberware.InnerText)
-								.Any(
-									objCyberware =>
-										objXmlCyberware.Attributes?["select"] == null ||
-										objXmlCyberware.Attributes["select"].InnerText ==
-										objCyberware.Location))
-								intTotal++;
-						}
-
-						// Check Cyberware name that contain a straing.
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("cyberwarecontains"))
-							foreach (Cyberware objCyberware in character.Cyberware)
-							{
-								if (!objCyberware.Name.Contains(objXmlCyberware.InnerText)) continue;
-								name += objCyberware.DisplayNameShort;
-								if (objXmlCyberware.Attributes["select"] == null)
-								{
-									intTotal++;
-									break;
-								}
-								if (objXmlCyberware.Attributes["select"].InnerText ==
-									objCyberware.Location)
-								{
-									intTotal++;
-									break;
-								}
-							}
-
-						// Check Bioware name that contain a straing.
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("biowarecontains"))
-							foreach (Cyberware objCyberware in character.Cyberware)
-							{
-								if (!objCyberware.Name.Contains(objXmlCyberware.InnerText)) continue;
-								name += objCyberware.DisplayNameShort;
-								if (objXmlCyberware.Attributes["select"] == null)
-								{
-									intTotal++;
-									break;
-								}
-								if (objXmlCyberware.Attributes["select"].InnerText ==
-									objCyberware.Location)
-								{
-									intTotal++;
-									break;
-								}
-							}
-						return intTotal >= Convert.ToInt32(node["count"].InnerText);
-					}
-				case "damageresistance":
+                case "damageresistance":
 					// Damage Resistance must be a particular value.
 					ImprovementManager objImprovementManager = new ImprovementManager(character);
 					name = "\n\t" + LanguageManager.Instance.GetString("String_DamageResistance");

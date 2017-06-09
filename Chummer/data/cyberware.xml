@@ -674,7 +674,8 @@
 			<cost>18000</cost>
 			<forbidden>
 				<oneof>
-					<cyberware>Bone Density Augmentation</cyberware>
+					<bioware>Bone Density Augmentation</bioware>
+					<cyberware>Siemens Cyberspine</cyberware>
 				</oneof>
 			</forbidden>
 			<bonus>
@@ -697,7 +698,8 @@
 			<cost>8000</cost>
 			<forbidden>
 				<oneof>
-					<cyberware>Bone Density Augmentation</cyberware>
+					<bioware>Bone Density Augmentation</bioware>
+					<cyberware>Siemens Cyberspine</cyberware>
 				</oneof>
 			</forbidden>
 			<bonus>
@@ -720,7 +722,8 @@
 			<cost>30000</cost>
 			<forbidden>
 				<oneof>
-					<cyberware>Bone Density Augmentation</cyberware>
+					<bioware>Bone Density Augmentation</bioware>
+					<cyberware>Siemens Cyberspine</cyberware>
 				</oneof>
 			</forbidden>
 			<bonus>
@@ -743,7 +746,7 @@
 			<cost>Rating * 3000</cost>
 			<forbidden>
 				<oneof>
-					<cyberware>Orthoskin</cyberware>
+					<bioware>Orthoskin</bioware>
 				</oneof>
 			</forbidden>
 			<bonus>
@@ -818,6 +821,11 @@
 			<capacity>0</capacity>
 			<avail>(Rating * 5)R</avail>
 			<cost>Rating * 13000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Siemens Cyberspine</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<specificattribute>
 					<name precedence="0">REA</name>
@@ -863,6 +871,11 @@
 			<capacity>0</capacity>
 			<avail>FixedValues(8R,12R,20R)</avail>
 			<cost>FixedValues(39000,149000,217000)</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Siemens Cyberspine</cyberware>
+				</oneof>
+			</forbidden>
 			<bonus>
 				<initiativepass precedence="0">Rating</initiativepass>
 				<specificattribute>
@@ -4259,7 +4272,7 @@
 			<cost>Rating * 5000</cost>
 			<forbidden>
 				<oneof>
-					<cyberware>Orthoskin</cyberware>
+					<bioware>Orthoskin</bioware>
 				</oneof>
 			</forbidden>
 			<bonus>
@@ -4550,5 +4563,155 @@
 			<page>204</page>
 		</cyberware>
 		<!-- End Region 2050 -->
+		<!-- Region SotA ADL -->
+		<cyberware>
+			<id>a77094da-bc4c-4856-a8a0-53d4e6b9a50c</id>
+			<name>Siemens Cyberspine</name>
+			<category>Bodyware</category>
+			<ess>2.09</ess>
+			<capacity>0</capacity>
+			<avail>10R</avail>
+			<cost>72600</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Wired Reflexes</cyberware>
+					<cyberware>Reaction Enhancers</cyberware>
+					<cyberware>Bone Lacing (Plastic)</cyberware>
+					<cyberware>Bone Lacing (Aluminum)</cyberware>
+					<cyberware>Bone Lacing (Titanium)</cyberware>
+					<bioware>Bone Density Augmentation</bioware>
+				</oneof>
+			</forbidden>
+			<bonus>
+				<initiativepass precedence="0">1</initiativepass>
+				<specificattribute>
+					<name>REA</name>
+					<val>2</val>
+				</specificattribute>
+				<armor>1</armor>
+				<damageresistance>1</damageresistance>
+				<unarmeddv>1</unarmeddv>
+				<unarmeddvphysical />
+			</bonus>
+			<source>SAG</source>
+			<page>80</page>
+		</cyberware>
+		<cyberware>
+			<id>6dd9013a-52c4-45be-a4a2-7210f5caa53b</id>
+			<name>Siemens Cyberspine Upgrade (Elite Athletic)</name>
+			<category>Bodyware</category>
+			<ess>0.22</ess>
+			<capacity>0</capacity>
+			<avail>12R</avail>
+			<cost>15600</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Wired Reflexes</cyberware>
+					<cyberware>Reaction Enhancers</cyberware>
+				</oneof>
+			</forbidden>
+			<required>
+				<allof>
+					<cyberware>Siemens Cyberspine</cyberware>
+				</allof>
+			</required>
+			<bonus>
+				<specificattribute>
+					<name>REA</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<source>SAG</source>
+			<page>80</page>
+		</cyberware>
+		<cyberware>
+			<id>0f53caba-37ea-4676-8c6e-68b2d826ecd0</id>
+			<name>Siemens Cyberspine Upgrade (Celestial Athletic)</name>
+			<category>Bodyware</category>
+			<ess>0.22</ess>
+			<capacity>0</capacity>
+			<avail>17R</avail>
+			<cost>15600</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Wired Reflexes</cyberware>
+					<cyberware>Reaction Enhancers</cyberware>
+				</oneof>
+			</forbidden>
+			<required>
+				<allof>
+					<cyberware>Siemens Cyberspine</cyberware>
+					<cyberware>Siemens Cyberspine Upgrade (Elite Athletic)</cyberware>
+				</allof>
+			</required>
+			<bonus>
+				<specificattribute>
+					<name>REA</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<source>SAG</source>
+			<page>80</page>
+		</cyberware>
+		<cyberware>
+			<id>70d15d2b-739d-418b-a7fe-3f03dee79546</id>
+			<name>Siemens Cyberspine Upgrade (Elite Warrior)</name>
+			<category>Bodyware</category>
+			<ess>0.72</ess>
+			<capacity>0</capacity>
+			<avail>14R</avail>
+			<cost>132000</cost>
+			<forbidden>
+				<oneof>
+					<cyberware>Wired Reflexes</cyberware>
+					<cyberware>Reaction Enhancers</cyberware>
+				</oneof>
+			</forbidden>
+			<required>
+				<allof>
+					<cyberware>Siemens Cyberspine</cyberware>
+				</allof>
+			</required>
+			<bonus>
+				<specificattribute>
+					<initiativepass precedence="0">2</initiativepass>
+					<name>REA</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<source>SAG</source>
+			<page>80</page>
+		</cyberware>
+		<cyberware>
+			<id>6a4ba6e2-0473-47dc-81f5-fd3a95e4b714</id>
+			<name>Siemens Cyberspine Upgrade (Celestial Warrior)</name>
+			<category>Bodyware</category>
+			<ess>1.44</ess>
+			<capacity>0</capacity>
+			<avail>22R</avail>
+			<cost>81600</cost>
+			<!--<forbidden>
+				<oneof>
+					<cyberware>Wired Reflexes</cyberware>
+					<cyberware>Reaction Enhancers</cyberware>
+				</oneof>
+			</forbidden>
+			<required>
+				<allof>
+					<cyberware>Siemens Cyberspine</cyberware>
+					<cyberware>Siemens Cyberspine Upgrade (Elite Warrior)</cyberware>
+				</allof>
+			</required>-->
+			<bonus>
+				<specificattribute>
+					<initiativepass precedence="0">3</initiativepass>
+					<name>REA</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<source>SAG</source>
+			<page>80</page>
+		</cyberware>
+		<!-- End Region -->
 	</cyberwares>
 </chummer>
