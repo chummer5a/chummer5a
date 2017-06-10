@@ -240,13 +240,6 @@ namespace Chummer.Backend.Shared_Methods
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 					XPathExpression xprAttributes = nav.Compile(strAttributes);
 					return Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(node["val"].InnerText);
-
-			    case "bioware":
-			        name = "\n\t" +
-			                      LanguageManager.Instance.GetString("Label_Bioware") + " " +
-			                      node.InnerText; ;
-			        return character.Cyberware.Any(objCyberware => objCyberware.Name == node.InnerText);
-
                 case "careerkarma":
 					// Check Career Karma requirement.
 					name = "\n\t" + LanguageManager.Instance.GetString("Message_SelectQuality_RequireKarma")
