@@ -2035,10 +2035,7 @@
 			</bonus>
 			<required>
 				<oneof>
-					<cyberwares>
-						<cyberware>Reaction Enhancers</cyberware>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Reaction Enhancers</cyberware>
 				</oneof>
 			</required>
 			<capacity>0</capacity>
@@ -2393,10 +2390,7 @@
 			<addweapon>Bone Spike I</addweapon>
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<bioware>Bone Density Augmentation</bioware>
-						<count>1</count>
-					</cyberwares>
+					<bioware>Bone Density Augmentation</bioware>
 				</oneof>
 			</forbidden>
 			<cost>20000</cost>
@@ -2413,10 +2407,7 @@
 			<addweapon>Bone Spike II</addweapon>
 			<required>
 				<oneof>
-					<cyberwares>
-						<bioware>Bone Density Augmentation</bioware>
-						<count>1</count>
-					</cyberwares>			
+					<bioware>Bone Density Augmentation</bioware>
 				</oneof>
 			</required>
 			<cost>20000</cost>
@@ -2433,10 +2424,7 @@
 			<addweapon>Bone Spike III</addweapon>
 			<required>
 				<oneof>
-					<cyberwares>
-						<bioware>Bone Density Augmentation</bioware>
-						<count>1</count>
-					</cyberwares>
+					<bioware>Bone Density Augmentation</bioware>
 				</oneof>
 			</required>
 			<cost>20000</cost>

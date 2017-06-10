@@ -80,156 +80,156 @@
 		<category>Toxins</category>
 		<category>Vision Devices</category>
 		<category>Vision Enhancements</category>
-</categories>
+	</categories>
 	<gears>
 		<!-- Region Ammo -->
-			<gear>
-				<id>4d96ee55-0929-480e-923d-178e69675541</id>
-				<name>Throwing Syringe</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>6F</avail>
-				<addweapon>Throwing Syringe</addweapon>
-				<costfor>1</costfor>
-				<cost>40</cost>
-				<source>HT</source>
-				<page>183</page>
-			</gear>
-			<gear>
-				<id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
-				<name>Arrow: Seeker Shaft</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>12F</avail>
-				<costfor>1</costfor>
-				<cost>45</cost>
-				<source>HT</source>
-				<page>187</page>
-			</gear>
-			<gear>
-				<id>39042c0a-4b22-4762-8d56-623033860178</id>
-				<name>Arrow: Monotip Head</name>
-				<category>Ammunition</category>
-				<rating>10</rating>
-				<avail>8R</avail>
-				<costfor>1</costfor>
-				<cost>(Rating * 30)</cost>
-        <weaponbonus>
-          <ap>-2</ap>
-        </weaponbonus>
-				<source>HT</source>
-				<page>187</page>
-			</gear>
-			<gear>
-				<id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
-				<name>Ammo: Depleted Uranium</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>28F</avail>
-				<costfor>10</costfor>
-				<cost>1000</cost>
-				<weaponbonus>
-					<ap>-5</ap>
-					<damage>1</damage>
-				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
-			</gear>
-			<gear>
-				<id>adef0fa4-67b7-41e1-b534-f15308c9c8c1</id>
-				<name>Ammo: Silver</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>12R</avail>
-				<costfor>10</costfor>
-				<cost>250</cost>
-				<weaponbonus>
-					<ap>+2</ap>
-				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
-			</gear>
-			<gear>
-				<id>60b7ad79-55b7-4803-8d1f-9145218eaf5b</id>
-				<name>Ammo: Wood Pulp</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>6R</avail>
-				<costfor>10</costfor>
-				<cost>10</cost>
-				<weaponbonus>
-					<ap>+4</ap>
-					<damage>-4</damage>
-				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
-			</gear>
-			<gear>
-				<id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
-				<name>Ammo: Hi-De Rounds</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>10F</avail>
-				<costfor>10</costfor>
-				<cost>150</cost>
-				<source>HT</source>
-				<page>189</page>
-			</gear>
-			<gear>
-				<id>c429fc81-d11b-434b-b98b-5fbdda9db905</id>
-				<name>Ammo: Subsonic</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>8F</avail>
-				<costfor>10</costfor>
-				<cost>40</cost>
-				<weaponbonus>
-					<damage>-1</damage>
-				</weaponbonus>
-				<source>HT</source>
-				<page>189</page>
-			</gear>
-			<gear>
-				<id>75ccb148-e774-429c-b854-a27816439626</id>
-				<name>Spare Clip</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>4</avail>
-				<cost>5</cost>
-				<bonus>
-					<selectweapon excludecategory="Melee" />
-				</bonus>
-				<source>SR5</source>
-				<page>433</page>
-			</gear>
-			<gear>
-				<id>18ad29eb-33d2-4032-9520-47b69979ebf3</id>
-				<name>Vindicator 200-Round Belt</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>4</avail>
-				<cost>100</cost>
-				<bonus>
-					<selectweapon />
-				</bonus>
-				<source>RG</source>
-				<page>42</page>
-			</gear>
-			<gear>
-				<id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
-				<name>Speed Loader</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>2</avail>
-				<cost>25</cost>
-				<bonus>
-					<selectweapon />
-				</bonus>
-				<source>SR5</source>
-				<page>433</page>
-			</gear>
-			<gear>
-				<id>ef9c8aae-26df-4fe6-88b3-79fbb5eb77c5</id>
+		<gear>
+			<id>4d96ee55-0929-480e-923d-178e69675541</id>
+			<name>Throwing Syringe</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<addweapon>Throwing Syringe</addweapon>
+			<costfor>1</costfor>
+			<cost>40</cost>
+			<source>HT</source>
+			<page>183</page>
+		</gear>
+		<gear>
+			<id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
+			<name>Arrow: Seeker Shaft</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<costfor>1</costfor>
+			<cost>45</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>39042c0a-4b22-4762-8d56-623033860178</id>
+			<name>Arrow: Monotip Head</name>
+			<category>Ammunition</category>
+			<rating>10</rating>
+			<avail>8R</avail>
+			<costfor>1</costfor>
+			<cost>(Rating * 30)</cost>
+			<weaponbonus>
+				<ap>-2</ap>
+			</weaponbonus>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
+			<name>Ammo: Depleted Uranium</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>28F</avail>
+			<costfor>10</costfor>
+			<cost>1000</cost>
+			<weaponbonus>
+				<ap>-5</ap>
+				<damage>1</damage>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>adef0fa4-67b7-41e1-b534-f15308c9c8c1</id>
+			<name>Ammo: Silver</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>12R</avail>
+			<costfor>10</costfor>
+			<cost>250</cost>
+			<weaponbonus>
+				<ap>+2</ap>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>60b7ad79-55b7-4803-8d1f-9145218eaf5b</id>
+			<name>Ammo: Wood Pulp</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<costfor>10</costfor>
+			<cost>10</cost>
+			<weaponbonus>
+				<ap>+4</ap>
+				<damage>-4</damage>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
+			<name>Ammo: Hi-De Rounds</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<costfor>10</costfor>
+			<cost>150</cost>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>c429fc81-d11b-434b-b98b-5fbdda9db905</id>
+			<name>Ammo: Subsonic</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<costfor>10</costfor>
+			<cost>40</cost>
+			<weaponbonus>
+				<damage>-1</damage>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>75ccb148-e774-429c-b854-a27816439626</id>
+			<name>Spare Clip</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>5</cost>
+			<bonus>
+				<selectweapon excludecategory="Melee" />
+			</bonus>
+			<source>SR5</source>
+			<page>433</page>
+		</gear>
+		<gear>
+			<id>18ad29eb-33d2-4032-9520-47b69979ebf3</id>
+			<name>Vindicator 200-Round Belt</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>100</cost>
+			<bonus>
+				<selectweapon />
+			</bonus>
+			<source>RG</source>
+			<page>42</page>
+		</gear>
+		<gear>
+			<id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
+			<name>Speed Loader</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>25</cost>
+			<bonus>
+				<selectweapon />
+			</bonus>
+			<source>SR5</source>
+			<page>433</page>
+		</gear>
+		<gear>
+			<id>ef9c8aae-26df-4fe6-88b3-79fbb5eb77c5</id>
 			<name>Ammo: APDS</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
@@ -327,22 +327,22 @@
 			<source>SR5</source>
 			<page>434</page>
 		</gear>
-			<gear>
-				<id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
-				<name>Ammo: Taurus Omni-6 Heavy</name>
-				<category>Ammunition</category>
-				<rating>0</rating>
-				<avail>2R</avail>
-				<costfor>10</costfor>
-				<cost>20</cost>
-				<weaponbonus>
-					<apreplace>-1</apreplace>
-					<damagereplace>7P</damagereplace>
-					<modereplace>SS</modereplace>
-				</weaponbonus>
-				<source>SR5</source>
-				<page>434</page>
-			</gear>
+		<gear>
+			<id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
+			<name>Ammo: Taurus Omni-6 Heavy</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>2R</avail>
+			<costfor>10</costfor>
+			<cost>20</cost>
+			<weaponbonus>
+				<apreplace>-1</apreplace>
+				<damagereplace>7P</damagereplace>
+				<modereplace>SS</modereplace>
+			</weaponbonus>
+			<source>SR5</source>
+			<page>434</page>
+		</gear>
 		<gear>
 			<id>d27dfc89-095d-440c-ad1c-c7f888df2824</id>
 			<name>Ammo: Peak-Discharge Energy Units</name>
@@ -1356,16 +1356,16 @@
 			<source>SR5</source>
 			<page>436</page>
 		</gear>
-    <gear>
-      <id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
-      <name>Detonator, Blasting Cap</name>
-      <category>Explosives</category>
-      <rating>0</rating>
-      <avail>8R</avail>
-      <cost>20</cost>
-      <source>RG</source>
-      <page>195</page>
-    </gear>
+		<gear>
+			<id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
+			<name>Detonator, Blasting Cap</name>
+			<category>Explosives</category>
+			<rating>0</rating>
+			<avail>8R</avail>
+			<cost>20</cost>
+			<source>RG</source>
+			<page>195</page>
+		</gear>
 		<gear>
 			<id>15a39069-3ee5-4ad8-9906-93f6c325c326</id>
 			<name>Detonator, Electrical</name>
@@ -1702,23 +1702,23 @@
 			<source>SR5</source>
 			<page>438</page>
 		</gear>
-    <gear>
-      <id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
-      <name>Spinrad Industries Trompe L'Oeil</name>
-      <category>Commlinks</category>
-      <armorcapacity>[2]</armorcapacity>
-      <capacity>0</capacity>
-      <rating>0</rating>
-      <devicerating>6</devicerating>
-      <attack>0</attack>
-      <sleaze>0</sleaze>
-      <dataprocessing>6</dataprocessing>
-      <firewall>6</firewall>
-      <avail>16</avail>
-      <cost>50000</cost>
-      <source>BOTL</source>
-      <page>126</page>
-    </gear>
+		<gear>
+			<id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
+			<name>Spinrad Industries Trompe L'Oeil</name>
+			<category>Commlinks</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>6</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>6</dataprocessing>
+			<firewall>6</firewall>
+			<avail>16</avail>
+			<cost>50000</cost>
+			<source>BOTL</source>
+			<page>126</page>
+		</gear>
 		<gear>
 			<id>d589142e-a71f-4cd9-b916-967168721eea</id>
 			<name>Sim Module</name>
@@ -2655,6 +2655,93 @@
 			<source>RG</source>
 			<page>38</page>
 		</gear>
+		<gear>
+			<id>809948de-95eb-4992-9886-41aa6d47e7f2</id>
+			<name>Cyberdynamix Special HardCore</name>
+			<category>Commlinks</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>2</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>1</dataprocessing>
+			<firewall>2</firewall>
+			<avail>5</avail>
+			<cost>800</cost>
+			<source>SAG</source>
+			<page>86</page>
+		</gear>
+		<gear>
+			<id>69c65b09-ac94-4032-a491-3610a464d168</id>
+			<name>MCT Dusseldorf</name>
+			<category>Commlinks</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>3</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>2</dataprocessing>
+			<firewall>3</firewall>
+			<avail>4</avail>
+			<cost>2500</cost>
+			<source>SAG</source>
+			<page>86</page>
+		</gear>
+		<gear>
+			<id>bcbda097-2e5e-4ac5-bcf3-7beadb62f3d3</id>
+			<name>Siemens Rheingold</name>
+			<category>Commlinks</category>
+			<armorcapacity>[2]</armorcapacity>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>4</devicerating>
+			<attack>0</attack>
+			<sleaze>0</sleaze>
+			<dataprocessing>5</dataprocessing>
+			<firewall>4</firewall>
+			<avail>8</avail>
+			<cost>5000</cost>
+			<source>SAG</source>
+			<page>86</page>
+		</gear>
+		<gear>
+			<id>6ed759a8-2283-4c5e-8c5b-dac2f162f55c</id>
+			<name>Cyberdynamix Waterkant</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>3</devicerating>
+			<attributearray>7,4,3,2</attributearray>
+			<attack>7</attack>
+			<sleaze>4</sleaze>
+			<dataprocessing>3</dataprocessing>
+			<firewall>2</firewall>
+			<programs>3</programs>
+			<avail>10R</avail>
+			<cost>210000</cost>
+			<source>SAG</source>
+			<page>86</page>
+		</gear>
+		<gear>
+			<id>3c1eab12-59bc-490a-8260-63a0ec2b727a</id>
+			<name>MSI Falke</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>0</rating>
+			<devicerating>4</devicerating>
+			<attributearray>7,6,5,4</attributearray>
+			<attack>7</attack>
+			<sleaze>6</sleaze>
+			<dataprocessing>5</dataprocessing>
+			<firewall>4</firewall>
+			<programs>4</programs>
+			<avail>12R</avail>
+			<cost>285000</cost>
+			<source>SAG</source>
+			<page>86</page>
+		</gear>
 		<!-- End Region -->
 		<!-- Region RCCs -->
 		<gear>
@@ -3354,13 +3441,13 @@
 				<tag>Knowsoft</tag>
 			</tags>
 			<bonus>
-        <!--<selecttext />-->
-        <knowsoft>
-          <pick/>
-          <val>Rating</val>
-          <notgroup>Language</notgroup>
-          <require>skilljack</require>
-        </knowsoft>
+				<!--<selecttext />-->
+				<knowsoft>
+					<pick/>
+					<val>Rating</val>
+					<notgroup>Language</notgroup>
+					<require>skilljack</require>
+				</knowsoft>
 			</bonus>
 			<avail>4</avail>
 			<cost>Rating * 2000</cost>
@@ -3378,12 +3465,12 @@
 				<tag>Linguasoft</tag>
 			</tags>
 			<bonus>
-        <knowsoft>
-          <pick/>
-          <val>Rating</val>
-          <group>Language</group>
-          <require>skilljack</require>
-        </knowsoft>
+				<knowsoft>
+					<pick/>
+					<val>Rating</val>
+					<group>Language</group>
+					<require>skilljack</require>
+				</knowsoft>
 			</bonus>
 			<avail>2</avail>
 			<cost>Rating * 1000</cost>
@@ -6167,7 +6254,7 @@
 			<bonus>
 				<selectpowers>
 					<selectpower>
-            <ignorerating>True</ignorerating>
+						<ignorerating>True</ignorerating>
 						<val>Rating</val>
 						<limit>Rating</limit>
 						<pointsperlevel>0.25</pointsperlevel>
@@ -6204,12 +6291,12 @@
 			<name>Spellcasting Focus, Combat</name>
 			<category>Foci</category>
 			<rating>18</rating>
-      <bonus>
-        <spellcategory>
-          <name>Combat</name>
-          <val>2</val>
-        </spellcategory>
-      </bonus>
+			<bonus>
+				<spellcategory>
+					<name>Combat</name>
+					<val>2</val>
+				</spellcategory>
+			</bonus>
 			<avail>(Rating * 3)R</avail>
 			<cost>Rating * 4000</cost>
 			<source>SR5</source>
@@ -6250,12 +6337,12 @@
 			<name>Spellcasting Focus, Detection</name>
 			<category>Foci</category>
 			<rating>18</rating>
-      <bonus>
-        <spellcategory>
-          <name>Detection</name>
-          <val>2</val>
-        </spellcategory>
-      </bonus>
+			<bonus>
+				<spellcategory>
+					<name>Detection</name>
+					<val>2</val>
+				</spellcategory>
+			</bonus>
 			<avail>(Rating * 3)R</avail>
 			<cost>Rating * 4000</cost>
 			<source>SR5</source>
@@ -6296,12 +6383,12 @@
 			<name>Spellcasting Focus, Health</name>
 			<category>Foci</category>
 			<rating>18</rating>
-      <bonus>
-        <spellcategory>
-          <name>Health</name>
-          <val>2</val>
-        </spellcategory>
-      </bonus>
+			<bonus>
+				<spellcategory>
+					<name>Health</name>
+					<val>2</val>
+				</spellcategory>
+			</bonus>
 			<avail>(Rating * 3)R</avail>
 			<cost>Rating * 4000</cost>
 			<source>SR5</source>
@@ -6342,12 +6429,12 @@
 			<name>Spellcasting Focus, Illusion</name>
 			<category>Foci</category>
 			<rating>18</rating>
-      <bonus>
-        <spellcategory>
-          <name>Illusion</name>
-          <val>2</val>
-        </spellcategory>
-      </bonus>
+			<bonus>
+				<spellcategory>
+					<name>Illusion</name>
+					<val>2</val>
+				</spellcategory>
+			</bonus>
 			<avail>(Rating * 3)R</avail>
 			<cost>Rating * 4000</cost>
 			<source>SR5</source>
@@ -6388,12 +6475,12 @@
 			<name>Spellcasting Focus, Manipulation</name>
 			<category>Foci</category>
 			<rating>18</rating>
-      <bonus>
-        <spellcategory>
-          <name>Manipulation</name>
-          <val>2</val>
-        </spellcategory>
-      </bonus>
+			<bonus>
+				<spellcategory>
+					<name>Manipulation</name>
+					<val>2</val>
+				</spellcategory>
+			</bonus>
 			<avail>(Rating * 3)R</avail>
 			<cost>Rating * 4000</cost>
 			<source>SR5</source>
@@ -8170,6 +8257,26 @@
 			<cost>1500</cost>
 			<source>CF</source>
 			<page>187</page>
+		</gear>
+		<gear>
+			<id>329f3767-f1ca-49ef-971a-6509ad3e8c41</id>
+			<name>Shiva (Vintage)</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>200</cost>
+			<source>SAG</source>
+			<page>97</page>
+		</gear>
+		<gear>
+			<id>c5c06863-d382-41b7-93de-bd10659515ca</id>
+			<name>Shiva II</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>150</cost>
+			<source>SAG</source>
+			<page>97</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region BTLs-->
@@ -11068,7 +11175,7 @@
 			<rating>0</rating>
 			<avail>2</avail>
 			<cost>200</cost>
-      <capacity>4</capacity>
+			<capacity>4</capacity>
 			<gears>
 				<usegear>
 					<name>Camera</name>
@@ -11388,7 +11495,7 @@
 			<source>SR5</source>
 			<page>1</page>
 		</gear>
-    <!-- Region SR5 2050 -->
+		<!-- Region SR5 2050 -->
 		<!-- Region Explosives -->
 		<gear>
 			<id>4320ca43-f04b-471a-a0c9-ae12fce4db4a</id>

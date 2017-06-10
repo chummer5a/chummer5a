@@ -3408,10 +3408,7 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberwarecontains>Cybereyes</cyberwarecontains>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Cybereyes Basic System</cyberware>
 					<quality>Albinism I</quality>
 				</oneof>
 			</forbidden>
@@ -14009,6 +14006,50 @@
 			<page>47</page>
 		</quality>
 		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region SotA ADL Negative Qualities-->
+		<quality>
+			<id>2c1fece2-e950-41c0-a020-2671334e1610</id>
+			<name>Arcology Tantrum</name>			
+			<karma>-10</karma>
+			<category>Negative</category>
+			<source>SAG</source>
+			<page>147</page>
+		</quality>
+		<quality>
+			<id>97615a7e-33aa-4013-b146-98175ac0f6c9</id>
+			<name>People's SIN</name>			
+			<karma>-3</karma>
+			<category>Negative</category>
+			<forbidden>
+				<oneof>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Criminal)</quality>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+					<quality>People's SIN (Criminal)</quality>
+				</oneof>
+			</forbidden>
+			<source>SAG</source>
+			<page>148</page>
+		</quality>
+		<quality>
+			<id>3e2eac9a-e256-4755-a66a-ffbaac751cfa</id>
+			<name>People's SIN (Criminal)</name>			
+			<karma>-10</karma>
+			<category>Negative</category>
+			<forbidden>
+				<oneof>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Criminal)</quality>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+					<quality>People's SIN</quality>
+				</oneof>
+			</forbidden>
+			<source>SAG</source>
+			<page>148</page>
+		</quality>
 		<!-- End Region -->
 	</qualities>
 </chummer>
