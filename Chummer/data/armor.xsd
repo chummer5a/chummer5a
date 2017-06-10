@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+<xs:schema id="bioware" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 <xs:include schemaLocation="../data../bonuses.xsd" />
 
   <xs:element name="chummer">
@@ -39,6 +39,13 @@
                     <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="selectmodsfromcategory" minOccurs="0" maxOccurs="1">
+					  <xs:complexType>
+					    <xs:sequence>
+						  <xs:element name="category" minOccurs="1" maxOccurs="unbounded" />
+						</xs:sequence>
+					  </xs:complexType>
+					</xs:element>					
 					<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
                     <xs:element name="addmodcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="mods" minOccurs="0" maxOccurs="1">
@@ -108,7 +115,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+  <xs:element name="bioware" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="chummer" />
