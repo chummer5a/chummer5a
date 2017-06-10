@@ -3408,10 +3408,7 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberwarecontains>Cybereyes</cyberwarecontains>
-						<count>1</count>
-					</cyberwares>
+					<cyberwarecontains>Cybereyes</cyberwarecontains>
 					<quality>Albinism I</quality>
 				</oneof>
 			</forbidden>

@@ -13,7 +13,6 @@ namespace Chummer.Backend.Shared_Methods
 	internal class SelectionShared
 	{
 		//TODO: Might be a better location for this; Class names are screwy.
-        //TODO: Parameter requirements (errorTitle, errorMessage, et al) can be reduced to a single string check if we assign the Message_Generic_XXXX string locally to the method, but this reduces the ability to push in arbitrary strings. Still not sure if message presentation should be handled by the calling method or not. 
 		/// <summary>
 		///     Evaluates requirements of a given node against a given Character object.
 		/// </summary>
@@ -270,82 +269,38 @@ namespace Chummer.Backend.Shared_Methods
 						return false;
 					}
 					break;
-				case "cyberwares":
-					{
-						// Check to see if the character has a number of the required Cyberware/Bioware items.
-						int intTotal = 0;
-
+				case "bioware":
+				case "cyberware":
+				{
+					
+					int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
+					name = null;
+					name += node.Name == "cyberware"
+						? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
+						: "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
+					return
+						character.Cyberware.Count(
+							objCyberware =>
+								objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
+								node.Attributes["select"].InnerText == objCyberware.Location) >= count;
+				}
+				case "biowarecontains":
+				case "cyberwarecontains":
+				{
+					int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
 						name = null;
-						// Check Cyberware.
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("cyberware"))
-						{
-							name += "\n\t" +
-									LanguageManager.Instance.GetString("Label_Cyberware") +
-									node.InnerText;
-							if (character.Cyberware.Where(
-									objCyberware => objCyberware.Name == objXmlCyberware.InnerText)
-								.Any(
-									objCyberware =>
-										objXmlCyberware.Attributes?["select"] == null ||
-										objXmlCyberware.Attributes["select"].InnerText ==
-										objCyberware.Location))
-								intTotal++;
-						}
-
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("bioware"))
-						{
-							name += "\n\t" +
-									LanguageManager.Instance.GetString("Label_Bioware") +
-									node.InnerText;
-							if (character.Cyberware.Where(
-									objCyberware => objCyberware.Name == objXmlCyberware.InnerText)
-								.Any(
-									objCyberware =>
-										objXmlCyberware.Attributes?["select"] == null ||
-										objXmlCyberware.Attributes["select"].InnerText ==
-										objCyberware.Location))
-								intTotal++;
-						}
-
-						// Check Cyberware name that contain a straing.
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("cyberwarecontains"))
-							foreach (Cyberware objCyberware in character.Cyberware)
-							{
-								if (!objCyberware.Name.Contains(objXmlCyberware.InnerText)) continue;
-								name += objCyberware.DisplayNameShort;
-								if (objXmlCyberware.Attributes["select"] == null)
-								{
-									intTotal++;
-									break;
-								}
-								if (objXmlCyberware.Attributes["select"].InnerText ==
-									objCyberware.Location)
-								{
-									intTotal++;
-									break;
-								}
-							}
-
-						// Check Bioware name that contain a straing.
-						foreach (XmlNode objXmlCyberware in node.SelectNodes("biowarecontains"))
-							foreach (Cyberware objCyberware in character.Cyberware)
-							{
-								if (!objCyberware.Name.Contains(objXmlCyberware.InnerText)) continue;
-								name += objCyberware.DisplayNameShort;
-								if (objXmlCyberware.Attributes["select"] == null)
-								{
-									intTotal++;
-									break;
-								}
-								if (objXmlCyberware.Attributes["select"].InnerText ==
-									objCyberware.Location)
-								{
-									intTotal++;
-									break;
-								}
-							}
-						return intTotal >= Convert.ToInt32(node["count"].InnerText);
+						name += node.Name == "cyberware"
+							? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
+							: "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
+					Improvement.ImprovementSource source = Improvement.ImprovementSource.Cyberware;
+					if (node.Name == "biowarecontains")
+					{
+						source = Improvement.ImprovementSource.Bioware;
 					}
+					return character.Cyberware.Count(objCyberware =>
+							objCyberware.SourceType == source && objCyberware.Name.Contains(node.InnerText) && node.Attributes?["select"] == null ||
+							node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+				}
 				case "damageresistance":
 					// Damage Resistance must be a particular value.
 					ImprovementManager objImprovementManager = new ImprovementManager(character);

@@ -133,12 +133,9 @@
       </bonus>
       <forbidden>
         <oneof>
-          <cyberwares>
-            <cyberware>Bone Lacing (Titanium)</cyberware>
-            <cyberware>Bone Lacing (Aluminum)</cyberware>
-            <cyberware>Bone Lacing (Plastic)</cyberware>
-            <count>1</count>
-          </cyberwares>
+					<cyberware>Bone Lacing (Titanium)</cyberware>
+					<cyberware>Bone Lacing (Aluminum)</cyberware>
+					<cyberware>Bone Lacing (Plastic)</cyberware>
         </oneof>
       </forbidden>
       <rating>4</rating>
@@ -299,10 +296,7 @@
       </bonus>
       <forbidden>
         <oneof>
-          <cyberwares>
-            <cyberware>Dermal Plating</cyberware>
-            <count>1</count>
-          </cyberwares>
+					<cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
       <rating>4</rating>
@@ -2044,10 +2038,7 @@
       </bonus>
       <required>
         <oneof>
-          <cyberwares>
-            <cyberware>Reaction Enhancers</cyberware>
-            <count>1</count>
-          </cyberwares>
+					<cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </required>
       <source>CF</source>
@@ -2400,10 +2391,7 @@
       <addweapon>Bone Spike I</addweapon>
       <forbidden>
         <oneof>
-          <cyberwares>
-            <bioware>Bone Density Augmentation</bioware>
-            <count>1</count>
-          </cyberwares>
+					<bioware>Bone Density Augmentation</bioware>
         </oneof>
       </forbidden>
       <source>HT</source>
@@ -2420,10 +2408,7 @@
       <addweapon>Bone Spike II</addweapon>
       <required>
         <oneof>
-          <cyberwares>
-            <bioware>Bone Density Augmentation</bioware>
-            <count>1</count>
-          </cyberwares>
+					<bioware>Bone Density Augmentation</bioware>
         </oneof>
       </required>
       <source>HT</source>
@@ -2440,10 +2425,7 @@
       <addweapon>Bone Spike III</addweapon>
       <required>
         <oneof>
-          <cyberwares>
-            <bioware>Bone Density Augmentation</bioware>
-            <count>1</count>
-          </cyberwares>
+					<bioware>Bone Density Augmentation</bioware>
         </oneof>
       </required>
       <source>HT</source>
@@ -2657,10 +2639,7 @@
       </bonus>
       <forbidden>
         <oneof>
-          <cyberwares>
-            <cyberware>Dermal Plating</cyberware>
-            <count>1</count>
-          </cyberwares>
+					<bioware>Bone Density Augmentation</bioware>
         </oneof>
       </forbidden>
       <rating>3</rating>

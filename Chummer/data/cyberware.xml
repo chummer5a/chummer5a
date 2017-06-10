@@ -681,10 +681,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberware>Bone Density Augmentation</cyberware>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Bone Density Augmentation</cyberware>
 				</oneof>
 			</forbidden>
 			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -707,10 +704,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberware>Bone Density Augmentation</cyberware>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Bone Density Augmentation</cyberware>
 				</oneof>
 			</forbidden>
 			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -733,10 +727,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberware>Bone Density Augmentation</cyberware>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Bone Density Augmentation</cyberware>
 				</oneof>
 			</forbidden>
 			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -756,10 +747,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberware>Orthoskin</cyberware>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Orthoskin</cyberware>
 				</oneof>
 			</forbidden>
 			<rating>6</rating>
@@ -4267,10 +4255,7 @@
 			</bonus>
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberware>Orthoskin</cyberware>
-						<count>1</count>
-					</cyberwares>
+					<cyberware>Orthoskin</cyberware>
 				</oneof>
 			</forbidden>
 			<rating>3</rating>
