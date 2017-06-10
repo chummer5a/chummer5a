@@ -366,6 +366,9 @@ namespace Chummer.Skills
 				cost = RangeCost(lower, LearnedRating);
 			}
 
+			cost /= 2;
+			cost *= CharacterObject.Options.KarmaImproveActiveSkill;
+
 			//Don't think this is going to happen, but if it happens i want to know
 			if (cost < 0 && Debugger.IsAttached)
 				Debugger.Break();
