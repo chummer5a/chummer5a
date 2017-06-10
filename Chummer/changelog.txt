@@ -23,6 +23,7 @@ Application Changes:
 - Implemented the AddSpell improvement type for the Alchemical Armorer quality. 
 - Fixed an issue with cyberware decreasing to Rating 0 in create mode. 
 - Fixed a legacy issue in which an attribute's Base value also included the Metatype Minimum value.
+- Fixed an issue in which reducing the Karma cost for skills below 2 would cause incorrect karma charges.
 
 Data Changes:
 
