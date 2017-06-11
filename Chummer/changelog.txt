@@ -42,6 +42,7 @@ Data Changes:
 - Added Content from 'State of the Art ADL' and its german translation (excluding critters and life modules).
 - Removed a redundant selecttext improvement for the Hard Nanohive cyberware. 
 - Cyberwares with Capacity can now install the Hard Nanohive in the Nanocybernetics category. 
+- Added Translations for the Improved Reflexes Power after the Power Update.
 
 New Strings:
 

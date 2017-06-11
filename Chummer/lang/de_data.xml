@@ -19255,6 +19255,11 @@
 				<translate>Gesteigerte Reflexe 3</translate>
 			</power>
 			<power>
+				<id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
+				<name>Improved Reflexes</name>
+				<translate>Gesteigerte Reflexe</translate>
+			</power>
+			<power>
 				<id>1376c13b-9a01-4873-b935-5b7d91e03785</id>
 				<name>Improved Sense</name>
 				<page>309</page>
