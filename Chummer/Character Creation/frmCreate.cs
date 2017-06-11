@@ -15768,51 +15768,25 @@ namespace Chummer
 				lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
 
 			if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
-            {
-				string strQualities = string.Empty;
+			{
+				string strQualities = string.Join(", ", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName));
 
 				lblLifestyleQualities.Text = string.Empty;
 
-				foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-				{
-					if (strQualities.Length > 0)
-						strQualities += ", ";
-					strQualities += objQuality.DisplayName;
-
-					if (objQuality.Multiplier > 0)
-					{
-						strQualities += $" [+{objQuality.Multiplier}%]";
-					}
-					else if (objQuality.Multiplier < 0)
-					{
-						strQualities += $" [-{objQuality.Multiplier}%]";
-					}
-
-					if (objQuality.Cost > 0)
-					{
-						strQualities += $" [+{objQuality.Cost}¥]";
-					}
-				}
-
 				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost))
 				{
-                    if (strQualities.Length > 0)
+					if (strQualities.Length > 0)
                         strQualities += ", ";
 
-                    if (objImprovement.Value > 0)
-                        strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
-                    else
-                        strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
-                }
-
-				foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
-				{
-					if (strQualities.Length > 0)
-					{
-						strQualities += ", ";
-					}
-					strQualities += objQuality.DisplayName;
+					strQualities += objImprovement.Value > 0
+						? objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]"
+						: objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
 				}
+
+				if (strQualities.Length > 0)
+					strQualities += ", ";
+
+				strQualities += string.Join(", ", objLifestyle.FreeGrids.Select(r => r.DisplayName));
 
 				if (strQualities.EndsWith(", "))
 				{

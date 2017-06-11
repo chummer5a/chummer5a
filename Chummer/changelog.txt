@@ -24,6 +24,7 @@ Application Changes:
 - Fixed an issue with cyberware decreasing to Rating 0 in create mode. 
 - Fixed a legacy issue in which an attribute's Base value also included the Metatype Minimum value.
 - Changed the way Cyber-/Bioware Requirements are implemented.
+- Implemented a selectcyberware improvement for use by the Soft Nanohive cyberware. 
 
 Data Changes:
 
@@ -39,6 +40,8 @@ Data Changes:
 - Fixed a typo in the Spells template for character sheets that made Rituals show up as an Unknown category.
 - Fixed issues with the Holy Text and Death mentor spirits that prevented them from being added. 
 - Added Content from 'State of the Art ADL' and its german translation (excluding critters and life modules).
+- Removed a redundant selecttext improvement for the Hard Nanohive cyberware. 
+- Cyberwares with Capacity can now install the Hard Nanohive in the Nanocybernetics category. 
 
 New Strings:
 

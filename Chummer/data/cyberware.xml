@@ -901,6 +901,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -930,6 +931,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -959,6 +961,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -987,6 +990,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1015,6 +1019,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1043,6 +1048,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1071,6 +1077,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1099,6 +1106,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1127,6 +1135,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1156,6 +1165,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1185,6 +1195,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1213,6 +1224,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1241,6 +1253,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1269,6 +1282,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1297,6 +1311,7 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 				<category>Headware</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -1324,6 +1339,7 @@
 				<category>Cyberlimb Enhancement</category>
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
+				<category>Nanocybernetics</category>
 			</allowsubsystems>
 			<bonus>
 				<conditionmonitor>
@@ -3278,9 +3294,7 @@
 			<cost>Rating * 12000</cost>
 			<source>CF</source>
 			<page>151</page>
-			<bonus>
-				<selecttext />
-			</bonus>
+			<bonus />
 			<rating>6</rating>
 		</cyberware>
 		<cyberware>
@@ -3294,7 +3308,9 @@
 			<source>CF</source>
 			<page>151</page>
 			<bonus>
-				<selecttext />
+				<selectcyberware>
+					<category>Soft Nanoware</category>
+				</selectcyberware>
 			</bonus>
 			<rating>6</rating>
 		</cyberware>

@@ -223,7 +223,7 @@ namespace Chummer.Backend.Equipment
 		public void Print(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("lifestyle");
-			objWriter.WriteElementString("name", DisplayNameShort);
+			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteElementString("cost", _intCost.ToString());
 			objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString());
 			objWriter.WriteElementString("totalcost", TotalCost.ToString());
