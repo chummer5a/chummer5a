@@ -25,6 +25,7 @@ Application Changes:
 - Fixed a legacy issue in which an attribute's Base value also included the Metatype Minimum value.
 - Changed the way Cyber-/Bioware Requirements are implemented.
 - Implemented a selectcyberware improvement for use by the Soft Nanohive cyberware. 
+- Fixed behaviour of contact control to properly manage Family and Blackmail settings between Save/Load. 
 
 Data Changes:
 

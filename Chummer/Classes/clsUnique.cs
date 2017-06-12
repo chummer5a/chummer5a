@@ -5515,16 +5515,14 @@ namespace Chummer
 			}
 		}
 
-		
-
-        /// <summary>
-        /// Is this contract a group contract?
+		/// <summary>
+        /// Is this contact a group contact?
         /// </summary>
 	    public bool IsGroup
 	    {
 	        get
 	        {
-	            return _blnIsGroup;
+	            return _blnIsGroup || _blnMadeMan;
 	        }
             set
             {
@@ -5537,7 +5535,11 @@ namespace Chummer
             }
 	    }
 
-		
+		public bool LoyaltyEnabled => !IsGroup;
+
+		public int ConnectionMaximum => !_objCharacter.Created ? (_objCharacter.FriendsInHighPlaces ? 12 : 6) : 12;
+
+		public string QuickText => $"({Connection}/{(IsGroup ? (MadeMan ? "M" : "G") : Loyalty.ToString())})";
 
 		/// <summary>
 		/// The Contact's type, either Contact or Enemy.

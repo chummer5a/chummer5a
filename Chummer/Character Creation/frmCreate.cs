@@ -645,18 +645,8 @@ namespace Chummer
                     objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
                     objContactControl.FamilyChanged += objContact_OtherCostChanged;
                     objContactControl.BlackmailChanged += objContact_OtherCostChanged;
-                    objContactControl.ContactObject = objContact;
-                    objContactControl.ContactName = objContact.Name;
-                    objContactControl.ContactLocation = objContact.Location;
-                    objContactControl.ContactRole = objContact.Role;
-                    objContactControl.ConnectionRating = objContact.Connection;
-                    objContactControl.LoyaltyRating = objContact.Loyalty;
-                    objContactControl.EntityType = objContact.EntityType;
-                    objContactControl.BackColor = objContact.Colour;
-                    objContactControl.IsGroup = objContact.IsGroup;
 					objContactControl.MouseDown += panContactControl_MouseDown;
-	                objContactControl.Blackmail = objContact.Blackmail;
-	                objContactControl.Family = objContact.Family;
+					objContactControl.ContactObject = objContact;
 
                     objContactControl.Top = intContact * objContactControl.Height;
 
@@ -675,15 +665,6 @@ namespace Chummer
                     objContactControl.FileNameChanged += objEnemy_FileNameChanged;
 
                     objContactControl.ContactObject = objContact;
-                    objContactControl.IsEnemy = true;
-                    objContactControl.ContactName = objContact.Name;
-                    objContactControl.ContactLocation = objContact.Location;
-                    objContactControl.ContactRole = objContact.Role;
-                    objContactControl.ConnectionRating = objContact.Connection;
-                    objContactControl.LoyaltyRating = objContact.Loyalty;
-                    objContactControl.EntityType = objContact.EntityType;
-                    objContactControl.BackColor = objContact.Colour;
-                    objContactControl.IsGroup = objContact.IsGroup;
 
                     objContactControl.Top = intEnemy * objContactControl.Height;
                     panEnemies.Controls.Add(objContactControl);
@@ -696,8 +677,6 @@ namespace Chummer
                     objContactControl.FileNameChanged += objPet_FileNameChanged;
 
                     objContactControl.ContactObject = objContact;
-                    objContactControl.ContactName = objContact.Name;
-                    objContactControl.BackColor = objContact.Colour;
 
                     panPets.Controls.Add(objContactControl);
                 }
@@ -4157,7 +4136,6 @@ namespace Chummer
             objContactControl.FileNameChanged += objEnemy_FileNameChanged;
             objContactControl.GroupStatusChanged += objEnemy_GroupStatusChanged;
             objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
-            objContactControl.IsEnemy = true;
 
             // Set the ContactControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
             objContactControl.Location = new Point(0, objContactControl.Height * i + panEnemies.AutoScrollPosition.Y);
@@ -14079,7 +14057,6 @@ namespace Chummer
 					if (_objCharacter.Contacts.Contains(contactControl.ContactObject))
 					{
 						contactControl.LoyaltyRating = contactControl.LoyaltyRating; //Force refresh
-						contactControl.UpdateQuickText();
 						existing.Add(contactControl.ContactObject);
 					}
 					else
