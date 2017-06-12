@@ -223,7 +223,7 @@ namespace Chummer.Backend.Equipment
 		public void Print(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("lifestyle");
-			objWriter.WriteElementString("name", DisplayName);
+			objWriter.WriteElementString("name", Name);
 			objWriter.WriteElementString("cost", _intCost.ToString());
 			objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString());
 			objWriter.WriteElementString("totalcost", TotalCost.ToString());
@@ -231,7 +231,6 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
 			objWriter.WriteElementString("months", _intMonths.ToString());
 			objWriter.WriteElementString("purchased", _blnPurchased.ToString());
-			objWriter.WriteElementString("lifestylename", _strLifestyleName);
 			objWriter.WriteElementString("type", _objType.ToString());
 			objWriter.WriteElementString("sourceid", SourceID.ToString());
 			string strBaseLifestyle = string.Empty;

@@ -3143,7 +3143,7 @@
 			<type>M</type>
 			<required>
 				<oneof>
-					<metamagicart>Advanced Rituals</metamagicart>
+					<metamagicart>Advanced Ritual Casting</metamagicart>
 					<quality>Adept</quality>
 					<quality>Mystic Adept</quality>
 				</oneof>

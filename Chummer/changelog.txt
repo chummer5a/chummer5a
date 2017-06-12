@@ -42,6 +42,8 @@ Data Changes:
 - Added Content from 'State of the Art ADL' and its german translation (excluding critters and life modules).
 - Removed a redundant selecttext improvement for the Hard Nanohive cyberware. 
 - Cyberwares with Capacity can now install the Hard Nanohive in the Nanocybernetics category. 
+- Fixed the Attribute Boost power to be selectable up to four times. 
+- Fixed one of the requirements for the Imbue Item spell that caused a crash. 
 
 New Strings:
 

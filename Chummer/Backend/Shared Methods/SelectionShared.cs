@@ -279,8 +279,8 @@ namespace Chummer.Backend.Shared_Methods
 						character.Cyberware.Count(
 							objCyberware =>
 								objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
-								node.Attributes["select"].InnerText == objCyberware.Location) >= count;
-				}
+								node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+					}
 				case "biowarecontains":
 				case "cyberwarecontains":
 				{
@@ -296,7 +296,7 @@ namespace Chummer.Backend.Shared_Methods
 					}
 					return character.Cyberware.Count(objCyberware =>
 							objCyberware.SourceType == source && objCyberware.Name.Contains(node.InnerText) && node.Attributes?["select"] == null ||
-							node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+							node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
 				}
 				case "damageresistance":
 					// Damage Resistance must be a particular value.

@@ -61,7 +61,7 @@
 			<name>Attribute Boost</name>
 			<points>.25</points>
 			<levels>true</levels>
-			<limit>1</limit>
+			<limit>4</limit>
 			<source>SR5</source>
 			<page>309</page>
 			<action>Simple</action>
