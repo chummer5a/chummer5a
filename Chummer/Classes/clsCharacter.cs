@@ -2121,7 +2121,6 @@ namespace Chummer
             if (strTraditionName == "Custom")
                 strTraditionName = _strTraditionName;
 			objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("name", strTraditionName);
 
             if (!string.IsNullOrEmpty(_strMagicTradition))
             {
@@ -2132,10 +2131,13 @@ namespace Chummer
 
                 if (objXmlTradition != null)
                 {
-                    if (objXmlTradition["name"] != null && objXmlTradition["name"].InnerText == "Custom")
-                        strDrainAtt = _strTraditionDrain;
-                    else
-                        strDrainAtt = objXmlTradition["drain"].InnerText;
+	                strDrainAtt = objXmlTradition["name"] != null && objXmlTradition["name"].InnerText == "Custom"
+		                ? _strTraditionDrain
+		                : objXmlTradition["drain"].InnerText;
+	                if (objXmlTradition["name"] != null && objXmlTradition["name"].InnerText != "Custom")
+	                {
+		                strTraditionName = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
+	                }
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -2149,7 +2151,7 @@ namespace Chummer
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
 
-                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
+                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
 				objWriter.WriteStartElement("drainattribute");
 	            foreach (string drainAttribute in strDrainAtt.Replace('+', ' ').Split(new [] {' '} , StringSplitOptions.RemoveEmptyEntries))
 	            {
@@ -2199,7 +2201,8 @@ namespace Chummer
 
 				objWriter.WriteElementString("source", strSource);
 				objWriter.WriteElementString("page", strPage);
-            }
+			}
+			objWriter.WriteElementString("name", strTraditionName);
 			objWriter.WriteEndElement();
 
 			// <stream />
