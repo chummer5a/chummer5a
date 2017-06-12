@@ -113,19 +113,16 @@ namespace Chummer
 
 	    private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            _objContact.Role = cboContactRole.Text;
             ConnectionRatingChanged(this);
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            _objContact.Name = txtContactName.Text;
             ConnectionRatingChanged(this);
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            _objContact.Location = txtContactLocation.Text;
             ConnectionRatingChanged(this);
         }
 
@@ -527,8 +524,12 @@ namespace Chummer
 				DataSourceUpdateMode.OnPropertyChanged);
 			nudConnection.DataBindings.Add("Maximum", _objContact, nameof(_objContact.ConnectionMaximum), false,
 				DataSourceUpdateMode.OnPropertyChanged);
-			if (!string.IsNullOrEmpty(_strContactRole))
-				cboContactRole.Text = _strContactRole;
+			txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name),false,
+				DataSourceUpdateMode.OnPropertyChanged);
+			txtContactLocation.DataBindings.Add("Text", _objContact, nameof(_objContact.Location), false, 
+				DataSourceUpdateMode.OnPropertyChanged);
+			cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.Role), false,
+				DataSourceUpdateMode.OnPropertyChanged);
             cboContactRole.EndUpdate();
 
             _loading = false;
