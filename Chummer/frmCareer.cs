@@ -13582,6 +13582,7 @@ namespace Chummer
 			frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
 			frmPickCyberware.Subsystems = objMod.Subsystems;
 			frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
+			frmPickCyberware.ParentVehicle = objVehicle;
 			frmPickCyberware.ShowDialog(this);
 
 			if (frmPickCyberware.DialogResult == DialogResult.Cancel)
