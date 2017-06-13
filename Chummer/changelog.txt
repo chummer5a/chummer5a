@@ -26,6 +26,8 @@ Application Changes:
 - Changed the way Cyber-/Bioware Requirements are implemented.
 - Implemented a selectcyberware improvement for use by the Soft Nanohive cyberware. 
 - Fixed behaviour of contact control to properly manage Family and Blackmail settings between Save/Load. 
+- Fixed support for AIs adding cyberware to vehicles. 
+- Added the ability to add the Underbarrel weapons from Hard Targets to other weapons via the Add Underbarrel Weapon menu option. 
 
 Data Changes:
 
@@ -46,6 +48,7 @@ Data Changes:
 - Fixed the Attribute Boost power to be selectable up to four times. 
 - Fixed one of the requirements for the Imbue Item spell that caused a crash. 
 - Added Translations for the Improved Reflexes Power after the Power Update.
+- Added Underbarrel Weapons from Hard Targets as weapons. Set the Underbarrel Weapon accessories to Hidden. 
 
 New Strings:
 
@@ -599,7 +602,6 @@ Data Changes:
 - Added missing Active Skill specializations based on SR4a20th and rules for specializing for specific actions.
 - Added knowledge skills and knowledge skill specializations based on Market Panic and Chrome Flesh.
 - Fixed Accessories for the new Cutting Aces Weapons.
-- Fixed support for AIs adding cyberware to vehicles. 
 
 New Strings:
 

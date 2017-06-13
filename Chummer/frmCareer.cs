@@ -9002,7 +9002,17 @@ namespace Chummer
 				return;
 			}
 
-			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter, true);
+			if (objSelectedWeapon.UnderbarrelWeapons.Count > 0)
+			{
+				return;
+			}
+
+			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
+			frmPickWeapon.LimitToCategories = "Underbarrel Weapons";
+			frmPickWeapon.Mounts = objSelectedWeapon.AccessoryMounts;
+
+			frmPickWeapon.Underbarrel = true;
+
 			frmPickWeapon.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -11211,7 +11221,16 @@ namespace Chummer
 			if (objSelectedWeapon == null)
 				return;
 
-			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter, true);
+			if (objSelectedWeapon.UnderbarrelWeapons.Count > 0)
+			{
+				return;
+			}
+
+			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
+			frmPickWeapon.LimitToCategories = "Underbarrel Weapons";
+			frmPickWeapon.Mounts = objSelectedWeapon.AccessoryMounts;
+			frmPickWeapon.Underbarrel = true;
+
 			frmPickWeapon.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
