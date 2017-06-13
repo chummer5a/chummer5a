@@ -25,8 +25,9 @@
               <xs:element name="mentor" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+					<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="advantage" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="disadvantage" type="xs:string" minOccurs="1" maxOccurs="1" />
 					<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />

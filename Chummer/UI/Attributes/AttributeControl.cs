@@ -35,15 +35,18 @@ namespace Chummer.UI.Attributes
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
-                cmdImproveATT.Visible = true;
-	            cmdBurnEdge.Visible = AttributeName == "EDG";
+				cmdImproveATT.DataBindings.Add("TooltipText", attribute, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+				cmdImproveATT.Visible = true;
+				cmdImproveATT.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
+				cmdBurnEdge.Visible = AttributeName == "EDG";
+	            cmdBurnEdge.TooltipText = LanguageManager.Instance.GetString("Tip_CommonBurnEdge");
             }
             else
 			{
-				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("Minimum", attribute, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.Visible = true;
@@ -117,7 +120,7 @@ namespace Chummer.UI.Attributes
 		/// </summary>
 		private bool ShowAttributeRule(decimal value)
 		{
-			if (value < attribute.TotalMaximum) return true;
+			if (attribute._objCharacter.IgnoreRules || value < attribute.TotalMaximum) return true;
 			bool any = attribute._objCharacter.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
 			if (!any || attribute.AtMetatypeMaximum || attribute._objCharacter.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
 			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
@@ -150,7 +153,9 @@ namespace Chummer.UI.Attributes
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value == attribute.TotalMaximum && nudKarma.Value != nudKarma.Minimum)
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attribute.TotalMaximum ||
+                nudKarma.Value == nudKarma.Minimum) return;
+            if (nudKarma.Value - nudBase.Increment >= 0)
             {
                 nudKarma.Value -= nudBase.Increment;
             }
@@ -158,7 +163,8 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value == attribute.TotalMaximum && nudBase.Value != nudBase.Minimum)
+            if (nudBase.Value + nudKarma.Value != attribute.TotalMaximum || nudBase.Value == nudBase.Minimum) return;
+            if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;
             }

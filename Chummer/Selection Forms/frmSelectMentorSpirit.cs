@@ -139,27 +139,30 @@ namespace Chummer
 				cboChoice1.DisplayMember = "Name";
 				cboChoice1.DataSource = lstChoice1;
 
-				if (lstChoice2.Count > 0)
+				lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
+                cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
+                lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
+                cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
+
+                if (lstChoice2.Count > 0)
 				{
 					lblChoice2.Visible = true;
 					cboChoice2.Visible = true;
 					cboChoice2.ValueMember = "Value";
 					cboChoice2.DisplayMember = "Name";
 					cboChoice2.DataSource = lstChoice2;
-					chkMentorMask.Top = cboChoice2.Top + cboChoice2.Height + 6;
-				}
+					chkMentorMask.Top = cboChoice2.Top + cboChoice2.Height + 6;				    
+                }
                 else 
                 {
                     lblChoice2.Visible = false;
                     cboChoice2.Visible = false;
 					chkMentorMask.Top = cboChoice1.Top + cboChoice1.Height + 6;
-				}
+                }
 
-                lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
-                cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
-                lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
-                cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
-			}
+                lblDisadvantageLabel.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
+			    lblDisadvantage.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
+            }
 			else
 			{
 				lblChoice1.Visible = false;

@@ -613,17 +613,8 @@ namespace Chummer
 					objContactControl.DeleteContact += objEnemy_DeleteContact;
 					objContactControl.FileNameChanged += objEnemy_FileNameChanged;
                     objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
-
-                    objContactControl.IsEnemy = true;
+					
 					objContactControl.ContactObject = objContact;
-					objContactControl.ContactName = objContact.Name;
-                    objContactControl.ContactLocation = objContact.Location;
-                    objContactControl.ContactRole = objContact.Role;
-                    objContactControl.ConnectionRating = objContact.Connection;
-					objContactControl.LoyaltyRating = objContact.Loyalty;
-					objContactControl.EntityType = objContact.EntityType;
-					objContactControl.BackColor = objContact.Colour;
-                    objContactControl.IsGroup = objContact.IsGroup;
 
 					objContactControl.Top = intEnemy * objContactControl.Height;
 					panEnemies.Controls.Add(objContactControl);
@@ -1055,26 +1046,6 @@ namespace Chummer
 			ToolStripManager.RevertMerge("toolStrip");
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
-            if (_objCharacter.Metatype.Contains("Sprite"))
-			{
-				lblBODLabel.Enabled = false;
-				lblAGILabel.Enabled = false;
-				lblREALabel.Enabled = false;
-				lblSTRLabel.Enabled = false;
-				lblCHALabel.Text = LanguageManager.Instance.GetString("String_Attack");
-				lblINTLabel.Text = LanguageManager.Instance.GetString("String_Sleaze");
-				lblLOGLabel.Text = LanguageManager.Instance.GetString("String_DataProcessing");
-				lblWILLabel.Text = LanguageManager.Instance.GetString("String_Firewall");
-            }
-            else if (_objCharacter.Metatype.Contains("Protosapients") || _objCharacter.Metatype.Contains("A.I."))
-            {
-                lblBODLabel.Enabled = false;
-                lblAGILabel.Enabled = false;
-                lblREALabel.Enabled = false;
-                lblSTRLabel.Enabled = false;
-			}
-
 			mnuSpecialConvertToFreeSprite.Visible = _objCharacter.IsSprite;
 
 			if (_objCharacter.MetatypeCategory == "Cyberzombie")
@@ -1388,7 +1359,6 @@ namespace Chummer
 		{
 			TabPage objPage = tabCharacterTabs.SelectedTab;
 			// Reseize the form elements with the form.
-
 			// Character Info Tab.
 			int intHeight = ((objPage.Height - lblDescription.Top) / 4 - 20);
 			txtDescription.Height = intHeight;
@@ -1518,12 +1488,6 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-
-            // Change to the status of DEP being enabled.
-            lblDEPLabel.Enabled = _objCharacter.DEPEnabled;
-            lblDEPAug.Enabled = _objCharacter.DEPEnabled;
-            lblDEP.Enabled = _objCharacter.DEPEnabled;
-            lblDEPMetatype.Enabled = _objCharacter.DEPEnabled;
         }
 
 		private void objCharacter_AdeptTabEnabledChanged(object sender)
@@ -4002,7 +3966,6 @@ namespace Chummer
 			objContactControl.DeleteContact += objEnemy_DeleteContact;
 			objContactControl.FileNameChanged += objEnemy_FileNameChanged;
             objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
-            objContactControl.IsEnemy = true;
 
 			panEnemies.Controls.Add(objContactControl);
 			ScheduleCharacterUpdate();
@@ -19660,7 +19623,6 @@ namespace Chummer
 					if (_objCharacter.Contacts.Contains(contactControl.ContactObject))
 					{
 						contactControl.LoyaltyRating = contactControl.LoyaltyRating; //Force refresh
-						contactControl.UpdateQuickText();
 						existing.Add(contactControl.ContactObject);
 					}
 					else
@@ -19730,10 +19692,6 @@ namespace Chummer
 			_blnSkipUpdate = true;
 
 			RedlinerCheck();
-
-			//needs to be somewhere...
-			cmdIncreasePowerPoints.Enabled = (_objCharacter.MysticAdeptPowerPoints < _objCharacter.MAG.TotalValue) &&
-			                                 _objCharacter.Karma >= 5;
 
 			if (_objCharacter.AdeptEnabled)
 			{
@@ -22516,58 +22474,24 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                 {
-                    string strQualities = string.Empty;
+					string strQualities = string.Join(", ", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName));
 
-                    lblLifestyleQualities.Text = string.Empty;
+					lblLifestyleQualities.Text = string.Empty;
 
-                    foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-                    {
-                        if (strQualities.Length > 0)
-                            strQualities += ", ";
-						strQualities += objQuality.DisplayName;
-						
-						if (objQuality.Multiplier > 0)
-                            {
-							strQualities += $" [+{objQuality.Multiplier}%]";
-                            }
-                        else if (objQuality.Multiplier < 0)
-                            {
-		                    strQualities += $" [-{objQuality.Multiplier}%]";
-                        }
-
-	                    if (objQuality.Cost > 0)
-                            {
-							strQualities += $" [+{objQuality.Cost}¥]";
-                        }
-                    }
-
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
-                        {
-                            if (strQualities.Length > 0)
-                                strQualities += ", ";
-
-                            if (objImprovement.Value > 0)
-                                strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
-                            else
-                                strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
-                        }
-					}
-
-					foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+					foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost))
 					{
 						if (strQualities.Length > 0)
-						{
 							strQualities += ", ";
-						}
-						strQualities += objQuality.DisplayName;
+
+						strQualities += objImprovement.Value > 0
+							? objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]"
+							: objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
 					}
 
-	                if (strQualities.EndsWith(", "))
-	                {
-		                strQualities = strQualities.Substring(0, strQualities.Length - 2);
-	                }
+					if (strQualities.Length > 0)
+						strQualities += ", ";
+
+					strQualities += string.Join(", ", objLifestyle.FreeGrids.Select(r => r.DisplayName));
 
 					lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
                     lblLifestyleQualities.Text += strQualities;
@@ -24193,10 +24117,6 @@ namespace Chummer
 		/// </summary>
 		private void SetTooltips()
 		{
-			// Common Tab.
-			tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
-			tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
-			tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
 			// Spells Tab.
 			tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.Instance.GetString("Tip_DiceRoller"));
 			tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.Instance.GetString("Tip_DiceRoller"));

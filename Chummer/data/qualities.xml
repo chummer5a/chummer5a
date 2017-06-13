@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
 	<version>0</version>
 	<categories>
 		<category>Positive</category>
@@ -3408,10 +3408,7 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<cyberwares>
-						<cyberwarecontains>Cybereyes</cyberwarecontains>
-						<count>1</count>
-					</cyberwares>
+					<cyberwarecontains>Cybereyes</cyberwarecontains>
 					<quality>Albinism I</quality>
 				</oneof>
 			</forbidden>
@@ -10636,7 +10633,7 @@
 			<page>148</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>d6ced15f-2ba7-4a02-bfb7-ddcc0a3e263e</id>
 			<name>Improved Restoration</name>
 			<karma>3</karma>
 			<category>Positive</category>
@@ -14009,6 +14006,50 @@
 			<page>47</page>
 		</quality>
 		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region SotA ADL Negative Qualities-->
+		<quality>
+			<id>2c1fece2-e950-41c0-a020-2671334e1610</id>
+			<name>Arcology Tantrum</name>			
+			<karma>-10</karma>
+			<category>Negative</category>
+			<source>SAG</source>
+			<page>147</page>
+		</quality>
+		<quality>
+			<id>97615a7e-33aa-4013-b146-98175ac0f6c9</id>
+			<name>People's SIN</name>			
+			<karma>-3</karma>
+			<category>Negative</category>
+			<forbidden>
+				<oneof>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Criminal)</quality>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+					<quality>People's SIN (Criminal)</quality>
+				</oneof>
+			</forbidden>
+			<source>SAG</source>
+			<page>148</page>
+		</quality>
+		<quality>
+			<id>3e2eac9a-e256-4755-a66a-ffbaac751cfa</id>
+			<name>People's SIN (Criminal)</name>			
+			<karma>-10</karma>
+			<category>Negative</category>
+			<forbidden>
+				<oneof>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Criminal)</quality>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+					<quality>People's SIN</quality>
+				</oneof>
+			</forbidden>
+			<source>SAG</source>
+			<page>148</page>
+		</quality>
 		<!-- End Region -->
 	</qualities>
 </chummer>

@@ -255,7 +255,7 @@ namespace Chummer
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-						strReturn = objNode?["translate"]?.InnerText;
+						strReturn = objNode?["translate"]?.InnerText ?? strReturn;
 				    _strDisplayName = strReturn;
 				}
 

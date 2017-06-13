@@ -22,6 +22,10 @@ Application Changes:
 - Added missing dice and multipliers for basic lifestyles. Existing characters should open any current lifestyles in order to refresh the values.
 - Implemented the AddSpell improvement type for the Alchemical Armorer quality. 
 - Fixed an issue with cyberware decreasing to Rating 0 in create mode. 
+- Fixed a legacy issue in which an attribute's Base value also included the Metatype Minimum value.
+- Changed the way Cyber-/Bioware Requirements are implemented.
+- Implemented a selectcyberware improvement for use by the Soft Nanohive cyberware. 
+- Fixed behaviour of contact control to properly manage Family and Blackmail settings between Save/Load. 
 
 Data Changes:
 
@@ -34,6 +38,14 @@ Data Changes:
 - Added missing bonuses for the Raven (Alt) Mentor Spirit. 
 - Fixed the drain attributes for the Red Magic tradition. 
 - Fixed the movement modification of the Satyr quality. 
+- Fixed a typo in the Spells template for character sheets that made Rituals show up as an Unknown category.
+- Fixed issues with the Holy Text and Death mentor spirits that prevented them from being added. 
+- Added Content from 'State of the Art ADL' and its german translation (excluding critters and life modules).
+- Removed a redundant selecttext improvement for the Hard Nanohive cyberware. 
+- Cyberwares with Capacity can now install the Hard Nanohive in the Nanocybernetics category. 
+- Fixed the Attribute Boost power to be selectable up to four times. 
+- Fixed one of the requirements for the Imbue Item spell that caused a crash. 
+- Added Translations for the Improved Reflexes Power after the Power Update.
 
 New Strings:
 

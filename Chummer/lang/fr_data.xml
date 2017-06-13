@@ -13731,6 +13731,11 @@
         <translate>Réflexes améliorés 3</translate>
         <page>196</page>
       </power>
+	  <power>
+	<id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
+	<name>Improved Reflexes</name>
+	<translate>Réflexes améliorés</translate>
+</power>
       <power>
         <id>1376c13b-9a01-4873-b935-5b7d91e03785</id>
         <name>Improved Sense</name>
