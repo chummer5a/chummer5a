@@ -2469,5 +2469,13 @@
 			<id>aca1fd74-0c25-41d5-b621-434c3892cfb3</id>
 			<name>WIL + LOG</name>
 		</drainattribute>
+    <drainattribute>
+      <id>c8adb0ec-7592-4801-b560-94805ef1c13e</id>
+      <name>WIL + MAG</name>
+    </drainattribute>
+    <drainattribute>
+      <id>f59248c7-7843-4b68-9a26-b966c32c8cae</id>
+      <name>WIL + WIL</name>
+    </drainattribute>
 	</drainattributes>
 </chummer>
