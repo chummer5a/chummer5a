@@ -3294,6 +3294,9 @@
 			<cost>Rating * 12000</cost>
 			<source>CF</source>
 			<page>151</page>
+			<allowgear>
+				<gearcategory>Hard Nanoware</gearcategory>
+			</allowgear>
 			<bonus />
 			<rating>6</rating>
 		</cyberware>

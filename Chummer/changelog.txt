@@ -49,6 +49,7 @@ Data Changes:
 - Fixed one of the requirements for the Imbue Item spell that caused a crash. 
 - Added Translations for the Improved Reflexes Power after the Power Update.
 - Added Underbarrel Weapons from Hard Targets as weapons. Set the Underbarrel Weapon accessories to Hidden. 
+- Hard Nanohives can now add Hard Nanoware as a gear item to themselves. 
 
 New Strings:
 
