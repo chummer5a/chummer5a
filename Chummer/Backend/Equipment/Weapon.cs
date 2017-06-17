@@ -1831,12 +1831,7 @@ namespace Chummer.Backend.Equipment
 		public bool AllowMode(string strFindMode)
 		{
 			string[] strModes = CalculatedMode.Split('/');
-			foreach (string strMode in strModes)
-			{
-				if (strMode == strFindMode)
-					return true;
-			}
-			return false;
+			return strModes.Any(strMode => strMode == strFindMode);
 		}
 
 		/// <summary>

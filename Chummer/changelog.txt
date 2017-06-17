@@ -28,6 +28,7 @@ Application Changes:
 - Fixed behaviour of contact control to properly manage Family and Blackmail settings between Save/Load. 
 - Fixed support for AIs adding cyberware to vehicles. 
 - Added the ability to add the Underbarrel weapons from Hard Targets to other weapons via the Add Underbarrel Weapon menu option. 
+- Fixed an issue with vehicle fire modes not being enabled when using languages other than English. 
 
 Data Changes:
 
