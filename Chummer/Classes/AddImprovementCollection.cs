@@ -3375,6 +3375,61 @@ namespace Chummer.Classes
 
 		}
 
+		// Select a specific piece of Cyberware.
+		public void selectcyberware(XmlNode bonusNode)
+		{
+			Log.Info("selectcyberware");
+			Log.Info("selectcyberware = " + bonusNode.OuterXml);
+			if (!string.IsNullOrEmpty(ForcedValue))
+				LimitSelection = ForcedValue;
+
+			// Display the Select Item window and record the value that was entered.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+			XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes(bonusNode["category"] != null 
+			? $"/chummer/cyberwares/cyberware[(category = '{bonusNode["category"].InnerText}') and ({_objCharacter.Options.BookXPath()})]" 
+			: $"/chummer/cyberwares/cyberware[({_objCharacter.Options.BookXPath()})]");
+
+			List<ListItem> list = new List<ListItem>();
+			foreach (XmlNode objNode in objXmlNodeList)
+			{
+				ListItem objItem = new ListItem();
+				objItem.Value = objNode["name"]?.InnerText;
+				objItem.Name = objNode.Attributes?["translate"]?.InnerText ?? objNode["name"]?.InnerText;
+				list.Add(objItem);
+			}
+
+			if (list.Count <= 0) return;
+			frmSelectItem frmPickItem = new frmSelectItem();
+			frmPickItem.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+				.Replace("{0}", _strFriendlyName);
+			frmPickItem.GeneralItems = list;
+
+			Log.Info("_strLimitSelection = " + LimitSelection);
+			Log.Info("_strForcedValue = " + ForcedValue);
+
+			if (!string.IsNullOrEmpty(LimitSelection))
+			{
+				frmPickItem.ForceItem = LimitSelection;
+				frmPickItem.Opacity = 0;
+			}
+
+			frmPickItem.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickItem.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickItem.SelectedItem;
+			if (_blnConcatSelectedValue)
+				SourceName += " (" + SelectedValue + ")";
+
+			string strSelectedValue = frmPickItem.SelectedItem;
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("SelectedValue = " + strSelectedValue);
+		}
+
 		// Select Weapon (custom entry for things like Spare Clip).
 		public void selectweapon(XmlNode bonusNode)
 		{

@@ -613,17 +613,8 @@ namespace Chummer
 					objContactControl.DeleteContact += objEnemy_DeleteContact;
 					objContactControl.FileNameChanged += objEnemy_FileNameChanged;
                     objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
-
-                    objContactControl.IsEnemy = true;
+					
 					objContactControl.ContactObject = objContact;
-					objContactControl.ContactName = objContact.Name;
-                    objContactControl.ContactLocation = objContact.Location;
-                    objContactControl.ContactRole = objContact.Role;
-                    objContactControl.ConnectionRating = objContact.Connection;
-					objContactControl.LoyaltyRating = objContact.Loyalty;
-					objContactControl.EntityType = objContact.EntityType;
-					objContactControl.BackColor = objContact.Colour;
-                    objContactControl.IsGroup = objContact.IsGroup;
 
 					objContactControl.Top = intEnemy * objContactControl.Height;
 					panEnemies.Controls.Add(objContactControl);
@@ -3975,7 +3966,6 @@ namespace Chummer
 			objContactControl.DeleteContact += objEnemy_DeleteContact;
 			objContactControl.FileNameChanged += objEnemy_FileNameChanged;
             objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
-            objContactControl.IsEnemy = true;
 
 			panEnemies.Controls.Add(objContactControl);
 			ScheduleCharacterUpdate();
@@ -9012,7 +9002,17 @@ namespace Chummer
 				return;
 			}
 
-			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter, true);
+			if (objSelectedWeapon.UnderbarrelWeapons.Count > 0)
+			{
+				return;
+			}
+
+			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
+			frmPickWeapon.LimitToCategories = "Underbarrel Weapons";
+			frmPickWeapon.Mounts = objSelectedWeapon.AccessoryMounts;
+
+			frmPickWeapon.Underbarrel = true;
+
 			frmPickWeapon.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -11221,7 +11221,16 @@ namespace Chummer
 			if (objSelectedWeapon == null)
 				return;
 
-			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter, true);
+			if (objSelectedWeapon.UnderbarrelWeapons.Count > 0)
+			{
+				return;
+			}
+
+			frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
+			frmPickWeapon.LimitToCategories = "Underbarrel Weapons";
+			frmPickWeapon.Mounts = objSelectedWeapon.AccessoryMounts;
+			frmPickWeapon.Underbarrel = true;
+
 			frmPickWeapon.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -13592,6 +13601,7 @@ namespace Chummer
 			frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
 			frmPickCyberware.Subsystems = objMod.Subsystems;
 			frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
+			frmPickCyberware.ParentVehicle = objVehicle;
 			frmPickCyberware.ShowDialog(this);
 
 			if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -19633,7 +19643,6 @@ namespace Chummer
 					if (_objCharacter.Contacts.Contains(contactControl.ContactObject))
 					{
 						contactControl.LoyaltyRating = contactControl.LoyaltyRating; //Force refresh
-						contactControl.UpdateQuickText();
 						existing.Add(contactControl.ContactObject);
 					}
 					else
@@ -22485,58 +22494,24 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                 {
-                    string strQualities = string.Empty;
+					string strQualities = string.Join(", ", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName));
 
-                    lblLifestyleQualities.Text = string.Empty;
+					lblLifestyleQualities.Text = string.Empty;
 
-                    foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-                    {
-                        if (strQualities.Length > 0)
-                            strQualities += ", ";
-						strQualities += objQuality.DisplayName;
-						
-						if (objQuality.Multiplier > 0)
-                            {
-							strQualities += $" [+{objQuality.Multiplier}%]";
-                            }
-                        else if (objQuality.Multiplier < 0)
-                            {
-		                    strQualities += $" [-{objQuality.Multiplier}%]";
-                        }
-
-	                    if (objQuality.Cost > 0)
-                            {
-							strQualities += $" [+{objQuality.Cost}¥]";
-                        }
-                    }
-
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
-                        {
-                            if (strQualities.Length > 0)
-                                strQualities += ", ";
-
-                            if (objImprovement.Value > 0)
-                                strQualities += objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]";
-                            else
-                                strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
-                        }
-					}
-
-					foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+					foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost))
 					{
 						if (strQualities.Length > 0)
-						{
 							strQualities += ", ";
-						}
-						strQualities += objQuality.DisplayName;
+
+						strQualities += objImprovement.Value > 0
+							? objImprovement.ImproveSource + " [+" + objImprovement.Value.ToString() + "%]"
+							: objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
 					}
 
-	                if (strQualities.EndsWith(", "))
-	                {
-		                strQualities = strQualities.Substring(0, strQualities.Length - 2);
-	                }
+					if (strQualities.Length > 0)
+						strQualities += ", ";
+
+					strQualities += string.Join(", ", objLifestyle.FreeGrids.Select(r => r.DisplayName));
 
 					lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
                     lblLifestyleQualities.Text += strQualities;

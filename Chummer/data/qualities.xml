@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
 	<version>0</version>
 	<categories>
 		<category>Positive</category>
@@ -3408,7 +3408,7 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<cyberware>Cybereyes Basic System</cyberware>
+					<cyberwarecontains>Cybereyes</cyberwarecontains>
 					<quality>Albinism I</quality>
 				</oneof>
 			</forbidden>
@@ -10633,7 +10633,7 @@
 			<page>148</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>d6ced15f-2ba7-4a02-bfb7-ddcc0a3e263e</id>
 			<name>Improved Restoration</name>
 			<karma>3</karma>
 			<category>Positive</category>

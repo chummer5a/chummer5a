@@ -68,8 +68,10 @@ namespace Chummer.Backend.Equipment
 		private bool _blnCyberware = false;
 
 		private readonly Character _objCharacter;
+	    private string _mount;
+	    private string _extraMount;
 
-		#region Constructor, Create, Save, Load, and Print Methods
+	    #region Constructor, Create, Save, Load, and Print Methods
 		public Weapon(Character objCharacter)
 		{
 			// Create the GUID for the new Weapon.
@@ -96,6 +98,8 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlWeapon.TryGetStringFieldQuickly("mode", ref _strMode);
             objXmlWeapon.TryGetStringFieldQuickly("ammo", ref _strAmmo);
+			objXmlWeapon.TryGetStringFieldQuickly("mount", ref _mount);
+			objXmlWeapon.TryGetStringFieldQuickly("extramount", ref _extraMount);
 			if (objXmlWeapon["accessorymounts"] != null)
 			{
 				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -168,11 +172,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objWeaponNode != null)
-				{
-					if (objWeaponNode.Attributes["translate"] != null)
-						_strAltCategory = objWeaponNode.Attributes["translate"].InnerText;
-				}
+				_strAltCategory = objWeaponNode?.Attributes?["translate"].InnerText;
 			}
 
 			// Populate the Range if it differs from the Weapon's Category.
@@ -337,6 +337,8 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("requireammo", _blnRequireAmmo.ToString());
 			objWriter.WriteElementString("accuracy", _strAccuracy);
+			objWriter.WriteElementString("mount",_mount);
+			objWriter.WriteElementString("extramount", _extraMount);
 			if (_lstAccessories.Count > 0)
 			{
 				objWriter.WriteStartElement("accessories");
@@ -445,6 +447,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
 			objNode.TryGetStringFieldQuickly("range", ref _strRange);
+			objNode.TryGetStringFieldQuickly("mount", ref _mount);
+			objNode.TryGetStringFieldQuickly("extramount", ref _extraMount);
 			if (_strRange == "Hold-Outs")
 			{
 				_strRange = "Holdouts";
@@ -1867,30 +1871,20 @@ namespace Chummer.Backend.Equipment
 				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
 				string strMounts = string.Empty;
 				XmlNodeList objXmlMountList = objAccessoryNode?.SelectNodes("accessorymounts/mount");
-                
-				if (objXmlMountList != null)
-				{
-					foreach (XmlNode objXmlMount in objXmlMountList)
-					{
-						bool blnFound = false;
-						foreach (WeaponAccessory objAccessory in _lstAccessories)
-						{
-							if ((objAccessory.Mount == objXmlMount.InnerText) || (objAccessory.ExtraMount == objXmlMount.InnerText))
-							{
-								blnFound = true;
-								break;
-							}
-						}
-						if (!blnFound)
-						{
-							strMounts += objXmlMount.InnerText + "/";
-						}
-					}
 
-					// Remove the trailing /
-					if (!string.IsNullOrEmpty(strMounts) && strMounts.Contains('/'))
-						strMounts = strMounts.Substring(0, strMounts.Length - 1);
+				if (objXmlMountList == null) return strMounts;
+				foreach (XmlNode objXmlMount in objXmlMountList)
+				{
+					bool blnFound = _lstAccessories.Any(objAccessory => objAccessory.Mount == objXmlMount.InnerText || objAccessory.ExtraMount == objXmlMount.InnerText) || UnderbarrelWeapons.Any(weapon => weapon.Mount == objXmlMount.InnerText || weapon.ExtraMount == objXmlMount.InnerText);
+					if (!blnFound)
+					{
+						strMounts += objXmlMount.InnerText + "/";
+					}
 				}
+
+				// Remove the trailing /
+				if (!string.IsNullOrEmpty(strMounts) && strMounts.Contains('/'))
+					strMounts = strMounts.Substring(0, strMounts.Length - 1);
 				return strMounts;
 			}
 		}
@@ -3034,7 +3028,25 @@ namespace Chummer.Backend.Equipment
 				return intReturn;
 			}
 		}
-		#endregion
+
+		/// <summary>
+		/// Mount slot that is used when mounting this weapon to another weapon.
+		/// </summary>
+	    public string Mount
+	    {
+		    get { return _mount; }
+		    private set { _mount = value; }
+	    }
+		/// <summary>
+		/// Additional Mount slot that is used when mounting this weapon to another weapon.
+		/// </summary>
+		public string ExtraMount
+	    {
+		    get { return _extraMount; }
+		    private set { _extraMount = value; }
+	    }
+
+	    #endregion
 
 		private Clip GetClip(int clip)
 		{

@@ -7157,7 +7157,7 @@
 			<!--<selectable/>-->
 			<versions>
 				<version>
-					<id></id>
+					<id>62a71e87-d427-4b96-93f2-33d96c6226f2</id>
 					<name>Greater Antilles</name>
 					<story>$real was born somewhere in the Greater Antilles area.</story>
 					<bonus>
@@ -7297,7 +7297,6 @@
 						<lucimi>Lucimi</lucimi>
 						<taino>Taino</taino>
 					</options>
-					<id></id>
 					<group>Language</group>
 				</knowledgeskilllevel>
 			</bonus>

@@ -996,8 +996,9 @@ namespace Chummer
                 return false;
             }
 
+#if RELEASE
             string strVersion = string.Empty;
-            //Check to see if the character was created in a version of Chummer later than the currently installed one.
+			//Check to see if the character was created in a version of Chummer later than the currently installed one.
             if (objXmlCharacter.TryGetStringFieldQuickly("appversion", ref strVersion) && !string.IsNullOrEmpty(strVersion))
             {
                 if (strVersion.StartsWith("0."))
@@ -1018,9 +1019,9 @@ namespace Chummer
                     }
                 }
             }
-
-            // Get the name of the settings file in use if possible.
-            objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+#endif
+			// Get the name of the settings file in use if possible.
+			objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 		    
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
@@ -2120,7 +2121,6 @@ namespace Chummer
             if (strTraditionName == "Custom")
                 strTraditionName = _strTraditionName;
 			objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("name", strTraditionName);
 
             if (!string.IsNullOrEmpty(_strMagicTradition))
             {
@@ -2131,10 +2131,13 @@ namespace Chummer
 
                 if (objXmlTradition != null)
                 {
-                    if (objXmlTradition["name"] != null && objXmlTradition["name"].InnerText == "Custom")
-                        strDrainAtt = _strTraditionDrain;
-                    else
-                        strDrainAtt = objXmlTradition["drain"].InnerText;
+	                strDrainAtt = objXmlTradition["name"] != null && objXmlTradition["name"].InnerText == "Custom"
+		                ? _strTraditionDrain
+		                : objXmlTradition["drain"].InnerText;
+	                if (objXmlTradition["name"] != null && objXmlTradition["name"].InnerText != "Custom")
+	                {
+		                strTraditionName = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
+	                }
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -2148,7 +2151,7 @@ namespace Chummer
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
 
-                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
+                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
 				objWriter.WriteStartElement("drainattribute");
 	            foreach (string drainAttribute in strDrainAtt.Replace('+', ' ').Split(new [] {' '} , StringSplitOptions.RemoveEmptyEntries))
 	            {
@@ -2198,7 +2201,8 @@ namespace Chummer
 
 				objWriter.WriteElementString("source", strSource);
 				objWriter.WriteElementString("page", strPage);
-            }
+			}
+			objWriter.WriteElementString("name", strTraditionName);
 			objWriter.WriteEndElement();
 
 			// <stream />
@@ -2789,9 +2793,9 @@ namespace Chummer
 			
 			SkillsSection.Reset();
 		}
-		#endregion
+#endregion
 
-		#region Helper Methods
+#region Helper Methods
 		/// <summary>
 		/// Collate and save the character's used sourcebooks. This list is cleared after loading a character to ensure that only the current items are stored.
 		/// </summary>
@@ -3043,9 +3047,9 @@ namespace Chummer
             return strReturn;
 
         }
-        #endregion
+#endregion
 
-        #region Basic Properties
+#region Basic Properties
         /// <summary>
         /// Character Options object.
         /// </summary>
@@ -4031,9 +4035,9 @@ namespace Chummer
                 _intMaxAvail = value;
             }
         }
-        #endregion
+#endregion
 
-        #region Attributes
+#region Attributes
         /// <summary>
         /// Get an CharacterAttribute by its name.
         /// </summary>
@@ -4650,8 +4654,8 @@ namespace Chummer
             }
         }
 
-		#region Initiative
-		#region Physical
+#region Initiative
+#region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
@@ -4689,8 +4693,8 @@ namespace Chummer
 				return intINI;
             }
         }
-		#endregion
-		#region Astral
+#endregion
+#region Astral
         /// <summary>
         /// Astral Initiative.
         /// </summary>
@@ -4726,9 +4730,9 @@ namespace Chummer
 	            return 3;
                 }
             }
-		#endregion
-		#region Matrix
-		#region AR
+#endregion
+#region Matrix
+#region AR
         /// <summary>
         /// Formatted AR Matrix Initiative.
         /// </summary>
@@ -4790,8 +4794,8 @@ namespace Chummer
                 return Math.Min(intReturn, 5);
 			}
         }
-		#endregion 
-		#region Cold Sim
+#endregion
+#region Cold Sim
         /// <summary>
         /// Matrix Initiative via VR with Cold Sim.
         /// </summary>
@@ -4839,8 +4843,8 @@ namespace Chummer
 				return Math.Min(3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice),5); 
             }
         }
-		#endregion
-		#region Hot Sim
+#endregion
+#region Hot Sim
         /// <summary>
 		/// Matrix Initiative via VR with Hot Sim.
         /// </summary>
@@ -4888,9 +4892,9 @@ namespace Chummer
 				return Math.Min(4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice), 5);
             }
         }
-		#endregion
-		#endregion
-		#endregion
+#endregion
+#endregion
+#endregion
 
         /// <summary>
         /// Character's total Spell Resistance from qualities and metatype properties. 
@@ -4902,9 +4906,9 @@ namespace Chummer
                 return _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellResistance);
             }
         }
-	    #endregion
+#endregion
 
-        #region Special CharacterAttribute Tests
+#region Special CharacterAttribute Tests
         /// <summary>
         /// Composure (WIL + CHA).
         /// </summary>
@@ -4948,9 +4952,9 @@ namespace Chummer
                 return LOG.TotalValue + WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory);
             }
         }
-        #endregion
+#endregion
 
-        #region Reputation
+#region Reputation
         /// <summary>
         /// Amount of Street Cred the character has earned through standard means.
         /// </summary>
@@ -5113,9 +5117,9 @@ namespace Chummer
                 return strReturn;
             }
         }
-        #endregion
+#endregion
 
-        #region List Properties
+#region List Properties
         /// <summary>
         /// Improvements.
         /// </summary>
@@ -5463,9 +5467,9 @@ namespace Chummer
                 return _lstCalendar;
             }
         }
-        #endregion
+#endregion
 
-        #region Armor Properties
+#region Armor Properties
         /// <summary>
         /// The Character's highest Armor Rating.
         /// </summary>
@@ -5581,9 +5585,9 @@ namespace Chummer
             }
         }
 
-        #endregion
+#endregion
 
-        #region Condition Monitors
+#region Condition Monitors
         /// <summary>
         /// Number of Physical Condition Monitor boxes.
         /// </summary>
@@ -5685,9 +5689,9 @@ namespace Chummer
                 return intModifier;
             }
         }
-        #endregion
+#endregion
 
-        #region Build Properties
+#region Build Properties
         /// <summary>
         /// Method being used to build the character.
         /// </summary>
@@ -5934,9 +5938,9 @@ namespace Chummer
             }
         }
 
-	    #endregion
+#endregion
 
-        #region Metatype/Metavariant Information
+#region Metatype/Metavariant Information
         /// <summary>
         /// Character's Metatype.
         /// </summary>
@@ -6333,9 +6337,9 @@ namespace Chummer
                     return false;
             }
         }
-		#endregion
+#endregion
 
-		#region Special Functions and Enabled Check Properties
+#region Special Functions and Enabled Check Properties
 
 		/// <summary>
 		/// Whether or not Adept options are enabled.
@@ -6802,9 +6806,9 @@ namespace Chummer
 
             return false;
         }
-        #endregion
+#endregion
 
-        #region Application Properties
+#region Application Properties
         /// <summary>
         /// The frmViewer window being used by the character.
         /// </summary>
@@ -6819,9 +6823,9 @@ namespace Chummer
                 _frmPrintView = value;
             }
         }
-        #endregion
+#endregion
 
-        #region Old Quality Conversion Code
+#region Old Quality Conversion Code
         /// <summary>
         /// Convert Qualities that are still saved in the old format.
         /// </summary>
@@ -7042,9 +7046,9 @@ namespace Chummer
 
             return strTemp;
         }
-        #endregion
+#endregion
 
-        #region Temporary Properties : Dashboard
+#region Temporary Properties : Dashboard
         // This region is for properties that are applicable to the Dashboard
         /// <summary>
         /// The Current Initiative roll result including base Initiative
@@ -7087,9 +7091,9 @@ namespace Chummer
         /// <note>Dashboard</note>
         /// </summary>
         public int InitialInit { get; set; }
-		#endregion
+#endregion
 
-		#region Temporary Properties
+#region Temporary Properties
 
 		/// <summary>
 		/// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
@@ -7122,7 +7126,7 @@ namespace Chummer
 			return strReturn;
 		}
 
-		#endregion
+#endregion
 
 		//Can't be at improvementmanager due reasons
 		private Lazy<Stack<string>> _pushtext = new Lazy<Stack<string>>();

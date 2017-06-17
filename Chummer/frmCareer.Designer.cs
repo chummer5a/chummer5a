@@ -137,6 +137,9 @@ namespace Chummer
 			this.chkArmorEquipped = new System.Windows.Forms.CheckBox();
 			this.cmdDecreaseLifestyleMonths = new System.Windows.Forms.Button();
 			this.cmdIncreaseLifestyleMonths = new System.Windows.Forms.Button();
+			this.lblAttributesAug = new System.Windows.Forms.Label();
+			this.lblAttributesMetatype = new System.Windows.Forms.Label();
+			this.lblAttributes = new System.Windows.Forms.Label();
 			this.lblMovementLabel = new System.Windows.Forms.Label();
 			this.cmsMartialArts = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsMartialArtsAddAdvantage = new System.Windows.Forms.ToolStripMenuItem();
@@ -1131,9 +1134,7 @@ namespace Chummer
 			this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.lblAttributesAug = new System.Windows.Forms.Label();
-			this.lblAttributesMetatype = new System.Windows.Forms.Label();
-			this.lblAttributes = new System.Windows.Forms.Label();
+			this.cmdIncreasePowerPoints = new Chummer.helpers.Button();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -2078,6 +2079,40 @@ namespace Chummer
 			this.tipTooltip.SetToolTip(this.cmdIncreaseLifestyleMonths, "Increase the number of pre-paid months for the Lifestyle");
 			this.cmdIncreaseLifestyleMonths.UseVisualStyleBackColor = true;
 			this.cmdIncreaseLifestyleMonths.Click += new System.EventHandler(this.cmdIncreaseLifestyleMonths_Click);
+			// 
+			// lblAttributesAug
+			// 
+			this.lblAttributesAug.AutoSize = true;
+			this.lblAttributesAug.Location = new System.Drawing.Point(486, 29);
+			this.lblAttributesAug.Name = "lblAttributesAug";
+			this.lblAttributesAug.Size = new System.Drawing.Size(50, 13);
+			this.lblAttributesAug.TabIndex = 105;
+			this.lblAttributesAug.Tag = "Label_ValAugmented";
+			this.lblAttributesAug.Text = "Val (Aug)";
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			// 
+			// lblAttributesMetatype
+			// 
+			this.lblAttributesMetatype.AutoSize = true;
+			this.lblAttributesMetatype.Location = new System.Drawing.Point(542, 29);
+			this.lblAttributesMetatype.Name = "lblAttributesMetatype";
+			this.lblAttributesMetatype.Size = new System.Drawing.Size(80, 13);
+			this.lblAttributesMetatype.TabIndex = 104;
+			this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
+			this.lblAttributesMetatype.Text = "Metatype Limits";
+			this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
+			// 
+			// lblAttributes
+			// 
+			this.lblAttributes.AutoSize = true;
+			this.lblAttributes.Location = new System.Drawing.Point(286, 29);
+			this.lblAttributes.Name = "lblAttributes";
+			this.lblAttributes.Size = new System.Drawing.Size(51, 13);
+			this.lblAttributes.TabIndex = 103;
+			this.lblAttributes.Tag = "Label_Attributes";
+			this.lblAttributes.Text = "Attributes";
+			this.tipTooltip.SetToolTip(this.lblAttributes, "Only one attribute may be at its Maximum value during character creation (not inc" +
+        "luding EDG, MAG, and RES).");
 			// 
 			// lblMovementLabel
 			// 
@@ -4560,6 +4595,7 @@ namespace Chummer
 			// tabCommon
 			// 
 			this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCommon.Controls.Add(this.cmdIncreasePowerPoints);
 			this.tabCommon.Controls.Add(this.lblAttributesAug);
 			this.tabCommon.Controls.Add(this.lblAttributesMetatype);
 			this.tabCommon.Controls.Add(this.lblAttributes);
@@ -13393,40 +13429,18 @@ namespace Chummer
 			this.tsAIProgramNotes.Text = "&Notes";
 			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
 			// 
-			// lblAttributesAug
+			// cmdIncreasePowerPoints
 			// 
-			this.lblAttributesAug.AutoSize = true;
-			this.lblAttributesAug.Location = new System.Drawing.Point(486, 29);
-			this.lblAttributesAug.Name = "lblAttributesAug";
-			this.lblAttributesAug.Size = new System.Drawing.Size(50, 13);
-			this.lblAttributesAug.TabIndex = 105;
-			this.lblAttributesAug.Tag = "Label_ValAugmented";
-			this.lblAttributesAug.Text = "Val (Aug)";
-			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
-			// 
-			// label3
-			// 
-			this.lblAttributesMetatype.AutoSize = true;
-			this.lblAttributesMetatype.Location = new System.Drawing.Point(542, 29);
-			this.lblAttributesMetatype.Name = "label3";
-			this.lblAttributesMetatype.Size = new System.Drawing.Size(80, 13);
-			this.lblAttributesMetatype.TabIndex = 104;
-			this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
-			this.lblAttributesMetatype.Text = "Metatype Limits";
-			this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
-			// 
-			// lblAttributes
-			// 
-			this.lblAttributes.AutoSize = true;
-			this.lblAttributes.Location = new System.Drawing.Point(286, 29);
-			this.lblAttributes.Name = "lblAttributes";
-			this.lblAttributes.Size = new System.Drawing.Size(51, 13);
-			this.lblAttributes.TabIndex = 103;
-			this.lblAttributes.Tag = "Label_Attributes";
-			this.lblAttributes.Text = "Attributes";
-			this.tipTooltip.SetToolTip(this.lblAttributes, "Only one attribute may be at its Maximum value during" +
-		" character creation (not incl" +
-        "uding EDG, MAG, and RES).");
+			this.cmdIncreasePowerPoints.Enabled = false;
+			this.cmdIncreasePowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add;
+			this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(805, 283);
+			this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
+			this.cmdIncreasePowerPoints.Size = new System.Drawing.Size(24, 24);
+			this.cmdIncreasePowerPoints.TabIndex = 106;
+			this.cmdIncreasePowerPoints.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.cmdIncreasePowerPoints.UseVisualStyleBackColor = true;
+			this.cmdIncreasePowerPoints.Click += new System.EventHandler(this.cmdIncreasePowerPoints_Click);
 			// 
 			// frmCareer
 			// 
@@ -13933,7 +13947,6 @@ namespace Chummer
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.FlowLayoutPanel panEnemies;
 		private System.Windows.Forms.Button cmdAddEnemy;
-		private System.Windows.Forms.Button cmdIncreasePowerPoints;
 		private System.Windows.Forms.Label lblPossessed;
 		private System.Windows.Forms.TextBox txtAlias;
 		private System.Windows.Forms.Label lblAlias;
@@ -14665,5 +14678,6 @@ namespace Chummer
 		private Label lblAttributes;
 		private Label lblAttributesAug;
 		private Label lblAttributesMetatype;
+		private Chummer.helpers.Button cmdIncreasePowerPoints;
 	}
 }

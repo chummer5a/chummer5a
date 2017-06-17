@@ -285,30 +285,29 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
 		public void Print(XmlTextWriter objWriter)
 		{
-			if (_blnPrint)
+			if (!_blnPrint) return;
+			objWriter.WriteStartElement("quality");
+			objWriter.WriteElementString("name", DisplayNameShort);
+			objWriter.WriteElementString("formattedname", FormattedDisplayName);
+			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+			objWriter.WriteElementString("lp", _intLP.ToString());
+			objWriter.WriteElementString("cost", _intCost.ToString());
+			string strLifestyleQualityType = _objLifestyleQualityType.ToString();
+			if (GlobalOptions.Instance.Language != "en-us")
 			{
-				objWriter.WriteStartElement("lifestylequality");
-				objWriter.WriteElementString("name", DisplayNameShort);
-				objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-				objWriter.WriteElementString("lp", _intLP.ToString());
-				objWriter.WriteElementString("cost", _intCost.ToString());
-				string strLifestyleQualityType = _objLifestyleQualityType.ToString();
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
-						strLifestyleQualityType = objNode?.Attributes["translate"]?.InnerText;
-				}
-				objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
-				objWriter.WriteElementString("lifestylequalitytype_english", _objLifestyleQualityType.ToString());
-				objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
-				objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-				objWriter.WriteElementString("page", Page);
-				if (_objCharacter.Options.PrintNotes)
-					objWriter.WriteElementString("notes", _strNotes);
-				objWriter.WriteEndElement();
+				XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
+				strLifestyleQualityType = objNode?.Attributes?["translate"].InnerText ?? strLifestyleQualityType;
 			}
+			objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
+			objWriter.WriteElementString("lifestylequalitytype_english", _objLifestyleQualityType.ToString());
+			objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
+			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+			objWriter.WriteElementString("page", Page);
+			if (_objCharacter.Options.PrintNotes)
+				objWriter.WriteElementString("notes", _strNotes);
+			objWriter.WriteEndElement();
 		}
 		#endregion
 
@@ -502,6 +501,29 @@ namespace Chummer.Backend.Equipment
 				return strReturn;
 			}
 		}
+
+	    public string FormattedDisplayName
+	    {
+		    get
+		    {
+			    string strReturn = DisplayName;
+
+				if (Multiplier > 0)
+				{
+					strReturn += $" [+{Multiplier}%]";
+				}
+				else if (Multiplier < 0)
+				{
+					strReturn += $" [-{Multiplier}%]";
+				}
+
+				if (Cost > 0)
+				{
+					strReturn += $" [+{Cost}¥]";
+				}
+				return strReturn;
+		    }
+	    }
 
 		/// <summary>
 		/// Whether or not the LifestyleQuality appears on the printouts.

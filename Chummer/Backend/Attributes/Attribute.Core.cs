@@ -1388,6 +1388,10 @@ namespace Chummer.Backend.Attributes
 			{
 				OnPropertyChanged(nameof(Augmented));
 			}
+			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReplaceAttribute && imp.ImprovedName == Abbrev))
+			{
+				OnPropertyChanged(nameof(AugmentedMetatypeLimits));
+			}
 			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled && imp.AugmentedMaximum != 0 || imp.Maximum != 0))
 			{
 				foreach (Improvement i in improvements.Where(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled))

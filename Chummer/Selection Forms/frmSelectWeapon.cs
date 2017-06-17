@@ -260,11 +260,19 @@ namespace Chummer
                 tabWeapons.Columns.Add("Cost");
                 tabWeapons.Columns["Cost"].DataType = typeof(Int32);
 
-                foreach (XmlNode objXmlWeapon in objNodeList)
-                {
-                    bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
+	            foreach (XmlNode objXmlWeapon in objNodeList)
+	            {
+		            bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
 
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+					if (objXmlWeapon["mount"] != null && !blnHide)
+					{
+						blnHide = !Mounts.Contains(objXmlWeapon["mount"].InnerText);
+					}
+					if (objXmlWeapon["extramount"] != null && !blnHide)
+					{
+						blnHide = !Mounts.Contains(objXmlWeapon["extramount"].InnerText);
+					}
+					if (!blnHide && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
                     {
                         continue;
                     }
@@ -331,20 +339,30 @@ namespace Chummer
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
-
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter,chkHideOverAvailLimit.Checked))
+					
+					if (objXmlWeapon["mount"] != null && !blnHide)
+					{
+						blnHide = !Mounts.Contains(objXmlWeapon["mount"].InnerText);
+					}
+					if (objXmlWeapon["extramount"] != null && !blnHide)
+					{
+						blnHide = !Mounts.Contains(objXmlWeapon["extramount"].InnerText);
+					}
+					if (!blnHide && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+					{
+						continue;
+					}
+					if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter,chkHideOverAvailLimit.Checked))
                     {
                         continue;
                     }
-                    if (!blnHide)
-                    {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objXmlWeapon["id"]?.InnerText,
-                            Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText
-                        };
-                        lstWeapons.Add(objItem);
-                    }
+	                if (blnHide) continue;
+	                ListItem objItem = new ListItem
+	                {
+		                Value = objXmlWeapon["id"]?.InnerText,
+		                Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText
+	                };
+	                lstWeapons.Add(objItem);
                 }
                 SortListItem objSort = new SortListItem();
                 lstWeapons.Sort(objSort.Compare);
@@ -535,6 +553,9 @@ namespace Chummer
 				_strLimitToCategories = value.Split(',');
 			}
 		}
+
+		public bool Underbarrel { get; set; }
+		public string Mounts { get; set; }
 		#endregion
 
 		#region Methods

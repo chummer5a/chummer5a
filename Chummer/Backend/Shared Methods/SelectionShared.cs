@@ -13,7 +13,6 @@ namespace Chummer.Backend.Shared_Methods
 	internal class SelectionShared
 	{
 		//TODO: Might be a better location for this; Class names are screwy.
-        //TODO: Parameter requirements (errorTitle, errorMessage, et al) can be reduced to a single string check if we assign the Message_Generic_XXXX string locally to the method, but this reduces the ability to push in arbitrary strings. Still not sure if message presentation should be handled by the calling method or not. 
 		/// <summary>
 		///     Evaluates requirements of a given node against a given Character object.
 		/// </summary>
@@ -241,13 +240,6 @@ namespace Chummer.Backend.Shared_Methods
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
 					XPathExpression xprAttributes = nav.Compile(strAttributes);
 					return Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(node["val"].InnerText);
-
-			    case "bioware":
-			        name = "\n\t" +
-			                      LanguageManager.Instance.GetString("Label_Bioware") + " " +
-			                      node.InnerText; ;
-			        return character.Cyberware.Any(objCyberware => objCyberware.Name == node.InnerText);
-
                 case "careerkarma":
 					// Check Career Karma requirement.
 					name = "\n\t" + LanguageManager.Instance.GetString("Message_SelectQuality_RequireKarma")
@@ -274,13 +266,39 @@ namespace Chummer.Backend.Shared_Methods
 						return false;
 					}
 					break;
-                case "cyberware":
-                    name = "\n\t" +
-                           LanguageManager.Instance.GetString("Label_Cyberware") + " " +
-                           node.InnerText; ;
-                    return character.Cyberware.Any(objCyberware => objCyberware.Name == node.InnerText);
-
-                case "damageresistance":
+				case "bioware":
+				case "cyberware":
+				{
+					
+					int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
+					name = null;
+					name += node.Name == "cyberware"
+						? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
+						: "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
+					return
+						character.Cyberware.Count(
+							objCyberware =>
+								objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
+								node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+					}
+				case "biowarecontains":
+				case "cyberwarecontains":
+				{
+					int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
+						name = null;
+						name += node.Name == "cyberware"
+							? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
+							: "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
+					Improvement.ImprovementSource source = Improvement.ImprovementSource.Cyberware;
+					if (node.Name == "biowarecontains")
+					{
+						source = Improvement.ImprovementSource.Bioware;
+					}
+					return character.Cyberware.Count(objCyberware =>
+							objCyberware.SourceType == source && objCyberware.Name.Contains(node.InnerText) && node.Attributes?["select"] == null ||
+							node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+				}
+				case "damageresistance":
 					// Damage Resistance must be a particular value.
 					ImprovementManager objImprovementManager = new ImprovementManager(character);
 					name = "\n\t" + LanguageManager.Instance.GetString("String_DamageResistance");

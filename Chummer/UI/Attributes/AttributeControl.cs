@@ -120,7 +120,7 @@ namespace Chummer.UI.Attributes
 		/// </summary>
 		private bool ShowAttributeRule(decimal value)
 		{
-			if (value < attribute.TotalMaximum) return true;
+			if (attribute._objCharacter.IgnoreRules || value < attribute.TotalMaximum) return true;
 			bool any = attribute._objCharacter.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
 			if (!any || attribute.AtMetatypeMaximum || attribute._objCharacter.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
 			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
