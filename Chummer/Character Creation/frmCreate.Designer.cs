@@ -36,31 +36,31 @@ namespace Chummer
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
-			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Physical");
-			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Mental");
-			System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Social");
-			System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
-			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Qualities");
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
-			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
-			System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Health Spells");
-			System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
-			System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
-			System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Rituals");
-			System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Enchantments");
-			System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
-			System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
-			System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Critter Powers");
-			System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Weaknesses");
-			System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Cyberware");
-			System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Bioware");
-			System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-			System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Armor");
-			System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Weapons");
-			System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Gear");
-			System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+			System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
+			System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
+			System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("Physical");
+			System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Mental");
+			System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("Social");
+			System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
+			System.Windows.Forms.TreeNode treeNode57 = new System.Windows.Forms.TreeNode("Selected Qualities");
+			System.Windows.Forms.TreeNode treeNode58 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
+			System.Windows.Forms.TreeNode treeNode59 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
+			System.Windows.Forms.TreeNode treeNode60 = new System.Windows.Forms.TreeNode("Selected Health Spells");
+			System.Windows.Forms.TreeNode treeNode61 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
+			System.Windows.Forms.TreeNode treeNode62 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
+			System.Windows.Forms.TreeNode treeNode63 = new System.Windows.Forms.TreeNode("Selected Rituals");
+			System.Windows.Forms.TreeNode treeNode64 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+			System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+			System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
+			System.Windows.Forms.TreeNode treeNode67 = new System.Windows.Forms.TreeNode("Critter Powers");
+			System.Windows.Forms.TreeNode treeNode68 = new System.Windows.Forms.TreeNode("Weaknesses");
+			System.Windows.Forms.TreeNode treeNode69 = new System.Windows.Forms.TreeNode("Selected Cyberware");
+			System.Windows.Forms.TreeNode treeNode70 = new System.Windows.Forms.TreeNode("Selected Bioware");
+			System.Windows.Forms.TreeNode treeNode71 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+			System.Windows.Forms.TreeNode treeNode72 = new System.Windows.Forms.TreeNode("Selected Armor");
+			System.Windows.Forms.TreeNode treeNode73 = new System.Windows.Forms.TreeNode("Selected Weapons");
+			System.Windows.Forms.TreeNode treeNode74 = new System.Windows.Forms.TreeNode("Selected Gear");
+			System.Windows.Forms.TreeNode treeNode75 = new System.Windows.Forms.TreeNode("Selected Vehicles");
 			this.StatusStrip = new System.Windows.Forms.StatusStrip();
 			this.tssBPLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tssBP = new System.Windows.Forms.ToolStripStatusLabel();
@@ -102,16 +102,6 @@ namespace Chummer
 			this.lblBuildPrimaryAttributes = new System.Windows.Forms.Label();
 			this.lblBuildNegativeQualities = new System.Windows.Forms.Label();
 			this.lblBuildPositiveQualities = new System.Windows.Forms.Label();
-			this.lblPBuildEssenceLabel = new System.Windows.Forms.Label();
-			this.lblPBuildNuyenLabel = new System.Windows.Forms.Label();
-			this.lblPBuildComplexFormsLabel = new System.Windows.Forms.Label();
-			this.lblPBuildSpellsLabel = new System.Windows.Forms.Label();
-			this.lblPBuildKnowledgeSkillsLabel = new System.Windows.Forms.Label();
-			this.lblPBuildActiveSkillsLabel = new System.Windows.Forms.Label();
-			this.lblPBuildSkillGroupsLabel = new System.Windows.Forms.Label();
-			this.lblPBuildContactsLabel = new System.Windows.Forms.Label();
-			this.lblPBuildNegativeQualitiesLabel = new System.Windows.Forms.Label();
-			this.lblPBuildPositiveQualitiesLabel = new System.Windows.Forms.Label();
 			this.lblRiggingINILabel = new System.Windows.Forms.Label();
 			this.lblMatrixINIHotLabel = new System.Windows.Forms.Label();
 			this.lblMatrixINIColdLabel = new System.Windows.Forms.Label();
@@ -150,8 +140,6 @@ namespace Chummer
 			this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
 			this.lblFoci = new System.Windows.Forms.Label();
 			this.lblBuildAIAdvancedPrograms = new System.Windows.Forms.Label();
-			this.lblBuildRituals = new System.Windows.Forms.Label();
-			this.lblBuildPreparations = new System.Windows.Forms.Label();
 			this.lblBuildRitualsBPLabel = new System.Windows.Forms.Label();
 			this.lblBuildPrepsBPLabel = new System.Windows.Forms.Label();
 			this.lblAIProgramsAdvancedPrograms = new System.Windows.Forms.Label();
@@ -809,25 +797,6 @@ namespace Chummer
 			this.lblNegativeQualitiesBP = new System.Windows.Forms.Label();
 			this.lblAttributesBP = new System.Windows.Forms.Label();
 			this.lblContactsBP = new System.Windows.Forms.Label();
-			this.tabBuildSummary = new System.Windows.Forms.TabPage();
-			this.lblPBuildSpecial = new System.Windows.Forms.Label();
-			this.lblPBuildSpecialLabel = new System.Windows.Forms.Label();
-			this.lblRitualsBP = new System.Windows.Forms.Label();
-			this.lblPreparationsBP = new System.Windows.Forms.Label();
-			this.lblMetatypeBP = new System.Windows.Forms.Label();
-			this.label18 = new System.Windows.Forms.Label();
-			this.lblPBuildEssence = new System.Windows.Forms.Label();
-			this.lblPBuildNuyen = new System.Windows.Forms.Label();
-			this.lblPBuildAttributes = new System.Windows.Forms.Label();
-			this.lblPBuildAttributesLabel = new System.Windows.Forms.Label();
-			this.lblPBuildComplexForms = new System.Windows.Forms.Label();
-			this.lblPBuildKnowledgeSkills = new System.Windows.Forms.Label();
-			this.lblPBuildActiveSkills = new System.Windows.Forms.Label();
-			this.lblPBuildSpells = new System.Windows.Forms.Label();
-			this.lblPBuildSkillGroups = new System.Windows.Forms.Label();
-			this.lblPBuildPositiveQualities = new System.Windows.Forms.Label();
-			this.lblPBuildNegativeQualities = new System.Windows.Forms.Label();
-			this.lblPBuildContacts = new System.Windows.Forms.Label();
 			this.tabOtherInfo = new System.Windows.Forms.TabPage();
 			this.lblRiggingINI = new System.Windows.Forms.Label();
 			this.lblMatrixINIHot = new System.Windows.Forms.Label();
@@ -888,6 +857,8 @@ namespace Chummer
 			this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.lblPBuildSpecial = new System.Windows.Forms.Label();
+			this.lblPBuildSpecialLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -965,7 +936,6 @@ namespace Chummer
 			this.tabImprovements.SuspendLayout();
 			this.tabInfo.SuspendLayout();
 			this.tabBPSummary.SuspendLayout();
-			this.tabBuildSummary.SuspendLayout();
 			this.tabOtherInfo.SuspendLayout();
 			this.tabDefences.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
@@ -1251,7 +1221,7 @@ namespace Chummer
 			// lblBuildFoci
 			// 
 			this.lblBuildFoci.AutoSize = true;
-			this.lblBuildFoci.Location = new System.Drawing.Point(6, 295);
+			this.lblBuildFoci.Location = new System.Drawing.Point(10, 282);
 			this.lblBuildFoci.Name = "lblBuildFoci";
 			this.lblBuildFoci.Size = new System.Drawing.Size(27, 13);
 			this.lblBuildFoci.TabIndex = 81;
@@ -1262,7 +1232,7 @@ namespace Chummer
 			// lblBuildManeuvers
 			// 
 			this.lblBuildManeuvers.AutoSize = true;
-			this.lblBuildManeuvers.Location = new System.Drawing.Point(6, 405);
+			this.lblBuildManeuvers.Location = new System.Drawing.Point(10, 408);
 			this.lblBuildManeuvers.Name = "lblBuildManeuvers";
 			this.lblBuildManeuvers.Size = new System.Drawing.Size(85, 13);
 			this.lblBuildManeuvers.TabIndex = 79;
@@ -1273,7 +1243,7 @@ namespace Chummer
 			// lblBuildNuyen
 			// 
 			this.lblBuildNuyen.AutoSize = true;
-			this.lblBuildNuyen.Location = new System.Drawing.Point(6, 141);
+			this.lblBuildNuyen.Location = new System.Drawing.Point(10, 156);
 			this.lblBuildNuyen.Name = "lblBuildNuyen";
 			this.lblBuildNuyen.Size = new System.Drawing.Size(38, 13);
 			this.lblBuildNuyen.TabIndex = 76;
@@ -1284,7 +1254,7 @@ namespace Chummer
 			// lblBuildEnemies
 			// 
 			this.lblBuildEnemies.AutoSize = true;
-			this.lblBuildEnemies.Location = new System.Drawing.Point(6, 119);
+			this.lblBuildEnemies.Location = new System.Drawing.Point(10, 135);
 			this.lblBuildEnemies.Name = "lblBuildEnemies";
 			this.lblBuildEnemies.Size = new System.Drawing.Size(47, 13);
 			this.lblBuildEnemies.TabIndex = 75;
@@ -1296,7 +1266,7 @@ namespace Chummer
 			// lblBuildComplexForms
 			// 
 			this.lblBuildComplexForms.AutoSize = true;
-			this.lblBuildComplexForms.Location = new System.Drawing.Point(6, 361);
+			this.lblBuildComplexForms.Location = new System.Drawing.Point(10, 366);
 			this.lblBuildComplexForms.Name = "lblBuildComplexForms";
 			this.lblBuildComplexForms.Size = new System.Drawing.Size(78, 13);
 			this.lblBuildComplexForms.TabIndex = 72;
@@ -1307,7 +1277,7 @@ namespace Chummer
 			// lblBuildSprites
 			// 
 			this.lblBuildSprites.AutoSize = true;
-			this.lblBuildSprites.Location = new System.Drawing.Point(6, 339);
+			this.lblBuildSprites.Location = new System.Drawing.Point(10, 345);
 			this.lblBuildSprites.Name = "lblBuildSprites";
 			this.lblBuildSprites.Size = new System.Drawing.Size(39, 13);
 			this.lblBuildSprites.TabIndex = 71;
@@ -1318,7 +1288,7 @@ namespace Chummer
 			// lblBuildSpirits
 			// 
 			this.lblBuildSpirits.AutoSize = true;
-			this.lblBuildSpirits.Location = new System.Drawing.Point(6, 317);
+			this.lblBuildSpirits.Location = new System.Drawing.Point(10, 324);
 			this.lblBuildSpirits.Name = "lblBuildSpirits";
 			this.lblBuildSpirits.Size = new System.Drawing.Size(35, 13);
 			this.lblBuildSpirits.TabIndex = 70;
@@ -1329,7 +1299,7 @@ namespace Chummer
 			// lblBuildSpells
 			// 
 			this.lblBuildSpells.AutoSize = true;
-			this.lblBuildSpells.Location = new System.Drawing.Point(6, 229);
+			this.lblBuildSpells.Location = new System.Drawing.Point(10, 240);
 			this.lblBuildSpells.Name = "lblBuildSpells";
 			this.lblBuildSpells.Size = new System.Drawing.Size(35, 13);
 			this.lblBuildSpells.TabIndex = 69;
@@ -1340,7 +1310,7 @@ namespace Chummer
 			// lblBuildKnowledgeSkills
 			// 
 			this.lblBuildKnowledgeSkills.AutoSize = true;
-			this.lblBuildKnowledgeSkills.Location = new System.Drawing.Point(6, 207);
+			this.lblBuildKnowledgeSkills.Location = new System.Drawing.Point(10, 219);
 			this.lblBuildKnowledgeSkills.Name = "lblBuildKnowledgeSkills";
 			this.lblBuildKnowledgeSkills.Size = new System.Drawing.Size(87, 13);
 			this.lblBuildKnowledgeSkills.TabIndex = 64;
@@ -1352,7 +1322,7 @@ namespace Chummer
 			// lblBuildActiveSkills
 			// 
 			this.lblBuildActiveSkills.AutoSize = true;
-			this.lblBuildActiveSkills.Location = new System.Drawing.Point(6, 185);
+			this.lblBuildActiveSkills.Location = new System.Drawing.Point(10, 198);
 			this.lblBuildActiveSkills.Name = "lblBuildActiveSkills";
 			this.lblBuildActiveSkills.Size = new System.Drawing.Size(64, 13);
 			this.lblBuildActiveSkills.TabIndex = 63;
@@ -1363,7 +1333,7 @@ namespace Chummer
 			// lblBuildSkillGroups
 			// 
 			this.lblBuildSkillGroups.AutoSize = true;
-			this.lblBuildSkillGroups.Location = new System.Drawing.Point(6, 163);
+			this.lblBuildSkillGroups.Location = new System.Drawing.Point(10, 177);
 			this.lblBuildSkillGroups.Name = "lblBuildSkillGroups";
 			this.lblBuildSkillGroups.Size = new System.Drawing.Size(63, 13);
 			this.lblBuildSkillGroups.TabIndex = 62;
@@ -1374,7 +1344,7 @@ namespace Chummer
 			// lblBuildContacts
 			// 
 			this.lblBuildContacts.AutoSize = true;
-			this.lblBuildContacts.Location = new System.Drawing.Point(6, 97);
+			this.lblBuildContacts.Location = new System.Drawing.Point(10, 114);
 			this.lblBuildContacts.Name = "lblBuildContacts";
 			this.lblBuildContacts.Size = new System.Drawing.Size(49, 13);
 			this.lblBuildContacts.TabIndex = 59;
@@ -1385,7 +1355,7 @@ namespace Chummer
 			// lblBuildPrimaryAttributes
 			// 
 			this.lblBuildPrimaryAttributes.AutoSize = true;
-			this.lblBuildPrimaryAttributes.Location = new System.Drawing.Point(6, 31);
+			this.lblBuildPrimaryAttributes.Location = new System.Drawing.Point(10, 30);
 			this.lblBuildPrimaryAttributes.Name = "lblBuildPrimaryAttributes";
 			this.lblBuildPrimaryAttributes.Size = new System.Drawing.Size(51, 13);
 			this.lblBuildPrimaryAttributes.TabIndex = 57;
@@ -1398,7 +1368,7 @@ namespace Chummer
 			// lblBuildNegativeQualities
 			// 
 			this.lblBuildNegativeQualities.AutoSize = true;
-			this.lblBuildNegativeQualities.Location = new System.Drawing.Point(6, 75);
+			this.lblBuildNegativeQualities.Location = new System.Drawing.Point(10, 93);
 			this.lblBuildNegativeQualities.Name = "lblBuildNegativeQualities";
 			this.lblBuildNegativeQualities.Size = new System.Drawing.Size(93, 13);
 			this.lblBuildNegativeQualities.TabIndex = 54;
@@ -1410,126 +1380,13 @@ namespace Chummer
 			// lblBuildPositiveQualities
 			// 
 			this.lblBuildPositiveQualities.AutoSize = true;
-			this.lblBuildPositiveQualities.Location = new System.Drawing.Point(6, 53);
+			this.lblBuildPositiveQualities.Location = new System.Drawing.Point(10, 72);
 			this.lblBuildPositiveQualities.Name = "lblBuildPositiveQualities";
 			this.lblBuildPositiveQualities.Size = new System.Drawing.Size(87, 13);
 			this.lblBuildPositiveQualities.TabIndex = 50;
 			this.lblBuildPositiveQualities.Tag = "Label_SummaryPositiveQualities";
 			this.lblBuildPositiveQualities.Text = "Positive Qualities";
 			this.tipTooltip.SetToolTip(this.lblBuildPositiveQualities, "Characters may select up to 35 BP worth of Positive Qualities. Qualities in dark " +
-        "red do not count towards the 35 BP limit.");
-			// 
-			// lblPBuildEssenceLabel
-			// 
-			this.lblPBuildEssenceLabel.AutoSize = true;
-			this.lblPBuildEssenceLabel.Location = new System.Drawing.Point(7, 282);
-			this.lblPBuildEssenceLabel.Name = "lblPBuildEssenceLabel";
-			this.lblPBuildEssenceLabel.Size = new System.Drawing.Size(48, 13);
-			this.lblPBuildEssenceLabel.TabIndex = 122;
-			this.lblPBuildEssenceLabel.Tag = "Label_SummaryEssence";
-			this.lblPBuildEssenceLabel.Text = "Essence";
-			this.tipTooltip.SetToolTip(this.lblPBuildEssenceLabel, "Each point of Connection or Loyalty costs 1 BP.");
-			// 
-			// lblPBuildNuyenLabel
-			// 
-			this.lblPBuildNuyenLabel.AutoSize = true;
-			this.lblPBuildNuyenLabel.Location = new System.Drawing.Point(7, 114);
-			this.lblPBuildNuyenLabel.Name = "lblPBuildNuyenLabel";
-			this.lblPBuildNuyenLabel.Size = new System.Drawing.Size(38, 13);
-			this.lblPBuildNuyenLabel.TabIndex = 112;
-			this.lblPBuildNuyenLabel.Tag = "Label_SummaryNuyen";
-			this.lblPBuildNuyenLabel.Text = "Nuyen";
-			this.tipTooltip.SetToolTip(this.lblPBuildNuyenLabel, "The amount of Nuyen your character has to purchase equipment. 1 BP = 5,000¥.");
-			// 
-			// lblPBuildComplexFormsLabel
-			// 
-			this.lblPBuildComplexFormsLabel.AutoSize = true;
-			this.lblPBuildComplexFormsLabel.Location = new System.Drawing.Point(7, 261);
-			this.lblPBuildComplexFormsLabel.Name = "lblPBuildComplexFormsLabel";
-			this.lblPBuildComplexFormsLabel.Size = new System.Drawing.Size(78, 13);
-			this.lblPBuildComplexFormsLabel.TabIndex = 108;
-			this.lblPBuildComplexFormsLabel.Tag = "Label_SummaryComplexForms";
-			this.lblPBuildComplexFormsLabel.Text = "Complex Forms";
-			this.tipTooltip.SetToolTip(this.lblPBuildComplexFormsLabel, "Complex Forms cost a number of BP equal to their Rating.");
-			// 
-			// lblPBuildSpellsLabel
-			// 
-			this.lblPBuildSpellsLabel.AutoSize = true;
-			this.lblPBuildSpellsLabel.Location = new System.Drawing.Point(7, 198);
-			this.lblPBuildSpellsLabel.Name = "lblPBuildSpellsLabel";
-			this.lblPBuildSpellsLabel.Size = new System.Drawing.Size(35, 13);
-			this.lblPBuildSpellsLabel.TabIndex = 105;
-			this.lblPBuildSpellsLabel.Tag = "Label_SummarySpells";
-			this.lblPBuildSpellsLabel.Text = "Spells";
-			this.tipTooltip.SetToolTip(this.lblPBuildSpellsLabel, "Each Spell costs 3 BP.");
-			// 
-			// lblPBuildKnowledgeSkillsLabel
-			// 
-			this.lblPBuildKnowledgeSkillsLabel.AutoSize = true;
-			this.lblPBuildKnowledgeSkillsLabel.Location = new System.Drawing.Point(7, 177);
-			this.lblPBuildKnowledgeSkillsLabel.Name = "lblPBuildKnowledgeSkillsLabel";
-			this.lblPBuildKnowledgeSkillsLabel.Size = new System.Drawing.Size(87, 13);
-			this.lblPBuildKnowledgeSkillsLabel.TabIndex = 100;
-			this.lblPBuildKnowledgeSkillsLabel.Tag = "Label_SummaryKnowledgeSkills";
-			this.lblPBuildKnowledgeSkillsLabel.Text = "Knowledge Skills";
-			this.tipTooltip.SetToolTip(this.lblPBuildKnowledgeSkillsLabel, "Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skil" +
-        "ls including Languages. Additional Knowledge Skill points cost 2 BP each.");
-			// 
-			// lblPBuildActiveSkillsLabel
-			// 
-			this.lblPBuildActiveSkillsLabel.AutoSize = true;
-			this.lblPBuildActiveSkillsLabel.Location = new System.Drawing.Point(7, 156);
-			this.lblPBuildActiveSkillsLabel.Name = "lblPBuildActiveSkillsLabel";
-			this.lblPBuildActiveSkillsLabel.Size = new System.Drawing.Size(64, 13);
-			this.lblPBuildActiveSkillsLabel.TabIndex = 99;
-			this.lblPBuildActiveSkillsLabel.Tag = "Label_SummaryActiveSkills";
-			this.lblPBuildActiveSkillsLabel.Text = "Active Skills";
-			this.tipTooltip.SetToolTip(this.lblPBuildActiveSkillsLabel, "Skills cost 4 BP per point and 2 BP for a Specialization.");
-			// 
-			// lblPBuildSkillGroupsLabel
-			// 
-			this.lblPBuildSkillGroupsLabel.AutoSize = true;
-			this.lblPBuildSkillGroupsLabel.Location = new System.Drawing.Point(7, 135);
-			this.lblPBuildSkillGroupsLabel.Name = "lblPBuildSkillGroupsLabel";
-			this.lblPBuildSkillGroupsLabel.Size = new System.Drawing.Size(63, 13);
-			this.lblPBuildSkillGroupsLabel.TabIndex = 98;
-			this.lblPBuildSkillGroupsLabel.Tag = "Label_SummarySkillGroups";
-			this.lblPBuildSkillGroupsLabel.Text = "Skill Groups";
-			this.tipTooltip.SetToolTip(this.lblPBuildSkillGroupsLabel, "Skill Groups cost 10 BP per point.");
-			// 
-			// lblPBuildContactsLabel
-			// 
-			this.lblPBuildContactsLabel.AutoSize = true;
-			this.lblPBuildContactsLabel.Location = new System.Drawing.Point(7, 303);
-			this.lblPBuildContactsLabel.Name = "lblPBuildContactsLabel";
-			this.lblPBuildContactsLabel.Size = new System.Drawing.Size(49, 13);
-			this.lblPBuildContactsLabel.TabIndex = 95;
-			this.lblPBuildContactsLabel.Tag = "Label_SummaryContacts";
-			this.lblPBuildContactsLabel.Text = "Contacts";
-			this.tipTooltip.SetToolTip(this.lblPBuildContactsLabel, "Each point of Connection or Loyalty costs 1 BP.");
-			// 
-			// lblPBuildNegativeQualitiesLabel
-			// 
-			this.lblPBuildNegativeQualitiesLabel.AutoSize = true;
-			this.lblPBuildNegativeQualitiesLabel.Location = new System.Drawing.Point(7, 93);
-			this.lblPBuildNegativeQualitiesLabel.Name = "lblPBuildNegativeQualitiesLabel";
-			this.lblPBuildNegativeQualitiesLabel.Size = new System.Drawing.Size(93, 13);
-			this.lblPBuildNegativeQualitiesLabel.TabIndex = 90;
-			this.lblPBuildNegativeQualitiesLabel.Tag = "Label_SummaryNegativeQualities";
-			this.lblPBuildNegativeQualitiesLabel.Text = "Negative Qualities";
-			this.tipTooltip.SetToolTip(this.lblPBuildNegativeQualitiesLabel, "Characters may select up to -35 BP worth of Negative Qualities. Qualities in dark" +
-        " red do not count towards the -35 BP limit.");
-			// 
-			// lblPBuildPositiveQualitiesLabel
-			// 
-			this.lblPBuildPositiveQualitiesLabel.AutoSize = true;
-			this.lblPBuildPositiveQualitiesLabel.Location = new System.Drawing.Point(7, 72);
-			this.lblPBuildPositiveQualitiesLabel.Name = "lblPBuildPositiveQualitiesLabel";
-			this.lblPBuildPositiveQualitiesLabel.Size = new System.Drawing.Size(87, 13);
-			this.lblPBuildPositiveQualitiesLabel.TabIndex = 86;
-			this.lblPBuildPositiveQualitiesLabel.Tag = "Label_SummaryPositiveQualities";
-			this.lblPBuildPositiveQualitiesLabel.Text = "Positive Qualities";
-			this.tipTooltip.SetToolTip(this.lblPBuildPositiveQualitiesLabel, "Characters may select up to 35 BP worth of Positive Qualities. Qualities in dark " +
         "red do not count towards the 35 BP limit.");
 			// 
 			// lblRiggingINILabel
@@ -1944,7 +1801,7 @@ namespace Chummer
 			// lblBuildAIAdvancedPrograms
 			// 
 			this.lblBuildAIAdvancedPrograms.AutoSize = true;
-			this.lblBuildAIAdvancedPrograms.Location = new System.Drawing.Point(6, 449);
+			this.lblBuildAIAdvancedPrograms.Location = new System.Drawing.Point(10, 450);
 			this.lblBuildAIAdvancedPrograms.Name = "lblBuildAIAdvancedPrograms";
 			this.lblBuildAIAdvancedPrograms.Size = new System.Drawing.Size(103, 13);
 			this.lblBuildAIAdvancedPrograms.TabIndex = 87;
@@ -1952,32 +1809,10 @@ namespace Chummer
 			this.lblBuildAIAdvancedPrograms.Text = "Advanced Programs";
 			this.tipTooltip.SetToolTip(this.lblBuildAIAdvancedPrograms, "Each Martial Art Maneuver costs 2 BP.");
 			// 
-			// lblBuildRituals
-			// 
-			this.lblBuildRituals.AutoSize = true;
-			this.lblBuildRituals.Location = new System.Drawing.Point(7, 240);
-			this.lblBuildRituals.Name = "lblBuildRituals";
-			this.lblBuildRituals.Size = new System.Drawing.Size(39, 13);
-			this.lblBuildRituals.TabIndex = 129;
-			this.lblBuildRituals.Tag = "Label_SummaryRituals";
-			this.lblBuildRituals.Text = "Rituals";
-			this.tipTooltip.SetToolTip(this.lblBuildRituals, "Each Spell costs 3 BP.");
-			// 
-			// lblBuildPreparations
-			// 
-			this.lblBuildPreparations.AutoSize = true;
-			this.lblBuildPreparations.Location = new System.Drawing.Point(7, 219);
-			this.lblBuildPreparations.Name = "lblBuildPreparations";
-			this.lblBuildPreparations.Size = new System.Drawing.Size(66, 13);
-			this.lblBuildPreparations.TabIndex = 127;
-			this.lblBuildPreparations.Tag = "Label_SummaryPreparations";
-			this.lblBuildPreparations.Text = "Preparations";
-			this.tipTooltip.SetToolTip(this.lblBuildPreparations, "Each Spell costs 3 BP.");
-			// 
 			// lblBuildRitualsBPLabel
 			// 
 			this.lblBuildRitualsBPLabel.AutoSize = true;
-			this.lblBuildRitualsBPLabel.Location = new System.Drawing.Point(6, 273);
+			this.lblBuildRitualsBPLabel.Location = new System.Drawing.Point(10, 303);
 			this.lblBuildRitualsBPLabel.Name = "lblBuildRitualsBPLabel";
 			this.lblBuildRitualsBPLabel.Size = new System.Drawing.Size(39, 13);
 			this.lblBuildRitualsBPLabel.TabIndex = 133;
@@ -1988,7 +1823,7 @@ namespace Chummer
 			// lblBuildPrepsBPLabel
 			// 
 			this.lblBuildPrepsBPLabel.AutoSize = true;
-			this.lblBuildPrepsBPLabel.Location = new System.Drawing.Point(6, 251);
+			this.lblBuildPrepsBPLabel.Location = new System.Drawing.Point(10, 261);
 			this.lblBuildPrepsBPLabel.Name = "lblBuildPrepsBPLabel";
 			this.lblBuildPrepsBPLabel.Size = new System.Drawing.Size(66, 13);
 			this.lblBuildPrepsBPLabel.TabIndex = 131;
@@ -2097,7 +1932,7 @@ namespace Chummer
 			this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
 			this.tsCreateSpell.Tag = "Menu_CreateSpell";
 			this.tsCreateSpell.Text = "&Create Spell";
-	        this.tsCreateSpell.Visible = false;
+			this.tsCreateSpell.Visible = false;
 			this.tsCreateSpell.Click += new System.EventHandler(this.tsCreateSpell_Click);
 			// 
 			// cmsComplexForm
@@ -3671,15 +3506,15 @@ namespace Chummer
 			this.treQualities.Indent = 15;
 			this.treQualities.Location = new System.Drawing.Point(6, 38);
 			this.treQualities.Name = "treQualities";
-			treeNode1.Name = "nodPositiveQualityRoot";
-			treeNode1.Tag = "Node_SelectedPositiveQualities";
-			treeNode1.Text = "Selected Positive Qualities";
-			treeNode2.Name = "nodNegativeQualityRoot";
-			treeNode2.Tag = "Node_SelectedNegativeQualities";
-			treeNode2.Text = "Selected Negative Qualities";
+			treeNode51.Name = "nodPositiveQualityRoot";
+			treeNode51.Tag = "Node_SelectedPositiveQualities";
+			treeNode51.Text = "Selected Positive Qualities";
+			treeNode52.Name = "nodNegativeQualityRoot";
+			treeNode52.Tag = "Node_SelectedNegativeQualities";
+			treeNode52.Text = "Selected Negative Qualities";
 			this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
+            treeNode51,
+            treeNode52});
 			this.treQualities.ShowNodeToolTips = true;
 			this.treQualities.ShowPlusMinus = false;
 			this.treQualities.ShowRootLines = false;
@@ -3831,19 +3666,19 @@ namespace Chummer
 			this.treLimit.HideSelection = false;
 			this.treLimit.Location = new System.Drawing.Point(8, 33);
 			this.treLimit.Name = "treLimit";
-			treeNode3.Name = "trePhysicalRoot";
-			treeNode3.Tag = "Node_Physical";
-			treeNode3.Text = "Physical";
-			treeNode4.Name = "treMentalRoot";
-			treeNode4.Tag = "Node_Mental";
-			treeNode4.Text = "Mental";
-			treeNode5.Name = "treSocialRoot";
-			treeNode5.Tag = "Node_Social";
-			treeNode5.Text = "Social";
+			treeNode53.Name = "trePhysicalRoot";
+			treeNode53.Tag = "Node_Physical";
+			treeNode53.Text = "Physical";
+			treeNode54.Name = "treMentalRoot";
+			treeNode54.Tag = "Node_Mental";
+			treeNode54.Text = "Mental";
+			treeNode55.Name = "treSocialRoot";
+			treeNode55.Tag = "Node_Social";
+			treeNode55.Text = "Social";
 			this.treLimit.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4,
-            treeNode5});
+            treeNode53,
+            treeNode54,
+            treeNode55});
 			this.treLimit.ShowNodeToolTips = true;
 			this.treLimit.ShowPlusMinus = false;
 			this.treLimit.ShowRootLines = false;
@@ -3919,14 +3754,14 @@ namespace Chummer
 			this.treMartialArts.HideSelection = false;
 			this.treMartialArts.Location = new System.Drawing.Point(8, 35);
 			this.treMartialArts.Name = "treMartialArts";
-			treeNode6.Name = "treMartialArtsRoot";
-			treeNode6.Tag = "Node_SelectedMartialArts";
-			treeNode6.Text = "Selected Martial Arts";
-			treeNode7.Name = "treQualitiesRoot";
-			treeNode7.Text = "Selected Qualities";
+			treeNode56.Name = "treMartialArtsRoot";
+			treeNode56.Tag = "Node_SelectedMartialArts";
+			treeNode56.Text = "Selected Martial Arts";
+			treeNode57.Name = "treQualitiesRoot";
+			treeNode57.Text = "Selected Qualities";
 			this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7});
+            treeNode56,
+            treeNode57});
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
@@ -4423,35 +4258,35 @@ namespace Chummer
 			this.treSpells.HideSelection = false;
 			this.treSpells.Location = new System.Drawing.Point(8, 55);
 			this.treSpells.Name = "treSpells";
-			treeNode8.Name = "nodSpellCombatRoot";
-			treeNode8.Tag = "Node_SelectedCombatSpells";
-			treeNode8.Text = "Selected Combat Spells";
-			treeNode9.Name = "nodSpellDetectionRoot";
-			treeNode9.Tag = "Node_SelectedDetectionSpells";
-			treeNode9.Text = "Selected Detection Spells";
-			treeNode10.Name = "nodSpellHealthRoot";
-			treeNode10.Tag = "Node_SelectedHealthSpells";
-			treeNode10.Text = "Selected Health Spells";
-			treeNode11.Name = "nodSpellIllusionRoot";
-			treeNode11.Tag = "Node_SelectedIllusionSpells";
-			treeNode11.Text = "Selected Illusion Spells";
-			treeNode12.Name = "nodSpellManipulationRoot";
-			treeNode12.Tag = "Node_SelectedManipulationSpells";
-			treeNode12.Text = "Selected Manipulation Spells";
-			treeNode13.Name = "nodSpellGeomancyRoot";
-			treeNode13.Tag = "Node_SelectedGeomancyRituals";
-			treeNode13.Text = "Selected Rituals";
-			treeNode14.Name = "nodSpellEnchantmentRoot";
-			treeNode14.Tag = "Node_SelectedEnchantments";
-			treeNode14.Text = "Selected Enchantments";
+			treeNode58.Name = "nodSpellCombatRoot";
+			treeNode58.Tag = "Node_SelectedCombatSpells";
+			treeNode58.Text = "Selected Combat Spells";
+			treeNode59.Name = "nodSpellDetectionRoot";
+			treeNode59.Tag = "Node_SelectedDetectionSpells";
+			treeNode59.Text = "Selected Detection Spells";
+			treeNode60.Name = "nodSpellHealthRoot";
+			treeNode60.Tag = "Node_SelectedHealthSpells";
+			treeNode60.Text = "Selected Health Spells";
+			treeNode61.Name = "nodSpellIllusionRoot";
+			treeNode61.Tag = "Node_SelectedIllusionSpells";
+			treeNode61.Text = "Selected Illusion Spells";
+			treeNode62.Name = "nodSpellManipulationRoot";
+			treeNode62.Tag = "Node_SelectedManipulationSpells";
+			treeNode62.Text = "Selected Manipulation Spells";
+			treeNode63.Name = "nodSpellGeomancyRoot";
+			treeNode63.Tag = "Node_SelectedGeomancyRituals";
+			treeNode63.Text = "Selected Rituals";
+			treeNode64.Name = "nodSpellEnchantmentRoot";
+			treeNode64.Tag = "Node_SelectedEnchantments";
+			treeNode64.Text = "Selected Enchantments";
 			this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14});
+            treeNode58,
+            treeNode59,
+            treeNode60,
+            treeNode61,
+            treeNode62,
+            treeNode63,
+            treeNode64});
 			this.treSpells.ShowNodeToolTips = true;
 			this.treSpells.ShowRootLines = false;
 			this.treSpells.Size = new System.Drawing.Size(295, 333);
@@ -4781,11 +4616,11 @@ namespace Chummer
 			this.treComplexForms.HideSelection = false;
 			this.treComplexForms.Location = new System.Drawing.Point(8, 54);
 			this.treComplexForms.Name = "treComplexForms";
-			treeNode15.Name = "nodProgramAdvancedRoot";
-			treeNode15.Tag = "Node_SelectedAdvancedComplexForms";
-			treeNode15.Text = "Selected Complex Forms";
+			treeNode65.Name = "nodProgramAdvancedRoot";
+			treeNode65.Tag = "Node_SelectedAdvancedComplexForms";
+			treeNode65.Text = "Selected Complex Forms";
 			this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15});
+            treeNode65});
 			this.treComplexForms.ShowNodeToolTips = true;
 			this.treComplexForms.ShowRootLines = false;
 			this.treComplexForms.Size = new System.Drawing.Size(295, 333);
@@ -4915,11 +4750,11 @@ namespace Chummer
 			this.treAIPrograms.HideSelection = false;
 			this.treAIPrograms.Location = new System.Drawing.Point(8, 54);
 			this.treAIPrograms.Name = "treAIPrograms";
-			treeNode16.Name = "nodAIProgramsRoot";
-			treeNode16.Tag = "Node_SelectedAIPrograms";
-			treeNode16.Text = "Selected AI Programs and Advanced Programs";
+			treeNode66.Name = "nodAIProgramsRoot";
+			treeNode66.Tag = "Node_SelectedAIPrograms";
+			treeNode66.Text = "Selected AI Programs and Advanced Programs";
 			this.treAIPrograms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode16});
+            treeNode66});
 			this.treAIPrograms.ShowNodeToolTips = true;
 			this.treAIPrograms.ShowRootLines = false;
 			this.treAIPrograms.Size = new System.Drawing.Size(295, 554);
@@ -5190,15 +5025,15 @@ namespace Chummer
 			this.treCritterPowers.HideSelection = false;
 			this.treCritterPowers.Location = new System.Drawing.Point(8, 32);
 			this.treCritterPowers.Name = "treCritterPowers";
-			treeNode17.Name = "nodCritterPowerRoot";
-			treeNode17.Tag = "Node_CritterPowers";
-			treeNode17.Text = "Critter Powers";
-			treeNode18.Name = "nodCritterWeaknessRoot";
-			treeNode18.Tag = "Node_CritterWeaknesses";
-			treeNode18.Text = "Weaknesses";
+			treeNode67.Name = "nodCritterPowerRoot";
+			treeNode67.Tag = "Node_CritterPowers";
+			treeNode67.Text = "Critter Powers";
+			treeNode68.Name = "nodCritterWeaknessRoot";
+			treeNode68.Tag = "Node_CritterWeaknesses";
+			treeNode68.Text = "Weaknesses";
 			this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode17,
-            treeNode18});
+            treeNode67,
+            treeNode68});
 			this.treCritterPowers.ShowNodeToolTips = true;
 			this.treCritterPowers.ShowPlusMinus = false;
 			this.treCritterPowers.ShowRootLines = false;
@@ -5787,15 +5622,15 @@ namespace Chummer
 			this.treCyberware.HideSelection = false;
 			this.treCyberware.Location = new System.Drawing.Point(8, 36);
 			this.treCyberware.Name = "treCyberware";
-			treeNode19.Name = "nodCyberwareRoot";
-			treeNode19.Tag = "Node_SelectedCyberware";
-			treeNode19.Text = "Selected Cyberware";
-			treeNode20.Name = "nodBioware";
-			treeNode20.Tag = "Node_SelectedBioware";
-			treeNode20.Text = "Selected Bioware";
+			treeNode69.Name = "nodCyberwareRoot";
+			treeNode69.Tag = "Node_SelectedCyberware";
+			treeNode69.Text = "Selected Cyberware";
+			treeNode70.Name = "nodBioware";
+			treeNode70.Tag = "Node_SelectedBioware";
+			treeNode70.Text = "Selected Bioware";
 			this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode19,
-            treeNode20});
+            treeNode69,
+            treeNode70});
 			this.treCyberware.ShowNodeToolTips = true;
 			this.treCyberware.ShowRootLines = false;
 			this.treCyberware.Size = new System.Drawing.Size(295, 572);
@@ -5990,11 +5825,11 @@ namespace Chummer
 			this.treLifestyles.HideSelection = false;
 			this.treLifestyles.Location = new System.Drawing.Point(6, 36);
 			this.treLifestyles.Name = "treLifestyles";
-			treeNode21.Name = "nodLifestylesRoot";
-			treeNode21.Tag = "Node_SelectedLifestyles";
-			treeNode21.Text = "Selected Lifestyles";
+			treeNode71.Name = "nodLifestylesRoot";
+			treeNode71.Tag = "Node_SelectedLifestyles";
+			treeNode71.Text = "Selected Lifestyles";
 			this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode21});
+            treeNode71});
 			this.treLifestyles.ShowNodeToolTips = true;
 			this.treLifestyles.ShowRootLines = false;
 			this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -6404,11 +6239,11 @@ namespace Chummer
 			this.treArmor.HideSelection = false;
 			this.treArmor.Location = new System.Drawing.Point(6, 36);
 			this.treArmor.Name = "treArmor";
-			treeNode22.Name = "nodArmorRoot";
-			treeNode22.Tag = "Node_SelectedArmor";
-			treeNode22.Text = "Selected Armor";
+			treeNode72.Name = "nodArmorRoot";
+			treeNode72.Tag = "Node_SelectedArmor";
+			treeNode72.Text = "Selected Armor";
 			this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode72});
 			this.treArmor.ShowNodeToolTips = true;
 			this.treArmor.Size = new System.Drawing.Size(295, 537);
 			this.treArmor.TabIndex = 69;
@@ -6860,11 +6695,11 @@ namespace Chummer
 			this.treWeapons.HideSelection = false;
 			this.treWeapons.Location = new System.Drawing.Point(6, 36);
 			this.treWeapons.Name = "treWeapons";
-			treeNode23.Name = "nodWeaponsRoot";
-			treeNode23.Tag = "Node_SelectedWeapons";
-			treeNode23.Text = "Selected Weapons";
+			treeNode73.Name = "nodWeaponsRoot";
+			treeNode73.Tag = "Node_SelectedWeapons";
+			treeNode73.Text = "Selected Weapons";
 			this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode23});
+            treeNode73});
 			this.treWeapons.ShowNodeToolTips = true;
 			this.treWeapons.Size = new System.Drawing.Size(295, 540);
 			this.treWeapons.TabIndex = 29;
@@ -7562,11 +7397,11 @@ namespace Chummer
 			this.treGear.HideSelection = false;
 			this.treGear.Location = new System.Drawing.Point(6, 36);
 			this.treGear.Name = "treGear";
-			treeNode24.Name = "nodGearRoot";
-			treeNode24.Tag = "Node_SelectedGear";
-			treeNode24.Text = "Selected Gear";
+			treeNode74.Name = "nodGearRoot";
+			treeNode74.Tag = "Node_SelectedGear";
+			treeNode74.Text = "Selected Gear";
 			this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
+            treeNode74});
 			this.treGear.ShowNodeToolTips = true;
 			this.treGear.Size = new System.Drawing.Size(295, 540);
 			this.treGear.TabIndex = 49;
@@ -8548,11 +8383,11 @@ namespace Chummer
 			this.treVehicles.HideSelection = false;
 			this.treVehicles.Location = new System.Drawing.Point(8, 36);
 			this.treVehicles.Name = "treVehicles";
-			treeNode25.Name = "nodVehiclesRoot";
-			treeNode25.Tag = "Node_SelectedVehicles";
-			treeNode25.Text = "Selected Vehicles";
+			treeNode75.Name = "nodVehiclesRoot";
+			treeNode75.Tag = "Node_SelectedVehicles";
+			treeNode75.Text = "Selected Vehicles";
 			this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode25});
+            treeNode75});
 			this.treVehicles.ShowNodeToolTips = true;
 			this.treVehicles.ShowRootLines = false;
 			this.treVehicles.Size = new System.Drawing.Size(403, 572);
@@ -9046,7 +8881,6 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabInfo.Controls.Add(this.tabBPSummary);
-			this.tabInfo.Controls.Add(this.tabBuildSummary);
 			this.tabInfo.Controls.Add(this.tabOtherInfo);
 			this.tabInfo.Controls.Add(this.tabDefences);
 			this.tabInfo.Location = new System.Drawing.Point(0, 0);
@@ -9058,6 +8892,8 @@ namespace Chummer
 			// tabBPSummary
 			// 
 			this.tabBPSummary.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabBPSummary.Controls.Add(this.lblPBuildSpecial);
+			this.tabBPSummary.Controls.Add(this.lblPBuildSpecialLabel);
 			this.tabBPSummary.Controls.Add(this.lblBuildRitualsBPLabel);
 			this.tabBPSummary.Controls.Add(this.lblBuildRitualsBP);
 			this.tabBPSummary.Controls.Add(this.lblBuildPrepsBPLabel);
@@ -9111,7 +8947,7 @@ namespace Chummer
 			// lblBuildRitualsBP
 			// 
 			this.lblBuildRitualsBP.AutoSize = true;
-			this.lblBuildRitualsBP.Location = new System.Drawing.Point(123, 273);
+			this.lblBuildRitualsBP.Location = new System.Drawing.Point(126, 282);
 			this.lblBuildRitualsBP.Name = "lblBuildRitualsBP";
 			this.lblBuildRitualsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblBuildRitualsBP.TabIndex = 132;
@@ -9120,7 +8956,7 @@ namespace Chummer
 			// lblBuildPrepsBP
 			// 
 			this.lblBuildPrepsBP.AutoSize = true;
-			this.lblBuildPrepsBP.Location = new System.Drawing.Point(123, 251);
+			this.lblBuildPrepsBP.Location = new System.Drawing.Point(126, 261);
 			this.lblBuildPrepsBP.Name = "lblBuildPrepsBP";
 			this.lblBuildPrepsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblBuildPrepsBP.TabIndex = 130;
@@ -9129,7 +8965,7 @@ namespace Chummer
 			// lblAINormalProgramsBP
 			// 
 			this.lblAINormalProgramsBP.AutoSize = true;
-			this.lblAINormalProgramsBP.Location = new System.Drawing.Point(123, 427);
+			this.lblAINormalProgramsBP.Location = new System.Drawing.Point(126, 429);
 			this.lblAINormalProgramsBP.Name = "lblAINormalProgramsBP";
 			this.lblAINormalProgramsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblAINormalProgramsBP.TabIndex = 88;
@@ -9138,7 +8974,7 @@ namespace Chummer
 			// lblBuildAINormalPrograms
 			// 
 			this.lblBuildAINormalPrograms.AutoSize = true;
-			this.lblBuildAINormalPrograms.Location = new System.Drawing.Point(6, 427);
+			this.lblBuildAINormalPrograms.Location = new System.Drawing.Point(10, 429);
 			this.lblBuildAINormalPrograms.Name = "lblBuildAINormalPrograms";
 			this.lblBuildAINormalPrograms.Size = new System.Drawing.Size(87, 13);
 			this.lblBuildAINormalPrograms.TabIndex = 89;
@@ -9148,7 +8984,7 @@ namespace Chummer
 			// lblAIAdvancedProgramsBP
 			// 
 			this.lblAIAdvancedProgramsBP.AutoSize = true;
-			this.lblAIAdvancedProgramsBP.Location = new System.Drawing.Point(123, 449);
+			this.lblAIAdvancedProgramsBP.Location = new System.Drawing.Point(126, 450);
 			this.lblAIAdvancedProgramsBP.Name = "lblAIAdvancedProgramsBP";
 			this.lblAIAdvancedProgramsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblAIAdvancedProgramsBP.TabIndex = 86;
@@ -9157,7 +8993,7 @@ namespace Chummer
 			// lblInitiationBP
 			// 
 			this.lblInitiationBP.AutoSize = true;
-			this.lblInitiationBP.Location = new System.Drawing.Point(123, 383);
+			this.lblInitiationBP.Location = new System.Drawing.Point(126, 387);
 			this.lblInitiationBP.Name = "lblInitiationBP";
 			this.lblInitiationBP.Size = new System.Drawing.Size(30, 13);
 			this.lblInitiationBP.TabIndex = 82;
@@ -9166,7 +9002,7 @@ namespace Chummer
 			// lblBuildInitiation
 			// 
 			this.lblBuildInitiation.AutoSize = true;
-			this.lblBuildInitiation.Location = new System.Drawing.Point(6, 383);
+			this.lblBuildInitiation.Location = new System.Drawing.Point(10, 387);
 			this.lblBuildInitiation.Name = "lblBuildInitiation";
 			this.lblBuildInitiation.Size = new System.Drawing.Size(106, 13);
 			this.lblBuildInitiation.TabIndex = 83;
@@ -9176,7 +9012,7 @@ namespace Chummer
 			// lblFociBP
 			// 
 			this.lblFociBP.AutoSize = true;
-			this.lblFociBP.Location = new System.Drawing.Point(123, 295);
+			this.lblFociBP.Location = new System.Drawing.Point(126, 303);
 			this.lblFociBP.Name = "lblFociBP";
 			this.lblFociBP.Size = new System.Drawing.Size(30, 13);
 			this.lblFociBP.TabIndex = 80;
@@ -9185,7 +9021,7 @@ namespace Chummer
 			// lblManeuversBP
 			// 
 			this.lblManeuversBP.AutoSize = true;
-			this.lblManeuversBP.Location = new System.Drawing.Point(123, 405);
+			this.lblManeuversBP.Location = new System.Drawing.Point(126, 408);
 			this.lblManeuversBP.Name = "lblManeuversBP";
 			this.lblManeuversBP.Size = new System.Drawing.Size(30, 13);
 			this.lblManeuversBP.TabIndex = 78;
@@ -9194,7 +9030,7 @@ namespace Chummer
 			// lblNuyenBP
 			// 
 			this.lblNuyenBP.AutoSize = true;
-			this.lblNuyenBP.Location = new System.Drawing.Point(123, 141);
+			this.lblNuyenBP.Location = new System.Drawing.Point(126, 156);
 			this.lblNuyenBP.Name = "lblNuyenBP";
 			this.lblNuyenBP.Size = new System.Drawing.Size(30, 13);
 			this.lblNuyenBP.TabIndex = 77;
@@ -9203,7 +9039,7 @@ namespace Chummer
 			// lblEnemiesBP
 			// 
 			this.lblEnemiesBP.AutoSize = true;
-			this.lblEnemiesBP.Location = new System.Drawing.Point(123, 119);
+			this.lblEnemiesBP.Location = new System.Drawing.Point(126, 135);
 			this.lblEnemiesBP.Name = "lblEnemiesBP";
 			this.lblEnemiesBP.Size = new System.Drawing.Size(30, 13);
 			this.lblEnemiesBP.TabIndex = 66;
@@ -9212,7 +9048,7 @@ namespace Chummer
 			// lblKarmaMetatypeBP
 			// 
 			this.lblKarmaMetatypeBP.AutoSize = true;
-			this.lblKarmaMetatypeBP.Location = new System.Drawing.Point(123, 9);
+			this.lblKarmaMetatypeBP.Location = new System.Drawing.Point(126, 9);
 			this.lblKarmaMetatypeBP.Name = "lblKarmaMetatypeBP";
 			this.lblKarmaMetatypeBP.Size = new System.Drawing.Size(30, 13);
 			this.lblKarmaMetatypeBP.TabIndex = 74;
@@ -9221,7 +9057,7 @@ namespace Chummer
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(6, 9);
+			this.label12.Location = new System.Drawing.Point(10, 9);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(51, 13);
 			this.label12.TabIndex = 73;
@@ -9231,7 +9067,7 @@ namespace Chummer
 			// lblComplexFormsBP
 			// 
 			this.lblComplexFormsBP.AutoSize = true;
-			this.lblComplexFormsBP.Location = new System.Drawing.Point(123, 361);
+			this.lblComplexFormsBP.Location = new System.Drawing.Point(126, 366);
 			this.lblComplexFormsBP.Name = "lblComplexFormsBP";
 			this.lblComplexFormsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblComplexFormsBP.TabIndex = 61;
@@ -9240,7 +9076,7 @@ namespace Chummer
 			// lblSpiritsBP
 			// 
 			this.lblSpiritsBP.AutoSize = true;
-			this.lblSpiritsBP.Location = new System.Drawing.Point(123, 317);
+			this.lblSpiritsBP.Location = new System.Drawing.Point(126, 324);
 			this.lblSpiritsBP.Name = "lblSpiritsBP";
 			this.lblSpiritsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblSpiritsBP.TabIndex = 52;
@@ -9249,7 +9085,7 @@ namespace Chummer
 			// lblSpritesBP
 			// 
 			this.lblSpritesBP.AutoSize = true;
-			this.lblSpritesBP.Location = new System.Drawing.Point(123, 339);
+			this.lblSpritesBP.Location = new System.Drawing.Point(126, 345);
 			this.lblSpritesBP.Name = "lblSpritesBP";
 			this.lblSpritesBP.Size = new System.Drawing.Size(30, 13);
 			this.lblSpritesBP.TabIndex = 58;
@@ -9258,7 +9094,7 @@ namespace Chummer
 			// lblKnowledgeSkillsBP
 			// 
 			this.lblKnowledgeSkillsBP.AutoSize = true;
-			this.lblKnowledgeSkillsBP.Location = new System.Drawing.Point(123, 207);
+			this.lblKnowledgeSkillsBP.Location = new System.Drawing.Point(126, 219);
 			this.lblKnowledgeSkillsBP.Name = "lblKnowledgeSkillsBP";
 			this.lblKnowledgeSkillsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblKnowledgeSkillsBP.TabIndex = 68;
@@ -9267,7 +9103,7 @@ namespace Chummer
 			// lblActiveSkillsBP
 			// 
 			this.lblActiveSkillsBP.AutoSize = true;
-			this.lblActiveSkillsBP.Location = new System.Drawing.Point(123, 185);
+			this.lblActiveSkillsBP.Location = new System.Drawing.Point(126, 198);
 			this.lblActiveSkillsBP.Name = "lblActiveSkillsBP";
 			this.lblActiveSkillsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblActiveSkillsBP.TabIndex = 67;
@@ -9276,7 +9112,7 @@ namespace Chummer
 			// lblSpellsBP
 			// 
 			this.lblSpellsBP.AutoSize = true;
-			this.lblSpellsBP.Location = new System.Drawing.Point(123, 229);
+			this.lblSpellsBP.Location = new System.Drawing.Point(126, 240);
 			this.lblSpellsBP.Name = "lblSpellsBP";
 			this.lblSpellsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblSpellsBP.TabIndex = 51;
@@ -9285,7 +9121,7 @@ namespace Chummer
 			// lblSkillGroupsBP
 			// 
 			this.lblSkillGroupsBP.AutoSize = true;
-			this.lblSkillGroupsBP.Location = new System.Drawing.Point(123, 163);
+			this.lblSkillGroupsBP.Location = new System.Drawing.Point(126, 177);
 			this.lblSkillGroupsBP.Name = "lblSkillGroupsBP";
 			this.lblSkillGroupsBP.Size = new System.Drawing.Size(30, 13);
 			this.lblSkillGroupsBP.TabIndex = 65;
@@ -9294,7 +9130,7 @@ namespace Chummer
 			// lblPositiveQualitiesBP
 			// 
 			this.lblPositiveQualitiesBP.AutoSize = true;
-			this.lblPositiveQualitiesBP.Location = new System.Drawing.Point(123, 53);
+			this.lblPositiveQualitiesBP.Location = new System.Drawing.Point(126, 72);
 			this.lblPositiveQualitiesBP.Name = "lblPositiveQualitiesBP";
 			this.lblPositiveQualitiesBP.Size = new System.Drawing.Size(30, 13);
 			this.lblPositiveQualitiesBP.TabIndex = 53;
@@ -9303,7 +9139,7 @@ namespace Chummer
 			// lblNegativeQualitiesBP
 			// 
 			this.lblNegativeQualitiesBP.AutoSize = true;
-			this.lblNegativeQualitiesBP.Location = new System.Drawing.Point(123, 75);
+			this.lblNegativeQualitiesBP.Location = new System.Drawing.Point(126, 93);
 			this.lblNegativeQualitiesBP.Name = "lblNegativeQualitiesBP";
 			this.lblNegativeQualitiesBP.Size = new System.Drawing.Size(30, 13);
 			this.lblNegativeQualitiesBP.TabIndex = 55;
@@ -9312,7 +9148,7 @@ namespace Chummer
 			// lblAttributesBP
 			// 
 			this.lblAttributesBP.AutoSize = true;
-			this.lblAttributesBP.Location = new System.Drawing.Point(123, 31);
+			this.lblAttributesBP.Location = new System.Drawing.Point(126, 30);
 			this.lblAttributesBP.Name = "lblAttributesBP";
 			this.lblAttributesBP.Size = new System.Drawing.Size(30, 13);
 			this.lblAttributesBP.TabIndex = 56;
@@ -9321,215 +9157,11 @@ namespace Chummer
 			// lblContactsBP
 			// 
 			this.lblContactsBP.AutoSize = true;
-			this.lblContactsBP.Location = new System.Drawing.Point(123, 97);
+			this.lblContactsBP.Location = new System.Drawing.Point(126, 114);
 			this.lblContactsBP.Name = "lblContactsBP";
 			this.lblContactsBP.Size = new System.Drawing.Size(46, 13);
 			this.lblContactsBP.TabIndex = 60;
 			this.lblContactsBP.Text = "0 Karma";
-			// 
-			// tabBuildSummary
-			// 
-			this.tabBuildSummary.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpecial);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpecialLabel);
-			this.tabBuildSummary.Controls.Add(this.lblBuildRituals);
-			this.tabBuildSummary.Controls.Add(this.lblRitualsBP);
-			this.tabBuildSummary.Controls.Add(this.lblBuildPreparations);
-			this.tabBuildSummary.Controls.Add(this.lblPreparationsBP);
-			this.tabBuildSummary.Controls.Add(this.lblMetatypeBP);
-			this.tabBuildSummary.Controls.Add(this.label18);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildEssenceLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildEssence);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNuyen);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNuyenLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildAttributes);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildAttributesLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildComplexForms);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildComplexFormsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpellsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildKnowledgeSkills);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildKnowledgeSkillsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildActiveSkills);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpells);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildActiveSkillsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSkillGroups);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSkillGroupsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildContactsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNegativeQualitiesLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildPositiveQualitiesLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildPositiveQualities);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNegativeQualities);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildContacts);
-			this.tabBuildSummary.Location = new System.Drawing.Point(4, 22);
-			this.tabBuildSummary.Name = "tabBuildSummary";
-			this.tabBuildSummary.Size = new System.Drawing.Size(179, 611);
-			this.tabBuildSummary.TabIndex = 2;
-			this.tabBuildSummary.Text = "Build Summary";
-			// 
-			// lblPBuildSpecial
-			// 
-			this.lblPBuildSpecial.AutoSize = true;
-			this.lblPBuildSpecial.Location = new System.Drawing.Point(123, 51);
-			this.lblPBuildSpecial.Name = "lblPBuildSpecial";
-			this.lblPBuildSpecial.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildSpecial.TabIndex = 131;
-			this.lblPBuildSpecial.Text = "0 of 0";
-			// 
-			// lblPBuildSpecialLabel
-			// 
-			this.lblPBuildSpecialLabel.AutoSize = true;
-			this.lblPBuildSpecialLabel.Location = new System.Drawing.Point(7, 51);
-			this.lblPBuildSpecialLabel.Name = "lblPBuildSpecialLabel";
-			this.lblPBuildSpecialLabel.Size = new System.Drawing.Size(89, 13);
-			this.lblPBuildSpecialLabel.TabIndex = 130;
-			this.lblPBuildSpecialLabel.Tag = "String_Special";
-			this.lblPBuildSpecialLabel.Text = "Special Attributes";
-			// 
-			// lblRitualsBP
-			// 
-			this.lblRitualsBP.AutoSize = true;
-			this.lblRitualsBP.Location = new System.Drawing.Point(124, 240);
-			this.lblRitualsBP.Name = "lblRitualsBP";
-			this.lblRitualsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblRitualsBP.TabIndex = 128;
-			this.lblRitualsBP.Text = "0 BP";
-			// 
-			// lblPreparationsBP
-			// 
-			this.lblPreparationsBP.AutoSize = true;
-			this.lblPreparationsBP.Location = new System.Drawing.Point(124, 219);
-			this.lblPreparationsBP.Name = "lblPreparationsBP";
-			this.lblPreparationsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblPreparationsBP.TabIndex = 126;
-			this.lblPreparationsBP.Text = "0 BP";
-			// 
-			// lblMetatypeBP
-			// 
-			this.lblMetatypeBP.AutoSize = true;
-			this.lblMetatypeBP.Location = new System.Drawing.Point(123, 9);
-			this.lblMetatypeBP.Name = "lblMetatypeBP";
-			this.lblMetatypeBP.Size = new System.Drawing.Size(30, 13);
-			this.lblMetatypeBP.TabIndex = 125;
-			this.lblMetatypeBP.Text = "0 BP";
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(7, 9);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(51, 13);
-			this.label18.TabIndex = 124;
-			this.label18.Tag = "Label_SummaryMetatype";
-			this.label18.Text = "Metatype";
-			// 
-			// lblPBuildEssence
-			// 
-			this.lblPBuildEssence.AutoSize = true;
-			this.lblPBuildEssence.Location = new System.Drawing.Point(124, 282);
-			this.lblPBuildEssence.Name = "lblPBuildEssence";
-			this.lblPBuildEssence.Size = new System.Drawing.Size(28, 13);
-			this.lblPBuildEssence.TabIndex = 123;
-			this.lblPBuildEssence.Text = "6.00";
-			// 
-			// lblPBuildNuyen
-			// 
-			this.lblPBuildNuyen.AutoSize = true;
-			this.lblPBuildNuyen.Location = new System.Drawing.Point(124, 114);
-			this.lblPBuildNuyen.Name = "lblPBuildNuyen";
-			this.lblPBuildNuyen.Size = new System.Drawing.Size(19, 13);
-			this.lblPBuildNuyen.TabIndex = 113;
-			this.lblPBuildNuyen.Text = "0¥";
-			// 
-			// lblPBuildAttributes
-			// 
-			this.lblPBuildAttributes.AutoSize = true;
-			this.lblPBuildAttributes.Location = new System.Drawing.Point(123, 30);
-			this.lblPBuildAttributes.Name = "lblPBuildAttributes";
-			this.lblPBuildAttributes.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildAttributes.TabIndex = 110;
-			this.lblPBuildAttributes.Text = "0 of 0";
-			// 
-			// lblPBuildAttributesLabel
-			// 
-			this.lblPBuildAttributesLabel.AutoSize = true;
-			this.lblPBuildAttributesLabel.Location = new System.Drawing.Point(7, 30);
-			this.lblPBuildAttributesLabel.Name = "lblPBuildAttributesLabel";
-			this.lblPBuildAttributesLabel.Size = new System.Drawing.Size(51, 13);
-			this.lblPBuildAttributesLabel.TabIndex = 109;
-			this.lblPBuildAttributesLabel.Tag = "Label_Attributes";
-			this.lblPBuildAttributesLabel.Text = "Attributes";
-			// 
-			// lblPBuildComplexForms
-			// 
-			this.lblPBuildComplexForms.AutoSize = true;
-			this.lblPBuildComplexForms.Location = new System.Drawing.Point(124, 261);
-			this.lblPBuildComplexForms.Name = "lblPBuildComplexForms";
-			this.lblPBuildComplexForms.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildComplexForms.TabIndex = 97;
-			this.lblPBuildComplexForms.Text = "0 of 0";
-			// 
-			// lblPBuildKnowledgeSkills
-			// 
-			this.lblPBuildKnowledgeSkills.AutoSize = true;
-			this.lblPBuildKnowledgeSkills.Location = new System.Drawing.Point(124, 177);
-			this.lblPBuildKnowledgeSkills.Name = "lblPBuildKnowledgeSkills";
-			this.lblPBuildKnowledgeSkills.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildKnowledgeSkills.TabIndex = 104;
-			this.lblPBuildKnowledgeSkills.Text = "0 of 0";
-			// 
-			// lblPBuildActiveSkills
-			// 
-			this.lblPBuildActiveSkills.AutoSize = true;
-			this.lblPBuildActiveSkills.Location = new System.Drawing.Point(124, 156);
-			this.lblPBuildActiveSkills.Name = "lblPBuildActiveSkills";
-			this.lblPBuildActiveSkills.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildActiveSkills.TabIndex = 103;
-			this.lblPBuildActiveSkills.Text = "0 of 0";
-			// 
-			// lblPBuildSpells
-			// 
-			this.lblPBuildSpells.AutoSize = true;
-			this.lblPBuildSpells.Location = new System.Drawing.Point(124, 198);
-			this.lblPBuildSpells.Name = "lblPBuildSpells";
-			this.lblPBuildSpells.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildSpells.TabIndex = 87;
-			this.lblPBuildSpells.Text = "0 of 0";
-			// 
-			// lblPBuildSkillGroups
-			// 
-			this.lblPBuildSkillGroups.AutoSize = true;
-			this.lblPBuildSkillGroups.Location = new System.Drawing.Point(124, 135);
-			this.lblPBuildSkillGroups.Name = "lblPBuildSkillGroups";
-			this.lblPBuildSkillGroups.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildSkillGroups.TabIndex = 101;
-			this.lblPBuildSkillGroups.Text = "0 of 0";
-			// 
-			// lblPBuildPositiveQualities
-			// 
-			this.lblPBuildPositiveQualities.AutoSize = true;
-			this.lblPBuildPositiveQualities.Location = new System.Drawing.Point(124, 72);
-			this.lblPBuildPositiveQualities.Name = "lblPBuildPositiveQualities";
-			this.lblPBuildPositiveQualities.Size = new System.Drawing.Size(30, 13);
-			this.lblPBuildPositiveQualities.TabIndex = 89;
-			this.lblPBuildPositiveQualities.Text = "0 BP";
-			// 
-			// lblPBuildNegativeQualities
-			// 
-			this.lblPBuildNegativeQualities.AutoSize = true;
-			this.lblPBuildNegativeQualities.Location = new System.Drawing.Point(124, 93);
-			this.lblPBuildNegativeQualities.Name = "lblPBuildNegativeQualities";
-			this.lblPBuildNegativeQualities.Size = new System.Drawing.Size(30, 13);
-			this.lblPBuildNegativeQualities.TabIndex = 91;
-			this.lblPBuildNegativeQualities.Text = "0 BP";
-			// 
-			// lblPBuildContacts
-			// 
-			this.lblPBuildContacts.AutoSize = true;
-			this.lblPBuildContacts.Location = new System.Drawing.Point(124, 303);
-			this.lblPBuildContacts.Name = "lblPBuildContacts";
-			this.lblPBuildContacts.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildContacts.TabIndex = 96;
-			this.lblPBuildContacts.Text = "0 of 0";
 			// 
 			// tabOtherInfo
 			// 
@@ -10132,6 +9764,25 @@ namespace Chummer
 			this.tsAIProgramNotes.Text = "&Notes";
 			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
 			// 
+			// lblPBuildSpecial
+			// 
+			this.lblPBuildSpecial.AutoSize = true;
+			this.lblPBuildSpecial.Location = new System.Drawing.Point(126, 51);
+			this.lblPBuildSpecial.Name = "lblPBuildSpecial";
+			this.lblPBuildSpecial.Size = new System.Drawing.Size(34, 13);
+			this.lblPBuildSpecial.TabIndex = 135;
+			this.lblPBuildSpecial.Text = "0 of 0";
+			// 
+			// lblPBuildSpecialLabel
+			// 
+			this.lblPBuildSpecialLabel.AutoSize = true;
+			this.lblPBuildSpecialLabel.Location = new System.Drawing.Point(10, 51);
+			this.lblPBuildSpecialLabel.Name = "lblPBuildSpecialLabel";
+			this.lblPBuildSpecialLabel.Size = new System.Drawing.Size(89, 13);
+			this.lblPBuildSpecialLabel.TabIndex = 134;
+			this.lblPBuildSpecialLabel.Tag = "String_Special";
+			this.lblPBuildSpecialLabel.Text = "Special Attributes";
+			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10251,8 +9902,6 @@ namespace Chummer
 			this.tabInfo.ResumeLayout(false);
 			this.tabBPSummary.ResumeLayout(false);
 			this.tabBPSummary.PerformLayout();
-			this.tabBuildSummary.ResumeLayout(false);
-			this.tabBuildSummary.PerformLayout();
 			this.tabOtherInfo.ResumeLayout(false);
 			this.tabOtherInfo.PerformLayout();
 			this.tabDefences.ResumeLayout(false);
@@ -10802,29 +10451,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblEssenceHoleESS;
         private System.Windows.Forms.Label lblEssenceHoleESSLabel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabPage tabBuildSummary;
-        private System.Windows.Forms.Label lblPBuildNuyen;
-        private System.Windows.Forms.Label lblPBuildNuyenLabel;
-        private System.Windows.Forms.Label lblPBuildAttributes;
-        private System.Windows.Forms.Label lblPBuildAttributesLabel;
-        private System.Windows.Forms.Label lblPBuildComplexForms;
-        private System.Windows.Forms.Label lblPBuildComplexFormsLabel;
-        private System.Windows.Forms.Label lblPBuildSpellsLabel;
-        private System.Windows.Forms.Label lblPBuildKnowledgeSkills;
-        private System.Windows.Forms.Label lblPBuildKnowledgeSkillsLabel;
-        private System.Windows.Forms.Label lblPBuildActiveSkills;
-        private System.Windows.Forms.Label lblPBuildSpells;
-        private System.Windows.Forms.Label lblPBuildActiveSkillsLabel;
-        private System.Windows.Forms.Label lblPBuildSkillGroups;
-        private System.Windows.Forms.Label lblPBuildSkillGroupsLabel;
-        private System.Windows.Forms.Label lblPBuildContactsLabel;
-        private System.Windows.Forms.Label lblPBuildNegativeQualitiesLabel;
-        private System.Windows.Forms.Label lblPBuildPositiveQualitiesLabel;
-        private System.Windows.Forms.Label lblPBuildPositiveQualities;
-        private System.Windows.Forms.Label lblPBuildNegativeQualities;
-        private System.Windows.Forms.Label lblPBuildContacts;
-        private System.Windows.Forms.Label lblPBuildEssenceLabel;
-        private System.Windows.Forms.Label lblPBuildEssence;
         private System.Windows.Forms.Label lblRiggingINI;
         private System.Windows.Forms.Label lblRiggingINILabel;
         private System.Windows.Forms.Label lblMatrixINIHot;
@@ -10982,8 +10608,6 @@ namespace Chummer
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ContextMenuStrip cmsTechnique;
         private System.Windows.Forms.ToolStripMenuItem tsAddTechniqueNotes;
-        private System.Windows.Forms.Label lblMetatypeBP;
-        private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label lblContactPoints;
         private System.Windows.Forms.Label lblContactPoints_Label;
         private System.Windows.Forms.Button cmdLifeModule;
@@ -11089,10 +10713,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblTraditionSource;
         private System.Windows.Forms.Label lblTraditionSourceLabel;
 		private PowersTabUserControl tabPowerUc;
-		private System.Windows.Forms.Label lblBuildRituals;
-		private System.Windows.Forms.Label lblRitualsBP;
-		private System.Windows.Forms.Label lblBuildPreparations;
-		private System.Windows.Forms.Label lblPreparationsBP;
 		private System.Windows.Forms.Label lblBuildRitualsBPLabel;
 		private System.Windows.Forms.Label lblBuildRitualsBP;
 		private System.Windows.Forms.Label lblBuildPrepsBPLabel;
