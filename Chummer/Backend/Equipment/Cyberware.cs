@@ -1982,16 +1982,12 @@ namespace Chummer.Backend.Equipment
                 if (_blnInheritAttributes)
                 {
                     int intAverageAttribute = 0;
-                    int intLoopStat = 0;
-                    int intCyberlimbChildrenNumber = 0;
+	                int intCyberlimbChildrenNumber = 0;
                     foreach (Cyberware objChild in _objChildren)
                     {
-                        intLoopStat = objChild.TotalStrength;
-                        if (intLoopStat > 0)
-                        {
-                            intCyberlimbChildrenNumber += 1;
-                            intAverageAttribute += intLoopStat;
-                        }
+	                    if (objChild.TotalStrength <= 0) continue;
+	                    intCyberlimbChildrenNumber += 1;
+	                    intAverageAttribute += objChild.TotalStrength;
                     }
                     if (intCyberlimbChildrenNumber == 0)
                         intCyberlimbChildrenNumber = 1;
@@ -2017,15 +2013,12 @@ namespace Chummer.Backend.Equipment
 					if (objChild.Name == "Enhanced Strength")
 						intBonus = objChild.Rating;
 				}
-                if (_blnVehicleMounted)
-                {
-                    Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
-                    return Math.Min(intAttribute + intBonus, objParentVehicle.TotalBody*2);
-                }
-                else
-                {
-                    return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
-                }
+				if (!_blnVehicleMounted)
+				{
+					return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
+				}
+				Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
+				return Math.Min(intAttribute + intBonus, objParentVehicle.TotalBody * 2);
 			}
 		}
 
@@ -2039,16 +2032,12 @@ namespace Chummer.Backend.Equipment
                 if (_blnInheritAttributes)
                 {
                     int intAverageAttribute = 0;
-                    int intLoopStat = 0;
-                    int intCyberlimbChildrenNumber = 0;
+	                int intCyberlimbChildrenNumber = 0;
                     foreach (Cyberware objChild in _objChildren)
                     {
-                        intLoopStat = objChild.TotalBody;
-                        if (intLoopStat > 0)
-                        {
-                            intCyberlimbChildrenNumber += 1;
-                            intAverageAttribute += intLoopStat;
-                        }
+	                    if (objChild.TotalBody <= 0) continue;
+	                    intCyberlimbChildrenNumber += 1;
+	                    intAverageAttribute += objChild.TotalBody;
                     }
                     if (intCyberlimbChildrenNumber == 0)
                         intCyberlimbChildrenNumber = 1;
@@ -2089,16 +2078,12 @@ namespace Chummer.Backend.Equipment
                 if (_blnInheritAttributes)
                 {
                     int intAverageAttribute = 0;
-                    int intLoopStat = 0;
-                    int intCyberlimbChildrenNumber = 0;
+	                int intCyberlimbChildrenNumber = 0;
                     foreach (Cyberware objChild in _objChildren)
                     {
-                        intLoopStat = objChild.TotalAgility;
-                        if (intLoopStat > 0)
-                        {
-                            intCyberlimbChildrenNumber += 1;
-                            intAverageAttribute += intLoopStat;
-                        }
+	                    if (objChild.TotalAgility <= 0) continue;
+	                    intCyberlimbChildrenNumber += 1;
+	                    intAverageAttribute += objChild.TotalAgility;
                     }
                     if (intCyberlimbChildrenNumber == 0)
                         intCyberlimbChildrenNumber = 1;
@@ -2125,16 +2110,13 @@ namespace Chummer.Backend.Equipment
 						intBonus = objChild.Rating;
 				}
 
-                if (_blnVehicleMounted)
-                {
-                    Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
-                    return Math.Min(intAttribute + intBonus, objParentVehicle.Pilot*2);
-                }
-                else
-                {
-                    return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
-                }
-            }
+				if (!_blnVehicleMounted)
+				{
+					return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
+				}
+				Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
+				return Math.Min(intAttribute + intBonus, objParentVehicle.Pilot*2);
+			}
 		}
 
 		/// <summary>
