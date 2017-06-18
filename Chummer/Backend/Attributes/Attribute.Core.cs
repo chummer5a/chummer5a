@@ -1093,11 +1093,12 @@ namespace Chummer.Backend.Attributes
 			        }
 			        strModifier += strCyberlimb;
 		        }
-
+				/*
                 if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
                 {
                     strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.Instance.GetString("String_AttributeESSLong")})";
                 }
+				*/
 
                 return strReturn + strModifier;
 	        }

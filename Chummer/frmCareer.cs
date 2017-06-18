@@ -8590,18 +8590,17 @@ namespace Chummer
 
 		private void tsVehicleAddMod_Click(object sender, EventArgs e)
 		{
+			while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+				treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
+
 			// Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
+			if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 
-			if (treVehicles.SelectedNode.Level > 1)
-				treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-
 			Vehicle objSelectedVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-
 			frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, true);
 			// Pass the selected vehicle on to the form.
 			frmPickVehicleMod.SelectedVehicle = objSelectedVehicle;

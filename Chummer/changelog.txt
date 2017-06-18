@@ -29,6 +29,8 @@ Application Changes:
 - Fixed support for AIs adding cyberware to vehicles. 
 - Added the ability to add the Underbarrel weapons from Hard Targets to other weapons via the Add Underbarrel Weapon menu option. 
 - Fixed an issue with vehicle fire modes not being enabled when using languages other than English. 
+- Fixed a crash when attempting to add mods to a vehicle in carer mode.
+- Hid the option to create spells, as it's not supported in 5e.
 
 Data Changes:
 

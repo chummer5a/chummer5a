@@ -2165,6 +2165,7 @@ namespace Chummer
 			this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
 			this.tsCreateSpell.Tag = "Menu_CreateSpell";
 			this.tsCreateSpell.Text = "&Create Spell";
+			this.tsCreateSpell.Visible = false;
 			this.tsCreateSpell.Click += new System.EventHandler(this.tsCreateSpell_Click);
 			// 
 			// cmsComplexForm
