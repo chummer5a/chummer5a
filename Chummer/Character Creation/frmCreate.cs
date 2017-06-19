@@ -12104,20 +12104,12 @@ namespace Chummer
                 cboSpiritIllusion.Visible = false;
                 cboSpiritManipulation.Visible = false;
 
-
-                string strDrain = objXmlTradition["drain"].InnerText;
-
-                foreach (string strAttribute in Character.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
-                }
-                lblDrainAttributes.Text = strDrain;
                 lblTraditionSource.Text = objXmlTradition["source"].InnerText + " " + objXmlTradition["page"].InnerText;
                 _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
-                _objCharacter.TraditionDrain = strDrain;
+                _objCharacter.TraditionDrain = objXmlTradition["drain"].InnerText;
 
-                foreach (SpiritControl objSpiritControl in panSpirits.Controls)
+				CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
+				foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                     objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
             }

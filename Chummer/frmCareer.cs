@@ -17991,10 +17991,7 @@ namespace Chummer
                     _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
                 else
                     _objCharacter.MagicTradition = txtTraditionName.Text;
-
-                if (cboDrain.SelectedIndex != 0)
-                    lblDrainAttributes.Text = cboDrain.Text;
-            }
+			}
             else
             {
                 cboDrain.Visible = false;
@@ -18013,23 +18010,15 @@ namespace Chummer
                 cboSpiritIllusion.Visible = false;
                 cboSpiritManipulation.Visible = false;
 
-                string strDrain = objXmlTradition["drain"].InnerText;
-                strDrain = strDrain.Replace("BOD", _objCharacter.BOD.DisplayAbbrev);
-                strDrain = strDrain.Replace("AGI", _objCharacter.AGI.DisplayAbbrev);
-                strDrain = strDrain.Replace("REA", _objCharacter.REA.DisplayAbbrev);
-                strDrain = strDrain.Replace("STR", _objCharacter.STR.DisplayAbbrev);
-                strDrain = strDrain.Replace("CHA", _objCharacter.CHA.DisplayAbbrev);
-                strDrain = strDrain.Replace("INT", _objCharacter.INT.DisplayAbbrev);
-                strDrain = strDrain.Replace("LOG", _objCharacter.LOG.DisplayAbbrev);
-                strDrain = strDrain.Replace("WIL", _objCharacter.WIL.DisplayAbbrev);
-                strDrain = strDrain.Replace("MAG", _objCharacter.MAG.DisplayAbbrev);
-                lblDrainAttributes.Text = strDrain;
                 lblTraditionSource.Text = objXmlTradition["source"].InnerText + " " + objXmlTradition["page"].InnerText;
                 _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
+	            _objCharacter.TraditionDrain = objXmlTradition["drain"].InnerText;
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                     objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
-            }
+			}
+
+			CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
 
 			ScheduleCharacterUpdate();
 
@@ -26278,16 +26267,11 @@ namespace Chummer
             if (_blnLoading || string.IsNullOrEmpty(cboDrain.SelectedValue.ToString()))
                 return;
 
-            _objCharacter.TraditionDrain = cboDrain.Text;
-            string strDrain = cboDrain.Text;
-            foreach (string strAttribute in Character.AttributeStrings)
-            {
-                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
-            }
-            lblDrainAttributes.Text = strDrain;
+            _objCharacter.TraditionDrain = cboDrain.SelectedValue.ToString();
 
-            ScheduleCharacterUpdate();
+			CalculateTraditionDrain(_objCharacter.TraditionDrain, _objImprovementManager, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
+
+			ScheduleCharacterUpdate();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
