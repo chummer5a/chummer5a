@@ -34,6 +34,9 @@ Application Changes:
 - Fixed ordering behaviour that prevented qualities that don't contribute to your limit from being taken if the quality's karma would go over the quality limit. 
 - Fixed an issue in which French language clients would crash while loading their magic tradition. 
 - Improved create method for qualities to properly use the ContributeToLimit field.
+- Fixed an issue with loading characters that would cause all equipment to become unequipped. 
+- Removed Omae character sheets if Omae is not enabled in the Options menu.
+- Fixed a version check issue that caused non-release builds to think characters were created in 0.0
 
 Data Changes:
 

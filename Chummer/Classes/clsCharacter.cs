@@ -996,7 +996,6 @@ namespace Chummer
                 return false;
             }
 
-#if RELEASE
             string strVersion = string.Empty;
 			//Check to see if the character was created in a version of Chummer later than the currently installed one.
             if (objXmlCharacter.TryGetStringFieldQuickly("appversion", ref strVersion) && !string.IsNullOrEmpty(strVersion))
@@ -1006,6 +1005,8 @@ namespace Chummer
                     strVersion = strVersion.Substring(2);
                 }
                 Version.TryParse(strVersion, out _verSavedVersion);
+            }
+#if RELEASE
                 Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
@@ -1018,10 +1019,9 @@ namespace Chummer
                         return false;
                     }
                 }
-            }
 #endif
-			// Get the name of the settings file in use if possible.
-			objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+            // Get the name of the settings file in use if possible.
+            objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 		    
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))

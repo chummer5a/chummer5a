@@ -94,25 +94,28 @@ namespace Chummer
                 }
             }
 
-            // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
-		    if (Directory.Exists(omaeDirectoryPath))
+		    if (GlobalOptions.Instance.OmaeEnabled)
 		    {
-		        foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
+		        // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
+		        string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+		        if (Directory.Exists(omaeDirectoryPath))
 		        {
-		            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-		            if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+		            foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
 		            {
-		                string strFileName = Path.GetFileNameWithoutExtension(strFile);
-		                ListItem objItem = new ListItem();
-		                objItem.Value = Path.Combine("omae", strFileName);
-		                objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
-		                lstFiles.Add(objItem);
+		                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+		                if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+		                {
+		                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
+		                    ListItem objItem = new ListItem();
+		                    objItem.Value = Path.Combine("omae", strFileName);
+		                    objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
+		                    lstFiles.Add(objItem);
+		                }
 		            }
 		        }
 		    }
 
-            cboXSLT.BeginUpdate();
+		    cboXSLT.BeginUpdate();
             cboXSLT.ValueMember = "Value";
 			cboXSLT.DisplayMember = "Name";
 			cboXSLT.DataSource = lstFiles;
