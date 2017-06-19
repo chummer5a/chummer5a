@@ -179,6 +179,7 @@ namespace Chummer
 			this.tsGearAddNexus = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsVehicleAddMod = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsVehicleAddWeaponMount = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddCyberware = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddSensor = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddGear = new System.Windows.Forms.ToolStripMenuItem();
@@ -2155,7 +2156,8 @@ namespace Chummer
 			// cmsVehicle
 			// 
 			this.cmsVehicle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleAddMod,
+			this.tsVehicleAddWeaponMount,
+			this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
             this.tsVehicleAddWeapon,
@@ -2164,6 +2166,15 @@ namespace Chummer
 			this.cmsVehicle.Name = "cmsWeapon";
 			this.cmsVehicle.Size = new System.Drawing.Size(193, 136);
 			this.cmsVehicle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			// 
+			// tsVehicleAddWeaponMount
+			// 
+			this.tsVehicleAddWeaponMount.Image = global::Chummer.Properties.Resources.car_add;
+			this.tsVehicleAddWeaponMount.Name = "tsVehicleAddMod";
+			this.tsVehicleAddWeaponMount.Size = new System.Drawing.Size(192, 22);
+			this.tsVehicleAddWeaponMount.Text = "Add Weapon Mount";
+	        this.tsVehicleAddWeaponMount.Visible = false;
+			this.tsVehicleAddWeaponMount.Click += new System.EventHandler(this.tsVehicleAddWeaponMount_Click);
 			// 
 			// tsVehicleAddMod
 			// 
@@ -10110,7 +10121,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripButton tsbPrint;
         private System.Windows.Forms.ContextMenuStrip cmsVehicle;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddMod;
-        private System.Windows.Forms.NumericUpDown nudVehicleRating;
+		private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponMount;
+		private System.Windows.Forms.NumericUpDown nudVehicleRating;
         private System.Windows.Forms.Label lblVehicleRatingLabel;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeapon;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponAccessory;

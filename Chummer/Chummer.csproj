@@ -137,6 +137,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
@@ -210,6 +211,12 @@
     </Compile>
     <Compile Include="frmCharacterRoster.Designer.cs">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCreateWeaponMount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateWeaponMount.Designer.cs">
+      <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
     <Compile Include="helpers\Button.cs">
       <SubType>Component</SubType>
@@ -885,6 +892,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmCreateSpell.resx">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCreateWeaponMount.resx">
+      <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>

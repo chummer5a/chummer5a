@@ -7317,7 +7317,13 @@ namespace Chummer
                 tsGearAddAsPlugin_Click(sender, e);
         }
 
-        private void tsVehicleAddMod_Click(object sender, EventArgs e)
+		private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
+		{
+			frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount();
+			frmPickVehicleMod.ShowDialog(this);
+		}
+
+		private void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
             while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
                 treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
