@@ -31,6 +31,9 @@ Application Changes:
 - Fixed an issue with vehicle fire modes not being enabled when using languages other than English. 
 - Fixed a crash when attempting to add mods to a vehicle in carer mode.
 - Hid the option to create spells, as it's not supported in 5e.
+- Fixed ordering behaviour that prevented qualities that don't contribute to your limit from being taken if the quality's karma would go over the quality limit. 
+- Fixed an issue in which French language clients would crash while loading their magic tradition. 
+- Improved create method for qualities to properly use the ContributeToLimit field.
 
 Data Changes:
 

@@ -921,28 +921,18 @@ namespace Chummer
 				objXmlDocument = XmlManager.Instance.Load("traditions.xml");
 				XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.MagicTradition + "\"]");
 				lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
+			    string strDrainAtt = string.Empty;
 
-				// Update the Drain CharacterAttribute Value.
-					XPathNavigator nav = objXmlDocument.CreateNavigator();
-					string strDrain = lblDrainAttributes.Text.Replace(LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"), _objCharacter.AGI.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.Value.ToString());
-                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.Value.ToString());
-					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"), _objCharacter.MAG.TotalValue.ToString());
-                int intDrain = 0;
-                try
-				{
-					XPathExpression xprDrain = nav.Compile(strDrain);
-					intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
-				}
-				catch (XPathException)
-				{
-				}
-                intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                string strDrain = Character.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                if (string.IsNullOrEmpty(strDrain))
+                {
+                    strDrain = "0";
+                }
+                XPathExpression xprDrain = nav.Compile(strDrain);
+
+                // Add any Improvements for Drain Resistance.
+                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
                 lblDrainAttributesValue.Text = intDrain.ToString();
 			}
 
@@ -952,17 +942,16 @@ namespace Chummer
 				XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.TechnomancerStream + "\"]");
 				lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
 
-				// Update the Fading CharacterAttribute Value.
+                // Update the Fading CharacterAttribute Value.
+                string strDrainAtt = string.Empty;
+
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strFading = lblFadingAttributes.Text.Replace(_objCharacter.BOD.Abbrev, _objCharacter.BOD.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.AGI.Abbrev, _objCharacter.AGI.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.REA.Abbrev, _objCharacter.REA.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.STR.Abbrev, _objCharacter.STR.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.CHA.Abbrev, _objCharacter.CHA.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.INT.Abbrev, _objCharacter.INT.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.LOG.Abbrev, _objCharacter.LOG.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.WIL.Abbrev, _objCharacter.WIL.Value.ToString());
-                strFading = strFading.Replace(_objCharacter.RES.Abbrev, _objCharacter.RES.TotalValue.ToString());
+                string strFading = Character.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                if (string.IsNullOrEmpty(strFading))
+                {
+                    strFading = "0";
+                }
+                XPathExpression xprDrain = nav.Compile(strFading);
                 int intFading = 0;
 				try
 				{

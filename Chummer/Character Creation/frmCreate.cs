@@ -6336,25 +6336,33 @@ namespace Chummer
             }
             else
             {
-                // Calculate the cost of the current Positive Qualities.
-                foreach (Quality objCharacterQuality in _objCharacter.Qualities)
+                if (objQuality.ContributeToLimit || objQuality.ContributeToBP)
                 {
-                    if (objCharacterQuality.Type == QualityType.Positive && objCharacterQuality.ContributeToLimit)
-                        intBP += objCharacterQuality.BP;
-                }
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intBP *= _objOptions.KarmaQuality;
-
-                // Include the amount from Free Negative Quality BP cost Improvements.
-                intBP -= (_objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) * _objOptions.KarmaQuality);
-
-                // Check if adding this Quality would put the character over their limit.
-                if (!_objOptions.ExceedPositiveQualities)
-                {
-                    if (intBP > intMaxQualityAmount && !_objCharacter.IgnoreRules)
+                    // Calculate the cost of the current Positive Qualities.
+                    foreach (Quality objCharacterQuality in _objCharacter.Qualities)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_PositiveQualityLimit").Replace("{0}", strAmount), LanguageManager.Instance.GetString("MessageTitle_PositiveQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        blnAddItem = false;
+                        if (objCharacterQuality.Type == QualityType.Positive && objCharacterQuality.ContributeToLimit)
+                            intBP += objCharacterQuality.BP;
+                    }
+                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                        intBP *= _objOptions.KarmaQuality;
+
+                    // Include the amount from Free Negative Quality BP cost Improvements.
+                    intBP -= (_objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) *
+                              _objOptions.KarmaQuality);
+
+                    // Check if adding this Quality would put the character over their limit.
+                    if (!_objOptions.ExceedPositiveQualities)
+                    {
+                        if (intBP > intMaxQualityAmount && !_objCharacter.IgnoreRules)
+                        {
+                            MessageBox.Show(
+                                LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
+                                    .Replace("{0}", strAmount),
+                                LanguageManager.Instance.GetString("MessageTitle_PositiveQualityLimit"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            blnAddItem = false;
+                        }
                     }
                 }
             }
