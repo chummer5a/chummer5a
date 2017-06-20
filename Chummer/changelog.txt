@@ -36,7 +36,9 @@ Application Changes:
 - Improved create method for qualities to properly use the ContributeToLimit field.
 - Fixed an issue with loading characters that would cause all equipment to become unequipped. 
 - Removed Omae character sheets if Omae is not enabled in the Options menu.
-- Fixed a version check issue that caused non-release builds to think characters were created in 0.0
+- Fixed a version check issue that caused non-release builds to think characters were created in 0.0.
+- Fixed behaviour of the house rule to have Essence Loss only reduce your Maximum attribute value. 
+- Removed the character property OverrideSpecialAttributeEssenceLoss as it's redundant in 5E.
 
 Data Changes:
 
@@ -59,6 +61,7 @@ Data Changes:
 - Added Translations for the Improved Reflexes Power after the Power Update.
 - Added Underbarrel Weapons from Hard Targets as weapons. Set the Underbarrel Weapon accessories to Hidden. 
 - Hard Nanohives can now add Hard Nanoware as a gear item to themselves. 
+- Removed the Latent Source property from qualities, as it's redundant in 5E.
 
 New Strings:
 

@@ -11539,7 +11539,6 @@
 			<name>Dracoform (Eastern Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
-      <latentsource>Latent Dracomorphosis</latentsource>
       <stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
@@ -11598,7 +11597,6 @@
 			<name>Dracoform (Western Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
@@ -11653,7 +11651,6 @@
 			<name>Dracoform (Feathered Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>
@@ -11716,7 +11713,6 @@
 			<name>Dracoform (Sea Drake)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>75</karma>
-      <latentsource>Latent Dracomorphosis</latentsource>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
 			<limit>no</limit>

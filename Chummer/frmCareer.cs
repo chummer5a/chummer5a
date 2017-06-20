@@ -7424,14 +7424,6 @@ namespace Chummer
 					treWeapons.Nodes[0].Expand();
 				}
 
-				// If the new Quality is linked to a Latent source, see if the Quality that is being swapped out is the same as the one the new Quality is linked to.
-				// If so, set the character's OverrideSpecialAttributeEssenceLoss to true so that they always start with a Special CharacterAttribute value of 1.
-				if (objXmlQuality["latentsource"] != null)
-				{
-					if (objXmlQuality["latentsource"].InnerText == objQuality.Name)
-						_objCharacter.OverrideSpecialAttributeEssenceLoss = true;
-				}
-
 				// Remove any Improvements for the old Quality.
 				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
 				_objCharacter.Qualities.Remove(objQuality);
@@ -19586,7 +19578,7 @@ namespace Chummer
 			_blnSkipUpdate = true;
 
 			int intEssenceLoss = 0;
-			if (!_objOptions.ESSLossReducesMaximumOnly && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
+			if (!_objOptions.ESSLossReducesMaximumOnly)
 				intEssenceLoss = _objCharacter.EssencePenalty;
 			else
 			{
@@ -19728,7 +19720,7 @@ namespace Chummer
 			}
 
 			int intEssenceLoss = 0;
-			if (!_objOptions.ESSLossReducesMaximumOnly && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
+			if (!_objOptions.ESSLossReducesMaximumOnly)
 				intEssenceLoss = _objCharacter.EssencePenalty;
 			else
 			{
