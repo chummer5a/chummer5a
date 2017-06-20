@@ -1061,7 +1061,7 @@
 		<quality>
 			<id>0e741331-d776-4be8-abc5-4101228abdef</id>
 			<name>Magician</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
@@ -1088,7 +1088,7 @@
 		<quality>
 			<id>55247bdc-c313-4614-ae15-5012308096ff</id>
 			<name>Adept</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
@@ -1116,7 +1116,7 @@
 		<quality>
 			<id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
 			<name>Mystic Adept</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>35</karma>
 			<category>Positive</category>
 			<bonus>
@@ -1145,7 +1145,7 @@
 		<quality>
 			<id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
 			<name>Technomancer</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
@@ -1175,7 +1175,7 @@
 		<quality>
 			<id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
 			<name>Aspected Magician</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
@@ -1203,7 +1203,7 @@
 		<quality>
 			<id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
 			<name>Aware</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<hide>yes</hide>
 			<karma>15</karma>
 			<category>Positive</category>
@@ -2503,7 +2503,7 @@
 		<quality>
 			<id>3ea0d4dd-5ed7-4ab0-817f-68d7d67ab3d1</id>
 			<name>Changeling (Class I SURGE)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>10</karma>
 			<category>Positive</category>
 			<forbidden>
@@ -2518,7 +2518,7 @@
 		<quality>
 			<id>bb16aae9-b511-47b2-93c4-217918346cc8</id>
 			<name>Changeling (Class II SURGE)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>15</karma>
 			<category>Positive</category>
 			<forbidden>
@@ -2533,7 +2533,7 @@
 		<quality>
 			<id>9baa5b9d-e96c-466d-b0b4-dd789a6c0f83</id>
 			<name>Changeling (Class III SURGE)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>30</karma>
 			<category>Positive</category>
 			<forbidden>
@@ -7243,7 +7243,7 @@
 		<quality>
 			<id>65026e10-6fa5-49a4-9da6-d9575b5b9cde</id>
 			<name>Infected: Bandersnatch</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>22</karma>
 			<category>Positive</category>
 			<bonus>
@@ -7373,7 +7373,7 @@
 		<quality>
 			<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
 			<name>Infected: Banshee</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
       <bonus>
@@ -7499,7 +7499,7 @@
 		<quality>
 			<id>6556d48f-2cbd-4bc6-a2c8-e9fe3f99ac7e</id>
 			<name>Infected: Dzoo-Noo-Qua</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>43</karma>
 			<category>Positive</category>
 			<bonus>
@@ -7633,7 +7633,7 @@
 		<quality>
 			<id>fe01a71d-50c2-4ba3-9604-54af663ae8af</id>
 			<name>Infected: Fomoraig</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>22</karma>
 			<category>Positive</category>
 			<bonus>
@@ -7766,7 +7766,7 @@
 		<quality>
 			<id>ed801fa4-0514-458a-b850-9eeddf0c2fed</id>
 			<name>Infected: Ghoul (Dwarf)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -7902,7 +7902,7 @@
 		<quality>
 			<id>e156dc45-66ca-4b45-baf8-5c875b9866c4</id>
 			<name>Infected: Ghoul (Elf)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8038,7 +8038,7 @@
 		<quality>
 			<id>2d99bbb6-7af0-45c6-a83b-46d9d9f10838</id>
 			<name>Infected: Ghoul (Human)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8174,7 +8174,7 @@
 		<quality>
 			<id>ea7c269f-6843-488a-b0fa-8f79c935f568</id>
 			<name>Infected: Ghoul (Ork)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8310,7 +8310,7 @@
 		<quality>
 			<id>8325c7f3-c578-458a-9068-e159b2c686ef</id>
 			<name>Infected: Ghoul (Sasquatch)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8446,7 +8446,7 @@
 		<quality>
 			<id>92123580-1f4f-4c6a-b2f5-3b9c9031d705</id>
 			<name>Infected: Ghoul (Troll)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8582,7 +8582,7 @@
 		<quality>
 			<id>5f31925d-cc76-49da-acab-644b66d5e93d</id>
 			<name>Infected: Gnawer</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>35</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8702,7 +8702,7 @@
 		<quality>
 			<id>ae5e7ba4-5b9e-40f9-8ace-66f19c6e11eb</id>
 			<name>Infected: Goblin</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
 			<bonus>
@@ -8846,7 +8846,7 @@
 		<quality>
 			<id>ba87adfa-6c7e-4c9b-bf13-b6576b59bd1f</id>
 			<name>Infected: Grendel</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>32</karma>
 			<implemented>no</implemented>
 			<category>Positive</category>
@@ -8994,7 +8994,7 @@
 		<quality>
 			<id>8e3d558a-b69a-4176-a130-1ec3465aa809</id>
 			<name>Infected: Harvester</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
 			<bonus>
@@ -9134,7 +9134,7 @@
 		<quality>
 			<id>fe0c2ae0-fc0f-40fe-9bae-1c3ad5c7e29a</id>
 			<name>Infected: Loup-Garou</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
@@ -9277,7 +9277,7 @@
 		<quality>
 			<id>818bfd22-7dec-4e50-8189-7fed09fbcfed</id>
 			<name>Infected: Mutaqua</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>54</karma>
 			<category>Positive</category>
 			<costdiscount>
@@ -9436,7 +9436,7 @@
 		<quality>
 			<id>39a8e176-ddbf-470e-84a0-ba25ccd92ca0</id>
 			<name>Infected: Nosferatu</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>48</karma>
       <category>Positive</category>
 			<costdiscount>
@@ -9583,7 +9583,7 @@
 		<quality>
 			<id>7d0a1679-846a-4cf2-b8b5-b5c686766a90</id>
 			<name>Infected: Vampire (Human)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
 			<bonus>
@@ -9711,7 +9711,7 @@
 		<quality>
 			<id>4024b100-c762-4354-95e4-db5cb0694a9a</id>
 			<name>Infected: Vampire (Non-Human)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
 			<bonus>
@@ -9837,7 +9837,7 @@
 		<quality>
 			<id>3c746778-bec5-4b9b-a1a4-62ac6eb98342</id>
 			<name>Infected: Sukuyan (Human)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
 			<bonus>
@@ -9966,7 +9966,7 @@
 		<quality>
 			<id>735aee59-2236-43e4-b618-9b9923513597</id>
 			<name>Infected: Sukuyan (Non-Human)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
 			<bonus>
@@ -10093,7 +10093,7 @@
 		<quality>
 			<id>652948f9-e629-4dea-bd13-776dd41ca6a1</id>
 			<name>Infected: Wendigo</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>47</karma>
 			<category>Positive</category>
 			<costdiscount>
@@ -11537,7 +11537,7 @@
 		<quality>
 			<id>3a8006d6-72c2-4655-9200-45ec21cad760</id>
 			<name>Dracoform (Eastern Drake)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>75</karma>
       <stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
@@ -11595,7 +11595,7 @@
 		<quality>
 			<id>f257ce85-fc27-4fa1-8d34-6eb4102e7614</id>
 			<name>Dracoform (Western Drake)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>75</karma>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
@@ -11649,7 +11649,7 @@
 		<quality>
 			<id>90a7cc01-ee0f-4d60-aeb9-05752e68ddf9</id>
 			<name>Dracoform (Feathered Drake)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>75</karma>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
@@ -11711,7 +11711,7 @@
 		<quality>
 			<id>c284e172-1d20-4844-b24c-e094d2588b72</id>
 			<name>Dracoform (Sea Drake)</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>75</karma>
 			<stagedpurchase>True</stagedpurchase>
 			<category>Positive</category>
@@ -13973,7 +13973,7 @@
 		<quality>
 			<id>c1d4d7ec-9ebb-4e85-ae72-8155b0f27478</id>
 			<name>Apprentice</name>
-			<contributetolimit>no</contributetolimit>
+			<contributetolimit>False</contributetolimit>
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>

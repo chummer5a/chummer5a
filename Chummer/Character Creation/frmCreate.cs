@@ -9314,7 +9314,7 @@ namespace Chummer
             // Run through the list of Active Skills and pick out the two applicable ones.
             int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
             
-            if (intSpellCount >= ((2 * intSkillValue) + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
+            if (intSpellCount >= (2 * intSkillValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -13219,27 +13219,48 @@ namespace Chummer
 				tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
 				tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
 			}
-	        if (_objCharacter.SpellLimit > 0)
+
+            int limit = _objCharacter.SpellLimit;
+            int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
+                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) +
+                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpellsATT);
+            if (limit > 0)
 	        {
 		        lblBuildPrepsBP.Text =
 			        string.Format(
-				        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2}: {intPrepPointsUsed} {strPoints}");
+				        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intPrepPointsUsed} {strPoints}");
 		        lblSpellsBP.Text =
 			        string.Format(
-				        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2}: {intSpellPointsUsed} {strPoints}");
+				        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intSpellPointsUsed} {strPoints}");
 		        lblBuildRitualsBP.Text =
 			        string.Format(
-				        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2}: {intRitualPointsUsed} {strPoints}");
+				        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intRitualPointsUsed} {strPoints}");
 	        }
 	        else
 	        {
-				lblBuildPrepsBP.Text =
-					string.Format($"{intPrepPointsUsed} {strPoints}");
-				lblSpellsBP.Text =
-					string.Format($"{intSpellPointsUsed} {strPoints}");
-				lblBuildRitualsBP.Text =
-					string.Format($"{intRitualPointsUsed} {strPoints}");
-			}
+	            if (limitMod == 0)
+	            {
+	                lblBuildPrepsBP.Text =
+	                    string.Format($"{intPrepPointsUsed} {strPoints}");
+	                lblSpellsBP.Text =
+	                    string.Format($"{intSpellPointsUsed} {strPoints}");
+	                lblBuildRitualsBP.Text =
+	                    string.Format($"{intRitualPointsUsed} {strPoints}");
+	            }
+	            else
+	            {
+                    //TODO: Make the costs render better, currently looks wrong as hell
+                    lblBuildPrepsBP.Text =
+                        string.Format(
+                            $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intPrepPointsUsed} {strPoints}");
+                    lblSpellsBP.Text =
+                        string.Format(
+                            $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intSpellPointsUsed} {strPoints}");
+                    lblBuildRitualsBP.Text =
+                        string.Format(
+                            $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intRitualPointsUsed} {strPoints}");
+                }
+	        }
 	        
 			intFreestyleBP += intSpellPointsUsed + intRitualPointsUsed + intPrepPointsUsed;
 
