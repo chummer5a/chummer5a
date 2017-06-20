@@ -39,6 +39,7 @@ Application Changes:
 - Fixed a version check issue that caused non-release builds to think characters were created in 0.0.
 - Fixed behaviour of the house rule to have Essence Loss only reduce your Maximum attribute value. 
 - Removed the character property OverrideSpecialAttributeEssenceLoss as it's redundant in 5E.
+- Fixed behaviour of update method to not mangle filenames with non-English accent characters. 
 
 Data Changes:
 

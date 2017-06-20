@@ -21,10 +21,10 @@ using System.ComponentModel;
 using System.Diagnostics;
  using System.Globalization;
  using System.IO;
-using System.Net;
+ using System.IO.Compression;
+ using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using System.IO.Compression;
 using System.Reflection;
 ﻿using System.Windows;
 ﻿using Application = System.Windows.Forms.Application;
@@ -281,7 +281,7 @@ namespace Chummer
 
                 // Copy over the archive from the temp directory.
                 Log.Info("Extracting downloaded archive into application path: ", _strTempPath);
-                using (ZipArchive archive = ZipFile.OpenRead(_strTempPath))
+				using (ZipArchive archive = ZipFile.Open(_strTempPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
