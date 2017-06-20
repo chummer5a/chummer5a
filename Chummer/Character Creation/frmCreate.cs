@@ -13106,6 +13106,7 @@ namespace Chummer
 			lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
 			intAttributePointsUsed += CalculateAttributeBP(_objCharacter.SpecialAttributeList);
 			intKarmaPointsRemain -= intAttributePointsUsed;
+			lblAttributesBP.Text = BuildAttributes(_objCharacter.AttributeList, null);
 			lblPBuildSpecial.Text = BuildAttributes(_objCharacter.SpecialAttributeList,null,true);
 			// ------------------------------------------------------------------------------
 			// Include the BP used by Martial Arts.
@@ -13124,28 +13125,17 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
             int intSkillGroupsPoints = _objCharacter.SkillsSection.SkillGroups.TotalCostKarma();
-
-                lblSkillGroupsBP.Text = string.Format("{0} " + strPoints, intSkillGroupsPoints);
 			intKarmaPointsRemain -= intSkillGroupsPoints;
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
 			int skillPointsKarma = _objCharacter.SkillsSection.Skills.TotalCostKarma();
 			intKarmaPointsRemain -= skillPointsKarma;
-			lblActiveSkillsBP.Text = $"{skillPointsKarma} {strPoints}";
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
             int knowledgeKarmaUsed = _objCharacter.SkillsSection.KnowledgeSkills.Sum(x => x.CurrentKarmaCost());
 			//TODO: Remaining is named USED?
             intKarmaPointsRemain -= knowledgeKarmaUsed;
-
-            // Update the label that displays the number of free Knowledge Skill points remaining.
-            lblKnowledgeSkillsBP.Text =
-		        $"{(_objCharacter.SkillsSection.KnowledgeSkillPointsRemain)} {LanguageManager.Instance.GetString("String_Of")}  {_objCharacter.SkillsSection.KnowledgeSkillPoints}";
-	        if (knowledgeKarmaUsed > 0)
-	        {
-		        lblKnowledgeSkillsBP.Text += $"{knowledgeKarmaUsed} {strPoints}";
-	        }
 			tabSkillUc.MissingDatabindingsWorkaround();
 			
             intFreestyleBP += knowledgeKarmaUsed;
@@ -13390,7 +13380,16 @@ namespace Chummer
             }
             if (intFormsPointsUsed > _objCharacter.CFPLimit)
                 intKarmaPointsRemain -= (intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm;
-            lblComplexFormsBP.Text = string.Format("{0} " + strPoints, intFormsPointsUsed.ToString());
+			string s = $"0 {LanguageManager.Instance.GetString("String_Karma")}";
+			if (_objCharacter.CFPLimit > 0)
+			{
+				s = $"{_objCharacter.SkillsSection.SkillGroupPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.SkillsSection.SkillGroupPointsMaximum}";
+			}
+			if (intFormsPointsUsed > 0)
+			{
+				s += $": {_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {LanguageManager.Instance.GetString("String_Karma")}";
+			}
+			lblComplexFormsBP.Text = s;
             intFreestyleBP += intFormsPointsUsed;
 
             // ------------------------------------------------------------------------------
@@ -13508,27 +13507,45 @@ namespace Chummer
 
 		private void UpdateSkillRelatedInfo()
 		{
+			string karma = LanguageManager.Instance.GetString("String_Karma");
+			string of = LanguageManager.Instance.GetString("String_Of");
+			string def = $"0 {karma}";
+			string s = string.Empty;
 			//Update Skill Labels
 			//Active skills
-			lblActiveSkillsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillPoints, _objCharacter.SkillsSection.SkillPointsMaximum);
-		    if (_objCharacter.SkillsSection.Skills.TotalCostKarma() > 0)
-		    {
-				lblActiveSkillsBP.Text += string.Format(": {0} {1}", _objCharacter.SkillsSection.Skills.TotalCostKarma(), LanguageManager.Instance.GetString("String_Karma"));
-		    }
-
+			s = def;
+			if (_objCharacter.SkillsSection.SkillPointsMaximum > 0)
+			{
+				s = $"{_objCharacter.SkillsSection.SkillPoints} {of} {_objCharacter.SkillsSection.SkillPointsMaximum}";
+			}
+			if (_objCharacter.SkillsSection.Skills.TotalCostKarma() > 0)
+			{
+				s += $": {_objCharacter.SkillsSection.Skills.TotalCostKarma()} {karma}";
+			}
+			lblActiveSkillsBP.Text = s;
 			//Knowledge skills
-			lblKnowledgeSkillsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.KnowledgeSkillPointsRemain, _objCharacter.SkillsSection.KnowledgeSkillPoints);
-            if (_objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma() > 0)
-            {
-				lblKnowledgeSkillsBP.Text += string.Format(": {0} {1}", _objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma(), LanguageManager.Instance.GetString("String_Karma"));
-            }
+			s = def;
+			if (_objCharacter.SkillsSection.KnowledgeSkillPoints > 0)
+			{
+				s = $"{_objCharacter.SkillsSection.KnowledgeSkillPointsRemain} {of} {_objCharacter.SkillsSection.KnowledgeSkillPoints}";
+			}
+			if (_objCharacter.SkillsSection.Skills.TotalCostKarma() > 0)
+			{
+				s += $": {_objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma()} {karma}";
+			}
+			lblKnowledgeSkillsBP.Text = s;
 			//Groups
-			lblSkillGroupsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillGroupPoints, _objCharacter.SkillsSection.SkillGroupPointsMaximum);
-            if (_objCharacter.SkillsSection.SkillGroups.TotalCostKarma() > 0)
-            {
-				lblSkillGroupsBP.Text += string.Format(": {0} {1}", _objCharacter.SkillsSection.SkillGroups.TotalCostKarma(), LanguageManager.Instance.GetString("String_Karma"));
-            }
-        }
+			s = def;
+			if (_objCharacter.SkillsSection.SkillGroupPointsMaximum > 0)
+			{
+				s = $"{_objCharacter.SkillsSection.SkillGroupPoints} {of} {_objCharacter.SkillsSection.SkillGroupPointsMaximum}";
+			}
+			if (_objCharacter.SkillsSection.SkillGroups.TotalCostKarma() > 0)
+			{
+				s += $": {_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {karma}";
+			}
+			lblSkillGroupsBP.Text = s;
+		}
 
         /// <summary>
         /// Update the Character information.
