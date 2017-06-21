@@ -555,7 +555,7 @@ namespace Chummer
 		}
 
 		public bool Underbarrel { get; set; }
-		public string Mounts { get; set; }
+        public string Mounts { get; set; } = string.Empty;
 		#endregion
 
 		#region Methods
