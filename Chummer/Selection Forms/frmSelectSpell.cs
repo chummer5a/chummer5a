@@ -169,10 +169,12 @@ namespace Chummer
 			
 			txtSearch.Enabled = string.IsNullOrEmpty(_strLimitCategory);
 
-	        int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) +
-	                         _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpellsATT);
-
-            chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
+	        int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) 
+			+ _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
+				.Select(imp => _objCharacter.GetAttribute(imp.UniqueName)).Select(att => att.TotalValue).Sum() 
+			+ _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+				.Select(imp => _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.UniqueName)).Select(objSkill => objSkill.LearnedRating).Sum();
+	        chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
         }
 
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)

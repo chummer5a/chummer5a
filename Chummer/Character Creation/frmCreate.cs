@@ -13201,20 +13201,35 @@ namespace Chummer
 		            }
 	            }
                 // Each spell costs KarmaSpell.
-                intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps - _objCharacter.SpellLimit) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
-                intSpellPointsUsed += Math.Max(Math.Max(0, spells) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount), 0);
-				intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount), 0);
-				intPrepPointsUsed += Math.Max(Math.Max(0, preps) * _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount), 0);
-				tipTooltip.SetToolTip(lblSpellsBP, $"{spells} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-				tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-				tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+	            int spellCost = _objOptions.KarmaSpell +
+	                            _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
+				intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps - _objCharacter.SpellLimit) * (spellCost);
+                intSpellPointsUsed += Math.Max(Math.Max(0, spells) * (spellCost), 0);
+				intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
+				intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
+				tipTooltip.SetToolTip(lblSpellsBP, $"{spells} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+				tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+				tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
 			}
 
             int limit = _objCharacter.SpellLimit;
             int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
-                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) +
-                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpellsATT);
-            if (limit > 0)
+                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
+	        foreach (
+		        Improvement imp in
+		        _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+	        {
+		        CharacterAttrib att = _objCharacter.GetAttribute(imp.UniqueName);
+		        limitMod += att.TotalValue;
+	        }
+			foreach (
+				Improvement imp in
+				_objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
+			{
+				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.UniqueName);
+				limitMod += objSkill.LearnedRating;
+			}
+			if (limit > 0)
 	        {
 		        lblBuildPrepsBP.Text =
 			        string.Format(
@@ -13664,14 +13679,6 @@ namespace Chummer
                         }
                         objSpiritControl.RebuildSpiritList(_objCharacter.MagicTradition);
                     }
-				}
-
-				foreach (
-					Improvement imp in
-					_objCharacter.Improvements.Where(imp => imp.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
-				{
-					CharacterAttrib att = _objCharacter.GetAttribute(imp.ImprovedName);
-					imp.Value = _objCharacter.MAG.TotalValue;
 				}
 
 				// If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).

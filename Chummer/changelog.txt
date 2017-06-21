@@ -40,6 +40,10 @@ Application Changes:
 - Fixed behaviour of the house rule to have Essence Loss only reduce your Maximum attribute value. 
 - Removed the character property OverrideSpecialAttributeEssenceLoss as it's redundant in 5E.
 - Fixed behaviour of update method to not mangle filenames with non-English accent characters. 
+- Fixed cost discount for Dedicated Spellslinger when using the Aspected Magician quality.
+- Fixed cost calculation of Dedicated Spellslinger to apply to all spells. 
+- Dedicates Spellslinger now properly provides free spells based on your Spellcasting skill.
+- Fixed implementations of FreeSpellsATT and FreeSpellsSkill improvements to not require updating the improvements manually. 
 
 Data Changes:
 

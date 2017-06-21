@@ -197,8 +197,9 @@ namespace Chummer
 			DrainValue,
             Spell,
 	        MentorSpirit,
-			Paragon
-        }
+			Paragon,
+			FreeSpellsSkill
+		}
 
         public enum ImprovementSource
         {

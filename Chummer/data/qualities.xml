@@ -12663,14 +12663,14 @@
       <costdiscount>
         <required>
           <oneof>
-            <quality>Aspected Mage</quality>
+            <quality>Aspected Magician</quality>
           </oneof>
         </required>
         <value>-5</value>
       </costdiscount>
       <bonus>
         <spellkarmadiscount>-1</spellkarmadiscount>
-				<freespells attribute="MAG" />
+				<freespells skill="Spellcasting" />
       </bonus>
       <required>
         <oneof>

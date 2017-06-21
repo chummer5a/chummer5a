@@ -3144,15 +3144,31 @@ namespace Chummer.Classes
 		{
 			Log.Info("freespells");
 			Log.Info("freespells = " + bonusNode.OuterXml.ToString());
-			Log.Info("Calling CreateImprovement");
 			if (bonusNode.Attributes?["attribute"] != null)
 			{
+				Log.Info("attribute");
 				CharacterAttrib att = _objCharacter.GetAttribute(bonusNode.Attributes?["attribute"].InnerText);
-				CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, string.Empty,
-					att.TotalValue);
+				if (att != null)
+				{
+					Log.Info(att.Abbrev);
+					Log.Info("Calling CreateImprovement");
+					CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, string.Empty);
+				}
+			}
+			else if (bonusNode.Attributes?["skill"] != null)
+			{
+				Log.Info("skill");
+				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
+				Log.Info(objSkill.Name);
+				if (objSkill != null)
+				{
+					Log.Info("Calling CreateImprovement");
+					CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill,string.Empty);
+				}
 			}
 			else
 			{
+				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, string.Empty,
 					ValueToInt(bonusNode.InnerText, _intRating));
 			}
