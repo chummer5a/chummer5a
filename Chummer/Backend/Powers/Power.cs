@@ -18,7 +18,8 @@ namespace Chummer
 	public class Power : INotifyPropertyChanged
 	{
 		private Guid _guiID;
-	    private string _strSource = "";
+		private Guid _sourceID = new Guid();
+		private string _strSource = "";
 		private string _strPage = "";
 		private string _strPointsPerLevel = "0";
 		private string _strAction = "";
@@ -51,6 +52,7 @@ namespace Chummer
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("power");
+			objWriter.WriteElementString("id", _sourceID.ToString());
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", Name);
 			objWriter.WriteElementString("extra", Extra);
@@ -91,6 +93,7 @@ namespace Chummer
 		public void Create(XmlNode objNode, ImprovementManager objImprovementManager, int intRating = 1)
 		{
 			Name = objNode["name"].InnerText;
+			_sourceID = Guid.Parse(objNode["id"].InnerText);
 			_strPointsPerLevel = objNode["points"].InnerText;
 			_strAdeptWayDiscount = objNode["adeptway"].InnerText;
 			LevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
@@ -140,7 +143,20 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 		    _guiID = Guid.Parse(objNode["guid"].InnerText);
-		    Name = objNode["name"].InnerText;
+			Name = objNode["name"].InnerText;
+			if (objNode["id"] != null)
+			{
+				_sourceID = Guid.Parse(objNode["id"].InnerText);
+			}
+			else
+			{
+				string strPowerName = Name;
+				if (strPowerName.Contains("("))
+					strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+				XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
+				if (objXmlPower != null) _sourceID = Guid.Parse(objXmlPower["id"].InnerText);
+			}
 			Extra = objNode["extra"].InnerText ?? "";
 			_strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
 			objNode.TryGetField("action", out _strAction);
@@ -169,8 +185,20 @@ namespace Chummer
 			objNode.TryGetStringFieldQuickly("page", ref _strPage);
 			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			Bonus = objNode["bonus"];
-			_nodAdeptWayRequirements = objNode["adeptwayrequires"];
-		    if (!objNode.InnerXml.Contains("enhancements")) return;
+			if (objNode["adeptway"] != null)
+			{
+				if (objNode["adeptwayrequires"] == null)
+				{
+					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+					XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID + "\"]");
+					if (objXmlPower != null) _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
+				}
+				else
+				{
+					_nodAdeptWayRequirements = objNode["adeptwayrequires"];
+				}
+			} 
+			if (!objNode.InnerXml.Contains("enhancements")) return;
 		    XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
 		    if (nodEnhancements == null) return;
 		    foreach (XmlNode nodEnhancement in nodEnhancements)

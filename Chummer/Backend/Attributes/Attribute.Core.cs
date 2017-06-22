@@ -238,13 +238,13 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-		/// Current value of the CharacterAttribute.
+		/// Current value of the CharacterAttribute before modifiers are applied.
 		/// </summary>
 		public int Value
         {
             get
             {
-                return Math.Max(TotalBase + Karma,TotalMinimum);
+	            return Math.Min(Math.Max(Base + Karma, MetatypeMinimum), MetatypeMaximum);
             }
         }
 
