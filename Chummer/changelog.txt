@@ -44,6 +44,8 @@ Application Changes:
 - Fixed cost calculation of Dedicated Spellslinger to apply to all spells. 
 - Dedicates Spellslinger now properly provides free spells based on your Spellcasting skill.
 - Fixed implementations of FreeSpellsATT and FreeSpellsSkill improvements to not require updating the improvements manually. 
+- Adept powers created before the powers refresh will now properly add the relevant bonus node for the adept way discount. 
+- Adept powers now store the source id for use in searching and such. 
 
 Data Changes:
 
