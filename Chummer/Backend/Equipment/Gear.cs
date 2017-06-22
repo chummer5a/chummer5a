@@ -711,7 +711,7 @@ namespace Chummer.Backend.Equipment
 			}
 
 			// Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements. 
-			if (_strName == "Qi Focus" || _SourceGuid != null)
+			if (_strName == "Qi Focus")
 			{
 				Version.TryParse("5.193.5", out Version test);
 				if (test != null)

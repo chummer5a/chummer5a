@@ -212,26 +212,9 @@ namespace Chummer
             if (objXmlQuality["category"] != null)
 			    _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
 			_objQualitySource = objQualitySource;
-			if (objXmlQuality["print"] != null)
-			{
-				if (objXmlQuality["print"].InnerText == "no")
-					_blnPrint = false;
-			}
-			if (objXmlQuality["implemented"] != null)
-			{
-				if (objXmlQuality["implemented"].InnerText == "False")
-					_blnImplemented = false;
-			}
-			if (objXmlQuality["contributetolimit"] != null)
-			{
-				if (objXmlQuality["contributetolimit"].InnerText == "no")
-					_blnContributeToLimit = false;
-			}
-            if (objXmlQuality["doublecareer"] != null)
-            {
-                if (objXmlQuality["doublecareer"].InnerText.ToLower() == "false")
-                    _blnDoubleCostCareer = false;
-            }
+            objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
+            objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
+            objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
 			if (objXmlQuality["mutant"] != null)

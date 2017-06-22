@@ -26,6 +26,24 @@ Application Changes:
 - Changed the way Cyber-/Bioware Requirements are implemented.
 - Implemented a selectcyberware improvement for use by the Soft Nanohive cyberware. 
 - Fixed behaviour of contact control to properly manage Family and Blackmail settings between Save/Load. 
+- Fixed support for AIs adding cyberware to vehicles. 
+- Added the ability to add the Underbarrel weapons from Hard Targets to other weapons via the Add Underbarrel Weapon menu option. 
+- Fixed an issue with vehicle fire modes not being enabled when using languages other than English. 
+- Fixed a crash when attempting to add mods to a vehicle in carer mode.
+- Hid the option to create spells, as it's not supported in 5e.
+- Fixed ordering behaviour that prevented qualities that don't contribute to your limit from being taken if the quality's karma would go over the quality limit. 
+- Fixed an issue in which French language clients would crash while loading their magic tradition. 
+- Improved create method for qualities to properly use the ContributeToLimit field.
+- Fixed an issue with loading characters that would cause all equipment to become unequipped. 
+- Removed Omae character sheets if Omae is not enabled in the Options menu.
+- Fixed a version check issue that caused non-release builds to think characters were created in 0.0.
+- Fixed behaviour of the house rule to have Essence Loss only reduce your Maximum attribute value. 
+- Removed the character property OverrideSpecialAttributeEssenceLoss as it's redundant in 5E.
+- Fixed behaviour of update method to not mangle filenames with non-English accent characters. 
+- Fixed cost discount for Dedicated Spellslinger when using the Aspected Magician quality.
+- Fixed cost calculation of Dedicated Spellslinger to apply to all spells. 
+- Dedicates Spellslinger now properly provides free spells based on your Spellcasting skill.
+- Fixed implementations of FreeSpellsATT and FreeSpellsSkill improvements to not require updating the improvements manually. 
 
 Data Changes:
 
@@ -46,6 +64,9 @@ Data Changes:
 - Fixed the Attribute Boost power to be selectable up to four times. 
 - Fixed one of the requirements for the Imbue Item spell that caused a crash. 
 - Added Translations for the Improved Reflexes Power after the Power Update.
+- Added Underbarrel Weapons from Hard Targets as weapons. Set the Underbarrel Weapon accessories to Hidden. 
+- Hard Nanohives can now add Hard Nanoware as a gear item to themselves. 
+- Removed the Latent Source property from qualities, as it's redundant in 5E.
 
 New Strings:
 

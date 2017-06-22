@@ -8265,6 +8265,74 @@
 			<source>HT</source>
 			<page>178</page>
 		</weapon>
+		<weapon>
+			<id>a1924b0d-3cc6-4a37-9783-c75145ca929e</id>
+			<name>Mounted Crossbow</name>
+			<category>Underbarrel Weapons</category>
+			<type>Ranged</type>
+			<mount>Barrel</mount>
+			<useskill>Archery</useskill>
+			<extramount>Under</extramount>
+			<conceal>-</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-2</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>1</ammo>
+			<avail>8R</avail>
+			<cost>1000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<source>HT</source>
+			<page>182</page>
+		</weapon>
+		<weapon>
+			<id>7914b526-90a1-4691-93bf-1eace51b914f</id>
+			<name>Underbarrel Shotgun</name>
+			<category>Underbarrel Weapons</category>
+			<type>Ranged</type>
+			<useskill>Longarms</useskill>
+			<mount>Under</mount>
+			<conceal>-</conceal>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>9P</damage>
+			<ap>-1</ap>
+			<mode>SS</mode>
+			<rc>-1</rc>
+			<ammo>4(m)</ammo>
+			<avail>5R</avail>
+			<cost>600</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<source>HT</source>
+			<page>182</page>
+		</weapon>
+		<weapon>
+			<id>fafa3c46-6ced-4cbd-b236-2c5abbae141e</id>
+			<name>Underbarrel Laser</name>
+			<category>Underbarrel Weapons</category>
+			<type>Ranged</type>
+			<mount>Under</mount>
+			<useskill>Exotic Ranged Weapon</useskill>
+			<extramount>Side</extramount>
+			<conceal>-</conceal>
+			<accuracy>8</accuracy>
+			<reach>0</reach>
+			<damage>5P</damage>
+			<ap>-10</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>5(c) or external source</ammo>
+			<avail>16F</avail>
+			<cost>22000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<source>HT</source>
+			<page>182</page>
+		</weapon>
 		<!-- End Region -->
 		<!-- Region Boston Lockdown-->
 		<weapon>
@@ -12959,6 +13027,7 @@
 			<name>Mounted Crossbow</name>
 			<mount>Under/Barrel</mount>
 			<extramount>Under/Barrel</extramount>
+			<hide>yes</hide>
 			<rating>0</rating>
 			<avail>8R</avail>
 			<cost>1000</cost>
@@ -12985,6 +13054,7 @@
 			<id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
 			<name>Underbarrel Laser</name>
 			<mount>Under/Side</mount>
+			<hide>yes</hide>
 			<extramount>Under/Side</extramount>
 			<rating>0</rating>
 			<avail>16F</avail>
@@ -12996,6 +13066,7 @@
 			<id>13d90aa2-6a67-47e5-a211-89aabea5f837</id>
 			<name>Underbarrel Shotgun</name>
 			<mount>Under</mount>
+			<hide>yes</hide>
 			<rating>0</rating>
 			<avail>5R</avail>
 			<cost>600</cost>

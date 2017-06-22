@@ -939,6 +939,11 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 			<limbslot>leg</limbslot>
 		</cyberware>
 		<cyberware>
@@ -969,6 +974,11 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 		</cyberware>
 		<cyberware>
 			<id>cc503281-ff05-4e22-9121-09116a4a8306</id>
@@ -1056,6 +1066,11 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 		</cyberware>
 		<cyberware>
 			<id>48e490fb-fe6a-482c-a47d-40cb04985897</id>
@@ -1173,6 +1188,11 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 			<limbslot>leg</limbslot>
 		</cyberware>
 		<cyberware>
@@ -1203,6 +1223,11 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 		</cyberware>
 		<cyberware>
 			<id>a1591e59-d859-40fc-aaf8-30fde5cf6a42</id>
@@ -1290,6 +1315,11 @@
 				</conditionmonitor>
 				<selectside />
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 		</cyberware>
 		<cyberware>
 			<id>40878e5d-cabc-4980-ad87-0dd5d5f5c037</id>
@@ -2534,7 +2564,12 @@
 			<bonus>
 				<selectside />
 			</bonus>
-			<limbslot>arm</limbslot>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
+			<limbslot>leg</limbslot>
 		</cyberware>
 		<cyberware>
 			<id>bd5d3479-7482-422d-a0dc-16357cf43275</id>
@@ -2552,7 +2587,12 @@
 			<bonus>
 				<selectside />
 			</bonus>
-			<limbslot>arm</limbslot>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
+			<limbslot>leg</limbslot>
 		</cyberware>
 		<cyberware>
 			<id>d7c9f80e-247a-44f3-ad1d-96851a4d6c25</id>
@@ -2943,6 +2983,11 @@
 			<bonus>
 				<movementpercent>100</movementpercent>
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 			<inheritattributes />
 			<limbslot>leg</limbslot>
 			<limbslotcount>2</limbslotcount>
@@ -3006,6 +3051,11 @@
 			<bonus>
 				<movementpercent>100</movementpercent>
 			</bonus>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 			<limbslot>leg</limbslot>
 			<limbslotcount>2</limbslotcount>
 		</cyberware>
@@ -3030,6 +3080,11 @@
 				<category>Cyberlimb Accessory</category>
 				<category>Cyber Implant Weapon</category>
 			</allowsubsystems>
+			<forbidden>
+				<oneof>
+					<cyberwarecontains>Liminal</cyberwarecontains>
+				</oneof>
+			</forbidden>
 			<limbslot>leg</limbslot>
 			<limbslotcount>2</limbslotcount>
 		</cyberware>
@@ -3294,6 +3349,9 @@
 			<cost>Rating * 12000</cost>
 			<source>CF</source>
 			<page>151</page>
+			<allowgear>
+				<gearcategory>Hard Nanoware</gearcategory>
+			</allowgear>
 			<bonus />
 			<rating>6</rating>
 		</cyberware>

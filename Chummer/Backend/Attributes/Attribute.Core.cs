@@ -628,14 +628,14 @@ namespace Chummer.Backend.Attributes
 					.Where(objCyberware => objCyberware.Category == "Cyberlimb")
 					.Where(objCyberware => !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
 				{
-					intLimbCount++;
+					intLimbCount += objCyberware.LimbSlotCount;
 					switch (_strAbbrev)
 					{
 						case "STR":
-							intLimbTotal += objCyberware.TotalStrength;
+							intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
 							break;
 						default:
-							intLimbTotal += objCyberware.TotalAgility;
+							intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
 							break;
 					}
 				}
@@ -650,7 +650,7 @@ namespace Chummer.Backend.Attributes
 							intLimbTotal += intMeat;
 						intLimbCount = _objCharacter.Options.LimbCount;
 					}
-					int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
+					int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
 					intReturn += intTotal;
 				}
 			}
@@ -696,6 +696,10 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+                    return 1;
+
                 int intReturn = MetatypeMinimum + MinimumModifiers;
                 if (_objCharacter.IsCritter || _intMetatypeMax == 0)
                 {
@@ -707,34 +711,15 @@ namespace Chummer.Backend.Attributes
                     if (intReturn < 1)
                         intReturn = 1;
                 }
-                /*
-				if	(
-					(_strAbbrev == "MAG" && !(_objCharacter.AdeptEnabled || _objCharacter.MagicianEnabled)) || 
-					(_strAbbrev == "RES" && !_objCharacter.TechnomancerEnabled) || 
-					(_strAbbrev == "DEP" && !(_objCharacter.Metatype == "A.I."))
-					)
-				{
-					intReturn = 0;
-				}*/
 
-                if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
+                if (_objCharacter.EssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
+
+                if (_objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty >= TotalMaximum)
                 {
-                    if (_objCharacter.Options.ESSLossReducesMaximumOnly || _objCharacter.OverrideSpecialAttributeEssenceLoss)
-                    {
-                        // If the House Rule for Essence Loss Only Affects Maximum MAG/RES is turned on, the minimum should always be 1 unless the total ESS penalty is greater than or equal to
-                        // the CharacterAttribute's total maximum, in which case the minimum becomes 0.
-                        if (_objCharacter.EssencePenalty >= _objCharacter.MAG.TotalMaximum)
-                            intReturn = 0;
-                        else
-                            intReturn = 1;
-                    }
-                    else
-                        intReturn = Math.Max(_intMetatypeMin - _objCharacter.EssencePenalty, 0);
+                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
                 }
-
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
-                    intReturn = 1;
+                else
+                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
 
                 return intReturn;
             }
@@ -1093,11 +1078,12 @@ namespace Chummer.Backend.Attributes
 			        }
 			        strModifier += strCyberlimb;
 		        }
-
+				/*
                 if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
                 {
                     strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.Instance.GetString("String_AttributeESSLong")})";
                 }
+				*/
 
                 return strReturn + strModifier;
 	        }
@@ -1130,7 +1116,7 @@ namespace Chummer.Backend.Attributes
             {
                 // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
                 int intEssenceLoss = 0;
-                if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
+                if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
 
                 // Don't apply the ESS loss penalty to EDG.

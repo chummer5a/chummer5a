@@ -186,7 +186,6 @@ namespace Chummer
         private string _strGroupNotes = string.Empty;
         private int _intInitiateGrade = 0;
         private int _intSubmersionGrade = 0;
-	    private bool _blnOverrideSpecialAttributeESSLoss = false;
 
         // Pseudo-Attributes use for Mystic Adepts.
         private int _intMAGMagician = 0;
@@ -457,8 +456,6 @@ namespace Chummer
                 objWriter.WriteElementString("iscritter", _blnIsCritter.ToString());
             if (_blnPossessed)
                 objWriter.WriteElementString("possessed", _blnPossessed.ToString());
-            if (_blnOverrideSpecialAttributeESSLoss)
-                objWriter.WriteElementString("overridespecialattributeessloss", _blnOverrideSpecialAttributeESSLoss.ToString());
 			if (_intMetageneticLimit > 0)
 				objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
 			// <karma />
@@ -996,7 +993,6 @@ namespace Chummer
                 return false;
             }
 
-#if RELEASE
             string strVersion = string.Empty;
 			//Check to see if the character was created in a version of Chummer later than the currently installed one.
             if (objXmlCharacter.TryGetStringFieldQuickly("appversion", ref strVersion) && !string.IsNullOrEmpty(strVersion))
@@ -1006,6 +1002,8 @@ namespace Chummer
                     strVersion = strVersion.Substring(2);
                 }
                 Version.TryParse(strVersion, out _verSavedVersion);
+            }
+#if RELEASE
                 Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
@@ -1018,10 +1016,9 @@ namespace Chummer
                         return false;
                     }
                 }
-            }
 #endif
-			// Get the name of the settings file in use if possible.
-			objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+            // Get the name of the settings file in use if possible.
+            objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 		    
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
@@ -1137,8 +1134,6 @@ namespace Chummer
 
 		    objXmlCharacter.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
 		    objXmlCharacter.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
-
-		    objXmlCharacter.TryGetBoolFieldQuickly("overridespecialattributeessloss", ref _blnOverrideSpecialAttributeESSLoss);
 
 		    objXmlCharacter.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
 		    objXmlCharacter.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
@@ -4002,22 +3997,6 @@ namespace Chummer
             set
             {
                 _blnPossessed = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not we should override the option of how Special CharacterAttribute Essence Loss is handled. When enabled, ESS loss always affects the character's maximum MAG/RES instead.
-        /// This should only be enabled as a result of swapping out a Latent Quality for its fully-realised version.
-        /// </summary>
-        public bool OverrideSpecialAttributeEssenceLoss
-        {
-            get
-            {
-                return _blnOverrideSpecialAttributeESSLoss;
-            }
-            set
-            {
-                _blnOverrideSpecialAttributeESSLoss = value;
             }
         }
 
