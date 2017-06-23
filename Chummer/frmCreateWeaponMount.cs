@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -19,14 +20,18 @@ namespace Chummer
 		private readonly List<object> _lstControl;
 		private readonly List<object> _lstSize;
 		private bool _loading = true;
+	    private Vehicle _vehicle;
+	    private Character _character;
 		private XmlDocument _xmlDoc;
 
-		public frmCreateWeaponMount()
+		public frmCreateWeaponMount(Vehicle vehicle, Character character)
 		{
 			_lstControl = new List<object>();
 			_lstFlexibility = new List<object>();
 			_lstSize = new List<object>();
 			_lstVisibility = new List<object>();
+		    _vehicle = vehicle;
+		    _character = character;
 			InitializeComponent();
 		}
 
@@ -97,7 +102,7 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-
+            WeaponMount mount = new WeaponMount(_character, _vehicle);
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)

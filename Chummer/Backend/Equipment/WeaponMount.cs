@@ -31,14 +31,16 @@ namespace Chummer.Backend.Equipment
 		private string _strSlots = "0";
 		private string _strCost = string.Empty;
 
-		private readonly Character _objCharacter;
+		private readonly Vehicle _vehicle;
+	    private readonly Character _character;
 
 		#region Constructor, Create, Save, Load, and Print Methods
-		public WeaponMount(Character objCharacter)
+		public WeaponMount(Character character, Vehicle vehicle)
 		{
 			// Create the GUID for the new VehicleMod.
 			_guiID = Guid.NewGuid();
-			_objCharacter = objCharacter;
+		    _character = character;
+			_vehicle = vehicle;
 		}
 
 		/// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
@@ -141,7 +143,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
 			objWriter.WriteEndElement();
-			_objCharacter.SourceProcess(_strSource);
+			_character.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -209,11 +211,11 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("avail", TotalAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());
 			objWriter.WriteElementString("owncost", OwnCost.ToString());
-			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+			objWriter.WriteElementString("source", _character.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
 			_objWeapon.Print(objWriter);
-			if (_objCharacter.Options.PrintNotes)
+			if (_character.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -596,4 +598,134 @@ namespace Chummer.Backend.Equipment
 		}
 		#endregion
 	}
+
+    public class WeaponMountOption
+    {
+        /// <summary>
+        /// Category of the weapon mount.
+        /// </summary>
+        public string Category;
+
+        private string _strAvail;
+        private string _strName;
+        private Guid _sourceID;
+        private string _strCost;
+        private string _strCategory;
+        private string _strSlots;
+        private string _strWeaponMountCategories;
+        private int _intMarkup;
+        private string _strAltName;
+        private string _strAltPage;
+        private string _strAltCategory;
+
+        #region Constructor, Create, Save and Load Methods
+
+        /// Create a Weapon Mount from an XmlNode.
+        public void Create(string id)
+        {
+            XmlDocument xmlDoc = XmlManager.Instance.Load("vehicles.xml");
+            XmlNode objXmlMod = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{id}\"]");
+            if (objXmlMod == null) Utils.BreakIfDebug();
+            objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
+            objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
+            objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strWeaponMountCategories);
+            objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
+
+            // Check for a Variable Cost.
+            // ReSharper disable once PossibleNullReferenceException
+            if (objXmlMod["cost"] != null)
+            {
+                if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+                {
+                    int intMin;
+                    var intMax = 0;
+                    char[] chrParentheses = { '(', ')' };
+                    string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                        intMax = Convert.ToInt32(strValues[1]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    if (intMin != 0 || intMax != 0)
+                    {
+                        var frmPickNumber = new frmSelectNumber();
+                        if (intMax == 0)
+                            intMax = 1000000;
+                        frmPickNumber.Minimum = intMin;
+                        frmPickNumber.Maximum = intMax;
+                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayName);
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString();
+                    }
+                }
+                else
+                    _strCost = objXmlMod["cost"].InnerText;
+            }
+            if (GlobalOptions.Instance.Language == "en-us") return;
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID + "\"]");
+            if (objModNode != null)
+            {
+                objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+            }
+
+            objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+            _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
+        }
+
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("mod");
+            objWriter.WriteElementString("id", _sourceID.ToString());
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("category", _strCategory);
+            objWriter.WriteElementString("slots", _strSlots);
+            objWriter.WriteElementString("avail", _strAvail);
+            objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Load the VehicleMod from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="objVehicle">Vehicle that the mod is attached to.</param>
+        public void Load(XmlNode objNode, Vehicle objVehicle)
+        {
+            Guid.TryParse(objNode["id"].InnerText, out _sourceID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetInt32FieldQuickly("markup", ref _intMarkup);
+
+            if (GlobalOptions.Instance.Language == "en-us") return;
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            XmlNode objModNode = objXmlDocument.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{_sourceID}\"]");
+            if (objModNode != null)
+            {
+                objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+            }
+
+            objModNode = objXmlDocument.SelectSingleNode($"/chummer/categories/category[. = \"{_strCategory}\"]");
+            _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
+        }
+        #endregion
+    }
 }
