@@ -90,7 +90,7 @@ namespace Chummer
 		    {
 		        string strBook = _objCharacter.Options.LanguageBookShort(objXmlMetamagic["source"]?.InnerText);
                 string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-		        lblSource.Text = $"{strBook} {strBook}";
+		        lblSource.Text = $"{strBook} {strPage}";
 
 		        tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"]?.InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 		    }
