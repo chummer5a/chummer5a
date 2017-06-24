@@ -46,6 +46,7 @@ Application Changes:
 - Fixed implementations of FreeSpellsATT and FreeSpellsSkill improvements to not require updating the improvements manually. 
 - Adept powers created before the powers refresh will now properly add the relevant bonus node for the adept way discount. 
 - Adept powers now store the source id for use in searching and such. 
+- Fixed rounding behaviour when using cyberlimbs to use Ceiling instead of Floor.
 
 Data Changes:
 
@@ -69,6 +70,7 @@ Data Changes:
 - Added Underbarrel Weapons from Hard Targets as weapons. Set the Underbarrel Weapon accessories to Hidden. 
 - Hard Nanohives can now add Hard Nanoware as a gear item to themselves. 
 - Removed the Latent Source property from qualities, as it's redundant in 5E.
+- Qualities now add notoriety, per SR5 368. 
 
 New Strings:
 

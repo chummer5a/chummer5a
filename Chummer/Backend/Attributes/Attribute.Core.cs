@@ -661,7 +661,7 @@ namespace Chummer.Backend.Attributes
 							intLimbTotal += intMeat;
 						intLimbCount = _objCharacter.Options.LimbCount;
 					}
-					int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
+					int intTotal = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
 					intReturn += intTotal;
 				}
 			}
