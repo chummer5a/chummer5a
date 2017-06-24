@@ -1416,6 +1416,19 @@ namespace Chummer.Backend.Attributes
 				OnPropertyChanged(nameof(Base));
 			}
 		}
+
+		/// <summary>
+		/// Forces a particular event to fire.
+		/// </summary>
+		/// <param name="property"></param>
+		public void ForceEvent(string property)
+		{
+			foreach (string s in DependencyTree.Find(property))
+			{
+				var v = new PropertyChangedEventArgs(s);
+				PropertyChanged?.Invoke(this, v);
+			}
+		}
 		#endregion
 	}
 }
