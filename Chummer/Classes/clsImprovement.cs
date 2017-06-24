@@ -1086,29 +1086,24 @@ namespace Chummer
 	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
                         break;
                     case Improvement.ImprovementType.Attribute:
-						/*    CharacterAttrib objChangedAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
-                        if (objImprovement.Minimum > 0)
-                        {
-                            objChangedAttribute.Value -= objImprovement.Minimum;
-                        }*/
-
 						// Determine if access to any Special Attributes have been lost.
 						if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
-				{
-                            switch (objImprovement.ImprovedName)
-					{
-                                case "MAG":
-							_objCharacter.MAGEnabled = false;
-									break;
-                                case "RES":
-							_objCharacter.RESEnabled = false;
-                                    break;
-                                case "DEP":
-                            _objCharacter.DEPEnabled = false;
-                                    break;
-                    }
-                }
-                        break;
+						{
+							switch (objImprovement.ImprovedName)
+							{
+										case "MAG":
+									_objCharacter.MAGEnabled = false;
+											break;
+										case "RES":
+									_objCharacter.RESEnabled = false;
+											break;
+										case "DEP":
+									_objCharacter.DEPEnabled = false;
+											break;
+							}
+						}
+						_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+						break;
                     case Improvement.ImprovementType.SpecialTab:
 				// Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate)

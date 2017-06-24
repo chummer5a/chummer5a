@@ -89,7 +89,9 @@
 			<name>Blandness</name>
 			<karma>8</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<notoriety>-1</notoriety>
+			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Distinctive Style</quality>
@@ -164,7 +166,9 @@
 			<name>First Impression</name>
 			<karma>11</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<notoriety>-1</notoriety>
+			</bonus>
 			<source>SR5</source>
 			<page>74</page>
 		</quality>
@@ -506,6 +510,7 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
+				<notoriety>-1</notoriety>
 				<specificattribute>
 					<name>EDG</name>
 					<max>1</max>
@@ -1234,6 +1239,7 @@
 			<category>Negative</category>
 			<limit>no</limit>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 			</bonus>
 			<source>SR5</source>
@@ -1246,6 +1252,7 @@
 			<category>Negative</category>
 			<limit>no</limit>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 			</bonus>
 			<source>SR5</source>
@@ -1258,6 +1265,7 @@
 			<category>Negative</category>
 			<limit>no</limit>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 			</bonus>
 			<source>SR5</source>
@@ -1270,6 +1278,7 @@
 			<category>Negative</category>
 			<limit>no</limit>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 				<sociallimit>-3</sociallimit>
 			</bonus>
@@ -1408,6 +1417,9 @@
 			<name>Bad Luck</name>
 			<karma>-12</karma>
 			<category>Negative</category>
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<source>SR5</source>
 			<page>79</page>
 		</quality>
@@ -1452,7 +1464,9 @@
 			<karma>-12</karma>
 			<implemented>False</implemented>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<source>SR5</source>
 			<page>80</page>
 		</quality>
@@ -1529,7 +1543,9 @@
 			<name>Elf Poser</name>
 			<karma>-6</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<required>
 				<allof>
 					<metatype>Human</metatype>
@@ -1544,7 +1560,9 @@
 			<karma>-4</karma>
 			<category>Negative</category>
 			<limit>4</limit>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Gremlins (Raring 4)</quality>
@@ -1559,7 +1577,9 @@
 			<karma>-8</karma>
 			<category>Negative</category>
 			<limit>2</limit>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Gremlins (Raring 3)</quality>
@@ -1574,7 +1594,9 @@
 			<name>Gremlins (Rating 3)</name>
 			<karma>-12</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Gremlins (Raring 2)</quality>
@@ -1589,7 +1611,9 @@
 			<name>Gremlins (Rating 4)</name>
 			<karma>-16</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Gremlins (Raring 1)</quality>
@@ -1599,7 +1623,7 @@
 			</forbidden>
 			<source>SR5</source>
 			<page>81</page>
-		</quality>
+		</quality>o
 		<quality>
 			<id>216290b9-053d-4f6d-81c9-d1fe8ae346be</id>
 			<name>Incompetent</name>
@@ -1607,6 +1631,7 @@
 			<category>Negative</category>
 			<bonus>
 				<blockskillgroupdefaulting />
+				<notoriety>1</notoriety>
 			</bonus>
 			<source>SR5</source>
 			<page>81</page>
@@ -1661,6 +1686,9 @@
 			<name>Ork Poser</name>
 			<karma>-6</karma>
 			<category>Negative</category>
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>Human</metatype>
@@ -1748,6 +1776,7 @@
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 			</bonus>
 			<source>SR5</source>
@@ -1833,6 +1862,7 @@
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 			</bonus>
 			<forbidden>
@@ -1863,6 +1893,7 @@
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus>
+				<notoriety>1</notoriety>
 				<selecttext />
 			</bonus>
 			<required>
@@ -1887,6 +1918,7 @@
 			<karma>-14</karma>
 			<category>Negative</category>
 			<bonus>
+				<notoriety>1</notoriety>
 				<uncouth />
 			</bonus>
 			<source>SR5</source>
@@ -1954,6 +1986,7 @@
 			<karma>-8</karma>
 			<category>Negative</category>
 			<bonus>
+				<notoriety>1</notoriety>
 				<uneducated />
 			</bonus>
 			<source>SR5</source>
@@ -1974,7 +2007,9 @@
 			<name>Weak Immune System</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<notoriety>1</notoriety>
+			</bonus>
 			<source>SR5</source>
 			<page>87</page>
 		</quality>

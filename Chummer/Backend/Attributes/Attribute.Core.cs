@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Xml;
 using Chummer.Datastructures;
 
@@ -82,9 +83,19 @@ namespace Chummer.Backend.Attributes
 				_intBase = 0;
 			}
 			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time. 
-			if (objNode["value"] != null && BaseUnlocked)
+			if (objNode["value"] != null)
 			{
-				_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
+				int i = Convert.ToInt32(objNode["value"].InnerText);
+				i -= _intMetatypeMin;
+				if (BaseUnlocked)
+				{
+					_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
+					i -= _intBase;
+				}
+				if (i > 0)
+				{
+					_intKarma = i;
+				}
 			}
 			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
             _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
@@ -244,7 +255,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-	            return Math.Min(Math.Max(Base + Karma, MetatypeMinimum), MetatypeMaximum);
+	            return Math.Min(Base + Karma + MetatypeMinimum, TotalMaximum);
             }
         }
 
@@ -650,7 +661,7 @@ namespace Chummer.Backend.Attributes
 							intLimbTotal += intMeat;
 						intLimbCount = _objCharacter.Options.LimbCount;
 					}
-					int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
+					int intTotal = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
 					intReturn += intTotal;
 				}
 			}
@@ -1403,6 +1414,19 @@ namespace Chummer.Backend.Attributes
 			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
 			{
 				OnPropertyChanged(nameof(Base));
+			}
+		}
+
+		/// <summary>
+		/// Forces a particular event to fire.
+		/// </summary>
+		/// <param name="property"></param>
+		public void ForceEvent(string property)
+		{
+			foreach (string s in DependencyTree.Find(property))
+			{
+				var v = new PropertyChangedEventArgs(s);
+				PropertyChanged?.Invoke(this, v);
 			}
 		}
 		#endregion

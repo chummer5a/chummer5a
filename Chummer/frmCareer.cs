@@ -4349,6 +4349,7 @@ namespace Chummer
 				}
 
 				RefreshSelectedCyberware();
+				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
 
 				_blnIsDirty = true;
@@ -5011,6 +5012,7 @@ namespace Chummer
 				_objController.PopulateFocusList(treFoci);
 				ScheduleCharacterUpdate();
 				RefreshSelectedGear();
+				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
 
 				_blnIsDirty = true;
@@ -7995,8 +7997,8 @@ namespace Chummer
                 //OBSOLETE: Review once ImprovementManager gets outbound events
                 //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-
-                UpdateWindowTitle();
+				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
+				UpdateWindowTitle();
             }
 		}
 
@@ -8018,8 +8020,9 @@ namespace Chummer
                 //OBSOLETE: Review once ImprovementManager gets outbound events
                 //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
 
-                UpdateWindowTitle();
+				UpdateWindowTitle();
             }
 		}
 
@@ -18635,8 +18638,9 @@ namespace Chummer
                     //OBSOLETE: Review once ImprovementManager gets outbound events
                     //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
                     _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
+					_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
 
-                    _blnIsDirty = true;
+					_blnIsDirty = true;
 					UpdateWindowTitle();
 				}
 			}
@@ -21815,6 +21819,7 @@ namespace Chummer
 			PopulateGearList();
 
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 
 			if (frmPickCyberware.DialogResult != DialogResult.Cancel)
 			{
@@ -22139,6 +22144,7 @@ namespace Chummer
 			}
 
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
+			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeValueModifiers));
 
 			ScheduleCharacterUpdate();
 			RefreshSelectedGear();

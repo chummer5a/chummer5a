@@ -4495,7 +4495,8 @@ namespace Chummer
                 treCyberware.Nodes.Remove(treCyberware.SelectedNode);
 
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
-                RefreshSelectedCyberware();
+				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+				RefreshSelectedCyberware();
 
                 ScheduleCharacterUpdate();
 
@@ -5042,6 +5043,7 @@ namespace Chummer
             _objController.PopulateFocusList(treFoci);
 
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
+			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 			ScheduleCharacterUpdate();
             RefreshSelectedGear();
 
@@ -10448,7 +10450,8 @@ namespace Chummer
 
                     treCyberware.SelectedNode.Text = objCyberware.DisplayName;
 
-	                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
+					_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+					_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
                 }
                 else
                 {
@@ -10478,7 +10481,6 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
-                //_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Attribute));
             }
             ScheduleCharacterUpdate();
         }
@@ -10815,7 +10817,8 @@ namespace Chummer
 
                 _objController.PopulateFocusList(treFoci);
                 RefreshSelectedGear();
-                ScheduleCharacterUpdate();
+                ScheduleCharacterUpdate(); 
+				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Rating));
 
                 _blnIsDirty = true;
@@ -15389,6 +15392,7 @@ namespace Chummer
             _blnSkipRefresh = false;
 
             _blnIsDirty = true;
+			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
             PopulateGearList();
             UpdateWindowTitle();
