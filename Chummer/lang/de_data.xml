@@ -34261,6 +34261,30 @@
 				<name>PJSS Model 75-III (Rifle Barrel)</name>
 				<translate>PJSS Modell 75-III (Büchsenlauf)</translate>
 			</weapon>
+			<weapon>
+				<id>bcbb7011-f4f6-40f3-a6ea-c3188e95be18</id>
+				<name>Defiance T-250 (2050)</name>
+				<page>186</page>
+				<translate>Defiance T-250</translate>
+			</weapon>
+			<weapon>
+				<id>ea074ca2-6309-4af9-ba63-1a39223c721a</id>
+				<name>Enfield AS-7 (2050)</name>
+				<page>186</page>
+				<translate>Enfield AS-7</translate>
+			</weapon>
+			<weapon>
+				<id>12dfa7c1-209a-4cb9-ac3d-8012c369177b</id>
+				<name>Mossberg CMDT (2050)</name>
+				<page>186</page>
+				<translate>Mossberg CMDT</translate>
+			</weapon>
+			<weapon>
+				<id>28952d02-310f-43ab-90f3-1f04374d7231</id>
+				<name>Mossberg CMDT/SM (2050)</name>
+				<page>186</page>
+				<translate>Mossberg CMDT/SM</translate>
+			</weapon>				
 		</weapons>
 		<accessories>
 			<accessory>
