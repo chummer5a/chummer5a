@@ -315,8 +315,8 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
                         {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
+	                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+							bool blnFound = false;
                             foreach (string strName in lstUniqueName)
                             {
                                 if (strName == objImprovement.UniqueName)
@@ -332,8 +332,16 @@ namespace Chummer.Backend.Attributes
                         }
                         else
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                                intModifier += objImprovement.Augmented * objImprovement.Rating;
+							if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+							if (objImprovement.SourceName == "Essence Loss")
+							{
+								if ((Abbrev == "MAG" || Abbrev == "DEP" || Abbrev == "RES") &&
+									_objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0)
+								{
+									break;
+								}
+							}
+							intModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
@@ -665,10 +673,6 @@ namespace Chummer.Backend.Attributes
 					intReturn += intTotal;
 				}
 			}
-		    if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP"))
-		    {
-		        //intReturn -= _objCharacter.EssencePenalty;
-		    }
 			// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 			if (intReturn > TotalAugmentedMaximum)
 				intReturn = TotalAugmentedMaximum;
@@ -725,13 +729,14 @@ namespace Chummer.Backend.Attributes
 
                 if (_objCharacter.EssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
 
-                if (_objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty >= TotalMaximum)
+                if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
+					return Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
                 }
-                else
-                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
-
+				if (_objCharacter.EssencePenalty >= TotalMaximum)
+				{
+					intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
+				}
                 return intReturn;
             }
         }
