@@ -543,9 +543,29 @@ namespace Chummer
 			cboStream.DataSource = lstStreams;
             cboStream.EndUpdate();
 
-			// Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
-			// to UpdateCharacterInformation();
-			MetatypeSelected();
+			cboAttributeCategory.Visible = _objCharacter.MetatypeCategory == "Shapeshifter";
+			if (_objCharacter.MetatypeCategory == "Shapeshifter")
+			{
+				XmlDocument objDoc = XmlManager.Instance.Load("metatypes.xml");
+				XmlNodeList objXmlCategoryList = objDoc.SelectNodes("/chummer/categories/category[. = \"Metahuman\" or . = \"Shapeshifter\"]");
+				List<ListItem> lstAttributeCategories = new List<ListItem>();
+				foreach (XmlNode category in objXmlCategoryList)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = category.InnerText;
+					objItem.Name = category.Attributes["translate"] != null
+						? category.Attributes["translate"].InnerText
+						: category.InnerText;
+					lstAttributeCategories.Add(objItem);
+				}
+				lstAttributeCategories.Sort(objSort.Compare);
+				cboAttributeCategory.BeginUpdate();
+				cboAttributeCategory.ValueMember = "Value";
+				cboAttributeCategory.DisplayMember = "Name";
+				cboAttributeCategory.DataSource = lstAttributeCategories;
+				cboAttributeCategory.EndUpdate();
+				cboAttributeCategory.SelectedValue = "Metahuman";
+			}
 
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
 			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
@@ -924,7 +944,7 @@ namespace Chummer
 			    string strDrainAtt = string.Empty;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = Character.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strDrain = AttributeSection.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
                 if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
@@ -946,7 +966,7 @@ namespace Chummer
                 string strDrainAtt = string.Empty;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strFading = Character.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strFading = AttributeSection.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
                 if (string.IsNullOrEmpty(strFading))
                 {
                     strFading = "0";
@@ -4349,7 +4369,7 @@ namespace Chummer
 				}
 
 				RefreshSelectedCyberware();
-				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+				_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
 
 				_blnIsDirty = true;
@@ -5012,7 +5032,7 @@ namespace Chummer
 				_objController.PopulateFocusList(treFoci);
 				ScheduleCharacterUpdate();
 				RefreshSelectedGear();
-				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+				_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
 
 				_blnIsDirty = true;
@@ -7997,7 +8017,7 @@ namespace Chummer
                 //OBSOLETE: Review once ImprovementManager gets outbound events
                 //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
+				_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
 				UpdateWindowTitle();
             }
 		}
@@ -8020,7 +8040,7 @@ namespace Chummer
                 //OBSOLETE: Review once ImprovementManager gets outbound events
                 //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
+				_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
 
 				UpdateWindowTitle();
             }
@@ -17416,7 +17436,7 @@ namespace Chummer
                     nav = objXmlDocument.CreateNavigator();
 				    string strDrain = lblDrainAttributes.Text;
 
-                    foreach (string strAttribute in Character.AttributeStrings)
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                         strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
@@ -17434,7 +17454,7 @@ namespace Chummer
 
 				    strTip = lblDrainAttributes.Text;
 
-                    foreach (string strAttribute in Character.AttributeStrings)
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                         strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
@@ -18037,7 +18057,7 @@ namespace Chummer
 
 			XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboStream.SelectedValue + "\"]");
             string strDrain = objXmlTradition["drain"].InnerText;
-            foreach (string strAttribute in Character.AttributeStrings)
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                 strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
@@ -18638,7 +18658,7 @@ namespace Chummer
                     //OBSOLETE: Review once ImprovementManager gets outbound events
                     //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
                     _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-					_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
+					_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
 
 					_blnIsDirty = true;
 					UpdateWindowTitle();
@@ -19572,36 +19592,6 @@ namespace Chummer
 		#endregion
 
 		#region Custom Methods
-		/// <summary>
-		/// Let the application know that a Metatype has been selected.
-		/// </summary>
-		public void MetatypeSelected()
-		{
-			// Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
-			// Also update the Maximum and Augmented Maximum values displayed.
-			_blnSkipUpdate = true;
-
-			int intEssenceLoss = 0;
-			if (!_objOptions.ESSLossReducesMaximumOnly)
-				intEssenceLoss = _objCharacter.EssencePenalty;
-			else
-			{
-				if (_objCharacter.MAGEnabled)
-				{
-					if (_objCharacter.MAG.Value > _objCharacter.MAG.TotalMaximum)
-						intEssenceLoss = _objCharacter.MAG.Value - _objCharacter.MAG.TotalMaximum;
-				}
-				else if (_objCharacter.RESEnabled)
-				{
-					if (_objCharacter.RES.Value > _objCharacter.RES.TotalMaximum)
-						intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
-				}
-			}
-
-			_blnSkipUpdate = false;
-
-			ScheduleCharacterUpdate();
-		}
 
 	    public void RefreshContacts()
 	    {
@@ -20051,7 +20041,7 @@ namespace Chummer
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 				string strDrain = lblDrainAttributes.Text;
-				foreach (string strAttribute in Character.AttributeStrings)
+				foreach (string strAttribute in AttributeSection.AttributeStrings)
 				{
 					strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short"),
 						_objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
@@ -20084,7 +20074,7 @@ namespace Chummer
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 				string strFading = lblFadingAttributes.Text;
 				strTip = lblFadingAttributes.Text;
-				foreach (string strAttribute in Character.AttributeStrings)
+				foreach (string strAttribute in AttributeSection.AttributeStrings)
 				{
 					string strShortAttribute = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
 					string strAttributeValue = _objCharacter.GetAttribute(strAttribute).TotalValue.ToString();
@@ -21819,7 +21809,7 @@ namespace Chummer
 			PopulateGearList();
 
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
-			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 
 			if (frmPickCyberware.DialogResult != DialogResult.Cancel)
 			{
@@ -22144,7 +22134,7 @@ namespace Chummer
 			}
 
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
-			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeValueModifiers));
+			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeValueModifiers));
 
 			ScheduleCharacterUpdate();
 			RefreshSelectedGear();
@@ -26615,5 +26605,11 @@ namespace Chummer
                 lstSpecialAttributes.Add(_objCharacter.DEP);
             }
         }
-    }
+
+		private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			_objCharacter.AttributeSection.AttributeCategory = _objCharacter.AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
+			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
+		}
+	}
 }

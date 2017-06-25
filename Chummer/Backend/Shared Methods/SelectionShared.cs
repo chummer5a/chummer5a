@@ -231,10 +231,10 @@ namespace Chummer.Backend.Shared_Methods
 
 				case "attributetotal":
 					// Check if the character's Attributes add up to a particular total.
-					string strAttributes = Character.AttributeStrings.Aggregate(node["attributes"].InnerText,
+					string strAttributes = AttributeSection.AttributeStrings.Aggregate(node["attributes"].InnerText,
 						(current, strAttribute) => current.Replace(strAttribute, character.GetAttribute(strAttribute).DisplayAbbrev));
 					name = $"\n\t{strAttributes} {node["val"].InnerText}";
-					strAttributes = Character.AttributeStrings.Aggregate(node["attributes"].InnerText,
+					strAttributes = AttributeSection.AttributeStrings.Aggregate(node["attributes"].InnerText,
 						(current, strAttribute) => current.Replace(strAttribute, character.GetAttribute(strAttribute).Value.ToString()));
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();

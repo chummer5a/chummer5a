@@ -703,7 +703,7 @@ namespace Chummer
                             case "attributetotal":
                                 // Check if the character's Attributes add up to a particular total.
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
-                                foreach (string strAttribute in Character.AttributeStrings)
+                                foreach (string strAttribute in AttributeSection.AttributeStrings)
                                 {
                                     strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
@@ -970,7 +970,7 @@ namespace Chummer
                             case "attributetotal":
                                 // Check if the character's Attributes add up to a particular total.
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
-                                foreach (string strAttribute in Character.AttributeStrings)
+                                foreach (string strAttribute in AttributeSection.AttributeStrings)
                                 {
                                     strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }

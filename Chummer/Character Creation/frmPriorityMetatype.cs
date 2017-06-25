@@ -1099,20 +1099,6 @@ namespace Chummer
                         boolHalveAttributePriorityPoints = true;
 				}
 
-				//TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh. 
-				_objCharacter.AttributeList.Add(_objCharacter.BOD);
-				_objCharacter.AttributeList.Add(_objCharacter.AGI);
-				_objCharacter.AttributeList.Add(_objCharacter.REA);
-				_objCharacter.AttributeList.Add(_objCharacter.STR);
-				_objCharacter.AttributeList.Add(_objCharacter.CHA);
-				_objCharacter.AttributeList.Add(_objCharacter.INT);
-				_objCharacter.AttributeList.Add(_objCharacter.LOG);
-				_objCharacter.AttributeList.Add(_objCharacter.WIL);
-				_objCharacter.SpecialAttributeList.Add(_objCharacter.EDG);
-				_objCharacter.SpecialAttributeList.Add(_objCharacter.MAG);
-				_objCharacter.SpecialAttributeList.Add(_objCharacter.RES);
-				_objCharacter.SpecialAttributeList.Add(_objCharacter.DEP);
-
 				// If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
 				if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
 					cboMetavariant.SelectedValue = "Human";

@@ -28,19 +28,27 @@ namespace Chummer.Backend.Attributes
         private int _intKarma;
         private string _strAbbrev = "";
         public Character _objCharacter;
+		private string _strDisplayNameShort;
+		private string _strDisplayNameLong;
+		private string _strDisplayNameFormatted;
+		private AttributeCategory _enumCategory;
+		private AttributeCategory _enumMetatypeCategory;
+		private string _strDisplayAbbrev;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        #region Constructor, Save, Load, and Print Methods
-        /// <summary>
-        /// Character CharacterAttribute.
-        /// </summary>
-        /// <param name="strAbbrev">CharacterAttribute abbreviation.</param>
-        /// <param name="enumCategory"></param>
-        public CharacterAttrib(string strAbbrev, Character character, AttributeCategory enumCategory = AttributeCategory.Standard)
+		#region Constructor, Save, Load, and Print Methods
+
+		/// <summary>
+		/// Character CharacterAttribute.
+		/// </summary>
+		/// <param name="character"></param>
+		/// <param name="abbrev"></param>
+		/// <param name="enumCategory"></param>
+		public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory = AttributeCategory.Standard)
         {
-            _strAbbrev = strAbbrev;
-	        Category = enumCategory;
+	        _strAbbrev = abbrev;
+	        MetatypeCategory = enumCategory;
 	        _objCharacter = character;
 			_objCharacter.AttributeImprovementEvent += OnImprovementEvent;
 			_objCharacter.PropertyChanged += OnCharacterChanged;
@@ -60,7 +68,7 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("base", _intBase.ToString());
             objWriter.WriteElementString("karma", _intKarma.ToString());
             objWriter.WriteElementString("augmodifier", _intAugModifier.ToString());
-			objWriter.WriteElementString("category", Category.ToString());
+			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
             // External reader friendly stuff.
             objWriter.WriteElementString("totalvalue", TotalValue.ToString());
             objWriter.WriteEndElement();
@@ -97,8 +105,10 @@ namespace Chummer.Backend.Attributes
 					_intKarma = i;
 				}
 			}
-			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
-            _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
+			_enumMetatypeCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText);
+			_enumCategory = ConvertToAttributeCategory(_strAbbrev);
+	        _enumMetatypeCategory = ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
+			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
         }
 
         /// <summary>
@@ -115,7 +125,7 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("max", TotalMaximum.ToString());
             objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString());
 			objWriter.WriteElementString("bp", CalculatedBP().ToString());
-			objWriter.WriteElementString("category", Category.ToString());
+			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
 			objWriter.WriteEndElement();
         }
 		#endregion
@@ -131,11 +141,17 @@ namespace Chummer.Backend.Attributes
 
 		#region Properties
 
-	    public Enum Category
+	    public AttributeCategory Category
 	    {
 		    get { return _enumCategory; }
 			set { _enumCategory = value; }
-	    }
+		}
+
+		public AttributeCategory MetatypeCategory
+		{
+			get { return _enumMetatypeCategory; }
+			set { _enumMetatypeCategory = value; }
+		}
 
 		/// <summary>
 		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
@@ -1258,33 +1274,38 @@ namespace Chummer.Backend.Attributes
 		}
 
 		/// <summary>
-		/// Convert a string to a LifestyleType.
+		/// Convert a string to an Attribute Category.
 		/// </summary>
 		/// <param name="strValue">String value to convert.</param>
 		/// <param name="strAbbrev">Linked attribute abbreviation.</param>
-		public AttributeCategory ConvertToAttributeCategory(string strValue, string strAbbrev = "")
+		public AttributeCategory ConvertToAttributeCategory(string strAbbrev)
 		{
-			//If the value does not exist, figure out what it should be from the abbreviation.
-			if (string.IsNullOrWhiteSpace(strValue))
+			switch (strAbbrev)
 			{
-				switch (strAbbrev)
-				{
-					case "EDG":
-					case "MAG":
-					case "RES":
-					case "DEP":
-						return AttributeCategory.Special;
-					default:
-						return AttributeCategory.Standard;
-				}
+				case "DEP":
+				case "EDG":
+				case "ESS":
+				case "MAG":
+				case "RES":
+					return AttributeCategory.Special;
+				default:
+					return AttributeCategory.Standard;
 			}
+		}
+
+		/// <summary>
+		/// Convert a string to an Attribute Category.
+		/// </summary>
+		/// <param name="strValue">String value to convert.</param>
+		public AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
+		{
 			//If a value does exist, test whether it belongs to a shapeshifter form.
 			switch (strValue)
 			{
 				case "Shapeshifter":
 					return AttributeCategory.Shapeshifter;
-				case "Special":
-					return AttributeCategory.Special;
+				case "Metahuman":
+				case "Standard":
 				default:
 					return AttributeCategory.Standard;
 			}
@@ -1296,11 +1317,6 @@ namespace Chummer.Backend.Attributes
 		private static readonly Lazy<HashSet<string>> _physicalAttributes =
             new Lazy<HashSet<string>>(() => new HashSet<string>() { "BOD", "AGI", "REA", "STR" },
                 LazyThreadSafetyMode.PublicationOnly);
-        private string _strDisplayNameShort;
-        private string _strDisplayNameLong;
-        private string _strDisplayNameFormatted;
-	    private Enum _enumCategory;
-		private string _strDisplayAbbrev;
 
 		public static HashSet<string> PhysicalAttributes
         {

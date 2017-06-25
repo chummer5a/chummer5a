@@ -241,7 +241,7 @@ namespace Chummer.UI.Skills
 		private void SetupDropdown()
 		{
             List<ListItem> lstAttributeItems = new List<ListItem>();
-		    foreach (string strLoopAttribute in Character.AttributeStrings)
+		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
                 lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.Instance.GetString($"String_Attribute{strLoopAttribute}Short")));
             }

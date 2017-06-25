@@ -35,6 +35,7 @@ using Chummer.Backend.Equipment;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Chummer.UI.Attributes;
+using System.Reflection;
 
 namespace Chummer
 {
@@ -4495,7 +4496,7 @@ namespace Chummer
                 treCyberware.Nodes.Remove(treCyberware.SelectedNode);
 
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
-				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+				_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				RefreshSelectedCyberware();
 
                 ScheduleCharacterUpdate();
@@ -5043,7 +5044,7 @@ namespace Chummer
             _objController.PopulateFocusList(treFoci);
 
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
-			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 			ScheduleCharacterUpdate();
             RefreshSelectedGear();
 
@@ -10450,7 +10451,7 @@ namespace Chummer
 
                     treCyberware.SelectedNode.Text = objCyberware.DisplayName;
 
-					_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+					_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 					_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
                 }
                 else
@@ -10818,7 +10819,7 @@ namespace Chummer
                 _objController.PopulateFocusList(treFoci);
                 RefreshSelectedGear();
                 ScheduleCharacterUpdate(); 
-				_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+				_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Rating));
 
                 _blnIsDirty = true;
@@ -13105,12 +13106,12 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = CalculateAttributeBP(_objCharacter.AttributeList);
+            int intAttributePointsUsed = CalculateAttributeBP(_objCharacter.AttributeSection.AttributeList);
 			lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
-			intAttributePointsUsed += CalculateAttributeBP(_objCharacter.SpecialAttributeList);
+			intAttributePointsUsed += CalculateAttributeBP(_objCharacter.AttributeSection.SpecialAttributeList);
 			intKarmaPointsRemain -= intAttributePointsUsed;
-			lblAttributesBP.Text = BuildAttributes(_objCharacter.AttributeList, null);
-			lblPBuildSpecial.Text = BuildAttributes(_objCharacter.SpecialAttributeList,null,true);
+			lblAttributesBP.Text = BuildAttributes(_objCharacter.AttributeSection.AttributeList, null);
+			lblPBuildSpecial.Text = BuildAttributes(_objCharacter.AttributeSection.SpecialAttributeList, null,true);
 			// ------------------------------------------------------------------------------
 			// Include the BP used by Martial Arts.
 			int intMartialArtsPoints = 0;
@@ -15184,8 +15185,23 @@ namespace Chummer
                 objKarmaUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
                 objKarma.Undo = objKarmaUndo;
             }
+	        if (_objCharacter.MetatypeCategory == "Shapeshifter")
+	        {
+		        List<CharacterAttrib> staging = new List<CharacterAttrib>();
+		        foreach (CharacterAttrib att in _objCharacter.AttributeSection.AttributeList)
+		        {
+			        CharacterAttrib newAtt = new CharacterAttrib(_objCharacter, att.Abbrev,
+				        CharacterAttrib.AttributeCategory.Shapeshifter);
+					_objCharacter.AttributeSection.CopyAttribute(att,newAtt);
+					staging.Add(newAtt);
+		        }
+		        foreach (CharacterAttrib att in staging)
+		        {
+					_objCharacter.AttributeSection.AttributeList.Add(att);
+				}
+	        }
 
-            // Create an Expense Entry for Starting Nuyen.
+	        // Create an Expense Entry for Starting Nuyen.
             ExpenseLogEntry objNuyen = new ExpenseLogEntry();
             objNuyen.Create(_objCharacter.Nuyen, "Starting Nuyen", ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objNuyen);
@@ -15392,7 +15408,7 @@ namespace Chummer
             _blnSkipRefresh = false;
 
             _blnIsDirty = true;
-			_objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
 			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
             PopulateGearList();
             UpdateWindowTitle();

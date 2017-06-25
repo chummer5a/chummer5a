@@ -381,6 +381,7 @@ namespace Chummer
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.tabCharacterTabs = new System.Windows.Forms.TabControl();
 			this.tabCommon = new System.Windows.Forms.TabPage();
+			this.cmdIncreasePowerPoints = new Chummer.helpers.Button();
 			this.pnlAttributes = new System.Windows.Forms.FlowLayoutPanel();
 			this.tabPeople = new System.Windows.Forms.TabControl();
 			this.tabContacts = new System.Windows.Forms.TabPage();
@@ -1134,7 +1135,7 @@ namespace Chummer
 			this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.cmdIncreasePowerPoints = new Chummer.helpers.Button();
+			this.cboAttributeCategory = new System.Windows.Forms.ComboBox();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -4596,6 +4597,7 @@ namespace Chummer
 			// tabCommon
 			// 
 			this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCommon.Controls.Add(this.cboAttributeCategory);
 			this.tabCommon.Controls.Add(this.cmdIncreasePowerPoints);
 			this.tabCommon.Controls.Add(this.lblAttributesAug);
 			this.tabCommon.Controls.Add(this.lblAttributesMetatype);
@@ -4626,6 +4628,20 @@ namespace Chummer
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
 			this.tabCommon.Text = "Common";
+			// 
+			// cmdIncreasePowerPoints
+			// 
+			this.cmdIncreasePowerPoints.Enabled = false;
+			this.cmdIncreasePowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add;
+			this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(805, 283);
+			this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
+			this.cmdIncreasePowerPoints.Size = new System.Drawing.Size(24, 24);
+			this.cmdIncreasePowerPoints.TabIndex = 106;
+			this.cmdIncreasePowerPoints.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.cmdIncreasePowerPoints.TooltipText = null;
+			this.cmdIncreasePowerPoints.UseVisualStyleBackColor = true;
+			this.cmdIncreasePowerPoints.Click += new System.EventHandler(this.cmdIncreasePowerPoints_Click);
 			// 
 			// pnlAttributes
 			// 
@@ -13430,18 +13446,15 @@ namespace Chummer
 			this.tsAIProgramNotes.Text = "&Notes";
 			this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
 			// 
-			// cmdIncreasePowerPoints
+			// cboAttributeCategory
 			// 
-			this.cmdIncreasePowerPoints.Enabled = false;
-			this.cmdIncreasePowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add;
-			this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(805, 283);
-			this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
-			this.cmdIncreasePowerPoints.Size = new System.Drawing.Size(24, 24);
-			this.cmdIncreasePowerPoints.TabIndex = 106;
-			this.cmdIncreasePowerPoints.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.cmdIncreasePowerPoints.UseVisualStyleBackColor = true;
-			this.cmdIncreasePowerPoints.Click += new System.EventHandler(this.cmdIncreasePowerPoints_Click);
+			this.cboAttributeCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboAttributeCategory.FormattingEnabled = true;
+			this.cboAttributeCategory.Location = new System.Drawing.Point(631, 74);
+			this.cboAttributeCategory.Name = "cboAttributeCategory";
+			this.cboAttributeCategory.Size = new System.Drawing.Size(141, 21);
+			this.cboAttributeCategory.TabIndex = 107;
+			this.cboAttributeCategory.SelectedIndexChanged += new System.EventHandler(this.cboAttributeCategory_SelectedIndexChanged);
 			// 
 			// frmCareer
 			// 
@@ -14680,5 +14693,6 @@ namespace Chummer
 		private Label lblAttributesAug;
 		private Label lblAttributesMetatype;
 		private Chummer.helpers.Button cmdIncreasePowerPoints;
+		private System.Windows.Forms.ComboBox cboAttributeCategory;
 	}
 }

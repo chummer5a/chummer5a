@@ -155,29 +155,6 @@ namespace Chummer
         private bool _blnErased = false;
 		private int _intTrustFund = 0;
 		private decimal _decPrototypeTranshuman = 0m;
-
-		// Attributes.
-        public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-        private List<CharacterAttrib> _attributes = new List<CharacterAttrib>();
-		private List<CharacterAttrib> _specialAttributes = new List<CharacterAttrib>();
-
-		private CharacterAttrib _attBOD;
-        private CharacterAttrib _attAGI;
-        private CharacterAttrib _attREA;
-        private CharacterAttrib _attSTR;
-        private CharacterAttrib _attCHA;
-        private CharacterAttrib _attINT;
-        private CharacterAttrib _attLOG;
-        private CharacterAttrib _attWIL;
-        private CharacterAttrib _attINI;
-        private CharacterAttrib _attEDG;
-        private CharacterAttrib _attMAG;
-        private CharacterAttrib _attRES;
-        private CharacterAttrib _attESS;
-        private CharacterAttrib _attDEP;
-
-        // Shapeshifter Attributes.
-
         private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnDEPEnabled = false;
@@ -196,7 +173,7 @@ namespace Chummer
         private string _strTraditionDrain = string.Empty;
         private string _strTraditionName = string.Empty;
         private string _strSpiritCombat = string.Empty;
-        private string _strSpiritDetection = string.Empty;
+		private string _strSpiritDetection = string.Empty;
         private string _strSpiritHealth = string.Empty;
         private string _strSpiritIllusion = string.Empty;
         private string _strSpiritManipulation = string.Empty;
@@ -297,43 +274,17 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-			_attBOD = new CharacterAttrib("BOD", this);
-			_attAGI = new CharacterAttrib("AGI", this);
-			_attREA = new CharacterAttrib("REA", this);
-			_attSTR = new CharacterAttrib("STR", this);
-			_attCHA = new CharacterAttrib("CHA", this);
-			_attINT = new CharacterAttrib("INT", this);
-			_attLOG = new CharacterAttrib("LOG", this);
-			_attWIL = new CharacterAttrib("WIL", this);
-			_attEDG = new CharacterAttrib("EDG", this, CharacterAttrib.AttributeCategory.Special);
-			_attMAG = new CharacterAttrib("MAG", this, CharacterAttrib.AttributeCategory.Special);
-			_attRES = new CharacterAttrib("RES", this, CharacterAttrib.AttributeCategory.Special);
-			_attDEP = new CharacterAttrib("DEP", this,CharacterAttrib.AttributeCategory.Special);
-			_attINI = new CharacterAttrib("INI", this);
-			_attESS = new CharacterAttrib("ESS", this);
-
-			BOD._objCharacter = this;
-            AGI._objCharacter = this;
-            REA._objCharacter = this;
-            STR._objCharacter = this;
-            CHA._objCharacter = this;
-            INT._objCharacter = this;
-            LOG._objCharacter = this;
-            WIL._objCharacter = this;
-            INI._objCharacter = this;
-            EDG._objCharacter = this;
-            MAG._objCharacter = this;
-            RES._objCharacter = this;
-            ESS._objCharacter = this;
-			DEP._objCharacter = this;
-
 			_objImprovementManager = new ImprovementManager(this);
 			_objOptions = new CharacterOptions(this);
+			AttributeSection = new AttributeSection(this);
+			AttributeSection.Reset();
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
         }
 
-        /// <summary>
+	    public AttributeSection AttributeSection { get; set; }
+
+	    /// <summary>
         /// Save the Character to an XML file.
         /// </summary>
         public void Save(string strFileName = "")
@@ -570,14 +521,7 @@ namespace Chummer
 
 			// <attributes>
 			objWriter.WriteStartElement("attributes");
-            foreach (CharacterAttrib objAttribute in _attributes)
-			{
-                objAttribute.Save(objWriter);
-            }
-            foreach (CharacterAttrib objAttribute in _specialAttributes)
-            {
-                objAttribute.Save(objWriter);
-            }
+	        AttributeSection.Save(objWriter);
             // </attributes>
             objWriter.WriteEndElement();
 
@@ -1243,102 +1187,7 @@ namespace Chummer
             if (blnHasOldQualities)
                 ConvertOldQualities(objXmlNodeList);
 	        Timekeeper.Finish("load_char_quality");
-			Timekeeper.Start("load_char_attrib");
-            // Attributes.
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"BOD\"]");
-            if (objXmlCharacter != null)
-            {
-                _attBOD.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"AGI\"]");
-            if (objXmlCharacter != null)
-            {
-                _attAGI.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
-            if (objXmlCharacter != null)
-            {
-                _attREA.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
-            if (objXmlCharacter != null)
-            {
-                _attSTR.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
-            if (objXmlCharacter != null)
-            {
-                _attCHA.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
-            if (objXmlCharacter != null)
-            {
-                _attINT.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
-            if (objXmlCharacter != null)
-            {
-                _attLOG.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
-            if (objXmlCharacter != null)
-            {
-                _attWIL.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
-            if (objXmlCharacter != null)
-            {
-                _attINI.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
-            if (objXmlCharacter != null)
-            {
-                _attEDG.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
-            if (objXmlCharacter != null)
-            {
-                _attMAG.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
-            if (objXmlCharacter != null)
-            {
-                _attRES.Load(objXmlCharacter);
-			}
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
-            if (objXmlCharacter != null)
-            {
-                _attESS.Load(objXmlCharacter);
-			}
-
-            // A.I. Attributes.
-            try
-            {
-                objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
-                if (objXmlCharacter != null)
-                {
-                    _attDEP.Load(objXmlCharacter);
-				}
-            }
-            catch
-            {
-            }
-
-
-			AttributeList.Add(_attBOD);
-			AttributeList.Add(_attAGI);
-			AttributeList.Add(_attREA);
-			AttributeList.Add(_attSTR);
-			AttributeList.Add(_attCHA);
-			AttributeList.Add(_attINT);
-			AttributeList.Add(_attLOG);
-			AttributeList.Add(_attWIL);
-			SpecialAttributeList.Add(_attEDG);
-			SpecialAttributeList.Add(_attMAG);
-			SpecialAttributeList.Add(_attRES);
-			SpecialAttributeList.Add(_attDEP);
-
-			Timekeeper.Finish("load_char_attrib");
+			AttributeSection.Load(objXmlDocument);
 			Timekeeper.Start("load_char_misc2");
 
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
@@ -2136,7 +1985,7 @@ namespace Chummer
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strDrain = AttributeSection.AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
 				if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
@@ -2212,7 +2061,7 @@ namespace Chummer
                 strDrainAtt = objXmlTradition["drain"].InnerText;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strDrain = AttributeSection.AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
 	            XPathExpression xprDrain = nav.Compile(strDrain);
 
 				// Add any Improvements for Fading Resistance.
@@ -2223,18 +2072,7 @@ namespace Chummer
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
-            _attBOD.Print(objWriter);
-            _attAGI.Print(objWriter);
-            _attREA.Print(objWriter);
-            _attSTR.Print(objWriter);
-            _attCHA.Print(objWriter);
-            _attINT.Print(objWriter);
-            _attLOG.Print(objWriter);
-            _attWIL.Print(objWriter);
-            _attINI.Print(objWriter);
-            _attEDG.Print(objWriter);
-            _attMAG.Print(objWriter);
-            _attRES.Print(objWriter);
+	        AttributeSection.Print(objWriter);
 
             // </attributes>
             objWriter.WriteEndElement();
@@ -2735,11 +2573,7 @@ namespace Chummer
             _blnCritterEnabled = false;
 
             // Reset Attributes.
-            _attributes.Clear();
-            foreach (string strAttribute in AttributeStrings)
-            {
-                CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute,this);
-            }
+	        AttributeSection.Reset();
 			_blnMAGEnabled = false;
             _blnRESEnabled = false;
             _blnDEPEnabled = false;
@@ -3117,34 +2951,7 @@ namespace Chummer
                 CharacterNameChanged?.Invoke(this);
             }
         }
-		/// <summary>
-		/// Character's Attributes.
-		/// </summary>
-		public List<CharacterAttrib> AttributeList
-		{
-			get
-			{
-				return _attributes;
-			}
-			set
-			{
-				_attributes = value;
-			}
-		}
-		/// <summary>
-		/// Character's Attributes.
-		/// </summary>
-		public List<CharacterAttrib> SpecialAttributeList
-		{
-			get
-			{
-				return _specialAttributes;
-			}
-			set
-			{
-				_specialAttributes = value;
-			}
-		}
+
 		/// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
@@ -4023,51 +3830,7 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         public CharacterAttrib GetAttribute(string strAttribute)
         {
-            switch (strAttribute)
-            {
-                case "BOD":
-                case "BODBase":
-                    return _attBOD;
-                case "AGI":
-                case "AGIBase":
-                    return _attAGI;
-                case "REA":
-                case "REABase":
-                    return _attREA;
-                case "STR":
-                case "STRBase":
-                    return _attSTR;
-                case "CHA":
-                case "CHABase":
-                    return _attCHA;
-                case "INT":
-                case "INTBase":
-                    return _attINT;
-                case "LOG":
-                case "LOGBase":
-                    return _attLOG;
-                case "WIL":
-                case "WILBase":
-                    return _attWIL;
-                case "INI":
-                    return _attINI;
-                case "EDG":
-                case "EDGBase":
-                    return _attEDG;
-                case "MAG":
-                case "MAGBase":
-                    return _attMAG;
-                case "RES":
-                case "RESBase":
-                    return _attRES;
-                case "DEP":
-                case "DEPBase":
-                    return _attDEP;
-                case "ESS":
-                    return _attESS;
-                default:
-                    return _attBOD;
-            }
+	        return AttributeSection.GetAttributeByName(strAttribute);
         }
 
         /// <summary>
@@ -4077,8 +3840,8 @@ namespace Chummer
         {
             get
             {
-	            return _attBOD;
-            }
+				return AttributeSection.GetAttributeByName("BOD");
+			}
         }
 
         /// <summary>
@@ -4088,8 +3851,8 @@ namespace Chummer
         {
             get
             {
-				return _attAGI;
-            }
+				return AttributeSection.GetAttributeByName("AGI");
+			}
         }
 
         /// <summary>
@@ -4099,8 +3862,8 @@ namespace Chummer
         {
             get
             {
-				return _attREA;
-            }
+				return AttributeSection.GetAttributeByName("REA");
+			}
         }
 
         /// <summary>
@@ -4110,8 +3873,8 @@ namespace Chummer
         {
             get
             {
-				return _attSTR;
-            }
+				return AttributeSection.GetAttributeByName("STR");
+			}
         }
 
         /// <summary>
@@ -4121,8 +3884,8 @@ namespace Chummer
         {
             get
             {
-				return _attCHA;
-            }
+				return AttributeSection.GetAttributeByName("CHA");
+			}
         }
 
         /// <summary>
@@ -4132,8 +3895,8 @@ namespace Chummer
         {
             get
             {
-				return _attINT;
-            }
+				return AttributeSection.GetAttributeByName("INT");
+			}
         }
 
         /// <summary>
@@ -4143,8 +3906,8 @@ namespace Chummer
         {
             get
             {
-				return _attLOG;
-            }
+				return AttributeSection.GetAttributeByName("LOG");
+			}
         }
 
         /// <summary>
@@ -4154,8 +3917,8 @@ namespace Chummer
         {
             get
             {
-				return _attWIL;
-            }
+				return AttributeSection.GetAttributeByName("WIL");
+			}
         }
 
 	    /// <summary>
@@ -4165,8 +3928,8 @@ namespace Chummer
         {
             get
 			{
-				return _attINI;
-            }
+				return AttributeSection.GetAttributeByName("INT");
+			}
         }
 
         /// <summary>
@@ -4176,8 +3939,8 @@ namespace Chummer
         {
             get
             {
-                return _attEDG;
-            }
+				return AttributeSection.GetAttributeByName("EDG");
+			}
         }
 
         /// <summary>
@@ -4187,8 +3950,8 @@ namespace Chummer
         {
             get
             {
-                return _attMAG;
-            }
+				return AttributeSection.GetAttributeByName("MAG");
+			}
         }
 
         /// <summary>
@@ -4196,7 +3959,10 @@ namespace Chummer
         /// </summary>
         public CharacterAttrib RES
         {
-            get { return _attRES; }
+	        get
+	        {
+				return AttributeSection.GetAttributeByName("RES");
+			}
 		}
         
         /// <summary>
@@ -4204,16 +3970,22 @@ namespace Chummer
         /// </summary>
         public CharacterAttrib DEP
 		{
-            get { return _attDEP; }
-        }
+			get
+			{
+				return AttributeSection.GetAttributeByName("DEP");
+			}
+		}
 
 		/// <summary>
 		/// Essence (ESS) Attribute.
 		/// </summary>
         public CharacterAttrib ESS
         {
-            get { return _attESS; }
-        }
+			get
+			{
+				return AttributeSection.GetAttributeByName("ESS");
+			}
+		}
 
         /// <summary>
         /// Is the MAG CharacterAttribute enabled?
@@ -7308,12 +7080,5 @@ namespace Chummer
 			}
 		}
 
-		internal void ForceAttributePropertyChangedNotificationAll(string name)
-		{
-			foreach (CharacterAttrib att in _attributes)
-			{
-				att.ForceEvent(name);
-			}
-		}
 	}
 }
