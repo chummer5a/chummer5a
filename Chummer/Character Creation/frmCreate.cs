@@ -13229,7 +13229,7 @@ namespace Chummer
 				Improvement imp in
 				_objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
 			{
-				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.UniqueName);
+				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName);
 				limitMod += objSkill.LearnedRating;
 			}
 			if (limit > 0)
