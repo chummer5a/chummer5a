@@ -10636,6 +10636,120 @@
 			<source>2050</source>
 			<page>196</page>
 		</weapon>
+		<weapon>
+			<id>bcbb7011-f4f6-40f3-a6ea-c3188e95be18</id>
+			<name>Defiance T-250 (2050)</name>
+			<category>Shotguns</category>
+			<type>Ranged</type>
+			<conceal>3</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>5(m)</ammo>
+			<avail>3R</avail>
+			<cost>750</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<range>Heavy Pistols</range>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>ea074ca2-6309-4af9-ba63-1a39223c721a</id>
+			<name>Enfield AS-7 (2050)</name>
+			<category>Shotguns</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-1</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>10(c) or 24(d)</ammo>
+			<avail>8R</avail>
+			<cost>1000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>				
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Laser Sight</name></accessory>
+			</accessories>			
+			<source>2050</source>
+			<page>186</page>
+		</weapon>
+		<weapon>
+			<id>12dfa7c1-209a-4cb9-ac3d-8012c369177b</id>
+			<name>Mossberg CMDT (2050)</name>
+			<category>Shotguns</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-1</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>8(c)</ammo>
+			<avail>8F</avail>
+			<cost>1500</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>		
+		<weapon>
+			<id>28952d02-310f-43ab-90f3-1f04374d7231</id>
+			<name>Mossberg CMDT/SM (2050)</name>
+			<category>Shotguns</category>
+			<type>Ranged</type>
+			<conceal>6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>10P</damage>
+			<ap>-1</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>8(c)</ammo>
+			<avail>12F</avail>
+			<cost>1900</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<accessories>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+			</accessories>
+			<source>2050</source>
+			<page>186</page>
+		</weapon>		
 		<!-- End SR5 2050 -->
 		<!-- End Region -->
 		<!-- Region SotA ADL -->
