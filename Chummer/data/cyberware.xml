@@ -4065,18 +4065,22 @@
 			<id>c8d6fe4e-f55b-4111-bbbb-ad89b6c99074</id>
 			<name>Cyberears (2050)</name>
 			<category>Earware</category>
+			<rating>0</rating>
 			<ess>0.2</ess>
 			<capacity>4</capacity>
 			<avail>0</avail>
 			<cost>5000</cost>
-			<source>2050</source>
-			<page>201</page>
 			<allowgear>
 				<gearcategory>Audio Enhancements</gearcategory>
 			</allowgear>
+			<allowsubsystems>
+				<category>Earware</category>
+			</allowsubsystems>
 			<subsystems>
-				<subsystem>Earware</subsystem>
+				<subsystem>Sound Link</subsystem>
 			</subsystems>
+			<source>2050</source>
+			<page>201</page>
 		</cyberware>
 		<cyberware>
 			<id>75f71536-b34a-452e-9045-17ce7ef02daf</id>

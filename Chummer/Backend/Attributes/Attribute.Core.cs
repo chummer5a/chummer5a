@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Xml;
 using Chummer.Datastructures;
 
@@ -82,9 +83,19 @@ namespace Chummer.Backend.Attributes
 				_intBase = 0;
 			}
 			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time. 
-			if (objNode["value"] != null && BaseUnlocked)
+			if (objNode["value"] != null)
 			{
-				_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
+				int i = Convert.ToInt32(objNode["value"].InnerText);
+				i -= _intMetatypeMin;
+				if (BaseUnlocked)
+				{
+					_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
+					i -= _intBase;
+				}
+				if (i > 0)
+				{
+					_intKarma = i;
+				}
 			}
 			_enumCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText, _strAbbrev);
             _intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
@@ -244,7 +255,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-	            return Math.Min(Math.Max(Base + Karma, MetatypeMinimum), MetatypeMaximum);
+	            return Math.Min(Base + Karma + MetatypeMinimum, TotalMaximum);
             }
         }
 
@@ -304,8 +315,8 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
                         {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
+	                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+							bool blnFound = false;
                             foreach (string strName in lstUniqueName)
                             {
                                 if (strName == objImprovement.UniqueName)
@@ -321,8 +332,16 @@ namespace Chummer.Backend.Attributes
                         }
                         else
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                                intModifier += objImprovement.Augmented * objImprovement.Rating;
+							if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+							if (objImprovement.SourceName == "Essence Loss")
+							{
+								if ((Abbrev == "MAG" || Abbrev == "DEP" || Abbrev == "RES") &&
+									_objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0)
+								{
+									break;
+								}
+							}
+							intModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
@@ -650,14 +669,10 @@ namespace Chummer.Backend.Attributes
 							intLimbTotal += intMeat;
 						intLimbCount = _objCharacter.Options.LimbCount;
 					}
-					int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
+					int intTotal = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
 					intReturn += intTotal;
 				}
 			}
-		    if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP"))
-		    {
-		        //intReturn -= _objCharacter.EssencePenalty;
-		    }
 			// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 			if (intReturn > TotalAugmentedMaximum)
 				intReturn = TotalAugmentedMaximum;
@@ -714,13 +729,14 @@ namespace Chummer.Backend.Attributes
 
                 if (_objCharacter.EssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
 
-                if (_objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty >= TotalMaximum)
+                if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
+					return Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
                 }
-                else
-                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
-
+				if (_objCharacter.EssencePenalty >= TotalMaximum)
+				{
+					intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
+				}
                 return intReturn;
             }
         }
@@ -1403,6 +1419,19 @@ namespace Chummer.Backend.Attributes
 			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
 			{
 				OnPropertyChanged(nameof(Base));
+			}
+		}
+
+		/// <summary>
+		/// Forces a particular event to fire.
+		/// </summary>
+		/// <param name="property"></param>
+		public void ForceEvent(string property)
+		{
+			foreach (string s in DependencyTree.Find(property))
+			{
+				var v = new PropertyChangedEventArgs(s);
+				PropertyChanged?.Invoke(this, v);
 			}
 		}
 		#endregion

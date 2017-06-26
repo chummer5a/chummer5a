@@ -7289,8 +7289,8 @@ namespace Chummer
 		//List of events that might be able to affect attributes. TODO: Should this just be merged into skillRelated?
 		private static readonly Improvement.ImprovementType[] attribRelated = {
 			Improvement.ImprovementType.Attributelevel,
-			Improvement.ImprovementType.Attribute
-			,
+			Improvement.ImprovementType.Attribute,
+			Improvement.ImprovementType.Seeker
 		};
 		//To get when things change in improvementmanager
 		//Ugly, ugly done, but we cannot get events out of it today
@@ -7305,6 +7305,14 @@ namespace Chummer
 			if (_lstTransaction.Any(x => attribRelated.Any(y => y == x.ImproveType)))
 			{
 				AttributeImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+			}
+		}
+
+		internal void ForceAttributePropertyChangedNotificationAll(string name)
+		{
+			foreach (CharacterAttrib att in _attributes)
+			{
+				att.ForceEvent(name);
 			}
 		}
 	}

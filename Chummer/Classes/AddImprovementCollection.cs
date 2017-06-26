@@ -3158,8 +3158,8 @@ namespace Chummer.Classes
 			else if (bonusNode.Attributes?["skill"] != null)
 			{
 				Log.Info("skill");
-				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
-				Log.Info(objSkill.Name);
+				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode.Attributes["skill"].InnerText);
+				Log.Info(bonusNode.Attributes["skill"].InnerText);
 				if (objSkill != null)
 				{
 					Log.Info("Calling CreateImprovement");
