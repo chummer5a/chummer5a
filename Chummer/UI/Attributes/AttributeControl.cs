@@ -20,40 +20,41 @@ namespace Chummer.UI.Attributes
 		private object sender;
 		private decimal _oldBase;
 		private decimal _oldKarma;
-
+		private BindingSource _dataSource;
 		public AttributeControl(CharacterAttrib attribute)
         {
             this.attribute = attribute;
             InitializeComponent();
-
+			_dataSource = new BindingSource { DataSource = typeof(CharacterAttrib) };
+			_dataSource.DataSource = attribute;
 			//Display
-			lblName.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblLimits.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblValue.DataBindings.Add("TooltipText", attribute, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblName.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblValue.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblLimits.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblValue.DataBindings.Add("TooltipText", _dataSource, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             if (attribute._objCharacter.Created)
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
-				cmdImproveATT.DataBindings.Add("TooltipText", attribute, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+				cmdImproveATT.DataBindings.Add("TooltipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 				cmdImproveATT.Visible = true;
-				cmdImproveATT.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
+				cmdImproveATT.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
 				cmdBurnEdge.Visible = AttributeName == "EDG";
 	            cmdBurnEdge.TooltipText = LanguageManager.Instance.GetString("Tip_CommonBurnEdge");
             }
             else
 			{
-				nudBase.DataBindings.Add("Minimum", attribute, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
-				nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
-				nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Minimum", _dataSource, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudBase.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudBase.Visible = true;
 
 				nudKarma.Minimum = 0;
-				nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.KarmaMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.Visible = true;
@@ -68,6 +69,10 @@ namespace Chummer.UI.Attributes
 			this.sender = sender;
 		}
 
+		public void ResetBinding(CharacterAttrib attrib)
+		{
+			_dataSource.DataSource = attrib;
+		}
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
             frmCareer parent = ParentForm as frmCareer;

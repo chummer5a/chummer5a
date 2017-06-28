@@ -26579,7 +26579,7 @@ namespace Chummer
 
         private void BuildAttributePanel()
         {
-            pnlAttributes.Controls.Clear();
+			pnlAttributes.Controls.Clear();
             lstPrimaryAttributes.Clear();
             lstSpecialAttributes.Clear();
             lstPrimaryAttributes.Add(_objCharacter.BOD);
@@ -26610,6 +26610,13 @@ namespace Chummer
 		{
 			_objCharacter.AttributeSection.AttributeCategory = _objCharacter.AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
 			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
+			//TODO: Shift binding reset into attributesection, pass bindingsource into attribute controls on create?
+			foreach (AttributeControl c in pnlAttributes.Controls)
+			{
+				c.ResetBinding(_objCharacter.GetAttribute(c.AttributeName));
+			}
+
+			objAttribute_ValueChanged(null);
 		}
 	}
 }

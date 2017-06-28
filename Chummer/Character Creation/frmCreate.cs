@@ -15188,11 +15188,12 @@ namespace Chummer
 	        if (_objCharacter.MetatypeCategory == "Shapeshifter")
 	        {
 		        List<CharacterAttrib> staging = new List<CharacterAttrib>();
+		        XmlDocument xmlDoc = XmlManager.Instance.Load("metatypes.xml");
 		        foreach (CharacterAttrib att in _objCharacter.AttributeSection.AttributeList)
 		        {
 			        CharacterAttrib newAtt = new CharacterAttrib(_objCharacter, att.Abbrev,
 				        CharacterAttrib.AttributeCategory.Shapeshifter);
-					_objCharacter.AttributeSection.CopyAttribute(att,newAtt);
+					_objCharacter.AttributeSection.CopyAttribute(att,newAtt,_objCharacter.Metavariant,xmlDoc);
 					staging.Add(newAtt);
 		        }
 		        foreach (CharacterAttrib att in staging)

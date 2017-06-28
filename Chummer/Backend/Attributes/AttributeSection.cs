@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -108,14 +109,14 @@ namespace Chummer.Backend.Attributes
 			}
 		}
 
-		public void CopyAttribute(CharacterAttrib source, CharacterAttrib target)
+		public void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
 		{
-			target.MetatypeMinimum = source.MetatypeMinimum;
-			target.MetatypeMaximum = source.MetatypeMaximum;
-			target.MetatypeAugmentedMaximum = source.MetatypeAugmentedMaximum;
+			XmlNode node = xmlDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{mv}\"]");
+			target.MetatypeMinimum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}min"].InnerText);
+			target.MetatypeMaximum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}max"].InnerText);
+			target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}aug"].InnerText);
 			target.Base = source.Base;
 			target.Karma = source.Karma;
-			target.AugmentModifier = source.AugmentModifier;
 		}
 
 		internal void Reset()
