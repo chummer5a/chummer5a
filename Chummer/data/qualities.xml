@@ -12052,14 +12052,52 @@
 		</quality>
 		<quality>
 			<id>7653cadb-0092-4a94-9a17-9329fb4f6041</id>
-			<name>Social Appearance Anxiety</name>
+			<name>Social Appearance Anxiety (Rating 1)</name>
 			<karma>-3</karma>
 			<category>Negative</category>
       <limit>3</limit>
 			<bonus />
+      <forbidden>
+        <oneof>
+          <quality>Social Apperance Anxiety (Rating 2)</quality>
+          <quality>Social Apperance Anxiety (Rating 3)</quality>
+        </oneof>
+      </forbidden>
 			<source>CA</source>
 			<page>152</page>
 		</quality>
+    <quality>
+      <id></id>
+      <name>Social Appearance Anxiety (Rating 2)</name>
+      <karma>-6</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Social Apperance Anxiety (Rating 1)</quality>
+          <quality>Social Apperance Anxiety (Rating 3)</quality>
+        </oneof>
+      </forbidden>
+      <source>CA</source>
+      <page>152</page>
+    </quality>
+    <quality>
+      <id></id>
+      <name>Social Appearance Anxiety (Rating 3)</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Social Apperance Anxiety (Rating 2)</quality>
+          <quality>Social Apperance Anxiety (Rating 1)</quality>
+        </oneof>
+      </forbidden>
+      <source>CA</source>
+      <page>152</page>
+    </quality>
 		<quality>
 			<id>c41e83a2-1a36-4b97-b286-5fbc6510d3d7</id>
 			<name>The Goat</name>
