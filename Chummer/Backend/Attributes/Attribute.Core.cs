@@ -333,15 +333,17 @@ namespace Chummer.Backend.Attributes
                         else
                         {
 							if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-							if (objImprovement.SourceName == "Essence Loss")
 							{
 								if ((Abbrev == "MAG" || Abbrev == "DEP" || Abbrev == "RES") &&
-									_objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0)
+                                     objImprovement.SourceName == "Essence Loss" &&
+                                    _objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0)
 								{
-									break;
-								}
+									// Do Nothing
+								} else
+                                {
+                                    intModifier += objImprovement.Augmented * objImprovement.Rating;
+                                }
 							}
-							intModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
