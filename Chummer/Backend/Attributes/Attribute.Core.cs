@@ -15,9 +15,10 @@ using Chummer.Datastructures;
 namespace Chummer.Backend.Attributes
 {
     /// <summary>
-    /// Character CharacterAttribute.
+    /// Character CharacterAttribute. 
+    /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
-    [DebuggerDisplay("{_strAbbrev}")]
+    [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
     public class CharacterAttrib : INotifyPropertyChanged
     {
         private int _intMetatypeMin = 1;

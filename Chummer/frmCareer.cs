@@ -547,24 +547,31 @@ namespace Chummer
 			if (_objCharacter.MetatypeCategory == "Shapeshifter")
 			{
 				XmlDocument objDoc = XmlManager.Instance.Load("metatypes.xml");
-				XmlNodeList objXmlCategoryList = objDoc.SelectNodes("/chummer/categories/category[. = \"Metahuman\" or . = \"Shapeshifter\"]");
 				List<ListItem> lstAttributeCategories = new List<ListItem>();
-				foreach (XmlNode category in objXmlCategoryList)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = category.InnerText;
-					objItem.Name = category.Attributes["translate"] != null
-						? category.Attributes["translate"].InnerText
-						: category.InnerText;
-					lstAttributeCategories.Add(objItem);
-				}
+				XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
+				ListItem objItem = new ListItem();
+				objItem.Value = "Standard";
+				objItem.Name = node["name"].Attributes["translate"] != null
+					? node["name"].Attributes["translate"].InnerText
+					: node["name"].InnerText;
+				lstAttributeCategories.Add(objItem);
+				
+				node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]");
+
+				objItem = new ListItem();
+				objItem.Value = "Shapeshifter";
+				objItem.Name = node["name"].Attributes["translate"] != null
+					? node["name"].Attributes["translate"].InnerText
+					: node["name"].InnerText;
+				lstAttributeCategories.Add(objItem);
+
 				lstAttributeCategories.Sort(objSort.Compare);
 				cboAttributeCategory.BeginUpdate();
 				cboAttributeCategory.ValueMember = "Value";
 				cboAttributeCategory.DisplayMember = "Name";
 				cboAttributeCategory.DataSource = lstAttributeCategories;
 				cboAttributeCategory.EndUpdate();
-				cboAttributeCategory.SelectedValue = "Metahuman";
+				cboAttributeCategory.SelectedValue = "Standard";
 			}
 
 			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
@@ -26610,11 +26617,7 @@ namespace Chummer
 		{
 			_objCharacter.AttributeSection.AttributeCategory = _objCharacter.AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
 			_objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
-			//TODO: Shift binding reset into attributesection, pass bindingsource into attribute controls on create?
-			foreach (AttributeControl c in pnlAttributes.Controls)
-			{
-				c.ResetBinding(_objCharacter.GetAttribute(c.AttributeName));
-			}
+			_objCharacter.AttributeSection.ResetBindings();
 
 			objAttribute_ValueChanged(null);
 		}

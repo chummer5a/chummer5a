@@ -16,17 +16,16 @@ namespace Chummer.UI.Attributes
 		// ConnectionRatingChanged Event Handler.
 		public delegate void ValueChangedHandler(Object sender);
 		public event ValueChangedHandler ValueChanged;
-		private readonly CharacterAttrib attribute;
+		private readonly CharacterAttrib _attribute;
 		private object sender;
 		private decimal _oldBase;
 		private decimal _oldKarma;
 		private BindingSource _dataSource;
 		public AttributeControl(CharacterAttrib attribute)
         {
-            this.attribute = attribute;
-            InitializeComponent();
-			_dataSource = new BindingSource { DataSource = typeof(CharacterAttrib) };
-			_dataSource.DataSource = attribute;
+            _attribute = attribute;
+			_dataSource = _attribute._objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
+			InitializeComponent();
 			//Display
 			lblName.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -78,12 +77,12 @@ namespace Chummer.UI.Attributes
             frmCareer parent = ParentForm as frmCareer;
             if (parent != null)
             {
-                int upgradeKarmaCost = attribute.UpgradeKarmaCost();
+                int upgradeKarmaCost = _attribute.UpgradeKarmaCost();
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
-					attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
-				if (upgradeKarmaCost > attribute._objCharacter.Karma)
+					_attribute.DisplayNameFormatted, _attribute.Value + 1, upgradeKarmaCost);
+				if (upgradeKarmaCost > _attribute._objCharacter.Karma)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -92,7 +91,7 @@ namespace Chummer.UI.Attributes
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;
             }
-            attribute.Upgrade();
+            _attribute.Upgrade();
 	        ValueChanged?.Invoke(this);
         }
 
@@ -125,9 +124,9 @@ namespace Chummer.UI.Attributes
 		/// </summary>
 		private bool ShowAttributeRule(decimal value)
 		{
-			if (attribute._objCharacter.IgnoreRules || value < attribute.TotalMaximum) return true;
-			bool any = attribute._objCharacter.AttributeSection.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
-			if (!any || attribute.AtMetatypeMaximum || attribute._objCharacter.AttributeSection.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
+			if (_attribute._objCharacter.IgnoreRules || value < _attribute.TotalMaximum) return true;
+			bool any = _attribute._objCharacter.AttributeSection.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
+			if (!any || _attribute.AtMetatypeMaximum || _attribute._objCharacter.AttributeSection.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
 			MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
 				LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
 				MessageBoxIcon.Information);
@@ -136,13 +135,13 @@ namespace Chummer.UI.Attributes
 
         public string AttributeName
 	    {
-		    get { return attribute.Abbrev; }
+		    get { return _attribute.Abbrev; }
 	    }
 
 		private void cmdBurnEdge_Click(object sender, EventArgs e)
 		{
 			// Edge cannot go below 1.
-			if (attribute.Value == 0)
+			if (_attribute.Value == 0)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotBurnEdge"), LanguageManager.Instance.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
@@ -152,13 +151,13 @@ namespace Chummer.UI.Attributes
 			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnEdge"), LanguageManager.Instance.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 				return;
 
-			attribute.Degrade(1);
+			_attribute.Degrade(1);
 			ValueChanged?.Invoke(this);
 		}
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attribute.TotalMaximum ||
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != _attribute.TotalMaximum ||
                 nudKarma.Value == nudKarma.Minimum) return;
             if (nudKarma.Value - nudBase.Increment >= 0)
             {
@@ -168,7 +167,7 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value != attribute.TotalMaximum || nudBase.Value == nudBase.Minimum) return;
+            if (nudBase.Value + nudKarma.Value != _attribute.TotalMaximum || nudBase.Value == nudBase.Minimum) return;
             if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;
