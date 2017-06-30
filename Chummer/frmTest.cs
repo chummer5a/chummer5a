@@ -571,11 +571,11 @@ namespace Chummer
 					}
 					try
 					{
-						decimal objValue = objTemp.CalculatedESS;
+						decimal objValue = objTemp.CalculatedESS();
 					}
 					catch
 					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedESS\r\n";
+						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedESS()\r\n";
 					}
 				}
 				catch

@@ -2253,8 +2253,16 @@
     <string>
       <key>Message_InvalidCyberwareGrades</key>
       <text>Cyber/Bioware Grade limit exceeded for the following items:</text>
-    </string>    
-    <string>
+    </string>
+		<string>
+			<key>Checkbox_PrototypeTranshuman</key>
+			<text>Prototype Transhuman</text>
+		</string>
+		<string>
+			<key>Message_OverPrototypeLimit</key>
+			<text>Bioware limit exceeded for Prototype Transhuman. Current: {0} Maximum: {1}</text>
+		</string>
+		<string>
       <key>Message_InvalidExConWare</key>
       <text>The following pieces of restricted Cyber/Bioware are not allowed on an ExCon:</text>
     </string>

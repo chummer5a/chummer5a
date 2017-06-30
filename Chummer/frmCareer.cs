@@ -4309,7 +4309,7 @@ namespace Chummer
 					    if (objCyberware.Parent == null)
 					    {
 					        //Add essence hole.
-					        IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100m));
+					        IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100m));
 					    }
 
 					    // Open the Cyberware XML file and locate the selected piece.
@@ -10162,7 +10162,7 @@ namespace Chummer
 						_objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
 						_objCharacter.Cyberware.Remove(objCyberware);
 
-						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100));
+						IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
 
 						// Remove the item from the TreeView.
 						treCyberware.Nodes.Remove(treCyberware.SelectedNode);
@@ -20423,7 +20423,7 @@ namespace Chummer
 	            lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
 	                                        objCyberware.CapacityRemaining.ToString() + " " +
 	                                        LanguageManager.Instance.GetString("String_Remaining") + ")";
-				lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(GlobalOptions.CultureInfo);
+				lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
 				ScheduleCharacterUpdate();
 			}
 			else
@@ -21774,7 +21774,7 @@ namespace Chummer
 				}
 			}
 
-			DecreaseEssenceHole((int)(objCyberware.CalculatedESS * 100));
+			DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
 
 			if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
 				{

@@ -121,7 +121,7 @@ namespace Chummer
 			{
 				WriteList(objCyberware, 0);
 				intTotalCost += objCyberware.TotalCost;
-				decTotalESS += objCyberware.CalculatedESS;
+				decTotalESS += objCyberware.CalculatedESS();
 			}
 
 			lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);

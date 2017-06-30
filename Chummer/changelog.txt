@@ -2,6 +2,7 @@ Build 194
 
 Application Changes: 
 
+- Implemented the Prototype Transhuman quality in a manner that's closer to RAW. Existing characters in career mode will need to be ported manually. Please contact me via chummer5isalive@gmail.com for assistance with this. 
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
 - Fixed behaviour of the condition monitors to properly be checked and unchecked.
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
