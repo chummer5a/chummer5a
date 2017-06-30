@@ -2032,7 +2032,7 @@
 			<disadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must frst pass a Charisma + Willpower (3) Test.</disadvantage>
       <bonus>
         <selectskill knowledgeskills="True" limittoskill="Anatomy,Disease,Infected,Undead">
-          <val>2</val>
+          <val>4</val>
           <applytorating>yes</applytorating>
         </selectskill>
       </bonus>

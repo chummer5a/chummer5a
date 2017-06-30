@@ -414,8 +414,8 @@ namespace Chummer.Classes
 		        }
 		        else
 		        {
-                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, frmPickSkill.SelectedSkill);
-                    _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
+			        KnowledgeSkill k = new KnowledgeSkill(_objCharacter) {WriteableName = frmPickSkill.SelectedSkill};
+			        _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
                     // We've found the selected Skill.
                     if (bonusNode.InnerXml.Contains("val"))
                     {

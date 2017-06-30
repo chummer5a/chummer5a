@@ -1440,7 +1440,7 @@
       <id>534600a0-395e-4bbc-8dc9-97a007e97504</id>
       <name>Anatomy</name>
       <attribute>LOG</attribute>
-      <catagory>Academic</catagory>
+      <category>Academic</category>
       <default>No</default>
       <skillgroup />
       <specs></specs>
@@ -2015,7 +2015,7 @@
       <id>be9be259-3109-489f-91d4-6e62e44f5ea3</id>
       <name>Disease</name>
       <attribute>LOG</attribute>
-      <catagory>Academic</catagory>
+      <category>Academic</category>
       <default>No</default>
       <skillgroup />
       <specs></specs>
@@ -2448,7 +2448,7 @@
       <id>71407a60-c753-40d9-9d5b-416c43b51fef</id>
       <name>Infected</name>
       <attribute>LOG</attribute>
-      <catagory>Academic</catagory>
+      <category>Academic</category>
       <default>No</default>
       <skillgroup />
       <specs></specs>
@@ -3518,7 +3518,7 @@
       <id>974e376f-5eec-4df8-b7d5-e53e900058e9</id>
       <name>Undead</name>
       <attribute>LOG</attribute>
-      <catagory>Academic</catagory>
+      <category>Academic</category>
       <default>No</default>
       <skillgroup />
       <specs></specs>
