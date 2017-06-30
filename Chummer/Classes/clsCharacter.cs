@@ -4556,14 +4556,6 @@ namespace Chummer
 								decBioware += objCyberware.CalculatedESS();
 						}
                     }
-				if (_decPrototypeTranshuman > 0)
-				{
-                    decBioware -= _decPrototypeTranshuman;
-                    if (decBioware < 0)
-					{
-						decBioware = 0;
-					}
-				}
 	            decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
 
 				decESS -= decCyberware + decBioware;
