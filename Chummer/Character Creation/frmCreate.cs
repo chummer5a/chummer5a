@@ -13204,7 +13204,7 @@ namespace Chummer
                         intKarmaPointsRemain -= intAttributePointsUsed;
                     }
                 }
-	            for (int i = _objCharacter.SpellLimit; i >= 0; i--)
+	            for (int i = _objCharacter.SpellLimit; i > 0; i--)
 	            {
 		            if (spells > 0)
 		            {
@@ -13229,7 +13229,7 @@ namespace Chummer
                 // Each spell costs KarmaSpell.
 	            int spellCost = _objOptions.KarmaSpell +
 	                            _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
-				intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps - _objCharacter.SpellLimit) * (spellCost);
+				intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps) * (spellCost);
                 intSpellPointsUsed += Math.Max(Math.Max(0, spells) * (spellCost), 0);
 				intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
 				intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
@@ -13259,13 +13259,13 @@ namespace Chummer
 	        {
 		        lblBuildPrepsBP.Text =
 			        string.Format(
-				        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intPrepPointsUsed} {strPoints}");
+				        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intPrepPointsUsed} {strPoints}");
 		        lblSpellsBP.Text =
 			        string.Format(
-				        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intSpellPointsUsed} {strPoints}");
+				        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intSpellPointsUsed} {strPoints}");
 		        lblBuildRitualsBP.Text =
 			        string.Format(
-				        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intRitualPointsUsed} {strPoints}");
+				        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intRitualPointsUsed} {strPoints}");
 	        }
 	        else
 	        {
