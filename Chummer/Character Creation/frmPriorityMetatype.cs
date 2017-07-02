@@ -596,7 +596,8 @@ namespace Chummer
 					string strSkillVal = (objTalentsNode.SelectSingleNode("skillval")?.InnerText ??
 										  objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
 					XmlNodeList objNodeList = (objTalentsNode.SelectNodes("skillgroupchoices/skillgroup"));
-					string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
+                    XmlNodeList skillNodeList = (objTalentsNode.SelectNodes("skillchoices/skill"));
+                    string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
 					strLabel = string.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkills"));
 					strLabel = string.Format(strLabel, strSkillCount, strSkillType, strSkillVal);
 					lblMetatypeSkillSelection.Text = strLabel;
@@ -622,8 +623,13 @@ namespace Chummer
 							{
 								objXmlSkillsList = BuildSkillCategoryList(objNodeList);
 								break;
-							}
-						default:
+                            }
+                        case "specific":
+                            {
+                                objXmlSkillsList = BuildSkillList(skillNodeList);
+                                break;
+                            }
+                        default:
 							{
 								objXmlSkillsList = GetActiveSkillList();
 								break;
@@ -2118,7 +2124,20 @@ namespace Chummer
 			return objXmlSkillList;
 		}
 
-		private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
+        private XmlNodeList BuildSkillList(XmlNodeList objSkillList)
+        {
+            XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+            string strGroups = "/chummer/skills/skill[name = \"" + objSkillList[0].InnerText + "\"";
+            for (int i = 1; i < objSkillList.Count; i++)
+            {
+                strGroups += " or name = \"" + objSkillList[i].InnerText + "\"";
+            }
+            strGroups += "]";
+            var objXmlSkillList = objXmlSkillsDocument.SelectNodes(strGroups);
+            return objXmlSkillList;
+        }
+
+        private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
 		{
 			cboPossessionMethod.Enabled = chkPossessionBased.Checked;
 		}

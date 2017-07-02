@@ -981,13 +981,15 @@
 					<qualities>
 						<quality>Aspected Magician</quality>
 					</qualities>
-					<skillgroupchoices>
-						<skillgroup>Enchanting</skillgroup>
-					</skillgroupchoices>
+          <skillchoices>
+            <skill>Arcana</skill>
+            <skill>Assensing</skill>
+            <skill>Astral Combat</skill>
+          </skillchoices>
 					<magic>5</magic>
-					<skillqty>1</skillqty>
-					<skillval>2</skillval>
-					<skilltype>magic</skilltype>
+          <skillqty>2</skillqty>
+          <skillval>6</skillval>
+          <skilltype>specific</skilltype>
 					<forbidden>
 						<oneof>
 							<metatype>A.I.</metatype>
@@ -1093,10 +1095,15 @@
 					<qualities>
 						<quality>Aware</quality>
 					</qualities>
+          <skillchoices>
+            <skill>Arcana</skill>
+            <skill>Assensing</skill>
+            <skill>Astral Combat</skill>
+          </skillchoices>
 					<magic>3</magic>
 					<skillqty>1</skillqty>
 					<skillval>4</skillval>
-					<skilltype>magic</skilltype>
+					<skilltype>specific</skilltype>
 					<forbidden>
 						<oneof>
 							<metatype>A.I.</metatype>
