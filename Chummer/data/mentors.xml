@@ -1237,11 +1237,11 @@
 						</specificpower>
 						<specificpower>
 							<name>Enhanced Accuracy (skill)</name>
-							<selectskill skillcategory="Combat Active">
-								<val>1</val>
-								<applytorating>no</applytorating>
-							</selectskill>
-							<val>1</val>
+              <val>1</val>
+              <selectskill skillcategory="Combat Active">
+                <val>1</val>
+                <applytorating>no</applytorating>
+              </selectskill>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -2030,6 +2030,12 @@
 			<name>Death</name>
 			<advantage>All: +4 ranks of the Knowledge Skill Anatomy, Disease, Infected, or Undead (choose one).</advantage>
 			<disadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must frst pass a Charisma + Willpower (3) Test.</disadvantage>
+      <bonus>
+        <selectskill knowledgeskills="True" limittoskill="Anatomy,Disease,Infected,Undead">
+          <val>4</val>
+          <applytorating>yes</applytorating>
+        </selectskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
@@ -2442,6 +2448,18 @@
 			<name>Eurasian Jay</name>
 			<advantage>All: +1 dice pool modifer for tests using the Perception and Palming skills.</advantage>
 			<disadvantage>Eurasian Jay loves to split his posessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Palming</name>
+          <bonus>1</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
@@ -2467,7 +2485,6 @@
 						<specificpower>
 							<name>Voice Control</name>
 							<val>1</val>
-							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -2477,23 +2494,10 @@
 						<specificpower>
 							<name>Danger Sense</name>
 							<val>2</val>
-							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Palming</name>
-					<bonus>1</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-				<specificskill>
-					<name>Perception</name>
-					<bonus>1</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>120</page>
 		</mentor>
@@ -2502,6 +2506,13 @@
 			<name>Squirrel</name>
 			<advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
 			<disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Chrisma (3) Tets or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
@@ -2518,18 +2529,11 @@
 						<specificpower>
 							<name>Light Body</name>
 							<val>2</val>
-							<free>yes</free>
+							
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Gymnastics</name>
-					<bonus>2</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>121</page>
 		</mentor>
@@ -2538,6 +2542,13 @@
 			<name>Fox</name>
 			<advantage>All: +2 dice pool modifer for tests using the Perception skill.</advantage>
 			<disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Charisma (3) Test to spare a bettered foe.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
@@ -2554,18 +2565,11 @@
 						<specificpower>
 							<name>Combat Sense</name>
 							<val>2</val>
-							<free>yes</free>
+							
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Perception</name>
-					<bonus>2</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>121</page>
 		</mentor>
@@ -2574,6 +2578,13 @@
 			<name>Tide</name>
 			<advantage>All: +2 dice pool modifer for tests using the Ritual Spellcasting skill.</advantage>
 			<disadvantage>Followers of Tide live in transition, but in the consistency of a cycle. They also design their lives this way. If their normal life cycle is lastingly impaired by Sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Ritual Spellcasting</name>
+          <bonus>2</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice summoning spirits of water or earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
@@ -2584,18 +2595,11 @@
 						<specificpower>
 							<name>Heightened Concentration</name>
 							<val>2</val>
-							<free>yes</free>
+							
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Ritual Spellcasting</name>
-					<bonus>2</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>121</page>
 		</mentor>
@@ -2604,6 +2608,16 @@
 			<name>Heinzelmännchen</name>
 			<advantage>All: +2 dice pool modifer for tests using the Artisan skill and the Engineering skill group.</advantage>
 			<disadvantage>Heinzelmännchen works in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic cease to function for the moment.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Artisan</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <skillgrouplevel>
+          <name>Engineering</name>
+          <val>1</val>
+        </skillgrouplevel>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
@@ -2619,27 +2633,15 @@
 					<bonus>
 						<specificpower>
 							<name>Improved Ability (skill)</name>
-							<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic">
-								<val>1</val>
-								<applytorating>no</applytorating>
-							</selectskill>
-							<val>1</val>
+              <val>1</val>
+              <selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic">
+                <val>1</val>
+                <applytorating>no</applytorating>
+              </selectskill>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Artisan</name>
-					<bonus>1</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-				<skillgrouplevel>
-					<name>Engineering</name>
-					<val>1</val>
-					<applytorating>no</applytorating>
-				</skillgrouplevel>
-			</bonus>
 			<source>SAG</source>
 			<page>121</page>
 		</mentor>
@@ -2648,6 +2650,18 @@
 			<name>Groundhog</name>
 			<advantage>All: +1 dice pool modifer for tests using the Perception and Etiquette skills.</advantage>
 			<disadvantage>If a follower of Grounghog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Chraisma (3) Test to not flee immediately.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>1</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
@@ -2676,23 +2690,10 @@
 						<specificpower>
 							<name>Motion Sense</name>
 							<val>1</val>
-							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Perception</name>
-					<bonus>1</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-				<specificskill>
-					<name>Etiquette</name>
-					<bonus>1</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>122</page>
 		</mentor>
@@ -2701,6 +2702,9 @@
 			<name>Seal</name>
 			<advantage>All: +2 dice pool modifer for Judge Intentions tests.</advantage>
 			<disadvantage>Seal has compassion, but she is lacking in tact dealing with the feelings of others. Whenever a follower of Seal gains insight into the emotional world of an other, it's difficult for him to respect private boundaries and not address the subject. In order to remain discreet in such situations, they must make a Charisma + Willpower (3) test. Glitches in social test are automatically critical.</disadvantage>
+      <bonus>
+        <judgeintentions>2</judgeintentions>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice summoning spirits of water.</name>
@@ -2724,9 +2728,6 @@
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<judgeintentions>2</judgeintentions>
-			</bonus>
 			<source>SAG</source>
 			<page>122</page>
 		</mentor>
@@ -2735,6 +2736,13 @@
 			<name>Pig</name>
 			<advantage>All: +2 dice pool modifer for tests using the Con skill.</advantage>
 			<disadvantage>A follower of Pig must make a Willpower + Charisma (3) Test to break free from pleasurable activities like sleeping, eating, drinking or consuming drugs.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Con</name>
+          <bonus>2</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
+      </bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
@@ -2750,22 +2758,15 @@
 					<bonus>
 						<specificpower>
 							<name>Improved Ability (skill)</name>
+              <val>1</val>
 							<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation">
 								<val>1</val>
 								<applytorating>no</applytorating>
 							</selectskill>
-							<val>1</val>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Con</name>
-					<bonus>2</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>122</page>
 		</mentor>
@@ -2774,6 +2775,13 @@
 			<name>Capricorn</name>
 			<advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
 			<disadvantage>Capricorn may not be stubborn, but he decides and acts quickly. He has neither tolerance nor time for hesitation. If a follower of Capricorn is confronted with long decision-making processes, discussions, or indecision, he must make a Charisma + Willpower (3) test in order not to immediately choose the in his opinion best decision available and to put it into practice immediately.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Gymnastics</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice summoning spirits of earth.</name>
@@ -2788,13 +2796,6 @@
 					</bonus>
 				</choice>
 			</choices>
-			<bonus>
-				<specificskill>
-					<name>Gymnastics</name>
-					<bonus>2</bonus>
-					<applytorating>no</applytorating>
-				</specificskill>
-			</bonus>
 			<source>SAG</source>
 			<page>123</page>
 		</mentor>

@@ -312,7 +312,7 @@ namespace Chummer.Backend.Shared_Methods
 									objCyberware =>
 										objCyberware.Grade.Name ==
 										node.Attributes?["grade"].InnerText)
-								.Sum(objCyberware => objCyberware.CalculatedESS);
+								.Sum(objCyberware => objCyberware.CalculatedESS());
 						if (node.InnerText.StartsWith("-"))
 						{
 							// Essence must be less than the value.

@@ -339,7 +339,8 @@ namespace Chummer.Classes
 			else
 				frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
 
-			Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
+
+			Log.Info("selectskill = " + bonusNode.OuterXml);
 			if (bonusNode.OuterXml.Contains("skillgroup"))
 				frmPickSkill.OnlySkillGroup = bonusNode.Attributes?["skillgroup"].InnerText;
 			else if (bonusNode.OuterXml.Contains("skillcategory"))
@@ -352,6 +353,9 @@ namespace Chummer.Classes
 				frmPickSkill.LimitToSkill = bonusNode.Attributes?["limittoskill"].InnerText;
 			else if (bonusNode.OuterXml.Contains("limittoattribute"))
 				frmPickSkill.LinkedAttribute = bonusNode.Attributes?["limittoattribute"].InnerText;
+
+            bool useKnowledge = Convert.ToBoolean(bonusNode.Attributes?["knowledgeskills"].InnerText);
+            frmPickSkill.ShowKnowledgeSkills = useKnowledge;
 
 			if (!string.IsNullOrEmpty(ForcedValue))
 			{
@@ -381,55 +385,106 @@ namespace Chummer.Classes
 			Log.Info("SourceName = " + SourceName);
 
 			// Find the selected Skill.
-			foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-			{
-				if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
-					frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
-					frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
-				{
-					if (objSkill.Name + " (" + objSkill.Specialization + ")" == frmPickSkill.SelectedSkill)
-					{
-						// We've found the selected Skill.
-						if (bonusNode.InnerXml.Contains("val"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name + " (" + objSkill.Specialization + ")", _objImprovementSource, SourceName,
-								Improvement.ImprovementType.Skill, _strUnique, ValueToInt(bonusNode["val"].InnerText, _intRating), 1,
-								0, 0, 0, 0, string.Empty, blnAddToRating);
-						}
+		    if (useKnowledge)
+		    {
+		        if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.Name == frmPickSkill.SelectedSkill))
+		        {
+		            foreach (KnowledgeSkill k in _objCharacter.SkillsSection.KnowledgeSkills)
+		            {
+		                if (k.Name != frmPickSkill.SelectedSkill) continue;
+		                // We've found the selected Skill.
+		                if (bonusNode.InnerXml.Contains("val"))
+		                {
+		                    Log.Info("Calling CreateImprovement");
+		                    CreateImprovement(k.Name, _objImprovementSource, SourceName,
+		                        Improvement.ImprovementType.Skill,
+		                        _strUnique,
+		                        ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
+		                        blnAddToRating);
+		                }
 
-						if (bonusNode.InnerXml.Contains("max"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name + " (" + objSkill.Specialization + ")", _objImprovementSource, SourceName,
-								Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-								ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
-						}
-					}
-				}
-				else
-				{
-					if (objSkill.Name == frmPickSkill.SelectedSkill)
-					{
-						// We've found the selected Skill.
-						if (bonusNode.InnerXml.Contains("val"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.Skill,
-								_strUnique,
-								ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, blnAddToRating);
-						}
+		                if (!bonusNode.InnerXml.Contains("max")) continue;
+		                Log.Info("Calling CreateImprovement");
+		                CreateImprovement(k.Name, _objImprovementSource, SourceName,
+		                    Improvement.ImprovementType.Skill,
+		                    _strUnique,
+		                    0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+		                    blnAddToRating);
+		            }
+		        }
+		        else
+		        {
+			        KnowledgeSkill k = new KnowledgeSkill(_objCharacter) {WriteableName = frmPickSkill.SelectedSkill};
+			        _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
+                    // We've found the selected Skill.
+                    if (bonusNode.InnerXml.Contains("val"))
+                    {
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.Skill,
+                            _strUnique,
+                            ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
+                            blnAddToRating);
+                    }
 
-						if (bonusNode.InnerXml.Contains("max"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.Skill,
-								_strUnique,
-								0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
-						}
-					}
-				}
-			}
+		            if (!bonusNode.InnerXml.Contains("max")) return;
+		            Log.Info("Calling CreateImprovement");
+		            CreateImprovement(k.Name, _objImprovementSource, SourceName,
+		                Improvement.ImprovementType.Skill,
+		                _strUnique,
+		                0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+		                blnAddToRating);
+		        }
+		    }
+		    else
+		        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+		        {
+		            if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
+		                frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
+		                frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
+		            {
+		                if ($"{objSkill.Name} ({objSkill.Specialization})" != frmPickSkill.SelectedSkill) continue;
+		                // We've found the selected Skill.
+		                if (bonusNode.InnerXml.Contains("val"))
+		                {
+		                    Log.Info("Calling CreateImprovement");
+		                    CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
+		                        SourceName,
+		                        Improvement.ImprovementType.Skill, _strUnique,
+		                        ValueToInt(bonusNode["val"].InnerText, _intRating), 1,
+		                        0, 0, 0, 0, string.Empty, blnAddToRating);
+		                }
+
+		                if (!bonusNode.InnerXml.Contains("max")) continue;
+		                Log.Info("Calling CreateImprovement");
+		                CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
+		                    SourceName,
+		                    Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
+		                    ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
+		            }
+		            else
+		            {
+		                if (objSkill.Name != frmPickSkill.SelectedSkill) continue;
+		                // We've found the selected Skill.
+		                if (bonusNode.InnerXml.Contains("val"))
+		                {
+		                    Log.Info("Calling CreateImprovement");
+		                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+		                        Improvement.ImprovementType.Skill,
+		                        _strUnique,
+		                        ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
+		                        blnAddToRating);
+		                }
+
+		                if (!bonusNode.InnerXml.Contains("max")) continue;
+		                Log.Info("Calling CreateImprovement");
+		                CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+		                    Improvement.ImprovementType.Skill,
+		                    _strUnique,
+		                    0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+		                    blnAddToRating);
+		            }
+		        }
 		}
 
 		// Select a Skill Group.

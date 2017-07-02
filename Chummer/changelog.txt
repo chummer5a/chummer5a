@@ -2,6 +2,7 @@ Build 194
 
 Application Changes: 
 
+- Implemented the Prototype Transhuman quality in a manner that's closer to RAW. Existing characters in career mode will need to be ported manually. Please contact me via chummer5isalive@gmail.com for assistance with this. 
 - Fixed behaviour of the Group condition to properly report when one or more groups qualifies for a forbidden/required restriction. 
 - Fixed behaviour of the condition monitors to properly be checked and unchecked.
 - Fixed behaviour of basic lifestyles to properly manage base-only multipliers.
@@ -47,6 +48,7 @@ Application Changes:
 - Adept powers created before the powers refresh will now properly add the relevant bonus node for the adept way discount. 
 - Adept powers now store the source id for use in searching and such. 
 - Fixed rounding behaviour when using cyberlimbs to use Ceiling instead of Floor.
+- Implemented support for knowledge skills in the selectskill improvement. Supports the Death Mentor Spirit.
 
 Data Changes:
 
@@ -71,6 +73,7 @@ Data Changes:
 - Hard Nanohives can now add Hard Nanoware as a gear item to themselves. 
 - Removed the Latent Source property from qualities, as it's redundant in 5E.
 - Qualities now add notoriety, per SR5 368. 
+- Implemented the Death Mentor Spirit. 
 
 New Strings:
 

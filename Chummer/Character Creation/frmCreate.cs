@@ -9111,7 +9111,7 @@ namespace Chummer
 
             if (frmPickCyberware.FreeCost)
                 objCyberware.Cost = "0";
-
+	        objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
             objCyberware.VehicleMounted = true;
 			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents.
@@ -10422,7 +10422,30 @@ namespace Chummer
             }
         }
 
-        private void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
+		private void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_blnSkipRefresh)
+			{
+				// Locate the selected piece of Cyberware.
+				bool blnFound = false;
+				Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
+				if (objCyberware != null)
+					blnFound = true;
+
+				if (blnFound)
+				{
+					// Update the selected Cyberware Rating.
+					objCyberware.PrototypeTranshuman = chkPrototypeTranshuman.Checked;
+				}
+
+				RefreshSelectedCyberware();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
+			}
+			ScheduleCharacterUpdate();
+		}
+		private void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
         {
             if (!_blnSkipRefresh)
             {
@@ -13181,7 +13204,7 @@ namespace Chummer
                         intKarmaPointsRemain -= intAttributePointsUsed;
                     }
                 }
-	            for (int i = _objCharacter.SpellLimit; i >= 0; i--)
+	            for (int i = _objCharacter.SpellLimit; i > 0; i--)
 	            {
 		            if (spells > 0)
 		            {
@@ -13206,7 +13229,7 @@ namespace Chummer
                 // Each spell costs KarmaSpell.
 	            int spellCost = _objOptions.KarmaSpell +
 	                            _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
-				intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps - _objCharacter.SpellLimit) * (spellCost);
+				intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps) * (spellCost);
                 intSpellPointsUsed += Math.Max(Math.Max(0, spells) * (spellCost), 0);
 				intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
 				intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
@@ -13236,13 +13259,13 @@ namespace Chummer
 	        {
 		        lblBuildPrepsBP.Text =
 			        string.Format(
-				        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intPrepPointsUsed} {strPoints}");
+				        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intPrepPointsUsed} {strPoints}");
 		        lblSpellsBP.Text =
 			        string.Format(
-				        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intSpellPointsUsed} {strPoints}");
+				        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intSpellPointsUsed} {strPoints}");
 		        lblBuildRitualsBP.Text =
 			        string.Format(
-				        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.MAG.Value * 2 + limitMod}: {intRitualPointsUsed} {strPoints}");
+				        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intRitualPointsUsed} {strPoints}");
 	        }
 	        else
 	        {
@@ -13942,6 +13965,7 @@ namespace Chummer
             lblCyberSleazeLabel.Visible = false;
             lblCyberDataProcessingLabel.Visible = false;
             lblCyberFirewallLabel.Visible = false;
+	        chkPrototypeTranshuman.Visible = false;
 
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
@@ -14031,11 +14055,14 @@ namespace Chummer
 
                 _blnSkipRefresh = false;
 
+	            chkPrototypeTranshuman.Visible = _objCharacter.PrototypeTranshuman > 0;
+	            chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
+
                 lblCyberwareAvail.Text = objCyberware.TotalAvail;
                 lblCyberwareCost.Text = $"{objCyberware.TotalCost:###,###,##0¥}";
                 lblCyberwareCapacity.Text =
                     $"{objCyberware.CalculatedCapacity} ({objCyberware.CapacityRemaining.ToString()} {LanguageManager.Instance.GetString("String_Remaining")})";
-                lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(GlobalOptions.CultureInfo);
+                lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
                 ScheduleCharacterUpdate();
             }
             else
@@ -15322,6 +15349,7 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(_objCharacter);
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+			objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
 
 			List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
@@ -17495,6 +17523,22 @@ namespace Chummer
                     }
 		        }
 		    }
+
+			// Cyberware: Prototype Transhuman
+			decimal d = _objCharacter.PrototypeTranshuman;
+			if (d > 0)
+			{
+				decimal total = 0;
+				foreach (Cyberware c in _objCharacter.Cyberware.Where(c => c.PrototypeTranshuman))
+				{
+					total += c.CalculatedESS(false);
+				}
+				if (d - total < 0)
+				{
+					blnValid = false;
+					strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPrototypeLimit").Replace("{0}", (total).ToString()).Replace("{1}", d.ToString());
+				}
+			}
 
 		    // Armor Availability.
 			foreach (Armor objArmor in _objCharacter.Armor)

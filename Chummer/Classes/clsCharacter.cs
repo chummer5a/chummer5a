@@ -4547,23 +4547,15 @@ namespace Chummer
                 foreach (Cyberware objCyberware in _lstCyberware)
                 {
                     if (objCyberware.Name == "Essence Hole")
-                        decHole += objCyberware.CalculatedESS;
+                        decHole += objCyberware.CalculatedESS();
                     else
                     {
 						if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-							decCyberware += objCyberware.CalculatedESS;
+							decCyberware += objCyberware.CalculatedESS();
 						else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-								decBioware += objCyberware.CalculatedESS;
+								decBioware += objCyberware.CalculatedESS();
 						}
                     }
-				if (_decPrototypeTranshuman > 0)
-				{
-                    decBioware -= _decPrototypeTranshuman;
-                    if (decBioware < 0)
-					{
-						decBioware = 0;
-					}
-				}
 	            decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
 
 				decESS -= decCyberware + decBioware;
@@ -4582,7 +4574,7 @@ namespace Chummer
             get
             {
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. 
-                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).Sum(objCyberware => objCyberware.CalculatedESS);
+                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -4594,7 +4586,7 @@ namespace Chummer
             get
             {
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. 
-                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).Sum(objCyberware => objCyberware.CalculatedESS);
+                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -4606,7 +4598,7 @@ namespace Chummer
             get
             {
                 // Find the total Essence Cost of all Essence Hole objects. 
-                return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").Sum(objCyberware => objCyberware.CalculatedESS);
+                return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
