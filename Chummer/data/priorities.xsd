@@ -49,6 +49,13 @@
                                       </xs:sequence>
                                     </xs:complexType>
                                   </xs:element>
+                                  <xs:element minOccurs="0" name="skillchoices">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element maxOccurs="unbounded" name="skill" type="xs:string" />
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
                                   <xs:element minOccurs="0" name="resonance" type="xs:unsignedByte" />
                                   <xs:element minOccurs="0" name="cfp" type="xs:unsignedByte" />
                                   <xs:element minOccurs="0" name="magic" type="xs:unsignedByte" />
