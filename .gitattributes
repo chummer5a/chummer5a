@@ -11,6 +11,9 @@
 # Note: This is only used by command line
 ###############################################################################
 #*.cs     diff=csharp
+*.cs    text
+*.xml   text
+*.xlst  text
 
 ###############################################################################
 # Set the merge driver for project and solution files
