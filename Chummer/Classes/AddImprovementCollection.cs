@@ -354,7 +354,7 @@ namespace Chummer.Classes
 			else if (bonusNode.OuterXml.Contains("limittoattribute"))
 				frmPickSkill.LinkedAttribute = bonusNode.Attributes?["limittoattribute"].InnerText;
 
-            bool useKnowledge = Convert.ToBoolean(bonusNode.Attributes?["knowledgeskills"].InnerText);
+            bool useKnowledge = Convert.ToBoolean(bonusNode.Attributes?["knowledgeskills"]?.InnerText);
             frmPickSkill.ShowKnowledgeSkills = useKnowledge;
 
 			if (!string.IsNullOrEmpty(ForcedValue))
