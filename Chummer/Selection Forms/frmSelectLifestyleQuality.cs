@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
- ﻿using Chummer.Backend.Equipment;
- ﻿using Chummer.Skills;
+using Chummer.Backend.Equipment;
+using Chummer.Skills;
+using Chummer.Backend.Attributes;
 
 namespace Chummer
 {
@@ -145,7 +146,7 @@ namespace Chummer
                 lblMinimumLabel.Visible = false;
             }
             if (objXmlQuality["cost"] != null)
-			{
+            {
                 if (chkFree.Checked)
 				{
 					lblCost.Text = LanguageManager.Instance.GetString("Checkbox_Free");
@@ -156,10 +157,10 @@ namespace Chummer
                 }
 				else
 				{
-					lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
+                lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
 				}
-				lblCost.Visible = true;
-				lblCostLabel.Visible = true;
+                lblCost.Visible = true;
+                lblCostLabel.Visible = true;
 			} 
 			else
             {
@@ -238,9 +239,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex++;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                {
-                    lstLifestyleQualities.SelectedIndex = 0;
-                }
+                    {
+                        lstLifestyleQualities.SelectedIndex = 0;
+                    }
             }
             if (e.KeyCode == Keys.Up)
             {
@@ -249,9 +250,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex--;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                {
-                    lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
-                }
+                    {
+                        lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
+                    }
             }
         }
 
@@ -357,7 +358,7 @@ namespace Chummer
                                 if (objFoundItem != null)
                                 {
                                     objItem.Name += " [" + objFoundItem.Name + "]";
-                                }
+                            }
                             }
 
                             lstLifestyleQuality.Add(objItem);
@@ -379,22 +380,22 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                    {
-                        if (objXmlQuality["hide"] == null)
-                        {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlQuality["name"].InnerText;
-                            if (objXmlQuality["translate"] != null)
-                                objItem.Name = objXmlQuality["translate"].InnerText;
-                            else
-                                objItem.Name = objXmlQuality["name"].InnerText;
+                            if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
+                            {
+                                if (objXmlQuality["hide"] == null)
+                                {
+                                    ListItem objItem = new ListItem();
+                                    objItem.Value = objXmlQuality["name"].InnerText;
+                                    if (objXmlQuality["translate"] != null)
+                                        objItem.Name = objXmlQuality["translate"].InnerText;
+                                    else
+                                        objItem.Name = objXmlQuality["name"].InnerText;
 
-                            lstLifestyleQuality.Add(objItem);
+                                    lstLifestyleQuality.Add(objItem);
+                                }
+                            }
                         }
                     }
-                }
-            }
             SortListItem objSort = new SortListItem();
             lstLifestyleQuality.Sort(objSort.Compare);
             lstLifestyleQualities.BeginUpdate();

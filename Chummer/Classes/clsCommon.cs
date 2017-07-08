@@ -699,7 +699,7 @@ namespace Chummer
 					{
 						if (objPower.BonusSource == objFocus.GearId)
 						{
-							objPower.FreeLevels -= (objFocus.Rating / 4);
+							//objPower.FreeLevels -= (objFocus.Rating / 4);
 						}
 					}
 					_objCharacter.Foci.Remove(objFocus);
@@ -1045,18 +1045,18 @@ namespace Chummer
 			objParent.Expand();
 		}
 
-	    /// <summary>
-	    /// Add a Vehicle to the TreeView.
-	    /// </summary>
-	    /// <param name="objVehicle">Vehicle to add.</param>
-	    /// <param name="treVehicles">Vehicle TreeView.</param>
-	    /// <param name="cmsVehicle">ContextMenuStrip for the Vehicle Node.</param>
-	    /// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
-	    /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
-	    /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
+		/// <summary>
+		/// Add a Vehicle to the TreeView.
+		/// </summary>
+		/// <param name="objVehicle">Vehicle to add.</param>
+		/// <param name="treVehicles">Vehicle TreeView.</param>
+		/// <param name="cmsVehicle">ContextMenuStrip for the Vehicle Node.</param>
+		/// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
+		/// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
+		/// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
 	    /// <param name="cmsWeaponAccessoryGear"></param>
-	    /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
-	    public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
+		/// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
+		public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
 		{
 			TreeNode objNode = new TreeNode();
 			objNode.Text = objVehicle.DisplayName;

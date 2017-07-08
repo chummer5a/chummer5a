@@ -95,7 +95,7 @@ namespace Chummer
 
 	        try
             {
-		        read = (T) Convert.ChangeType(fieldValue, typeof (T));
+		        read = (T) Convert.ChangeType(fieldValue, typeof (T), GlobalOptions.InvariantCultureInfo);
 	            return true;
             }
             catch (Exception)

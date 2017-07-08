@@ -8,7 +8,6 @@
 			<xsl:param name="sfx" select="''"/>
 
 		<xsl:for-each select="expenses/expense[type = $type]">
-			<xsl:sort select="date"/>
 			<tr>
 				<xsl:if test="position() mod 2 != 1">
 					<xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>

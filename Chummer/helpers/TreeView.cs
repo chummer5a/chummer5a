@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace Chummer.helpers
 {
-    class TreeView : System.Windows.Forms.TreeView
+    public class TreeView : System.Windows.Forms.TreeView
     {
         public void Add(LimitModifier input, ContextMenuStrip strip)
         {

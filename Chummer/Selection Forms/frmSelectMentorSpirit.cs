@@ -26,8 +26,6 @@ namespace Chummer
 {
 	public partial class frmSelectMentorSpirit : Form
 	{
-		private string _strSelectedMentor = string.Empty;
-
 		private XmlNode _nodBonus;
 		private XmlNode _nodChoice1Bonus;
 		private XmlNode _nodChoice2Bonus;
@@ -67,11 +65,8 @@ namespace Chummer
             foreach (XmlNode objXmlMentor in objXmlMentorList)
             {
                 ListItem objItem = new ListItem();
-                objItem.Value = objXmlMentor["name"].InnerText;
-                if (objXmlMentor["translate"] != null)
-                    objItem.Name = objXmlMentor["translate"].InnerText;
-                else
-                    objItem.Name = objXmlMentor["name"].InnerText;
+                objItem.Value = objXmlMentor["id"].InnerText;
+                objItem.Name = objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText;
                 lstMentors.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -100,16 +95,10 @@ namespace Chummer
 				return;
 
 			// Get the information for the selected Mentor.
-			XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" + lstMentor.SelectedValue + "\"]");
+			XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
 
-			if (objXmlMentor["altadvantage"] != null)
-				lblAdvantage.Text = objXmlMentor["altadvantage"].InnerText;
-			else
-				lblAdvantage.Text = objXmlMentor["advantage"].InnerText;
-			if (objXmlMentor["altdisadvantage"] != null)
-				lblDisadvantage.Text = objXmlMentor["altdisadvantage"].InnerText;
-			else
-				lblDisadvantage.Text = objXmlMentor["disadvantage"].InnerText;
+			lblAdvantage.Text = objXmlMentor["altadvantage"]?.InnerText ?? objXmlMentor["advantage"].InnerText;
+			lblDisadvantage.Text = objXmlMentor["altdisadvantage"]?.InnerText ?? objXmlMentor["disadvantage"].InnerText;
 
             cboChoice1.BeginUpdate();
             cboChoice2.BeginUpdate();
@@ -124,31 +113,24 @@ namespace Chummer
 
 				foreach (XmlNode objChoice in objXmlMentor["choices"].SelectNodes("choice"))
 				{					
-                    bool blnShow = true;
-                    if (objChoice["name"].InnerText.StartsWith("Adept:") && !_objCharacter.AdeptEnabled)
-                        blnShow = false;
+                    bool blnShow = !(objChoice["name"].InnerText.StartsWith("Adept:") && !_objCharacter.AdeptEnabled);
                     if (objChoice["name"].InnerText.StartsWith("Magician:") && !_objCharacter.MagicianEnabled)
                         blnShow = false;
 
-                    if (blnShow)
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objChoice["name"].InnerText;
-                        if (objChoice["translate"] != null)
-                            objItem.Name = objChoice["translate"].InnerText;
-                        else
-                            objItem.Name = objChoice["name"].InnerText;
+					if (!blnShow) continue;
+					ListItem objItem = new ListItem();
+					objItem.Value = objChoice["name"].InnerText;
+					objItem.Name = objChoice["translate"]?.InnerText ?? objChoice["name"].InnerText;
 
-                        if (objChoice.Attributes["set"] != null)
-                        {
-                            if (objChoice.Attributes["set"].InnerText == "2")
-                                lstChoice2.Add(objItem);
-                            else
-                                lstChoice1.Add(objItem);
-                        }
-                        else
-                            lstChoice1.Add(objItem);
-                    }
+					if (objChoice.Attributes["set"] != null)
+					{
+						if (objChoice.Attributes["set"].InnerText == "2")
+							lstChoice2.Add(objItem);
+						else
+							lstChoice1.Add(objItem);
+					}
+					else
+						lstChoice1.Add(objItem);
 				}
 
 				lblChoice1.Visible = true;
@@ -157,24 +139,29 @@ namespace Chummer
 				cboChoice1.DisplayMember = "Name";
 				cboChoice1.DataSource = lstChoice1;
 
-				if (lstChoice2.Count > 0)
+				lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
+                cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
+                lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
+                cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
+
+                if (lstChoice2.Count > 0)
 				{
 					lblChoice2.Visible = true;
 					cboChoice2.Visible = true;
 					cboChoice2.ValueMember = "Value";
 					cboChoice2.DisplayMember = "Name";
 					cboChoice2.DataSource = lstChoice2;
-				}
+					chkMentorMask.Top = cboChoice2.Top + cboChoice2.Height + 6;				    
+                }
                 else 
                 {
                     lblChoice2.Visible = false;
                     cboChoice2.Visible = false;
+					chkMentorMask.Top = cboChoice1.Top + cboChoice1.Height + 6;
                 }
 
-                lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
-                cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
-                lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
-                cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
+                lblDisadvantageLabel.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
+			    lblDisadvantage.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
             }
 			else
 			{
@@ -211,82 +198,37 @@ namespace Chummer
 		/// <summary>
 		/// Mentor that was selected in the dialogue.
 		/// </summary>
-		public string SelectedMentor
-		{
-			get
-			{
-				return _strSelectedMentor;
-			}
-		}
+		public string SelectedMentor { get; private set; } = string.Empty;
 
 		/// <summary>
 		/// First choice that was selected in the dialogue.
 		/// </summary>
-		public string Choice1
-		{
-			get
-			{
-				if (cboChoice1.SelectedValue != null)
-				{
-					return cboChoice1.SelectedValue.ToString();
-				}
-				else
-				{
-					return string.Empty;
-				}
-			}
-		}
+		public string Choice1 => cboChoice1.SelectedValue?.ToString() ?? string.Empty;
 
 		/// <summary>
 		/// Second choice that was selected in the dialogue.
 		/// </summary>
-		public string Choice2
-		{
-			get
-			{
-                if (cboChoice2.SelectedValue != null)
-                {
-					return cboChoice2.SelectedValue.ToString();
-				}
-				else
-				{
-					return string.Empty;
-				}
-			}
-		}
+		public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
 
 		/// <summary>
 		/// Bonus Node for the Mentor that was selected.
 		/// </summary>
-		public XmlNode BonusNode
-		{
-			get
-			{
-				return _nodBonus;
-			}
-		}
+		public XmlNode BonusNode => _nodBonus;
 
 		/// <summary>
 		/// Bonus Node for the first choice that was selected.
 		/// </summary>
-		public XmlNode Choice1BonusNode
-		{
-			get
-			{
-				return _nodChoice1Bonus;
-			}
-		}
+		public XmlNode Choice1BonusNode => _nodChoice1Bonus;
 
 		/// <summary>
 		/// Bonus Node for the second choice that was selected.
 		/// </summary>
-		public XmlNode Choice2BonusNode
-		{
-			get
-			{
-				return _nodChoice2Bonus;
-			}
-		}
+		public XmlNode Choice2BonusNode => _nodChoice2Bonus;
+
+		/// <summary>
+		/// Whether the character manifests the Mentor's Mask. Used externally to create improvements.
+		/// </summary>
+		public bool MentorsMask => chkMentorMask.Checked;
 		#endregion
 
 		#region Methods
@@ -295,30 +237,29 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
-			if (!string.IsNullOrEmpty(lstMentor.Text))
+			if (string.IsNullOrEmpty(lstMentor.Text)) return;
+			XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
+
+			SelectedMentor = objXmlMentor["id"].InnerText;
+
+			if (objXmlMentor.InnerXml.Contains("<bonus>"))
+				_nodBonus = objXmlMentor.SelectSingleNode("bonus");
+
+			if (cboChoice1.SelectedValue != null)
 			{
-				_strSelectedMentor = lstMentor.SelectedValue.ToString();
-
-				XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" + lstMentor.SelectedValue + "\"]");
-				if (objXmlMentor.InnerXml.Contains("<bonus>"))
-					_nodBonus = objXmlMentor.SelectSingleNode("bonus");
-
-				if (cboChoice1.SelectedValue != null)
-				{
-					XmlNode objChoice = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + cboChoice1.SelectedValue + "\"]");
-					if (objChoice.InnerXml.Contains("<bonus>"))
-						_nodChoice1Bonus = objChoice.SelectSingleNode("bonus");
-				}
-
-				if (cboChoice2.SelectedValue != null)
-				{
-					XmlNode objChoice = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + cboChoice2.SelectedValue + "\"]");
-					if (objChoice.InnerXml.Contains("<bonus>"))
-						_nodChoice2Bonus = objChoice.SelectSingleNode("bonus");
-				}
-
-				DialogResult = DialogResult.OK;
+				XmlNode objChoice = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + cboChoice1.SelectedValue + "\"]");
+				if (objChoice.InnerXml.Contains("<bonus>"))
+					_nodChoice1Bonus = objChoice.SelectSingleNode("bonus");
 			}
+
+			if (cboChoice2.SelectedValue != null)
+			{
+				XmlNode objChoice = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + cboChoice2.SelectedValue + "\"]");
+				if (objChoice.InnerXml.Contains("<bonus>"))
+					_nodChoice2Bonus = objChoice.SelectSingleNode("bonus");
+			}
+
+			DialogResult = DialogResult.OK;
 		}
 		#endregion
 

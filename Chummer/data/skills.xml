@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema skills.xsd">
 	<version>0</version>
 	<skillgroups>
 		<name>Acting</name>
@@ -1350,7 +1350,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>9f348c99-27e8-47ac-a098-a8a6a54c446a</id>
+			<id>60156c75-78e9-4d79-af3f-494baa20edb7</id>
 			<name>Alchemy</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -1436,6 +1436,15 @@
 				<spec>Lingo</spec>
 			</specs>
 		</skill>
+    <skill>
+      <id>534600a0-395e-4bbc-8dc9-97a007e97504</id>
+      <name>Anatomy</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>No</default>
+      <skillgroup />
+      <specs></specs>
+    </skill>
 		<skill>
 			<id>05eb2251-81aa-4dfb-8619-75102fc7b895</id>
 			<name>Arabic</name>
@@ -2002,8 +2011,17 @@
 				<spec>Sewing</spec>
 			</specs>
 		</skill>
+    <skill>
+      <id>be9be259-3109-489f-91d4-6e62e44f5ea3</id>
+      <name>Disease</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>No</default>
+      <skillgroup />
+      <specs></specs>
+    </skill>
 		<skill>
-			<id>5227212f-507d-4aa7-8894-7d35a1eb98cf</id>
+			<id>c9ca1da3-11d0-4921-8a87-4726f342a04b</id>
 			<name>Drones</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -2129,7 +2147,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>b21c9f0f-9db0-4de1-b901-2a911d9abd62</id>
+			<id>cee3de6f-4947-4947-b2e1-75fde02a5d78</id>
 			<name>Fashion Design</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -2426,6 +2444,15 @@
 				<spec>Lingo</spec>
 			</specs>
 		</skill>
+    <skill>
+      <id>71407a60-c753-40d9-9d5b-416c43b51fef</id>
+      <name>Infected</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>No</default>
+      <skillgroup />
+      <specs></specs>
+    </skill>
 		<skill>
 			<id>c66aff30-b99b-47c3-94df-e5b4cc4e06d2</id>
 			<name>Iroquoian</name>
@@ -2634,7 +2661,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>9843709f-803a-4424-88a2-d972d3405955</id>
+			<id>a02ee5ad-42a4-4f3c-8e9f-24730fadd440</id>
 			<name>Mathematics</name>
 			<attribute>LOG</attribute>
 			<category>Academic</category>
@@ -2777,7 +2804,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>1862a5ed-7b7b-4fa8-bf25-5d10ec45223f</id>
+			<id>a068c0d8-5c87-46f2-a13d-f981fda80a06</id>
 			<name>Tir Military Vehicles</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -3487,6 +3514,15 @@
 				<spec>Lingo</spec>
 			</specs>
 		</skill>
+    <skill>
+      <id>974e376f-5eec-4df8-b7d5-e53e900058e9</id>
+      <name>Undead</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>No</default>
+      <skillgroup />
+      <specs></specs>
+    </skill>
 		<skill>
 			<id>5c3ebb6f-d075-4486-8900-d7a19bae958f</id>
 			<name>Underworld</name>
@@ -4161,7 +4197,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>47c41bfc-2cfa-47ca-b20e-ec3351979791</id>
+			<id>cd7444d3-8eb4-41f7-a8a9-753df5958d0c</id>
 			<name>Foster System</name>
 			<attribute>LOG</attribute>
 			<category>Professional</category>
@@ -4461,7 +4497,7 @@
 			</specs>
 		</skill>
 		<skill>
-			<id>af8ea3b6-5ffd-41b6-892a-7e77ee8e247a</id>
+			<id>1d68ed58-91ff-495a-a456-2bc04d82a3b7</id>
 			<name>Lone Star Procedures</name>
 			<attribute>INT</attribute>
 			<category>Street</category>

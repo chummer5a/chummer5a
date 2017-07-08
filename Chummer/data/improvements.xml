@@ -25,9 +25,9 @@
       <id>enableattribute</id>
       <internal>enableattribute</internal>
       <fields>
-        <field>val</field>
+        <field>SelectSpecialAttribute</field>
       </fields>
-      <xml><![CDATA[<name>{val}</name>]]></xml>
+      <xml><![CDATA[<name>{select}</name>]]></xml>
       <page>Unlocks the controls for an attribute, allowing the values to be increased. Expected values are MAG, RES or DEP for Magic, Resonance and Depth respectively.</page>
     </improvement>
     <improvement>

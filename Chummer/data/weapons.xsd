@@ -28,11 +28,8 @@
 										<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="conceal" type="xs:integer" minOccurs="1" maxOccurs="1" />
-										<xs:element name="spec" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="spec2" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="accuracy" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="reach" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="damage" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -40,27 +37,13 @@
 										<xs:element name="mode" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="rc" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="ammo" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="ammocategory" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="requireammo" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="underbarrels" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="underbarrel" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="cyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="allowaccessory" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="allowmod" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="accessorymounts" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
+										<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="spec" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="spec2" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="accessories" minOccurs="0" maxOccurs="1">
 											<xs:complexType>
 												<xs:sequence>
@@ -91,6 +74,18 @@
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
+										<xs:element name="accessorymounts" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="allowaccessory" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="allowmod" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="ammocategory" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="cyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="fullburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
 										<xs:element name="mods" minOccurs="0" maxOccurs="1">
 											<xs:complexType>
 												<xs:sequence>
@@ -106,8 +101,6 @@
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="useskill" minOccurs="0" maxOccurs="1" />
-										<xs:element name="spec" minOccurs="0" maxOccurs="1" />
 										<xs:element name="range" minOccurs="0" maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:simpleContent>
@@ -117,10 +110,17 @@
 												</xs:simpleContent>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="fullburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="requireammo" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="spec" minOccurs="0" maxOccurs="1" />
 										<xs:element name="suppressive" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="underbarrels" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="underbarrel" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="useskill" minOccurs="0" maxOccurs="1" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -135,21 +135,12 @@
 									<xs:sequence>
 										<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="ammoslots" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="extramount" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="rcdeployable" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="rcgroup" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="conceal" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="dicepool" type="xs:integer" minOccurs="0" maxOccurs="1" />
 										<xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="allowgear" minOccurs="0" maxOccurs="1">
 											<xs:complexType>
 												<xs:sequence>
@@ -157,8 +148,17 @@
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="ammoslots" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="conceal" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="dicepool" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="extramount" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="rcdeployable" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="rcgroup" type="xs:integer" minOccurs="0" maxOccurs="1" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -175,24 +175,24 @@
 										<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="rating" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="slots" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="rcgroup" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="dvbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="apbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="conceal" type="xs:integer" minOccurs="0" maxOccurs="1" />
 										<xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="dicepool" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="accessorycostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="addmode" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="ammobonus" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="accessorycostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="modcostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="apbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="conceal" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="dicepool" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="dvbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
 										<xs:element name="fullburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="suppressive" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="modcostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="rcgroup" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="suppressive" type="xs:integer" minOccurs="0" maxOccurs="1" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>

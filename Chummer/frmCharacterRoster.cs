@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.helpers;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using TreeView = Chummer.helpers.TreeView;
 
@@ -21,6 +20,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
+            GlobalOptions.Instance.MRUChanged += MruChanged;
 			treCharacterList.ItemDrag += treCharacterList_ItemDrag;
 			treCharacterList.DragEnter += treCharacterList_DragEnter;
 			treCharacterList.DragDrop += treCharacterList_DragDrop;
@@ -29,8 +29,16 @@ namespace Chummer
 			MoveControls();
 		}
 
+	    private void MruChanged()
+	    {
+            //TODO: Cheaper way to do this than rebuilding the list every time?
+            treCharacterList.Nodes.Clear();
+	        LoadCharacters();
+            MoveControls();
+	    }
 
-		private void LoadCharacters()
+
+	    private void LoadCharacters()
 		{
 			TreeNode objFavouriteNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_FavouriteCharacters")) {Tag = "Favourite"};
 			TreeNode objRecentNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_RecentCharacters")) {Tag = "Recent"};
@@ -38,7 +46,7 @@ namespace Chummer
 			bool blnAddRecent = true;
 			bool blnAddFavourite = true;
 			bool blnAddWatch = true;
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList("stickymru").Where(File.Exists))
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList("stickymru").Where(File.Exists) )
 			{
 				if (blnAddFavourite)
 				{
@@ -67,16 +75,25 @@ namespace Chummer
 				{
 					foreach (string strFile in objFiles.Where(strFile => strFile.EndsWith(".chum5")))
 					{
-						bool blnAdd = lstCharacterCache.All(objCache => objCache.FilePath != strFile);
-						if (blnAdd)
-						{
-							if (blnAddWatch)
-							{
-								treCharacterList.Nodes.Add(objWatchNode);
-								blnAddWatch = false;
-							}
-							CacheCharacter(strFile, objWatchNode);
-						}
+						var cache = lstCharacterCache.FirstOrDefault(objCache => objCache.FilePath == strFile);
+                        var loaded = false;
+                        if (cache != null)
+					    {
+					        foreach (TreeNode rootNode in treCharacterList.Nodes)
+					        {
+					            if (rootNode.Nodes.Cast<TreeNode>().Any(childNode => Convert.ToInt32(childNode.Tag) == lstCharacterCache.IndexOf(cache)))
+					            {
+					                loaded = true;
+					            }
+					        }
+                        }
+                        if (loaded) continue;
+                        if (blnAddWatch)
+					        {
+					            treCharacterList.Nodes.Add(objWatchNode);
+					            blnAddWatch = false;
+					        }
+					    CacheCharacter(strFile, objWatchNode);
 					}
 				}
 			}
@@ -93,17 +110,21 @@ namespace Chummer
                 return;
 			XmlDocument objXmlSource = new XmlDocument();
 			// If we run into any problems loading the character cache, fail out early.
-			try
-			{
-                using (StreamReader sr = new StreamReader(strFile, true))
-                {
-                    objXmlSource.Load(sr);
-                }
-            }
-			catch (IOException)
-			{
-                return;
-            }
+		    try
+		    {
+		        using (StreamReader sr = new StreamReader(strFile, true))
+		        {
+		            objXmlSource.Load(sr);
+		        }
+		    }
+		    catch (IOException)
+		    {
+		        return;
+		    }
+		    catch (XmlException)
+		    {
+		        return;
+		    }
 			CharacterCache objCache = new CharacterCache();
 			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
 			if (objXmlSourceNode != null)
@@ -212,61 +233,63 @@ namespace Chummer
 
 		private void MoveControls()
 		{
-			int intWidth = 0;
-			int intMargin = 0;
-			foreach (TreeNode objNode in treCharacterList.Nodes)
-			{
-				intMargin = Math.Max(intMargin, objNode.Bounds.Left);
-				intWidth = (from TreeNode objChildNode in objNode.Nodes select objChildNode.Bounds.Right).Concat(new[] { intWidth }).Max();
-			}
-			intWidth += intMargin;
+            int intWidth = 0;
+            int intMargin = 0;
+            foreach (TreeNode objNode in treCharacterList.Nodes)
+            {
+                intMargin = Math.Max(intMargin, objNode.Bounds.Left);
+                intWidth =
+                    (from TreeNode objChildNode in objNode.Nodes select objChildNode.Bounds.Right).Concat(new[] { intWidth })
+                    .Max();
+            }
+            intWidth += intMargin;
 
-			int intDifference = intWidth - treCharacterList.Width;
-			treCharacterList.Width = intWidth;
-			tabCharacterText.Left = treCharacterList.Width + 12;
-			tabCharacterText.Width -= intDifference;
+            int intDifference = intWidth - treCharacterList.Width;
+            treCharacterList.Width = intWidth;
+            tabCharacterText.Left = treCharacterList.Width + 12;
+            tabCharacterText.Width -= intDifference;
 
-			lblPlayerNameLabel.Left = tabCharacterText.Left;
-			lblCharacterNameLabel.Left = tabCharacterText.Left;
-			lblCareerKarmaLabel.Left = tabCharacterText.Left;
-			lblMetatypeLabel.Left = tabCharacterText.Left;
-			lblCharacterAliasLabel.Left = tabCharacterText.Left;
-			lblEssenceLabel.Left = tabCharacterText.Left;
-			lblFilePathLabel.Left = tabCharacterText.Left;
-			intWidth = lblPlayerNameLabel.Right;
-			if (lblCareerKarmaLabel.Right > intWidth)
-			{
-				intWidth = lblCareerKarmaLabel.Right;
-			}
-			if (lblCareerKarmaLabel.Right > intWidth)
-			{
-				intWidth = lblCareerKarmaLabel.Right;
-			}
-			if (lblMetatypeLabel.Right > intWidth)
-			{
-				intWidth = lblMetatypeLabel.Right;
-			}
-			if (lblCharacterAliasLabel.Right > intWidth)
-			{
-				intWidth = lblCharacterAliasLabel.Right;
-			}
-			if (lblEssenceLabel.Right > intWidth)
-			{
-				intWidth = lblEssenceLabel.Right;
-			}
-			if (lblFilePathLabel.Right > intWidth)
-			{
-				intWidth = lblFilePathLabel.Right;
-			}
-			intWidth += 12;
-			lblEssence.Left = intWidth;
-			lblPlayerName.Left = intWidth;
-			lblCareerKarma.Left = intWidth;
-			lblCharacterAlias.Left = intWidth;
-			lblMetatype.Left = intWidth;
-			lblCharacterName.Left = intWidth;
-			lblFilePath.Left = intWidth;
-		}
+            lblPlayerNameLabel.Left = tabCharacterText.Left;
+            lblCharacterNameLabel.Left = tabCharacterText.Left;
+            lblCareerKarmaLabel.Left = tabCharacterText.Left;
+            lblMetatypeLabel.Left = tabCharacterText.Left;
+            lblCharacterAliasLabel.Left = tabCharacterText.Left;
+            lblEssenceLabel.Left = tabCharacterText.Left;
+            lblFilePathLabel.Left = tabCharacterText.Left;
+            intWidth = lblPlayerNameLabel.Right;
+            if (lblCareerKarmaLabel.Right > intWidth)
+            {
+                intWidth = lblCareerKarmaLabel.Right;
+            }
+            if (lblCareerKarmaLabel.Right > intWidth)
+            {
+                intWidth = lblCareerKarmaLabel.Right;
+            }
+            if (lblMetatypeLabel.Right > intWidth)
+            {
+                intWidth = lblMetatypeLabel.Right;
+            }
+            if (lblCharacterAliasLabel.Right > intWidth)
+            {
+                intWidth = lblCharacterAliasLabel.Right;
+            }
+            if (lblEssenceLabel.Right > intWidth)
+            {
+                intWidth = lblEssenceLabel.Right;
+            }
+            if (lblFilePathLabel.Right > intWidth)
+            {
+                intWidth = lblFilePathLabel.Right;
+            }
+            intWidth += 12;
+            lblEssence.Left = intWidth;
+            lblPlayerName.Left = intWidth;
+            lblCareerKarma.Left = intWidth;
+            lblCharacterAlias.Left = intWidth;
+            lblMetatype.Left = intWidth;
+            lblCharacterName.Left = intWidth;
+            lblFilePath.Left = intWidth;
+        }
 
 		private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
 		{
@@ -288,7 +311,7 @@ namespace Chummer
 		}
 		private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode != null)
+            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode?.Level > 0 && treCharacterList.SelectedNode.Parent?.Tag.ToString() != "Recent")
             {
                 RemoveSelected(treCharacterList.SelectedNode);
             }
@@ -375,7 +398,7 @@ namespace Chummer
 			CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
 			GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
 			GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
-			treCharacterList.Nodes.RemoveAt(sender.Index);
+			sender.Remove();
 		}
 		#endregion
 		#region Classes

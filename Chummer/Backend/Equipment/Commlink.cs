@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -69,11 +70,11 @@ namespace Chummer.Backend.Equipment
 		{
             base.SaveInner(objWriter);
 			objWriter.WriteElementString("overclocked", _blnHomeNode.ToString());
-			objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
-			objWriter.WriteElementString("attack", _intAttack.ToString());
-			objWriter.WriteElementString("sleaze", _intSleaze.ToString());
-			objWriter.WriteElementString("dataprocessing", _intDataProcessing.ToString());
-			objWriter.WriteElementString("firewall", _intFirewall.ToString());
+			objWriter.WriteElementString("devicerating", _intDeviceRating.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("attack", _intAttack.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("sleaze", _intSleaze.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("dataprocessing", _intDataProcessing.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("firewall", _intFirewall.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("livingpersona", _blnIsLivingPersona.ToString());
 			objWriter.WriteElementString("active", _blnActiveCommlink.ToString());
 		}

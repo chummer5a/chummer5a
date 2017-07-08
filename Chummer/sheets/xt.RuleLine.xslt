@@ -53,7 +53,7 @@
 					background: inherit;
 					border: none;
 					border-top: 1px white;
-					color: red;
+					color: white;
 					display: block;
 					font-size: 0;
 					height: 1px;
@@ -69,7 +69,7 @@
 					background: inherit;
 					border: none;
 					border-top: 1px white;
-					color: red;
+					color: white;
 					display: block;
 					font-size: 0;
 					height: 1px;
@@ -85,7 +85,7 @@
 					background: inherit;
 					border: none;
 					border-top: 1px white;
-					color: red;
+					color: white;
 					display: block;
 					font-size: 0;
 					height: 1px;
@@ -101,7 +101,7 @@
 					background: inherit;
 					border: none;
 					border-top: 1px white;
-					color: red;
+					color: white;
 					display: block;
 					font-size: 0;
 					height: 1px;
@@ -117,7 +117,7 @@
 					background: inherit;
 					border: none;
 					border-top: 1px white;
-					color: red;
+					color: white;
 					display: block;
 					font-size: 0;
 					height: 1px;

@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -37,6 +38,7 @@ namespace Chummer
         public Action<object> ServicesOwedChanged;
 		public Action<object> ForceChanged;
 		public Action<object> BoundChanged;
+        public Action<object> FetteredChanged;
         public Action<object> DeleteSpirit;
 		public Action<object> FileNameChanged;
 
@@ -79,6 +81,28 @@ namespace Chummer
 			_objSpirit.Bound = chkBound.Checked;
 			BoundChanged(this);
 		}
+        private void chkFettered_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkFettered.Checked)
+            {
+                //Only one Fettered spirit is permitted. 
+                if (_objSpirit.CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                {
+                    chkFettered.Checked = false;
+                    return;
+                }
+                _objSpirit.CharacterObject.ObjImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+            }
+            else
+            {
+                _objSpirit.CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
+            }
+            _objSpirit.Fettered = chkFettered.Checked;
+
+            // Raise the FetteredChanged Event when the Checkbox's Checked status changes.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            FetteredChanged(this);
+        }
 
 		private void SpiritControl_Load(object sender, EventArgs e)
 		{
@@ -408,6 +432,22 @@ namespace Chummer
 				_objSpirit.Bound = value;
 			}
 		}
+
+        /// <summary>
+        /// Whether or not the Spirit is Fettered.
+        /// </summary>
+        public bool Fettered
+        {
+            get
+            {
+                return _objSpirit.Fettered;
+            }
+            set
+            {
+                chkFettered.Checked = value;
+                _objSpirit.Fettered = value;
+            }
+        }
 		#endregion
 
 		#region Methods
@@ -596,18 +636,18 @@ namespace Chummer
 			}
 
 			// If we're working with a Critter, set the Attributes to their default values.
-			objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
-			objCharacter.AGI.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 0));
-			objCharacter.REA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 0));
-			objCharacter.STR.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, 0));
-			objCharacter.CHA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, 0));
-			objCharacter.INT.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 0));
-			objCharacter.LOG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 0));
-			objCharacter.WIL.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 0));
-			objCharacter.MAG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 0));
-			objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
-			objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
-			objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
+			objCharacter.BOD.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
+			objCharacter.AGI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 0));
+			objCharacter.REA.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 0));
+			objCharacter.STR.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, 0));
+			objCharacter.CHA.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, 0));
+			objCharacter.INT.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 0));
+			objCharacter.LOG.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 0));
+			objCharacter.WIL.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 0));
+			objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 0));
+			objCharacter.RES.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
+			objCharacter.EDG.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
+			objCharacter.ESS.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
 
 			// Sprites can never have Physical Attributes or WIL.
 			if (objXmlMetatype["category"].InnerText.EndsWith("Sprite"))
@@ -799,7 +839,7 @@ namespace Chummer
             }
             catch (XPathException) { }
             if (xprEvaluateResult != null && xprEvaluateResult.GetType() == typeof(Double))
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString())));
+                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(),GlobalOptions.InvariantCultureInfo)));
             intValue += intOffset;
 			if (intForce > 0)
 			{
@@ -814,5 +854,6 @@ namespace Chummer
 			return intValue.ToString();
 		}
 		#endregion
+
     }
 }

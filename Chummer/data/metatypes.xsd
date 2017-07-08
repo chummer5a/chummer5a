@@ -41,7 +41,6 @@
 	  </xs:sequence>
 	</xs:complexType>
   </xs:element>
-  
   <xs:element name="quality" nillable="true">
     <xs:complexType>
       <xs:simpleContent>

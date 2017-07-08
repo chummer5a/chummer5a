@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 namespace Translator
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
 
         private IContainer components;
@@ -138,7 +138,7 @@ namespace Translator
             this.ClientSize = new System.Drawing.Size(445, 127);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbxCreate);
-            this.Name = "frmMain";
+            this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer Translator";
             this.Load += new System.EventHandler(this.frmMain_Load);

@@ -63,7 +63,7 @@ namespace Chummer
 		public static void BreakIfDebug()
 		{
 			if (Debugger.IsAttached)
-				Debugger.Break();
+			    Debugger.Break();
 		}
 
 		public static bool IsRunningInVisualStudio()

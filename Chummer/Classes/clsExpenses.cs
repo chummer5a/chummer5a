@@ -57,7 +57,8 @@ namespace Chummer
         AddSpecialization = 24,
         AddAIProgram = 25,
         AddAIAdvancedProgram = 26,
-        AddCritterPower = 27
+        AddCritterPower = 27,
+        SpiritFettering = 28
     }
 
 	public enum NuyenExpenseType

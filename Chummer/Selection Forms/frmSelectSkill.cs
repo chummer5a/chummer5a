@@ -53,13 +53,11 @@ namespace Chummer
         private void frmSelectSkill_Load(object sender, EventArgs e)
         {
 			List<ListItem> lstSkills = new List<ListItem>();
-
-			if (!_blnKnowledgeSkill)
+            if (!_blnKnowledgeSkill)
 			{
-				_objXmlDocument = XmlManager.Instance.Load("skills.xml");
-
-				// Build the list of non-Exotic Skills from the Skills file.
-				XmlNodeList objXmlSkillList;
+                _objXmlDocument = XmlManager.Instance.Load("skills.xml");
+                // Build the list of non-Exotic Skills from the Skills file.
+                XmlNodeList objXmlSkillList;
 				if (!string.IsNullOrEmpty(_strForceSkill))
 				{
 					objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + _strForceSkill + "\" and not(exotic)]");
@@ -167,14 +165,42 @@ namespace Chummer
 			}
 			else
 			{
-				// Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
-				foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
-				{
-					ListItem objSkill = new ListItem();
-					objSkill.Value = objKnow.Name;
-					objSkill.Name = objKnow.DisplayName;
-					lstSkills.Add(objSkill);
-				}
+                //TODO: This is less robust than it should be. Should be refactored to support the rest of the entries.
+			    if (!string.IsNullOrWhiteSpace(_strLimitToSkill))
+			    {
+                    _objXmlDocument = XmlManager.Instance.Load("skills.xml");
+                    string strFilter = string.Empty;
+                    string[] strValue = _strLimitToSkill.Split(',');
+			        strFilter = strValue.Aggregate(strFilter, (current, strSkill) => current + "name = \"" + strSkill.Trim() + "\" or ");
+			        // Remove the trailing " or ".
+                    strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                    XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill[" + strFilter + "]");
+
+                    // Add the Skills to the list.
+                    foreach (XmlNode objXmlSkill in objXmlSkillList)
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlSkill["name"].InnerText;
+                        if (objXmlSkill.Attributes != null)
+                        {
+                            objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+                        }
+                        else
+                            objItem.Name = objXmlSkill["name"].InnerXml;
+                        lstSkills.Add(objItem);
+                    }
+                }
+			    else
+			    {
+			        // Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
+			        foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
+			        {
+			            ListItem objSkill = new ListItem();
+			            objSkill.Value = objKnow.Name;
+			            objSkill.Name = objKnow.DisplayName;
+			            lstSkills.Add(objSkill);
+			        }
+			    }
 			}
 			SortListItem objSort = new SortListItem();
 			lstSkills.Sort(objSort.Compare);

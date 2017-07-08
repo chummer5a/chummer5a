@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -57,6 +58,7 @@ namespace Chummer.Backend.Equipment
 		// Condition Monitor Progress.
 		private int _intPhysicalCMFilled = 0;
 		private int _intMatrixCMFilled = 0;
+		private Guid _sourceID;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Vehicle(Character objCharacter)
@@ -76,7 +78,8 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
 		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, bool blnCreateChildren = true)
 		{
-            objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
+			objXmlVehicle.TryGetField("id", Guid.TryParse, out _sourceID);
+			objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
             objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objXmlVehicle["handling"] != null)
             {
@@ -182,11 +185,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objVehicleNode != null)
-				{
-					if (objVehicleNode.Attributes["translate"] != null)
-						_strAltCategory = objVehicleNode.Attributes["translate"].InnerText;
-				}
+				_strAltCategory = objVehicleNode?.Attributes?["translate"]?.InnerText;
 			}
 
 			objNode.Text = DisplayName;
@@ -378,35 +377,36 @@ namespace Chummer.Backend.Equipment
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("vehicle");
+			objWriter.WriteElementString("id", _sourceID.ToString());
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
-			objWriter.WriteElementString("handling", _intHandling.ToString());
-			objWriter.WriteElementString("offroadhandling", _intOffroadHandling.ToString());
-			objWriter.WriteElementString("accel", _intAccel.ToString());
-            objWriter.WriteElementString("offroadaccel", _intOffroadAccel.ToString());
-            objWriter.WriteElementString("speed", _intSpeed.ToString());
-            objWriter.WriteElementString("offroadspeed", _intOffroadSpeed.ToString());
-            objWriter.WriteElementString("pilot", _intPilot.ToString());
-			objWriter.WriteElementString("body", _intBody.ToString());
-			objWriter.WriteElementString("seats", _intSeats.ToString());
-			objWriter.WriteElementString("armor", _intArmor.ToString());
-			objWriter.WriteElementString("sensor", _intSensor.ToString());
-			objWriter.WriteElementString("devicerating", Pilot.ToString());
+			objWriter.WriteElementString("handling", _intHandling.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("offroadhandling", _intOffroadHandling.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("accel", _intAccel.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("offroadaccel", _intOffroadAccel.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("speed", _intSpeed.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("offroadspeed", _intOffroadSpeed.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("pilot", _intPilot.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("body", _intBody.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("seats", _intSeats.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("armor", _intArmor.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("sensor", _intSensor.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("devicerating", Pilot.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
-			objWriter.WriteElementString("addslots", _intAddSlots.ToString());
-			objWriter.WriteElementString("modslots", _intDroneModSlots.ToString());
-			objWriter.WriteElementString("powertrainmodslots", _intAddPowertrainModSlots.ToString());
-			objWriter.WriteElementString("protectionmodslots", _intAddProtectionModSlots.ToString());
-			objWriter.WriteElementString("weaponmodslots", _intAddWeaponModSlots.ToString());
-			objWriter.WriteElementString("bodymodslots", _intAddBodyModSlots.ToString());
-			objWriter.WriteElementString("electromagneticmodslots", _intAddElectromagneticModSlots.ToString());
-			objWriter.WriteElementString("cosmeticmodslots", _intAddCosmeticModSlots.ToString());
+			objWriter.WriteElementString("addslots", _intAddSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("modslots", _intDroneModSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("powertrainmodslots", _intAddPowertrainModSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("protectionmodslots", _intAddProtectionModSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("weaponmodslots", _intAddWeaponModSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("bodymodslots", _intAddBodyModSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("electromagneticmodslots", _intAddElectromagneticModSlots.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("cosmeticmodslots", _intAddCosmeticModSlots.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
-			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
+			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
 			objWriter.WriteElementString("vehiclename", _strVehicleName);
 			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
 			objWriter.WriteStartElement("mods");
@@ -466,8 +466,14 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.Parse(objNode["guid"].InnerText);
                 objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
             }
-            
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+
+			objNode.TryGetStringFieldQuickly("name", ref _strName);
+			if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
+			{
+				XmlDocument doc = XmlManager.Instance.Load("vehicles.xml");
+				XmlNode sourceNode = doc.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
+				sourceNode.TryGetField("id", Guid.TryParse, out _sourceID);
+			}
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["handling"] != null)
             {
@@ -550,11 +556,7 @@ namespace Chummer.Backend.Equipment
 				}
 
 				objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-				if (objVehicleNode != null)
-				{
-					if (objVehicleNode.Attributes["translate"] != null)
-						_strAltCategory = objVehicleNode.Attributes["translate"].InnerText;
-				}
+				_strAltCategory = objVehicleNode?.Attributes?["translate"]?.InnerText;
 			}
 
 			if (objNode.InnerXml.Contains("<mods>"))
@@ -691,6 +693,14 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				return _guiID.ToString();
+			}
+		}
+
+		public Guid SourceID
+		{
+			get
+			{
+				return _sourceID;
 			}
 		}
 
@@ -1635,7 +1645,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed != intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
                 {
-                    return ((intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString() + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString());
+                    return ((intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString() + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty));
                 }
                 else
                 {
@@ -1720,7 +1730,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel != intBaseOffroadAccel + intTotalBonusOffroadAccel)
                 {
-                    return ((intTotalAccel + intTotalBonusAccel - intPenalty).ToString() + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString());
+                    return ((intTotalAccel + intTotalBonusAccel - intPenalty).ToString() + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty));
                 }
                 else
                 {
@@ -1844,7 +1854,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Handling != OffroadHandling || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
                 {
-                    return ((intBaseHandling + intTotalBonusHandling - intPenalty).ToString() + '/' + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString());
+                    return ((intBaseHandling + intTotalBonusHandling - intPenalty).ToString() + '/' + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty));
                 }
                 else
                 {
@@ -1920,7 +1930,8 @@ namespace Chummer.Backend.Equipment
 				if (_objCharacter.IgnoreRules)
 					intReturn = 99;
 
-				return intReturn;
+                //When you need to use a 0 for the math, use 0.5 instead
+                return Math.Max(intReturn, 1);
 			}
 		}
 

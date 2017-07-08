@@ -36,9 +36,11 @@ namespace Chummer.UI.Skills
 			{
 				nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.Character.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+				nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.Character.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				if (_skillGroup.Character.BuildMethod == CharacterBuildMethod.Karma ||
 					_skillGroup.Character.BuildMethod == CharacterBuildMethod.LifeModule)

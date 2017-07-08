@@ -30,6 +30,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace Chummer
@@ -205,12 +206,12 @@ namespace Chummer
 			string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-				         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM).ToString() + ")";
+				         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) + ")";
 			tipTooltip.SetToolTip(lblPhysical, strCM);
 			strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
-            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
+			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
 				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-				         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
+				         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) + ")";
 			tipTooltip.SetToolTip(lblStun, strCM);
 		}
 
@@ -219,17 +220,17 @@ namespace Chummer
 		/// </summary>
 		/// <param name="lblArmor"></param>
 		/// <param name="tipTooltip"></param>
-		/// <param name="_objImprovementManager"></param>
+		/// <param name="objImprovementManager"></param>
 		/// <param name="lblCMArmor"></param>
-		protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, ImprovementManager _objImprovementManager,
+		protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, ImprovementManager objImprovementManager,
 			Label lblCMArmor = null)
 		{
 			// Armor Ratings.
 			lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-			string strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
+			string strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating + ")";
 			if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
 				strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-				                   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
+				                   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating) + ")";
 			tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
 			if (lblCMArmor != null)
 			{
@@ -238,51 +239,14 @@ namespace Chummer
 			}
 
 			// Remove any Improvements from Armor Encumbrance.
-			_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
+			objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
 			// Create the Armor Encumbrance Improvements.
 			if (_objCharacter.ArmorEncumbrance < 0)
 			{
-				_objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+				objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
 					Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-				_objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+				objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
 					Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-			}
-		}
-
-		/// <summary>
-		/// Update the labels and tooltips for the character's Attributes.
-		/// </summary>
-		/// <param name="objAttribute"></param>
-		/// <param name="lblATTMetatype"></param>
-		/// <param name="lblATTAug"></param>
-		/// <param name="tipTooltip"></param>
-		/// <param name="nudATT"></param>
-		protected void UpdateCharacterAttribute(CharacterAttrib objAttribute, Label lblATTMetatype, Label lblATTAug,
-			HtmlToolTip tipTooltip, [Optional] NumericUpDown nudATT, [Optional] NumericUpDown nudKATT)
-		{
-			if (nudATT != null)
-			{
-				nudATT.Minimum = objAttribute.TotalMinimum;
-				nudATT.Maximum = objAttribute.TotalMaximum;
-				nudATT.Value = Math.Max(objAttribute.Value - objAttribute.Karma, objAttribute.Base);
-			}
-			if (nudKATT != null)
-			{
-				nudKATT.Minimum = 0;
-				nudKATT.Maximum = objAttribute.TotalMaximum;
-				nudKATT.Value = objAttribute.Karma;
-			}
-			lblATTMetatype.Text =
-			    $"{objAttribute.TotalMinimum} / {objAttribute.TotalMaximum} ({objAttribute.TotalAugmentedMaximum})";
-			if (objAttribute.HasModifiers)
-			{
-				lblATTAug.Text = $"{objAttribute.Value} ({objAttribute.TotalValue})";
-				tipTooltip.SetToolTip(lblATTAug, objAttribute.ToolTip());
-			}
-			else
-			{
-				lblATTAug.Text = $"{objAttribute.Value}";
-				tipTooltip.SetToolTip(lblATTAug, string.Empty);
 			}
 		}
 
@@ -311,7 +275,7 @@ namespace Chummer
                 objLoopImprovment => (objLoopImprovment.ImproveType == Improvement.ImprovementType.PhysicalLimit 
                 || objLoopImprovment.ImproveType == Improvement.ImprovementType.SocialLimit 
                 || objLoopImprovment.ImproveType == Improvement.ImprovementType.MentalLimit) && objLoopImprovment.Enabled))
-		    {
+		        {
 		            switch (objLoopImprovement.ImproveType)
 		            {
                         case Improvement.ImprovementType.PhysicalLimit:
@@ -324,7 +288,7 @@ namespace Chummer
                             strSocial += $" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})";
                             break;
                     }
-		    }
+		        }
 
             tipTooltip.SetToolTip(lblPhysical, strPhysical);
             tipTooltip.SetToolTip(lblMental, strMental);
@@ -406,12 +370,31 @@ namespace Chummer
 			objSelectedNode.Remove();
 		}
 
-		/// <summary>
-		/// Clears and updates the treeview for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
-		/// </summary>
-		/// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
-		/// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
-		protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
+        /// <summary>
+        /// Clears and updates the treeview for Spells. Typically called as part of AddQuality or UpdateCharacterInfo.
+        /// </summary>
+        /// <param name="treSpells">Treenode that will be cleared and populated.</param>
+        /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
+        protected void RefreshSpells(helpers.TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
+        {
+            //Clear the default nodes of entries.
+            foreach (TreeNode objNode in treSpells.Nodes)
+            {
+                objNode.Nodes.Clear();
+            }
+            //Add the Spells that exist.
+            foreach (Spell s in _objCharacter.Spells)
+            {
+                treSpells.Add(s, cmsSpell, _objCharacter);
+            }
+        }
+
+        /// <summary>
+        /// Clears and updates the treeview for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
+        /// </summary>
+        /// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
+        /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
+        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
 		{
 			//Clear the default nodes of entries.
 			foreach (TreeNode objNode in treCritterPowers.Nodes)
@@ -652,7 +635,7 @@ namespace Chummer
             {
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                 strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
-                strDisplayDrain = strDisplayDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev.ToString());
+                strDisplayDrain = strDisplayDrain.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
             }
             XPathExpression xprFading = nav.Compile(strDrain);
             object o = nav.Evaluate(xprFading);

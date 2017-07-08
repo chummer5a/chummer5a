@@ -71,7 +71,7 @@
 						<xsl:when test="category = 'Enchantments'">
 							<xsl:value-of select="$lang.Enchantments"/>
 						</xsl:when>
-						<xsl:when test="category = 'Ritual'">
+						<xsl:when test="category = 'Rituals'">
 							<xsl:value-of select="$lang.Rituals"/>
 						</xsl:when>
 						<xsl:otherwise>

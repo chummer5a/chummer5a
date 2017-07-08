@@ -8,10 +8,10 @@
 
 	<xsl:include href="xs.fnx.xslt"/>
 	<xsl:include href="xs.TitleName.xslt"/>
-
+                
 	<xsl:include href="xt.MovementRate.xslt"/>
 	<xsl:include href="xt.PreserveLineBreaks.xslt"/>
-
+                
 	<!-- Set global variables -->
 	<xsl:variable name="lang" select="'en'"/>
 </xsl:stylesheet>

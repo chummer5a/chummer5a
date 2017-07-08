@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -20,17 +21,23 @@ namespace WpfApplication1
             InitializeComponent();
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+
+        private void ConvertString(bool critter = true)
         {
+	        Guid g;
+	        if (!Guid.TryParse(txtGUID.Text, out g))
+            {
+	            txtGUID.Text = Guid.NewGuid().ToString();
+            }
             var lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 	        if (lines.Length <= 1) return;
 	        var doc = new XmlDocument();
 	        // write the root chummer node.
-	        XmlNode objHeader = doc.CreateElement("critter");
+			
+	        XmlNode objHeader = doc.CreateElement(critter ? "critter" : "spirit");
 	        doc.AppendChild(objHeader);
 
 			XmlNode xmlNode = doc.CreateElement("id");
-			Guid g = Guid.NewGuid();
 			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString();
 			objHeader.AppendChild(xmlNode);
 
@@ -51,22 +58,37 @@ namespace WpfApplication1
 	        {
 		        if (_attAbbrevs.Contains(str))
 		        {
-			        int i = _attAbbrevs.IndexOf(str);
-			        foreach (var node in nodes)
+			        if (critter)
 			        {
-				        xmlNode = doc.CreateElement($"{str}{node}".ToLower());
-				        xmlNode.InnerText = node == "aug" ? (Convert.ToInt32(_attValues[i]) + 4).ToString() : _attValues[i];
-				        objHeader.AppendChild(xmlNode);
+				        int i = _attAbbrevs.IndexOf(str);
+				        foreach (var node in nodes)
+				        {
+					        xmlNode = doc.CreateElement($"{str}{node}".ToLower());
+					        if (node == "aug" && int.TryParse(_attValues[i], out int result))
+					        {
+						        xmlNode.InnerText = node == "aug" ? (result + 4).ToString() : _attValues[i];
+					        }
+					        else
+					        {
+						        xmlNode.InnerText = _attValues[i];
+					        }
+
+					        objHeader.AppendChild(xmlNode);
+				        }
 			        }
-		        }
-		        else
-		        {
-					foreach (var node in nodes)
-					{
-						xmlNode = doc.CreateElement($"{str}{node}".ToLower());
-						xmlNode.InnerText = "0";
+			        else
+			        {
+						int i = _attAbbrevs.IndexOf(str);
+						xmlNode = doc.CreateElement($"{str}".ToLower());
+						xmlNode.InnerText = _attValues[i];
 						objHeader.AppendChild(xmlNode);
 					}
+		        }
+		        else if (!critter)
+				{
+					xmlNode = doc.CreateElement($"{str}".ToLower());
+					xmlNode.InnerText = "0";
+					objHeader.AppendChild(xmlNode);
 				}
 	        }
 
@@ -136,11 +158,18 @@ namespace WpfApplication1
 			        foreach (var s in split.Where(s => s != string.Empty))
 			        {
 				        xmlNode = doc.CreateElement("skill"); 
-				        var attr = doc.CreateAttribute("rating");
-				        var index = s.LastIndexOf(' ');
-				        xmlNode.InnerText = s.Substring(0, index).Trim();
-				        attr.Value = s.Substring(index + 1).Trim();
-				        xmlNode.Attributes?.Append(attr);
+				        var index = s.LastIndexOf(" R");
+				        if (index != -1)
+						{
+							var attr = doc.CreateAttribute("rating");
+							xmlNode.InnerText = s.Substring(0, index).Trim();
+							attr.Value = s.Substring(index + 1).Trim();
+							xmlNode.Attributes?.Append(attr);
+						}
+				        else
+				        {
+					        xmlNode.InnerText = s.Trim();
+				        }
 				        xmlParentNode.AppendChild(xmlNode);
 			        }
 			        objHeader.AppendChild(xmlParentNode);
@@ -173,14 +202,25 @@ namespace WpfApplication1
 					foreach (var s in split.Where(s => s != string.Empty))
 					{
 						xmlNode = doc.CreateElement("power");
-						if (s.Contains('('))
+						if (s.Contains(':'))
+						{
+							var attr = doc.CreateAttribute("select");
+							attr.Value = s.Split(':')[1].Trim();
+							xmlNode.Attributes?.Append(attr);
+							xmlNode.InnerText = s.Split(':')[0].Trim();
+						}
+						else if (s.Contains('('))
 						{
 							var attr = doc.CreateAttribute("select");
 							attr.Value = s.Split('(', ')')[1];
 							xmlNode.Attributes?.Append(attr);
+							xmlNode.InnerText = s.Split('(', ')')[0].Trim();
+						}
+						else
+						{
+							xmlNode.InnerText = s.Trim();
 						}
 
-						xmlNode.InnerText = s.Split('(', ')')[0].Trim();
 						xmlParentNode.AppendChild(xmlNode);
 					}
 					objHeader.AppendChild(xmlParentNode);
@@ -254,16 +294,20 @@ namespace WpfApplication1
         }
 
 		private static string ReplaceAttributeAbbrevs(string input)
-        {
-            input = ReplaceWholeWord(input, "B", "bod");
-            input = ReplaceWholeWord(input, "A", "agi");
-            input = ReplaceWholeWord(input, "R", "rea");
-            input = ReplaceWholeWord(input, "S", "str");
-            input = ReplaceWholeWord(input, "W", "wil");
-            input = ReplaceWholeWord(input, "L", "log");
-            input = ReplaceWholeWord(input, "I", "int");
-            input = ReplaceWholeWord(input, "C", "cha");
-			input = ReplaceWholeWord(input, "DEPTH", "dep");
+		{
+			input = input.ToLower();
+			input = ReplaceWholeWord(input, "b", "bod");
+			input = ReplaceWholeWord(input, "a", "agi");
+			input = ReplaceWholeWord(input, "r", "rea");
+			input = ReplaceWholeWord(input, "s", "str");
+			input = ReplaceWholeWord(input, "w", "wil");
+			input = ReplaceWholeWord(input, "l", "log");
+			input = ReplaceWholeWord(input, "i", "int");
+			input = ReplaceWholeWord(input, "c", "cha");
+			input = ReplaceWholeWord(input, "edg", "edg");
+			input = ReplaceWholeWord(input, "m", "mag");
+			input = ReplaceWholeWord(input, "r", "res");
+			input = ReplaceWholeWord(input, "depth", "dep");
 			return input;
         }
 
@@ -283,5 +327,15 @@ namespace WpfApplication1
             var ret = Regex.Replace(original, pattern, replacement, regexOptions);
             return ret;
         }
-    }
+
+		private void CreateSpirit(object sender, RoutedEventArgs e)
+		{
+			ConvertString(false);
+		}
+
+		private void CreateCritter(object sender, RoutedEventArgs e)
+		{
+			ConvertString();
+		}
+	}
 }

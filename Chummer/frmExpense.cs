@@ -38,7 +38,6 @@ namespace Chummer
 			if (!GlobalOptions.Instance.DatesIncludeTime)
 				strDatePattern = objDateTimeInfo.LongDatePattern;
 			datDate.CustomFormat = strDatePattern;
-
 			datDate.Value = DateTime.Now;
 
 			txtDescription.Text = LanguageManager.Instance.GetString("String_ExpenseDefault");
@@ -46,7 +45,14 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			DialogResult = DialogResult.OK;
+		    if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % 2000 != 0)
+		    {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_KarmaNuyenExchange"), LanguageManager.Instance.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+		    else
+            {
+                DialogResult = DialogResult.OK;
+            }
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
@@ -81,7 +87,7 @@ namespace Chummer
 		/// <summary>
 		/// Reason for the Karma change.
 		/// </summary>
-		public string strReason
+		public string Reason
 		{
 			get
 			{
@@ -148,13 +154,17 @@ namespace Chummer
 				_objMode = value;
 			}
 		}
-		#endregion
 
-		#region Methods
-		/// <summary>
-		/// Lock fields on the Form so that only the Date and Reason fields are editable.
-		/// </summary>
-		public void LockFields(bool blnEditAmount = false)
+	    public bool KarmaNuyenExchange { get; set; }
+        public string KarmaNuyenExchangeString { get; internal set; }
+
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Lock fields on the Form so that only the Date and Reason fields are editable.
+        /// </summary>
+        public void LockFields(bool blnEditAmount = false)
 		{
 			nudAmount.Enabled = blnEditAmount;
 			nudPercent.Enabled = false;
@@ -163,6 +173,29 @@ namespace Chummer
 			if (blnEditAmount && nudAmount.Minimum < 0)
 				nudAmount.Minimum = nudAmount.Maximum * -1;
 		}
-		#endregion
-	}
+        #endregion
+
+        private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkKarmaNuyenExchange.Checked)
+            {
+                txtDescription.Text = KarmaNuyenExchangeString;
+            }
+            if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
+            {
+                nudAmount.Increment = 2000;
+                nudAmount.Value = 2000;
+            }
+            else
+            {
+                nudAmount.Increment = 1;
+            }
+            KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
+        }
+
+        private void frmExpanse_Load(object sender, EventArgs e)
+        {
+            chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
+        }
+    }
 }

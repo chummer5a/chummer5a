@@ -134,11 +134,11 @@ namespace Chummer
         private static bool _blnUseLogging = false;
 		private static string _strCharacterRosterPath;
 
-        #region Constructor and Instance
-        /// <summary>
-        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
+		#region Constructor and Instance
+		/// <summary>
+		/// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+		/// </summary>
+		private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
         {
 			object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
 			if (objRegistryResult != null)
@@ -239,24 +239,32 @@ namespace Chummer
 			{
 				if (objXmlBook["code"] != null)
 				{
+                    SourcebookInfo objSource = new SourcebookInfo();
+                    objSource.Code = objXmlBook["code"].InnerText;
                     string strTemp = string.Empty;
-                    LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText, "Sourcebook");
-                    if (!string.IsNullOrEmpty(strTemp))
-                    {
-                        SourcebookInfo objSource = new SourcebookInfo();
-                        string[] strParts = strTemp.Split('|');
-                        objSource.Code = objXmlBook["code"].InnerText;
-                        objSource.Path = strParts[0];
-                        if (strParts.Length > 1)
-                        {
-                            int intTmp;
-                            if (int.TryParse(strParts[1], out intTmp))
-                                objSource.Offset = intTmp;
-                        }
 
+                    try
+                    {
+                        LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText, "Sourcebook");
+                        if (!string.IsNullOrEmpty(strTemp))
+                        {
+
+                            string[] strParts = strTemp.Split('|');
+                            objSource.Path = strParts[0];
+                            if (strParts.Length > 1)
+                            {
+                                int intTmp;
+                                if (int.TryParse(strParts[1], out intTmp))
+                                    objSource.Offset = intTmp;
+                            }
+                        }
                         _lstSourcebookInfo.Add(objSource);
                     }
-				}
+                    catch (Exception)
+                    {
+
+                    }
+                }
 			}
 
 			CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);

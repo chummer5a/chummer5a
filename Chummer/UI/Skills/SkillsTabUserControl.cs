@@ -476,9 +476,10 @@ namespace Chummer.UI.Skills
 		        {
 		            KnowledgeSkill skill = new KnowledgeSkill(ObjCharacter);
 		            skill.WriteableName = form.SelectedItem;
+                    skill.LoadDefaultType(skill.Name);
 
 
-		            ObjCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+                    ObjCharacter.SkillsSection.KnowledgeSkills.Add(skill);
 		        }
 		    }
 		    else
