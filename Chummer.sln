@@ -1,11 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer", "Chummer\Chummer.csproj", "{95279469-5A3E-42E6-993C-6A403586C86E}"
 	ProjectSection(ProjectDependencies) = postProject
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D} = {B65D0252-6BCB-4901-9CA6-856EF785DF8D}
 		{8C904468-F3A3-4034-B2DE-ED532803AD38} = {8C904468-F3A3-4034-B2DE-ED532803AD38}
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675} = {97EFDBA5-9A5A-459E-BEC4-BA7647295675}
 	EndProjectSection
@@ -29,12 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "Translator\Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Textblock-Converter", "TextblockConverter\Textblock-Converter.csproj", "{97EFDBA5-9A5A-459E-BEC4-BA7647295675}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "Translator\Translator.csproj", "{B65D0252-6BCB-4901-9CA6-856EF785DF8D}"
-EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -67,29 +61,10 @@ Global
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release|x86.ActiveCfg = Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release|x86.Build.0 = Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|x86.Build.0 = Debug|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|x86.ActiveCfg = Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|x86.Build.0 = Release|Any CPU
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debug|Any CPU.Build.0 = Debug|x86
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debug|x86.ActiveCfg = Debug|x86
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debug|x86.Build.0 = Debug|x86
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|Any CPU.ActiveCfg = Release|x86
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|x86.ActiveCfg = Release|x86
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|x86.Build.0 = Release|x86
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Debug|x86.Build.0 = Debug|Any CPU
-		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Legacy|Any CPU.ActiveCfg = Release|Any CPU
-		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Legacy|Any CPU.Build.0 = Release|Any CPU
-		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Legacy|x86.ActiveCfg = Release|Any CPU
-		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Legacy|x86.Build.0 = Release|Any CPU
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F4FCC61A-EB95-4267-98F4-E5ACE54F3242}.Release|x86.ActiveCfg = Release|Any CPU
@@ -98,10 +73,6 @@ Global
 		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Debug|x86.Build.0 = Debug|Any CPU
-		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Legacy|Any CPU.ActiveCfg = Release|Any CPU
-		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Legacy|Any CPU.Build.0 = Release|Any CPU
-		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Legacy|x86.ActiveCfg = Release|Any CPU
-		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Legacy|x86.Build.0 = Release|Any CPU
 		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9423C8C1-6C6F-418F-8120-9A2C26091860}.Release|x86.ActiveCfg = Release|Any CPU
@@ -110,10 +81,6 @@ Global
 		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Debug|x86.Build.0 = Debug|Any CPU
-		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Legacy|Any CPU.ActiveCfg = Release|Any CPU
-		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Legacy|Any CPU.Build.0 = Release|Any CPU
-		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Legacy|x86.ActiveCfg = Release|Any CPU
-		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Legacy|x86.Build.0 = Release|Any CPU
 		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F9DCA51-E65D-4CF3-A28D-27D28ECC2C36}.Release|x86.ActiveCfg = Release|Any CPU
@@ -135,5 +102,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
