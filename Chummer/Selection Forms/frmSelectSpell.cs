@@ -135,7 +135,7 @@ namespace Chummer
 				if (blnInclude)
                 {
                     nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
-                    nodSpell.Tag = objXmlSpell["name"].InnerText;
+                    nodSpell.Tag = objXmlSpell["id"].InnerText;
                     // Check to see if there is already a Category node for the Spell's category.
                     foreach (TreeNode nodCategory in treSpells.Nodes)
                     {
@@ -183,7 +183,7 @@ namespace Chummer
             if (treSpells.SelectedNode.Level > 0)
             {
             	// Display the Spell information.
-                XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + treSpells.SelectedNode.Tag + "\"]");
+                XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + treSpells.SelectedNode.Tag + "\"]");
 
 				string[] strDescriptorsIn = objXmlSpell["descriptor"].InnerText.Split(',');
 				

@@ -1089,8 +1089,12 @@ namespace Chummer.Classes
 			{
 				throw new AbortedException();
 			}
+			// Open the Spells XML file and locate the selected piece.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
 
-			SelectedValue = frmPickSpell.SelectedSpell;
+			XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
+			SelectedValue = objXmlSpell["name"].InnerText;
+
 			if (_blnConcatSelectedValue)
 				SourceName += " (" + SelectedValue + ")";
 
@@ -1098,7 +1102,7 @@ namespace Chummer.Classes
 			Log.Info("SourceName = " + SourceName);
 
 			Log.Info("Calling CreateImprovement");
-			CreateImprovement(frmPickSpell.SelectedSpell, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
+			CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
 				_strUnique);
 		}
 
