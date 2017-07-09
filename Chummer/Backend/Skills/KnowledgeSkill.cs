@@ -50,6 +50,8 @@ namespace Chummer.Skills
 			        CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
 			    }
 			}
+
+		    DefaultKnowledgeSkillCatagories = DefaultKnowledgeSkillCatagories.OrderBy(x => x.Name).ToList();
 		}
 
 		public static List<ListItem> KnowledgeSkillsWithCategory(params string[] categories)
