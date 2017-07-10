@@ -3972,9 +3972,6 @@ namespace Chummer
 				return;
 			}
 
-			// Run through the list of Active Skills and pick out the two applicable ones.
-			int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name== "Ritual Spellcasting").Max(x => x.Rating);
-
 			frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
 			frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
 			frmPickSpell.ShowDialog(this);
@@ -13848,9 +13845,6 @@ namespace Chummer
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
-
-			// Run through the list of Active Skills and pick out the two applicable ones.
-			int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
 
 			// The character is still allowed to add Spells, so show the Create Spell window.
 			frmCreateSpell frmSpell = new frmCreateSpell(_objCharacter);
