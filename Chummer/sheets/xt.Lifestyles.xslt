@@ -24,9 +24,6 @@
 			<tr>
 				<td>
 					<xsl:value-of select="name"/>
-					<xsl:if test="lifestylename != ''">
-						("<xsl:value-of select="lifestylename"/>")
-					</xsl:if>
 				</td>
 				<td style="text-align: center">
 					<xsl:value-of select="baselifestyle"/>
@@ -45,7 +42,7 @@
 			<xsl:if test="qualities/quality">
 				<tr><td colspan="100%" style="padding: 0 2%; text-align: justify;">
 					<xsl:for-each select="qualities/quality">
-						<xsl:value-of select="."/>
+						<xsl:value-of select="formattedname"/>
 						<text>; </text>
 					</xsl:for-each>
 				</td></tr>

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Chummer.helpers;
 using Chummer.Skills;
 
 namespace Chummer.UI.Skills
@@ -24,7 +25,6 @@ namespace Chummer.UI.Skills
 			cboType.ValueMember = nameof(ListItem.Value);
             cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
-
 
 			if (skill.CharacterObject.Created)
 			{
@@ -52,14 +52,16 @@ namespace Chummer.UI.Skills
 				btnCareerIncrease.Visible = true;
 
 				lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-			}
+            }
 			else
 			{
 				//Up down boxes
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
+				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Enabled", skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+				nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
 						DataSourceUpdateMode.OnPropertyChanged);
@@ -166,7 +168,7 @@ namespace Chummer.UI.Skills
 			//TODO turn this into a databinding, but i don't care enough right now
             lblSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.Name));
 
-            parrent?.UpdateCharacterInfo();
+            parrent?.ScheduleCharacterUpdate();
 		}
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
@@ -176,5 +178,10 @@ namespace Chummer.UI.Skills
                 chkKarma.Checked = true;
             }
         }
-	}
+
+	    private void cboSkill_SelectedIndexChanged(object sender, EventArgs e)
+	    {
+            _skill.LoadDefaultType(_skill.Name);
+        }
+    }
 }

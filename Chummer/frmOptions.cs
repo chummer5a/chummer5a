@@ -134,11 +134,13 @@ namespace Chummer
                 if (chkKnowledgeMultiplier.Checked)
                     chkKnowledgeMultiplier.Enabled = true;
             _characterOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
+		    _characterOptions.HideItemsOverAvailLimit = chkHideItemsOverAvail.Checked;
             _characterOptions.IgnoreArt = chkIgnoreArt.Checked;
             _characterOptions.UnarmedImprovementsApplyToWeapons = chkUnarmedSkillImprovements.Checked;
             _characterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
             _characterOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
             _characterOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
+		    _characterOptions.ReverseAttributePriorityOrder = chkReverseAttributePriorityOrder.Checked;
             _characterOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
             _characterOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
             _characterOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
@@ -187,9 +189,10 @@ namespace Chummer
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
 		    _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
 		    _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
+			_characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
 
-            // Build Priority options.
-            _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
+			// Build Priority options.
+			_characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
             _characterOptions.UseContactPoints = chkContactPoints.Checked;
 
             // Build method options.
@@ -613,6 +616,7 @@ namespace Chummer
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
             chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
+	        chkHideItemsOverAvail.Checked = _characterOptions.HideItemsOverAvailLimit;
 	        chkFreeMartialArtSpecialization.Checked = _characterOptions.FreeMartialArtSpecialization;
             chkPrioritySpellsAsAdeptPowers.Checked = _characterOptions.PrioritySpellsAsAdeptPowers;
             chkEducationQualitiesApplyOnChargenKarma.Checked = _characterOptions.EducationQualitiesApplyOnChargenKarma;
@@ -645,6 +649,8 @@ namespace Chummer
 			chkUseCalculatedPublicAwareness.Checked = _characterOptions.UseCalculatedPublicAwareness;
 			chkStrictSkillGroups.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
 			chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
+	        chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
+		    chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
 			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
@@ -1240,7 +1246,7 @@ namespace Chummer
 
 		private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			if (chkOmaeEnabled.Checked)
+			if (chkOmaeEnabled.Checked && !blnLoading)
 			{
 				DialogResult result = MessageBox.Show(LanguageManager.Instance.GetString("Tip_Omae_Warning"), "Warning!", MessageBoxButtons.OKCancel);
 
@@ -1268,11 +1274,6 @@ namespace Chummer
 				if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
 					txtCharacterRosterPath.Text = selectFolderDialog.SelectedPath;
 			}
-		}
-
-		private void cboPDFParameters_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			GlobalOptions.Instance.PDFParameters = cboPDFParameters.SelectedValue.ToString();
 		}
     }
 }

@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Translator
 {
-    public partial class frmMain
+    public partial class FrmMain
     {
         private readonly bool _blnDelete = true;
 
@@ -15,7 +15,7 @@ namespace Translator
         private XmlDocument _objDoc;
         private string _strPath = string.Empty;
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -96,7 +96,7 @@ namespace Translator
             _objDoc.Save(str1);
 
             LoadLanguageList();
-            using (var frmTranslate = new frmTranslate())
+            using (var frmTranslate = new FrmTranslate())
             {
                 frmTranslate.Language = str;
                 frmTranslate.ShowDialog(this);
@@ -107,7 +107,7 @@ namespace Translator
         {
             if (cboLanguages.SelectedIndex == -1)
                 return;
-            var frmTranslate = new frmTranslate {Language = cboLanguages.Text};
+            var frmTranslate = new FrmTranslate {Language = cboLanguages.Text};
             frmTranslate.ShowDialog();
         }
 
@@ -4035,7 +4035,7 @@ namespace Translator
             _strPath = Application.StartupPath;
             if (!_strPath.EndsWith("\\"))
             {
-                frmMain _frmMain = this;
+                FrmMain _frmMain = this;
                 _frmMain._strPath = string.Concat(_frmMain._strPath, "\\");
             }
         }

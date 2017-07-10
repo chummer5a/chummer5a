@@ -167,11 +167,11 @@
 				<xsl:when test="$LowBox &gt; ($TotalBoxes + $OverFlow)">&#160;</xsl:when>
 				<!-- Last Box of OverFlow needs DEAD -->
 				<xsl:when test="$LowBox = ($TotalBoxes + $OverFlow) and $OverFlow &gt; 0">
-					<text><br/>DEAD</text>
+					<text><br/><xsl:value-of select="$lang.Dead"/></text>
 				</xsl:when>
 				<!-- Boxes of OverFlow are Marked OVR -->
 				<xsl:when test="$LowBox &gt; $TotalBoxes">
-					<text><br/>OVR&#160;</text>
+					<text><br/><xsl:value-of select="$lang.OVR"/></text>
 				</xsl:when>
 				<!-- Last Normal Box -->
 				<xsl:when test="$LowBox = $TotalBoxes">

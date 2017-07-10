@@ -313,7 +313,7 @@ namespace Chummer.Skills
 				}
 			};
 
-			character.ImprovementEvent += OnImprovementEvent;
+			character.SkillImprovementEvent += OnImprovementEvent;
 			character.PropertyChanged += Character_PropertyChanged;
 		}
 

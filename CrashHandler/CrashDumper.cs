@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,25 +39,47 @@ namespace CrashHandler
 		private Thread _worker;
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
 
+	    
+	    private TextWriter CrashLogWriter;
+
 		public CrashDumper(string b64Json)
 		{
+		    CrashLogWriter = new StreamWriter(
+                Path.ChangeExtension(
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
+                        GenerateFolderName()
+                    ),
+                    "txt"));
+
+            CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.\n" +
+                                     "You can safely delete this file, but a developer might want to look at it");
+            CrashLogWriter.Flush();
+		    
+
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
 				throw new ArgumentException();
 			}
 
-//		    _filesList = new List<string>();
-//		    _attributes = new Dictionary<string, string>()
-//		    {
-//		        {"visible-error-friendly", "FAKE"},
-//		        {"visible-crash-id", Guid.NewGuid().ToString()}
-//		    };
-//		    _pretendFiles = new Dictionary<string, string>();
+            CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
+            CrashLogWriter.Flush();
 
-		    WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
+            //		    _filesList = new List<string>();
+            //		    _attributes = new Dictionary<string, string>()
+            //		    {
+            //		        {"visible-error-friendly", "FAKE"},
+            //		        {"visible-crash-id", Guid.NewGuid().ToString()}
+            //		    };
+            //		    _pretendFiles = new Dictionary<string, string>();
+
+            WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
 			Directory.CreateDirectory(WorkingDirectory);
 			Attributes["visible-crashhandler-major-minor"] = "v3_0";
-		}
+
+            CrashLogWriter.WriteLine("Crash working directory is {0}", WorkingDirectory);
+            CrashLogWriter.Flush();
+        }
 
 		private void AttemptDebug(Process process)
 		{
@@ -120,7 +143,11 @@ namespace CrashHandler
 		        CopyFiles();
 
 		        SetProgress(CrashDumperProgress.FinishedCollecting);
-		        _startSendEvent.WaitOne();
+
+                _startSendEvent.WaitOne();
+                
+                CrashLogWriter.WriteLine("Files collected");
+                CrashLogWriter.Flush();
 
 		        SetProgress(CrashDumperProgress.Compressing);
 		        byte[] zip = GetZip();
@@ -132,18 +159,26 @@ namespace CrashHandler
 		        SetProgress(CrashDumperProgress.Uploading);
 		        string location = Upload(encrypted);
 
+                CrashLogWriter.WriteLine("Files uploaded");
+                CrashLogWriter.Flush();
 
-		        SetProgress(CrashDumperProgress.Saving);
+                SetProgress(CrashDumperProgress.Saving);
 		        Attributes["visible-key"] = MakeStringKey(iv, key);
 		        Attributes["visible-location"] = location;
 
 		        UploadToAws();
 
-		        SetProgress(CrashDumperProgress.Cleanup);
+                CrashLogWriter.WriteLine("Key saved");
+                CrashLogWriter.Flush();
+
+                SetProgress(CrashDumperProgress.Cleanup);
 		        if (DoCleanUp)
 		        {
 		            Clean();
-		        }
+
+                    CrashLogWriter.WriteLine("Cleanup done");
+                    CrashLogWriter.Flush();
+                }
 
 		        SetProgress(CrashDumperProgress.FinishedSending);
 		        Process.Kill();
@@ -164,6 +199,8 @@ namespace CrashHandler
 
 				Process?.Kill();
 			}
+
+            CrashLogWriter.Close();
 		}
 
 		

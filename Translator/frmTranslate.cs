@@ -5,10 +5,11 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+// ReSharper disable LocalizableElement
 
 namespace Translator
 {
-    public partial class frmTranslate : Form
+    public partial class FrmTranslate : Form
     {
         private bool _blnLoading;
         private readonly XmlDocument _objDataDoc = new XmlDocument();
@@ -16,7 +17,7 @@ namespace Translator
         private string _strCode = string.Empty;
         private string _strPath = string.Empty;
 
-        public frmTranslate()
+        public FrmTranslate()
         {
             InitializeComponent();
         }
@@ -26,6 +27,7 @@ namespace Translator
         #region Control Events
         private void chkOnlyTranslation_CheckedChanged(object sender, EventArgs e)
         {
+            // ReSharper disable once LocalizableElement
             if (cboFile.Text == "Strings")
             {
                 LoadStrings();
@@ -125,7 +127,7 @@ namespace Translator
             if (_blnLoading || (e.RowIndex < 0))
                 return;
             DataGridViewRow item = dgvSection.Rows[e.RowIndex];
-            bool flag = Convert.ToBoolean(item.Cells["translated"]);
+            bool flag = Convert.ToBoolean(item.Cells["translated"].Value);
             TranslatedIndicator(item);
             string strTranslated = item.Cells["text"].Value.ToString();
             string strEnglish = item.Cells["english"].Value.ToString();
@@ -321,6 +323,7 @@ namespace Translator
         #region Methods
         private void LoadLanguageFiles()
         {
+            // ReSharper disable once StringIndexOfIsCultureSpecific.1
             _strCode = Language.Substring(Language.IndexOf("(") + 1, 2);
             _objTranslationDoc.Load(string.Concat(_strPath, "lang\\", _strCode, ".xml"));
             _objDataDoc.Load(string.Concat(_strPath, "lang\\", _strCode, "_data.xml"));
@@ -425,22 +428,24 @@ namespace Translator
             if (xmlNodeList != null)
                 foreach (XmlNode xmlNodeEnglish in xmlNodeList)
                 {
-                    string innerText = xmlNodeEnglish["key"]?.InnerText;
-                    string str = xmlNodeEnglish["text"]?.InnerText;
+                    string strKey = xmlNodeEnglish["key"]?.InnerText;
+                    string strEnglish = xmlNodeEnglish["text"]?.InnerText;
+                    string strTranslated = xmlNodeEnglish["text"]?.InnerText;
+                    var blnTranslated = false;
                     XmlNode xmlNodeLocal =
-                        _objTranslationDoc.SelectSingleNode(string.Concat("/chummer/strings/string[key = \"", innerText, "\"]"));
+                        _objTranslationDoc.SelectSingleNode(string.Concat("/chummer/strings/string[key = \"", strKey, "\"]"));
                     if (xmlNodeLocal != null)
                     {
-                        string innerText1 = xmlNodeLocal["text"]?.InnerText;
-                        var flag = false;
-                        if (xmlNodeEnglish.Attributes?["translated"] != null)
-                            flag = Convert.ToBoolean(xmlNodeEnglish.Attributes["translated"].InnerText);
-                        if (chkOnlyTranslation.Checked && (str == innerText1 || string.IsNullOrWhiteSpace(innerText1)) || !chkOnlyTranslation.Checked)
-                        {
-                            DataRowCollection rows = dataTable.Rows;
-                            object[] objArray = { innerText, str, innerText1, flag };
-                            rows.Add(objArray);
-                        }
+                        strTranslated = xmlNodeLocal["text"]?.InnerText;
+                        blnTranslated = xmlNodeEnglish.Attributes?["translated"] != null
+                            ? Convert.ToBoolean(xmlNodeEnglish.Attributes["translated"].InnerText)
+                            : strEnglish != strTranslated;
+                    }
+                    if (chkOnlyTranslation.Checked && (strEnglish == strTranslated || string.IsNullOrWhiteSpace(strTranslated)) || !chkOnlyTranslation.Checked)
+                    {
+                        DataRowCollection rows = dataTable.Rows;
+                        object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
+                        rows.Add(objArray);
                     }
                 }
             var dataSet = new DataSet("strings");
@@ -460,8 +465,8 @@ namespace Translator
             _strPath = Application.StartupPath;
             if (!_strPath.EndsWith("\\"))
             {
-                frmTranslate _frmTranslate = this;
-                _frmTranslate._strPath = string.Concat(_frmTranslate._strPath, "\\");
+                FrmTranslate frmTranslate = this;
+                frmTranslate._strPath = string.Concat(frmTranslate._strPath, "\\");
             }
         }
         #endregion

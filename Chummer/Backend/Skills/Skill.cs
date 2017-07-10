@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,6 +13,7 @@ using Chummer.Annotations;
 using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Skills
 {
@@ -42,8 +44,8 @@ namespace Chummer.Skills
 			writer.WriteStartElement("skill");
 			writer.WriteElementString("guid", Id.ToString());
 			writer.WriteElementString("suid", SkillId.ToString());
-			writer.WriteElementString("karma", _karma.ToString());
-			writer.WriteElementString("base", _base.ToString()); //this could acctually be saved in karma too during career
+			writer.WriteElementString("karma", _karma.ToString(CultureInfo.InvariantCulture));
+			writer.WriteElementString("base", _base.ToString(CultureInfo.InvariantCulture)); //this could acctually be saved in karma too during career
 			writer.WriteElementString("notes", _strNotes);
 			if (!CharacterObject.Created)
 			{
@@ -335,7 +337,7 @@ namespace Chummer.Skills
 				SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
 			}
 
-			character.ImprovementEvent += OnImprovementEvent;
+			character.SkillImprovementEvent += OnImprovementEvent;
 			Specializations.ListChanged += SpecializationsOnListChanged;
 		}
 

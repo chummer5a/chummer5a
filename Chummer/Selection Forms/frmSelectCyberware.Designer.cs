@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
 			this.cboCategory = new System.Windows.Forms.ComboBox();
 			this.lblCategory = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -66,6 +65,8 @@
 			this.nudMarkup = new System.Windows.Forms.NumericUpDown();
 			this.lblMarkupLabel = new System.Windows.Forms.Label();
 			this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
+			this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+			this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -330,10 +331,10 @@
 			this.lblESSDiscountLabel.AutoSize = true;
 			this.lblESSDiscountLabel.Location = new System.Drawing.Point(381, 83);
 			this.lblESSDiscountLabel.Name = "lblESSDiscountLabel";
-			this.lblESSDiscountLabel.Size = new System.Drawing.Size(101, 13);
+			this.lblESSDiscountLabel.Size = new System.Drawing.Size(96, 13);
 			this.lblESSDiscountLabel.TabIndex = 6;
 			this.lblESSDiscountLabel.Tag = "Label_SelectCyberware_ESSDiscount";
-			this.lblESSDiscountLabel.Text = "Additional Discount:";
+			this.lblESSDiscountLabel.Text = "Essence Discount:";
 			// 
 			// lblESSDiscountPercentLabel
 			// 
@@ -366,7 +367,7 @@
 			// chkTransgenic
 			// 
 			this.chkTransgenic.AutoSize = true;
-			this.chkTransgenic.Location = new System.Drawing.Point(382, 150);
+			this.chkTransgenic.Location = new System.Drawing.Point(382, 202);
 			this.chkTransgenic.Name = "chkTransgenic";
 			this.chkTransgenic.Size = new System.Drawing.Size(115, 17);
 			this.chkTransgenic.TabIndex = 18;
@@ -378,10 +379,15 @@
 			// 
 			// tipTooltip
 			// 
+			this.tipTooltip.AllowLinksHandling = true;
 			this.tipTooltip.AutoPopDelay = 10000;
+			this.tipTooltip.BaseStylesheet = null;
 			this.tipTooltip.InitialDelay = 250;
 			this.tipTooltip.IsBalloon = true;
+			this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+			this.tipTooltip.OwnerDraw = true;
 			this.tipTooltip.ReshowDelay = 100;
+			this.tipTooltip.TooltipCssClass = "htmltooltip";
 			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.tipTooltip.ToolTipTitle = "Chummer Help";
 			// 
@@ -408,7 +414,7 @@
 			// chkBlackMarketDiscount
 			// 
 			this.chkBlackMarketDiscount.AutoSize = true;
-			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(338, 176);
+			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(382, 176);
 			this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
 			this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
 			this.chkBlackMarketDiscount.TabIndex = 39;
@@ -439,7 +445,7 @@
 			// lblMarkupLabel
 			// 
 			this.lblMarkupLabel.AutoSize = true;
-			this.lblMarkupLabel.Location = new System.Drawing.Point(432, 104);
+			this.lblMarkupLabel.Location = new System.Drawing.Point(431, 104);
 			this.lblMarkupLabel.Name = "lblMarkupLabel";
 			this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
 			this.lblMarkupLabel.TabIndex = 40;
@@ -455,6 +461,31 @@
 			this.lblMarkupPercentLabel.TabIndex = 42;
 			this.lblMarkupPercentLabel.Text = "%";
 			// 
+			// chkHideOverAvailLimit
+			// 
+			this.chkHideOverAvailLimit.AutoSize = true;
+			this.chkHideOverAvailLimit.Location = new System.Drawing.Point(258, 353);
+			this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
+			this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
+			this.chkHideOverAvailLimit.TabIndex = 65;
+			this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
+			this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+			this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+			this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
+			// 
+			// chkPrototypeTranshuman
+			// 
+			this.chkPrototypeTranshuman.AutoSize = true;
+			this.chkPrototypeTranshuman.Location = new System.Drawing.Point(382, 59);
+			this.chkPrototypeTranshuman.Name = "chkPrototypeTranshuman";
+			this.chkPrototypeTranshuman.Size = new System.Drawing.Size(133, 17);
+			this.chkPrototypeTranshuman.TabIndex = 66;
+			this.chkPrototypeTranshuman.Tag = "Checkbox_PrototypeTranshuman";
+			this.chkPrototypeTranshuman.Text = "Prototype Transhuman";
+			this.chkPrototypeTranshuman.UseVisualStyleBackColor = true;
+			this.chkPrototypeTranshuman.Visible = false;
+			this.chkPrototypeTranshuman.CheckedChanged += new System.EventHandler(this.chkPrototypeTranshuman_CheckedChanged);
+			// 
 			// frmSelectCyberware
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -462,6 +493,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(549, 417);
+			this.Controls.Add(this.chkPrototypeTranshuman);
+			this.Controls.Add(this.chkHideOverAvailLimit);
 			this.Controls.Add(this.nudMarkup);
 			this.Controls.Add(this.lblMarkupLabel);
 			this.Controls.Add(this.lblMarkupPercentLabel);
@@ -554,5 +587,7 @@
 		private System.Windows.Forms.NumericUpDown nudMarkup;
 		private System.Windows.Forms.Label lblMarkupLabel;
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+		private System.Windows.Forms.CheckBox chkPrototypeTranshuman;
 	}
 }

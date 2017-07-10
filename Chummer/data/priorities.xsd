@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="version" type="xs:unsignedByte" />
+        <xs:element name="categories">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="category" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="priorities">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="priority">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:choice maxOccurs="unbounded">
+                      <xs:element name="id" type="xs:string" />
+                      <xs:element name="name" type="xs:string" />
+                      <xs:element name="value" type="xs:string" />
+                      <xs:element name="category" type="xs:string" />
+                      <xs:element name="gameplayoption" type="xs:string" />
+                      <xs:element name="skills" type="xs:unsignedByte" />
+                      <xs:element name="skillgroups" type="xs:unsignedByte" />
+                      <xs:element name="attributes" type="xs:unsignedByte" />
+                      <xs:element name="talents">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element maxOccurs="unbounded" name="talent">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="name" type="xs:string" />
+                                  <xs:element name="value" type="xs:string" />
+                                  <xs:element minOccurs="0" name="depth" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="qualities">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="quality" type="xs:string" />
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="skillgroupchoices">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element maxOccurs="unbounded" name="skillgroup" type="xs:string" />
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="skillchoices">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element maxOccurs="unbounded" name="skill" type="xs:string" />
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="resonance" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="cfp" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="magic" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="skillgroupqty" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="skillgroupval" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="skillgrouptype" type="xs:string" />
+                                  <xs:element minOccurs="0" name="spells" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="skillqty" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="skillval" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="skilltype" type="xs:string" />
+                                  <xs:element minOccurs="0" name="required">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="oneof">
+                                          <xs:complexType>
+                                            <xs:sequence>
+                                              <xs:element name="metatype" type="xs:string" />
+                                            </xs:sequence>
+                                          </xs:complexType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="forbidden">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="oneof">
+                                          <xs:complexType>
+                                            <xs:sequence>
+                                              <xs:element name="metatype" type="xs:string" />
+                                            </xs:sequence>
+                                          </xs:complexType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="metatypes">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element maxOccurs="unbounded" name="metatype">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="name" type="xs:string" />
+                                  <xs:element name="value" type="xs:unsignedByte" />
+                                  <xs:element name="karma" type="xs:unsignedByte" />
+                                  <xs:element minOccurs="0" name="metavariants">
+                                    <xs:complexType>
+                                      <xs:sequence minOccurs="0">
+                                        <xs:element maxOccurs="unbounded" name="metavariant">
+                                          <xs:complexType>
+                                            <xs:sequence>
+                                              <xs:element name="name" type="xs:string" />
+                                              <xs:element name="value" type="xs:unsignedByte" />
+                                              <xs:element name="karma" type="xs:byte" />
+                                            </xs:sequence>
+                                          </xs:complexType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="resources" type="xs:unsignedInt" />
+                    </xs:choice>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

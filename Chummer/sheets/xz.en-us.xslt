@@ -137,6 +137,7 @@
 	<xsl:variable name="lang.Notoriety"		select="'Notoriety'"/>
 	<xsl:variable name="lang.Nuyen"			select="'Nuyen'"/>
 	<xsl:variable name="lang.Other"			select="'Other'"/>
+	<xsl:variable name="lang.OVR"			select="'OVR'"/>
 	<xsl:variable name="lang.Permanent"		select="'Permanent'"/>
 	<xsl:variable name="lang.Persona"		select="'Persona'"/>
 	<xsl:variable name="lang.Physical"		select="'Physical'"/>

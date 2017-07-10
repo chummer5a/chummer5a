@@ -7,8 +7,10 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
+// ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
 {
@@ -337,7 +339,8 @@ namespace Chummer.Classes
 			else
 				frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
 
-			Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
+
+			Log.Info("selectskill = " + bonusNode.OuterXml);
 			if (bonusNode.OuterXml.Contains("skillgroup"))
 				frmPickSkill.OnlySkillGroup = bonusNode.Attributes?["skillgroup"].InnerText;
 			else if (bonusNode.OuterXml.Contains("skillcategory"))
@@ -350,6 +353,9 @@ namespace Chummer.Classes
 				frmPickSkill.LimitToSkill = bonusNode.Attributes?["limittoskill"].InnerText;
 			else if (bonusNode.OuterXml.Contains("limittoattribute"))
 				frmPickSkill.LinkedAttribute = bonusNode.Attributes?["limittoattribute"].InnerText;
+
+            bool useKnowledge = Convert.ToBoolean(bonusNode.Attributes?["knowledgeskills"]?.InnerText);
+            frmPickSkill.ShowKnowledgeSkills = useKnowledge;
 
 			if (!string.IsNullOrEmpty(ForcedValue))
 			{
@@ -379,55 +385,106 @@ namespace Chummer.Classes
 			Log.Info("SourceName = " + SourceName);
 
 			// Find the selected Skill.
-			foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-			{
-				if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
-					frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
-					frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
-				{
-					if (objSkill.Name + " (" + objSkill.Specialization + ")" == frmPickSkill.SelectedSkill)
-					{
-						// We've found the selected Skill.
-						if (bonusNode.InnerXml.Contains("val"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name + " (" + objSkill.Specialization + ")", _objImprovementSource, SourceName,
-								Improvement.ImprovementType.Skill, _strUnique, ValueToInt(bonusNode["val"].InnerText, _intRating), 1,
-								0, 0, 0, 0, string.Empty, blnAddToRating);
-						}
+		    if (useKnowledge)
+		    {
+		        if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.Name == frmPickSkill.SelectedSkill))
+		        {
+		            foreach (KnowledgeSkill k in _objCharacter.SkillsSection.KnowledgeSkills)
+		            {
+		                if (k.Name != frmPickSkill.SelectedSkill) continue;
+		                // We've found the selected Skill.
+		                if (bonusNode.InnerXml.Contains("val"))
+		                {
+		                    Log.Info("Calling CreateImprovement");
+		                    CreateImprovement(k.Name, _objImprovementSource, SourceName,
+		                        Improvement.ImprovementType.Skill,
+		                        _strUnique,
+		                        ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
+		                        blnAddToRating);
+		                }
 
-						if (bonusNode.InnerXml.Contains("max"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name + " (" + objSkill.Specialization + ")", _objImprovementSource, SourceName,
-								Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-								ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
-						}
-					}
-				}
-				else
-				{
-					if (objSkill.Name == frmPickSkill.SelectedSkill)
-					{
-						// We've found the selected Skill.
-						if (bonusNode.InnerXml.Contains("val"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.Skill,
-								_strUnique,
-								ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, blnAddToRating);
-						}
+		                if (!bonusNode.InnerXml.Contains("max")) continue;
+		                Log.Info("Calling CreateImprovement");
+		                CreateImprovement(k.Name, _objImprovementSource, SourceName,
+		                    Improvement.ImprovementType.Skill,
+		                    _strUnique,
+		                    0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+		                    blnAddToRating);
+		            }
+		        }
+		        else
+		        {
+			        KnowledgeSkill k = new KnowledgeSkill(_objCharacter) {WriteableName = frmPickSkill.SelectedSkill};
+			        _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
+                    // We've found the selected Skill.
+                    if (bonusNode.InnerXml.Contains("val"))
+                    {
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.Skill,
+                            _strUnique,
+                            ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
+                            blnAddToRating);
+                    }
 
-						if (bonusNode.InnerXml.Contains("max"))
-						{
-							Log.Info("Calling CreateImprovement");
-							CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.Skill,
-								_strUnique,
-								0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
-						}
-					}
-				}
-			}
+		            if (!bonusNode.InnerXml.Contains("max")) return;
+		            Log.Info("Calling CreateImprovement");
+		            CreateImprovement(k.Name, _objImprovementSource, SourceName,
+		                Improvement.ImprovementType.Skill,
+		                _strUnique,
+		                0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+		                blnAddToRating);
+		        }
+		    }
+		    else
+		        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+		        {
+		            if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
+		                frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
+		                frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
+		            {
+		                if ($"{objSkill.Name} ({objSkill.Specialization})" != frmPickSkill.SelectedSkill) continue;
+		                // We've found the selected Skill.
+		                if (bonusNode.InnerXml.Contains("val"))
+		                {
+		                    Log.Info("Calling CreateImprovement");
+		                    CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
+		                        SourceName,
+		                        Improvement.ImprovementType.Skill, _strUnique,
+		                        ValueToInt(bonusNode["val"].InnerText, _intRating), 1,
+		                        0, 0, 0, 0, string.Empty, blnAddToRating);
+		                }
+
+		                if (!bonusNode.InnerXml.Contains("max")) continue;
+		                Log.Info("Calling CreateImprovement");
+		                CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
+		                    SourceName,
+		                    Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
+		                    ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
+		            }
+		            else
+		            {
+		                if (objSkill.Name != frmPickSkill.SelectedSkill) continue;
+		                // We've found the selected Skill.
+		                if (bonusNode.InnerXml.Contains("val"))
+		                {
+		                    Log.Info("Calling CreateImprovement");
+		                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+		                        Improvement.ImprovementType.Skill,
+		                        _strUnique,
+		                        ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
+		                        blnAddToRating);
+		                }
+
+		                if (!bonusNode.InnerXml.Contains("max")) continue;
+		                Log.Info("Calling CreateImprovement");
+		                CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+		                    Improvement.ImprovementType.Skill,
+		                    _strUnique,
+		                    0, 1, 0, ValueToInt(bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+		                    blnAddToRating);
+		            }
+		        }
 		}
 
 		// Select a Skill Group.
@@ -1045,6 +1102,52 @@ namespace Chummer.Classes
 				_strUnique);
 		}
 
+        // Add a specific Spell to the Character.
+        public void addspell(XmlNode bonusNode)
+        {
+            Log.Info("addspell");
+
+            Log.Info("addspell = " + bonusNode.OuterXml.ToString());
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            XmlDocument objXmlSpellDocument = XmlManager.Instance.Load("spells.xml");
+
+            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + bonusNode.InnerText + "\"]");
+
+            if (node == null) return;
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            if (node["bonus"]?["selecttext"] != null)
+            {
+                
+                frmSelectText frmPickText = new frmSelectText();
+                frmPickText.Description =
+                    LanguageManager.Instance.GetString("String_Improvement_SelectText")
+                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText);
+                frmPickText.ShowDialog();
+                strExtra = frmPickText.SelectedValue;
+            }
+
+            Spell spell = new Spell(_objCharacter);
+            spell.Create(node, _objCharacter, new TreeNode(), strExtra);
+            if (spell.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.Spells.Add(spell);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Spell,
+                _strUnique);
+        }
+
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)
         {
@@ -1332,9 +1435,9 @@ namespace Chummer.Classes
 			}
 			else
 			{
-				CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, string.Empty,
-					Convert.ToInt32(bonusNode["val"].InnerText));
-			}
+                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, string.Empty,
+                    Convert.ToInt32(bonusNode["val"].InnerText));
+            }
 		}
 
 		// Add a paid increase to an attribute
@@ -1349,6 +1452,57 @@ namespace Chummer.Classes
 				CreateImprovement(strAttrib, _objImprovementSource, SourceName,
 					Improvement.ImprovementType.Attributelevel, string.Empty, value);
 			}
+            else if (bonusNode["options"] != null)
+			{
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                if (!string.IsNullOrEmpty(_strFriendlyName))
+                    frmPickAttribute.Description =
+                        LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
+                else
+                    frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
+
+                // Add MAG and/or RES to the list of Attributes if they are enabled on the form.
+                if (_objCharacter.MAGEnabled)
+                    frmPickAttribute.AddMAG();
+                if (_objCharacter.RESEnabled)
+                    frmPickAttribute.AddRES();
+                if (_objCharacter.DEPEnabled)
+                    frmPickAttribute.AddDEP();
+
+                Log.Info("attributelevel = " + bonusNode.OuterXml.ToString());
+
+                List<string> strValue = new List<string>();
+                foreach (XmlNode objSubNode in bonusNode["options"])
+                    strValue.Add(objSubNode.InnerText);
+                frmPickAttribute.LimitToList(strValue);
+
+                // Check to see if there is only one possible selection because of _strLimitSelection.
+                if (!string.IsNullOrEmpty(ForcedValue))
+                    LimitSelection = ForcedValue;
+
+                Log.Info("_strForcedValue = " + ForcedValue);
+                Log.Info("_strLimitSelection = " + LimitSelection);
+
+                if (!string.IsNullOrEmpty(LimitSelection))
+                {
+                    frmPickAttribute.SingleAttribute(LimitSelection);
+                    frmPickAttribute.Opacity = 0;
+                }
+
+                frmPickAttribute.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
+                Log.Info("SourceName = " + SourceName);
+
+                CreateImprovement(frmPickAttribute.SelectedAttribute, _objImprovementSource, SourceName,
+    Improvement.ImprovementType.Attributelevel, string.Empty, value);
+            }
 			else
 			{
 				Log.Error(new object[] { "attributelevel", bonusNode.OuterXml });
@@ -2249,14 +2403,15 @@ namespace Chummer.Classes
 			_objCharacter.RestrictedGear = true;
 		}
 
-		// Check for Adept Linguistics.
-		public void adeptlinguistics(XmlNode bonusNode)
+		// Check for Improvements that grant bonuses to the maximum amount of Native languages a user can have.
+		public void nativelanguagelimit(XmlNode bonusNode)
 		{
-			Log.Info("adeptlinguistics");
-			Log.Info("adeptlinguistics = " + bonusNode.OuterXml.ToString());
+			Log.Info("nativelanguagelimit");
+			Log.Info("nativelanguagelimit = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptLinguistics, _strUnique,
-				1);
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.NativeLanguageLimit,
+				_strUnique,
+				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
 		// Check for Ambidextrous modifiers.
@@ -2407,7 +2562,9 @@ namespace Chummer.Classes
 				throw new AbortedException();
 			}
 
-			SelectedValue = frmPickMentorSpirit.SelectedMentor;
+			XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
+			XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+			SelectedValue = mentorDoc["name"].InnerText;
 
 			string strHoldValue = SelectedValue;
 			if (_blnConcatSelectedValue)
@@ -2463,6 +2620,22 @@ namespace Chummer.Classes
 				_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
 			}
 
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
+
+			if (frmPickMentorSpirit.MentorsMask)
+			{
+				Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
+				Log.Info("Calling CreateImprovement");
+				bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+					_blnConcatSelectedValue, _intRating, _strFriendlyName);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
+				CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
+				if (!blnSuccess)
+				{
+					throw new AbortedException();
+				}
+			}
+
 			SelectedValue = strHoldValue;
 			Log.Info("_strSelectedValue = " + SelectedValue);
 			Log.Info("_strForcedValue = " + ForcedValue);
@@ -2482,11 +2655,16 @@ namespace Chummer.Classes
 			{
 				throw new AbortedException();
 			}
+			
+			XmlDocument doc = XmlManager.Instance.Load("paragons.xml");
+			XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+			SelectedValue = mentorDoc["name"].InnerText;
 
-			SelectedValue = frmPickMentorSpirit.SelectedMentor;
 			string strHoldValue = SelectedValue;
 			if (_blnConcatSelectedValue)
 				SourceName += " (" + SelectedValue + ")";
+
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
 
 			if (frmPickMentorSpirit.BonusNode != null)
 			{
@@ -2681,7 +2859,6 @@ namespace Chummer.Classes
 		// Check for Adept Powers
 		public void specificpower(XmlNode bonusNode)
 		{
-			//TODO: Probably broken
 			Log.Info("specificpower");
 			Log.Info("specificpower = " + bonusNode.OuterXml.ToString());
 			// If the character isn't an adept or mystic adept, skip the rest of this.
@@ -2697,357 +2874,28 @@ namespace Chummer.Classes
 				int intLevels = 0;
 				if (bonusNode["val"] != null)
 					intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
-				bool blnFree = false;
-				if (bonusNode["free"] != null)
-					blnFree = (bonusNode["free"].InnerText == "yes");
 
 				string strPowerNameLimit = strPowerName;
-				if (bonusNode["selectlimit"] != null)
-				{
-					Log.Info("selectlimit = " + bonusNode["selectlimit"].OuterXml.ToString());
-					ForcedValue = string.Empty;
-					// Display the Select Limit window and record which Limit was selected.
-					frmSelectLimit frmPickLimit = new frmSelectLimit();
-					if (!string.IsNullOrEmpty(_strFriendlyName))
-						frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
-							.Replace("{0}", _strFriendlyName);
-					else
-						frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
-
-					if (bonusNode["selectlimit"].InnerXml.Contains("<limit>"))
-					{
-						List<string> strValue = new List<string>();
-						foreach (XmlNode objXmlAttribute in bonusNode["selectlimit"].SelectNodes("limit"))
-							strValue.Add(objXmlAttribute.InnerText);
-						frmPickLimit.LimitToList(strValue);
-					}
-
-					if (bonusNode["selectlimit"].InnerXml.Contains("<excludelimit>"))
-					{
-						List<string> strValue = new List<string>();
-						foreach (XmlNode objXmlAttribute in bonusNode["selectlimit"].SelectNodes("excludelimit"))
-							strValue.Add(objXmlAttribute.InnerText);
-						frmPickLimit.RemoveFromList(strValue);
-					}
-
-					// Check to see if there is only one possible selection because of _strLimitSelection.
-					if (!string.IsNullOrEmpty(ForcedValue))
-						LimitSelection = ForcedValue;
-
-					Log.Info("_strForcedValue = " + ForcedValue);
-					Log.Info("_strLimitSelection = " + LimitSelection);
-
-					if (!string.IsNullOrEmpty(LimitSelection))
-					{
-						frmPickLimit.SingleLimit(LimitSelection);
-						frmPickLimit.Opacity = 0;
-					}
-
-					frmPickLimit.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickLimit.DialogResult == DialogResult.Cancel)
-					{
-						throw new AbortedException();
-					}
-
-					SelectedValue = frmPickLimit.SelectedLimit;
-					strSelection = SelectedValue;
-					ForcedValue = SelectedValue;
-
-					Log.Info("_strForcedValue = " + ForcedValue);
-					Log.Info("_strLimitSelection = " + LimitSelection);
-				}
-
-				if (bonusNode["selectskill"] != null)
-				{
-					Log.Info("selectskill = " + bonusNode["selectskill"].OuterXml);
-					XmlNode nodSkill = bonusNode;
-					// Display the Select Skill window and record which Skill was selected.
-					frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-					if (!string.IsNullOrEmpty(_strFriendlyName))
-						frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-							.Replace("{0}", _strFriendlyName);
-					else
-						frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-					if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillgroup"))
-						frmPickSkill.OnlySkillGroup = nodSkill.SelectSingleNode("selectskill").Attributes["skillgroup"].InnerText;
-					else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillcategory"))
-						frmPickSkill.OnlyCategory = nodSkill.SelectSingleNode("selectskill").Attributes["skillcategory"].InnerText;
-					else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("excludecategory"))
-						frmPickSkill.ExcludeCategory = nodSkill.SelectSingleNode("selectskill").Attributes["excludecategory"].InnerText;
-					else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("limittoskill"))
-						frmPickSkill.LimitToSkill = nodSkill.SelectSingleNode("selectskill").Attributes["limittoskill"].InnerText;
-
-					if (ForcedValue.StartsWith("Adept:") || ForcedValue.StartsWith("Magician:"))
-						ForcedValue = string.Empty;
-
-					Log.Info("_strForcedValue = " + ForcedValue);
-					Log.Info("_strLimitSelection = " + LimitSelection);
-
-					if (!string.IsNullOrEmpty(ForcedValue))
-					{
-						frmPickSkill.OnlySkill = ForcedValue;
-						frmPickSkill.Opacity = 0;
-					}
-					frmPickSkill.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickSkill.DialogResult == DialogResult.Cancel)
-					{
-						throw new AbortedException();
-					}
-
-					SelectedValue = frmPickSkill.SelectedSkill;
-					ForcedValue = SelectedValue;
-					strSelection = SelectedValue;
-
-					Log.Info("_strForcedValue = " + ForcedValue);
-					Log.Info("_strSelectedValue = " + SelectedValue);
-					Log.Info("strSelection = " + strSelection);
-				}
-
-				if (bonusNode["selecttext"] != null)
-				{
-					Log.Info("selecttext = " + bonusNode["selecttext"].OuterXml.ToString());
-					frmSelectText frmPickText = new frmSelectText();
-
-
-					if (_objCharacter.Pushtext.Count > 0)
-					{
-						strSelection = _objCharacter.Pushtext.Pop();
-					}
-					else
-					{
-						frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-							.Replace("{0}", _strFriendlyName);
-
-						Log.Info("_strForcedValue = " + ForcedValue);
-						Log.Info("_strLimitSelection = " + LimitSelection);
-
-						if (!string.IsNullOrEmpty(LimitSelection))
-						{
-							frmPickText.SelectedValue = LimitSelection;
-							frmPickText.Opacity = 0;
-						}
-
-						frmPickText.ShowDialog();
-
-						// Make sure the dialogue window was not canceled.
-						if (frmPickText.DialogResult == DialogResult.Cancel)
-						{
-							throw new AbortedException();
-						}
-
-						strSelection = frmPickText.SelectedValue;
-						LimitSelection = strSelection;
-					}
-					Log.Info("_strLimitSelection = " + LimitSelection);
-					Log.Info("strSelection = " + strSelection);
-				}
-
-				if (bonusNode["specificattribute"] != null)
-				{
-					Log.Info("specificattribute = " + bonusNode["specificattribute"].OuterXml.ToString());
-					strSelection = bonusNode["specificattribute"]["name"].InnerText.ToString();
-					Log.Info(
-						"strSelection = " + strSelection);
-				}
-
-				if (bonusNode["selectattribute"] != null)
-				{
-					Log.Info("selectattribute = " + bonusNode["selectattribute"].OuterXml.ToString());
-					XmlNode nodSkill = bonusNode;
-					if (ForcedValue.StartsWith("Adept"))
-						ForcedValue = string.Empty;
-
-					// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
-					frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-					if (!string.IsNullOrEmpty(_strFriendlyName))
-						frmPickAttribute.Description =
-							LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
-					else
-						frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-					// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-					if (_objCharacter.MAGEnabled)
-						frmPickAttribute.AddMAG();
-					if (_objCharacter.RESEnabled)
-						frmPickAttribute.AddRES();
-                    if (_objCharacter.DEPEnabled)
-                        frmPickAttribute.AddDEP();
-
-                    if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
-					{
-						List<string> strValue = new List<string>();
-						foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
-							strValue.Add(objXmlAttribute.InnerText);
-						frmPickAttribute.LimitToList(strValue);
-					}
-
-					if (nodSkill["selectattribute"].InnerXml.Contains("<excludeattribute>"))
-					{
-						List<string> strValue = new List<string>();
-						foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("excludeattribute"))
-							strValue.Add(objXmlAttribute.InnerText);
-						frmPickAttribute.RemoveFromList(strValue);
-					}
-
-					// Check to see if there is only one possible selection because of _strLimitSelection.
-					if (!string.IsNullOrEmpty(ForcedValue))
-						LimitSelection = ForcedValue;
-
-					Log.Info("_strForcedValue = " + ForcedValue);
-					Log.Info("_strLimitSelection = " + LimitSelection);
-
-					if (!string.IsNullOrEmpty(LimitSelection))
-					{
-						frmPickAttribute.SingleAttribute(LimitSelection);
-						frmPickAttribute.Opacity = 0;
-					}
-
-					frmPickAttribute.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-					{
-						throw new AbortedException();
-					}
-
-					SelectedValue = frmPickAttribute.SelectedAttribute;
-					if (_blnConcatSelectedValue)
-						SourceName += " (" + SelectedValue + ")";
-					strSelection = SelectedValue;
-					ForcedValue = SelectedValue;
-
-					Log.Info("_strSelectedValue = " + SelectedValue);
-					Log.Info("SourceName = " + SourceName);
-					Log.Info("_strForcedValue = " + ForcedValue);
-				}
 
 				// Check if the character already has this power
-				Log.Info("strSelection = " + strSelection);
-				bool blnHasPower = false;
-				Power objPower = new Power(_objCharacter);
-				foreach (Power power in _objCharacter.Powers)
+					Log.Info("strSelection = " + strSelection);
+				Power objNewPower = new Power(_objCharacter);
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+				XmlNode objXmlPower =
+					objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerNameLimit + "\"]");
+				objNewPower.Create(objXmlPower, _manager, 0);
+
+				bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+				if (!blnHasPower)
 				{
-					if (power.Name == strPowerNameLimit)
-					{
-						if (!string.IsNullOrEmpty(power.Extra) && power.Extra == strSelection)
-						{
-							blnHasPower = true;
-							objPower = power;
-						}
-						else if (string.IsNullOrEmpty(power.Extra))
-						{
-							blnHasPower = true;
-							objPower = power;
-						}
+					_objCharacter.Powers.Add(objNewPower);
 					}
-				}
 
 				Log.Info("blnHasPower = " + blnHasPower);
-
-				if (blnHasPower)
-				{
-					// If yes, mark it free or give it free levels
-					if (blnFree)
-					{
-						objPower.Free = true;
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
 					}
-					else
-					{
-						objPower.FreeLevels += intLevels;
-						if (objPower.Rating < objPower.FreeLevels)
-							objPower.Rating = objPower.FreeLevels;
 					}
-				}
-				else
-				{
-					Log.Info("Adding Power " + strPowerName);
-					// If no, add the power and mark it free or give it free levels
-					objPower = new Power(_objCharacter);
-					_objCharacter.Powers.Add(objPower);
-
-					// Get the Power information
-					XmlDocument objXmlDocument = new XmlDocument();
-					objXmlDocument = XmlManager.Instance.Load("powers.xml");
-					XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
-					Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
-
-					bool blnLevels = false;
-					if (objXmlPower["levels"] != null)
-						blnLevels = (objXmlPower["levels"].InnerText != "no");
-					objPower.LevelsEnabled = blnLevels;
-					objPower.Name = strPowerNameLimit;
-					if (!string.IsNullOrEmpty(strSelection))
-						objPower.Extra = strSelection;
-					if (objXmlPower["doublecost"] != null)
-						objPower.DoubleCost = false;
-					objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
-					objPower.Source = objXmlPower["source"].InnerText;
-					objPower.Page = objXmlPower["page"].InnerText;
-
-					if (objPower.LevelsEnabled)
-					{
-						if (objPower.Name == "Improved Ability (skill)")
-						{
-							foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							{
-								if (objPower.Extra == objSkill.Name ||
-									(objSkill.IsExoticSkill &&
-									 objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
-								{
-									int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-									if (intImprovedAbilityMaximum == 0)
-									{
-										intImprovedAbilityMaximum = 1;
-									}
-									objPower.MaxLevels = intImprovedAbilityMaximum;
-								}
-							}
-						}
-						else if (objXmlPower["levels"].InnerText != "yes")
-						{
-							objPower.MaxLevels = Convert.ToInt32(objXmlPower["levels"].InnerText);
-						}
-						else
-						{
-							objPower.MaxLevels = _objCharacter.MAG.TotalValue;
-						}
-					}
-
-					if (blnFree && objPower.MaxLevels == 0)
-					{
-						objPower.Free = true;
-					}
-					else
-					{
-						objPower.FreeLevels += intLevels;
-						if (objPower.Rating < intLevels)
-							objPower.Rating = objPower.FreeLevels;
-					}
-
-					if (objXmlPower.InnerXml.Contains("bonus"))
-					{
-						objPower.Bonus = objXmlPower["bonus"];
-						Log.Info("Calling CreateImprovements");
-						if (
-							!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
-								Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-						{
-							_objCharacter.Powers.Remove(objPower);
-						}
-					}
-				}
-				SelectedValue = string.Empty;
-				ForcedValue = string.Empty;
-				strSelection = string.Empty;
-			}
-			Log.Info("Calling CreateImprovement");
-			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPower, string.Empty);
-		}
 
 		// Select a Power.
 		public void selectpowers(XmlNode bonusNode)
@@ -3059,73 +2907,19 @@ namespace Chummer.Classes
 				Log.Info("_strSelectedValue = " + SelectedValue);
 				Log.Info("_strForcedValue = " + ForcedValue);
 
-				//Gerry: These unfortunately did not work in any case of multiple bonuses
-				// Switched the setting of powerpoints and levels to ADDING them
-				// Remove resetting powerpoints.
-				bool blnExistingPower = false;
-				foreach (Power objExistingPower in _objCharacter.Powers)
-				{
-					if (objExistingPower.Name.StartsWith("Improved Reflexes"))
-					{
-						if (objExistingPower.Name.EndsWith("1"))
-						{
-							if (objExistingPower.Name.EndsWith("1"))
-							{
-								if (_intRating >= 6)
-									objExistingPower.FreePoints += 1.5M;
-								//else
-								//	objExistingPower.FreePoints = 0;
-							}
-							else if (objExistingPower.Name.EndsWith("2"))
-							{
-								if (_intRating >= 10)
-									objExistingPower.FreePoints += 2.5M;
-								else if (_intRating >= 4)
-									objExistingPower.FreePoints += 1.0M;
-								//else
-								//	objExistingPower.FreePoints = 0;
-							}
-							else
-							{
-								if (_intRating >= 14)
-									objExistingPower.FreePoints += 3.5M;
-								else if (_intRating >= 8)
-									objExistingPower.FreePoints += 2.0M;
-								else if (_intRating >= 4)
-									objExistingPower.FreePoints += 1.0M;
-								//else
-								//	objExistingPower.FreePoints = 0;
-							}
-						}
-						else
-						{
-							// we have to adjust the number of free levels.
-							decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objExistingPower.PointsPerLevel);
-							objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
-							if (objExistingPower.Rating < _intRating)
-								objExistingPower.Rating = objExistingPower.FreeLevels;
-							break;
-						}
-					}
-					else
-					{
-						// we have to adjust the number of free levels.
-						decimal decLevels = Convert.ToDecimal(_intRating) / 4;
-						decLevels = Math.Floor(decLevels / objExistingPower.PointsPerLevel);
-						objExistingPower.FreeLevels = Convert.ToInt32(decLevels);
-						if (objExistingPower.Rating < _intRating)
-							objExistingPower.Rating = objExistingPower.FreeLevels;
-						break;
-					}
-					//}
-				}
-
-				if (!blnExistingPower)
-				{
-					// Display the Select Skill window and record which Skill was selected.
+				// Display the Select Power window and record which Power was selected.
 					frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
 					Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
+				int intLevels = 0;
+			    if (objNode["ignorerating"] != null)
+			        frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
+				if (objNode["val"] != null)
+					intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
+				if (objNode["pointsperlevel"] != null)
+					frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
+				if (objNode["limit"] != null)
+					frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating",_intRating.ToString()));
 					if (objNode.OuterXml.Contains("limittopowers"))
 						frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
 					frmPickPower.ShowDialog();
@@ -3133,9 +2927,11 @@ namespace Chummer.Classes
 					// Make sure the dialogue window was not canceled.
 					if (frmPickPower.DialogResult == DialogResult.Cancel)
 					{
-						throw new AbortedException();
+					//TODO: Rollback is unimplemented.
+					Rollback();
 					}
-
+				else
+				{
 					SelectedValue = frmPickPower.SelectedPower;
 					if (_blnConcatSelectedValue)
 						SourceName += " (" + SelectedValue + ")";
@@ -3143,381 +2939,34 @@ namespace Chummer.Classes
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 					XmlNode objXmlPower =
 						objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
-					string strSelection = string.Empty;
-
-					Log.Info("_strSelectedValue = " + SelectedValue);
-					Log.Info("SourceName = " + SourceName);
-
-					XmlNode objBonus = objXmlPower["bonus"];
-
-					string strPowerNameLimit = SelectedValue;
-					if (objBonus != null)
-					{
-						if (objBonus["selectlimit"] != null)
-						{
-							Log.Info("selectlimit = " + objBonus["selectlimit"].OuterXml.ToString());
-							ForcedValue = string.Empty;
-							// Display the Select Limit window and record which Limit was selected.
-							frmSelectLimit frmPickLimit = new frmSelectLimit();
-							if (!string.IsNullOrEmpty(_strFriendlyName))
-								frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
-									.Replace("{0}", _strFriendlyName);
-							else
-								frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
-
-							if (objBonus["selectlimit"].InnerXml.Contains("<limit>"))
-							{
-								List<string> strValue = new List<string>();
-								foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("limit"))
-									strValue.Add(objXmlAttribute.InnerText);
-								frmPickLimit.LimitToList(strValue);
-							}
-
-							if (objBonus["selectlimit"].InnerXml.Contains("<excludelimit>"))
-							{
-								List<string> strValue = new List<string>();
-								foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("excludelimit"))
-									strValue.Add(objXmlAttribute.InnerText);
-								frmPickLimit.RemoveFromList(strValue);
-							}
-
-							// Check to see if there is only one possible selection because of _strLimitSelection.
-							if (!string.IsNullOrEmpty(ForcedValue))
-								LimitSelection = ForcedValue;
-
-							Log.Info("_strForcedValue = " + ForcedValue);
-							Log.Info("_strLimitSelection = " + LimitSelection);
-
-							if (!string.IsNullOrEmpty(LimitSelection))
-							{
-								frmPickLimit.SingleLimit(LimitSelection);
-								frmPickLimit.Opacity = 0;
-							}
-
-							frmPickLimit.ShowDialog();
-
-							// Make sure the dialogue window was not canceled.
-							if (frmPickLimit.DialogResult == DialogResult.Cancel)
-							{
-								throw new AbortedException();
-							}
-
-							SelectedValue = frmPickLimit.SelectedLimit;
-							strSelection = SelectedValue;
-							ForcedValue = SelectedValue;
-
-							Log.Info("_strForcedValue = " + ForcedValue);
-							Log.Info("_strLimitSelection = " + LimitSelection);
-						}
-
-						if (objBonus["selectskill"] != null)
-						{
-							Log.Info("selectskill = " + objBonus["selectskill"].OuterXml.ToString());
-							XmlNode nodSkill = objBonus;
-							// Display the Select Skill window and record which Skill was selected.
-							frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-							if (!string.IsNullOrEmpty(_strFriendlyName))
-								frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-									.Replace("{0}", _strFriendlyName);
-							else
-								frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-							if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillgroup"))
-								frmPickSkill.OnlySkillGroup = nodSkill.SelectSingleNode("selectskill").Attributes["skillgroup"].InnerText;
-							else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillcategory"))
-								frmPickSkill.OnlyCategory = nodSkill.SelectSingleNode("selectskill").Attributes["skillcategory"].InnerText;
-							else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("excludecategory"))
-								frmPickSkill.ExcludeCategory = nodSkill.SelectSingleNode("selectskill").Attributes["excludecategory"].InnerText;
-							else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("limittoskill"))
-								frmPickSkill.LimitToSkill = nodSkill.SelectSingleNode("selectskill").Attributes["limittoskill"].InnerText;
-
-							if (ForcedValue.StartsWith("Adept:") || ForcedValue.StartsWith("Magician:"))
-								ForcedValue = string.Empty;
-
-							Log.Info("_strForcedValue = " + ForcedValue);
-							Log.Info("_strLimitSelection = " + LimitSelection);
-
-							if (!string.IsNullOrEmpty(ForcedValue))
-							{
-								frmPickSkill.OnlySkill = ForcedValue;
-								frmPickSkill.Opacity = 0;
-							}
-							frmPickSkill.ShowDialog();
-
-							// Make sure the dialogue window was not canceled.
-							if (frmPickSkill.DialogResult == DialogResult.Cancel)
-							{
-								throw new AbortedException();
-							}
-
-							SelectedValue = frmPickSkill.SelectedSkill;
-							ForcedValue = SelectedValue;
-							strSelection = SelectedValue;
-
-							Log.Info("_strForcedValue = " + ForcedValue);
-							Log.Info("_strSelectedValue = " + SelectedValue);
-							Log.Info("strSelection = " + strSelection);
-						}
-
-						if (objBonus["selecttext"] != null)
-						{
-							Log.Info("selecttext = " + objBonus["selecttext"].OuterXml.ToString());
-							frmSelectText frmPickText = new frmSelectText();
-							frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-								.Replace("{0}", _strFriendlyName);
-
-							Log.Info("_strForcedValue = " + ForcedValue);
-							Log.Info("_strLimitSelection = " + LimitSelection);
-
-							if (!string.IsNullOrEmpty(LimitSelection))
-							{
-								frmPickText.SelectedValue = LimitSelection;
-								frmPickText.Opacity = 0;
-							}
-
-							frmPickText.ShowDialog();
-
-							// Make sure the dialogue window was not canceled.
-							if (frmPickText.DialogResult == DialogResult.Cancel)
-							{
-								throw new AbortedException();
-							}
-
-							strSelection = frmPickText.SelectedValue;
-							LimitSelection = strSelection;
-
-							Log.Info("_strLimitSelection = " + LimitSelection);
-							Log.Info("strSelection = " + strSelection);
-						}
-
-						if (objBonus["specificattribute"] != null)
-						{
-							Log.Info("specificattribute = " + objBonus["specificattribute"].OuterXml.ToString());
-							strSelection = objBonus["specificattribute"]["name"].InnerText.ToString();
-							Log.Info("strSelection = " + strSelection);
-						}
-
-						if (objBonus["selectattribute"] != null)
-						{
-							Log.Info("selectattribute = " + objBonus["selectattribute"].OuterXml.ToString());
-							XmlNode nodSkill = objBonus;
-							if (ForcedValue.StartsWith("Adept"))
-								ForcedValue = string.Empty;
-
-							// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
-							frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-							if (!string.IsNullOrEmpty(_strFriendlyName))
-								frmPickAttribute.Description =
-									LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", _strFriendlyName);
-							else
-								frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-							// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-							if (_objCharacter.MAGEnabled)
-								frmPickAttribute.AddMAG();
-							if (_objCharacter.RESEnabled)
-								frmPickAttribute.AddRES();
-                            if (_objCharacter.DEPEnabled)
-                                frmPickAttribute.AddDEP();
-
-                            if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
-							{
-								List<string> strValue = new List<string>();
-								foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
-									strValue.Add(objXmlAttribute.InnerText);
-								frmPickAttribute.LimitToList(strValue);
-							}
-
-							if (nodSkill["selectattribute"].InnerXml.Contains("<excludeattribute>"))
-							{
-								List<string> strValue = new List<string>();
-								foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("excludeattribute"))
-									strValue.Add(objXmlAttribute.InnerText);
-								frmPickAttribute.RemoveFromList(strValue);
-							}
-
-							// Check to see if there is only one possible selection because of _strLimitSelection.
-							if (!string.IsNullOrEmpty(ForcedValue))
-								LimitSelection = ForcedValue;
-
-							Log.Info("_strForcedValue = " + ForcedValue);
-							Log.Info("_strLimitSelection = " + LimitSelection);
-
-							if (!string.IsNullOrEmpty(LimitSelection))
-							{
-								frmPickAttribute.SingleAttribute(LimitSelection);
-								frmPickAttribute.Opacity = 0;
-							}
-
-							frmPickAttribute.ShowDialog();
-
-							// Make sure the dialogue window was not canceled.
-							if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-							{
-								throw new AbortedException();
-							}
-
-							SelectedValue = frmPickAttribute.SelectedAttribute;
-							if (_blnConcatSelectedValue)
-								SourceName += " (" + SelectedValue + ")";
-							strSelection = SelectedValue;
-							ForcedValue = SelectedValue;
-
-							Log.Info("_strSelectedValue = " + SelectedValue);
-							Log.Info("SourceName = " + SourceName);
-							Log.Info("_strForcedValue = " + ForcedValue);
-						}
-					}
 
 					// If no, add the power and mark it free or give it free levels
-					Power objPower = new Power(_objCharacter);
-					bool blnHasPower = false;
+					Power objNewPower = new Power(_objCharacter);
+					objNewPower.Create(objXmlPower, _manager,0);
 
-					foreach (Power power in _objCharacter.Powers)
-					{
-						if (power.Name == objXmlPower["name"].InnerText)
-						{
-							if (!string.IsNullOrEmpty(power.Extra) && power.Extra == strSelection)
-							{
-								blnHasPower = true;
-								objPower = power;
-							}
-							else if (string.IsNullOrEmpty(power.Extra))
-							{
-								blnHasPower = true;
-								objPower = power;
-							}
-						}
-					}
+					bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 
 					Log.Info("blnHasPower = " + blnHasPower);
 
-					if (blnHasPower)
-					{
-						// If yes, mark it free or give it free levels
-						if (objXmlPower["levels"].InnerText == "no")
+					if (!blnHasPower)
 						{
-							if (objPower.Name.StartsWith("Improved Reflexes"))
-							{
-								if (objPower.Name.EndsWith("1"))
-								{
-									if (_intRating >= 6)
-										objPower.FreePoints = 1.5M;
-									else
-										objPower.FreePoints = 0;
-								}
-								else if (objPower.Name.EndsWith("2"))
-								{
-									if (_intRating >= 10)
-										objPower.FreePoints = 2.5M;
-									else if (_intRating >= 4)
-										objPower.FreePoints = 1.0M;
-									else
-										objPower.FreePoints = 0;
-								}
-								else
-								{
-									if (_intRating >= 14)
-										objPower.FreePoints = 3.5M;
-									else if (_intRating >= 8)
-										objPower.FreePoints = 2.0M;
-									else if (_intRating >= 4)
-										objPower.FreePoints = 1.0M;
-									else
-										objPower.FreePoints = 0;
-								}
-							}
-							else
-							{
-								objPower.Free = true;
-							}
-						}
-						else
-						{
-                            decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objPower.PointsPerLevel);
-                            objPower.FreeLevels += Convert.ToInt32(decLevels);
-							objPower.Rating += Convert.ToInt32(decLevels);
-						}
-						objPower.BonusSource = SourceName;
-					}
-					else
-					{
-						Log.Info("Adding Power " + SelectedValue);
-						// Get the Power information
-						_objCharacter.Powers.Add(objPower);
-						Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
-
-						bool blnLevels = false;
-						if (objXmlPower["levels"] != null)
-							blnLevels = (objXmlPower["levels"].InnerText == "yes");
-						objPower.LevelsEnabled = blnLevels;
-						objPower.Name = objXmlPower["name"].InnerText;
-						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
-						objPower.Source = objXmlPower["source"].InnerText;
-						objPower.Page = objXmlPower["page"].InnerText;
-						objPower.BonusSource = SourceName;
-						if (!string.IsNullOrEmpty(strSelection))
-							objPower.Extra = strSelection;
-						if (objXmlPower["doublecost"] != null)
-							objPower.DoubleCost = false;
-
-						if (objXmlPower["levels"].InnerText == "no")
-						{
-							if (objPower.Name.StartsWith("Improved Reflexes"))
-							{
-								if (objPower.Name.EndsWith("1"))
-								{
-									if (_intRating >= 6)
-										objPower.FreePoints = 1.5M;
-									else
-										objPower.FreePoints = 0;
-								}
-								else if (objPower.Name.EndsWith("2"))
-								{
-									if (_intRating >= 10)
-										objPower.FreePoints = 2.5M;
-									else if (_intRating >= 4)
-										objPower.FreePoints = 1.0M;
-									else
-										objPower.FreePoints = 0;
-								}
-								else
-								{
-									if (_intRating >= 14)
-										objPower.FreePoints = 3.5M;
-									else if (_intRating >= 8)
-										objPower.FreePoints = 2.0M;
-									else if (_intRating >= 4)
-										objPower.FreePoints = 1.0M;
-									else
-										objPower.FreePoints = 0;
-								}
-							}
-							else
-							{
-								objPower.Free = true;
-							}
-						}
-						else
-						{
-                            decimal decLevels = Math.Floor(Convert.ToDecimal(_intRating) / 4.0m / objPower.PointsPerLevel);
-                            objPower.FreeLevels += Convert.ToInt32(decLevels);
-							if (objPower.Rating < _intRating)
-								objPower.Rating = objPower.FreeLevels;
+						_objCharacter.Powers.Add(objNewPower);
 						}
 
-						if (objXmlPower.InnerXml.Contains("bonus"))
-						{
-							objPower.Bonus = objXmlPower["bonus"];
-							Log.Info("Calling CreateImprovements");
-							if (
-								!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
-									Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-							{
-								_objCharacter.Powers.Remove(objPower);
-							}
-						}
-					}
+					Log.Info("blnHasPower = " + blnHasPower);
+					Log.Info("Calling CreateImprovement");
+					CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
+
+				    if (blnHasPower)
+				    {
+				        foreach (
+				            Power objPower in
+				            _objCharacter.Powers.Where(
+				                objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
+				        {
+				            objPower.ForceEvent(nameof(Power.FreeLevels));
+				        }
+				    }
 				}
 			}
 		}
@@ -3745,6 +3194,41 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
+		// Check for Free Spells.
+		public void freespells(XmlNode bonusNode)
+		{
+			Log.Info("freespells");
+			Log.Info("freespells = " + bonusNode.OuterXml.ToString());
+			if (bonusNode.Attributes?["attribute"] != null)
+			{
+				Log.Info("attribute");
+				CharacterAttrib att = _objCharacter.GetAttribute(bonusNode.Attributes?["attribute"].InnerText);
+				if (att != null)
+				{
+					Log.Info(att.Abbrev);
+					Log.Info("Calling CreateImprovement");
+					CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, string.Empty);
+				}
+			}
+			else if (bonusNode.Attributes?["skill"] != null)
+			{
+				Log.Info("skill");
+				Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode.Attributes["skill"].InnerText);
+				Log.Info(bonusNode.Attributes["skill"].InnerText);
+				if (objSkill != null)
+				{
+					Log.Info("Calling CreateImprovement");
+					CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill,string.Empty);
+				}
+			}
+			else
+			{
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, string.Empty,
+					ValueToInt(bonusNode.InnerText, _intRating));
+			}
+		}
+
 		// Check for Spell Category bonuses.
 		public void spellcategory(XmlNode bonusNode)
 		{
@@ -3827,6 +3311,16 @@ namespace Chummer.Classes
 		}
 
 		// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
+		public void essencepenalty(XmlNode bonusNode)
+		{
+			Log.Info("essencepenalty");
+			Log.Info("essencepenalty = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, string.Empty,
+				ValueToInt(bonusNode.InnerText, _intRating));
+		}
+
+		// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
 		public void essencemax(XmlNode bonusNode)
 		{
 			Log.Info("essencemax");
@@ -3848,10 +3342,7 @@ namespace Chummer.Classes
 			foreach (XmlNode objXmlNode in objXmlNodeList)
 			{
 				ListItem objItem = new ListItem();
-				if (objXmlNode["translate"] != null)
-					objItem.Name = objXmlNode["translate"].InnerText;
-				else
-					objItem.Name = objXmlNode["name"].InnerText;
+				objItem.Name = objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText;
 				objItem.Value = objItem.Name;
 				lstCritters.Add(objItem);
 			}
@@ -3953,6 +3444,61 @@ namespace Chummer.Classes
 				Log.Info("SelectedValue = " + strSelectedValue);
 			}
 
+		}
+
+		// Select a specific piece of Cyberware.
+		public void selectcyberware(XmlNode bonusNode)
+		{
+			Log.Info("selectcyberware");
+			Log.Info("selectcyberware = " + bonusNode.OuterXml);
+			if (!string.IsNullOrEmpty(ForcedValue))
+				LimitSelection = ForcedValue;
+
+			// Display the Select Item window and record the value that was entered.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+			XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes(bonusNode["category"] != null 
+			? $"/chummer/cyberwares/cyberware[(category = '{bonusNode["category"].InnerText}') and ({_objCharacter.Options.BookXPath()})]" 
+			: $"/chummer/cyberwares/cyberware[({_objCharacter.Options.BookXPath()})]");
+
+			List<ListItem> list = new List<ListItem>();
+			foreach (XmlNode objNode in objXmlNodeList)
+			{
+				ListItem objItem = new ListItem();
+				objItem.Value = objNode["name"]?.InnerText;
+				objItem.Name = objNode.Attributes?["translate"]?.InnerText ?? objNode["name"]?.InnerText;
+				list.Add(objItem);
+			}
+
+			if (list.Count <= 0) return;
+			frmSelectItem frmPickItem = new frmSelectItem();
+			frmPickItem.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+				.Replace("{0}", _strFriendlyName);
+			frmPickItem.GeneralItems = list;
+
+			Log.Info("_strLimitSelection = " + LimitSelection);
+			Log.Info("_strForcedValue = " + ForcedValue);
+
+			if (!string.IsNullOrEmpty(LimitSelection))
+			{
+				frmPickItem.ForceItem = LimitSelection;
+				frmPickItem.Opacity = 0;
+			}
+
+			frmPickItem.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickItem.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickItem.SelectedItem;
+			if (_blnConcatSelectedValue)
+				SourceName += " (" + SelectedValue + ")";
+
+			string strSelectedValue = frmPickItem.SelectedItem;
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("SelectedValue = " + strSelectedValue);
 		}
 
 		// Select Weapon (custom entry for things like Spare Clip).
@@ -4342,17 +3888,122 @@ namespace Chummer.Classes
 		public void addskillspecializationoption(XmlNode bonusNode)
 		{
 			if (!(_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)) return;
-			Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
-			if (objSkill == null) return;
-			// Create the Improvement.
-			Log.Info("Calling CreateImprovement");
-			CreateImprovement(bonusNode["skill"].InnerText, _objImprovementSource, SourceName,
-				Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
-			SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
-			objSkill.Specializations.Add(nspec);
+            var lstSkills = new List<Skill>();
+            if (bonusNode["skills"] != null)
+		    {
+		        foreach (XmlNode objNode in bonusNode["skills"])
+		        {
+                    var objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objNode.InnerText);
+                    if (objSkill != null)
+                    {
+                        lstSkills.Add(objSkill);
+                    }
+                }
+		    }
+		    else
+            {
+                var objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
+                if (objSkill != null)
+                {
+                    lstSkills.Add(objSkill);
+                }
+            }
+                
+			if (lstSkills.Count == 0) return;
+		    foreach (var objSkill in lstSkills)
+		    {
+		        // Create the Improvement.
+		        Log.Info("Calling CreateImprovement");
+		        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+		            Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
+		        SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
+		        objSkill.Specializations.Add(nspec);
+		    }
 		}
-		#endregion
-	}
+		
+		public void spellkarmadiscount(XmlNode bonusNode)
+		{
+			Log.Info("spellkarmadiscount");
+			Log.Info("spellkarmadiscount = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellKarmaDiscount, string.Empty,
+				ValueToInt(bonusNode.InnerText, _intRating));
+		}
+
+		public void limitspellcategory(XmlNode bonusNode)
+		{
+			Log.Info("limitspellcategory");
+			// Display the Select Spell window.
+			frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory();
+			frmPickSpellCategory.Description = LanguageManager.Instance.GetString("Title_SelectSpellCategory");
+			frmPickSpellCategory.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickSpellCategory.SelectedCategory;
+			if (_blnConcatSelectedValue)
+				SourceName += " (" + SelectedValue + ")";
+
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("SourceName = " + SourceName);
+
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement(frmPickSpellCategory.SelectedCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory,
+				_strUnique);
+		}
+
+		public void limitspiritcategory(XmlNode bonusNode)
+		{
+			Log.Info("limitspiritcategory");
+			XmlDocument spiritDoc = XmlManager.Instance.Load("traditions.xml");
+			XmlNodeList xmlSpirits = spiritDoc.SelectNodes("/chummer/spirits/spirit");
+
+			var spirits = (from XmlNode spirit in xmlSpirits
+				select new ListItem
+				{
+					Value = spirit["name"].InnerText, 
+					Name = spirit["translate"]?.InnerText ?? spirit["name"].InnerText
+				}).ToList();
+
+			frmSelectItem frmSelect = new frmSelectItem {GeneralItems = spirits};
+			frmSelect.ShowDialog();
+			
+			if (frmSelect.DialogResult == DialogResult.Cancel)
+			{
+				throw new AbortedException();
+			}
+			CreateImprovement(frmSelect.SelectedItem, Improvement.ImprovementSource.Quality, SourceName,
+	Improvement.ImprovementType.LimitSpiritCategory,"");
+		}
+        public void movementreplace(XmlNode bonusNode)
+        {
+            Log.Info("movementreplace");
+            Log.Info("movementreplace = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+
+            Improvement.ImprovementType imp = Improvement.ImprovementType.WalkSpeed;
+            switch (bonusNode["speed"].InnerText.ToLower())
+            {
+                case "walk":
+                    imp = Improvement.ImprovementType.WalkSpeed;
+                    break;
+                case "run":
+                    imp = Improvement.ImprovementType.RunSpeed;
+                    break;
+                case "sprint":
+                    imp = Improvement.ImprovementType.SprintSpeed;
+                    break;
+            }
+
+            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, imp, string.Empty,
+                ValueToInt(bonusNode["val"].InnerText, _intRating));
+        }
+        #endregion
+    }
 
 	internal class AbortedException : Exception
 	{

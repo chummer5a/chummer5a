@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema priorities.xsd">
 	<version>0</version>
 	<categories>
 		<category>Heritage</category>
@@ -155,7 +155,7 @@
 					<karma>0</karma>
 					<metavariants>
 						<metavariant>
-							<name>Cyclopean</name>
+							<name>Cyclops</name>
 							<value>5</value>
 							<karma>2</karma>
 						</metavariant>
@@ -376,7 +376,7 @@
 					<karma>0</karma>
 					<metavariants>
 						<metavariant>
-							<name>Cyclopean</name>
+							<name>Cyclops</name>
 							<value>0</value>
 							<karma>2</karma>
 						</metavariant>
@@ -872,6 +872,19 @@
 					</forbidden>
 				</talent>
 				<talent>
+					<name>Apprentice - 5 Magic</name>
+					<value>Apprentice</value>
+					<qualities>
+						<quality>Apprentice</quality>
+					</qualities>
+					<magic>5</magic>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
 					<name>Technomancer - 4 Resonance/2 Complex Forms</name>
 					<value>Technomancer</value>
 					<qualities>
@@ -963,6 +976,59 @@
 					</forbidden>
 				</talent>
 				<talent>
+					<name>Explorer - 5 Magic</name>
+					<value>Explorer</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+          <skillchoices>
+            <skill>Arcana</skill>
+            <skill>Assensing</skill>
+            <skill>Astral Combat</skill>
+          </skillchoices>
+					<magic>5</magic>
+          <skillqty>2</skillqty>
+          <skillval>6</skillval>
+          <skilltype>specific</skilltype>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Enchanter - 5 Magic</name>
+					<value>Enchanter</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<skillgroupchoices>
+						<skillgroup>Enchanting</skillgroup>
+					</skillgroupchoices>
+					<magic>5</magic>
+					<skillgroupqty>1</skillgroupqty>
+					<skillgroupval>4</skillgroupval>
+					<skillgrouptype>choices</skillgrouptype>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Apprentice - 3 Magic</name>
+					<value>Apprentice</value>
+					<qualities>
+						<quality>Apprentice</quality>
+					</qualities>
+					<magic>3</magic>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
 					<name>Technomancer - 3 Resonance/1 Complex Forms</name>
 					<value>Technomancer</value>
 					<qualities>
@@ -1021,6 +1087,40 @@
 					<skillgrouptype>choices</skillgrouptype>
 					<forbidden>
 						<oneof><metatype>A.I.</metatype></oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Aware - 3 Magic</name>
+					<value>Aware</value>
+					<qualities>
+						<quality>Aware</quality>
+					</qualities>
+          <skillchoices>
+            <skill>Arcana</skill>
+            <skill>Assensing</skill>
+            <skill>Astral Combat</skill>
+          </skillchoices>
+					<magic>3</magic>
+					<skillqty>1</skillqty>
+					<skillval>4</skillval>
+					<skilltype>specific</skilltype>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
+					</forbidden>
+				</talent>
+				<talent>
+					<name>Apprentice - 2 Magic</name>
+					<value>Apprentice</value>
+					<qualities>
+						<quality>Apprentice</quality>
+					</qualities>
+					<magic>2</magic>
+					<forbidden>
+						<oneof>
+							<metatype>A.I.</metatype>
+						</oneof>
 					</forbidden>
 				</talent>
 				<talent>

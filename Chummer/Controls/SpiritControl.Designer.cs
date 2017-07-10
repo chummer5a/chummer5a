@@ -44,6 +44,7 @@
 			this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
 			this.imgNotes = new System.Windows.Forms.PictureBox();
 			this.txtCritterName = new System.Windows.Forms.TextBox();
+            this.chkFettered = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
@@ -53,7 +54,7 @@
 			// 
 			// cmdDelete
 			// 
-			this.cmdDelete.Location = new System.Drawing.Point(690, 0);
+            this.cmdDelete.Location = new System.Drawing.Point(733, 0);
 			this.cmdDelete.Name = "cmdDelete";
 			this.cmdDelete.Size = new System.Drawing.Size(75, 23);
 			this.cmdDelete.TabIndex = 6;
@@ -65,7 +66,7 @@
 			// lblServices
 			// 
 			this.lblServices.AutoSize = true;
-			this.lblServices.Location = new System.Drawing.Point(433, 4);
+            this.lblServices.Location = new System.Drawing.Point(421, 4);
 			this.lblServices.Name = "lblServices";
 			this.lblServices.Size = new System.Drawing.Size(82, 13);
 			this.lblServices.TabIndex = 3;
@@ -74,8 +75,12 @@
 			// 
 			// nudServices
 			// 
-			this.nudServices.Location = new System.Drawing.Point(521, 1);
-			this.nudServices.Maximum = decimal.MaxValue;
+            this.nudServices.Location = new System.Drawing.Point(509, 3);
+            this.nudServices.Maximum = new decimal(new int[] {
+            -1,
+            -1,
+            -1,
+            0});
 			this.nudServices.Name = "nudServices";
 			this.nudServices.Size = new System.Drawing.Size(40, 20);
 			this.nudServices.TabIndex = 4;
@@ -121,7 +126,7 @@
 			this.chkBound.Checked = true;
 			this.chkBound.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chkBound.Enabled = false;
-			this.chkBound.Location = new System.Drawing.Point(574, 2);
+            this.chkBound.Location = new System.Drawing.Point(555, 3);
 			this.chkBound.Name = "chkBound";
 			this.chkBound.Size = new System.Drawing.Size(57, 17);
 			this.chkBound.TabIndex = 5;
@@ -143,7 +148,7 @@
 			// imgLink
 			// 
 			this.imgLink.Image = global::Chummer.Properties.Resources.link;
-			this.imgLink.Location = new System.Drawing.Point(646, 3);
+            this.imgLink.Location = new System.Drawing.Point(689, 3);
 			this.imgLink.Name = "imgLink";
 			this.imgLink.Size = new System.Drawing.Size(16, 16);
 			this.imgLink.TabIndex = 8;
@@ -199,17 +204,22 @@
 			// 
 			// tipTooltip
 			// 
+            this.tipTooltip.AllowLinksHandling = true;
 			this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
 			this.tipTooltip.InitialDelay = 250;
 			this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
 			this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
 			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.tipTooltip.ToolTipTitle = "Chummer Help";
 			// 
 			// imgNotes
 			// 
 			this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.imgNotes.Location = new System.Drawing.Point(667, 3);
+            this.imgNotes.Location = new System.Drawing.Point(711, 3);
 			this.imgNotes.Name = "imgNotes";
 			this.imgNotes.Size = new System.Drawing.Size(16, 16);
 			this.imgNotes.TabIndex = 11;
@@ -224,10 +234,23 @@
 			this.txtCritterName.TabIndex = 12;
 			this.txtCritterName.TextChanged += new System.EventHandler(this.txtCritterName_TextChanged);
 			// 
+            // chkFettered
+            // 
+            this.chkFettered.AutoSize = true;
+            this.chkFettered.Location = new System.Drawing.Point(618, 3);
+            this.chkFettered.Name = "chkFettered";
+            this.chkFettered.Size = new System.Drawing.Size(65, 17);
+            this.chkFettered.TabIndex = 13;
+            this.chkFettered.Tag = "Checkbox_Spirit_Fettered";
+            this.chkFettered.Text = "Fettered";
+            this.chkFettered.UseVisualStyleBackColor = true;
+            this.chkFettered.CheckedChanged += new System.EventHandler(this.chkFettered_CheckedChanged);
+            // 
 			// SpiritControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.chkFettered);
 			this.Controls.Add(this.txtCritterName);
 			this.Controls.Add(this.imgNotes);
 			this.Controls.Add(this.imgLink);
@@ -239,7 +262,7 @@
 			this.Controls.Add(this.lblServices);
 			this.Controls.Add(this.nudServices);
 			this.Name = "SpiritControl";
-			this.Size = new System.Drawing.Size(771, 23);
+            this.Size = new System.Drawing.Size(809, 23);
 			this.Load += new System.EventHandler(this.SpiritControl_Load);
 			((System.ComponentModel.ISupportInitialize)(this.nudServices)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
@@ -269,5 +292,6 @@
 		private System.Windows.Forms.PictureBox imgNotes;
 		private System.Windows.Forms.ToolStripMenuItem tsCreateCharacter;
 		private System.Windows.Forms.TextBox txtCritterName;
+        private System.Windows.Forms.CheckBox chkFettered;
     }
 }

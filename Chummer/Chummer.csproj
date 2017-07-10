@@ -137,6 +137,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
@@ -161,6 +163,7 @@
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
+    <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
     <Compile Include="Backend\Skills\Skill.core.cs" />
@@ -199,6 +202,7 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
@@ -207,6 +211,22 @@
     </Compile>
     <Compile Include="frmCharacterRoster.Designer.cs">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCreateWeaponMount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateWeaponMount.Designer.cs">
+      <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\Button.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\Guid.cs" />
+    <Compile Include="helpers\Label.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\NumericUpDownEx.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Interfaces\INamedItemWithGuid.cs" />
     <Compile Include="Properties\Contributors.cs">
@@ -325,7 +345,12 @@
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </Compile>
-    <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
+    <Compile Include="UI\Attributes\AttributeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
+      <DependentUpon>AttributeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -349,6 +374,12 @@
     </Compile>
     <Compile Include="UI\Shared\BindingListDisplay.Designer.cs">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Powers\PowersTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Powers\PowersTabUserControl.Designer.cs">
+      <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Skills\SkillsTabUserControl.cs">
       <SubType>UserControl</SubType>
@@ -770,10 +801,10 @@
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PowerControl.cs">
+    <Compile Include="UI\Powers\PowerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PowerControl.Designer.cs">
+    <Compile Include="UI\Powers\PowerControl.Designer.cs">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
@@ -862,6 +893,9 @@
     <EmbeddedResource Include="frmCreateSpell.resx">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmCreateWeaponMount.resx">
+      <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </EmbeddedResource>
@@ -880,6 +914,9 @@
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
+      <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -891,6 +928,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\BindingListDisplay.resx">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Powers\PowersTabUserControl.resx">
+      <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
@@ -1105,7 +1145,7 @@
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PowerControl.resx">
+    <EmbeddedResource Include="UI\Powers\PowerControl.resx">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
@@ -1134,6 +1174,8 @@
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
+    <Compile Include="Backend\Attributes\Attribute.Core.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
@@ -1143,6 +1185,9 @@
     </None>
     <None Include="data\bioware.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\bonuses.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="data\books.xsc">
       <DependentUpon>books.xsd</DependentUpon>
@@ -1159,6 +1204,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\complexforms.xsd" />
     <None Include="data\critterpowers.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1174,8 +1220,14 @@
     <None Include="data\gear.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\lifestyles.xsc">
+      <DependentUpon>lifestyles.xsd</DependentUpon>
+    </None>
     <None Include="data\lifestyles.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\lifestyles.xss">
+      <DependentUpon>lifestyles.xsd</DependentUpon>
     </None>
     <None Include="data\martialarts.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1205,23 +1257,56 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\ranges.xsc">
+      <DependentUpon>ranges.xsd</DependentUpon>
+    </None>
     <None Include="data\ranges.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\conditions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="data\ranges.xss">
+      <DependentUpon>ranges.xsd</DependentUpon>
+    </None>
+    <None Include="data\skills.xsc">
+      <DependentUpon>skills.xsd</DependentUpon>
     </None>
     <None Include="data\skills.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\skills.xss">
+      <DependentUpon>skills.xsd</DependentUpon>
+    </None>
     <None Include="data\spells.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\streams.xsc">
+      <DependentUpon>streams.xsd</DependentUpon>
     </None>
     <None Include="data\streams.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\streams.xss">
+      <DependentUpon>streams.xsd</DependentUpon>
+    </None>
+    <None Include="data\traditions.xsc">
+      <DependentUpon>traditions.xsd</DependentUpon>
+    </None>
     <None Include="data\traditions.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\traditions.xss">
+      <DependentUpon>traditions.xsd</DependentUpon>
+    </None>
+    <None Include="data\vehicles.xsc">
+      <DependentUpon>vehicles.xsd</DependentUpon>
+    </None>
     <None Include="data\vehicles.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\vehicles.xss">
+      <DependentUpon>vehicles.xsd</DependentUpon>
     </None>
     <None Include="data\vessels.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1626,6 +1711,7 @@
     </Content>
     <Content Include="data\weapons.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="Expand.png" />
     <Content Include="export\Squad Manager.xsl">
@@ -1974,9 +2060,6 @@
     <Content Include="sheets\xz.en-us.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Translator.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="settings\" />
@@ -1998,10 +2081,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml ;" />
-    </ItemGroup>
-    <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
-  </Target>
 </Project>

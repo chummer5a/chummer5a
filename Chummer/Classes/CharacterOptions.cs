@@ -180,8 +180,11 @@ namespace Chummer
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
 	    private bool _mysaddPpCareer;
+	    private bool _blnReverseAttributePriorityOrder;
+	    private bool _blnHhideItemsOverAvailLimit = true;
+		private bool _blnAllowHoverIncrement;
 
-        #region Initialization, Save, and Load Methods
+		#region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
 		{
 			_character = character;
@@ -253,8 +256,10 @@ namespace Chummer
 			objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
 			// <nuyenperbp />
 			objWriter.WriteElementString("nuyenperbp", _intNuyenPerBP.ToString());
-			// <UnarmedImprovementsApplyToWeapons />
-			objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
+            // <hideitemsoveravaillimit />
+            objWriter.WriteElementString("hideitemsoveravaillimit", _blnHhideItemsOverAvailLimit.ToString());
+            // <UnarmedImprovementsApplyToWeapons />
+            objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
 			// <allowinitiationincreatemode />
 			objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString());
 			// <usepointsonbrokengroups />
@@ -378,6 +383,8 @@ namespace Chummer
             objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString());
 			// <alternatemetatypeattributekarma />
 			objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
+            // <reversekarmapriorityorder />
+            objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
 			// <createbackuponcareer />
 			objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
 			// <printleadershipalternates />
@@ -396,6 +403,8 @@ namespace Chummer
 			objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
 			// <technomancerallowautosoft />
 			objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
+			// <allowhoverincrement />
+			objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
 			// <autobackstory />
 			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
 			// <freemartialartspecialization />
@@ -619,8 +628,10 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
 			// Nuyen per Build Point
 			objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
-			// Knucks use Unarmed
-			objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
+            // Hide Items Over Avail Limit in Create Mode
+            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHhideItemsOverAvailLimit);
+            // Knucks use Unarmed
+            objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
 			// Allow Initiation in Create Mode
 			objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
 			// Use Points on Broken Groups
@@ -666,8 +677,10 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
 			// Metatype Costs Karma.
 			objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
-			// Metatype Costs Karma Multiplier.
-			objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
+            // Metatype Costs Karma.
+            objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder", ref _blnReverseAttributePriorityOrder);
+            // Metatype Costs Karma Multiplier.
+            objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
 			// Limb Count.
 			objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
 			// Exclude Limb Slot.
@@ -767,6 +780,8 @@ namespace Chummer
 			objXmlNode.TryGetBoolFieldQuickly("specialattributekarmalimit", ref _blnSpecialAttributeKarmaLimit);
 			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
 			objXmlNode.TryGetBoolFieldQuickly("technomancerallowautosoft", ref _blnTechnomancerAllowAutosoft);
+			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
+			objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
 			// Optional Rule: Whether Life Modules should automatically create a character back story.
 			objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
 			// House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
@@ -3380,6 +3395,35 @@ namespace Chummer
 				_strImageFolder = value;
 			}
 		}
+
+	    /// <summary>
+	    /// Allows characters to spend their Karma before Priority Points.
+	    /// </summary>
+	    public bool ReverseAttributePriorityOrder
+	    {
+	        get { return _blnReverseAttributePriorityOrder; }
+	        internal set { _blnReverseAttributePriorityOrder = value; }
+	    }
+
+	    /// <summary>
+	    /// Whether items that exceed the Availability Limit should be shown in Create Mode. 
+	    /// </summary>
+	    public bool HideItemsOverAvailLimit
+	    {
+	        get { return _blnHhideItemsOverAvailLimit; }
+	        set { _blnHhideItemsOverAvailLimit = value; }
+	    }
+
+		/// <summary>
+		/// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+		/// </summary>
+		public bool AllowHoverIncrement
+		{
+			get { return _blnAllowHoverIncrement; }
+			internal set { _blnAllowHoverIncrement = value; }
+		}
+
+		public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
 		#endregion
 

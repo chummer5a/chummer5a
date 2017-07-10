@@ -17,4 +17,5 @@
 
 	<!-- Set global variables -->
 	<xsl:variable name="lang" select="'jp'"/>
+	<xsl:variable name="ProduceNotes" select="true()"/>
 </xsl:stylesheet>

@@ -6,9 +6,9 @@
 	<xsl:include href="xt.Skills.xslt"/>
 
 	<xsl:template name="skills1">
-		<xsl:variable name="skillcut" select="round(count(skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt;= $MinimumRating)]) div 2)"/>
+		<xsl:variable name="skillcut" select="round(count(skills/skill[knowledge = 'False' and (rating &gt;= $MinimumRating)]) div 2)"/>
 		<xsl:variable name="sortedskills">
-			<xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt;= $MinimumRating)]">
+			<xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt;= $MinimumRating)]">
 				<xsl:sort select="skillcategory"/>
 				<xsl:sort select="rating" order="descending" />
 				<xsl:if test="position() &lt;= $skillcut">
@@ -31,9 +31,9 @@
 	</xsl:template>
 	
 	<xsl:template name="skills2">
-		<xsl:variable name="skillcut" select="round(count(skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt;= $MinimumRating)]) div 2)"/>
+		<xsl:variable name="skillcut" select="round(count(skills/skill[knowledge = 'False' and (rating &gt;= $MinimumRating)]) div 2)"/>
 		<xsl:variable name="sortedskills">
-			<xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt;= $MinimumRating)]">
+			<xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt;= $MinimumRating)]">
 				<xsl:sort select="skillcategory" />
 				<xsl:sort select="rating" order="descending" />
 				<xsl:if test="position() &gt; $skillcut">
