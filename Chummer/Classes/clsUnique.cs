@@ -358,7 +358,9 @@ namespace Chummer
 				objWriter.WriteElementString("bonus", string.Empty);
 			if (_guiWeaponID != Guid.Empty)
 				objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
-			objWriter.WriteElementString("notes", _strNotes);
+            if (_nodDiscounts != null)
+                objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
+            objWriter.WriteElementString("notes", _strNotes);
 			if (_objQualityType == QualityType.LifeModule)
 			{
 				objWriter.WriteElementString("stage", _stage);
