@@ -2511,8 +2511,23 @@
       <action>Complex</action>
       <range>LOS</range>
       <karma>14</karma>
-      <bonus />
-      <!-- //TODO: Implement an improvement that adds flight -->
+      <bonus>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>walk</speed>
+          <val>2</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>run</speed>
+          <val>4</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>sprint</speed>
+          <val>3</val>
+        </movementreplace>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Dracoform (Sea Drake)</quality>

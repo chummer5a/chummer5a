@@ -76,7 +76,8 @@ Data Changes:
 - Qualities now add notoriety, per SR5 368. 
 - Implemented the Death Mentor Spirit. 
 - Updated incorrect modifications for the Dodge General Trailer
-- Added missing special equipment mod entries to vechiles from R5
+- Added missing special equipment mod entries to vehicles from R5.
+- Fixed behaviour of the Satyr Legs quality and Flight critter power to properly provide movement speed increases. 
 
 New Strings:
 

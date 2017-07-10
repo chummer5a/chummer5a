@@ -6701,12 +6701,12 @@
 			<bonus>
 				<movementreplace>
           <category>ground</category>
-          <type>run</type>
+          <speed>run</speed>
           <val>6</val>
         </movementreplace>
         <movementreplace>
           <category>ground</category>
-          <type>sprint</type>
+          <speed>sprint</speed>
           <val>2</val>
         </movementreplace>
 			</bonus>
