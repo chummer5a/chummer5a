@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,31 +22,31 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-	public partial class frmHistory : Form
-	{
-		#region Control Events
-		public frmHistory()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
+    public partial class frmHistory : Form
+    {
+        #region Control Events
+        public frmHistory()
+        {
+            InitializeComponent();
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+        }
 
-		private void frmHistory_Load(object sender, EventArgs e)
-		{
-			// Display the contents of the changelog.txt file in the TextBox.
-			try
-			{
-				txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"));
-			}
-			catch
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_History_FileNotFound"), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				Close();
+        private void frmHistory_Load(object sender, EventArgs e)
+        {
+            // Display the contents of the changelog.txt file in the TextBox.
+            try
+            {
+                txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"));
+            }
+            catch
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_History_FileNotFound"), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Close();
                 return;
-			}
+            }
             txtRevisionHistory.SelectionStart = 0;
             txtRevisionHistory.SelectionLength = 0;
         }
-		#endregion
-	}
+        #endregion
+    }
 }

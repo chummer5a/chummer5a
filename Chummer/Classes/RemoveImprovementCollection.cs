@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Chummer.Classes
 {
-	//Might in the future be used as part of ImprovementManager (clsImprovement.cs at time of writing)
-	class RemoveImprovementCollection
-	{
-	}
+    //Might in the future be used as part of ImprovementManager (clsImprovement.cs at time of writing)
+    class RemoveImprovementCollection
+    {
+    }
 }

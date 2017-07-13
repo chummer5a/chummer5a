@@ -2,34 +2,34 @@
 
 namespace Chummer
 {
-	partial class frmViewer
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmViewer
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.cmdSaveHTML = new SplitButton();
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -170,19 +170,19 @@ namespace Chummer
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
-		internal SplitButton cmdPrint;
-		private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
-		private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
-		internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-		private System.Windows.Forms.ComboBox cboXSLT;
-		private System.Windows.Forms.Label lblCharacterSheet;
-		private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
-		internal SplitButton cmdSaveHTML;
-		private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
-		private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
+        #endregion
+        internal SplitButton cmdPrint;
+        private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
+        private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
+        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
+        private System.Windows.Forms.ComboBox cboXSLT;
+        private System.Windows.Forms.Label lblCharacterSheet;
+        private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
+        internal SplitButton cmdSaveHTML;
+        private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
+        private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
     }
 
