@@ -912,6 +912,8 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnInitializing)
+                return;
             PopulateMetatypes();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
