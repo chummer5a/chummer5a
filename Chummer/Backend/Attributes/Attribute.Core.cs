@@ -108,7 +108,8 @@ namespace Chummer.Backend.Attributes
         public void Print(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("attribute");
-            objWriter.WriteElementString("name", _strAbbrev);
+            objWriter.WriteElementString("name_english", Abbrev);
+            objWriter.WriteElementString("name", DisplayAbbrev);
             objWriter.WriteElementString("base", Value.ToString());
             objWriter.WriteElementString("total", TotalValue.ToString());
             objWriter.WriteElementString("min", TotalMinimum.ToString());

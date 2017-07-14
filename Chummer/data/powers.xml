@@ -329,6 +329,13 @@
       <source>SR5</source>
       <page>310</page>
       <adeptway>0</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
@@ -511,6 +518,15 @@
       <source>SR5</source>
       <page>311</page>
       <adeptway>.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Magician's Way</quality>
+            <quality>The Invisible Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>71692391-e01f-4902-98f0-abbbf5431680</id>
@@ -1669,152 +1685,143 @@
       <id>8dc0a8e3-535a-4935-8c90-2079666e6a01</id>
       <name>Air Walking</name>
       <power>Light Body</power>
+      <source>SG</source>
+      <page>156</page>
       <required>
         <allof>
           <power>Light Body</power>
           <quality>The Athlete's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>156</page>
     </enhancement>
     <enhancement>
       <id>19bafb80-2f5a-4370-8cbe-875477ce7471</id>
       <name>Pied Piper</name>
       <power />
+      <source>SG</source>
+      <page>156</page>
       <required>
         <allof>
           <quality>The Artist's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>156</page>
     </enhancement>
     <enhancement>
       <id>855a7a07-5def-4ec5-bb69-29273327b885</id>
       <name>Skin Artist</name>
       <power>Melanin Control</power>
+      <source>SG</source>
+      <page>157</page>
       <required>
         <allof>
           <power>Melanin Control</power>
           <quality>The Artist's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>157</page>
     </enhancement>
     <enhancement>
       <id>3f0a99c7-6524-46cb-b43e-070a978c5052</id>
       <name>Claws</name>
       <power>Keratin Control</power>
+      <source>SG</source>
+      <page>157</page>
       <required>
         <allof>
           <power>Keratin Control</power>
           <quality>The Beast's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>157</page>
     </enhancement>
     <enhancement>
       <id>2d2939f0-486c-4915-bbeb-084b857c2450</id>
       <name>Hot Qi</name>
       <power>Living Focus</power>
+      <source>SG</source>
+      <page>157</page>
       <required>
         <allof>
           <power>Living Focus</power>
           <quality>The Burnout's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>157</page>
     </enhancement>
     <enhancement>
       <id>25f6368f-21ef-4544-ac55-3c20d8a60374</id>
       <name>Shadow Touch</name>
       <power>Traceless Walk</power>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Beast's Way</quality>
-            <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
+      <source>SG</source>
+      <page>158</page>
       <required>
         <allof>
           <power>Traceless Walk</power>
           <quality>The Invisible Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>158</page>
     </enhancement>
     <enhancement>
       <id>e5cf0578-be0f-4453-9223-118234d3e749</id>
       <name>Digital Celerity</name>
       <power>Nimble Fingers</power>
+      <source>SG</source>
+      <page>157</page>
       <required>
         <allof>
           <power>Nimble Fingers</power>
           <quality>The Magician's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>157</page>
     </enhancement>
     <enhancement>
       <id>e66fac54-39e4-4e3e-92c6-670485c28c25</id>
       <name>Master of the Nine Chakras</name>
       <power>Nerve Strike</power>
+      <source>SG</source>
+      <page>158</page>
       <required>
         <allof>
           <power>Nerve Strike</power>
           <quality>The Magician's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>158</page>
     </enhancement>
     <enhancement>
       <id>fafc7fd4-8418-4a86-b396-6e90943d9e68</id>
       <name>Silver-Tongued Devil</name>
       <power>Authoritative Tone</power>
+      <source>SG</source>
+      <page>159</page>
       <required>
         <allof>
           <power>Authoritative Tone</power>
           <quality>The Speaker's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>159</page>
     </enhancement>
     <enhancement>
       <id>215a5a0e-09fc-47ff-9a84-74c99f4f1a53</id>
       <name>Barrage</name>
       <power>Missile Mastery</power>
+      <source>SG</source>
+      <page>159</page>
       <required>
         <allof>
           <power>Missile Mastery</power>
           <quality>The Warrior's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>159</page>
     </enhancement>
     <enhancement>
       <id>47cb80a1-a11b-4a60-a557-feada7114379</id>
       <name>Master of Taijiquan</name>
       <power>Counterstrike</power>
+      <source>SG</source>
+      <page>159</page>
       <required>
         <allof>
           <power>Counterstrike</power>
           <quality>The Warrior's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>159</page>
     </enhancement>
   </enhancements>
 </chummer>

@@ -2554,11 +2554,11 @@
           <category>Software</category>
         </gear>
         <gear>
-          <name select="motorcycles and motorcycle parts">Shopsoft</name>
+          <name select="Motorcycles and Motorcycle Parts">Shopsoft</name>
           <category>Software</category>
         </gear>
         <gear>
-          <name select="Automotive mechanics">Tool Kit</name>
+          <name select="Automotive Mechanic">Tool Kit</name>
           <category>Tools</category>
         </gear>
       </gears>

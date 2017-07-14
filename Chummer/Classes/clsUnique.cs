@@ -429,6 +429,7 @@ namespace Chummer
             {
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort);
+                objWriter.WriteElementString("name_english", Name);
                 objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
                 objWriter.WriteElementString("bp", _intBP.ToString());
                 string strQualityType = _objQualityType.ToString();
@@ -437,11 +438,7 @@ namespace Chummer
                     XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
 
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
-                    if (objNode != null)
-                    {
-                        if (objNode.Attributes["translate"] != null)
-                            strQualityType = objNode.Attributes["translate"].InnerText;
-                    }
+                        strQualityType = objNode?.Attributes?["translate"].InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", _objQualityType.ToString());
@@ -1145,10 +1142,11 @@ namespace Chummer
             if (GlobalOptions.Instance.Language != "en-us")
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText;
-                }
+            }
 
             objWriter.WriteStartElement("spirit");
             objWriter.WriteElementString("name", strName);
+            objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("crittername", _strCritterName);
             objWriter.WriteElementString("services", _intServicesOwed.ToString());
             objWriter.WriteElementString("force", _intForce.ToString());
@@ -1654,8 +1652,10 @@ namespace Chummer
                 objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("String_SpellAlchemical") + ")");
             else
                 objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("descriptors", DisplayDescriptors);
             objWriter.WriteElementString("category", DisplayCategory);
+            objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", DisplayType);
             objWriter.WriteElementString("range", DisplayRange);
             objWriter.WriteElementString("damage", DisplayDamage);
@@ -2889,6 +2889,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("metamagic");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("grade", _intGrade.ToString());
@@ -3209,6 +3210,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("art");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -3494,6 +3496,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("enhancement");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -3793,6 +3796,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("complexform");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("duration", _strDuration);
             objWriter.WriteElementString("fv", _strFV);
             objWriter.WriteElementString("target", _strTarget);
@@ -4093,6 +4097,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("aiprogram");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.Instance.GetString("String_None"))
                 objWriter.WriteElementString("requiresprogram", LanguageManager.Instance.GetString("String_None")); 
             else
@@ -4415,6 +4420,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("rating", _intRating.ToString());
@@ -4671,6 +4677,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialartadvantage");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", _strSource);
@@ -4861,6 +4868,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialartmaneuver");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             if (_objCharacter.Options.PrintNotes)
@@ -5102,6 +5110,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("limitmodifier");
             objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("condition", _strCondition);
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -5816,8 +5825,10 @@ namespace Chummer
         {
             objWriter.WriteStartElement("critterpower");
             objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
             objWriter.WriteElementString("category", DisplayCategory);
+            objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", DisplayType);
             objWriter.WriteElementString("action", DisplayAction);
             objWriter.WriteElementString("range", DisplayRange);
