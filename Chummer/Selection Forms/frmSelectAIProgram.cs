@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,12 +37,12 @@ namespace Chummer
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 
-		#region Control Events
-		public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
+        #region Control Events
+        public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_objCharacter = objCharacter;
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            _objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             MoveControls();
@@ -50,14 +50,14 @@ namespace Chummer
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = string.Empty;
-			}
+            foreach (Label objLabel in Controls.OfType<Label>())
+            {
+                if (objLabel.Text.StartsWith("["))
+                    objLabel.Text = string.Empty;
+            }
 
-        	// Load the Programs information.
-			_objXmlDocument = XmlManager.Instance.Load("programs.xml");
+            // Load the Programs information.
+            _objXmlDocument = XmlManager.Instance.Load("programs.xml");
 
             // Populate the Category list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -153,14 +153,14 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            _blnAddAgain = true;
             cmdOK_Click(sender, e);
-		}
+        }
 
-		private void txtSearch_TextChanged(object sender, EventArgs e)
-		{
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
             if (string.IsNullOrEmpty(txtSearch.Text))
             {
                 cboCategory_SelectedIndexChanged(sender, e);
@@ -175,8 +175,8 @@ namespace Chummer
             UpdateProgramList(objXmlNodeList);
         }
 
-		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
-		{
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
             if (e.KeyCode == Keys.Down)
             {
                 if (lstAIPrograms.SelectedIndex + 1 < lstAIPrograms.Items.Count)
@@ -201,24 +201,24 @@ namespace Chummer
             }
         }
 
-		private void txtSearch_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Up)
-				txtSearch.Select(txtSearch.Text.Length, 0);
-		}
-		#endregion
+        private void txtSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+                txtSearch.Select(txtSearch.Text.Length, 0);
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
+        #region Properties
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain
+        {
+            get
+            {
+                return _blnAddAgain;
+            }
+        }
 
         /// <summary>
         /// Program that was selected in the dialogue.
@@ -386,8 +386,8 @@ namespace Chummer
             }
         }
 
-		private void MoveControls()
-		{
+        private void MoveControls()
+        {
             int intLeft = lblRequiresProgramLabel.Width;
             intLeft = Math.Max(intLeft, lblSourceLabel.Width);
 
@@ -395,8 +395,8 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + intLeft + 6;
 
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
-		}
-		#endregion
+        }
+        #endregion
 
         private void lblSource_Click(object sender, EventArgs e)
         {

@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -604,7 +604,7 @@ public class SplitButton : Button
 
     private void LayoutTextBeforeOrAfterImage(Rectangle totalArea, bool textFirst, Size textSize, Size imageSize, out Rectangle textRect, out Rectangle imageRect)
     {
-        int element_spacing = 0;	// Spacing between the Text and the Image
+        int element_spacing = 0;    // Spacing between the Text and the Image
         int total_width = textSize.Width + element_spacing + imageSize.Width;
 
         if (!textFirst)
@@ -652,7 +652,7 @@ public class SplitButton : Button
 
     private void LayoutTextAboveOrBelowImage(Rectangle totalArea, bool textFirst, Size textSize, Size imageSize, out Rectangle textRect, out Rectangle imageRect)
     {
-        int element_spacing = 0;	// Spacing between the Text and the Image
+        int element_spacing = 0;    // Spacing between the Text and the Image
         int total_height = textSize.Height + element_spacing + imageSize.Height;
 
         if (textFirst)

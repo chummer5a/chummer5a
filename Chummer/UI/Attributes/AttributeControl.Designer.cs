@@ -147,6 +147,6 @@
         internal Chummer.helpers.Label lblLimits;
         internal Chummer.helpers.NumericUpDownEx nudKarma;
         internal Chummer.helpers.NumericUpDownEx nudBase;
-		private Chummer.helpers.Button cmdBurnEdge;
-	}
+        private Chummer.helpers.Button cmdBurnEdge;
+    }
 }

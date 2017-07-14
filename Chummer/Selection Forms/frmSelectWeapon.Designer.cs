@@ -1,6 +1,6 @@
 ﻿namespace Chummer
 {
-	partial class frmSelectWeapon
+    partial class frmSelectWeapon
     {
         /// <summary>
         /// Required designer variable.
@@ -929,12 +929,12 @@
         #endregion
 
         private System.Windows.Forms.ComboBox cboCategory;
-		private System.Windows.Forms.Label lblCategory;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.DataGridView dgvWeapons;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabBrowse;
