@@ -40,7 +40,7 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
 environment:
-  SolutionDir: C:\projects\chummer5a\
+  SolutionDir: C:\projects\chummer\
   matrix:
   - project_name: Chummer
     api_token: 'secure: z2debbMslTiLN7tQ/jDZh1PqLHeNYlAqr5tKmjjgNB8='
