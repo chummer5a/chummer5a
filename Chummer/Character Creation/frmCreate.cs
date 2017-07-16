@@ -12171,8 +12171,10 @@ namespace Chummer
         {
             if (cboSpiritCombat.IsInitalized(_blnLoading))
                 return;
+            if (cboSpiritCombat.SelectedValue == null)
+                return;
 
-            _objCharacter.SpiritCombat = cboSpiritCombat.Text;
+            _objCharacter.SpiritCombat = cboSpiritCombat.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -12185,8 +12187,10 @@ namespace Chummer
         {
             if (cboSpiritDetection.IsInitalized(_blnLoading))
                 return;
+            if (cboSpiritDetection.SelectedValue == null)
+                return;
 
-            _objCharacter.SpiritDetection = cboSpiritDetection.Text;
+            _objCharacter.SpiritDetection = cboSpiritDetection.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -12199,8 +12203,10 @@ namespace Chummer
         {
             if (cboSpiritHealth.IsInitalized(_blnLoading))
                 return;
+            if (cboSpiritHealth.SelectedValue == null)
+                return;
 
-            _objCharacter.SpiritHealth = cboSpiritHealth.Text;
+            _objCharacter.SpiritHealth = cboSpiritHealth.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -12213,8 +12219,9 @@ namespace Chummer
         {
             if (cboSpiritIllusion.IsInitalized(_blnLoading))
                 return;
-
-            _objCharacter.SpiritIllusion = cboSpiritIllusion.Text;
+            if (cboSpiritIllusion.SelectedValue == null)
+                return;
+            _objCharacter.SpiritIllusion = cboSpiritIllusion.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -12227,8 +12234,10 @@ namespace Chummer
         {
             if (cboSpiritManipulation.IsInitalized(_blnLoading))
                 return;
+            if (cboSpiritManipulation.SelectedValue == null)
+                return;
 
-            _objCharacter.SpiritManipulation = cboSpiritManipulation.Text;
+            _objCharacter.SpiritManipulation = cboSpiritManipulation.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
