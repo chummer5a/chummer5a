@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,42 +27,42 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-	public partial class frmSelectWeaponAccessory : Form
-	{
-		private string _strSelectedAccessory = string.Empty;
-		private int _intMarkup = 0;
+    public partial class frmSelectWeaponAccessory : Form
+    {
+        private string _strSelectedAccessory = string.Empty;
+        private int _intMarkup = 0;
 
-		private string _strAllowedMounts = string.Empty;
-		private int _intWeaponCost = 0;
-		private int _intRating = 0;
+        private string _strAllowedMounts = string.Empty;
+        private int _intWeaponCost = 0;
+        private int _intRating = 0;
         private string _strCurrentWeaponName = string.Empty;
-		private bool _blnAddAgain = false;
+        private bool _blnAddAgain = false;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
-		private readonly Character _objCharacter;
-		private int _intAccessoryMultiplier = 1;
-		private bool _blnBlackMarketDiscount;
-		private List<WeaponAccessory> _lstAccessories;
+        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly Character _objCharacter;
+        private int _intAccessoryMultiplier = 1;
+        private bool _blnBlackMarketDiscount;
+        private List<WeaponAccessory> _lstAccessories;
 
-		#region Control Events
-		public frmSelectWeaponAccessory(Character objCharacter, bool blnCareer = false)
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			lblMarkupLabel.Visible = blnCareer;
-			nudMarkup.Visible = blnCareer;
-			lblMarkupPercentLabel.Visible = blnCareer;
-			_objCharacter = objCharacter;
-			MoveControls();
-		}
+        #region Control Events
+        public frmSelectWeaponAccessory(Character objCharacter, bool blnCareer = false)
+        {
+            InitializeComponent();
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            lblMarkupLabel.Visible = blnCareer;
+            nudMarkup.Visible = blnCareer;
+            lblMarkupPercentLabel.Visible = blnCareer;
+            _objCharacter = objCharacter;
+            MoveControls();
+        }
 
-		private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
-		{
+        private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
+        {
             foreach (Label objLabel in Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = string.Empty;
-			}
+            {
+                if (objLabel.Text.StartsWith("["))
+                    objLabel.Text = string.Empty;
+            }
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
                     _objCharacter.Options.Availability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
@@ -183,51 +183,51 @@ namespace Chummer
         }
 
         private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateGearInfo();
-		}
+        {
+            UpdateGearInfo();
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrEmpty(lstAccessory.Text))
-				AcceptForm();
-		}
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(lstAccessory.Text))
+                AcceptForm();
+        }
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-		}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
 
-		private void lstAccessory_DoubleClick(object sender, EventArgs e)
-		{
-			cmdOK_Click(sender, e);
-		}
+        private void lstAccessory_DoubleClick(object sender, EventArgs e)
+        {
+            cmdOK_Click(sender, e);
+        }
 
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
-			cmdOK_Click(sender, e);
-		}
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            _blnAddAgain = true;
+            cmdOK_Click(sender, e);
+        }
 
-		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
-		{
-			UpdateGearInfo();
-		}
+        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateGearInfo();
+        }
 
-		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-		{
-			UpdateGearInfo();
-		}
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateGearInfo();
+        }
 
-		private void nudMarkup_ValueChanged(object sender, EventArgs e)
-		{
-			UpdateGearInfo();
-		}
+        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateGearInfo();
+        }
 
-		private void nudRating_ValueChanged(object sender, EventArgs e)
-		{
-			UpdateGearInfo();
-		}
+        private void nudRating_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateGearInfo();
+        }
 
         private void lblSource_Click(object sender, EventArgs e)
         {
@@ -254,69 +254,69 @@ namespace Chummer
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
-
-		/// <summary>
-		/// Name of Accessory that was selected in the dialogue.
-		/// </summary>
-		public string SelectedAccessory
-		{
-			get
-			{
-				return _strSelectedAccessory;
-			}
-		}
-
-		/// <summary>
-		/// Mount that was selected in the dialogue.
-		/// </summary>
-		public Tuple<string, string> SelectedMount
-		{
-			get
-			{
-				return new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
-			}
-		}
-
-		/// <summary>
-		/// Rating of the Accessory.
-		/// </summary>
-		public string SelectedRating
-		{
-			get
-			{
-				if (nudRating.Enabled)
-				{
-					return nudRating.Value.ToString(GlobalOptions.CultureInfo);
-				}
-				else
-				{
-					// Display Rating for items without one as 0
-					return 0.ToString(GlobalOptions.CultureInfo);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Mounts that the Weapon allows to be used.
-		/// </summary>
-		public string AllowedMounts
-		{
-			set
-			{
-				_strAllowedMounts = value;
-			}
-		}
+        {
+            get
+            {
+                return _blnAddAgain;
+            }
+        }
 
         /// <summary>
-		/// GUID of the current weapon for which the accessory is being selected
-		/// </summary>
-		public string CurrentWeaponName
+        /// Name of Accessory that was selected in the dialogue.
+        /// </summary>
+        public string SelectedAccessory
+        {
+            get
+            {
+                return _strSelectedAccessory;
+            }
+        }
+
+        /// <summary>
+        /// Mount that was selected in the dialogue.
+        /// </summary>
+        public Tuple<string, string> SelectedMount
+        {
+            get
+            {
+                return new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Rating of the Accessory.
+        /// </summary>
+        public string SelectedRating
+        {
+            get
+            {
+                if (nudRating.Enabled)
+                {
+                    return nudRating.Value.ToString(GlobalOptions.CultureInfo);
+                }
+                else
+                {
+                    // Display Rating for items without one as 0
+                    return 0.ToString(GlobalOptions.CultureInfo);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mounts that the Weapon allows to be used.
+        /// </summary>
+        public string AllowedMounts
+        {
+            set
+            {
+                _strAllowedMounts = value;
+            }
+        }
+
+        /// <summary>
+        /// GUID of the current weapon for which the accessory is being selected
+        /// </summary>
+        public string CurrentWeaponName
         {
             set
             {
@@ -328,67 +328,67 @@ namespace Chummer
         /// Whether or not the item should be added for free.
         /// </summary>
         public bool FreeCost
-		{
-			get
-			{
-				return chkFreeItem.Checked;
-			}
-		}
+        {
+            get
+            {
+                return chkFreeItem.Checked;
+            }
+        }
 
-		/// <summary>
-		/// Whether or not the selected Vehicle is used.
-		/// </summary>
-		public bool BlackMarketDiscount
-		{
-			get
-			{
-				return _blnBlackMarketDiscount;
-			}
-		}
+        /// <summary>
+        /// Whether or not the selected Vehicle is used.
+        /// </summary>
+        public bool BlackMarketDiscount
+        {
+            get
+            {
+                return _blnBlackMarketDiscount;
+            }
+        }
 
-		/// <summary>
-		/// Weapon's Accessory Cost Multiplier.
-		/// </summary>
-		public int AccessoryMultiplier
-		{
-			set
-			{
-				_intAccessoryMultiplier = value;
-			}
-		}
+        /// <summary>
+        /// Weapon's Accessory Cost Multiplier.
+        /// </summary>
+        public int AccessoryMultiplier
+        {
+            set
+            {
+                _intAccessoryMultiplier = value;
+            }
+        }
 
-		/// <summary>
-		/// Weapon's Cost.
-		/// </summary>
-		public int WeaponCost
-		{
-			set
-			{
-				_intWeaponCost = value;
-			}
-		}
+        /// <summary>
+        /// Weapon's Cost.
+        /// </summary>
+        public int WeaponCost
+        {
+            set
+            {
+                _intWeaponCost = value;
+            }
+        }
 
-		/// <summary>
-		/// Markup percentage.
-		/// </summary>
-		public int Markup
-		{
-			get
-			{
-				return _intMarkup;
-			}
-		}
+        /// <summary>
+        /// Markup percentage.
+        /// </summary>
+        public int Markup
+        {
+            get
+            {
+                return _intMarkup;
+            }
+        }
 
-		/// <summary>
-		/// Currently Installed Accessories
-		/// </summary>
-		public List<WeaponAccessory> InstalledAccessories
-		{
-			set
-			{
-				_lstAccessories = value;
-			}
-		}
+        /// <summary>
+        /// Currently Installed Accessories
+        /// </summary>
+        public List<WeaponAccessory> InstalledAccessories
+        {
+            set
+            {
+                _lstAccessories = value;
+            }
+        }
         #endregion
 
         #region Methods
@@ -614,32 +614,32 @@ namespace Chummer
         /// Accept the selected item and close the form.
         /// </summary>
         private void AcceptForm()
-		{
-			_strSelectedAccessory = lstAccessory.SelectedValue.ToString();
+        {
+            _strSelectedAccessory = lstAccessory.SelectedValue.ToString();
             int.TryParse(nudRating.Value.ToString(GlobalOptions.CultureInfo), out _intRating);
             int.TryParse(nudMarkup.Value.ToString(GlobalOptions.CultureInfo), out _intMarkup);
-			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-			DialogResult = DialogResult.OK;
-		}
+            _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+            DialogResult = DialogResult.OK;
+        }
 
-		private void MoveControls()
-		{
-			int intWidth = Math.Max(lblRCLabel.Width, lblMountLabel.Width);
-			intWidth = Math.Max(intWidth, lblAvailLabel.Width);
-			intWidth = Math.Max(intWidth, lblCostLabel.Width);
+        private void MoveControls()
+        {
+            int intWidth = Math.Max(lblRCLabel.Width, lblMountLabel.Width);
+            intWidth = Math.Max(intWidth, lblAvailLabel.Width);
+            intWidth = Math.Max(intWidth, lblCostLabel.Width);
 
-			lblRC.Left = lblRCLabel.Left + intWidth + 6;
-			//lblMount.Left = lblMountLabel.Left + intWidth + 6;
-			lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
-			lblTestLabel.Left = lblAvail.Left + lblAvail.Width + 16;
-			lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
-			lblCost.Left = lblCostLabel.Left + intWidth + 6;
+            lblRC.Left = lblRCLabel.Left + intWidth + 6;
+            //lblMount.Left = lblMountLabel.Left + intWidth + 6;
+            lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
+            lblTestLabel.Left = lblAvail.Left + lblAvail.Width + 16;
+            lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
+            lblCost.Left = lblCostLabel.Left + intWidth + 6;
 
-			nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
-			lblMarkupPercentLabel.Left = nudMarkup.Left + nudMarkup.Width;
+            nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
+            lblMarkupPercentLabel.Left = nudMarkup.Left + nudMarkup.Width;
 
-			lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-		}
+            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
+        }
         #endregion
 
     }

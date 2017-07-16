@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,20 +24,20 @@ using System.Xml;
 
 namespace Chummer
 {
-	class StoryBuilder
-	{
-		private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
-		private Character _objCharacter;
-		Random random = new Random();
-		public StoryBuilder(Character objCharacter)
-		{
-			_objCharacter = objCharacter;
-			persistenceDictionary.Add("metatype", _objCharacter.Metatype.ToLower());
-			persistenceDictionary.Add("metavariant", _objCharacter.Metavariant.ToLower());
-		}
+    class StoryBuilder
+    {
+        private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
+        private Character _objCharacter;
+        Random random = new Random();
+        public StoryBuilder(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+            persistenceDictionary.Add("metatype", _objCharacter.Metatype.ToLower());
+            persistenceDictionary.Add("metavariant", _objCharacter.Metavariant.ToLower());
+        }
 
-		public String GetStory()
-		{
+        public String GetStory()
+        {
             //Little bit of data required for following steps
             XmlDocument xdoc = XmlManager.Instance.Load("lifemodules.xml");
 
@@ -46,13 +46,13 @@ namespace Chummer
                 //Generate list of all life modules (xml, we don't save required data to quality) this character has
                 List<XmlNode> modules = new List<XmlNode>();
 
-			    foreach (Quality quality in _objCharacter.Qualities)
-			    {
-				    if (quality.Type == QualityType.LifeModule)
-				    {
-					    modules.Add(Quality.GetNodeOverrideable(quality.QualityId));
-				    }
-			    }
+                foreach (Quality quality in _objCharacter.Qualities)
+                {
+                    if (quality.Type == QualityType.LifeModule)
+                    {
+                        modules.Add(Quality.GetNodeOverrideable(quality.QualityId));
+                    }
+                }
 
                 //Sort the list (Crude way, but have to do)
                 for (int i = 0; i < modules.Count; i++)
@@ -96,111 +96,111 @@ namespace Chummer
             }
 
             return string.Empty;
-		}
+        }
 
-		private void Write(StringBuilder story, string innerText, int levels)
-		{
-			if (levels <= 0) return;
+        private void Write(StringBuilder story, string innerText, int levels)
+        {
+            if (levels <= 0) return;
 
-			int startingLength = story.Length;
+            int startingLength = story.Length;
 
-			String[] words;
+            String[] words;
             if (innerText.StartsWith("$") && innerText.IndexOf(" ") < 0)
             {
-	            words = Macro(innerText).Split(" \n\r\t".ToCharArray());
+                words = Macro(innerText).Split(" \n\r\t".ToCharArray());
             }
-			else
-			{
-				words = innerText.Split(" \n\r\t".ToCharArray());
-			}
+            else
+            {
+                words = innerText.Split(" \n\r\t".ToCharArray());
+            }
 
-			bool mfix = false;
-			foreach (string word in words)
-			{
-				String trim = word.Trim();
-				if (trim.StartsWith("$DOLLAR"))
-				{
-					story.Append('$');
-					mfix = true;
-				}
-				else if (trim.StartsWith("$"))
-				{
-					//if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
-					Write(story, trim, --levels);
-					mfix = true;
-				}
-				else
-				{
-					if (story.Length != startingLength && !mfix)
-					{
-						story.Append(' ');
-					}
-					else
-					{
-						mfix = false;
-					}
-					int slenght = story.Length;
-					story.AppendFormat(trim);
-					if (story.Length != slenght)
-					{
-						
-					}
-				}
-			}
-		}
+            bool mfix = false;
+            foreach (string word in words)
+            {
+                String trim = word.Trim();
+                if (trim.StartsWith("$DOLLAR"))
+                {
+                    story.Append('$');
+                    mfix = true;
+                }
+                else if (trim.StartsWith("$"))
+                {
+                    //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
+                    Write(story, trim, --levels);
+                    mfix = true;
+                }
+                else
+                {
+                    if (story.Length != startingLength && !mfix)
+                    {
+                        story.Append(' ');
+                    }
+                    else
+                    {
+                        mfix = false;
+                    }
+                    int slenght = story.Length;
+                    story.AppendFormat(trim);
+                    if (story.Length != slenght)
+                    {
+                        
+                    }
+                }
+            }
+        }
 
-		public string Macro(string innerText)
-		{
+        public string Macro(string innerText)
+        {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-			String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
-			String macroName, macroPool;
-			if (endString.Contains("_"))
-			{
-				String[] split = endString.Split('_');
-				macroName = split[0];
-				macroPool = split[1];
-			}
-			else
-			{
-				macroName = macroPool = endString;
-			}
+            String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
+            String macroName, macroPool;
+            if (endString.Contains("_"))
+            {
+                String[] split = endString.Split('_');
+                macroName = split[0];
+                macroPool = split[1];
+            }
+            else
+            {
+                macroName = macroPool = endString;
+            }
 
-			//$DOLLAR is defined elsewhere to prevent recursive calling
-			if (macroName == "street")
-			{
-				if (!string.IsNullOrEmpty(_objCharacter.Alias))
-				{
-					return _objCharacter.Alias;
-				}
-				return "Alias ";
-			}
-			if(macroName == "real")
-			{
-				if (!string.IsNullOrEmpty(_objCharacter.Name))
-				{
-					return _objCharacter.Name;
-				}
-				return "Unnamed John Doe ";
-			}
-			if (macroName == "year")
-			{
-				int year;
-				if (int.TryParse(_objCharacter.Age, out year))
-				{
-					int age;
-					if (int.TryParse(macroPool, out age))
-					{
-						return (2075 + age - year).ToString();
-					}
-					return (2075 - year).ToString();
-				}
-				return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
-			}
+            //$DOLLAR is defined elsewhere to prevent recursive calling
+            if (macroName == "street")
+            {
+                if (!string.IsNullOrEmpty(_objCharacter.Alias))
+                {
+                    return _objCharacter.Alias;
+                }
+                return "Alias ";
+            }
+            if(macroName == "real")
+            {
+                if (!string.IsNullOrEmpty(_objCharacter.Name))
+                {
+                    return _objCharacter.Name;
+                }
+                return "Unnamed John Doe ";
+            }
+            if (macroName == "year")
+            {
+                int year;
+                if (int.TryParse(_objCharacter.Age, out year))
+                {
+                    int age;
+                    if (int.TryParse(macroPool, out age))
+                    {
+                        return (2075 + age - year).ToString();
+                    }
+                    return (2075 - year).ToString();
+                }
+                return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
+            }
 
-			//Did not meet predefined macros, check user defined
-			
-			String searchString = "/chummer/storybuilder/macros/" + macroName;
+            //Did not meet predefined macros, check user defined
+            
+            String searchString = "/chummer/storybuilder/macros/" + macroName;
             XmlDocument objXmlLifeModulesDocument = XmlManager.Instance.Load("lifemodules.xml");
 
             if (objXmlLifeModulesDocument != null)
@@ -257,7 +257,7 @@ namespace Chummer
                     }
                 }
             }
-			return String.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));
-		}
-	}
+            return String.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));
+        }
+    }
 }

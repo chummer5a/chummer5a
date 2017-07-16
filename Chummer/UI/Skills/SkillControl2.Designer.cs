@@ -4,42 +4,42 @@ using System.Windows.Forms;
 
 namespace Chummer.UI.Skills
 {
-	partial class SkillControl2
-	{
-		/// <summary> 
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class SkillControl2
+    {
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			_italic.Dispose();
-			base.Dispose(disposing);
-		}
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            _italic.Dispose();
+            base.Dispose(disposing);
+        }
 
-		#region Component Designer generated code
+        #region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.lblName = new System.Windows.Forms.Label();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
-			this.nudKarma = new Chummer.helpers.NumericUpDownEx();
-			this.nudSkill = new Chummer.helpers.NumericUpDownEx();
+            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
+            this.nudSkill = new Chummer.helpers.NumericUpDownEx();
             this.lblModifiedRating = new System.Windows.Forms.Label();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
@@ -95,7 +95,7 @@ namespace Chummer.UI.Skills
             // 
             // nudKarma
             // 
-			this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(210, 1);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
@@ -103,13 +103,13 @@ namespace Chummer.UI.Skills
             0,
             0});
             this.nudKarma.Name = "nudKarma";
-			this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
+            this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
             this.nudKarma.TabIndex = 14;
             // 
             // nudSkill
             // 
-			this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(168, 1);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
@@ -117,7 +117,7 @@ namespace Chummer.UI.Skills
             0,
             0});
             this.nudSkill.Name = "nudSkill";
-			this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
+            this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudSkill.Size = new System.Drawing.Size(40, 20);
             this.nudSkill.TabIndex = 15;
             // 
@@ -274,26 +274,26 @@ namespace Chummer.UI.Skills
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.Label lblName;
-		private System.Windows.Forms.Label lblAttribute;
-		private Chummer.helpers.NumericUpDownEx nudKarma;
-		private Chummer.helpers.NumericUpDownEx nudSkill;
-		private System.Windows.Forms.Label lblModifiedRating;
-		private System.Windows.Forms.ComboBox cboSpec;
-		private System.Windows.Forms.CheckBox chkKarma;
-		private System.Windows.Forms.Button cmdDelete;
-		private System.Windows.Forms.Label lblCareerRating;
-		private System.Windows.Forms.Button btnCareerIncrease;
-		private System.Windows.Forms.Label lblCareerSpec;
-		private System.Windows.Forms.Button btnAddSpec;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-		private System.Windows.Forms.Button btnAttribute;
-		private System.Windows.Forms.ComboBox cboSelectAttribute;
-		private ContextMenuStrip cmsSkillLabel;
-		private ToolStripMenuItem tsSkillLabelNotes;
-	}
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.Label lblAttribute;
+        private Chummer.helpers.NumericUpDownEx nudKarma;
+        private Chummer.helpers.NumericUpDownEx nudSkill;
+        private System.Windows.Forms.Label lblModifiedRating;
+        private System.Windows.Forms.ComboBox cboSpec;
+        private System.Windows.Forms.CheckBox chkKarma;
+        private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.Label lblCareerRating;
+        private System.Windows.Forms.Button btnCareerIncrease;
+        private System.Windows.Forms.Label lblCareerSpec;
+        private System.Windows.Forms.Button btnAddSpec;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.Button btnAttribute;
+        private System.Windows.Forms.ComboBox cboSelectAttribute;
+        private ContextMenuStrip cmsSkillLabel;
+        private ToolStripMenuItem tsSkillLabelNotes;
+    }
 }

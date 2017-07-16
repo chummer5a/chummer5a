@@ -229,6 +229,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Interfaces\INamedItemWithGuid.cs" />
+    <Compile Include="lang\language.cs">
+      <DependentUpon>language.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1174,6 +1177,7 @@
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include=".editorconfig" />
     <None Include="app.config" />
     <Compile Include="Backend\Attributes\Attribute.Core.cs" />
     <None Include="app.config">
@@ -1593,6 +1597,7 @@
     <Content Include="Custom Content\override_cyberlimbheadware_cyberware.xml" />
     <Content Include="data\options.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Properties\Contributors.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -1614,9 +1619,11 @@
     </Content>
     <Content Include="data\contacts.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\critterpowers.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\critters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1628,6 +1635,7 @@
     </Content>
     <Content Include="data\echoes.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\gameplayoptions.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1638,9 +1646,11 @@
     </Content>
     <Content Include="data\improvements.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\licenses.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\lifemodules.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1648,9 +1658,11 @@
     </Content>
     <Content Include="data\lifestyles.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\martialarts.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\mentors.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1658,9 +1670,11 @@
     </Content>
     <Content Include="data\metamagic.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\metatypes.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\packs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1668,6 +1682,7 @@
     </Content>
     <Content Include="data\paragons.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\powers.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1679,6 +1694,7 @@
     </Content>
     <Content Include="data\programs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\qualities.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1686,6 +1702,7 @@
     </Content>
     <Content Include="data\ranges.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\skills.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1693,21 +1710,27 @@
     </Content>
     <Content Include="data\spells.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spiritpowers.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\streams.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\traditions.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\vehicles.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\vessels.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\weapons.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
