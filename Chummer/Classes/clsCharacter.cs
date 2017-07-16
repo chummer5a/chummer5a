@@ -310,7 +310,7 @@ namespace Chummer
             _attRES = new CharacterAttrib("RES", this, CharacterAttrib.AttributeCategory.Special);
             _attDEP = new CharacterAttrib("DEP", this,CharacterAttrib.AttributeCategory.Special);
             _attINI = new CharacterAttrib("INI", this);
-            _attESS = new CharacterAttrib("ESS", this);
+            _attESS = new CharacterAttrib("ESS", this, CharacterAttrib.AttributeCategory.Special);
 
             BOD._objCharacter = this;
             AGI._objCharacter = this;
@@ -1324,7 +1324,6 @@ namespace Chummer
             {
             }
 
-
             AttributeList.Add(_attBOD);
             AttributeList.Add(_attAGI);
             AttributeList.Add(_attREA);
@@ -1336,6 +1335,7 @@ namespace Chummer
             SpecialAttributeList.Add(_attEDG);
             SpecialAttributeList.Add(_attMAG);
             SpecialAttributeList.Add(_attRES);
+            SpecialAttributeList.Add(_attESS);            
             SpecialAttributeList.Add(_attDEP);
 
             Timekeeper.Finish("load_char_attrib");
@@ -2234,6 +2234,7 @@ namespace Chummer
             _attINI.Print(objWriter);
             _attEDG.Print(objWriter);
             _attMAG.Print(objWriter);
+            _attESS.Print(objWriter);
             _attRES.Print(objWriter);
 
             // </attributes>
@@ -4561,6 +4562,9 @@ namespace Chummer
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
+
+                //1781 Essence is not printing
+                _attESS.Base = Convert.ToInt32(decESS);
 
                 return decESS;
             }
