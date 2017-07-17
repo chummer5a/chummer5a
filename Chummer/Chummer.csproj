@@ -1177,7 +1177,6 @@
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include=".editorconfig" />
     <None Include="app.config" />
     <Compile Include="Backend\Attributes\Attribute.Core.cs" />
     <None Include="app.config">
