@@ -427,7 +427,30 @@ namespace Chummer.Skills
         /// </summary>
         public int KnowledgeSkillPointsUsed
         {
+            get { return KnowledgeSkillRanksSum - SkillPointsSpentOnKnoskills; }
+        }
+
+        /// <summary>
+        /// Sum of knowledge skill ranks the character has allocated.
+        /// </summary>
+        public int KnowledgeSkillRanksSum
+        {
             get { return KnowledgeSkills.Sum(x => x.CurrentSpCost()); }
+        }
+
+        /// <summary>
+        /// Number of Skill Points that have been spent on knowledge skills.
+        /// </summary>
+       public int SkillPointsSpentOnKnoskills
+        {
+            get
+            {
+                //Even if it is stupid, you can spend real skill points on knoskills...
+                int work = 0;
+                if (KnowledgeSkillRanksSum > KnowledgeSkillPoints)
+                    work -= KnowledgeSkillPoints - KnowledgeSkillRanksSum;
+                return work;
+            }
         }
 
         /// <summary>
@@ -437,16 +460,11 @@ namespace Chummer.Skills
         {
             get
             {
-                //Even if it is stupid, you can spend real skill points on knoskills...
                 if (SkillPointsMaximum == 0)
                 {
                     return 0;
                 }
-                int work = 0;
-                if (KnowledgeSkillPointsUsed > KnowledgeSkillPoints)
-                    work -= KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
-
-                return SkillPointsMaximum - Skills.TotalCostSp() - work;
+                return SkillPointsMaximum - Skills.TotalCostSp() - SkillPointsSpentOnKnoskills;
             }
         }
 

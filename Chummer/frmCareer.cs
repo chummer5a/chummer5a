@@ -26278,10 +26278,12 @@ namespace Chummer
 
         private void cboSpiritCombat_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cboSpiritCombat.SelectedValue == null)
+                return;
             if (_blnLoading || string.IsNullOrEmpty(cboSpiritCombat.SelectedValue.ToString()))
                 return;
 
-            _objCharacter.SpiritCombat = cboSpiritCombat.Text;
+            _objCharacter.SpiritCombat = cboSpiritCombat.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -26292,10 +26294,12 @@ namespace Chummer
 
         private void cboSpiritDetection_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cboSpiritDetection.SelectedValue == null)
+                return;
             if (_blnLoading || string.IsNullOrEmpty(cboSpiritDetection.SelectedValue.ToString()))
                 return;
 
-            _objCharacter.SpiritDetection = cboSpiritDetection.Text;
+            _objCharacter.SpiritDetection = cboSpiritDetection.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -26306,10 +26310,12 @@ namespace Chummer
 
         private void cboSpiritHealth_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cboSpiritHealth.SelectedValue == null)
+                return;
             if (_blnLoading || string.IsNullOrEmpty(cboSpiritHealth.SelectedValue.ToString()))
                 return;
 
-            _objCharacter.SpiritHealth = cboSpiritHealth.Text;
+            _objCharacter.SpiritHealth = cboSpiritHealth.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -26320,10 +26326,12 @@ namespace Chummer
 
         private void cboSpiritIllusion_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cboSpiritIllusion.SelectedValue == null)
+                return;
             if (_blnLoading || string.IsNullOrEmpty(cboSpiritIllusion.SelectedValue.ToString()))
                 return;
 
-            _objCharacter.SpiritIllusion = cboSpiritIllusion.Text;
+            _objCharacter.SpiritIllusion = cboSpiritIllusion.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
@@ -26334,10 +26342,12 @@ namespace Chummer
 
         private void cboSpiritManipulation_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cboSpiritManipulation.SelectedValue == null)
+                return;
             if (_blnLoading || string.IsNullOrEmpty(cboSpiritManipulation.SelectedValue.ToString()))
                 return;
 
-            _objCharacter.SpiritManipulation = cboSpiritManipulation.Text;
+            _objCharacter.SpiritManipulation = cboSpiritManipulation.SelectedValue.ToString();
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                 objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ namespace Chummer
             Adapsin,
             FreePositiveQualities,
             FreeNegativeQualities,
-            FreeKnowledgeSkills, 
+            FreeKnowledgeSkills,
             NuyenMaxBP,
             CMOverflow,
             FreeSpiritPowerPoints,
@@ -115,7 +115,7 @@ namespace Chummer
             Notoriety,
             SpellCategory,
             ThrowRange,
-            SkillsoftAccess, 
+            SkillsoftAccess,
             AddSprite,
             BlackMarketDiscount,
             SelectWeapon,
@@ -168,7 +168,7 @@ namespace Chummer
             SkillGroupLevel, //group
             SkillBase,  //base points in skill
             SkillGroupBase, //group
-            SkillKnowledgeForced, //A skill gained from a knowsoft 
+            SkillKnowledgeForced, //A skill gained from a knowsoft
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
@@ -219,7 +219,7 @@ namespace Chummer
             Submersion,
             Metamagic,
             Echo,
-            Armor, 
+            Armor,
             ArmorMod,
             EssenceLoss,
             ConditionMonitor,
@@ -334,7 +334,7 @@ namespace Chummer
             if (objNode == null)
                 return;
             Log.Enter("Load");
-            
+
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
@@ -562,7 +562,7 @@ namespace Chummer
     public class ImprovementManager
     {
         private readonly Character _objCharacter;
-        
+
         // String that will be used to limit the selection in Pick forms.
         private string _strLimitSelection = string.Empty;
 
@@ -958,7 +958,7 @@ namespace Chummer
                 objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Source  = " + ex.Source);
                 objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager",
                     "ERROR Trace   = " + ex.StackTrace.ToString());
-                
+
                 Rollback();
                 throw;
             }*/
@@ -1015,7 +1015,7 @@ namespace Chummer
 
             return allMethods.ToDictionary(x => x.Name.ToUpperInvariant());
         });
-        
+
         /// <summary>
         /// Remove all of the Improvements for an XML Node.
         /// </summary>
@@ -1102,7 +1102,7 @@ namespace Chummer
                                             break;
                             }
                         }
-                        _objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+                        _objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers),objImprovement.ImprovedName);
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                 // Determine if access to any special tabs have been lost.
@@ -1405,7 +1405,7 @@ namespace Chummer
             Log.Info( "strExclude = " + strExclude);
             Log.Info(
                 "blnAddToRating = " + blnAddToRating.ToString());
-            
+
             // Record the improvement.
             Improvement objImprovement = new Improvement();
             objImprovement.ImprovedName = strImprovedName;
@@ -1465,7 +1465,7 @@ namespace Chummer
 
         #endregion
 
-        
+
 
 }
 

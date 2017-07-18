@@ -133,7 +133,7 @@ namespace Chummer
         private int _intMetatypeBP = 0;
 
         // Special Flags.
-        
+
         private bool _blnAdeptEnabled = false;
         private bool _blnMagicianEnabled = false;
         private bool _blnTechnomancerEnabled = false;
@@ -310,7 +310,7 @@ namespace Chummer
             _attRES = new CharacterAttrib("RES", this, CharacterAttrib.AttributeCategory.Special);
             _attDEP = new CharacterAttrib("DEP", this,CharacterAttrib.AttributeCategory.Special);
             _attINI = new CharacterAttrib("INI", this);
-            _attESS = new CharacterAttrib("ESS", this);
+            _attESS = new CharacterAttrib("ESS", this, CharacterAttrib.AttributeCategory.Special);
 
             BOD._objCharacter = this;
             AGI._objCharacter = this;
@@ -517,7 +517,7 @@ namespace Chummer
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString());
 
-            
+
             // <nuyenbp />
             objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyenmaxbp />
@@ -537,12 +537,12 @@ namespace Chummer
             objWriter.WriteElementString("initiationoverride", _blnInitiationEnabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", _blnCritterEnabled.ToString());
-            
+
             // <friendsinhighplaces />
             objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
             // <prototypetranshuman />
             objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
-            
+
             // <blackmarket />
             objWriter.WriteElementString("blackmarketdiscount", _blnBlackMarketDiscount.ToString());
 
@@ -550,7 +550,7 @@ namespace Chummer
 
             objWriter.WriteElementString("trustfund", _intTrustFund.ToString());
 
-            
+
 
             objWriter.WriteElementString("restrictedgear", _blnRestrictedGear.ToString());
 
@@ -631,7 +631,7 @@ namespace Chummer
             objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString());
 
             ///////////////////////////////////////////SKILLS
-            /// 
+            ///
 
             SkillsSection.Save(objWriter);
 
@@ -640,7 +640,7 @@ namespace Chummer
             oldSkillsBackup?.WriteTo(objWriter);
 
             ///////////////////////////////////////////SKILLS
-            /// 
+            ///
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
@@ -866,7 +866,7 @@ namespace Chummer
             // </improvements>
             objWriter.WriteEndElement();
 
-           
+
 
             // <expenses>
             objWriter.WriteStartElement("expenses");
@@ -1019,7 +1019,7 @@ namespace Chummer
 #endif
             // Get the name of the settings file in use if possible.
             objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
-            
+
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
                 return false;
@@ -1040,7 +1040,7 @@ namespace Chummer
                 }
                     if (blnMissingBooks)
                 {
-                    string strMessage = 
+                    string strMessage =
                         "This character was created with the following books that are not enabled:\n {0} \nThis may cause issues. Do you want to continue loading the character?"
                             .Replace("{0}", TranslatedBookList(strMissingBooks));
                     if (MessageBox.Show(strMessage, "Missing Books", MessageBoxButtons.YesNo) == DialogResult.No)
@@ -1177,7 +1177,7 @@ namespace Chummer
             objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
 
             objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-            
+
             objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
             objXmlCharacter.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
             objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
@@ -1187,7 +1187,7 @@ namespace Chummer
             objXmlCharacter.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
             objXmlCharacter.TryGetBoolFieldQuickly("initiationoverride", ref _blnInitiationEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
-           
+
             objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
             objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
             objXmlCharacter.TryGetBoolFieldQuickly("blackmarket", ref _blnBlackMarketDiscount);
@@ -1220,7 +1220,7 @@ namespace Chummer
                 _lstImprovements.Add(objImprovement);
             }
             Timekeeper.Finish("load_char_imp");
-            
+
             Timekeeper.Start("load_char_quality");
             // Qualities
             objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");
@@ -1324,7 +1324,6 @@ namespace Chummer
             {
             }
 
-
             AttributeList.Add(_attBOD);
             AttributeList.Add(_attAGI);
             AttributeList.Add(_attREA);
@@ -1336,13 +1335,14 @@ namespace Chummer
             SpecialAttributeList.Add(_attEDG);
             SpecialAttributeList.Add(_attMAG);
             SpecialAttributeList.Add(_attRES);
+            SpecialAttributeList.Add(_attESS);
             SpecialAttributeList.Add(_attDEP);
 
             Timekeeper.Finish("load_char_attrib");
             Timekeeper.Start("load_char_misc2");
 
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-            
+
             // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
             if (_blnAdeptEnabled && _blnMagicianEnabled)
             {
@@ -1389,7 +1389,7 @@ namespace Chummer
             {
                 SkillsSection.Load(objXmlCharacter, true);
             }
-            
+
             Timekeeper.Start("load_char_contacts");
 
 
@@ -1795,7 +1795,7 @@ namespace Chummer
                             objXmlDwarfQuality =
                                 XmlManager.Instance.Load("qualities.xml")
                                     .SelectSingleNode("/chummer/qualities/quality[name = \"Dwarf Resistance\"]");
-                
+
                 TreeNode objNode = new TreeNode();
                 List<Weapon> objWeapons = new List<Weapon>();
                 List<TreeNode> objWeaponNodes = new List<TreeNode>();
@@ -1842,7 +1842,7 @@ namespace Chummer
             }
             Timekeeper.Finish("load_char_maxkarmafix");
             Timekeeper.Start("load_char_mentorspiritfix");
-            // If the character doesn't have an Improvement marker that uniquely identifies what the Mentor Spirit is, create it now. 
+            // If the character doesn't have an Improvement marker that uniquely identifies what the Mentor Spirit is, create it now.
             if (Qualities.Any(q => q.Name == "Mentor Spirit") && Improvements.All(imp => imp.ImproveType != Improvement.ImprovementType.MentorSpirit))
             {
                 Quality mentorQuality = Qualities.First(q => q.Name == "Mentor Spirit");
@@ -2182,7 +2182,7 @@ namespace Chummer
                     objWriter.WriteElementString("spiritillusion", _strSpiritIllusion);
                     objWriter.WriteElementString("spiritmanipulation", _strSpiritManipulation);
                 }
-                
+
                 //Spirit form, default to materialization unless field with other data persists
                 string strSpiritForm = "Materialization";
                 objXmlTradition.TryGetStringFieldQuickly("spiritform", ref strSpiritForm);
@@ -2234,6 +2234,7 @@ namespace Chummer
             _attINI.Print(objWriter);
             _attEDG.Print(objWriter);
             _attMAG.Print(objWriter);
+            _attESS.Print(objWriter);
             _attRES.Print(objWriter);
 
             // </attributes>
@@ -2702,8 +2703,8 @@ namespace Chummer
         {
             _intBuildPoints = 800;
             _intSumtoTen = 10;
-            
-            
+
+
             _decNuyenMaximumBP = 50m;
             _intSpellLimit = 0;
             _intCFPLimit = 0;
@@ -2757,7 +2758,7 @@ namespace Chummer
             // Reset all of the Lists.
             // This kills the GC
             _lstImprovements = new List<Improvement>();
-            
+
             _lstContacts = new List<Contact>();
             _lstSpirits = new List<Spirit>();
             _lstSpells = new List<Spell>();
@@ -2785,7 +2786,7 @@ namespace Chummer
             _lstOldQualities = new List<string>();
             _lstCalendar = new List<CalendarWeek>();
 
-            
+
             SkillsSection.Reset();
         }
 #endregion
@@ -3072,7 +3073,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Name of the settings file the Character uses. 
+        /// Name of the settings file the Character uses.
         /// </summary>
         public string SettingsFile
         {
@@ -3194,7 +3195,7 @@ namespace Chummer
                         _intMainMugshotIndex = _lstMugshots.Count - 1;
                     else
                         _intMainMugshotIndex = 0;
-                }    
+                }
             }
         }
 
@@ -3595,7 +3596,7 @@ namespace Chummer
         {
             get
             {
-                return _strPrimaryArm; 
+                return _strPrimaryArm;
             }
             set
             {
@@ -4198,7 +4199,7 @@ namespace Chummer
         {
             get { return _attRES; }
         }
-        
+
         /// <summary>
         /// Depth (DEP) Attribute.
         /// </summary>
@@ -4562,6 +4563,9 @@ namespace Chummer
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
 
+                //1781 Essence is not printing
+                _attESS.Base = Convert.ToInt32(decESS);
+
                 return decESS;
             }
         }
@@ -4573,7 +4577,7 @@ namespace Chummer
         {
             get
             {
-                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. 
+                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
@@ -4585,7 +4589,7 @@ namespace Chummer
         {
             get
             {
-                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. 
+                // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
@@ -4597,7 +4601,7 @@ namespace Chummer
         {
             get
             {
-                // Find the total Essence Cost of all Essence Hole objects. 
+                // Find the total Essence Cost of all Essence Hole objects.
                 return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
@@ -4811,7 +4815,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeDice;
                 }
-                return Math.Min(3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice),5); 
+                return Math.Min(3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice),5);
             }
         }
 #endregion
@@ -4868,7 +4872,7 @@ namespace Chummer
 #endregion
 
         /// <summary>
-        /// Character's total Spell Resistance from qualities and metatype properties. 
+        /// Character's total Spell Resistance from qualities and metatype properties.
         /// </summary>
         public int SpellResistance
         {
@@ -5592,7 +5596,7 @@ namespace Chummer
                 int intCMStun = 0;
                 // A.I. do not have a Stun Condition Monitor.
                 if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
-                { 
+                {
                     intCMStun = 8 + (WIL.TotalValue + 1) / 2;
                 // Include Improvements in the Condition Monitor values.
                 intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
@@ -6013,13 +6017,13 @@ namespace Chummer
 
                     strReturn = string.Format(LanguageManager.Instance.GetString("Tip_CalculatedMovement"), intWalking.ToString(), walkratekph.ToString(), intRunning.ToString(), runratekph.ToString());
                 }
-                
+
                 return strReturn;
             }
         }
 
         /// <summary>
-        /// Character's running Movement rate. 
+        /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
         private int WalkingRate(string strType = "Ground")
@@ -6053,7 +6057,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's running Movement rate. 
+        /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
         private int RunningRate(string strType = "Ground")
@@ -6086,7 +6090,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's running Movement rate. 
+        /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
         private int SprintingRate(string strType = "Ground")
@@ -6588,7 +6592,7 @@ namespace Chummer
             set
             {
                 _blnLightningReflexes = value;
-                    
+
             }
         }
         /// <summary>
@@ -7222,7 +7226,7 @@ namespace Chummer
         {
             get { return _verSavedVersion; }
         }
-        
+
         public bool Ambidextrous
         {
             get { return _ambidextrous; }
@@ -7234,7 +7238,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Is the character a mystic adept (MagicianEnabled && AdeptEnabled)? Used for databinding properties. 
+        /// Is the character a mystic adept (MagicianEnabled && AdeptEnabled)? Used for databinding properties.
         /// </summary>
         public bool IsMysticAdept
         {
@@ -7300,11 +7304,18 @@ namespace Chummer
             }
         }
 
-        internal void ForceAttributePropertyChangedNotificationAll(string name)
+        internal void ForceAttributePropertyChangedNotificationAll(string name, string abbrev = "")
         {
-            foreach (CharacterAttrib att in _attributes)
+            if (!string.IsNullOrWhiteSpace(abbrev))
             {
-                att.ForceEvent(name);
+                GetAttribute(abbrev).ForceEvent(name);
+            }
+            else
+            {
+                foreach (CharacterAttrib att in _attributes)
+                {
+                    att.ForceEvent(name);
+                }
             }
         }
     }
