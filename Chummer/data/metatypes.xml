@@ -436,7 +436,7 @@
           <source>RF</source>
           <page>104</page>
         </metavariant>
-      </metavariants>      
+      </metavariants>
     </metatype>
     <metatype>
       <id>08f2c9cc-f9f8-4f1a-9efb-63555af71788</id>
@@ -671,11 +671,11 @@
           <depaug>0</depaug>
           <bonus>
             <lifestylecost>20</lifestylecost>
-          </bonus>    
+          </bonus>
           <qualities>
             <positive>
               <quality>Celerity</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>                            
+              <quality>Resistance to Pathogens/Toxins</quality>
               <quality>Thermographic Vision</quality>
             </positive>
             <negative>
@@ -730,7 +730,7 @@
           <essaug>6</essaug>
           <depmin>0</depmin>
           <depmax>0</depmax>
-          <depaug>0</depaug>        
+          <depaug>0</depaug>
           <qualities>
             <positive>
               <quality>Resistance to Pathogens</quality>
@@ -742,7 +742,7 @@
           <source>RF</source>
           <page>90</page>
         </metavariant>
-      </metavariants>      
+      </metavariants>
     </metatype>
     <metatype>
       <id>8ed6892f-88e6-42d0-a704-b805778ec13e</id>
@@ -1038,7 +1038,7 @@
           <source>RF</source>
           <page>104</page>
         </metavariant>
-      </metavariants>      
+      </metavariants>
     </metatype>
     <metatype>
       <id>77fa1ed8-f4e6-4763-9f0b-f125318b9782</id>
@@ -1345,7 +1345,7 @@
           <source>RF</source>
           <page>104</page>
         </metavariant>
-      </metavariants>    
+      </metavariants>
     </metatype>
     <!-- End Region -->
     <!-- Region Metasapient -->
@@ -1412,7 +1412,7 @@
         <positive>
           <quality>Low-Light Vision</quality>
           <quality>Thermographic Vision</quality>
-          <quality>Natural Weapon: Kick (Centaur)</quality> 
+          <quality>Natural Weapon: Kick (Centaur)</quality>
           <quality>Magic Sense</quality>
         </positive>
       </qualities>
@@ -1488,14 +1488,13 @@
           <quality>Natural Weapon: Bite (Naga)</quality>
         </positive>
         <negative>
-          <quality removable="true">Uneducated</quality>
           <quality>Cold-Blooded</quality>
         </negative>
       </qualities>
       <powers>
         <power>Dual Natured</power>
         <power select="Bite: DV (STR + 1)P, AP -2, Reach -1">Natural Weapon</power>
-        <power select="8">Armor</power>     
+        <power select="8">Armor</power>
         <power>Venom</power>
         <power>Guard</power>
       </powers>
@@ -1563,7 +1562,7 @@
         <lifestylecost>100</lifestylecost>
       </bonus>
       <qualities>
-        <positive> 
+        <positive>
           <quality>Astral Perception</quality>
         </positive>
         <negative>
@@ -1768,7 +1767,7 @@
           <quality>Redundancy</quality>
           <quality>Restricted Gear</quality>
           <quality>Sapper</quality>
-          <quality>Sensor Upgrade</quality>                    
+          <quality>Sensor Upgrade</quality>
           <quality>Sense of Direction</quality>
           <quality>Sensei</quality>
           <quality>Sharpshooter</quality>
@@ -1946,7 +1945,7 @@
               <quality>Redundancy</quality>
               <quality>Restricted Gear</quality>
               <quality>Sapper</quality>
-              <quality>Sensor Upgrade</quality>                    
+              <quality>Sensor Upgrade</quality>
               <quality>Sense of Direction</quality>
               <quality>Sensei</quality>
               <quality>Sharpshooter</quality>
@@ -2136,7 +2135,7 @@
               <quality>Redundancy</quality>
               <quality>Restricted Gear</quality>
               <quality>Sapper</quality>
-              <quality>Sensor Upgrade</quality>                    
+              <quality>Sensor Upgrade</quality>
               <quality>Sense of Direction</quality>
               <quality>Sensei</quality>
               <quality>Sharpshooter</quality>
@@ -2325,7 +2324,7 @@
               <quality>Redundancy</quality>
               <quality>Restricted Gear</quality>
               <quality>Sapper</quality>
-              <quality>Sensor Upgrade</quality>                    
+              <quality>Sensor Upgrade</quality>
               <quality>Sense of Direction</quality>
               <quality>Sensei</quality>
               <quality>Sharpshooter</quality>
@@ -2412,7 +2411,7 @@
           <page>135</page>
         </metavariant>
       </metavariants>
-    </metatype>    
+    </metatype>
     <!-- End Region -->
     <!-- Region Shapeshifter -->
     <metatype>
