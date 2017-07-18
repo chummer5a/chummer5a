@@ -385,7 +385,7 @@ namespace Chummer
                 else
                 {
                     // Display the Spell information.
-                    XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + treSpells.SelectedNode.Tag + "\"]");
+                    XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + treSpells.SelectedNode.Tag + "\"]");
                     // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
                     // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
                     int intSpellCount = 0;
