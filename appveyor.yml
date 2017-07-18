@@ -19,7 +19,7 @@ init:
       "Content-type" = "application/json"
     }
 
-    $LastCommit = (Invoke-RestMethod -Uri "https://ci.appveyor.com/api/projects/$accountName/$projectSlug/" -Headers $headers -Method GET).build.commitid
+    $LastCommit = git rev-list -1 --skip 1 head
 
     $NewCommit = $env:APPVEYOR_REPO_COMMIT
 
