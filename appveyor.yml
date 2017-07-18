@@ -6,33 +6,6 @@ skip_tags: true
 image: Visual Studio 2017
 configuration: Release
 platform: x86
-init:
-- ps: >-
-    $token = $env:api_token
-
-    $accountName = 'chummer5a'
-
-    $projectSlug = 'chummer'
-
-    $headers = @{
-      "Authorization" = "Bearer $token"
-      "Content-type" = "application/json"
-    }
-
-    $LastCommit = (Invoke-RestMethod -Uri "https://ci.appveyor.com/api/projects/$accountName/$projectSlug/" -Headers $headers -Method GET).build.commitid
-
-    $NewCommit = $env:APPVEYOR_REPO_COMMIT
-
-
-    Write-Host "Last Commit ID: $LastCommit"
-
-    Write-Host "This Commit ID: $NewCommit"
-
-    if ($LastCommit -eq $NewCommit -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
-
-    {
-    	Exit-AppveyorBuild
-    }
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -52,6 +25,31 @@ nuget:
   disable_publish_on_pr: true
 before_build:
 - ps: >-
+    $token = $env:api_token
+
+    $accountName = 'chummer5a'
+
+    $projectSlug = 'chummer'
+
+    $headers = @{
+      "Authorization" = "Bearer $token"
+      "Content-type" = "application/json"
+    }
+
+    $LastCommit = git rev-list -1 --skip 1 head
+
+    $NewCommit = $env:APPVEYOR_REPO_COMMIT
+
+
+    Write-Host "Last Commit ID: $LastCommit"
+
+    Write-Host "This Commit ID: $NewCommit"
+
+    if ($LastCommit -eq $NewCommit -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
+
+    {
+    	Exit-AppveyorBuild
+    }
     nuget restore
 
     & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
