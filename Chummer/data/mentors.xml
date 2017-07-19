@@ -2226,7 +2226,7 @@
             <specificpower>
               <name>Stillness</name>
               <val>3</val>
-              
+
             </specificpower>
           </bonus>
         </choice>
@@ -2310,7 +2310,7 @@
             <specificpower>
               <name>Empathic Healing</name>
               <val>1</val>
-              
+
             </specificpower>
           </bonus>
         </choice>
@@ -2395,7 +2395,7 @@
             <specificpower>
               <name>Danger Sense</name>
               <val>2</val>
-              
+
             </specificpower>
           </bonus>
         </choice>
@@ -2529,7 +2529,7 @@
             <specificpower>
               <name>Light Body</name>
               <val>2</val>
-              
+
             </specificpower>
           </bonus>
         </choice>
@@ -2565,7 +2565,7 @@
             <specificpower>
               <name>Combat Sense</name>
               <val>2</val>
-              
+
             </specificpower>
           </bonus>
         </choice>
@@ -2595,7 +2595,7 @@
             <specificpower>
               <name>Heightened Concentration</name>
               <val>2</val>
-              
+
             </specificpower>
           </bonus>
         </choice>
@@ -2832,10 +2832,10 @@
           <name>Magician: +2 dice summoning guardian spirits.</name>
         </choice>
         <choice set="2">
-          <name>Adept: Gain the Berserker power for free.</name>
+          <name>Adept: Gain the Berserk power for free.</name>
           <bonus>
             <specificpower>
-              <name>Berserker</name>
+              <name>Berserk</name>
               <val>1</val>
             </specificpower>
           </bonus>
